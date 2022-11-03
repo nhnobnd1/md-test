@@ -1,0 +1,47 @@
+{
+  "addNew": "Add new {name}",
+  "update": "Update {name}",
+  "edit": "Edit {name}",
+  "save": "Save",
+  "delete": "Delete {name}",
+  "cancel": "Cancel",
+  "ok": "Ok",
+  "confirm": "Confirm",
+  "clear": "Clear",
+  "reset": "Reset",
+
+  "search": "Search",
+  "searchBy": "Search by {name}",
+
+  "schedule": "Schedule",
+  "pause": "Pause",
+  "preview": "Preview",
+
+  "lock": "Lock",
+  "activate": "Activate",
+
+  "sort": "Sort",
+  "sort_by": "Sort by {name}",
+
+  "enter": "Enter {name}",
+  "select": "Select {name}",
+  "select_by": "Select by {name}",
+
+  "states": {
+    "create": {
+      "processing": "Creating new {name} is being processed",
+      "successful": "Successfully create {name}",
+      "failed": "Create {name} failed, please try again later"
+    },
+    "update": {
+      "processing": "Updating {name} is being processed",
+      "successful": "Successfully update {name}",
+      "failed": "Update {name} failed, please try again later"
+    },
+    "delete": {
+      "processing": "Deleting {name} is being processed",
+      "successful": "Successfully delete {name}",
+      "failed": "Delete {name} failed, please try again later"
+    }
+  }
+}

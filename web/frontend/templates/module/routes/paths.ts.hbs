@@ -1,0 +1,8 @@
+import createRoutePath from "src/core/routes/createRoutePath";
+
+const {{moduleName.pascal}}RoutePaths = createRoutePath({
+  Index: "{{moduleName.kebab}}",
+  Child: "child",
+} as const);
+
+export default {{moduleName.pascal}}RoutePaths;

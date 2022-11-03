@@ -1,0 +1,17 @@
+import {{moduleName.camel}}Locales from "src/modules/{{moduleName.camel}}/locales";
+import { {{moduleName.camel}}Reducer } from "src/modules/{{moduleName.camel}}/redux";
+import {{moduleName.pascal}}RoutePaths from "src/modules/{{moduleName.camel}}/routes/paths";
+
+declare global {
+  interface ModulesReducers {
+    {{moduleName.camel}}: typeof {{moduleName.camel}}Reducer;
+  }
+
+  interface RoutePaths {
+    {{moduleName.pascal}}: typeof {{moduleName.pascal}}RoutePaths;
+  }
+
+  interface Localizations {
+    {{moduleName.camel}}: typeof {{moduleName.camel}}Locales.en & typeof {{moduleName.camel}}Locales.vi;
+  }
+}
