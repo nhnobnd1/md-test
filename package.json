@@ -10,7 +10,9 @@
 		"info": "shopify app info",
 		"generate": "shopify app generate",
 		"deploy": "shopify app deploy",
-		"frontend": "yarn --cwd web/frontend"
+		"frontend": "yarn --cwd web/frontend",
+		"web": "yarn --cwd web",
+		"postinstall": "yarn web && yarn frontend"
 	},
 	"dependencies": {
 		"@shopify/app": "3.21.0",
