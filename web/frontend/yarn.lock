@@ -1265,25 +1265,25 @@
     base64url "^3.0.1"
     web-vitals "^3.0.1"
 
-"@shopify/polaris-icons@^5.4.0":
-  version "5.4.0"
-  resolved "https://registry.yarnpkg.com/@shopify/polaris-icons/-/polaris-icons-5.4.0.tgz#99a11fa48d38657aaa63d2cc3306a4d56911d6b8"
-  integrity sha512-RzVSdwJuObO/4hS+DUCzY0jEQE0d6WFH5yFjTYqotMUGxe3tCUVdbuxxk/G1QbLVGQXYHmAvDXKbt+xSHwf+ow==
+"@shopify/polaris-icons@^6.5.0":
+  version "6.5.0"
+  resolved "https://registry.yarnpkg.com/@shopify/polaris-icons/-/polaris-icons-6.5.0.tgz#2192b52e9909388ddc02ba9a58fbd161def7f5c1"
+  integrity sha512-/PtTzYNsGzhrg+1B07o+Gxp2W9s83YY/4+JszP05zbKsr9iW7rza15pa03P3C9RoGb/1GR0ZKhxVIpaxpljNwA==
 
-"@shopify/polaris-tokens@^5.5.2":
-  version "5.5.2"
-  resolved "https://registry.yarnpkg.com/@shopify/polaris-tokens/-/polaris-tokens-5.5.2.tgz#679148c0565c640425b40c9c18d3052a139f5475"
-  integrity sha512-1kYnaRU5MtSV+DMcSn5Mytrnsev1IO/trORD8BtiW+s2V85K5LoNqAZ1F1rRmJnZLAfe8XwlAixkR+sCDLSYmQ==
+"@shopify/polaris-tokens@^6.3.0":
+  version "6.3.0"
+  resolved "https://registry.yarnpkg.com/@shopify/polaris-tokens/-/polaris-tokens-6.3.0.tgz#6c127ba92231d7c46cc1b630c93cf10ea8a492b9"
+  integrity sha512-ZYcV/yzTDw/qizqb2zKYi0ryNTWg1fKs492sZajs5Rk6TdEYIJSuIHG4U1iP2RFadIFWyHu5ELC5UZWsUCxP9w==
 
-"@shopify/polaris@^9.11.0":
-  version "9.24.0"
-  resolved "https://registry.yarnpkg.com/@shopify/polaris/-/polaris-9.24.0.tgz#c7a028457f76acac5a40dc9dc6aa2044a4e394c5"
-  integrity sha512-7ca3maYnyAmG7kcz7P7s9tW/09nLGT7AQv5E98ekw4aAL7ZWGTV3hAh7n7wo0Cc7RLepkSZgqDI1jdYk99nZGQ==
+"@shopify/polaris@^10.12.0":
+  version "10.12.0"
+  resolved "https://registry.yarnpkg.com/@shopify/polaris/-/polaris-10.12.0.tgz#268ee96aff19a94205c442c227b2a0bbe29ef36b"
+  integrity sha512-qIZNqTHQeJKBgxlI6fuNkinlVQtXrqFGS9QTZ16TP7CNFHjHLXBGdBvj+77BTEgsEGYeS4FKJejstS7COiyufg==
   dependencies:
-    "@shopify/polaris-icons" "^5.4.0"
-    "@shopify/polaris-tokens" "^5.5.2"
-    "@types/react" "^17.0.2"
-    "@types/react-dom" "^17.0.2"
+    "@shopify/polaris-icons" "^6.5.0"
+    "@shopify/polaris-tokens" "^6.3.0"
+    "@types/react" "^18.0.15"
+    "@types/react-dom" "^18.0.6"
     "@types/react-transition-group" "^4.4.2"
     react-fast-compare "^3.2.0"
     react-transition-group "^4.4.2"
@@ -1343,12 +1343,19 @@
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.5.tgz#5f19d2b85a98e9558036f6a3cacc8819420f05cf"
   integrity sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==
 
-"@types/react-dom@^17.0.11", "@types/react-dom@^17.0.2":
+"@types/react-dom@^17.0.11":
   version "17.0.18"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-17.0.18.tgz#8f7af38f5d9b42f79162eea7492e5a1caff70dc2"
   integrity sha512-rLVtIfbwyur2iFKykP2w0pl/1unw26b5td16d5xMgp7/yjTHomkyxPYChFoCr/FtEX1lN9wY6lFj1qvKdS5kDw==
   dependencies:
     "@types/react" "^17"
+
+"@types/react-dom@^18.0.6":
+  version "18.0.9"
+  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-18.0.9.tgz#ffee5e4bfc2a2f8774b15496474f8e7fe8d0b504"
+  integrity sha512-qnVvHxASt/H7i+XG1U1xMiY5t+IHcPGUK7TDMDzom08xa7e86eCeKOiLZezwCKVxJn6NEiiy2ekgX8aQssjIKg==
+  dependencies:
+    "@types/react" "*"
 
 "@types/react-router-dom@^5.3.3":
   version "5.3.3"
@@ -1383,10 +1390,19 @@
     "@types/scheduler" "*"
     csstype "^3.0.2"
 
-"@types/react@^17", "@types/react@^17.0.2", "@types/react@^17.0.37":
+"@types/react@^17", "@types/react@^17.0.37":
   version "17.0.52"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.52.tgz#10d8b907b5c563ac014a541f289ae8eaa9bf2e9b"
   integrity sha512-vwk8QqVODi0VaZZpDXQCmEmiOuyjEFPY7Ttaw5vjM112LOq37yz1CDJGrRJwA1fYEq4Iitd5rnjd1yWAc/bT+A==
+  dependencies:
+    "@types/prop-types" "*"
+    "@types/scheduler" "*"
+    csstype "^3.0.2"
+
+"@types/react@^18.0.15":
+  version "18.0.25"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.0.25.tgz#8b1dcd7e56fe7315535a4af25435e0bb55c8ae44"
+  integrity sha512-xD6c0KDT4m7n9uD4ZHi02lzskaiqcBxf4zi+tXZY98a04wvc0hi/TcCPC2FOESZi51Nd7tlUeOJY8RofL799/g==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"

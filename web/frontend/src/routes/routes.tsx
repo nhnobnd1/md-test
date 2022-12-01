@@ -5,7 +5,7 @@ const appRootRoutes: IRoute[] = [
   {
     path: RoutePaths.Index,
     title: "Index page",
-    showInNavigationMenu: true,
+    showInNavigationMenu: false,
     index: true,
     element: <></>,
   },

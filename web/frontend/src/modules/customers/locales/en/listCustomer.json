@@ -1,0 +1,13 @@
+{
+  "title": "Customer",
+  "subTitle": "List of customer",
+  "searchPlaceholder": "Search customer",
+  "nameCustomer": "Customer name",
+  "email": "Email",
+  "numberOfTicket": "Number of tickets",
+
+  "actions": {
+    "addNew": "Add new",
+    "next": "Next"
+  }
+}
