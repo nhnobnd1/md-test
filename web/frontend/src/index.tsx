@@ -39,6 +39,7 @@ ReactDOM.render(
                   <AuthProvider
                     defaultTokens={{
                       base_token: TokenManager.getToken("base_token"),
+                      refresh_token: TokenManager.getToken("refresh_token"),
                     }}
                   >
                     <ModuleLoader>

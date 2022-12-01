@@ -26,11 +26,7 @@ export interface Interceptor {
       response: AxiosResponse<any>
     ) => AxiosResponse<any> | Promise<AxiosResponse<any>>;
 
-    error?: (
-      error: any,
-      handleError: (error?: any) => any,
-      axios: AxiosObservable
-    ) => any;
+    error?: (error: any, axios: AxiosObservable) => any;
   };
 }
 
