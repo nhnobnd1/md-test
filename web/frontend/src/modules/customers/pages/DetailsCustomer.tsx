@@ -8,7 +8,7 @@ import {
 } from "@shopify/polaris";
 import { useCallback, useState } from "react";
 
-export default function IndexTableWithFilteringExample() {
+export default function DetailsInforCustomer() {
   const customers = [
     {
       id: "3416",
