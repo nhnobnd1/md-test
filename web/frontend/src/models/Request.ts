@@ -12,8 +12,8 @@ export interface BaseListRequest {
 }
 
 export interface BaseMetaDataListResponse {
-  page?: number;
-  totalPage?: number;
-  totalCount?: number;
-  resultsPerPage?: number;
+  page: number;
+  totalPage: number;
+  totalCount: number;
+  resultsPerPage: number;
 }
