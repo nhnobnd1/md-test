@@ -113,7 +113,7 @@ export class Api<GlobalResponse = any> {
           ...Api.globalHeaders,
           "Content-Type":
             config.contentType === "formData"
-              ? ""
+              ? false
               : config.contentType === "urlEncoded"
               ? RequestHeaderContentType.UrlEncoded
               : RequestHeaderContentType.Json,
@@ -182,9 +182,7 @@ export class Api<GlobalResponse = any> {
       },
       async (error) => {
         const result = await this.useErrorResponseInterceptor(error);
-        return result && !result?.message && result.data
-          ? result
-          : Promise.reject(result);
+        return result instanceof Error ? Promise.reject(result) : result;
       }
     );
   }
@@ -203,16 +201,9 @@ export class Api<GlobalResponse = any> {
     for (const interceptor of Api.interceptors) {
       if (interceptor.response && interceptor.response.error) {
         try {
-          error = await interceptor.response.error(
-            error,
-            (err?: any) => {
-              err = err ?? error;
-              return err;
-            },
-            this.axiosInstance
-          );
+          error = await interceptor.response.error(error, this.axiosInstance);
         } catch (err) {
-          console.log(err);
+          return error;
         }
       }
     }
