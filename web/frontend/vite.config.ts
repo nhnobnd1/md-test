@@ -1,5 +1,3 @@
-/// <reference types="vitest" />
-
 import react from "@vitejs/plugin-react";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
@@ -71,24 +69,6 @@ export default defineConfig({
     proxy: {
       "^/(\\?.*)?$": proxyOptions,
       "^/api(/|(\\?.*)?$)": proxyOptions,
-    },
-  },
-
-  test: {
-    globals: true,
-    environment: "jsdom",
-    setupFiles: "./__test__/test.setup.ts",
-    exclude: [
-      "node_modules",
-      "dist",
-      ".idea",
-      ".git",
-      ".vscode",
-      ".cache",
-      "./src/core",
-    ],
-    coverage: {
-      exclude: ["src/core"],
     },
   },
 });
