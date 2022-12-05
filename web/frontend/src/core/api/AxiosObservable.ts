@@ -26,7 +26,7 @@ export class AxiosObservable<GlobalResponseType = any> {
     config: AxiosObservableRequestConfig
   ) {
     return new Observable<AxiosResponse<ResponseType>>((destination) => {
-      const cancelToken = Axios.CancelToken.source();
+      const abortController = new AbortController();
 
       let onUploadProgress;
       let onDownloadProgress;
@@ -52,7 +52,7 @@ export class AxiosObservable<GlobalResponseType = any> {
           ...config,
           onUploadProgress,
           onDownloadProgress,
-          cancelToken: cancelToken.token,
+          signal: abortController.signal,
         })
         .then((response) => {
           destination.next(response);
@@ -71,7 +71,7 @@ export class AxiosObservable<GlobalResponseType = any> {
         });
 
       return () => {
-        cancelToken.cancel();
+        abortController.abort();
       };
     });
   }
