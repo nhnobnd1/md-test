@@ -24,11 +24,12 @@ export default function applyAuthMiddleware(
 
       const shop = await Shop.all({
         session: session,
-        fields: "email, phone, timezone, shop_owner, myshopify_domain",
+        fields: "id, email, phone, timezone, shop_owner, myshopify_domain",
       });
 
       const payload = {
-        subdomain: shop[0].myshopify_domain,
+        subdomain: shop[0].myshopify_domain.replace(".myshopify.com", ""),
+        storeId: String(shop[0].id),
         email: shop[0].email,
         password: process.env.PASS_DEFAULT,
         firstName: shop[0].shop_owner,
