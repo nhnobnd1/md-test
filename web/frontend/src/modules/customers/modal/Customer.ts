@@ -1,6 +1,6 @@
 import { BaseListRequest, BaseResponse } from "src/models/Request";
 
-export interface Customer {
+export type Customer = {
   _id: string;
   createdDatetime: string;
   createdTimestamp: string;
@@ -17,7 +17,7 @@ export interface Customer {
   email: string;
   phoneNumber: string;
   storeId: string;
-}
+};
 
 export type GetListCustomerRequest = BaseListRequest;
 export type GetListCustomerResponse = BaseResponse<Customer>;
