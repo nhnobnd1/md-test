@@ -1265,6 +1265,11 @@
     base64url "^3.0.1"
     web-vitals "^3.0.1"
 
+"@shopify/polaris-icons@6.6.0":
+  version "6.6.0"
+  resolved "https://registry.yarnpkg.com/@shopify/polaris-icons/-/polaris-icons-6.6.0.tgz#389eec18ffda60b8e288fb472c27f7325cf8361e"
+  integrity sha512-nlw4DJOCXpqbdnlE8J3PYF5jYdnW1R/xFiw63xrh0Xgb9AErC48VB58SufW2qxWybuw0UJ4g+ozyspd6a4i92g==
+
 "@shopify/polaris-icons@^6.5.0":
   version "6.5.0"
   resolved "https://registry.yarnpkg.com/@shopify/polaris-icons/-/polaris-icons-6.5.0.tgz#2192b52e9909388ddc02ba9a58fbd161def7f5c1"

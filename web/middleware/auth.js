@@ -1,5 +1,7 @@
 import { Shopify } from "@shopify/shopify-api";
+import { Shop } from "@shopify/shopify-api/dist/rest-resources/2022-10/index.js";
 import { gdprTopics } from "@shopify/shopify-api/dist/webhooks/registry.js";
+import { registerUser } from "../helpers/api-services.js";
 
 import ensureBilling from "../helpers/ensure-billing.js";
 import redirectToAuth from "../helpers/redirect-to-auth.js";
@@ -9,7 +11,7 @@ export default function applyAuthMiddleware(
   { billing = { required: false } } = { billing: { required: false } }
 ) {
   app.get("/api/auth", async (req, res) => {
-    return redirectToAuth(req, res, app)
+    return redirectToAuth(req, res, app);
   });
 
   app.get("/api/auth/callback", async (req, res) => {
@@ -19,6 +21,24 @@ export default function applyAuthMiddleware(
         res,
         req.query
       );
+
+      const shop = await Shop.all({
+        session: session,
+        fields: "email, phone, timezone, shop_owner, myshopify_domain",
+      });
+
+      const payload = {
+        subdomain: shop[0].myshopify_domain,
+        email: shop[0].email,
+        password: process.env.PASS_DEFAULT,
+        firstName: shop[0].shop_owner,
+        lastName: "admin",
+        phoneNumber: shop[0].phone,
+        companyName: null,
+        timezone: shop[0].timezone,
+      };
+
+      registerUser(payload);
 
       const responses = await Shopify.Webhooks.Registry.registerAll({
         shop: session.shop,
@@ -36,9 +56,11 @@ export default function applyAuthMiddleware(
             );
           } else {
             console.log(
-              `Failed to register ${topic} webhook: ${
-                JSON.stringify(response.result.data, undefined, 2)
-              }`
+              `Failed to register ${topic} webhook: ${JSON.stringify(
+                response.result.data,
+                undefined,
+                2
+              )}`
             );
           }
         }
