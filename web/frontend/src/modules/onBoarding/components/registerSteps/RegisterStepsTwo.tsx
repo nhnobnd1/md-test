@@ -6,9 +6,16 @@ import {
   Stack,
   Text,
   TextContainer,
+  TextField,
 } from "@shopify/polaris";
-import { useCallback, useState } from "react";
-import LogosGoogleIcon from "~icons/logos/google-icon";
+import { useCallback, useRef, useState } from "react";
+import GoogleLogin, {
+  GoogleLoginResponse,
+  GoogleLoginResponseOffline,
+} from "react-google-login";
+import Form, { RefProperties } from "src/components/Form";
+import FormItem from "src/components/Form/Item";
+import LogosMicrosoftWindows from "~icons/logos/microsoft-windows";
 
 interface RegisterStepsTwoProps {
   nextStep: () => void;
@@ -27,14 +34,31 @@ const RegisterStepsTwo = ({ nextStep }: RegisterStepsTwoProps) => {
     setValue(newValue);
   }, []);
 
+  const callBackLoginGoogle = (
+    state: "success" | "failure",
+    response: GoogleLoginResponse | GoogleLoginResponseOffline
+  ) => {
+    return state;
+  };
+
   const ContentOwnEmail = () => {
     return (
       <div className="mt-2">
         <Stack spacing="baseTight">
-          <Button size="slim" destructive>
-            Gmail
+          <GoogleLogin
+            clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
+            buttonText="Login"
+            onSuccess={(response) => callBackLoginGoogle("success", response)}
+            onFailure={(response) => callBackLoginGoogle("failure", response)}
+            cookiePolicy={"single_host_origin"}
+          />
+          <Button
+            size="medium"
+            onClick={submit}
+            icon={<LogosMicrosoftWindows />}
+          >
+            Microsoft
           </Button>
-          <Button size="slim">Microsoft</Button>
         </Stack>
         <p className="mt-2">
           If you want to use your own custom mail server, you can configure
@@ -60,6 +84,16 @@ const RegisterStepsTwo = ({ nextStep }: RegisterStepsTwoProps) => {
     );
   };
 
+  const formRef = useRef<RefProperties>();
+
+  const handleSubmit = (values: any) => {
+    return values;
+  };
+
+  const submit = () => {
+    formRef.current?.form.submitForm();
+  };
+
   const TitleCard = () => {
     return (
       <Text variant="headingXl" as="h1">
@@ -80,8 +114,13 @@ const RegisterStepsTwo = ({ nextStep }: RegisterStepsTwoProps) => {
       >
         <Text variant="headingLg" as="h4">
           How would you like your support email works?
-          <LogosGoogleIcon />
         </Text>
+
+        <Form ref={formRef} initialValues={{}} onSubmit={handleSubmit}>
+          <FormItem name="keyword">
+            <TextField label="Store name" autoComplete="off" />
+          </FormItem>
+        </Form>
 
         <Card.Section>
           <RadioButton

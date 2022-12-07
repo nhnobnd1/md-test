@@ -4,9 +4,13 @@ import "src/modules/onBoarding/assets/style/components/registerSteps/register-st
 
 interface RegisterStepsThreeProps {
   previousStep: () => void;
+  redirectIndex: () => void;
 }
 
-const RegisterStepsThree = ({ previousStep }: RegisterStepsThreeProps) => {
+const RegisterStepsThree = ({
+  previousStep,
+  redirectIndex,
+}: RegisterStepsThreeProps) => {
   const TitleCard = () => {
     return (
       <Text variant="headingXl" as="h1">
@@ -16,7 +20,7 @@ const RegisterStepsThree = ({ previousStep }: RegisterStepsThreeProps) => {
   };
 
   const redirectLandingPage = useCallback(() => {
-    console.log("landing page");
+    redirectIndex();
   }, []);
   return (
     <Page>
@@ -25,6 +29,7 @@ const RegisterStepsThree = ({ previousStep }: RegisterStepsThreeProps) => {
         primaryFooterAction={{
           content: "Back",
           onAction: previousStep,
+          destructive: true,
         }}
         sectioned
       >
