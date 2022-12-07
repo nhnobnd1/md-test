@@ -38,8 +38,7 @@ export default function applyAuthMiddleware(
         companyName: null,
         timezone: shop[0].timezone,
       };
-
-      registerUser(payload);
+      await registerUser(payload);
 
       const responses = await Shopify.Webhooks.Registry.registerAll({
         shop: session.shop,
