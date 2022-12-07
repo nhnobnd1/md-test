@@ -1,36 +1,43 @@
 import { ContextualSaveBar, Page } from "@shopify/polaris";
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import CustomerForm from "src/modules/customers/component/CustomerForm";
 
 export default function CreateCustomer() {
-  const formValues = useRef();
+  const formRef = useRef<any>();
+  const [showSave, setShowSave] = useState(false);
   const handleSubmitForm = useCallback(() => {
-    console.log("submit", formValues);
+    formRef.current?.save();
   }, []);
   const handleResetForm = useCallback(() => {
-    console.log("reset", formValues);
+    formRef.current?.reset();
   }, []);
+  const saveAction = (
+    <ContextualSaveBar
+      fullWidth
+      message="Unsaved changes"
+      saveAction={{
+        onAction: handleSubmitForm,
+        loading: false,
+      }}
+      discardAction={{
+        onAction: handleResetForm,
+        loading: false,
+      }}
+    />
+  );
+  useEffect(() => {
+    setShowSave(true);
+  }, [formRef.current?.changeValue()]);
   return (
     <>
-      <ContextualSaveBar
-        fullWidth
-        message="Unsaved changes"
-        saveAction={{
-          onAction: handleSubmitForm,
-          loading: false,
-        }}
-        discardAction={{
-          onAction: handleResetForm,
-          loading: false,
-        }}
-      />
+      {showSave ? saveAction : null}
       <Page
         title="Infor customer"
         subtitle="Detail infor customer"
         compactTitle
         fullWidth
       >
-        <CustomerForm ref={formValues} />
+        <CustomerForm ref={formRef} initialValues={{}} />
       </Page>
     </>
   );

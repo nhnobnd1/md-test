@@ -1,22 +1,23 @@
 import { Card, FormLayout, TextField } from "@shopify/polaris";
 import { forwardRef, useCallback, useImperativeHandle, useRef } from "react";
-import { FormProps } from "react-router-dom";
-import Form from "src/components/Form";
+import Form, { RefProperties } from "src/components/Form";
 import FormItem from "src/components/Form/Item";
 
-const CustomerForm = (props: any, ref: any) => {
-  const formRef = useRef<FormProps>({});
+const CustomerForm = ({ initialValues }: any, ref: any) => {
+  const formRef = useRef<RefProperties>();
   const handleSubmit = useCallback((data: any) => {
-    console.log("dataaaaaaaaa", data);
+    return data;
   }, []);
   useImperativeHandle(ref, () => ({
-    save: () => formRef.current?.onSubmit,
-    reset: () => formRef.current?.onReset,
+    save: () => formRef.current?.form.submitForm(),
+    reset: () => formRef.current?.form.resetForm(),
+    changeValue: () =>
+      formRef.current?.form.handleChange((value: any) => value),
   }));
 
   return (
     <Card sectioned>
-      <Form initialValues={formRef} onSubmit={handleSubmit}>
+      <Form ref={formRef} initialValues={initialValues} onSubmit={handleSubmit}>
         <FormLayout>
           <FormItem name="firstName">
             <TextField type="text" label="Firstname" autoComplete="cc-name" />
