@@ -37,7 +37,11 @@ export default function CreateCustomer() {
         compactTitle
         fullWidth
       >
-        <CustomerForm ref={formRef} initialValues={{}} />
+        <CustomerForm
+          ref={formRef}
+          initialValues={{}}
+          setShowSave={setShowSave}
+        />
       </Page>
     </>
   );
