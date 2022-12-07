@@ -13,7 +13,7 @@ import {
 } from "@shopify/polaris";
 import { isEmpty } from "lodash-es";
 import { useCallback, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { generatePath, useNavigate, useParams } from "react-router-dom";
 import { map } from "rxjs";
 import env from "src/core/env";
 import { useJob } from "src/core/hooks";
@@ -69,11 +69,7 @@ export default function CustomerIndexPage() {
   };
   const [email, setEmail] = useState<string>("");
   const navigateShowDetails = useCallback((id: string) => {
-    navigate(CustomersRoutePaths.Details, {
-      state: {
-        id: id,
-      },
-    });
+    navigate(generatePath(CustomersRoutePaths.Details, { id }));
   }, []);
   const searchResultsMarkup = (
     <ActionList

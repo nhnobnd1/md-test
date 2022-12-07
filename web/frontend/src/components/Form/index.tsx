@@ -1,5 +1,5 @@
 import { Formik, FormikConfig, FormikProps, FormikValues } from "formik";
-import { HTMLAttributes, useCallback } from "react";
+import { HTMLAttributes, useCallback, useRef } from "react";
 import FormItem from "src/components/Form/Item";
 import FormikEffect from "./FormikEffect";
 
@@ -26,9 +26,9 @@ function Form<Values extends FormikValues = any>({
     },
     [onValuesChange]
   );
-
+  const formRef = useRef<FormikProps<FormikValues>>();
   return (
-    <Formik {...props}>
+    <Formik innerRef={formRef} {...props}>
       {isFunction(props.children)
         ? (formikProps: FormikProps<Values>) => (
             <>

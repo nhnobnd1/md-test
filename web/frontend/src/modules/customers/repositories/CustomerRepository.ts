@@ -18,7 +18,7 @@ const CustomerRepository = createRepository(
     getList(api, params: GetListCustomerRequest) {
       return api.get<GetListCustomerResponse>("", params);
     },
-    getOne(api, id: string) {
+    getOne(api, id: string | undefined) {
       return api.get(`/${id}`);
     },
     create(api, data: CreateCustomerRequest) {

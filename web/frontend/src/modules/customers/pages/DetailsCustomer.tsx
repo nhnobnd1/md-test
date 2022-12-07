@@ -1,108 +1,72 @@
-import {
-  Card,
-  Filters,
-  IndexTable,
-  Text,
-  TextField,
-  useIndexResourceState,
-} from "@shopify/polaris";
+import { Card, ContextualSaveBar, Page, Tabs } from "@shopify/polaris";
 import { useCallback, useState } from "react";
+import { useParams } from "react-router-dom";
+import { map } from "rxjs";
+import { useJob } from "src/core/hooks";
+import { CustomerForm } from "src/modules/customers/component/CustomerForm";
+import CustomerRepository from "src/modules/customers/repositories/CustomerRepository";
 
-export default function DetailsInforCustomer() {
-  const customers = [
-    {
-      id: "3416",
-      url: "customers/341",
-      name: "Mae Jemison",
-      location: "Decatur, USA",
-      orders: 20,
-      amountSpent: "$2,400",
+export default function DetailsCustomer() {
+  const { id } = useParams();
+  const { result } = useJob(
+    () => {
+      return CustomerRepository.getOne(id).pipe(
+        map(({ data }) => {
+          return data.data;
+        })
+      );
     },
-  ];
-  const resourceName = {
-    singular: "customer",
-    plural: "customers",
-  };
-
-  const { selectedResources, allResourcesSelected, handleSelectionChange } =
-    useIndexResourceState(customers);
-  const [taggedWith, setTaggedWith] = useState("VIP");
-  const [queryValue, setQueryValue] = useState("");
-
-  const handleTaggedWithChange = useCallback(
-    (value) => setTaggedWith(value),
+    { showLoading: false }
+  );
+  const [selectedTabs, setSelectedTabs] = useState(0);
+  const handleTabChange = useCallback(
+    (selectedTabIndex) => setSelectedTabs(selectedTabIndex),
     []
   );
-  const handleQueryValueRemove = useCallback(() => setQueryValue(""), []);
-  const handleClearAll = useCallback(() => {
-    handleQueryValueRemove();
-  }, [handleQueryValueRemove]);
-
-  const filters = [
+  const tabs = [
     {
-      key: "taggedWith",
-      label: "Tagged with",
-      filter: (
-        <TextField
-          label="Tagged with"
-          value={taggedWith}
-          onChange={handleTaggedWithChange}
-          autoComplete="off"
-          labelHidden
-        />
-      ),
-      shortcut: true,
+      id: "customer-profile",
+      content: "Customer profile",
+      value: <CustomerForm dataDetails={result} />,
+      accessibilityLabel: "Customer profile",
+      panelID: "customer-profile",
+    },
+    {
+      id: "list-ticket-of-customer",
+      content: "List ticket",
+      value: "List ticket",
+      panelID: "list-ticket-of-customer",
     },
   ];
-  const rowMarkup = customers.map(
-    ({ id, name, location, orders, amountSpent }, index) => (
-      <IndexTable.Row
-        id={id}
-        key={id}
-        selected={selectedResources.includes(id)}
-        position={index}
-      >
-        <IndexTable.Cell>
-          <Text variant="bodyMd" fontWeight="bold" as="span">
-            {name}
-          </Text>
-        </IndexTable.Cell>
-        <IndexTable.Cell>{location}</IndexTable.Cell>
-        <IndexTable.Cell>{orders}</IndexTable.Cell>
-        <IndexTable.Cell>{amountSpent}</IndexTable.Cell>
-      </IndexTable.Row>
-    )
-  );
-
+  const handleSubmit = useCallback(() => {
+    console.log("submit");
+  }, []);
   return (
-    <Card>
-      <div style={{ padding: "16px", display: "flex" }}>
-        <div style={{ flex: 1 }}>
-          <Filters
-            queryValue={queryValue}
-            filters={filters}
-            onQueryChange={setQueryValue}
-            onQueryClear={handleQueryValueRemove}
-            onClearAll={handleClearAll}
-          />
-        </div>
-      </div>
-      <IndexTable
-        resourceName={resourceName}
-        itemCount={customers.length}
-        selectedItemsCount={
-          allResourcesSelected ? "All" : selectedResources.length
-        }
-        onSelectionChange={handleSelectionChange}
-        headings={[
-          { title: "Name" },
-          { title: "Location" },
-          { title: "Order count" },
-          { title: "Amount spent" },
-        ]}
-      >
-        {rowMarkup}
-      </IndexTable>
-    </Card>
+    <Page
+      title="Infor customer"
+      subtitle="Detail infor customer"
+      compactTitle
+      fullWidth
+    >
+      <ContextualSaveBar
+        fullWidth
+        message="Unsaved changes"
+        saveAction={{
+          onAction: () => console.log("add form submit logic"),
+          loading: false,
+          disabled: false,
+        }}
+        discardAction={{
+          onAction: () => console.log("add clear form logic"),
+        }}
+      />
+      <Card sectioned>
+        <Tabs tabs={tabs} selected={selectedTabs} onSelect={handleTabChange}>
+          <Card.Section title={tabs[selectedTabs].content}>
+            {tabs[selectedTabs].value}
+          </Card.Section>
+        </Tabs>
+      </Card>
+    </Page>
   );
 }
