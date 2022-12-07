@@ -1,3 +1,4 @@
+import { lazy } from "react";
 import { IRoute } from "src/core/models/routes";
 import RoutePaths from "src/routes/paths";
 
@@ -7,7 +8,7 @@ const appRootRoutes: IRoute[] = [
     title: "Index page",
     showInNavigationMenu: false,
     index: true,
-    element: <></>,
+    component: lazy(() => import("src/modules/onBoarding/pages/Index")),
   },
 ];
 

@@ -1,5 +1,6 @@
 import react from "@vitejs/plugin-react";
 import path, { dirname } from "path";
+import Icons from "unplugin-icons/vite";
 import { fileURLToPath } from "url";
 import { defineConfig } from "vite";
 import eslintPlugin from "vite-plugin-eslint";
@@ -49,9 +50,11 @@ export default defineConfig({
     eslintPlugin({
       cache: false,
     }),
+    Icons({ jsx: "react", compiler: "jsx", autoInstall: true }),
   ],
   define: {
     "process.env.SHOPIFY_API_KEY": JSON.stringify(process.env.SHOPIFY_API_KEY),
+    "process.env.HOST": JSON.stringify(process.env.HOST),
   },
   resolve: {
     preserveSymlinks: true,
