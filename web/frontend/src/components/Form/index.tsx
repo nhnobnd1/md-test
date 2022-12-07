@@ -1,12 +1,5 @@
 import { Formik, FormikConfig, FormikProps, FormikValues } from "formik";
-import {
-  ForwardedRef,
-  forwardRef,
-  HTMLAttributes,
-  useCallback,
-  useImperativeHandle,
-  useRef,
-} from "react";
+import { ForwardedRef, forwardRef, HTMLAttributes, useCallback } from "react";
 import FormItem from "src/components/Form/Item";
 import FormikEffect from "./FormikEffect";
 
@@ -28,18 +21,8 @@ export interface RefProperties {
 
 function Form<Values extends FormikValues = any>(
   { onValuesChange, formDefaultProps, ...props }: FormProps<Values>,
-  ref: ForwardedRef<any>
+  ref: ForwardedRef<FormikProps<Values>>
 ) {
-  const formRef = useRef<FormikProps<any>>(null);
-
-  useImperativeHandle(
-    ref,
-    () => ({
-      form: formRef.current,
-    }),
-    [formRef.current]
-  );
-
   const handleFormValuesChange = useCallback(
     (newValues: Values, oldValues: Values) => {
       onValuesChange && onValuesChange(newValues, oldValues);
@@ -48,7 +31,7 @@ function Form<Values extends FormikValues = any>(
   );
 
   return (
-    <Formik innerRef={formRef} {...props}>
+    <Formik innerRef={ref} {...props}>
       {isFunction(props.children)
         ? (formikProps: FormikProps<Values>) => (
             <>
