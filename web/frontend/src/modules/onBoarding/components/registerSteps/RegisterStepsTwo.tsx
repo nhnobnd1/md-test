@@ -6,15 +6,9 @@ import {
   Stack,
   Text,
   TextContainer,
-  TextField,
 } from "@shopify/polaris";
-import { useCallback, useRef, useState } from "react";
-import GoogleLogin, {
-  GoogleLoginResponse,
-  GoogleLoginResponseOffline,
-} from "react-google-login";
-import Form, { RefProperties } from "src/components/Form";
-import FormItem from "src/components/Form/Item";
+import { useCallback, useMemo, useState } from "react";
+import LogosGoogleIcon from "~icons/logos/google-icon";
 import LogosMicrosoftWindows from "~icons/logos/microsoft-windows";
 
 interface RegisterStepsTwoProps {
@@ -34,27 +28,24 @@ const RegisterStepsTwo = ({ nextStep }: RegisterStepsTwoProps) => {
     setValue(newValue);
   }, []);
 
-  const callBackLoginGoogle = (
-    state: "success" | "failure",
-    response: GoogleLoginResponse | GoogleLoginResponseOffline
-  ) => {
-    return state;
-  };
+  const disableButtonOwnEmail = useMemo(() => {
+    return value !== RadioButtonValue.OwnEmail;
+  }, [value]);
 
   const ContentOwnEmail = () => {
     return (
       <div className="mt-2">
         <Stack spacing="baseTight">
-          <GoogleLogin
-            clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
-            buttonText="Login"
-            onSuccess={(response) => callBackLoginGoogle("success", response)}
-            onFailure={(response) => callBackLoginGoogle("failure", response)}
-            cookiePolicy={"single_host_origin"}
-          />
           <Button
             size="medium"
-            onClick={submit}
+            disabled={disableButtonOwnEmail}
+            icon={<LogosGoogleIcon />}
+          >
+            Gmail
+          </Button>
+          <Button
+            size="medium"
+            disabled={disableButtonOwnEmail}
             icon={<LogosMicrosoftWindows />}
           >
             Microsoft
@@ -72,7 +63,11 @@ const RegisterStepsTwo = ({ nextStep }: RegisterStepsTwoProps) => {
     return (
       <div className="mt-2">
         <TextContainer spacing="tight">
-          <Text variant="headingMd" as="h2" color="critical">
+          <Text
+            variant="headingMd"
+            as="h2"
+            color={disableButtonOwnEmail ? "critical" : "subdued"}
+          >
             support@%sub-domain%.moosedesk.com
           </Text>
           <p>
@@ -82,16 +77,6 @@ const RegisterStepsTwo = ({ nextStep }: RegisterStepsTwoProps) => {
         </TextContainer>
       </div>
     );
-  };
-
-  const formRef = useRef<RefProperties>();
-
-  const handleSubmit = (values: any) => {
-    return values;
-  };
-
-  const submit = () => {
-    formRef.current?.form.submitForm();
   };
 
   const TitleCard = () => {
@@ -115,12 +100,6 @@ const RegisterStepsTwo = ({ nextStep }: RegisterStepsTwoProps) => {
         <Text variant="headingLg" as="h4">
           How would you like your support email works?
         </Text>
-
-        <Form ref={formRef} initialValues={{}} onSubmit={handleSubmit}>
-          <FormItem name="keyword">
-            <TextField label="Store name" autoComplete="off" />
-          </FormItem>
-        </Form>
 
         <Card.Section>
           <RadioButton
