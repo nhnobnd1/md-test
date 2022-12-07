@@ -4,10 +4,12 @@ import RegisterStepsOne from "src/modules/onBoarding/components/registerSteps/Re
 import RegisterStepsThree from "src/modules/onBoarding/components/registerSteps/RegisterStepsThree";
 import RegisterStepsTwo from "src/modules/onBoarding/components/registerSteps/RegisterStepsTwo";
 
-interface ComponentNameProps {}
+interface RegisterStepsProps {
+  finishAuth: () => void;
+}
 
-const ComponentName = (props: ComponentNameProps) => {
-  const [steps, setSteps] = useState(2);
+const RegisterSteps = ({ finishAuth }: RegisterStepsProps) => {
+  const [steps, setSteps] = useState(1);
 
   const handleNextStep = useCallback(() => {
     setSteps(() => {
@@ -25,9 +27,14 @@ const ComponentName = (props: ComponentNameProps) => {
     <>
       {steps === 1 && <RegisterStepsOne nextStep={handleNextStep} />}
       {steps === 2 && <RegisterStepsTwo nextStep={handleNextStep} />}
-      {steps === 3 && <RegisterStepsThree previousStep={handlePreviousStep} />}
+      {steps === 3 && (
+        <RegisterStepsThree
+          previousStep={handlePreviousStep}
+          redirectIndex={finishAuth}
+        />
+      )}
     </>
   );
 };
 
-export default ComponentName;
+export default RegisterSteps;

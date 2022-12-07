@@ -7,7 +7,15 @@ interface OnBoardingIndexPageProps {}
 const OnBoardingIndexPage: PageComponent<OnBoardingIndexPageProps> = () => {
   const [registered, setRegistered] = useState(false);
 
-  return <>{!registered ? <RegisterSteps /> : <>Boarding</>}</>;
+  return (
+    <>
+      {!registered ? (
+        <RegisterSteps finishAuth={() => setRegistered(true)} />
+      ) : (
+        <>Boarding</>
+      )}
+    </>
+  );
 };
 
 export default OnBoardingIndexPage;
