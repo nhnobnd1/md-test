@@ -1,5 +1,4 @@
 import {
-  ActionList,
   Button,
   Card,
   Form,
@@ -8,13 +7,14 @@ import {
   Pagination,
   Text,
   TextField,
+  Toast,
   TopBar,
   useIndexResourceState,
 } from "@shopify/polaris";
 import { isEmpty } from "lodash-es";
 import { useCallback, useEffect, useState } from "react";
 import { generatePath, useNavigate, useParams } from "react-router-dom";
-import { map } from "rxjs";
+import { catchError, map, of } from "rxjs";
 import env from "src/core/env";
 import { useJob } from "src/core/hooks";
 import useTable from "src/core/hooks/useTable";
@@ -26,7 +26,9 @@ export default function CustomerIndexPage() {
   const param = useParams();
   const navigate = useNavigate();
   const [customers, setCustomers] = useState<Customer[]>([]);
-
+  const [active, setActive] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState(false);
   const resourceName = {
     singular: "customer",
     plural: "customers",
@@ -71,14 +73,6 @@ export default function CustomerIndexPage() {
   const navigateShowDetails = useCallback((id: string) => {
     navigate(generatePath(CustomersRoutePaths.Details, { id }));
   }, []);
-  const searchResultsMarkup = (
-    <ActionList
-      items={[
-        { content: "Shopify help center" },
-        { content: "Community forums" },
-      ]}
-    />
-  );
   const searchFieldMarkup = (
     <TopBar.SearchField
       onChange={handleSearchFieldChange}
@@ -100,13 +94,44 @@ export default function CustomerIndexPage() {
       ? {
           page: page ? Number(page) : 0,
           limit: rowsPerPage ? Number(rowsPerPage) : env.DEFAULT_PAGE_SIZE,
+          query: "",
         }
       : {
           page: 0,
           limit: env.DEFAULT_PAGE_SIZE,
+          query: "",
         }
   );
-  const handleRemoveCustomer = useCallback((id: string[]) => {}, []);
+  const toast = active ? (
+    <Toast
+      content={message}
+      duration={1000}
+      onDismiss={() => {
+        setActive(false);
+      }}
+      error={error}
+    />
+  ) : null;
+  const { run: handleRemoveCustomer } = useJob((dataDelete: string[]) => {
+    return CustomerRepository.delete({ ids: dataDelete }).pipe(
+      map(({ data }) => {
+        if (data.statusCode === 200) {
+          setMessage("Delete customer success");
+          setActive(true);
+        } else {
+          setMessage("Delete customer failed");
+          setError(true);
+          setActive(true);
+        }
+      }),
+      catchError((error) => {
+        setMessage("Delete customer failed");
+        setError(true);
+        setActive(true);
+        return of(error);
+      })
+    );
+  });
   const { run: fetchListStaticPosts, result } = useJob(
     () => {
       return CustomerRepository.getList(filterData).pipe(
@@ -118,73 +143,77 @@ export default function CustomerIndexPage() {
     },
     { showLoading: false }
   );
-
   useEffect(() => {
     setPage(0);
     fetchListStaticPosts();
   }, [filterData]);
 
   return (
-    <Page title="Customer" subtitle="List of customer" compactTitle fullWidth>
-      <Card sectioned>
-        <div className="mb-4">
-          <Form onSubmit={handleSubmit}>
-            <div className="flex justify-between items-center">
-              <div className="w-3/4 relative">
-                <TextField
-                  value={email}
-                  onChange={handleSearchChange}
-                  placeholder="Search customer"
-                  type="search"
-                  autoComplete="search"
-                  label
-                />
+    <>
+      <Page title="Customer" subtitle="List of customer" compactTitle fullWidth>
+        <Card sectioned>
+          <div className="mb-4">
+            <Form onSubmit={handleSubmit}>
+              <div className="flex justify-between items-center">
+                <div className="w-3/4 relative">
+                  <TextField
+                    value={email}
+                    onChange={handleSearchChange}
+                    placeholder="Search customer"
+                    type="search"
+                    autoComplete="search"
+                    label
+                  />
+                </div>
+                <Button onClick={navigateCreate} primary>
+                  {"Add new"}
+                </Button>
               </div>
-              <Button onClick={navigateCreate} primary>
-                {"Add new"}
-              </Button>
-            </div>
-          </Form>
+            </Form>
+          </div>
+          <IndexTable
+            resourceName={resourceName}
+            itemCount={customers.length}
+            selectedItemsCount={
+              allResourcesSelected ? "All" : selectedResources.length
+            }
+            onSelectionChange={handleSelectionChange}
+            headings={[
+              { title: "Customer name" },
+              { title: "Email" },
+              { title: "Number of tickets" },
+            ]}
+            hasMoreItems
+            promotedBulkActions={promotedBulkActions}
+          >
+            {rowMarkup}
+          </IndexTable>
+        </Card>
+        <div className="flex items-center justify-center mt-4">
+          <Pagination
+            hasPrevious
+            onPrevious={() => {
+              if (page > 0) {
+                setPage(page - 1);
+              }
+            }}
+            hasNext
+            onNext={() => {
+              if (
+                page <
+                (result
+                  ? result.metadata.totalCount / env.DEFAULT_PAGE_SIZE
+                  : 1)
+              ) {
+                setPage(page + 1);
+              }
+            }}
+            label={`${customers.length} / ${customers.length}`}
+            nextTooltip={"Next"}
+          />
         </div>
-        <IndexTable
-          resourceName={resourceName}
-          itemCount={customers.length}
-          selectedItemsCount={
-            allResourcesSelected ? "All" : selectedResources.length
-          }
-          onSelectionChange={handleSelectionChange}
-          headings={[
-            { title: "Customer name" },
-            { title: "Email" },
-            { title: "Number of tickets" },
-          ]}
-          hasMoreItems
-          promotedBulkActions={promotedBulkActions}
-        >
-          {rowMarkup}
-        </IndexTable>
-      </Card>
-      <div className="flex items-center justify-center mt-4">
-        <Pagination
-          hasPrevious
-          onPrevious={() => {
-            if (page > 0) {
-              setPage(page - 1);
-            }
-          }}
-          hasNext
-          onNext={() => {
-            if (
-              page <
-              (result ? result.metadata.totalCount / env.DEFAULT_PAGE_SIZE : 1)
-            ) {
-              setPage(page + 1);
-            }
-          }}
-          label={`${customers.length} / ${customers.length}`}
-          nextTooltip={"Next"}
-        />
-      </div>
-    </Page>
+      </Page>
+      {toast}
+    </>
   );
 }

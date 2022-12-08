@@ -1,13 +1,27 @@
 import { Card, FormLayout, TextField } from "@shopify/polaris";
 import { FormikProps } from "formik";
-import { forwardRef, useCallback, useImperativeHandle, useRef } from "react";
+import {
+  ForwardedRef,
+  forwardRef,
+  useCallback,
+  useImperativeHandle,
+  useRef,
+} from "react";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
 
-const CustomerForm = ({ initialValues, setShowSave }: any, ref: any) => {
+export interface RefProperties {
+  save: () => Promise<void> | undefined;
+  reset: () => void | undefined;
+}
+
+const CustomerForm = (
+  { initialValues, submit }: any,
+  ref: ForwardedRef<RefProperties>
+) => {
   const formRef = useRef<FormikProps<any>>(null);
   const handleSubmit = useCallback((data: any) => {
-    return data;
+    submit(data);
   }, []);
   useImperativeHandle(ref, () => ({
     save: () => formRef.current?.submitForm(),
@@ -20,20 +34,51 @@ const CustomerForm = ({ initialValues, setShowSave }: any, ref: any) => {
         ref={formRef}
         initialValues={initialValues}
         onSubmit={handleSubmit}
-        onValuesChange={() => setShowSave(true)}
+        enableReinitialize
       >
         <FormLayout>
+          <FormItem name="_id" />
           <FormItem name="firstName">
-            <TextField type="text" label="Firstname" autoComplete="cc-name" />
+            <TextField
+              type="text"
+              placeholder="Your firstname"
+              label="Firstname"
+              autoComplete="cc-name"
+            />
           </FormItem>
           <FormItem name="lastName">
-            <TextField type="text" label="Lastname" autoComplete="cc-name" />
+            <TextField
+              type="text"
+              placeholder="Your lastname"
+              label="Lastname"
+              autoComplete="cc-name"
+            />
           </FormItem>
           <FormItem name="email">
-            <TextField type="email" label="Email" autoComplete="email" />
+            <TextField
+              type="email"
+              placeholder="Your email"
+              label="Email"
+              autoComplete="email"
+            />
           </FormItem>
-          <FormItem name="phone">
-            <TextField type="tel" label="Phone" autoComplete="tel" />
+          <FormItem name="phoneNumber">
+            <TextField
+              type="tel"
+              placeholder="Your phonenumber"
+              label="Phone"
+              autoComplete="tel"
+            />
+          </FormItem>
+
+          <FormItem name="storeId">
+            <TextField
+              type="text"
+              placeholder="Your storeID"
+              label="Store ID"
+              autoComplete="off"
+              disabled
+            />
           </FormItem>
         </FormLayout>
       </Form>
