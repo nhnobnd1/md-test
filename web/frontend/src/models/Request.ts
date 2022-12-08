@@ -18,3 +18,6 @@ export interface BaseMetaDataListResponse {
   totalCount: number;
   resultsPerPage: number;
 }
+export interface BaseDeleteList {
+  ids: string[];
+}
