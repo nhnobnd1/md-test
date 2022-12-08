@@ -1,5 +1,6 @@
 import env from "src/core/env";
 import { createRepository } from "src/core/repository";
+import { BaseDeleteList } from "src/models/Request";
 import {
   CreateCustomerRequest,
   CreateCustomerResponse,
@@ -27,7 +28,7 @@ const CustomerRepository = createRepository(
     update(api, id: string, data: UpdateCustomerRequest) {
       return api.put<UpdateCustomerResponse>(`/${id}`, data);
     },
-    delete(api, data: any) {
+    delete(api, data: BaseDeleteList) {
       return api.delete<DeleteCustomerResponse>("", data);
     },
   }

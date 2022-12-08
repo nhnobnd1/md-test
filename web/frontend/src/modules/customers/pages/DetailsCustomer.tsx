@@ -1,9 +1,9 @@
 import { useNavigate } from "@shopify/app-bridge-react";
 import { Card, Page, Tabs, Toast } from "@shopify/polaris";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { catchError, map, of } from "rxjs";
-import { useJob } from "src/core/hooks";
+import { useJob, useMount } from "src/core/hooks";
 import CustomerForm, {
   RefProperties,
 } from "src/modules/customers/component/CustomerForm";
@@ -92,9 +92,9 @@ export default function DetailsCustomer() {
       panelID: "list-ticket-of-customer",
     },
   ];
-  useEffect(() => {
+  useMount(() => {
     fetDetailsCustomer();
-  }, []);
+  });
   return (
     <>
       <Page

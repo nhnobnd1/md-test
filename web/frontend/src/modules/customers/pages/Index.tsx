@@ -1,14 +1,12 @@
 import {
   Button,
   Card,
-  Form,
   IndexTable,
   Page,
   Pagination,
   Text,
   TextField,
   Toast,
-  TopBar,
   useIndexResourceState,
 } from "@shopify/polaris";
 import { isEmpty } from "lodash-es";
@@ -16,7 +14,7 @@ import { useCallback, useEffect, useState } from "react";
 import { generatePath, useNavigate, useParams } from "react-router-dom";
 import { catchError, map, of } from "rxjs";
 import env from "src/core/env";
-import { useJob } from "src/core/hooks";
+import { useDebounceFn, useJob } from "src/core/hooks";
 import useTable from "src/core/hooks/useTable";
 import { BaseListRequest } from "src/models/Request";
 import { Customer } from "src/modules/customers/modal/Customer";
@@ -33,7 +31,6 @@ export default function CustomerIndexPage() {
     singular: "customer",
     plural: "customers",
   };
-
   const { selectedResources, allResourcesSelected, handleSelectionChange } =
     useIndexResourceState<Customer>(customers);
 
@@ -55,31 +52,18 @@ export default function CustomerIndexPage() {
     </IndexTable.Row>
   ));
 
-  const [searchValue, setSearchValue] = useState<string>("");
-  const [searchActive, setSearchActive] = useState<boolean>(false);
-
-  const handleSearchFieldChange = useCallback((value) => {
-    setSearchValue(value);
-    setSearchActive(value.length > 0);
-  }, []);
-  const handleSubmit = () => {};
-  const handleSearchChange = (value: any) => {
-    setEmail(value);
+  const handleSearchChange = (value: string) => {
+    setFilterData(() => ({
+      ...filterData,
+      query: value,
+    }));
   };
   const navigateCreate = () => {
     return navigate(CustomersRoutePaths.Create);
   };
-  const [email, setEmail] = useState<string>("");
   const navigateShowDetails = useCallback((id: string) => {
     navigate(generatePath(CustomersRoutePaths.Details, { id }));
   }, []);
-  const searchFieldMarkup = (
-    <TopBar.SearchField
-      onChange={handleSearchFieldChange}
-      value={searchValue}
-      placeholder="Search"
-    />
-  );
   const promotedBulkActions = [
     {
       content: "Remove customer",
@@ -102,6 +86,7 @@ export default function CustomerIndexPage() {
           query: "",
         }
   );
+
   const toast = active ? (
     <Toast
       content={message}
@@ -143,9 +128,13 @@ export default function CustomerIndexPage() {
     },
     { showLoading: false }
   );
+  const { run: callAPI } = useDebounceFn(() => fetchListStaticPosts(), {
+    wait: 300,
+  });
+
   useEffect(() => {
     setPage(0);
-    fetchListStaticPosts();
+    callAPI();
   }, [filterData]);
 
   return (
@@ -153,23 +142,21 @@ export default function CustomerIndexPage() {
       <Page title="Customer" subtitle="List of customer" compactTitle fullWidth>
         <Card sectioned>
           <div className="mb-4">
-            <Form onSubmit={handleSubmit}>
-              <div className="flex justify-between items-center">
-                <div className="w-3/4 relative">
-                  <TextField
-                    value={email}
-                    onChange={handleSearchChange}
-                    placeholder="Search customer"
-                    type="search"
-                    autoComplete="search"
-                    label
-                  />
-                </div>
-                <Button onClick={navigateCreate} primary>
-                  {"Add new"}
-                </Button>
+            <div className="flex justify-between items-center">
+              <div className="w-3/4 relative">
+                <TextField
+                  value={filterData.query}
+                  onChange={handleSearchChange}
+                  placeholder="Search customer"
+                  type="search"
+                  autoComplete="search"
+                  label
+                />
               </div>
-            </Form>
+              <Button onClick={navigateCreate} primary>
+                {"Add new"}
+              </Button>
+            </div>
           </div>
           <IndexTable
             resourceName={resourceName}
@@ -190,27 +177,31 @@ export default function CustomerIndexPage() {
           </IndexTable>
         </Card>
         <div className="flex items-center justify-center mt-4">
-          <Pagination
-            hasPrevious
-            onPrevious={() => {
-              if (page > 0) {
-                setPage(page - 1);
-              }
-            }}
-            hasNext
-            onNext={() => {
-              if (
-                page <
-                (result
-                  ? result.metadata.totalCount / env.DEFAULT_PAGE_SIZE
-                  : 1)
-              ) {
-                setPage(page + 1);
-              }
-            }}
-            label={`${customers.length} / ${customers.length}`}
-            nextTooltip={"Next"}
-          />
+          {customers.length > 10 ? (
+            <Pagination
+              hasPrevious
+              onPrevious={() => {
+                if (page > 0) {
+                  setPage(page - 1);
+                }
+              }}
+              hasNext
+              onNext={() => {
+                if (
+                  page <
+                  (result
+                    ? result.metadata.totalCount / env.DEFAULT_PAGE_SIZE
+                    : 1)
+                ) {
+                  setPage(page + 1);
+                }
+              }}
+              label={`${page + 1} / ${
+                customers.length / env.DEFAULT_PAGE_SIZE
+              }`}
+              nextTooltip={"Next"}
+            />
+          ) : null}
         </div>
       </Page>
       {toast}
