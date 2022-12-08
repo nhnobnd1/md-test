@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import { useMount } from "src/core/hooks";
 import "src/modules/onBoarding/assets/style/components/registerSteps/register-steps.scss";
 import RegisterStepsOne from "src/modules/onBoarding/components/registerSteps/RegisterStepsOne";
 import RegisterStepsThree from "src/modules/onBoarding/components/registerSteps/RegisterStepsThree";
@@ -22,6 +23,8 @@ const RegisterSteps = ({ finishAuth }: RegisterStepsProps) => {
       return steps - 1;
     });
   }, [steps]);
+
+  useMount(() => {});
 
   return (
     <>

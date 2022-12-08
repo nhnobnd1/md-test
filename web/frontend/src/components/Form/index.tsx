@@ -15,10 +15,6 @@ export interface FormProps<Values = any> extends FormikConfig<Values> {
   formDefaultProps?: Omit<HTMLAttributes<HTMLFormElement>, "onSubmit">;
 }
 
-export interface RefProperties {
-  form: FormikProps<any>;
-}
-
 function Form<Values extends FormikValues = any>(
   { onValuesChange, formDefaultProps, ...props }: FormProps<Values>,
   ref: ForwardedRef<FormikProps<Values>>
