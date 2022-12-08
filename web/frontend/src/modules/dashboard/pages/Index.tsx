@@ -12,7 +12,6 @@ import {
 import { useCallback, useState } from "react";
 
 export default function DashboardIndexPage() {
-  // const { t } = useI18n();
   const rows = [
     ["John Doe", 22, "0123456789", 140, "$122,500.00"],
     ["Jane", 22, "0123456789", 83, "$19,090.00"],

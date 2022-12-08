@@ -1,108 +1,128 @@
-import {
-  Card,
-  Filters,
-  IndexTable,
-  Text,
-  TextField,
-  useIndexResourceState,
-} from "@shopify/polaris";
-import { useCallback, useState } from "react";
+import { useNavigate } from "@shopify/app-bridge-react";
+import { Card, Page, Tabs, Toast } from "@shopify/polaris";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
+import { catchError, map, of } from "rxjs";
+import { useJob } from "src/core/hooks";
+import CustomerForm, {
+  RefProperties,
+} from "src/modules/customers/component/CustomerForm";
+import CustomerRepository from "src/modules/customers/repositories/CustomerRepository";
+import CustomersRoutePaths from "src/modules/customers/routes/paths";
 
-export default function DetailsInforCustomer() {
-  const customers = [
-    {
-      id: "3416",
-      url: "customers/341",
-      name: "Mae Jemison",
-      location: "Decatur, USA",
-      orders: 20,
-      amountSpent: "$2,400",
+export default function DetailsCustomer() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const formRef = useRef<RefProperties>(null);
+
+  const [active, setActive] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState(false);
+  const toast = active ? (
+    <Toast
+      content={message}
+      duration={1000}
+      onDismiss={() => {
+        setActive(false);
+        if (!error) {
+          navigate(CustomersRoutePaths.Index);
+        }
+      }}
+      error={error}
+    />
+  ) : null;
+  const { run: fetDetailsCustomer, result } = useJob(
+    () => {
+      return CustomerRepository.getOne(id).pipe(
+        map(({ data }) => {
+          return data.data;
+        })
+      );
     },
-  ];
-  const resourceName = {
-    singular: "customer",
-    plural: "customers",
-  };
-
-  const { selectedResources, allResourcesSelected, handleSelectionChange } =
-    useIndexResourceState(customers);
-  const [taggedWith, setTaggedWith] = useState("VIP");
-  const [queryValue, setQueryValue] = useState("");
-
-  const handleTaggedWithChange = useCallback(
-    (value) => setTaggedWith(value),
+    { showLoading: false }
+  );
+  const [selectedTabs, setSelectedTabs] = useState(0);
+  const handleTabChange = useCallback(
+    (selectedTabIndex) => setSelectedTabs(selectedTabIndex),
     []
   );
-  const handleQueryValueRemove = useCallback(() => setQueryValue(""), []);
-  const handleClearAll = useCallback(() => {
-    handleQueryValueRemove();
-  }, [handleQueryValueRemove]);
 
-  const filters = [
+  const { run: submit } = useJob((dataSubmit: any) => {
+    const { _id } = dataSubmit;
+    return CustomerRepository.update(_id, dataSubmit).pipe(
+      map(({ data }) => {
+        if (data.statusCode === 200) {
+          setMessage("Edit customer success");
+          setActive(true);
+        } else {
+          setMessage("Edit customer failed");
+          setError(true);
+          setActive(true);
+        }
+      }),
+      catchError((error) => {
+        setMessage("Edit customer failed");
+        setError(true);
+        setActive(true);
+        return of(error);
+      })
+    );
+  });
+  const handleSubmitForm = useCallback(() => {
+    formRef.current?.save();
+  }, []);
+  const handleResetForm = useCallback(() => {
+    formRef.current?.reset();
+  }, []);
+  const profileCustomer = (
+    <CustomerForm ref={formRef} initialValues={result} submit={submit} />
+  );
+  const tabs = [
     {
-      key: "taggedWith",
-      label: "Tagged with",
-      filter: (
-        <TextField
-          label="Tagged with"
-          value={taggedWith}
-          onChange={handleTaggedWithChange}
-          autoComplete="off"
-          labelHidden
-        />
-      ),
-      shortcut: true,
+      id: "customer-profile",
+      content: "Customer profile",
+      value: profileCustomer,
+      accessibilityLabel: "Customer profile",
+      panelID: "customer-profile",
+    },
+    {
+      id: "list-ticket-of-customer",
+      content: "List ticket",
+      value: "List ticket",
+      panelID: "list-ticket-of-customer",
     },
   ];
-  const rowMarkup = customers.map(
-    ({ id, name, location, orders, amountSpent }, index) => (
-      <IndexTable.Row
-        id={id}
-        key={id}
-        selected={selectedResources.includes(id)}
-        position={index}
-      >
-        <IndexTable.Cell>
-          <Text variant="bodyMd" fontWeight="bold" as="span">
-            {name}
-          </Text>
-        </IndexTable.Cell>
-        <IndexTable.Cell>{location}</IndexTable.Cell>
-        <IndexTable.Cell>{orders}</IndexTable.Cell>
-        <IndexTable.Cell>{amountSpent}</IndexTable.Cell>
-      </IndexTable.Row>
-    )
-  );
-
+  useEffect(() => {
+    fetDetailsCustomer();
+  }, []);
   return (
-    <Card>
-      <div style={{ padding: "16px", display: "flex" }}>
-        <div style={{ flex: 1 }}>
-          <Filters
-            queryValue={queryValue}
-            filters={filters}
-            onQueryChange={setQueryValue}
-            onQueryClear={handleQueryValueRemove}
-            onClearAll={handleClearAll}
-          />
-        </div>
-      </div>
-      <IndexTable
-        resourceName={resourceName}
-        itemCount={customers.length}
-        selectedItemsCount={
-          allResourcesSelected ? "All" : selectedResources.length
-        }
-        onSelectionChange={handleSelectionChange}
-        headings={[
-          { title: "Name" },
-          { title: "Location" },
-          { title: "Order count" },
-          { title: "Amount spent" },
+    <>
+      <Page
+        title="Infor customer"
+        subtitle="Details infor customer"
+        compactTitle
+        breadcrumbs={[{ onAction: () => navigate(CustomersRoutePaths.Index) }]}
+        primaryAction={{
+          content: "Save",
+          onAction: handleSubmitForm,
+        }}
+        secondaryActions={[
+          {
+            content: "Discard",
+            onAction: handleResetForm,
+          },
         ]}
+        fullWidth
       >
-        {rowMarkup}
-      </IndexTable>
-    </Card>
+        <Card sectioned>
+          <Tabs tabs={tabs} selected={selectedTabs} onSelect={handleTabChange}>
+            <Card.Section title={tabs[selectedTabs].content}>
+              {tabs[selectedTabs].value}
+            </Card.Section>
+          </Tabs>
+        </Card>
+      </Page>
+      {toast}
+    </>
   );
 }
