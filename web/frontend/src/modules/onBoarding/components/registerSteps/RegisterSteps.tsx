@@ -24,7 +24,9 @@ const RegisterSteps = ({ finishAuth }: RegisterStepsProps) => {
     });
   }, [steps]);
 
-  useMount(() => {});
+  useMount(() => {
+    setSteps(1);
+  });
 
   return (
     <>

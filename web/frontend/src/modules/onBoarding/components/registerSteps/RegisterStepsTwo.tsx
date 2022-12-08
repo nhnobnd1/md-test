@@ -145,7 +145,7 @@ const RegisterStepsTwo = ({ nextStep }: RegisterStepsTwoProps) => {
   );
 
   const handleActionStep = useCallback(() => {
-    formRef.current?.submitForm();
+    formRef.current?.submitForm().then((data) => console.log(data, "data"));
     nextStep();
   }, []);
 

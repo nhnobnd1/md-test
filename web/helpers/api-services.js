@@ -39,5 +39,7 @@ export async function registerUser(payload) {
   const response = await api().post("/v1/account/sign-up", {
     body: payload,
   });
+  if (response.statusCode === 200) {
+  }
   return response;
 }
