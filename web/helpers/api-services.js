@@ -35,11 +35,15 @@ function api() {
   };
 }
 
+// list function api
 export async function registerUser(payload) {
-  const response = await api().post("/v1/account/sign-up", {
+  const response = await api().post("/v1/account/shopify/sign-up", {
     body: payload,
   });
   if (response.statusCode === 200) {
+    console.log("sign up success", response);
+  } else {
+    console.log("sign up failed", response);
   }
   return response;
 }

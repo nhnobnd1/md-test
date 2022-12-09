@@ -10,6 +10,7 @@ import { AppInstallations } from "./app_installations.js";
 import { setupGDPRWebHooks } from "./gdpr.js";
 import productCreator from "./helpers/product-creator.js";
 import redirectToAuth from "./helpers/redirect-to-auth.js";
+import { getInformationShop } from "./helpers/shop.js";
 import applyAuthMiddleware from "./middleware/auth.js";
 import verifyRequest from "./middleware/verify-request.js";
 
@@ -148,8 +149,8 @@ export async function createServer(
   // attribute, as a result of the express.json() middleware
   app.use(express.json());
 
-  app.use((req, res, next) => {
-    const shop = Shopify.Utils.sanitizeShop(req.query.shop);
+  app.use(async (req, res, next) => {
+    const shop = await Shopify.Utils.sanitizeShop(req.query.shop);
     if (Shopify.Context.IS_EMBEDDED_APP && shop) {
       res.setHeader(
         "Content-Security-Policy",
@@ -159,6 +160,26 @@ export async function createServer(
       );
     } else {
       res.setHeader("Content-Security-Policy", `frame-ancestors 'none';`);
+    }
+    if (shop) {
+      const { shop, offlineSession, shopDomain } = await getInformationShop(
+        req.query.shop
+      );
+      // signup insall app -> offlineSession null
+      if (shop && offlineSession) {
+        res.cookie(
+          shopDomain,
+          {
+            offlineToken: offlineSession?.accessToken ?? "",
+            email: shop.email ?? "",
+          },
+          {
+            maxAge: 900000000,
+            secure: true,
+            sameSite: "none",
+          }
+        );
+      }
     }
     next();
   });

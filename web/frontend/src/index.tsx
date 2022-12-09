@@ -1,5 +1,6 @@
 import { Loading } from "@shopify/polaris";
 import { lazy, Suspense } from "react";
+import { CookiesProvider } from "react-cookie";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import {
@@ -36,18 +37,20 @@ ReactDOM.render(
             >
               <LoadingProvider>
                 <ApiLoadingHandlerProvider>
-                  <AuthProvider
-                    defaultTokens={{
-                      base_token: TokenManager.getToken("base_token"),
-                      refresh_token: TokenManager.getToken("refresh_token"),
-                    }}
-                  >
-                    <ModuleLoader>
-                      <LazyComponent
-                        component={lazy(() => import("src/App"))}
-                      />
-                    </ModuleLoader>
-                  </AuthProvider>
+                  <CookiesProvider>
+                    <AuthProvider
+                      defaultTokens={{
+                        base_token: TokenManager.getToken("base_token"),
+                        refresh_token: TokenManager.getToken("refresh_token"),
+                      }}
+                    >
+                      <ModuleLoader>
+                        <LazyComponent
+                          component={lazy(() => import("src/App"))}
+                        />
+                      </ModuleLoader>
+                    </AuthProvider>
+                  </CookiesProvider>
                 </ApiLoadingHandlerProvider>
               </LoadingProvider>
             </Suspense>

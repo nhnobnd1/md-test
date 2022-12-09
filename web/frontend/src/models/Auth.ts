@@ -1,3 +1,5 @@
+import { HttpStatusCode } from "axios";
+
 export interface Account {}
 
 export interface LoginRequest {
@@ -11,7 +13,11 @@ export interface RegisterRequest {
 }
 
 export interface LoginResponse {
-  accessToken: string;
-  refreshToken: string;
-  userInfo: Account;
+  data: {
+    accessToken: string;
+    expiresIn: number;
+    tokenType: "Bearer";
+  };
+  datetime: string;
+  statusCode: HttpStatusCode;
 }
