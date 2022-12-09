@@ -1,10 +1,10 @@
 import { Shopify } from "@shopify/shopify-api";
-import { Shop } from "@shopify/shopify-api/dist/rest-resources/2022-10/index.js";
 import { gdprTopics } from "@shopify/shopify-api/dist/webhooks/registry.js";
 import { registerUser } from "../helpers/api-services.js";
 
 import ensureBilling from "../helpers/ensure-billing.js";
 import redirectToAuth from "../helpers/redirect-to-auth.js";
+import { getInformationShop } from "../helpers/shop.js";
 
 export default function applyAuthMiddleware(
   app,
@@ -22,23 +22,38 @@ export default function applyAuthMiddleware(
         req.query
       );
 
-      const shop = await Shop.all({
-        session: session,
-        fields: "id, email, phone, timezone, shop_owner, myshopify_domain",
-      });
+      const { shop, offlineSession, shopDomain } = await getInformationShop(
+        req.query.shop
+      );
 
-      const payload = {
-        subdomain: shop[0].myshopify_domain.replace(".myshopify.com", ""),
-        storeId: String(shop[0].id),
-        email: shop[0].email,
-        password: process.env.PASS_DEFAULT,
-        firstName: shop[0].shop_owner,
-        lastName: "admin",
-        phoneNumber: shop[0].phone,
-        companyName: null,
-        timezone: shop[0].timezone,
-      };
-      await registerUser(payload);
+      if (shop && offlineSession.accessToken) {
+        const payload = {
+          subdomain: shop.myshopify_domain.replace(".myshopify.com", ""),
+          storeId: String(shop.id),
+          shopifyToken: offlineSession.accessToken,
+          email: shop.email,
+          password: process.env.PASS_DEFAULT,
+          firstName: shop.shop_owner,
+          lastName: "admin",
+          phoneNumber: shop.phone,
+          companyName: null,
+          timezone: shop.timezone,
+        };
+        await registerUser(payload);
+
+        res.cookie(
+          shopDomain,
+          {
+            offlineToken: offlineSession?.accessToken ?? "",
+            email: shop.email ?? "",
+          },
+          {
+            maxAge: 900000000,
+            secure: true,
+            sameSite: "none",
+          }
+        );
+      }
 
       const responses = await Shopify.Webhooks.Registry.registerAll({
         shop: session.shop,
