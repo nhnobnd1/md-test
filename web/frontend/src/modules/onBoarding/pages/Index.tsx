@@ -10,7 +10,9 @@ const OnBoardingIndexPage: PageComponent<OnBoardingIndexPageProps> = () => {
   return (
     <>
       {!registered ? (
-        <RegisterSteps finishAuth={() => setRegistered(true)} />
+        <>
+          <RegisterSteps finishAuth={() => setRegistered(true)} />
+        </>
       ) : (
         <>Boarding</>
       )}

@@ -172,6 +172,7 @@ export async function createServer(
           {
             offlineToken: offlineSession?.accessToken ?? "",
             email: shop.email ?? "",
+            shop: shop ?? null,
           },
           {
             maxAge: 900000000,
