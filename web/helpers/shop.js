@@ -5,26 +5,31 @@ export async function getOfflineSession(reqQueryShop) {
   const offlineSession = await Shopify.Utils.loadOfflineSession(shopData);
   if (!offlineSession) {
     return {
-      shop: shopData ?? "",
+      shopDomain: shopData ?? "",
       offlineSession: null,
     };
   }
   return {
-    shop: shopData ?? "",
+    shopDomain: shopData ?? "",
     offlineSession,
   };
 }
 
 export async function getInformationShop(reqQueryShop) {
   try {
-    const { offlineSession, shop } = await getOfflineSession(reqQueryShop);
-    const client = new Shopify.Clients.Rest(shop, offlineSession.accessToken);
+    const { offlineSession, shopDomain } = await getOfflineSession(
+      reqQueryShop
+    );
+    const client = new Shopify.Clients.Rest(
+      shopDomain,
+      offlineSession.accessToken
+    );
     const data = await client.get({
       path: "shop",
     });
     return {
       shop: data?.body?.shop,
-      shopDomain: shop,
+      shopDomain: shopDomain,
       offlineSession,
     };
   } catch (error) {

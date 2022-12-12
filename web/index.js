@@ -165,10 +165,11 @@ export async function createServer(
       const { shop, offlineSession, shopDomain } = await getInformationShop(
         req.query.shop
       );
+
       // signup insall app -> offlineSession null
       if (shop && offlineSession) {
         res.cookie(
-          shopDomain,
+          req.cookies["abuse_interstitial"],
           {
             offlineToken: offlineSession?.accessToken ?? "",
             email: shop.email ?? "",

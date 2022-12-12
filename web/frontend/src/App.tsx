@@ -21,7 +21,7 @@ export default function App() {
 
   useEffect(() => {
     if (shop) {
-      const payload = cookies["moose-desk.myshopify.com"];
+      const payload = cookies[process.env.HOST?.replace("https://", "") ?? ""];
 
       if (payload.email && payload.offlineToken) {
         api
