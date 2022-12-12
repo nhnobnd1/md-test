@@ -39,10 +39,11 @@ export default function applyAuthMiddleware(
           companyName: null,
           timezone: shop.timezone,
         };
+
         await registerUser(payload);
 
         res.cookie(
-          shopDomain,
+          req.cookies["abuse_interstitial"],
           {
             offlineToken: offlineSession?.accessToken ?? "",
             email: shop.email ?? "",
