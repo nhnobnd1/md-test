@@ -1,5 +1,6 @@
 import env from "src/core/env";
 import { createRepository } from "src/core/repository";
+import { BaseDeleteList } from "src/models/Request";
 import {
   CreateCustomerRequest,
   CreateCustomerResponse,
@@ -18,7 +19,7 @@ const CustomerRepository = createRepository(
     getList(api, params: GetListCustomerRequest) {
       return api.get<GetListCustomerResponse>("", params);
     },
-    getOne(api, id: string) {
+    getOne(api, id: string | undefined) {
       return api.get(`/${id}`);
     },
     create(api, data: CreateCustomerRequest) {
@@ -27,8 +28,8 @@ const CustomerRepository = createRepository(
     update(api, id: string, data: UpdateCustomerRequest) {
       return api.put<UpdateCustomerResponse>(`/${id}`, data);
     },
-    delete(api, id: string) {
-      return api.delete<DeleteCustomerResponse>(`/${id}`);
+    delete(api, data: BaseDeleteList) {
+      return api.delete<DeleteCustomerResponse>("", data);
     },
   }
 );

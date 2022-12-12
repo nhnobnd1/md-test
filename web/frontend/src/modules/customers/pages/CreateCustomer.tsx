@@ -1,75 +1,87 @@
-import {
-  Card,
-  IndexTable,
-  Text,
-  useIndexResourceState,
-} from "@shopify/polaris";
+import { useNavigate } from "@shopify/app-bridge-react";
+import { Page, Toast } from "@shopify/polaris";
+import { useCallback, useRef, useState } from "react";
+import { catchError, map, of } from "rxjs";
+import { useJob } from "src/core/hooks";
+import useAuth from "src/hooks/useAuth";
+import CustomerForm, {
+  RefProperties,
+} from "src/modules/customers/component/CustomerForm";
+import CustomerRepository from "src/modules/customers/repositories/CustomerRepository";
+import CustomersRoutePaths from "src/modules/customers/routes/paths";
 
-export default function SimpleIndexTableExample() {
-  const customers = [
-    {
-      id: "3411",
-      url: "customers/341",
-      name: "Mae Jemison",
-      location: "Decatur, USA",
-      orders: 20,
-      amountSpent: "$2,400",
-    },
-    {
-      id: "2561",
-      url: "customers/256",
-      name: "Ellen Ochoa",
-      location: "Los Angeles, USA",
-      orders: 30,
-      amountSpent: "$140",
-    },
-  ];
-  const resourceName = {
-    singular: "customer",
-    plural: "customers",
-  };
-
-  const { selectedResources, allResourcesSelected, handleSelectionChange } =
-    useIndexResourceState(customers);
-
-  const rowMarkup = customers.map(
-    ({ id, name, location, orders, amountSpent }, index) => (
-      <IndexTable.Row
-        id={id}
-        key={id}
-        selected={selectedResources.includes(id)}
-        position={index}
-      >
-        <IndexTable.Cell>
-          <Text variant="bodyMd" fontWeight="bold" as="span">
-            {name}
-          </Text>
-        </IndexTable.Cell>
-        <IndexTable.Cell>{location}</IndexTable.Cell>
-        <IndexTable.Cell>{orders}</IndexTable.Cell>
-        <IndexTable.Cell>{amountSpent}</IndexTable.Cell>
-      </IndexTable.Row>
-    )
-  );
-
-  return (
-    <Card>
-      <IndexTable
-        resourceName={resourceName}
-        itemCount={customers.length}
-        selectedItemsCount={
-          allResourcesSelected ? "All" : selectedResources.length
+export default function CreateCustomer() {
+  const formRef = useRef<RefProperties>(null);
+  const auth = useAuth();
+  const navigate = useNavigate();
+  const [active, setActive] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState(false);
+  const toast = active ? (
+    <Toast
+      content={message}
+      duration={1000}
+      onDismiss={() => {
+        setActive(false);
+        if (!error) {
+          navigate(CustomersRoutePaths.Index);
         }
-        onSelectionChange={handleSelectionChange}
-        headings={[
-          { title: "Name" },
-          { title: "Location" },
-          { title: "Order count" },
-          { title: "Amount spent" },
+      }}
+      error={error}
+    />
+  ) : null;
+  const { run: submit } = useJob((dataSubmit: any) => {
+    return CustomerRepository.create(dataSubmit).pipe(
+      map(({ data }) => {
+        if (data.statusCode === 200) {
+          setMessage("Create customer success");
+          setActive(true);
+        } else {
+          setMessage("Create customer failed");
+          setError(true);
+          setActive(true);
+        }
+      }),
+      catchError((error) => {
+        setMessage("Create customer failed");
+        setError(true);
+        setActive(true);
+        return of(error);
+      })
+    );
+  });
+  const handleSubmitForm = useCallback(() => {
+    formRef.current?.save();
+  }, []);
+  const handleResetForm = useCallback(() => {
+    formRef.current?.reset();
+  }, []);
+  return (
+    <>
+      <Page
+        title="Infor customer"
+        subtitle="Create customer"
+        compactTitle
+        breadcrumbs={[{ onAction: () => navigate(CustomersRoutePaths.Index) }]}
+        primaryAction={{
+          content: "Save",
+          onAction: handleSubmitForm,
+        }}
+        secondaryActions={[
+          {
+            content: "Discard",
+            onAction: handleResetForm,
+          },
         ]}
+        fullWidth
       >
-        {rowMarkup}
-      </IndexTable>
-    </Card>
+        <CustomerForm
+          ref={formRef}
+          initialValues={{ storeId: auth.user ? auth.user : "hihi" }}
+          submit={submit}
+        />
+      </Page>
+      {toast}
+    </>
   );
 }

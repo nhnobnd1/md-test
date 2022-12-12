@@ -1,6 +1,6 @@
 export interface BaseResponse<T> {
   data: T[];
-  statusCode: boolean;
+  statusCode: number;
   metadata: BaseMetaDataListResponse;
   datetime: string;
   errorCode?: string;
@@ -9,6 +9,7 @@ export interface BaseResponse<T> {
 export interface BaseListRequest {
   page?: number;
   limit?: number;
+  query?: string;
 }
 
 export interface BaseMetaDataListResponse {
@@ -16,4 +17,7 @@ export interface BaseMetaDataListResponse {
   totalPage: number;
   totalCount: number;
   resultsPerPage: number;
+}
+export interface BaseDeleteList {
+  ids: string[];
 }
