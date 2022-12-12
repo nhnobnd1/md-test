@@ -6,6 +6,7 @@ const dashboardRoutes: IRoute = {
   path: DashboardRoutePaths.Index,
   title: "Dashboard",
   showInNavigationMenu: true,
+  component: lazy(() => import("src/layouts/MainLayout")),
   routes: [
     {
       path: DashboardRoutePaths.Index,
