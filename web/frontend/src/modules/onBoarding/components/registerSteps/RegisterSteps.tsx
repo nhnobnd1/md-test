@@ -1,16 +1,17 @@
 import { useCallback, useState } from "react";
+import { generatePath, useNavigate } from "react-router-dom";
 import { useMount } from "src/core/hooks";
+import DashboardRoutePaths from "src/modules/dashboard/routes/paths";
 import "src/modules/onBoarding/assets/style/components/registerSteps/register-steps.scss";
 import RegisterStepsOne from "src/modules/onBoarding/components/registerSteps/RegisterStepsOne";
 import RegisterStepsThree from "src/modules/onBoarding/components/registerSteps/RegisterStepsThree";
 import RegisterStepsTwo from "src/modules/onBoarding/components/registerSteps/RegisterStepsTwo";
 
-interface RegisterStepsProps {
-  finishAuth: () => void;
-}
+interface RegisterStepsProps {}
 
-const RegisterSteps = ({ finishAuth }: RegisterStepsProps) => {
+const RegisterSteps = (props: RegisterStepsProps) => {
   const [steps, setSteps] = useState(1);
+  const navigate = useNavigate();
 
   const handleNextStep = useCallback(() => {
     setSteps(() => {
@@ -24,6 +25,10 @@ const RegisterSteps = ({ finishAuth }: RegisterStepsProps) => {
     });
   }, [steps]);
 
+  const redirectDashBoard = useCallback(() => {
+    navigate(generatePath(DashboardRoutePaths.Index));
+  }, []);
+
   useMount(() => {
     setSteps(1);
   });
@@ -35,7 +40,7 @@ const RegisterSteps = ({ finishAuth }: RegisterStepsProps) => {
       {steps === 3 && (
         <RegisterStepsThree
           previousStep={handlePreviousStep}
-          redirectIndex={finishAuth}
+          redirectIndex={redirectDashBoard}
         />
       )}
     </>

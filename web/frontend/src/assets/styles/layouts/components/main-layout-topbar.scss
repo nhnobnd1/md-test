@@ -1,0 +1,23 @@
+.Md-TopBar {
+  &__Wrapper {
+    display: flex;
+    align-items: center;
+  }
+
+  &__Title {
+    position: absolute;
+    left: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+
+    & > * {
+      margin-right: 12px !important;
+    }
+  }
+
+  &__TextBrand {
+    color: #003a89;
+  }
+}

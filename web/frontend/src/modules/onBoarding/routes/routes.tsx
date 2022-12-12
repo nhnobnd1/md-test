@@ -12,10 +12,6 @@ const onBoardingRoutes: IRoute = {
       index: true,
       component: lazy(() => import("src/modules/onBoarding/pages/Index")),
     },
-    {
-      path: OnBoardingRoutePaths.Child,
-      component: lazy(() => import("src/modules/onBoarding/pages/Child")),
-    },
   ],
 };
 
