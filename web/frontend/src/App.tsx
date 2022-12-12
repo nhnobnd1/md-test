@@ -22,8 +22,7 @@ export default function App() {
   useEffect(() => {
     if (shop) {
       const payload = cookies[process.env.HOST?.replace("https://", "") ?? ""];
-
-      if (payload.email && payload.offlineToken) {
+      if (payload && payload.email && payload.offlineToken) {
         api
           .request<LoginResponse>({
             url: "/v1/account/shopify/sign-in",
