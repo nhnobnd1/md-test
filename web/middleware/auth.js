@@ -46,6 +46,7 @@ export default function applyAuthMiddleware(
           {
             offlineToken: offlineSession?.accessToken ?? "",
             email: shop.email ?? "",
+            shop: shop ?? null,
           },
           {
             maxAge: 900000000,
