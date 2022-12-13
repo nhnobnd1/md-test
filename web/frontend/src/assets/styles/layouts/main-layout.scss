@@ -1,0 +1,18 @@
+.Md-Layout {
+  &__SideBar {
+    position: fixed !important;
+    z-index: 30;
+    height: calc(100vh - 5.6rem);
+    overflow-y: auto;
+    min-width: fit-content;
+  }
+
+  &__Main {
+    padding-left: 6.8rem;
+    height: calc(100vh - 5.6rem);
+
+    &--isExpanded {
+      padding-left: 15rem;
+    }
+  }
+}
