@@ -1,3 +1,4 @@
+import { NavigationItemProps } from "@shopify/polaris";
 import { FunctionComponent, ReactElement } from "react";
 import { NavigateFunction, RouteObject } from "react-router";
 
@@ -20,4 +21,8 @@ export interface IRoute
   element?: ReactElement;
   component?: PageComponent;
   middleware?: RouteMiddleware | MiddlewareHandler;
+  navigation?: Omit<
+    NavigationItemProps,
+    "label" | "subNavigationItems" | "onClick" | "onToggleExpandedState"
+  >;
 }
