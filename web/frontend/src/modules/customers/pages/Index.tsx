@@ -129,7 +129,12 @@ export default function CustomerIndexPage() {
     () => {
       return CustomerRepository.getList(filterData).pipe(
         map(({ data }) => {
-          setCustomers(data.data);
+          setCustomers(
+            data.data.map((item) => ({
+              ...item,
+              id: item._id,
+            }))
+          );
           return data;
         })
       );
