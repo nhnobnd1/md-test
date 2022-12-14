@@ -37,7 +37,7 @@ const MainLayoutTopBar = (props: MainLayoutTopBarProps) => {
           />
           <div className="Md-TopBar__TextBrand">
             <Text as="p" variant="headingLg" fontWeight="semibold">
-              SEO Suite
+              Moose desk
             </Text>
           </div>
         </div>
