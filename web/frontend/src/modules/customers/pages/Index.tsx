@@ -2,6 +2,7 @@ import {
   Button,
   Card,
   IndexTable,
+  Link,
   Page,
   Pagination,
   Text,
@@ -16,6 +17,7 @@ import { catchError, map, of } from "rxjs";
 import env from "src/core/env";
 import { useDebounceFn, useJob } from "src/core/hooks";
 import useTable from "src/core/hooks/useTable";
+import useAuth from "src/hooks/useAuth";
 import { BaseListRequest } from "src/models/Request";
 import { Customer } from "src/modules/customers/modal/Customer";
 import CustomerRepository from "src/modules/customers/repositories/CustomerRepository";
@@ -23,6 +25,9 @@ import CustomersRoutePaths from "src/modules/customers/routes/paths";
 export default function CustomerIndexPage() {
   const param = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  console.log("user", user);
+
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [active, setActive] = useState(false);
   const [message, setMessage] = useState("");
@@ -34,23 +39,26 @@ export default function CustomerIndexPage() {
   const { selectedResources, allResourcesSelected, handleSelectionChange } =
     useIndexResourceState<Customer>(customers);
 
-  const rowMarkup = customers.map((customer, index) => (
-    <IndexTable.Row
-      id={customer._id}
-      key={`${customer._id}`}
-      selected={selectedResources.includes(customer._id)}
-      position={index}
-      onClick={() => navigateShowDetails(customer._id)}
-    >
-      <IndexTable.Cell>
-        <Text variant="bodyMd" fontWeight="bold" as="span">
-          {`${customer.firstName} ${customer.lastName}`}
-        </Text>
-      </IndexTable.Cell>
-      <IndexTable.Cell>{customer.email}</IndexTable.Cell>
-      <IndexTable.Cell>{customer.storeId}</IndexTable.Cell>
-    </IndexTable.Row>
-  ));
+  const rowMarkup = customers.map(
+    ({ _id, firstName, lastName, email, storeId }, index) => (
+      <IndexTable.Row
+        id={_id}
+        key={_id}
+        selected={selectedResources.includes(_id)}
+        position={index}
+      >
+        <IndexTable.Cell>
+          <Link dataPrimaryLink onClick={() => navigateShowDetails(_id)}>
+            <Text variant="bodyMd" fontWeight="bold" as="span">
+              {`${firstName} ${lastName}`}
+            </Text>
+          </Link>
+        </IndexTable.Cell>
+        <IndexTable.Cell>{email}</IndexTable.Cell>
+        <IndexTable.Cell>{storeId}</IndexTable.Cell>
+      </IndexTable.Row>
+    )
+  );
 
   const handleSearchChange = (value: string) => {
     setFilterData(() => ({
@@ -76,14 +84,13 @@ export default function CustomerIndexPage() {
   const [filterData, setFilterData] = useState<BaseListRequest>(
     !isEmpty(param)
       ? {
-          page: page ? Number(page) : 0,
+          page: page ? Number(page) : 1,
           limit: rowsPerPage ? Number(rowsPerPage) : env.DEFAULT_PAGE_SIZE,
           query: "",
         }
       : {
-          page: 0,
+          page: 1,
           limit: env.DEFAULT_PAGE_SIZE,
-          query: "",
         }
   );
 
@@ -97,6 +104,7 @@ export default function CustomerIndexPage() {
       error={error}
     />
   ) : null;
+
   const { run: handleRemoveCustomer } = useJob((dataDelete: string[]) => {
     return CustomerRepository.delete({ ids: dataDelete }).pipe(
       map(({ data }) => {
@@ -196,9 +204,7 @@ export default function CustomerIndexPage() {
                   setPage(page + 1);
                 }
               }}
-              label={`${page + 1} / ${
-                customers.length / env.DEFAULT_PAGE_SIZE
-              }`}
+              label={`${page} / ${customers.length / env.DEFAULT_PAGE_SIZE}`}
               nextTooltip={"Next"}
             />
           ) : null}
