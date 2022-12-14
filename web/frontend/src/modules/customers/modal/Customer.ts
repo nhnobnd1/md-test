@@ -1,6 +1,7 @@
 import { BaseListRequest, BaseResponse } from "src/models/Request";
 
 export type Customer = {
+  id?: string;
   _id: string;
   createdDatetime: string;
   createdTimestamp: string;
