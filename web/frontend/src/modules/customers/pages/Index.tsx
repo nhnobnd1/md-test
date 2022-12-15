@@ -5,7 +5,6 @@ import {
   IndexTable,
   Link,
   Page,
-  Pagination,
   Text,
   useIndexResourceState,
 } from "@shopify/polaris";
@@ -13,8 +12,9 @@ import { isEmpty } from "lodash-es";
 import { useCallback, useEffect, useState } from "react";
 import { generatePath, useNavigate, useParams } from "react-router-dom";
 import { catchError, map, of } from "rxjs";
+import Pagination from "src/components/Pagination/Pagination";
 import env from "src/core/env";
-import { useDebounceFn, useJob } from "src/core/hooks";
+import { useDebounceFn, useJob, useMount } from "src/core/hooks";
 import useTable from "src/core/hooks/useTable";
 import { BaseListRequest } from "src/models/Request";
 import { Customer } from "src/modules/customers/modal/Customer";
@@ -29,8 +29,12 @@ export default function CustomerIndexPage() {
     singular: "customer",
     plural: "customers",
   };
-  const { selectedResources, allResourcesSelected, handleSelectionChange } =
-    useIndexResourceState<Customer>(customers);
+  const {
+    selectedResources,
+    allResourcesSelected,
+    handleSelectionChange,
+    clearSelection,
+  } = useIndexResourceState<Customer>(customers);
 
   const rowMarkup = customers.map(
     ({ id, firstName, lastName, email, storeId }, index) => (
@@ -91,6 +95,7 @@ export default function CustomerIndexPage() {
         }
   );
   const handleSearchChange = (value: string) => {
+    setPage(1);
     setFilterData(() => ({
       ...filterData,
       query: value,
@@ -108,27 +113,34 @@ export default function CustomerIndexPage() {
     setFilterData(defaultFilter());
   }, []);
 
-  const { run: handleRemoveCustomer } = useJob((dataDelete: string[]) => {
-    return CustomerRepository.delete({ ids: dataDelete }).pipe(
-      map(({ data }) => {
-        if (data.statusCode === 200) {
-          show("Delete customer success");
-          fetchListCustomer();
-        } else {
+  const { run: handleRemoveCustomer, processing } = useJob(
+    (dataDelete: string[]) => {
+      return CustomerRepository.delete({ ids: dataDelete }).pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            show("Delete customer success");
+            fetchListCustomer();
+            clearSelection();
+          } else {
+            show("Delete customer failed", {
+              isError: true,
+            });
+          }
+        }),
+        catchError((error) => {
           show("Delete customer failed", {
             isError: true,
           });
-        }
-      }),
-      catchError((error) => {
-        show("Delete customer failed", {
-          isError: true,
-        });
-        return of(error);
-      })
-    );
-  });
-  const { run: fetchListCustomer, result } = useJob(
+          return of(error);
+        })
+      );
+    }
+  );
+  const {
+    run: fetchListCustomer,
+    result,
+    processing: loadCustomer,
+  } = useJob(
     () => {
       return CustomerRepository.getList(filterData).pipe(
         map(({ data }) => {
@@ -147,12 +159,17 @@ export default function CustomerIndexPage() {
   const { run: callAPI } = useDebounceFn(() => fetchListCustomer(), {
     wait: 300,
   });
-
   useEffect(() => {
-    setPage(0);
+    setFilterData({
+      ...filterData,
+      page: page,
+    });
+  }, [page]);
+  useEffect(() => {
+    console.log("change filter data");
     callAPI();
   }, [filterData]);
-
+  useMount(() => setPage(1));
   return (
     <>
       <Page
@@ -190,34 +207,36 @@ export default function CustomerIndexPage() {
             ]}
             hasMoreItems
             promotedBulkActions={promotedBulkActions}
+            loading={loadCustomer}
           >
             {rowMarkup}
           </IndexTable>
         </Card>
         <div className="flex items-center justify-center mt-4">
-          {customers.length > 10 ? (
-            <Pagination
-              hasPrevious
-              onPrevious={() => {
-                if (page > 0) {
-                  setPage(page - 1);
-                }
-              }}
-              hasNext
-              onNext={() => {
-                if (
-                  page <
-                  (result
-                    ? result.metadata.totalCount / env.DEFAULT_PAGE_SIZE
-                    : 1)
-                ) {
-                  setPage(page + 1);
-                }
-              }}
-              label={`${page} / ${customers.length / env.DEFAULT_PAGE_SIZE}`}
-              nextTooltip={"Next"}
-            />
-          ) : null}
+          <Pagination
+            total={result ? result.metadata.totalCount : 1}
+            pageSize={filterData.limit ?? 0}
+            currentPage={page}
+            hasPrevious
+            onPrevious={() => {
+              if (page > 1) {
+                setPage(page - 1);
+              }
+            }}
+            hasNext
+            onNext={() => {
+              if (
+                page <
+                (result
+                  ? result.metadata.totalCount / env.DEFAULT_PAGE_SIZE
+                  : 1)
+              ) {
+                setPage(page + 1);
+              }
+            }}
+            previousTooltip={"Previous"}
+            nextTooltip={"Next"}
+          />
         </div>
       </Page>
     </>
