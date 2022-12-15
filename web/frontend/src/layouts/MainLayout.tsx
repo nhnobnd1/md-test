@@ -4,7 +4,7 @@ import {
   NavigationItemProps,
   SubNavigationItem,
 } from "@shopify/polaris";
-import { ReactNode, useCallback, useMemo } from "react";
+import { ReactNode, useCallback, useMemo, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import "src/assets/styles/layouts/main-layout.scss";
 import { IRoute } from "src/core/models/routes";
@@ -18,6 +18,7 @@ interface MainLayoutProps {
 const MainLayout = ({ children }: MainLayoutProps) => {
   const { routes } = useRoutes();
   const location = useLocation();
+  const [mobileNavigationActive, setMobileNavigationActive] = useState(false);
 
   const getItemRouteNavigation = useCallback(
     (routesItem: IRoute, type: "main" | "sub") => {
@@ -71,11 +72,29 @@ const MainLayout = ({ children }: MainLayoutProps) => {
     );
   };
 
+  const toggleMobileNavigationActive = useCallback(
+    () =>
+      setMobileNavigationActive(
+        (mobileNavigationActive) => !mobileNavigationActive
+      ),
+    []
+  );
+
+  const logo = {
+    width: 40,
+    contextualSaveBarSource:
+      "https://cdn1.avada.io/get-market/preset/avada_icon.png",
+  };
+
   return (
     <div className="Md-Layout">
       <Frame
-        topBar={<MainLayoutTopBar />}
+        topBar={
+          <MainLayoutTopBar navigationToggle={toggleMobileNavigationActive} />
+        }
         navigation={<MainLayoutNavigation />}
+        showMobileNavigation={mobileNavigationActive}
+        onNavigationDismiss={toggleMobileNavigationActive}
       >
         <div>
           <Outlet />

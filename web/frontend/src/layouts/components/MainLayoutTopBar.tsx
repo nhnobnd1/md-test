@@ -3,33 +3,41 @@ import { CancelMajor, MobileHamburgerMajor } from "@shopify/polaris-icons";
 import { useState } from "react";
 import "src/assets/styles/layouts/components/main-layout-topbar.scss";
 
-interface MainLayoutTopBarProps {}
+interface MainLayoutTopBarProps {
+  navigationToggle: () => void;
+}
 
-const MainLayoutTopBar = (props: MainLayoutTopBarProps) => {
-  const [expandedMenu, setExpendedMenu] = useState(true);
+const MainLayoutTopBar = ({ navigationToggle }: MainLayoutTopBarProps) => {
+  const [expandedMenu, setExpendedMenu] = useState(false);
 
   const SecondaryMenu = () => {
     return (
       <div className="Md-TopBar__Wrapper">
         <div className="Md-TopBar__Title">
-          <Button
-            plain
-            onClick={() =>
-              setExpendedMenu(() => {
-                return !expandedMenu;
-              })
-            }
-            icon={
-              <Icon
-                source={() => (
-                  <>
-                    {expandedMenu ? <CancelMajor /> : <MobileHamburgerMajor />}
-                  </>
-                )}
-                color="base"
-              />
-            }
-          />
+          <div className="Md-Toggle__Navigation">
+            <Button
+              plain
+              onClick={() =>
+                setExpendedMenu(() => {
+                  return !expandedMenu;
+                })
+              }
+              icon={
+                <Icon
+                  source={() => (
+                    <>
+                      {expandedMenu ? (
+                        <CancelMajor />
+                      ) : (
+                        <MobileHamburgerMajor />
+                      )}
+                    </>
+                  )}
+                  color="base"
+                />
+              }
+            />
+          </div>
           <img
             src={"https://cdn1.avada.io/get-market/preset/avada_icon.png"}
             alt=""
@@ -46,7 +54,11 @@ const MainLayoutTopBar = (props: MainLayoutTopBarProps) => {
     );
   };
   return (
-    <TopBar showNavigationToggle secondaryMenu={<SecondaryMenu />}></TopBar>
+    <TopBar
+      showNavigationToggle
+      onNavigationToggle={navigationToggle}
+      secondaryMenu={<SecondaryMenu />}
+    ></TopBar>
   );
 };
 
