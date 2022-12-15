@@ -1,6 +1,13 @@
-import { useNavigate } from "@shopify/app-bridge-react";
-import { Page, Toast } from "@shopify/polaris";
+import { useToast } from "@shopify/app-bridge-react";
+import {
+  Banner,
+  ContextualSaveBar,
+  Layout,
+  Page,
+  Text,
+} from "@shopify/polaris";
 import { useCallback, useRef, useState } from "react";
+import { generatePath, useNavigate } from "react-router-dom";
 import { catchError, map, of } from "rxjs";
 import { useJob } from "src/core/hooks";
 import useAuth from "src/hooks/useAuth";
@@ -14,74 +21,92 @@ export default function CreateCustomer() {
   const formRef = useRef<RefProperties>(null);
   const auth = useAuth();
   const navigate = useNavigate();
-  const [active, setActive] = useState(false);
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState(false);
-  const toast = active ? (
-    <Toast
-      content={message}
-      duration={1000}
-      onDismiss={() => {
-        setActive(false);
-        if (!error) {
-          navigate(CustomersRoutePaths.Index);
-        }
-      }}
-      error={error}
-    />
-  ) : null;
+  const { show } = useToast();
+  const [disable, setDisable] = useState(true);
+  const [messageError, setMessageError] = useState("");
+  const [banner, setBanner] = useState(false);
+  const navigateShowDetails = useCallback((id: string, statusCode: number) => {
+    navigate(generatePath(CustomersRoutePaths.Details, { id }), {
+      state: { status: statusCode },
+    });
+  }, []);
   const { run: submit } = useJob((dataSubmit: any) => {
     return CustomerRepository.create(dataSubmit).pipe(
       map(({ data }) => {
         if (data.statusCode === 200) {
-          setMessage("Create customer success");
-          setActive(true);
+          show("Create customer success");
+          navigateShowDetails(data.data._id, data.statusCode);
         } else {
-          setMessage("Create customer failed");
-          setError(true);
-          setActive(true);
+          setBanner(true);
+          show("Create customer failed", {
+            isError: true,
+          });
         }
       }),
       catchError((error) => {
-        setMessage("Create customer failed");
-        setError(true);
-        setActive(true);
+        setMessageError(error.response.data.error[0]);
+        setBanner(true);
+        show("Create customer failed", {
+          isError: true,
+        });
         return of(error);
       })
     );
   });
+  const handleChangeValueForm = (value: boolean) => {
+    setDisable(value);
+  };
   const handleSubmitForm = useCallback(() => {
     formRef.current?.save();
   }, []);
   const handleResetForm = useCallback(() => {
     formRef.current?.reset();
   }, []);
+
   return (
     <>
+      <ContextualSaveBar
+        fullWidth
+        message="Unsaved changes"
+        saveAction={{
+          onAction: handleSubmitForm,
+          disabled: disable,
+        }}
+        discardAction={{
+          onAction: handleResetForm,
+        }}
+      />
       <Page
-        title="Infor customer"
-        subtitle="Create customer"
+        title="Create customer"
+        subtitle="Profile customer"
         compactTitle
         breadcrumbs={[{ onAction: () => navigate(CustomersRoutePaths.Index) }]}
-        primaryAction={{
-          content: "Save",
-          onAction: handleSubmitForm,
-        }}
-        secondaryActions={[
-          {
-            content: "Discard",
-            onAction: handleResetForm,
-          },
-        ]}
         fullWidth
       >
-        <CustomerForm
-          ref={formRef}
-          initialValues={{ storeId: auth.user ? auth.user : "hihi" }}
-          submit={submit}
-        />
+        <Layout sectioned>
+          <Layout.Section>
+            {banner ? (
+              <Banner
+                title="There is an error with this customer initialization"
+                status="critical"
+                onDismiss={() => setBanner(false)}
+              >
+                <Text variant="bodyMd" as="p" color="subdued">
+                  {messageError}
+                </Text>
+              </Banner>
+            ) : null}
+          </Layout.Section>
+          <Layout.Section>
+            <CustomerForm
+              ref={formRef}
+              initialValues={{ storeId: auth.user ? auth.user : "hihi" }}
+              submit={submit}
+              change={handleChangeValueForm}
+            />
+          </Layout.Section>
+        </Layout>
       </Page>
-      {toast}
     </>
   );
 }

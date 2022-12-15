@@ -1,7 +1,16 @@
-import { useNavigate } from "@shopify/app-bridge-react";
-import { Card, Page, Tabs, Toast } from "@shopify/polaris";
-import { useCallback, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useToast } from "@shopify/app-bridge-react";
+import {
+  Banner,
+  BannerStatus,
+  Card,
+  ContextualSaveBar,
+  Layout,
+  Page,
+  Tabs,
+  Text,
+} from "@shopify/polaris";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useLocation, useParams } from "react-router-dom";
 import { catchError, map, of } from "rxjs";
 import { useJob, useMount } from "src/core/hooks";
 import CustomerForm, {
@@ -13,24 +22,22 @@ import CustomersRoutePaths from "src/modules/customers/routes/paths";
 export default function DetailsCustomer() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const formRef = useRef<RefProperties>(null);
+  const { state } = useLocation();
 
-  const [active, setActive] = useState(false);
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState(false);
-  const toast = active ? (
-    <Toast
-      content={message}
-      duration={1000}
-      onDismiss={() => {
-        setActive(false);
-        if (!error) {
-          navigate(CustomersRoutePaths.Index);
-        }
-      }}
-      error={error}
-    />
-  ) : null;
+  const formRef = useRef<RefProperties>(null);
+  const [disable, setDisable] = useState(true);
+  const [banner, setBanner] = useState<{
+    isShow: boolean;
+    message: string;
+    type: BannerStatus;
+    title: string;
+  }>({
+    isShow: false,
+    message: "",
+    type: "success",
+    title: "",
+  });
+  const { show } = useToast();
   const { run: fetDetailsCustomer, result } = useJob(
     () => {
       return CustomerRepository.getOne(id).pipe(
@@ -46,24 +53,43 @@ export default function DetailsCustomer() {
     (selectedTabIndex) => setSelectedTabs(selectedTabIndex),
     []
   );
-
+  const handleChangeValueForm = (value: boolean) => {
+    setDisable(value);
+  };
   const { run: submit } = useJob((dataSubmit: any) => {
     const { _id } = dataSubmit;
     return CustomerRepository.update(_id, dataSubmit).pipe(
       map(({ data }) => {
         if (data.statusCode === 200) {
-          setMessage("Edit customer success");
-          setActive(true);
+          setBanner({
+            isShow: true,
+            message: "Edit customer success",
+            type: "success",
+            title: "Edit customer is successful",
+          });
+          show("Edit customer success");
         } else {
-          setMessage("Edit customer failed");
-          setError(true);
-          setActive(true);
+          setBanner({
+            message: "Edit customer is success",
+            isShow: true,
+            type: "critical",
+            title: "There is an error with this customer initialization",
+          });
+          show("Edit customer failed", {
+            isError: true,
+          });
         }
       }),
       catchError((error) => {
-        setMessage("Edit customer failed");
-        setError(true);
-        setActive(true);
+        setBanner({
+          isShow: true,
+          message: error.response.data.error[0],
+          type: "critical",
+          title: "There is an error with this customer initialization",
+        });
+        show("Edit customer failed", {
+          isError: true,
+        });
         return of(error);
       })
     );
@@ -75,7 +101,12 @@ export default function DetailsCustomer() {
     formRef.current?.reset();
   }, []);
   const profileCustomer = (
-    <CustomerForm ref={formRef} initialValues={result} submit={submit} />
+    <CustomerForm
+      ref={formRef}
+      initialValues={result}
+      submit={submit}
+      change={handleChangeValueForm}
+    />
   );
   const tabs = [
     {
@@ -95,34 +126,65 @@ export default function DetailsCustomer() {
   useMount(() => {
     fetDetailsCustomer();
   });
+  useEffect(() => {
+    if (state.status === 200) {
+      setBanner({
+        isShow: true,
+        message: "Create customer is success",
+        type: "success",
+        title: "Create customer is successful",
+      });
+    }
+  }, [state.status]);
   return (
     <>
+      <ContextualSaveBar
+        fullWidth
+        message="Unsaved changes"
+        saveAction={{
+          onAction: handleSubmitForm,
+          disabled: disable,
+        }}
+        discardAction={{
+          onAction: handleResetForm,
+        }}
+      />
       <Page
         title="Infor customer"
         subtitle="Details infor customer"
         compactTitle
         breadcrumbs={[{ onAction: () => navigate(CustomersRoutePaths.Index) }]}
-        primaryAction={{
-          content: "Save",
-          onAction: handleSubmitForm,
-        }}
-        secondaryActions={[
-          {
-            content: "Discard",
-            onAction: handleResetForm,
-          },
-        ]}
         fullWidth
       >
-        <Card sectioned>
-          <Tabs tabs={tabs} selected={selectedTabs} onSelect={handleTabChange}>
-            <Card.Section title={tabs[selectedTabs].content}>
-              {tabs[selectedTabs].value}
-            </Card.Section>
-          </Tabs>
-        </Card>
+        <Layout sectioned>
+          <Layout.Section>
+            {banner.isShow ? (
+              <Banner
+                title={banner.title}
+                status={banner.type}
+                onDismiss={() => setBanner({ ...banner, isShow: false })}
+              >
+                <Text variant="bodyMd" as="p" color="subdued">
+                  {banner.message}
+                </Text>
+              </Banner>
+            ) : null}
+          </Layout.Section>
+          <Layout.Section>
+            <Card sectioned>
+              <Tabs
+                tabs={tabs}
+                selected={selectedTabs}
+                onSelect={handleTabChange}
+              >
+                <Card.Section title={tabs[selectedTabs].content}>
+                  {tabs[selectedTabs].value}
+                </Card.Section>
+              </Tabs>
+            </Card>
+          </Layout.Section>
+        </Layout>
       </Page>
-      {toast}
     </>
   );
 }

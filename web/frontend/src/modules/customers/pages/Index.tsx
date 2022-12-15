@@ -1,5 +1,5 @@
+import { useToast } from "@shopify/app-bridge-react";
 import {
-  Button,
   Card,
   IndexTable,
   Link,
@@ -7,7 +7,6 @@ import {
   Pagination,
   Text,
   TextField,
-  Toast,
   useIndexResourceState,
 } from "@shopify/polaris";
 import { isEmpty } from "lodash-es";
@@ -17,7 +16,6 @@ import { catchError, map, of } from "rxjs";
 import env from "src/core/env";
 import { useDebounceFn, useJob } from "src/core/hooks";
 import useTable from "src/core/hooks/useTable";
-import useAuth from "src/hooks/useAuth";
 import { BaseListRequest } from "src/models/Request";
 import { Customer } from "src/modules/customers/modal/Customer";
 import CustomerRepository from "src/modules/customers/repositories/CustomerRepository";
@@ -25,13 +23,8 @@ import CustomersRoutePaths from "src/modules/customers/routes/paths";
 export default function CustomerIndexPage() {
   const param = useParams();
   const navigate = useNavigate();
-  const { user } = useAuth();
-  console.log("user", user);
-
+  const { show } = useToast();
   const [customers, setCustomers] = useState<Customer[]>([]);
-  const [active, setActive] = useState(false);
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState(false);
   const resourceName = {
     singular: "customer",
     plural: "customers",
@@ -48,7 +41,12 @@ export default function CustomerIndexPage() {
         position={index}
       >
         <IndexTable.Cell>
-          <Link dataPrimaryLink onClick={() => navigateShowDetails(_id)}>
+          <Link
+            monochrome
+            dataPrimaryLink
+            onClick={() => navigateShowDetails(_id)}
+            removeUnderline
+          >
             <Text variant="bodyMd" fontWeight="bold" as="span">
               {`${firstName} ${lastName}`}
             </Text>
@@ -93,34 +91,21 @@ export default function CustomerIndexPage() {
           limit: env.DEFAULT_PAGE_SIZE,
         }
   );
-
-  const toast = active ? (
-    <Toast
-      content={message}
-      duration={1000}
-      onDismiss={() => {
-        setActive(false);
-      }}
-      error={error}
-    />
-  ) : null;
-
   const { run: handleRemoveCustomer } = useJob((dataDelete: string[]) => {
     return CustomerRepository.delete({ ids: dataDelete }).pipe(
       map(({ data }) => {
         if (data.statusCode === 200) {
-          setMessage("Delete customer success");
-          setActive(true);
+          show("Delete customer success");
         } else {
-          setMessage("Delete customer failed");
-          setError(true);
-          setActive(true);
+          show("Delete customer failed", {
+            isError: true,
+          });
         }
       }),
       catchError((error) => {
-        setMessage("Delete customer failed");
-        setError(true);
-        setActive(true);
+        show("Delete customer failed", {
+          isError: true,
+        });
         return of(error);
       })
     );
@@ -152,24 +137,26 @@ export default function CustomerIndexPage() {
 
   return (
     <>
-      <Page title="Customer" subtitle="List of customer" compactTitle fullWidth>
+      <Page
+        title="Customer"
+        subtitle="List of customer"
+        primaryAction={{
+          content: "Add new",
+          onAction: navigateCreate,
+        }}
+        compactTitle
+        fullWidth
+      >
         <Card sectioned>
           <div className="mb-4">
-            <div className="flex justify-between items-center">
-              <div className="w-3/4 relative">
-                <TextField
-                  value={filterData.query}
-                  onChange={handleSearchChange}
-                  placeholder="Search customer"
-                  type="search"
-                  autoComplete="search"
-                  label
-                />
-              </div>
-              <Button onClick={navigateCreate} primary>
-                {"Add new"}
-              </Button>
-            </div>
+            <TextField
+              value={filterData.query}
+              onChange={handleSearchChange}
+              placeholder="Search customer"
+              type="search"
+              autoComplete="search"
+              label
+            />
           </div>
           <IndexTable
             resourceName={resourceName}
@@ -215,7 +202,6 @@ export default function CustomerIndexPage() {
           ) : null}
         </div>
       </Page>
-      {toast}
     </>
   );
 }
