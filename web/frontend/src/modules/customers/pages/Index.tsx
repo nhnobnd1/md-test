@@ -1,12 +1,12 @@
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Card,
+  Filters,
   IndexTable,
   Link,
   Page,
   Pagination,
   Text,
-  TextField,
   useIndexResourceState,
 } from "@shopify/polaris";
 import { isEmpty } from "lodash-es";
@@ -33,18 +33,18 @@ export default function CustomerIndexPage() {
     useIndexResourceState<Customer>(customers);
 
   const rowMarkup = customers.map(
-    ({ _id, firstName, lastName, email, storeId }, index) => (
+    ({ id, firstName, lastName, email, storeId }, index) => (
       <IndexTable.Row
-        id={_id}
-        key={_id}
-        selected={selectedResources.includes(_id)}
+        id={id}
+        key={id}
+        selected={selectedResources.includes(id)}
         position={index}
       >
-        <IndexTable.Cell>
+        <IndexTable.Cell className="py-3">
           <Link
             monochrome
             dataPrimaryLink
-            onClick={() => navigateShowDetails(_id)}
+            onClick={() => navigateShowDetails(id)}
             removeUnderline
           >
             <Text variant="bodyMd" fontWeight="bold" as="span">
@@ -52,18 +52,12 @@ export default function CustomerIndexPage() {
             </Text>
           </Link>
         </IndexTable.Cell>
-        <IndexTable.Cell>{email}</IndexTable.Cell>
-        <IndexTable.Cell>{storeId}</IndexTable.Cell>
+        <IndexTable.Cell className="py-3">{email}</IndexTable.Cell>
+        <IndexTable.Cell className="py-3">{storeId}</IndexTable.Cell>
       </IndexTable.Row>
     )
   );
 
-  const handleSearchChange = (value: string) => {
-    setFilterData(() => ({
-      ...filterData,
-      query: value,
-    }));
-  };
   const navigateCreate = () => {
     return navigate(CustomersRoutePaths.Create);
   };
@@ -79,6 +73,11 @@ export default function CustomerIndexPage() {
   const { page, setPage, rowsPerPage } = useTable({
     defaultRowsPerPage: env.DEFAULT_PAGE_SIZE,
   });
+  const defaultFilter = () => ({
+    page: 1,
+    limit: env.DEFAULT_PAGE_SIZE,
+    query: "",
+  });
   const [filterData, setFilterData] = useState<BaseListRequest>(
     !isEmpty(param)
       ? {
@@ -91,11 +90,30 @@ export default function CustomerIndexPage() {
           limit: env.DEFAULT_PAGE_SIZE,
         }
   );
+  const handleSearchChange = (value: string) => {
+    setFilterData(() => ({
+      ...filterData,
+      query: value,
+    }));
+  };
+  const handleQueryValueRemove = useCallback(() => {
+    setFilterData((old) => {
+      return {
+        ...old,
+        query: "",
+      };
+    });
+  }, []);
+  const resetFilterData = useCallback(() => {
+    setFilterData(defaultFilter());
+  }, []);
+
   const { run: handleRemoveCustomer } = useJob((dataDelete: string[]) => {
     return CustomerRepository.delete({ ids: dataDelete }).pipe(
       map(({ data }) => {
         if (data.statusCode === 200) {
           show("Delete customer success");
+          fetchListCustomer();
         } else {
           show("Delete customer failed", {
             isError: true,
@@ -110,7 +128,7 @@ export default function CustomerIndexPage() {
       })
     );
   });
-  const { run: fetchListStaticPosts, result } = useJob(
+  const { run: fetchListCustomer, result } = useJob(
     () => {
       return CustomerRepository.getList(filterData).pipe(
         map(({ data }) => {
@@ -126,7 +144,7 @@ export default function CustomerIndexPage() {
     },
     { showLoading: false }
   );
-  const { run: callAPI } = useDebounceFn(() => fetchListStaticPosts(), {
+  const { run: callAPI } = useDebounceFn(() => fetchListCustomer(), {
     wait: 300,
   });
 
@@ -149,13 +167,13 @@ export default function CustomerIndexPage() {
       >
         <Card sectioned>
           <div className="mb-4">
-            <TextField
-              value={filterData.query}
-              onChange={handleSearchChange}
-              placeholder="Search customer"
-              type="search"
-              autoComplete="search"
-              label
+            <Filters
+              queryValue={filterData.query}
+              onQueryChange={handleSearchChange}
+              onQueryClear={handleQueryValueRemove}
+              queryPlaceholder="Search customer"
+              filters={[]}
+              onClearAll={resetFilterData}
             />
           </div>
           <IndexTable
