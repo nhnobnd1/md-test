@@ -80,6 +80,12 @@ const MainLayout = ({ children }: MainLayoutProps) => {
     []
   );
 
+  const logo = {
+    width: 40,
+    contextualSaveBarSource:
+      "https://cdn1.avada.io/get-market/preset/avada_icon.png",
+  };
+
   return (
     <div className="Md-Layout">
       <Frame

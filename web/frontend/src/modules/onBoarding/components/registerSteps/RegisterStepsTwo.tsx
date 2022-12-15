@@ -86,6 +86,7 @@ const RegisterStepsTwo = ({ nextStep }: RegisterStepsTwoProps) => {
               <FormItem name="username">
                 <TextField
                   label="Email or phone"
+                  type="email"
                   autoComplete="off"
                   placeholder="Email or phone"
                 ></TextField>

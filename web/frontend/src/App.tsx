@@ -45,7 +45,9 @@ export default function App() {
               );
             },
             error() {
-              show("Login app failed !");
+              show("Login app failed !", {
+                isError: true,
+              });
               TokenManager.setToken("base_token", "");
             },
           });

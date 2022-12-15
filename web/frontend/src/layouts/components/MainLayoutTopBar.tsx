@@ -8,7 +8,7 @@ interface MainLayoutTopBarProps {
 }
 
 const MainLayoutTopBar = ({ navigationToggle }: MainLayoutTopBarProps) => {
-  const [expandedMenu, setExpendedMenu] = useState(true);
+  const [expandedMenu, setExpendedMenu] = useState(false);
 
   const SecondaryMenu = () => {
     return (

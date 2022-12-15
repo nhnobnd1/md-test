@@ -1,4 +1,4 @@
-import { MarketingMinor } from "@shopify/polaris-icons";
+import { CustomersMajor } from "@shopify/polaris-icons";
 import { lazy } from "react";
 import { IRoute } from "src/core/models/routes";
 import CustomersRoutePaths from "src/modules/customers/routes/paths";
@@ -8,7 +8,7 @@ const customersRoutes: IRoute = {
   title: "Customers",
   showInNavigationMenu: true,
   navigation: {
-    icon: () => <MarketingMinor />,
+    icon: () => <CustomersMajor />,
   },
   component: lazy(() => import("src/layouts/MainLayout")),
   routes: [
