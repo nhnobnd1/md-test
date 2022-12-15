@@ -25,8 +25,6 @@ const customersRoutes: IRoute = {
     },
     {
       path: CustomersRoutePaths.Create,
-      showInNavigationMenu: true,
-      title: "Create Customer",
       component: lazy(
         () => import("src/modules/customers/pages/CreateCustomer")
       ),

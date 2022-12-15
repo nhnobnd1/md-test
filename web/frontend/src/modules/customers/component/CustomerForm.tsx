@@ -9,14 +9,14 @@ import {
 } from "react";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
-
+import { number, object, string } from "yup";
 export interface RefProperties {
   save: () => Promise<void> | undefined;
   reset: () => void | undefined;
 }
 
 const CustomerForm = (
-  { initialValues, submit }: any,
+  { initialValues, submit, change }: any,
   ref: ForwardedRef<RefProperties>
 ) => {
   const formRef = useRef<FormikProps<any>>(null);
@@ -27,13 +27,23 @@ const CustomerForm = (
     save: () => formRef.current?.submitForm(),
     reset: () => formRef.current?.resetForm(),
   }));
-
+  const handleChange = useCallback(() => {
+    change(false);
+  }, []);
+  const validateObject = object({
+    firstName: string().required("Required!"),
+    lastName: string().required("Required!"),
+    email: string().email("Invalid email format ").required("Required!"),
+    phoneNumber: number().required("Required!"),
+  });
   return (
     <Card sectioned>
       <Form
         ref={formRef}
         initialValues={initialValues}
         onSubmit={handleSubmit}
+        validationSchema={validateObject}
+        onValuesChange={handleChange}
         enableReinitialize
       >
         <FormLayout>
@@ -71,15 +81,7 @@ const CustomerForm = (
             />
           </FormItem>
 
-          <FormItem name="storeId">
-            <TextField
-              type="text"
-              placeholder="Your storeID"
-              label="Store ID"
-              autoComplete="off"
-              disabled
-            />
-          </FormItem>
+          <FormItem name="storeId" />
         </FormLayout>
       </Form>
     </Card>

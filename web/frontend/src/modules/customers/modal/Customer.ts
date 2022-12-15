@@ -1,4 +1,8 @@
-import { BaseListRequest, BaseResponse } from "src/models/Request";
+import {
+  BaseListRequest,
+  BaseListResponse,
+  BaseResponse,
+} from "src/models/Request";
 
 export type Customer = {
   id?: string;
@@ -21,10 +25,10 @@ export type Customer = {
 };
 
 export type GetListCustomerRequest = BaseListRequest;
-export type GetListCustomerResponse = BaseResponse<Customer>;
-export type GetOneCustomerResponse = BaseResponse<Customer>;
+export type GetListCustomerResponse = BaseListResponse<Customer>;
+export type GetOneCustomerResponse = BaseListResponse<Customer>;
 export type CreateCustomerRequest = Omit<Customer, "id">;
 export type CreateCustomerResponse = BaseResponse<Customer>;
 export type UpdateCustomerRequest = Customer;
-export type UpdateCustomerResponse = BaseResponse<Customer>;
-export type DeleteCustomerResponse = BaseResponse<Customer>;
+export type UpdateCustomerResponse = BaseListResponse<Customer>;
+export type DeleteCustomerResponse = BaseListResponse<Customer>;
