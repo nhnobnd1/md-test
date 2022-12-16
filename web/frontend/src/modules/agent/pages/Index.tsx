@@ -15,7 +15,7 @@ import { generatePath, useNavigate } from "react-router-dom";
 import Pagination from "src/components/Pagination/Pagination";
 import env from "src/core/env";
 import { PageComponent } from "src/core/models/routes";
-import { GetListAgentRequest } from "src/modules/agent/models";
+import { GetListAgentRequest } from "src/modules/agent/models/Agent";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
 
 interface AgentIndexPageProps {}

@@ -8,6 +8,14 @@ import "./AgentForm.scss";
 
 interface AgentFormProps extends Omit<FormProps, "initialValues"> {}
 
+export interface AgentFormValues {
+  email: string;
+  firstName: string;
+  lastName: "";
+  phone: "";
+  role: Role.BasicAgent;
+}
+
 const AgentForm = (props: AgentFormProps) => {
   const options = [
     { label: "Super Admin", value: Role.Admin },
@@ -18,7 +26,8 @@ const AgentForm = (props: AgentFormProps) => {
   const initialValuesForm = useMemo(() => {
     return {
       email: "",
-      name: "",
+      firstName: "",
+      lastName: "",
       phone: "",
       role: Role.BasicAgent,
     };
@@ -28,9 +37,12 @@ const AgentForm = (props: AgentFormProps) => {
     email: Yup.string()
       .email("Email is invalid")
       .required("You must enter your email"),
-    name: Yup.string()
-      .required("You must enter your name")
-      .max(255, "Name up to 255 characters"),
+    firstName: Yup.string()
+      .required("You must enter your first name")
+      .max(255, "First name up to 255 characters"),
+    lastName: Yup.string()
+      .required("You must enter your last name")
+      .max(255, "Last name up to 255 characters"),
     phone: Yup.string()
       .min(9, "Phone at least 9 characters")
       .max(12, "Name up to 12 characters"),
@@ -45,13 +57,36 @@ const AgentForm = (props: AgentFormProps) => {
     >
       <FormLayout>
         <FormItem name="email">
-          <TextField label="Email" type="email" autoComplete="off" />
+          <TextField
+            label="Email"
+            type="email"
+            autoComplete="off"
+            placeholder="Enter email"
+          />
         </FormItem>
-        <FormItem name="name">
-          <TextField label="Display name" type="text" autoComplete="off" />
+        <FormItem name="firstName">
+          <TextField
+            label="First name"
+            type="text"
+            autoComplete="off"
+            placeholder="Enter first name"
+          />
         </FormItem>
-        <FormItem name="phone">
-          <TextField label="Phone number" type="tel" autoComplete="off" />
+        <FormItem name="lastName">
+          <TextField
+            label="Last name"
+            type="text"
+            autoComplete="off"
+            placeholder="Enter last name"
+          />
+        </FormItem>
+        <FormItem name="phoneNumber">
+          <TextField
+            label="Phone number"
+            type="tel"
+            autoComplete="off"
+            placeholder="Enter phone number"
+          />
         </FormItem>
         <FormItem name="role">
           <Select label="User role" options={options} />
