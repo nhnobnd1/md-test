@@ -169,7 +169,7 @@ export async function createServer(
       // signup insall app -> offlineSession null
       if (shop && offlineSession) {
         res.cookie(
-          req.cookies["abuse_interstitial"],
+          process.env.HOST,
           {
             offlineToken: offlineSession?.accessToken ?? "",
             email: shop.email ?? "",
