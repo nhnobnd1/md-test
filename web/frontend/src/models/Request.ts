@@ -7,6 +7,7 @@ export interface BaseListResponse<T> {
 }
 export interface BaseResponse<T> {
   data: T;
+  message?: string;
   statusCode: number;
   datetime: string;
 }

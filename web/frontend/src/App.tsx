@@ -21,7 +21,7 @@ export default function App() {
 
   useEffect(() => {
     if (shop) {
-      const payload = cookies[process.env.HOST?.replace("https://", "") ?? ""];
+      const payload = cookies[process.env.HOST ?? shop];
       if (payload && payload.email && payload.offlineToken) {
         api
           .request<LoginResponse>({
@@ -36,10 +36,11 @@ export default function App() {
           .subscribe({
             next({ data }) {
               TokenManager.setToken("base_token", data.data.accessToken);
+              TokenManager.setToken("refresh_token", data.data.refreshToken);
               login(
                 {
                   base_token: data.data.accessToken,
-                  refresh_token: "",
+                  refresh_token: data.data.refreshToken,
                 },
                 payload.shop
               );
@@ -48,6 +49,7 @@ export default function App() {
               show("Login app failed !", {
                 isError: true,
               });
+              TokenManager.setToken("refresh_token", "");
               TokenManager.setToken("base_token", "");
             },
           });
