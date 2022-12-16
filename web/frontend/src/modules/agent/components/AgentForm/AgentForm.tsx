@@ -6,7 +6,7 @@ import { Role } from "src/models/Rule";
 import * as Yup from "yup";
 import "./AgentForm.scss";
 
-interface AgentFormProps extends FormProps {}
+interface AgentFormProps extends Omit<FormProps, "initialValues"> {}
 
 const AgentForm = (props: AgentFormProps) => {
   const options = [

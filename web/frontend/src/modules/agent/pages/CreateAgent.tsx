@@ -43,11 +43,7 @@ const CreateAgent = (props: CreateAgentProps) => {
     >
       <Card>
         <Card.Section>
-          <AgentForm
-            innerRef={formRef}
-            initialValues={{}}
-            onSubmit={handleSubmit}
-          />
+          <AgentForm innerRef={formRef} onSubmit={handleSubmit} />
           {invited && (
             <div className="pt-4">
               <Link dataPrimaryLink>
