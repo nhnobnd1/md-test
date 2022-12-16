@@ -127,7 +127,7 @@ export default function DetailsCustomer() {
     fetDetailsCustomer();
   });
   useEffect(() => {
-    if (state.status === 200) {
+    if (state ? state.status === 200 : false) {
       setBanner({
         isShow: true,
         message: "Create customer is success",
@@ -135,7 +135,7 @@ export default function DetailsCustomer() {
         title: "Create customer is successful",
       });
     }
-  }, [state.status]);
+  }, []);
   return (
     <>
       <ContextualSaveBar

@@ -5,7 +5,7 @@ import {
 } from "src/models/Request";
 
 export type Customer = {
-  id?: string;
+  id: string;
   _id: string;
   createdDatetime: string;
   createdTimestamp: string;

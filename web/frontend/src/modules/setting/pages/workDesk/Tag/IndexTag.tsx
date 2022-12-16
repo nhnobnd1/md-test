@@ -18,26 +18,26 @@ import env from "src/core/env";
 import { useDebounceFn, useJob, useMount } from "src/core/hooks";
 import useTable from "src/core/hooks/useTable";
 import { BaseListRequest } from "src/models/Request";
-import { Customer } from "src/modules/customers/modal/Customer";
-import CustomerRepository from "src/modules/customers/repositories/CustomerRepository";
-import CustomersRoutePaths from "src/modules/customers/routes/paths";
-export default function CustomerIndexPage() {
+import { Tag } from "src/modules/setting/modal/workDesk/Tag";
+import TagRepository from "src/modules/setting/repository/workDesk/TagRepository";
+import SettingRoutePaths from "src/modules/setting/routes/paths";
+export default function TagIndexPage() {
   const param = useParams();
   const navigate = useNavigate();
   const { show } = useToast();
-  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
   const resourceName = {
-    singular: "customer",
-    plural: "customers",
+    singular: "tag",
+    plural: "tags",
   };
   const {
     selectedResources,
     allResourcesSelected,
     handleSelectionChange,
     clearSelection,
-  } = useIndexResourceState<Customer>(customers);
+  } = useIndexResourceState<Tag>(tags);
 
-  const rowMarkup = customers.map(
+  const rowMarkup = tags.map(
     ({ id, firstName, lastName, email, storeId }, index) => (
       <IndexTable.Row
         id={id}
@@ -64,14 +64,14 @@ export default function CustomerIndexPage() {
   );
 
   const navigateCreate = () => {
-    return navigate(CustomersRoutePaths.Create);
+    return navigate(SettingRoutePaths.Workdesk.Tag.Create);
   };
   const navigateShowDetails = useCallback((id: string) => {
-    navigate(generatePath(CustomersRoutePaths.Details, { id }));
+    navigate(generatePath(SettingRoutePaths.Workdesk.Tag.Edit, { id }));
   }, []);
   const promotedBulkActions = [
     {
-      content: "Remove customer",
+      content: "Remove tag",
       onAction: () => handleOpenModalDelete(),
     },
   ];
@@ -118,21 +118,21 @@ export default function CustomerIndexPage() {
   const handleOpenModalDelete = () => {
     setIsOpen(true);
   };
-  const { run: handleRemoveCustomer } = useJob((dataDelete: string[]) => {
-    return CustomerRepository.delete({ ids: dataDelete }).pipe(
+  const { run: handleRemoveTag } = useJob((dataDelete: string[]) => {
+    return TagRepository.delete({ ids: dataDelete }).pipe(
       map(({ data }) => {
         if (data.statusCode === 200) {
-          show("Delete customer success");
-          fetchListCustomer();
+          show("Delete tag success");
+          fetchListTag();
           clearSelection();
         } else {
-          show("Delete customer failed", {
+          show("Delete tag failed", {
             isError: true,
           });
         }
       }),
       catchError((error) => {
-        show("Delete customer failed", {
+        show("Delete tag failed", {
           isError: true,
         });
         return of(error);
@@ -140,14 +140,14 @@ export default function CustomerIndexPage() {
     );
   });
   const {
-    run: fetchListCustomer,
+    run: fetchListTag,
     result,
-    processing: loadCustomer,
+    processing: loadTag,
   } = useJob(
     () => {
-      return CustomerRepository.getList(filterData).pipe(
+      return TagRepository.getList(filterData).pipe(
         map(({ data }) => {
-          setCustomers(
+          setTags(
             data.data.map((item) => ({
               ...item,
               id: item._id,
@@ -159,7 +159,7 @@ export default function CustomerIndexPage() {
     },
     { showLoading: false }
   );
-  const { run: callAPI } = useDebounceFn(() => fetchListCustomer(), {
+  const { run: callAPI } = useDebounceFn(() => fetchListTag(), {
     wait: 300,
   });
   useEffect(() => {
@@ -175,8 +175,8 @@ export default function CustomerIndexPage() {
   return (
     <>
       <Page
-        title="Customer"
-        subtitle="List of customer"
+        title="Tags"
+        subtitle="List of tag"
         primaryAction={{
           content: "Add new",
           onAction: navigateCreate,
@@ -185,11 +185,11 @@ export default function CustomerIndexPage() {
         fullWidth
       >
         <ModalDelete
-          title="Do you want to delete customers?"
+          title="Do you want to delete tags?"
           open={isOpen}
           onClose={() => setIsOpen(false)}
-          content={"Are you sure you want to delete these customers?"}
-          deleteAction={handleRemoveCustomer}
+          content={"Are you sure you want to delete these tags?"}
+          deleteAction={handleRemoveTag}
           dataDelete={selectedResources}
         />
         <Card sectioned>
@@ -198,26 +198,26 @@ export default function CustomerIndexPage() {
               queryValue={filterData.query}
               onQueryChange={handleSearchChange}
               onQueryClear={handleQueryValueRemove}
-              queryPlaceholder="Search customer"
+              queryPlaceholder="Search tags"
               filters={[]}
               onClearAll={resetFilterData}
             />
           </div>
           <IndexTable
             resourceName={resourceName}
-            itemCount={customers.length}
+            itemCount={tags.length}
             selectedItemsCount={
               allResourcesSelected ? "All" : selectedResources.length
             }
             onSelectionChange={handleSelectionChange}
             headings={[
-              { title: "Customer name" },
+              { title: "Tag name" },
               { title: "Email" },
               { title: "Number of tickets" },
             ]}
             hasMoreItems
             promotedBulkActions={promotedBulkActions}
-            loading={loadCustomer}
+            loading={loadTag}
           >
             {rowMarkup}
           </IndexTable>
