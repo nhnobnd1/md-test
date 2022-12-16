@@ -74,7 +74,7 @@ const CustomerForm = (
           <FormItem name="phoneNumber">
             <TextField
               type="tel"
-              placeholder="Your phonenumber"
+              placeholder="Your phone number"
               label="Phone"
               autoComplete="tel"
             />
