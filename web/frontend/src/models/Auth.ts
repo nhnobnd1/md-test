@@ -1,7 +1,7 @@
-import { HttpStatusCode } from "axios";
+import { BaseResponse } from "src/models/Request";
 
 export interface Account {
-  id: number;
+  id: string;
   name: string;
   email: string;
   domain: string;
@@ -70,12 +70,9 @@ export interface RegisterRequest {
   password: string;
 }
 
-export interface LoginResponse {
-  data: {
-    accessToken: string;
-    expiresIn: number;
-    tokenType: "Bearer";
-  };
-  datetime: string;
-  statusCode: HttpStatusCode;
-}
+export type LoginResponse = BaseResponse<{
+  accessToken: string;
+  expiresIn: number;
+  refreshToken: string;
+  tokenType: "Bearer";
+}>;
