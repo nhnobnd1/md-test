@@ -6,7 +6,9 @@ import { Role } from "src/models/Rule";
 import * as Yup from "yup";
 import "./AgentForm.scss";
 
-interface AgentFormProps extends Omit<FormProps, "initialValues"> {}
+interface AgentFormProps extends Omit<FormProps, "initialValues"> {
+  disableForm: boolean;
+}
 
 export interface AgentFormValues {
   email: string;
@@ -16,7 +18,7 @@ export interface AgentFormValues {
   role: Role.BasicAgent;
 }
 
-const AgentForm = (props: AgentFormProps) => {
+const AgentForm = ({ disableForm = false, ...props }: AgentFormProps) => {
   const options = [
     { label: "Super Admin", value: Role.Admin },
     { label: "Agent Leader", value: Role.AgentLeader },
@@ -61,6 +63,7 @@ const AgentForm = (props: AgentFormProps) => {
             label="Email"
             type="email"
             autoComplete="off"
+            disabled={disableForm}
             placeholder="Enter email"
           />
         </FormItem>
@@ -69,6 +72,7 @@ const AgentForm = (props: AgentFormProps) => {
             label="First name"
             type="text"
             autoComplete="off"
+            disabled={disableForm}
             placeholder="Enter first name"
           />
         </FormItem>
@@ -77,6 +81,7 @@ const AgentForm = (props: AgentFormProps) => {
             label="Last name"
             type="text"
             autoComplete="off"
+            disabled={disableForm}
             placeholder="Enter last name"
           />
         </FormItem>
@@ -85,11 +90,12 @@ const AgentForm = (props: AgentFormProps) => {
             label="Phone number"
             type="tel"
             autoComplete="off"
+            disabled={disableForm}
             placeholder="Enter phone number"
           />
         </FormItem>
         <FormItem name="role">
-          <Select label="User role" options={options} />
+          <Select label="User role" disabled={disableForm} options={options} />
         </FormItem>
       </FormLayout>
     </Form>
