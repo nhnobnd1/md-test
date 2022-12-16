@@ -12,7 +12,7 @@ import {
 } from "@shopify/polaris";
 import { FormikProps } from "formik";
 import { useCallback, useRef, useState } from "react";
-import { generatePath } from "react-router-dom";
+import { generatePath, useNavigate } from "react-router-dom";
 import { catchError, map, of } from "rxjs";
 import { useJob } from "src/core/hooks";
 import useAuth from "src/hooks/useAuth";
@@ -21,7 +21,7 @@ import AgentForm, {
   AgentFormValues,
 } from "src/modules/agent/components/AgentForm/AgentForm";
 import ModalSetPassword from "src/modules/agent/components/Modal/ModalSetPassword/ModalSetPassword";
-import { CreateAgentRequest } from "src/modules/agent/models/Agent";
+import { Agent, CreateAgentRequest } from "src/modules/agent/models/Agent";
 import AgentRepository from "src/modules/agent/repositories/AgentRepository";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
 
@@ -32,15 +32,17 @@ const CreateAgent = (props: CreateAgentProps) => {
   const [modalSetPassword, setModalSetPassword] = useState(false);
   const { show } = useToast();
   const { user } = useAuth();
+  const navigate = useNavigate();
   const formRef = useRef<FormikProps<any>>(null);
   const { banner, show: showBanner, close: closeBanner } = useBanner();
+  const [agentSaved, setAgentSaved] = useState<Agent>();
 
   const { run: createAgentApi, processing: loadingCreate } = useJob(
     (payload: CreateAgentRequest) => {
       return AgentRepository.create(payload).pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
-            console.log(data);
+            setAgentSaved(data.data);
             showBanner("success", {
               title: `Add ${data.data.lastName} ${data.data.firstName}`,
               message: data.message ?? "Add agent success",
@@ -68,6 +70,28 @@ const CreateAgent = (props: CreateAgentProps) => {
     }
   );
 
+  const { run: deleteAgentApi, processing: loadingDelete } = useJob(
+    (id: string) => {
+      return AgentRepository.delete(id).pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            showBanner("success", {
+              title: `Remove ${agentSaved?.firstName} ${agentSaved?.lastName}`,
+              message: data.message ?? "Remove agent success",
+            });
+            show("Remove Agent Success");
+            navigate(generatePath(AgentRoutePaths.Index));
+          } else {
+            showBanner("critical", {
+              title: "There is an error with remove agent",
+              message: data.message ?? "Remove agent failed",
+            });
+          }
+        })
+      );
+    }
+  );
+
   const handleSubmit = useCallback(
     (values: AgentFormValues) => {
       const payload: CreateAgentRequest = {
@@ -78,6 +102,12 @@ const CreateAgent = (props: CreateAgentProps) => {
     },
     [user]
   );
+
+  const handleDeleteAgent = useCallback(() => {
+    if (agentSaved) {
+      deleteAgentApi(agentSaved?._id);
+    }
+  }, [agentSaved]);
 
   return (
     <Page
@@ -104,7 +134,11 @@ const CreateAgent = (props: CreateAgentProps) => {
         <Layout.Section>
           <Card>
             <Card.Section>
-              <AgentForm innerRef={formRef} onSubmit={handleSubmit} />
+              <AgentForm
+                disableForm={invited}
+                innerRef={formRef}
+                onSubmit={handleSubmit}
+              />
               {invited && (
                 <div className="pt-4">
                   <Link dataPrimaryLink>
@@ -121,7 +155,11 @@ const CreateAgent = (props: CreateAgentProps) => {
                       <Button onClick={() => formRef.current?.resetForm()}>
                         Cancel
                       </Button>
-                      <Button onClick={() => console.log("remove")} destructive>
+                      <Button
+                        onClick={handleDeleteAgent}
+                        loading={loadingDelete}
+                        destructive
+                      >
                         Remove
                       </Button>
                     </ButtonGroup>
