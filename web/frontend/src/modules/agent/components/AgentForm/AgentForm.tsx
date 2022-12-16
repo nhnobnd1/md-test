@@ -1,6 +1,8 @@
 import { FormLayout, Select, TextField } from "@shopify/polaris";
+import { useMemo } from "react";
 import Form, { FormProps } from "src/components/Form";
 import FormItem from "src/components/Form/Item";
+import { Role } from "src/models/Rule";
 import * as Yup from "yup";
 import "./AgentForm.scss";
 
@@ -8,10 +10,19 @@ interface AgentFormProps extends FormProps {}
 
 const AgentForm = (props: AgentFormProps) => {
   const options = [
-    { label: "Super Admin", value: "superAdmin" },
-    { label: "Agent Leader", value: "agentLeader" },
-    { label: "Basic Agent", value: "basicAgent" },
+    { label: "Super Admin", value: Role.Admin },
+    { label: "Agent Leader", value: Role.AgentLeader },
+    { label: "Basic Agent", value: Role.BasicAgent },
   ];
+
+  const initialValuesForm = useMemo(() => {
+    return {
+      email: "",
+      name: "",
+      phone: "",
+      role: Role.BasicAgent,
+    };
+  }, []);
 
   const AgentFormSchema = Yup.object().shape({
     email: Yup.string()
@@ -27,7 +38,11 @@ const AgentForm = (props: AgentFormProps) => {
   });
 
   return (
-    <Form {...props} validationSchema={AgentFormSchema}>
+    <Form
+      {...props}
+      initialValues={initialValuesForm}
+      validationSchema={AgentFormSchema}
+    >
       <FormLayout>
         <FormItem name="email">
           <TextField label="Email" type="email" autoComplete="off" />

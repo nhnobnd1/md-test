@@ -75,7 +75,10 @@ const MemoFormItemInput = memo(
           [valuePropName]: fieldMeta?.value,
           [onChangePropName]: handleInputChange,
           [onBlurPropName]: handleInputBlur,
-          error: fieldMeta?.error,
+          error:
+            fieldMeta?.error && fieldMeta.touched
+              ? fieldMeta?.error
+              : undefined,
         } as any)
       : null;
 
