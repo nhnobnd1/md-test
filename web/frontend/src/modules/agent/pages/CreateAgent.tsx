@@ -87,6 +87,13 @@ const CreateAgent = (props: CreateAgentProps) => {
               message: data.message ?? "Remove agent failed",
             });
           }
+        }),
+        catchError((err) => {
+          showBanner("critical", {
+            title: "There is an error with configuration",
+            message: "Remove agent failed",
+          });
+          return of(err);
         })
       );
     }
