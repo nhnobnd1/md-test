@@ -1,20 +1,20 @@
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Card,
+  Filters,
   IndexTable,
   Link,
   Page,
-  Pagination,
   Text,
-  TextField,
   useIndexResourceState,
 } from "@shopify/polaris";
 import { isEmpty } from "lodash-es";
 import { useCallback, useEffect, useState } from "react";
 import { generatePath, useNavigate, useParams } from "react-router-dom";
 import { catchError, map, of } from "rxjs";
+import Pagination from "src/components/Pagination/Pagination";
 import env from "src/core/env";
-import { useDebounceFn, useJob } from "src/core/hooks";
+import { useDebounceFn, useJob, useMount } from "src/core/hooks";
 import useTable from "src/core/hooks/useTable";
 import { BaseListRequest } from "src/models/Request";
 import { Customer } from "src/modules/customers/modal/Customer";
@@ -29,22 +29,26 @@ export default function CustomerIndexPage() {
     singular: "customer",
     plural: "customers",
   };
-  const { selectedResources, allResourcesSelected, handleSelectionChange } =
-    useIndexResourceState<Customer>(customers);
+  const {
+    selectedResources,
+    allResourcesSelected,
+    handleSelectionChange,
+    clearSelection,
+  } = useIndexResourceState<Customer>(customers);
 
   const rowMarkup = customers.map(
-    ({ _id, firstName, lastName, email, storeId }, index) => (
+    ({ id, firstName, lastName, email, storeId }, index) => (
       <IndexTable.Row
-        id={_id}
-        key={_id}
-        selected={selectedResources.includes(_id)}
+        id={id}
+        key={id}
+        selected={selectedResources.includes(id)}
         position={index}
       >
-        <IndexTable.Cell>
+        <IndexTable.Cell className="py-3">
           <Link
             monochrome
             dataPrimaryLink
-            onClick={() => navigateShowDetails(_id)}
+            onClick={() => navigateShowDetails(id)}
             removeUnderline
           >
             <Text variant="bodyMd" fontWeight="bold" as="span">
@@ -52,18 +56,12 @@ export default function CustomerIndexPage() {
             </Text>
           </Link>
         </IndexTable.Cell>
-        <IndexTable.Cell>{email}</IndexTable.Cell>
-        <IndexTable.Cell>{storeId}</IndexTable.Cell>
+        <IndexTable.Cell className="py-3">{email}</IndexTable.Cell>
+        <IndexTable.Cell className="py-3">{storeId}</IndexTable.Cell>
       </IndexTable.Row>
     )
   );
 
-  const handleSearchChange = (value: string) => {
-    setFilterData(() => ({
-      ...filterData,
-      query: value,
-    }));
-  };
   const navigateCreate = () => {
     return navigate(CustomersRoutePaths.Create);
   };
@@ -79,6 +77,11 @@ export default function CustomerIndexPage() {
   const { page, setPage, rowsPerPage } = useTable({
     defaultRowsPerPage: env.DEFAULT_PAGE_SIZE,
   });
+  const defaultFilter = () => ({
+    page: 1,
+    limit: env.DEFAULT_PAGE_SIZE,
+    query: "",
+  });
   const [filterData, setFilterData] = useState<BaseListRequest>(
     !isEmpty(param)
       ? {
@@ -91,26 +94,53 @@ export default function CustomerIndexPage() {
           limit: env.DEFAULT_PAGE_SIZE,
         }
   );
-  const { run: handleRemoveCustomer } = useJob((dataDelete: string[]) => {
-    return CustomerRepository.delete({ ids: dataDelete }).pipe(
-      map(({ data }) => {
-        if (data.statusCode === 200) {
-          show("Delete customer success");
-        } else {
+  const handleSearchChange = (value: string) => {
+    setPage(1);
+    setFilterData(() => ({
+      ...filterData,
+      query: value,
+    }));
+  };
+  const handleQueryValueRemove = useCallback(() => {
+    setFilterData((old) => {
+      return {
+        ...old,
+        query: "",
+      };
+    });
+  }, []);
+  const resetFilterData = useCallback(() => {
+    setFilterData(defaultFilter());
+  }, []);
+
+  const { run: handleRemoveCustomer, processing } = useJob(
+    (dataDelete: string[]) => {
+      return CustomerRepository.delete({ ids: dataDelete }).pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            show("Delete customer success");
+            fetchListCustomer();
+            clearSelection();
+          } else {
+            show("Delete customer failed", {
+              isError: true,
+            });
+          }
+        }),
+        catchError((error) => {
           show("Delete customer failed", {
             isError: true,
           });
-        }
-      }),
-      catchError((error) => {
-        show("Delete customer failed", {
-          isError: true,
-        });
-        return of(error);
-      })
-    );
-  });
-  const { run: fetchListStaticPosts, result } = useJob(
+          return of(error);
+        })
+      );
+    }
+  );
+  const {
+    run: fetchListCustomer,
+    result,
+    processing: loadCustomer,
+  } = useJob(
     () => {
       return CustomerRepository.getList(filterData).pipe(
         map(({ data }) => {
@@ -126,15 +156,20 @@ export default function CustomerIndexPage() {
     },
     { showLoading: false }
   );
-  const { run: callAPI } = useDebounceFn(() => fetchListStaticPosts(), {
+  const { run: callAPI } = useDebounceFn(() => fetchListCustomer(), {
     wait: 300,
   });
-
   useEffect(() => {
-    setPage(0);
+    setFilterData({
+      ...filterData,
+      page: page,
+    });
+  }, [page]);
+  useEffect(() => {
+    console.log("change filter data");
     callAPI();
   }, [filterData]);
-
+  useMount(() => setPage(1));
   return (
     <>
       <Page
@@ -149,13 +184,13 @@ export default function CustomerIndexPage() {
       >
         <Card sectioned>
           <div className="mb-4">
-            <TextField
-              value={filterData.query}
-              onChange={handleSearchChange}
-              placeholder="Search customer"
-              type="search"
-              autoComplete="search"
-              label
+            <Filters
+              queryValue={filterData.query}
+              onQueryChange={handleSearchChange}
+              onQueryClear={handleQueryValueRemove}
+              queryPlaceholder="Search customer"
+              filters={[]}
+              onClearAll={resetFilterData}
             />
           </div>
           <IndexTable
@@ -172,34 +207,36 @@ export default function CustomerIndexPage() {
             ]}
             hasMoreItems
             promotedBulkActions={promotedBulkActions}
+            loading={loadCustomer}
           >
             {rowMarkup}
           </IndexTable>
         </Card>
         <div className="flex items-center justify-center mt-4">
-          {customers.length > 10 ? (
-            <Pagination
-              hasPrevious
-              onPrevious={() => {
-                if (page > 0) {
-                  setPage(page - 1);
-                }
-              }}
-              hasNext
-              onNext={() => {
-                if (
-                  page <
-                  (result
-                    ? result.metadata.totalCount / env.DEFAULT_PAGE_SIZE
-                    : 1)
-                ) {
-                  setPage(page + 1);
-                }
-              }}
-              label={`${page} / ${customers.length / env.DEFAULT_PAGE_SIZE}`}
-              nextTooltip={"Next"}
-            />
-          ) : null}
+          <Pagination
+            total={result ? result.metadata.totalCount : 1}
+            pageSize={filterData.limit ?? 0}
+            currentPage={page}
+            hasPrevious
+            onPrevious={() => {
+              if (page > 1) {
+                setPage(page - 1);
+              }
+            }}
+            hasNext
+            onNext={() => {
+              if (
+                page <
+                (result
+                  ? result.metadata.totalCount / env.DEFAULT_PAGE_SIZE
+                  : 1)
+              ) {
+                setPage(page + 1);
+              }
+            }}
+            previousTooltip={"Previous"}
+            nextTooltip={"Next"}
+          />
         </div>
       </Page>
     </>

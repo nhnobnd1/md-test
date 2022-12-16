@@ -9,7 +9,7 @@ import {
 } from "react";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
-import { number, object, string } from "yup";
+import { object, string } from "yup";
 export interface RefProperties {
   save: () => Promise<void> | undefined;
   reset: () => void | undefined;
@@ -34,7 +34,6 @@ const CustomerForm = (
     firstName: string().required("Required!"),
     lastName: string().required("Required!"),
     email: string().email("Invalid email format ").required("Required!"),
-    phoneNumber: number().required("Required!"),
   });
   return (
     <Card sectioned>

@@ -29,7 +29,7 @@ const CustomerRepository = createRepository(
       return api.put<UpdateCustomerResponse>(`/${id}`, data);
     },
     delete(api, data: BaseDeleteList) {
-      return api.delete<DeleteCustomerResponse>("", data);
+      return api.delete<DeleteCustomerResponse>("", {}, { data });
     },
   }
 );
