@@ -43,7 +43,7 @@ export default function applyAuthMiddleware(
         await registerUser(payload);
 
         res.cookie(
-          req.cookies["abuse_interstitial"],
+          process.env.HOST,
           {
             offlineToken: offlineSession?.accessToken ?? "",
             email: shop.email ?? "",
