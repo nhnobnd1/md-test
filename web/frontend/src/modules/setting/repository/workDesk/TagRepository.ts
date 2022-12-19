@@ -13,7 +13,7 @@ import {
 
 const TagRepository = createRepository(
   {
-    baseURL: `${env.API_URL}/tag`,
+    baseURL: `${env.API_URL}/api/v1/tag`,
   },
   {
     getList(api, params: GetListTagRequest) {
