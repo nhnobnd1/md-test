@@ -12,9 +12,7 @@ interface ModalSetPasswordProps extends Omit<ModalProps, "title"> {}
 const ModalSetPassword = (props: ModalSetPasswordProps) => {
   const { show } = useToast();
   const formRef = useRef<FormikProps<any>>(null);
-  const handleSubmit = useCallback((values: any) => {
-    console.log(values);
-  }, []);
+  const handleSubmit = useCallback((values: any) => {}, []);
 
   const handleSetPassword = useCallback(() => {
     formRef.current

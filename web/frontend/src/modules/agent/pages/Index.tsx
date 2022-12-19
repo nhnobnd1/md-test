@@ -85,17 +85,11 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
     setFilterData(defaultFilter());
   }, []);
 
-  const handleTabChange = useCallback((index) => {
-    console.log("tab change index", index);
-  }, []);
+  const handleTabChange = useCallback((index) => {}, []);
 
-  const editAgent = useCallback(() => {
-    console.log("edit");
-  }, []);
+  const editAgent = useCallback(() => {}, []);
 
-  const removeAgent = useCallback(() => {
-    console.log("remove");
-  }, []);
+  const removeAgent = useCallback(() => {}, []);
 
   return (
     <Page
@@ -191,13 +185,9 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
                 total={agents.length}
                 pageSize={filterData.limit}
                 hasPrevious
-                onPrevious={() => {
-                  console.log("Previous");
-                }}
+                onPrevious={() => {}}
                 hasNext
-                onNext={() => {
-                  console.log("Next");
-                }}
+                onNext={() => {}}
               />
             )}
           </div>

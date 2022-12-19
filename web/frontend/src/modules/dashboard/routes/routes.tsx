@@ -5,7 +5,7 @@ import DashboardRoutePaths from "src/modules/dashboard/routes/paths";
 
 const dashboardRoutes: IRoute = {
   path: DashboardRoutePaths.Index,
-  title: "Dashboard",
+  title: "Home",
   showInNavigationMenu: true,
   component: lazy(() => import("src/layouts/MainLayout")),
   navigation: {
