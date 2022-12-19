@@ -1,4 +1,3 @@
-import { SettingsMajor } from "@shopify/polaris-icons";
 import { lazy } from "react";
 import { IRoute } from "src/core/models/routes";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
@@ -7,9 +6,7 @@ const settingRoutes: IRoute = {
   path: SettingRoutePaths.Index,
   title: "Setting",
   showInNavigationMenu: true,
-  navigation: {
-    icon: () => <SettingsMajor />,
-  },
+  component: lazy(() => import("src/layouts/MainLayout")),
   routes: [
     {
       path: SettingRoutePaths.Index,
@@ -21,7 +18,7 @@ const settingRoutes: IRoute = {
       title: "Workdesk",
       showInNavigationMenu: true,
       component: lazy(
-        () => import("src/modules/setting/pages/workDesk/Tag/IndexTag")
+        () => import("src/modules/setting/pages/workDesk/tag/IndexTag")
       ),
       routes: [
         {
@@ -29,19 +26,19 @@ const settingRoutes: IRoute = {
           title: "Tag",
           showInNavigationMenu: true,
           component: lazy(
-            () => import("src/modules/setting/pages/workDesk/Tag/IndexTag")
+            () => import("src/modules/setting/pages/workDesk/tag/IndexTag")
           ),
         },
         {
           path: SettingRoutePaths.Workdesk.Tag.Create,
           component: lazy(
-            () => import("src/modules/setting/pages/workDesk/Tag/CreateTag")
+            () => import("src/modules/setting/pages/workDesk/tag/CreateTag")
           ),
         },
         {
           path: SettingRoutePaths.Workdesk.Tag.Edit,
           component: lazy(
-            () => import("src/modules/setting/pages/workDesk/Tag/IndexTag")
+            () => import("src/modules/setting/pages/workDesk/tag/IndexTag")
           ),
         },
       ],
