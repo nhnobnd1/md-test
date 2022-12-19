@@ -212,8 +212,8 @@ export default function TagIndexPage() {
             onSelectionChange={handleSelectionChange}
             headings={[
               { title: "Tag name" },
-              { title: "Email" },
               { title: "Number of tickets" },
+              { title: "Last Updated date" },
             ]}
             hasMoreItems
             promotedBulkActions={promotedBulkActions}

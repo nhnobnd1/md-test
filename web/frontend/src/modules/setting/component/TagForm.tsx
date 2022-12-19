@@ -15,7 +15,7 @@ export interface RefProperties {
   reset: () => void | undefined;
 }
 
-const CustomerForm = (
+const TagForm = (
   { initialValues, submit, change }: any,
   ref: ForwardedRef<RefProperties>
 ) => {
@@ -86,4 +86,4 @@ const CustomerForm = (
     </Card>
   );
 };
-export default forwardRef(CustomerForm);
+export default forwardRef(TagForm);
