@@ -1,9 +1,9 @@
 import createRoutePath from "src/core/routes/createRoutePath";
 
 const AgentRoutePaths = createRoutePath({
-  Index: "agent",
-  Create: "agent/new",
-  Detail: "agent/:id",
+  Index: "settings/people/agent",
+  Create: "new",
+  Detail: ":id",
 } as const);
 
 export default AgentRoutePaths;

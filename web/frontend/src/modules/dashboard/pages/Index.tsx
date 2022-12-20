@@ -87,13 +87,9 @@ export default function DashboardIndexPage() {
         <div className="flex items-center justify-center mt-4">
           <Pagination
             hasPrevious
-            onPrevious={() => {
-              console.log("Previous");
-            }}
+            onPrevious={() => {}}
             hasNext
-            onNext={() => {
-              console.log("Next");
-            }}
+            onNext={() => {}}
             label={`${rows.length} / ${rows.length}`}
             nextTooltip="Next"
           />

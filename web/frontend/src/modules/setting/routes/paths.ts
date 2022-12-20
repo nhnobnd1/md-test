@@ -5,10 +5,19 @@ const SettingRoutePaths = createRoutePath({
 
   Workdesk: {
     Index: "workdesk",
+    TicketSetting: {
+      Index: "ticket-setting",
+    },
+    Views: {
+      Index: "views",
+    },
+    Macros: {
+      Index: "macros",
+    },
     Tag: {
-      Index: "tag-index",
-      Create: "tag-create",
-      Edit: "tag-edit/:id",
+      Index: "tag",
+      Create: "new",
+      Edit: "edit/:id",
     },
   },
 } as const);
