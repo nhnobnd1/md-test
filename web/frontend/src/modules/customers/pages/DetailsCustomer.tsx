@@ -7,7 +7,6 @@ import {
   Layout,
   Page,
   Tabs,
-  Text,
 } from "@shopify/polaris";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
@@ -150,8 +149,8 @@ export default function DetailsCustomer() {
         }}
       />
       <Page
-        title="Infor customer"
-        subtitle="Details infor customer"
+        title={`${result?.firstName} ${result?.lastName}`}
+        subtitle="Details info customer"
         compactTitle
         breadcrumbs={[{ onAction: () => navigate(CustomersRoutePaths.Index) }]}
         fullWidth
@@ -163,11 +162,7 @@ export default function DetailsCustomer() {
                 title={banner.title}
                 status={banner.type}
                 onDismiss={() => setBanner({ ...banner, isShow: false })}
-              >
-                <Text variant="bodyMd" as="p" color="subdued">
-                  {banner.message}
-                </Text>
-              </Banner>
+              ></Banner>
             ) : null}
           </Layout.Section>
           <Layout.Section>

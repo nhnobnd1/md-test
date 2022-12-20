@@ -6,7 +6,6 @@ import {
 
 export type Tag = {
   id: string;
-  _id: string;
   createdDatetime: string;
   createdTimestamp: string;
   createdBy: string;
@@ -17,11 +16,10 @@ export type Tag = {
   deletedDatetime?: string;
   deletedTimestamp?: string;
   deletedBy?: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phoneNumber: string;
+  name: string;
+  description: string;
   storeId: string;
+  _id: string;
 };
 
 export type GetListTagRequest = BaseListRequest;
