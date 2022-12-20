@@ -100,7 +100,9 @@ export default function CreateCustomer() {
           <Layout.Section>
             <CustomerForm
               ref={formRef}
-              initialValues={{ storeId: auth.user ? auth.user : "hihi" }}
+              initialValues={{
+                storeId: auth.user?.id ? auth.user?.id : "",
+              }}
               submit={submit}
               change={handleChangeValueForm}
             />

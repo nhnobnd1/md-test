@@ -100,7 +100,7 @@ export default function CreateTag() {
           <Layout.Section>
             <TagForm
               ref={formRef}
-              initialValues={{ storeId: auth.user ? auth.user : "hihi" }}
+              initialValues={{ storeId: auth.user ? auth.user : "storeID" }}
               submit={submit}
               change={handleChangeValueForm}
             />

@@ -21,7 +21,7 @@ import { BaseListRequest } from "src/models/Request";
 import { Tag } from "src/modules/setting/modal/workDesk/Tag";
 import TagRepository from "src/modules/setting/repository/workDesk/TagRepository";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
-export default function TagIndexPage() {
+export default function SettingIndexPage() {
   const param = useParams();
   const navigate = useNavigate();
   const { show } = useToast();
@@ -37,31 +37,29 @@ export default function TagIndexPage() {
     clearSelection,
   } = useIndexResourceState<Tag>(tags);
 
-  const rowMarkup = tags.map(
-    ({ id, firstName, lastName, email, storeId }, index) => (
-      <IndexTable.Row
-        id={id}
-        key={id}
-        selected={selectedResources.includes(id)}
-        position={index}
-      >
-        <IndexTable.Cell className="py-3">
-          <Link
-            monochrome
-            dataPrimaryLink
-            onClick={() => navigateShowDetails(id)}
-            removeUnderline
-          >
-            <Text variant="bodyMd" fontWeight="bold" as="span">
-              {`${firstName} ${lastName}`}
-            </Text>
-          </Link>
-        </IndexTable.Cell>
-        <IndexTable.Cell className="py-3">{email}</IndexTable.Cell>
-        <IndexTable.Cell className="py-3">{storeId}</IndexTable.Cell>
-      </IndexTable.Row>
-    )
-  );
+  const rowMarkup = tags.map(({ id, name, storeId }, index) => (
+    <IndexTable.Row
+      id={id}
+      key={id}
+      selected={selectedResources.includes(id)}
+      position={index}
+    >
+      <IndexTable.Cell className="py-3">
+        <Link
+          monochrome
+          dataPrimaryLink
+          onClick={() => navigateShowDetails(id)}
+          removeUnderline
+        >
+          <Text variant="bodyMd" fontWeight="bold" as="span">
+            {`${name}`}
+          </Text>
+        </Link>
+      </IndexTable.Cell>
+      <IndexTable.Cell className="py-3">{name}</IndexTable.Cell>
+      <IndexTable.Cell className="py-3">{storeId}</IndexTable.Cell>
+    </IndexTable.Row>
+  ));
 
   const navigateCreate = () => {
     return navigate(SettingRoutePaths.Workdesk.Tag.Create);

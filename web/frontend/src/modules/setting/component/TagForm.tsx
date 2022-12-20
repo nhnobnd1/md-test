@@ -31,9 +31,8 @@ const TagForm = (
     change(false);
   }, []);
   const validateObject = object({
-    firstName: string().required("Required!"),
-    lastName: string().required("Required!"),
-    email: string().email("Invalid email format ").required("Required!"),
+    name: string().required("Required!"),
+    description: string().required("Required!"),
   });
   return (
     <Card sectioned>
@@ -47,39 +46,23 @@ const TagForm = (
       >
         <FormLayout>
           <FormItem name="_id" />
-          <FormItem name="firstName">
+          <FormItem name="name">
             <TextField
               type="text"
-              placeholder="Your first name"
-              label="First name"
-              autoComplete="cc-name"
+              placeholder="Enter tag name"
+              label="Tag name"
+              autoComplete="off"
             />
           </FormItem>
-          <FormItem name="lastName">
+          <FormItem name="description">
             <TextField
               type="text"
-              placeholder="Your last name"
-              label="Last name"
-              autoComplete="cc-name"
+              placeholder="Enter description"
+              label="Description"
+              autoComplete="off"
+              multiline={10}
             />
           </FormItem>
-          <FormItem name="email">
-            <TextField
-              type="email"
-              placeholder="Your email"
-              label="Email"
-              autoComplete="email"
-            />
-          </FormItem>
-          <FormItem name="phoneNumber">
-            <TextField
-              type="tel"
-              placeholder="Your phone number"
-              label="Phone"
-              autoComplete="tel"
-            />
-          </FormItem>
-
           <FormItem name="storeId" />
         </FormLayout>
       </Form>

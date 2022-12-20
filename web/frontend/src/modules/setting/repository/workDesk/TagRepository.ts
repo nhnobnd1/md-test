@@ -19,7 +19,7 @@ const TagRepository = createRepository(
     getList(api, params: GetListTagRequest) {
       return api.get<GetListTagResponse>("", params);
     },
-    getOne(api, id: string) {
+    getOne(api, id: string | undefined) {
       return api.get(`/${id}`);
     },
     create(api, data: CreateTagRequest) {

@@ -7,6 +7,7 @@ const settingRoutes: IRoute = {
   path: SettingRoutePaths.Index,
   title: "Setting",
   showInNavigationMenu: true,
+  component: lazy(() => import("src/layouts/MainLayout")),
   navigation: {
     icon: () => <SettingsMajor />,
   },
@@ -23,28 +24,18 @@ const settingRoutes: IRoute = {
       component: lazy(
         () => import("src/modules/setting/pages/workDesk/Tag/IndexTag")
       ),
-      routes: [
-        {
-          path: SettingRoutePaths.Workdesk.Tag.Index,
-          title: "Tag",
-          showInNavigationMenu: true,
-          component: lazy(
-            () => import("src/modules/setting/pages/workDesk/Tag/IndexTag")
-          ),
-        },
-        {
-          path: SettingRoutePaths.Workdesk.Tag.Create,
-          component: lazy(
-            () => import("src/modules/setting/pages/workDesk/Tag/CreateTag")
-          ),
-        },
-        {
-          path: SettingRoutePaths.Workdesk.Tag.Edit,
-          component: lazy(
-            () => import("src/modules/setting/pages/workDesk/Tag/IndexTag")
-          ),
-        },
-      ],
+    },
+    {
+      path: SettingRoutePaths.Workdesk.Tag.Create,
+      component: lazy(
+        () => import("src/modules/setting/pages/workDesk/Tag/CreateTag")
+      ),
+    },
+    {
+      path: SettingRoutePaths.Workdesk.Tag.Edit,
+      component: lazy(
+        () => import("src/modules/setting/pages/workDesk/Tag/IndexTag")
+      ),
     },
   ],
 };
