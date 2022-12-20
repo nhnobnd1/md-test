@@ -5,7 +5,7 @@ export interface BannerState {
   visible: boolean;
   status: BannerStatus;
   title: string;
-  message: string;
+  message: string | string[];
 }
 
 export function useBanner(defaultState?: BannerState) {
@@ -14,7 +14,7 @@ export function useBanner(defaultState?: BannerState) {
       visible: false,
       status: "info",
       title: "",
-      message: "",
+      message: [""],
     }
   );
 

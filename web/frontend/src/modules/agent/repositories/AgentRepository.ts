@@ -10,6 +10,7 @@ import {
   GetListAgentRequest,
   GetListAgentResponse,
   GetOneAgentResponse,
+  ReActiveResponse,
   ResendEmailInvitationRequest,
   ResendEmailInvitationResponse,
   UpdateAgentRequest,
@@ -50,7 +51,7 @@ const AgentRepository = createRepository(
     },
 
     reActiveAgent(api, id: string) {
-      return api.put(`/reactive/${id}`, {});
+      return api.put<ReActiveResponse>(`/reactive/${id}`, {});
     },
   }
 );

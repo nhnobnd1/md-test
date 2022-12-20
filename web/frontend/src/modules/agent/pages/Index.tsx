@@ -10,58 +10,66 @@ import {
   Text,
   useIndexResourceState,
 } from "@shopify/polaris";
-import { useCallback, useState } from "react";
+import { IndexTableSortDirection } from "@shopify/polaris/build/ts/latest/src/components/IndexTable";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { generatePath, useNavigate } from "react-router-dom";
+import { map } from "rxjs";
 import Pagination from "src/components/Pagination/Pagination";
 import env from "src/core/env";
+import { useDebounceFn, useJob, usePrevious } from "src/core/hooks";
 import { PageComponent } from "src/core/models/routes";
-import { GetListAgentRequest } from "src/modules/agent/models/Agent";
+import { BaseMetaDataListResponse } from "src/models/Request";
+import { Agent, GetListAgentRequest } from "src/modules/agent/models/Agent";
+import AgentRepository from "src/modules/agent/repositories/AgentRepository";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
 
 interface AgentIndexPageProps {}
 
 const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
-  const agents = [
-    {
-      id: "1",
-      name: "Agent A",
-      role: "System Admin",
-      status: true,
-      isAvailability: true,
-    },
-    {
-      id: "2",
-      name: "Agent B",
-      role: "Agent Leader",
-      status: false,
-      isAvailability: true,
-    },
-    {
-      id: "3",
-      name: "Agent A",
-      role: "Standard Agent",
-      status: true,
-      isAvailability: true,
-    },
-  ];
+  const [agents, setAgents] = useState<Agent[]>([]);
 
   const navigate = useNavigate();
 
   const tabs = [{ id: "all", content: "All", panelID: "all-agent" }];
-  const [isLoadingTable, setIsLoadingTable] = useState(false);
 
   const defaultFilter = () => ({
     page: 1,
     limit: env.DEFAULT_PAGE_SIZE,
-    query: "",
   });
 
   const [filterData, setFilterData] =
     useState<GetListAgentRequest>(defaultFilter);
 
+  const prevFilter = usePrevious<GetListAgentRequest>(filterData);
+
+  const [meta, setMeta] = useState<BaseMetaDataListResponse>();
+
   const { selectedResources, allResourcesSelected, handleSelectionChange } =
-    useIndexResourceState(agents);
+    useIndexResourceState<any>(agents);
+
   const [selectedTab, setSelectedTab] = useState(0);
+
+  const { run: getListAgentApi, processing: loadingList } = useJob(
+    (payload: GetListAgentRequest) => {
+      return AgentRepository.getList(payload).pipe(
+        map(({ data }) => {
+          const listAgent = data.data.map((item) => ({
+            ...item,
+            id: item._id,
+          }));
+          setAgents(listAgent);
+          setMeta(data.metadata);
+        })
+      );
+    }
+  );
+
+  const { run: getListDebounce } = useDebounceFn(
+    (payload: GetListAgentRequest) => {
+      getListAgentApi(payload);
+    },
+    { wait: 300 }
+  );
 
   const handleFiltersQueryChange = useCallback((queryValue: string) => {
     setFilterData((old) => {
@@ -85,11 +93,49 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
     setFilterData(defaultFilter());
   }, []);
 
-  const handleTabChange = useCallback((index) => {}, []);
-
-  const editAgent = useCallback(() => {}, []);
+  const editAgent = useCallback(() => {
+    navigate(generatePath(AgentRoutePaths.Create));
+  }, [navigate, AgentRoutePaths]);
 
   const removeAgent = useCallback(() => {}, []);
+
+  const bulkActions = useMemo(() => {
+    if (selectedResources.length > 1) {
+      return [{ content: "Remove agent", onAction: removeAgent }];
+    } else {
+      return [
+        { content: "Edit agent", onAction: editAgent },
+        { content: "Remove agent", onAction: removeAgent },
+      ];
+    }
+  }, [selectedResources, removeAgent, editAgent]);
+
+  const handleTabChange = useCallback((index) => {}, []);
+
+  const handleSort = useCallback(
+    (index, direction: IndexTableSortDirection) => {
+      console.log(index, direction);
+      if (index === 0) {
+        const sortFirstName = [...agents].sort((rowA, rowB) => {
+          const nameA = rowA.firstName;
+          const nameB = rowB.firstName;
+          if (direction === "descending")
+            return nameA > nameB ? 1 : nameB > nameA ? -1 : 0;
+          else return nameA > nameB ? -1 : nameB > nameA ? 1 : 0;
+        });
+        return setAgents(sortFirstName);
+      }
+    },
+    [agents]
+  );
+
+  useEffect(() => {
+    if (prevFilter?.query !== filterData.query && filterData.query) {
+      getListDebounce(filterData);
+    } else {
+      getListAgentApi(filterData);
+    }
+  }, [filterData]);
 
   return (
     <Page
@@ -119,11 +165,10 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
             }
             onSelectionChange={handleSelectionChange}
             hasMoreItems
-            loading={isLoadingTable}
-            promotedBulkActions={[
-              { content: "Edit agent", onAction: editAgent },
-              { content: "Remove agent", onAction: removeAgent },
-            ]}
+            loading={loadingList}
+            sortable={[true, true, true, true]}
+            onSort={handleSort}
+            promotedBulkActions={bulkActions}
             lastColumnSticky
             emptyState={
               <EmptySearchResult
@@ -136,14 +181,14 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
               { title: "Agent" },
               { title: "Roles" },
               { title: "Status" },
-              { title: "2FA A", hidden: false },
+              { title: "2FA Availability" },
             ]}
           >
             {agents.map((agentItem, index) => (
               <IndexTable.Row
-                id={agentItem.id}
-                key={agentItem.id}
-                selected={selectedResources.includes(agentItem.id)}
+                id={agentItem._id}
+                key={agentItem._id}
+                selected={selectedResources.includes(agentItem._id)}
                 position={index}
               >
                 <IndexTable.Cell className="py-3">
@@ -151,10 +196,15 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
                     <Link
                       dataPrimaryLink
                       data-polaris-unstyled
-                      url={generatePath(AgentRoutePaths.Detail, { id: "1" })}
+                      url={generatePath(AgentRoutePaths.Detail, {
+                        id: agentItem._id,
+                      })}
+                      removeUnderline={true}
                     >
                       <Text variant="bodyMd" fontWeight="semibold" as="span">
-                        {agentItem.name}
+                        {agentItem.lastName === "admin"
+                          ? agentItem.firstName
+                          : agentItem.firstName + " " + agentItem.lastName}
                       </Text>
                     </Link>
                   </div>
@@ -164,15 +214,15 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
                 </IndexTable.Cell>
                 <IndexTable.Cell className="py-3">
                   <Text variant="bodyMd" as="span">
-                    <Badge status={agentItem.status ? "success" : "info"}>
-                      {agentItem.status ? "Active" : "Draft"}
+                    <Badge status={agentItem.isActive ? "success" : "critical"}>
+                      {agentItem.isActive ? "Active" : "Deactivate"}
                     </Badge>
                   </Text>
                 </IndexTable.Cell>
                 <IndexTable.Cell className="py-3">
-                  <Text variant="bodyMd" as="span">
+                  {/* <Text variant="bodyMd" as="span">
                     {agentItem.isAvailability ? "Yes" : "No"}
-                  </Text>
+                  </Text> */}
                 </IndexTable.Cell>
               </IndexTable.Row>
             ))}

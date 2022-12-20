@@ -39,7 +39,7 @@ export interface CreateAgentRequest {
 export type CreateAgentResponse = BaseResponse<Agent>;
 
 // GET ONE
-export type GetOneAgentResponse = BaseListResponse<Agent>;
+export type GetOneAgentResponse = BaseResponse<Agent>;
 
 // UPDATE
 export interface UpdateAgentRequest {
