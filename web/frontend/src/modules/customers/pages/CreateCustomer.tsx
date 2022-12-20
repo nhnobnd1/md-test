@@ -1,11 +1,5 @@
 import { useToast } from "@shopify/app-bridge-react";
-import {
-  Banner,
-  ContextualSaveBar,
-  Layout,
-  Page,
-  Text,
-} from "@shopify/polaris";
+import { Banner, ContextualSaveBar, Layout, Page } from "@shopify/polaris";
 import { useCallback, useRef, useState } from "react";
 import { generatePath, useNavigate } from "react-router-dom";
 import { catchError, map, of } from "rxjs";
@@ -77,8 +71,8 @@ export default function CreateCustomer() {
         }}
       />
       <Page
-        title="Create customer"
-        subtitle="Profile customer"
+        title="New Customer Profile"
+        subtitle="Customer profile"
         compactTitle
         breadcrumbs={[{ onAction: () => navigate(CustomersRoutePaths.Index) }]}
         fullWidth
@@ -90,11 +84,7 @@ export default function CreateCustomer() {
                 title="There is an error with this customer initialization"
                 status="critical"
                 onDismiss={() => setBanner(false)}
-              >
-                <Text variant="bodyMd" as="p" color="subdued">
-                  {messageError}
-                </Text>
-              </Banner>
+              ></Banner>
             ) : null}
           </Layout.Section>
           <Layout.Section>

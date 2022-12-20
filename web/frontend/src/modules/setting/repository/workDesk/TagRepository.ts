@@ -29,6 +29,8 @@ const TagRepository = createRepository(
       return api.put<UpdateTagResponse>(`/${id}`, data);
     },
     delete(api, data: BaseDeleteList) {
+      console.log("api,", api, "delete", data);
+
       return api.delete<DeleteTagResponse>("", {}, { data });
     },
   }

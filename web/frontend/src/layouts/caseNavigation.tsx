@@ -63,12 +63,6 @@ const caseNavigation: NavigationItems[] = [
         label: "Workdesk",
         url: SettingRoutePaths.Workdesk.Tag.Index,
         tabBarNavigation: [
-          // {
-          //   label: "Ticket Settings",
-          //   url: SettingRoutePaths.Workdesk.TicketSetting.Index,
-          // },
-          // { label: "Views", url: SettingRoutePaths.Workdesk.Views.Index },
-          // { label: "Macros", url: SettingRoutePaths.Workdesk.Macros.Index },
           { label: "Tags", url: SettingRoutePaths.Workdesk.Tag.Index },
         ],
       },

@@ -1,6 +1,7 @@
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Card,
+  EmptySearchResult,
   Filters,
   IndexTable,
   Link,
@@ -8,6 +9,7 @@ import {
   Text,
   useIndexResourceState,
 } from "@shopify/polaris";
+import dayjs from "dayjs";
 import { isEmpty } from "lodash-es";
 import { useCallback, useEffect, useState } from "react";
 import { generatePath, useNavigate, useParams } from "react-router-dom";
@@ -37,29 +39,35 @@ export default function SettingIndexPage() {
     clearSelection,
   } = useIndexResourceState<Tag>(tags);
 
-  const rowMarkup = tags.map(({ id, name, storeId }, index) => (
-    <IndexTable.Row
-      id={id}
-      key={id}
-      selected={selectedResources.includes(id)}
-      position={index}
-    >
-      <IndexTable.Cell className="py-3">
-        <Link
-          monochrome
-          dataPrimaryLink
-          onClick={() => navigateShowDetails(id)}
-          removeUnderline
-        >
-          <Text variant="bodyMd" fontWeight="bold" as="span">
-            {`${name}`}
-          </Text>
-        </Link>
-      </IndexTable.Cell>
-      <IndexTable.Cell className="py-3">{name}</IndexTable.Cell>
-      <IndexTable.Cell className="py-3">{storeId}</IndexTable.Cell>
-    </IndexTable.Row>
-  ));
+  const rowMarkup = tags.map(
+    ({ id, name, updatedDatetime, createdDatetime }, index) => (
+      <IndexTable.Row
+        id={id}
+        key={id}
+        selected={selectedResources.includes(id)}
+        position={index}
+      >
+        <IndexTable.Cell className="py-3">
+          <Link
+            monochrome
+            dataPrimaryLink
+            onClick={() => navigateShowDetails(id)}
+            removeUnderline
+          >
+            <Text variant="bodyMd" fontWeight="bold" as="span">
+              {`${name}`}
+            </Text>
+          </Link>
+        </IndexTable.Cell>
+        <IndexTable.Cell className="py-3">{`###`}</IndexTable.Cell>
+        <IndexTable.Cell className="py-3">
+          {updatedDatetime
+            ? dayjs(updatedDatetime).format("DD-MM-YYYY")
+            : dayjs(createdDatetime).format("DD-MM-YYYY")}
+        </IndexTable.Cell>
+      </IndexTable.Row>
+    )
+  );
 
   const navigateCreate = () => {
     return navigate(SettingRoutePaths.Workdesk.Tag.Create);
@@ -183,15 +191,17 @@ export default function SettingIndexPage() {
         fullWidth
       >
         <ModalDelete
-          title="Do you want to delete tags?"
+          title="Are you sure that you want to remove this Tag?"
           open={isOpen}
           onClose={() => setIsOpen(false)}
-          content={"Are you sure you want to delete these tags?"}
+          content={
+            "This Tag will be removed permanently. This action cannot be undone. All tickets which are using this tag will get affected too."
+          }
           deleteAction={handleRemoveTag}
           dataDelete={selectedResources}
         />
-        <Card sectioned>
-          <div className="mb-4">
+        <Card>
+          <div className="flex-1 px-4 pt-4 pb-2">
             <Filters
               queryValue={filterData.query}
               onQueryChange={handleSearchChange}
@@ -209,13 +219,20 @@ export default function SettingIndexPage() {
             }
             onSelectionChange={handleSelectionChange}
             headings={[
-              { title: "Tag name" },
+              { title: "Name" },
               { title: "Number of tickets" },
-              { title: "Last Updated date" },
+              { title: "Last Updated" },
             ]}
             hasMoreItems
             promotedBulkActions={promotedBulkActions}
             loading={loadTag}
+            emptyState={
+              <EmptySearchResult
+                title={"No tag yet"}
+                description={"Try changing the filters or search term"}
+                withIllustration
+              />
+            }
           >
             {rowMarkup}
           </IndexTable>

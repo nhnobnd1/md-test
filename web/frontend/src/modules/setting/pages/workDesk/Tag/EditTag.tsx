@@ -7,7 +7,6 @@ import {
   Layout,
   Page,
   Tabs,
-  Text,
 } from "@shopify/polaris";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
@@ -147,8 +146,8 @@ export default function DetailsTag() {
         }}
       />
       <Page
-        title="Infor tag"
-        subtitle="Details infor tag"
+        title={`${result?.name}`}
+        subtitle="Details Tag"
         compactTitle
         breadcrumbs={[
           { onAction: () => navigate(SettingRoutePaths.Workdesk.Tag.Index) },
@@ -162,11 +161,7 @@ export default function DetailsTag() {
                 title={banner.title}
                 status={banner.type}
                 onDismiss={() => setBanner({ ...banner, isShow: false })}
-              >
-                <Text variant="bodyMd" as="p" color="subdued">
-                  {banner.message}
-                </Text>
-              </Banner>
+              ></Banner>
             ) : null}
           </Layout.Section>
           <Layout.Section>

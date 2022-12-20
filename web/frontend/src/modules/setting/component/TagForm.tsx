@@ -49,7 +49,7 @@ const TagForm = (
           <FormItem name="name">
             <TextField
               type="text"
-              placeholder="Enter tag name"
+              placeholder="Tags name"
               label="Tag name"
               autoComplete="off"
             />
