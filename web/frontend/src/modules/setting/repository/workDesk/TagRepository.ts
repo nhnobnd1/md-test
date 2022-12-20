@@ -19,7 +19,7 @@ const TagRepository = createRepository(
     getList(api, params: GetListTagRequest) {
       return api.get<GetListTagResponse>("", params);
     },
-    getOne(api, id: string) {
+    getOne(api, id: string | undefined) {
       return api.get(`/${id}`);
     },
     create(api, data: CreateTagRequest) {
@@ -29,6 +29,8 @@ const TagRepository = createRepository(
       return api.put<UpdateTagResponse>(`/${id}`, data);
     },
     delete(api, data: BaseDeleteList) {
+      console.log("api,", api, "delete", data);
+
       return api.delete<DeleteTagResponse>("", {}, { data });
     },
   }

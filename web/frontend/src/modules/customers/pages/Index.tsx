@@ -1,6 +1,7 @@
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Card,
+  EmptySearchResult,
   Filters,
   IndexTable,
   Link,
@@ -185,15 +186,17 @@ export default function CustomerIndexPage() {
         fullWidth
       >
         <ModalDelete
-          title="Do you want to delete customers?"
+          title="Are you sure that you want to remove this customer?"
           open={isOpen}
           onClose={() => setIsOpen(false)}
-          content={"Are you sure you want to delete these customers?"}
+          content={
+            "This customer will be removed permanently. All customer's tickets and his profile will no longer accessible."
+          }
           deleteAction={handleRemoveCustomer}
           dataDelete={selectedResources}
         />
         <Card sectioned>
-          <div className="mb-4">
+          <div className="flex-1 px-4 pt-4 pb-2">
             <Filters
               queryValue={filterData.query}
               onQueryChange={handleSearchChange}
@@ -211,13 +214,20 @@ export default function CustomerIndexPage() {
             }
             onSelectionChange={handleSelectionChange}
             headings={[
-              { title: "Customer name" },
-              { title: "Email" },
+              { title: "Customer Name" },
+              { title: "Email address" },
               { title: "Number of tickets" },
             ]}
             hasMoreItems
             promotedBulkActions={promotedBulkActions}
             loading={loadCustomer}
+            emptyState={
+              <EmptySearchResult
+                title={"No customer yet"}
+                description={"Try changing the filters or search term"}
+                withIllustration
+              />
+            }
           >
             {rowMarkup}
           </IndexTable>

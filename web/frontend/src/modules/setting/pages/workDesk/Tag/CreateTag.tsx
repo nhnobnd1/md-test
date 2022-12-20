@@ -1,11 +1,5 @@
 import { useToast } from "@shopify/app-bridge-react";
-import {
-  Banner,
-  ContextualSaveBar,
-  Layout,
-  Page,
-  Text,
-} from "@shopify/polaris";
+import { Banner, ContextualSaveBar, Layout, Page } from "@shopify/polaris";
 import { useCallback, useRef, useState } from "react";
 import { generatePath, useNavigate } from "react-router-dom";
 import { catchError, map, of } from "rxjs";
@@ -90,17 +84,13 @@ export default function CreateTag() {
                 title="There is an error with this tag initialization"
                 status="critical"
                 onDismiss={() => setBanner(false)}
-              >
-                <Text variant="bodyMd" as="p" color="subdued">
-                  {messageError}
-                </Text>
-              </Banner>
+              ></Banner>
             ) : null}
           </Layout.Section>
           <Layout.Section>
             <TagForm
               ref={formRef}
-              initialValues={{ storeId: auth.user ? auth.user : "hihi" }}
+              initialValues={{ storeId: auth.user ? auth.user : "storeID" }}
               submit={submit}
               change={handleChangeValueForm}
             />
