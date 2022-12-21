@@ -112,7 +112,6 @@ export default function DetailsCustomer() {
       id: "customer-profile",
       content: "Customer profile",
       value: profileCustomer,
-      accessibilityLabel: "Customer profile",
       panelID: "customer-profile",
     },
     {
@@ -150,7 +149,6 @@ export default function DetailsCustomer() {
       />
       <Page
         title={`${result?.firstName} ${result?.lastName}`}
-        subtitle="Details info customer"
         compactTitle
         breadcrumbs={[{ onAction: () => navigate(CustomersRoutePaths.Index) }]}
         fullWidth
@@ -172,9 +170,7 @@ export default function DetailsCustomer() {
                 selected={selectedTabs}
                 onSelect={handleTabChange}
               >
-                <Card.Section title={tabs[selectedTabs].content}>
-                  {tabs[selectedTabs].value}
-                </Card.Section>
+                <Card.Section>{tabs[selectedTabs].value}</Card.Section>
               </Tabs>
             </Card>
           </Layout.Section>

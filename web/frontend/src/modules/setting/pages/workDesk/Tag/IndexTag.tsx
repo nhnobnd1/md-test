@@ -184,18 +184,18 @@ export default function SettingIndexPage() {
         title="Tags"
         subtitle="List of tag"
         primaryAction={{
-          content: "Add new",
+          content: "Add new tag",
           onAction: navigateCreate,
         }}
         compactTitle
         fullWidth
       >
         <ModalDelete
-          title="Are you sure that you want to remove this Tag?"
+          title="Are you sure that you want to remove this tag?"
           open={isOpen}
           onClose={() => setIsOpen(false)}
           content={
-            "This Tag will be removed permanently. This action cannot be undone. All tickets which are using this tag will get affected too."
+            "This tag will be removed permanently. This action cannot be undone. All tickets which are using this tag will get affected too."
           }
           deleteAction={handleRemoveTag}
           dataDelete={selectedResources}
@@ -206,7 +206,7 @@ export default function SettingIndexPage() {
               queryValue={filterData.query}
               onQueryChange={handleSearchChange}
               onQueryClear={handleQueryValueRemove}
-              queryPlaceholder="Search tags"
+              queryPlaceholder="Search"
               filters={[]}
               onClearAll={resetFilterData}
             />
@@ -221,7 +221,7 @@ export default function SettingIndexPage() {
             headings={[
               { title: "Name" },
               { title: "Number of tickets" },
-              { title: "Last Updated" },
+              { title: "Last updated" },
             ]}
             hasMoreItems
             promotedBulkActions={promotedBulkActions}
