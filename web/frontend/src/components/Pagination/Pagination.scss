@@ -1,0 +1,23 @@
+.pagination-item-wrap {
+  .pagination-item {
+    cursor: pointer;
+    color: #202223;
+    font-size: 16px;
+    &:hover {
+      text-decoration: underline;
+      color: rgba(44, 110, 203, 1);
+    }
+
+    &.active {
+      text-decoration: underline;
+      color: rgba(44, 110, 203, 1);
+    }
+    &__more {
+      cursor: pointer;
+      &:hover {
+        text-decoration: underline;
+        color: rgba(44, 110, 203, 1);
+      }
+    }
+  }
+}
