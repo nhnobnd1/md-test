@@ -17,10 +17,10 @@ export default function App() {
   const api = useApi();
   const [cookies, setCookie] = useCookies();
   const { show } = useToast();
-  const { login } = useAuth();
+  const { login, isLoggedIn } = useAuth();
 
   useEffect(() => {
-    if (shop) {
+    if (shop && !isLoggedIn) {
       const payload = cookies[process.env.HOST ?? shop];
       if (payload && payload.email && payload.offlineToken) {
         api
@@ -55,7 +55,7 @@ export default function App() {
           });
       }
     }
-  }, [shop]);
+  }, [shop, isLoggedIn]);
 
   const navigationLinks = useMemo((): NavigationLink[] => {
     return routes

@@ -54,6 +54,10 @@ export function LoadingProvider({
     });
   }, []);
 
+  useEffect(() => {
+    console.log("loading", state);
+  }, [state]);
+
   return (
     <LoadingContext.Provider value={{ startLoading, stopLoading, state }}>
       {children}

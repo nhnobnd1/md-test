@@ -6,7 +6,6 @@ import AgentRoutePaths from "src/modules/agent/routes/paths";
 const agentRoutes: IRoute = {
   path: AgentRoutePaths.Index,
   title: "Agent",
-  showInNavigationMenu: true,
   component: lazy(() => import("src/layouts/MainLayout")),
   navigation: {
     icon: () => <MarketingMinor />,

@@ -132,7 +132,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
       >
         {tabBar.length > 0 ? (
           <Tabs tabs={tabBar} selected={selected} onSelect={handleTabChange}>
-            <div>
+            <div className="pb-[50px]">
               <Outlet />
             </div>
           </Tabs>
