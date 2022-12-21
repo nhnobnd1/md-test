@@ -2,11 +2,9 @@ import { useNavigate, useToast } from "@shopify/app-bridge-react";
 import {
   Banner,
   BannerStatus,
-  Card,
   ContextualSaveBar,
   Layout,
   Page,
-  Tabs,
 } from "@shopify/polaris";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
@@ -43,11 +41,6 @@ export default function DetailsTag() {
       );
     },
     { showLoading: false }
-  );
-  const [selectedTabs, setSelectedTabs] = useState(0);
-  const handleTabChange = useCallback(
-    (selectedTabIndex) => setSelectedTabs(selectedTabIndex),
-    []
   );
   const handleChangeValueForm = (value: boolean) => {
     setDisable(value);
@@ -96,29 +89,6 @@ export default function DetailsTag() {
   const handleResetForm = useCallback(() => {
     formRef.current?.reset();
   }, []);
-  const profileTag = (
-    <TagForm
-      ref={formRef}
-      initialValues={result}
-      submit={submit}
-      change={handleChangeValueForm}
-    />
-  );
-  const tabs = [
-    {
-      id: "tag-profile",
-      content: "Tag profile",
-      value: profileTag,
-      accessibilityLabel: "Tag profile",
-      panelID: "tag-profile",
-    },
-    {
-      id: "list-ticket-of-tag",
-      content: "List ticket",
-      value: "List ticket",
-      panelID: "list-ticket-of-tag",
-    },
-  ];
   useMount(() => {
     fetDetailsTag();
   });
@@ -147,7 +117,6 @@ export default function DetailsTag() {
       />
       <Page
         title={`${result?.name}`}
-        subtitle="Details Tag"
         compactTitle
         breadcrumbs={[
           { onAction: () => navigate(SettingRoutePaths.Workdesk.Tag.Index) },
@@ -165,17 +134,12 @@ export default function DetailsTag() {
             ) : null}
           </Layout.Section>
           <Layout.Section>
-            <Card sectioned>
-              <Tabs
-                tabs={tabs}
-                selected={selectedTabs}
-                onSelect={handleTabChange}
-              >
-                <Card.Section title={tabs[selectedTabs].content}>
-                  {tabs[selectedTabs].value}
-                </Card.Section>
-              </Tabs>
-            </Card>
+            <TagForm
+              ref={formRef}
+              initialValues={result}
+              submit={submit}
+              change={handleChangeValueForm}
+            />
           </Layout.Section>
         </Layout>
       </Page>

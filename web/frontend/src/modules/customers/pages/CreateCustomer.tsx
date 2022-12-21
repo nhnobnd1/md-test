@@ -1,5 +1,11 @@
 import { useToast } from "@shopify/app-bridge-react";
-import { Banner, ContextualSaveBar, Layout, Page } from "@shopify/polaris";
+import {
+  Banner,
+  Card,
+  ContextualSaveBar,
+  Layout,
+  Page,
+} from "@shopify/polaris";
 import { useCallback, useRef, useState } from "react";
 import { generatePath, useNavigate } from "react-router-dom";
 import { catchError, map, of } from "rxjs";
@@ -71,33 +77,34 @@ export default function CreateCustomer() {
         }}
       />
       <Page
-        title="New Customer Profile"
-        subtitle="Customer profile"
+        title="New customer profile"
         compactTitle
         breadcrumbs={[{ onAction: () => navigate(CustomersRoutePaths.Index) }]}
         fullWidth
       >
-        <Layout sectioned>
-          <Layout.Section>
-            {banner ? (
-              <Banner
-                title="There is an error with this customer initialization"
-                status="critical"
-                onDismiss={() => setBanner(false)}
-              ></Banner>
-            ) : null}
-          </Layout.Section>
-          <Layout.Section>
-            <CustomerForm
-              ref={formRef}
-              initialValues={{
-                storeId: auth.user?.id ? auth.user?.id : "",
-              }}
-              submit={submit}
-              change={handleChangeValueForm}
-            />
-          </Layout.Section>
-        </Layout>
+        <Card title="Customer profile" sectioned>
+          <Layout>
+            <Layout.Section>
+              {banner ? (
+                <Banner
+                  title="There is an error with this customer initialization"
+                  status="critical"
+                  onDismiss={() => setBanner(false)}
+                ></Banner>
+              ) : null}
+            </Layout.Section>
+            <Layout.Section>
+              <CustomerForm
+                ref={formRef}
+                initialValues={{
+                  storeId: auth.user?.id ? auth.user?.id : "",
+                }}
+                submit={submit}
+                change={handleChangeValueForm}
+              />
+            </Layout.Section>
+          </Layout>
+        </Card>
       </Page>
     </>
   );

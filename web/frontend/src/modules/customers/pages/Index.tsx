@@ -177,9 +177,8 @@ export default function CustomerIndexPage() {
     <>
       <Page
         title="Customer"
-        subtitle="List of customer"
         primaryAction={{
-          content: "Add new",
+          content: "Add customer",
           onAction: navigateCreate,
         }}
         compactTitle
@@ -201,7 +200,7 @@ export default function CustomerIndexPage() {
               queryValue={filterData.query}
               onQueryChange={handleSearchChange}
               onQueryClear={handleQueryValueRemove}
-              queryPlaceholder="Search customer"
+              queryPlaceholder="Search"
               filters={[]}
               onClearAll={resetFilterData}
             />
@@ -214,7 +213,7 @@ export default function CustomerIndexPage() {
             }
             onSelectionChange={handleSelectionChange}
             headings={[
-              { title: "Customer Name" },
+              { title: "Customer name" },
               { title: "Email address" },
               { title: "Number of tickets" },
             ]}
