@@ -228,16 +228,17 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
             ))}
           </IndexTable>
 
-          <div className="flex items-center justify-center py-4">
-            {filterData.page && filterData.limit && (
+          <div className="flex items-center justify-center py-8">
+            {filterData.page && filterData.limit && meta?.totalCount && (
               <Pagination
+                total={meta.totalCount}
+                pageSize={filterData.limit ?? 0}
                 currentPage={filterData.page}
-                total={agents.length}
-                pageSize={filterData.limit}
-                hasPrevious
-                onPrevious={() => {}}
-                hasNext
-                onNext={() => {}}
+                onChangePage={(page) =>
+                  setFilterData((val) => {
+                    return { ...val, page };
+                  })
+                }
               />
             )}
           </div>
