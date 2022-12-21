@@ -38,11 +38,11 @@ const MainLayoutTopBar = ({ navigationToggle }: MainLayoutTopBarProps) => {
               }
             />
           </div>
-          <img
+          {/* <img
             src={"https://cdn1.avada.io/get-market/preset/avada_icon.png"}
             alt=""
             width={40}
-          />
+          /> */}
           <div className="Md-TopBar__TextBrand">
             <Text as="p" variant="headingLg" fontWeight="semibold">
               Moose desk

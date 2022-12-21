@@ -94,7 +94,6 @@ const DetailAgent = (props: CreateAgentProps) => {
       return AgentRepository.update(id, payload).pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
-            console.log(data);
             showBanner("success", {
               title: `Update ${agentSaved?.firstName} ${agentSaved?.lastName}`,
               message: "Update agent success",
@@ -289,7 +288,6 @@ const DetailAgent = (props: CreateAgentProps) => {
     label: string;
     status: Status;
   }>(() => {
-    console.log(agentSaved, "agentSaved");
     if (agentSaved?.isActive) {
       if (agentSaved.emailConfirmed) {
         return {
