@@ -114,7 +114,6 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
 
   const handleSort = useCallback(
     (index, direction: IndexTableSortDirection) => {
-      console.log(index, direction);
       if (index === 0) {
         const sortFirstName = [...agents].sort((rowA, rowB) => {
           const nameA = rowA.firstName;
