@@ -181,8 +181,7 @@ export default function SettingIndexPage() {
   return (
     <>
       <Page
-        title="Tags"
-        subtitle="List of tag"
+        title="Manage tags"
         primaryAction={{
           content: "Add new tag",
           onAction: navigateCreate,
