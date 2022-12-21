@@ -70,7 +70,6 @@ const Pagination = ({
           list.push(0);
         }
       }
-      console.log(list, "list left");
       return list;
     }, [page, pageAmount]);
 
@@ -140,7 +139,7 @@ const Pagination = ({
         setPage((value) => value - 1);
       }
     }
-  }, [currentPage, page]);
+  }, [currentPage, page, pageAmount]);
 
   const handleNext = useCallback(() => {
     if (props.onNext) {
@@ -150,7 +149,7 @@ const Pagination = ({
         setPage((value) => value + 1);
       }
     }
-  }, [currentPage, page]);
+  }, [currentPage, page, pageAmount]);
 
   useEffect(() => {
     onChangePage && onChangePage(page);
@@ -161,7 +160,6 @@ const Pagination = ({
         pageSize: pageSize,
         total: total,
       });
-    console.log("page", page);
   }, [page]);
 
   return (
