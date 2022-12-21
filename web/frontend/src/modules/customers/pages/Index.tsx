@@ -9,21 +9,18 @@ import {
   Text,
   useIndexResourceState,
 } from "@shopify/polaris";
-import { isEmpty } from "lodash-es";
 import { useCallback, useEffect, useState } from "react";
-import { generatePath, useNavigate, useParams } from "react-router-dom";
+import { generatePath, useNavigate } from "react-router-dom";
 import { catchError, map, of } from "rxjs";
 import ModalDelete from "src/components/ModalDelete";
 import Pagination from "src/components/Pagination/Pagination";
 import env from "src/core/env";
-import { useDebounceFn, useJob, useMount } from "src/core/hooks";
-import useTable from "src/core/hooks/useTable";
+import { useDebounceFn, useJob } from "src/core/hooks";
 import { BaseListRequest } from "src/models/Request";
 import { Customer } from "src/modules/customers/modal/Customer";
 import CustomerRepository from "src/modules/customers/repositories/CustomerRepository";
 import CustomersRoutePaths from "src/modules/customers/routes/paths";
 export default function CustomerIndexPage() {
-  const param = useParams();
   const navigate = useNavigate();
   const { show } = useToast();
   const [customers, setCustomers] = useState<Customer[]>([]);
@@ -76,28 +73,13 @@ export default function CustomerIndexPage() {
       onAction: () => handleOpenModalDelete(),
     },
   ];
-  const { page, setPage, rowsPerPage } = useTable({
-    defaultRowsPerPage: env.DEFAULT_PAGE_SIZE,
-  });
   const defaultFilter = () => ({
     page: 1,
     limit: env.DEFAULT_PAGE_SIZE,
     query: "",
   });
-  const [filterData, setFilterData] = useState<BaseListRequest>(
-    !isEmpty(param)
-      ? {
-          page: page ? Number(page) : 1,
-          limit: rowsPerPage ? Number(rowsPerPage) : env.DEFAULT_PAGE_SIZE,
-          query: "",
-        }
-      : {
-          page: 1,
-          limit: env.DEFAULT_PAGE_SIZE,
-        }
-  );
+  const [filterData, setFilterData] = useState<BaseListRequest>(defaultFilter);
   const handleSearchChange = (value: string) => {
-    setPage(1);
     setFilterData(() => ({
       ...filterData,
       query: value,
@@ -164,15 +146,10 @@ export default function CustomerIndexPage() {
     wait: 300,
   });
   useEffect(() => {
-    setFilterData({
-      ...filterData,
-      page: page,
-    });
-  }, [page]);
-  useEffect(() => {
+    console.log("asda");
+
     callAPI();
   }, [filterData]);
-  useMount(() => setPage(1));
   return (
     <>
       <Page
@@ -233,28 +210,10 @@ export default function CustomerIndexPage() {
         </Card>
         <div className="flex items-center justify-center mt-4">
           <Pagination
-            total={result ? result.metadata.totalCount : 1}
+            total={result?.metadata ? result.metadata.totalCount : 1}
             pageSize={filterData.limit ?? 0}
-            currentPage={page}
-            hasPrevious
-            onPrevious={() => {
-              if (page > 1) {
-                setPage(page - 1);
-              }
-            }}
-            hasNext
-            onNext={() => {
-              if (
-                page <
-                (result
-                  ? result.metadata.totalCount / env.DEFAULT_PAGE_SIZE
-                  : 1)
-              ) {
-                setPage(page + 1);
-              }
-            }}
-            previousTooltip={"Previous"}
-            nextTooltip={"Next"}
+            currentPage={filterData.page ?? 1}
+            onChangePage={(page) => setFilterData((val) => ({ ...val, page }))}
           />
         </div>
       </Page>

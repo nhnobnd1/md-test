@@ -72,6 +72,7 @@ const Pagination = ({
         pageSize: pageSize,
         total: total,
       });
+    console.log("page", page);
   }, [page]);
 
   return (
