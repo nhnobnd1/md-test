@@ -55,13 +55,14 @@ const Pagination = ({
     const listLeft = useMemo(() => {
       let list: number[] = [];
       if (page <= 3) {
-        for (let i = 1; i <= 3; i++) {
+        const countLoop = pageAmount <= 3 ? pageAmount : 3;
+        for (let i = 1; i <= countLoop; i++) {
           list.push(i);
         }
         if (pageAmount > 3) list.push(0);
       } else {
         if (page - 1 > 3) {
-          list = [1, 2, 0, page - 1, page];
+          list = [1, 2, 3, 0, page - 1, page];
         } else {
           for (let i = 1; i <= page; i++) {
             list.push(i);
@@ -69,6 +70,7 @@ const Pagination = ({
           list.push(0);
         }
       }
+      console.log(list, "list left");
       return list;
     }, [page, pageAmount]);
 
@@ -119,7 +121,7 @@ const Pagination = ({
                 ? setPage(item)
                 : page + 5 < pageAmount - 3
                 ? setPage(() => page + 5)
-                : setPage(() => pageAmount - 1)
+                : setPage(() => pageAmount)
             }
             key={`pag-${item}`}
           >
