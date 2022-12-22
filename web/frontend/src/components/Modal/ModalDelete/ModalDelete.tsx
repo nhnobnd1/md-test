@@ -1,36 +1,32 @@
 import { Modal, ModalProps, TextContainer } from "@shopify/polaris";
 
 export interface ModalDelete extends ModalProps {
-  title: string;
   content?: string;
   textConfirm?: string;
   deleteAction: () => void;
 }
 export const ModalDelete = ({
-  open,
-  onClose,
-  title,
   textConfirm = "Delete",
   content,
   deleteAction,
+  ...props
 }: ModalDelete) => {
   return (
     <Modal
-      open={open}
-      title={title}
-      onClose={onClose}
+      {...props}
+      fullScreen={true}
       primaryAction={{
         content: textConfirm,
         onAction: () => {
           deleteAction();
-          onClose();
+          props.onClose();
         },
         destructive: true,
       }}
       secondaryActions={[
         {
           content: "Cancel",
-          onAction: onClose,
+          onAction: props.onClose,
         },
       ]}
     >
