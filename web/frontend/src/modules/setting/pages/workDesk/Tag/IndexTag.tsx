@@ -19,7 +19,7 @@ import dayjs from "dayjs";
 import { useCallback, useEffect, useState } from "react";
 import { generatePath, useNavigate } from "react-router-dom";
 import { catchError, map, of } from "rxjs";
-import ModalDelete from "src/components/ModalDelete";
+import { ModalDelete } from "src/components/Modal/ModalDelete";
 import Pagination from "src/components/Pagination/Pagination";
 import env from "src/core/env";
 import { useDebounceFn, useJob } from "src/core/hooks";

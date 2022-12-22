@@ -10,12 +10,15 @@ import {
   useIndexResourceState,
 } from "@shopify/polaris";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { generatePath, useNavigate } from "react-router-dom";
+import { generatePath, useLocation, useNavigate } from "react-router-dom";
 import { map } from "rxjs";
+import { Banner } from "src/components/Banner";
+import { useBannerState } from "src/components/Banner/useBannerState";
 import Pagination from "src/components/Pagination/Pagination";
 import env from "src/core/env";
 import { useDebounceFn, useJob, usePrevious } from "src/core/hooks";
 import { PageComponent } from "src/core/models/routes";
+import { useBanner } from "src/hooks/useBanner";
 import { BaseMetaDataListResponse } from "src/models/Request";
 import { Role } from "src/models/Rule";
 import { getStatusAgent } from "src/modules/agent/constant";
@@ -27,13 +30,19 @@ interface AgentIndexPageProps {}
 
 const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
   const [agents, setAgents] = useState<Agent[]>([]);
-
+  const { banner, show: showBanner, close: closeBanner } = useBanner();
   const navigate = useNavigate();
+  const { state } = useLocation();
+  useBannerState(showBanner);
 
   const defaultFilter = () => ({
     page: 1,
     limit: env.DEFAULT_PAGE_SIZE,
   });
+
+  useEffect(() => {
+    console.log("state", state);
+  }, [state]);
 
   const [filterData, setFilterData] =
     useState<GetListAgentRequest>(defaultFilter);
@@ -136,6 +145,11 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
       }}
       fullWidth
     >
+      {banner.visible && (
+        <div className="mb-4">
+          <Banner banner={banner} onDismiss={closeBanner}></Banner>
+        </div>
+      )}
       <Card>
         <div className="flex-1 px-4 pt-4 pb-2">
           <Filters

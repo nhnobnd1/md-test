@@ -29,7 +29,8 @@ import {
 } from "react-router-dom";
 import { catchError, map, of } from "rxjs";
 import Banner from "src/components/Banner/Banner";
-import { useJob, useMount } from "src/core/hooks";
+import { ModalDelete } from "src/components/Modal/ModalDelete";
+import { useJob, useMount, useToggle } from "src/core/hooks";
 import { useBanner } from "src/hooks/useBanner";
 import AgentForm, {
   AgentFormValues,
@@ -63,16 +64,16 @@ const DetailAgent = (props: CreateAgentProps) => {
               setAgentSaved(data.data);
             } else {
               showBanner("critical", {
-                title: "There is an error with information agent",
                 message: "Get data agent failed",
               });
+              show("Get data agent failed", { isError: true });
             }
           },
           catchError((err) => {
             showBanner("critical", {
-              title: "There is an error with information agent",
               message: "Get data agent failed",
             });
+            show("Get data agent failed", { isError: true });
             return of(err);
           })
         )
@@ -104,21 +105,32 @@ const DetailAgent = (props: CreateAgentProps) => {
   const { run: updateAgentApi } = useJob(
     (id: string, payload: UpdateAgentRequest) => {
       return AgentRepository.update(id, payload).pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            showBanner("success", {
-              title: `Update ${agentSaved?.firstName} ${agentSaved?.lastName}`,
-              message: "Update agent success",
-            });
-            show("Update Agent Success");
-          } else {
+        map(
+          ({ data }) => {
+            if (data.statusCode === 200) {
+              showBanner("success", {
+                title: `Update ${agentSaved?.firstName} ${agentSaved?.lastName}`,
+                message: "Agent has been updated successfully",
+              });
+              setAgentSaved(data.data);
+              show("Agent has been updated successfully");
+            } else {
+              showBanner("critical", {
+                title: `Update ${agentSaved?.firstName} ${agentSaved?.lastName}`,
+                message: "Agent has been updated failed",
+              });
+              show("Agent has been updated failed", { isError: true });
+            }
+          },
+          catchError((err) => {
             showBanner("critical", {
               title: `Update ${agentSaved?.firstName} ${agentSaved?.lastName}`,
-              message: "Update agent failed",
+              message: "Agent has been updated failed",
             });
-            show("Update Agent Failed");
-          }
-        })
+            show("Agent has been updated failed", { isError: true });
+            return of(err);
+          })
+        )
       );
     }
   );
@@ -136,17 +148,17 @@ const DetailAgent = (props: CreateAgentProps) => {
               show("Resend mail success");
             } else {
               showBanner("critical", {
-                title: "There is an error with resend invitation email",
                 message: "Resend invitation email failed",
               });
+              show("Resend mail failed", { isError: true });
             }
           },
 
           catchError((err) => {
             showBanner("critical", {
-              title: "There is an error with resend invitation email",
               message: "Resend invitation email failed",
             });
+            show("Resend mail failed", { isError: true });
             return of(err);
           })
         )
@@ -162,25 +174,22 @@ const DetailAgent = (props: CreateAgentProps) => {
           ({ data }) => {
             if (data.statusCode === 200) {
               showBanner("success", {
-                title: `Active agent ${agentSaved?.firstName} ${agentSaved?.lastName}`,
-                message: "Active agent success",
+                message: "Agent has been activated successfully.",
               });
               show("Active agent success");
               getDetailAgentApi(id);
             } else {
               showBanner("critical", {
-                title: `Active agent ${agentSaved?.firstName} ${agentSaved?.lastName}`,
                 message: "Active agent failed",
               });
-              show("Active agent failed");
+              show("Active agent failed", { isError: true });
             }
           },
           catchError((err) => {
             showBanner("critical", {
-              title: `Active agent ${agentSaved?.firstName} ${agentSaved?.lastName}`,
               message: "Active agent failed",
             });
-            show("Active agent failed");
+            show("Active agent failed", { isError: true });
             return of(err);
           })
         )
@@ -196,25 +205,22 @@ const DetailAgent = (props: CreateAgentProps) => {
           ({ data }) => {
             if (data.statusCode === 200) {
               showBanner("success", {
-                title: `Deactivate agent ${agentSaved?.firstName} ${agentSaved?.lastName}`,
-                message: "Deactivate agent success",
+                message: "Agent has been deactivated successfully.",
               });
               show("Deactivate agent success");
               getDetailAgentApi(id);
             } else {
               showBanner("critical", {
-                title: `Deactivate agent ${agentSaved?.firstName} ${agentSaved?.lastName}`,
                 message: "Deactivate agent failed",
               });
-              show("Deactivate agent failed");
+              show("Deactivate agent failed", { isError: true });
             }
           },
           catchError((err) => {
             showBanner("critical", {
-              title: `Deactivate agent ${agentSaved?.firstName} ${agentSaved?.lastName}`,
               message: "Deactivate agent failed",
             });
-            show("Deactivate agent failed");
+            show("Deactivate agent failed", { isError: true });
             return of(err);
           })
         )
@@ -228,18 +234,22 @@ const DetailAgent = (props: CreateAgentProps) => {
       return AgentRepository.delete(id).pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
-            showBanner("success", {
-              title: `Remove ${agentSaved?.firstName} ${agentSaved?.lastName}`,
-              message: "Remove agent success",
-            });
             show("Remove Agent Success");
-            navigate(generatePath(AgentRoutePaths.Index));
+            navigate(generatePath(AgentRoutePaths.Index), {
+              state: {
+                banner: {
+                  status: "success",
+                  message:
+                    "The selected agent has been removed from the system.",
+                },
+              },
+            });
           } else {
             showBanner("critical", {
               title: "There is an error with remove agent",
               message: "Remove agent failed",
             });
-            show("Remove Agent Failed");
+            show("Remove Agent Failed", { isError: true });
           }
         }),
         catchError((err) => {
@@ -247,7 +257,7 @@ const DetailAgent = (props: CreateAgentProps) => {
             title: "There is an error with remove agent",
             message: "Remove agent failed",
           });
-          show("Remove Agent Failed");
+          show("Remove Agent Failed", { isError: true });
           return of(err);
         })
       );
@@ -309,6 +319,19 @@ const DetailAgent = (props: CreateAgentProps) => {
     };
   }, [agentSaved]);
 
+  // MODAL
+  const {
+    state: modalRemove,
+    on: showModalRemove,
+    off: closeModalRemove,
+  } = useToggle();
+
+  const {
+    state: modalDeactivate,
+    on: showModalDeactivate,
+    off: closeModalDeactivate,
+  } = useToggle();
+
   return (
     <>
       <Suspense
@@ -321,7 +344,7 @@ const DetailAgent = (props: CreateAgentProps) => {
           </div>
         }
       >
-        {!loadingGetDetail && agentSaved ? (
+        {agentSaved && (
           <Page
             breadcrumbs={[
               { content: "Agents", url: generatePath(AgentRoutePaths.Index) },
@@ -372,13 +395,19 @@ const DetailAgent = (props: CreateAgentProps) => {
                             >
                               Cancel
                             </Button>
-                            <Button
-                              onClick={handleDeleteAgent}
+                            <ModalDelete
+                              open={modalRemove}
+                              activator={
+                                <Button onClick={showModalRemove} destructive>
+                                  Remove
+                                </Button>
+                              }
+                              onClose={closeModalRemove}
+                              title="Are you sure that you want to permanently remove this Agent"
+                              content="This Agent will be removed permanently. This action cannot be undone"
                               loading={loadingDelete}
-                              destructive
-                            >
-                              Remove
-                            </Button>
+                              deleteAction={handleDeleteAgent}
+                            />
                           </ButtonGroup>
                         ) : (
                           <ButtonGroup>
@@ -390,18 +419,40 @@ const DetailAgent = (props: CreateAgentProps) => {
                               Cancel
                             </Button>
                             {agentSaved?._id && (
-                              <Button
-                                primary={!agentSaved?.isActive}
-                                destructive={agentSaved?.isActive}
-                                loading={loadingActive || loadingDeactivate}
-                                onClick={() =>
-                                  agentSaved?.isActive
-                                    ? deActiveAgentApi(agentSaved._id ?? id)
-                                    : activeAgentApi(agentSaved._id ?? id)
-                                }
-                              >
-                                {agentSaved?.isActive ? "Deactivate" : "Active"}
-                              </Button>
+                              <>
+                                {agentSaved.isActive ? (
+                                  <ModalDelete
+                                    open={modalDeactivate}
+                                    textConfirm="Deactivate"
+                                    activator={
+                                      <Button
+                                        destructive
+                                        loading={loadingDeactivate}
+                                        onClick={showModalDeactivate}
+                                      >
+                                        Deactivate
+                                      </Button>
+                                    }
+                                    onClose={closeModalDeactivate}
+                                    title="Are you sure that you want to deactivate this Agent"
+                                    content="This Agent will set to Inactive. He/She will no longer have access to system"
+                                    loading={loadingDeactivate}
+                                    deleteAction={() =>
+                                      deActiveAgentApi(agentSaved._id ?? id)
+                                    }
+                                  />
+                                ) : (
+                                  <Button
+                                    primary
+                                    loading={loadingActive}
+                                    onClick={() =>
+                                      activeAgentApi(agentSaved._id ?? id)
+                                    }
+                                  >
+                                    Active
+                                  </Button>
+                                )}
+                              </>
                             )}
                             {agentSaved.isActive && (
                               <Button
@@ -421,8 +472,6 @@ const DetailAgent = (props: CreateAgentProps) => {
               </Layout.Section>
             </Layout>
           </Page>
-        ) : (
-          "Loading..."
         )}
       </Suspense>
     </>
