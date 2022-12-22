@@ -6,13 +6,21 @@ import {
   Card,
   Layout,
   Link,
+  Loading,
   Page,
   Stack,
   Text,
 } from "@shopify/polaris";
 import { Status } from "@shopify/polaris/build/ts/latest/src/components/Badge";
 import { FormikProps } from "formik";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   generatePath,
   useLocation,
@@ -26,6 +34,7 @@ import { useBanner } from "src/hooks/useBanner";
 import AgentForm, {
   AgentFormValues,
 } from "src/modules/agent/components/AgentForm/AgentForm";
+import { getStatusAgent } from "src/modules/agent/constant";
 import {
   Agent,
   ResendEmailInvitationRequest,
@@ -45,29 +54,32 @@ const DetailAgent = (props: CreateAgentProps) => {
   const { state } = useLocation();
   const { id } = useParams();
 
-  const { run: getDetailAgentApi } = useJob((id: string) => {
-    return AgentRepository.getOne(id).pipe(
-      map(
-        ({ data }) => {
-          if (data.statusCode === 200) {
-            setAgentSaved(data.data);
-          } else {
+  const { run: getDetailAgentApi, processing: loadingGetDetail } = useJob(
+    (id: string) => {
+      return AgentRepository.getOne(id).pipe(
+        map(
+          ({ data }) => {
+            if (data.statusCode === 200) {
+              setAgentSaved(data.data);
+            } else {
+              showBanner("critical", {
+                title: "There is an error with information agent",
+                message: "Get data agent failed",
+              });
+            }
+          },
+          catchError((err) => {
             showBanner("critical", {
               title: "There is an error with information agent",
               message: "Get data agent failed",
             });
-          }
-        },
-        catchError((err) => {
-          showBanner("critical", {
-            title: "There is an error with information agent",
-            message: "Get data agent failed",
-          });
-          return of(err);
-        })
-      )
-    );
-  });
+            return of(err);
+          })
+        )
+      );
+    },
+    { showLoading: true }
+  );
 
   useMount(() => {
     if (id) {
@@ -288,120 +300,132 @@ const DetailAgent = (props: CreateAgentProps) => {
     label: string;
     status: Status;
   }>(() => {
-    if (agentSaved?.isActive) {
-      if (agentSaved.emailConfirmed) {
-        return {
-          label: "Active",
-          status: "success",
-        };
-      } else
-        return {
-          label: "Invited",
-          status: "info",
-        };
-    } else
-      return {
-        label: "Deactivate",
-        status: "critical",
-      };
+    if (agentSaved) {
+      return getStatusAgent(agentSaved?.isActive, agentSaved?.emailConfirmed);
+    }
+    return {
+      label: "",
+      status: "warning",
+    };
   }, [agentSaved]);
 
   return (
-    <Page
-      breadcrumbs={[
-        { content: "Agents", url: generatePath(AgentRoutePaths.Index) },
-      ]}
-      title={`${agentSaved?.firstName} ${agentSaved?.lastName}`}
-      titleMetadata={
-        <Badge status={agentStatus.status}>{agentStatus.label}</Badge>
-      }
-    >
-      <Layout>
-        {banner.visible && (
-          <Layout.Section>
-            <Banner banner={banner} onDismiss={closeBanner}></Banner>
-          </Layout.Section>
-        )}
-
-        <Layout.Section>
-          <Card>
-            <Card.Section>
-              <AgentForm
-                innerRef={formRef}
-                initialValues={agentSaved}
-                disableForm={!agentSaved?.emailConfirmed}
-                enableReinitialize
-                onSubmit={handleSubmit}
-              />
-              {!agentSaved?.emailConfirmed && (
-                <div className="pt-4">
-                  <Link dataPrimaryLink onClick={resendMail}>
-                    <Text variant="bodyLg" as="p">
-                      Re-send Invitation Email
-                    </Text>
-                  </Link>
-                </div>
+    <>
+      <Suspense
+        fallback={
+          <div
+            className="flex items-center content-center w"
+            style={{ width: "100vw", height: "100vh" }}
+          >
+            <Loading />
+          </div>
+        }
+      >
+        {!loadingGetDetail && agentSaved ? (
+          <Page
+            breadcrumbs={[
+              { content: "Agents", url: generatePath(AgentRoutePaths.Index) },
+            ]}
+            title={`${agentSaved?.firstName} ${agentSaved?.lastName}`}
+            titleMetadata={
+              <Badge status={agentStatus.status}>{agentStatus.label}</Badge>
+            }
+          >
+            <Layout>
+              {banner.visible && (
+                <Layout.Section>
+                  <Banner banner={banner} onDismiss={closeBanner}></Banner>
+                </Layout.Section>
               )}
 
-              <div className="pt-6">
-                <Stack distribution="trailing">
-                  {!agentSaved?.emailConfirmed && agentSaved?.isActive ? (
-                    <ButtonGroup>
-                      <Button
-                        onClick={() =>
-                          navigate(generatePath(AgentRoutePaths.Index))
-                        }
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        onClick={handleDeleteAgent}
-                        loading={loadingDelete}
-                        destructive
-                      >
-                        Remove
-                      </Button>
-                    </ButtonGroup>
-                  ) : (
-                    <ButtonGroup>
-                      <Button
-                        onClick={() =>
-                          navigate(generatePath(AgentRoutePaths.Index))
-                        }
-                      >
-                        Cancel
-                      </Button>
-                      {agentSaved?._id && (
-                        <Button
-                          primary={!agentSaved?.isActive}
-                          destructive={agentSaved?.isActive}
-                          loading={loadingActive || loadingDeactivate}
-                          onClick={() =>
-                            agentSaved?.isActive
-                              ? deActiveAgentApi(agentSaved._id ?? id)
-                              : activeAgentApi(agentSaved._id ?? id)
-                          }
-                        >
-                          {agentSaved?.isActive ? "Deactivate" : "Active"}
-                        </Button>
-                      )}
+              <Layout.Section>
+                <Card>
+                  <Card.Section>
+                    <AgentForm
+                      innerRef={formRef}
+                      initialValues={agentSaved}
+                      disableForm={
+                        (agentSaved.isActive && !agentSaved?.emailConfirmed) ||
+                        !agentSaved.isActive
+                      }
+                      enableReinitialize
+                      onSubmit={handleSubmit}
+                    />
+                    {!agentSaved?.emailConfirmed && (
+                      <div className="pt-4">
+                        <Link dataPrimaryLink onClick={resendMail}>
+                          <Text variant="bodyLg" as="p">
+                            Re-send Invitation Email
+                          </Text>
+                        </Link>
+                      </div>
+                    )}
 
-                      <Button
-                        onClick={() => formRef.current?.submitForm()}
-                        loading={loadingDelete}
-                        primary
-                      >
-                        Save
-                      </Button>
-                    </ButtonGroup>
-                  )}
-                </Stack>
-              </div>
-            </Card.Section>
-          </Card>
-        </Layout.Section>
-      </Layout>
-    </Page>
+                    <div className="pt-6">
+                      <Stack distribution="trailing">
+                        {!agentSaved?.emailConfirmed && agentSaved?.isActive ? (
+                          <ButtonGroup>
+                            <Button
+                              onClick={() =>
+                                navigate(generatePath(AgentRoutePaths.Index))
+                              }
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              onClick={handleDeleteAgent}
+                              loading={loadingDelete}
+                              destructive
+                            >
+                              Remove
+                            </Button>
+                          </ButtonGroup>
+                        ) : (
+                          <ButtonGroup>
+                            <Button
+                              onClick={() =>
+                                navigate(generatePath(AgentRoutePaths.Index))
+                              }
+                            >
+                              Cancel
+                            </Button>
+                            {agentSaved?._id && (
+                              <Button
+                                primary={!agentSaved?.isActive}
+                                destructive={agentSaved?.isActive}
+                                loading={loadingActive || loadingDeactivate}
+                                onClick={() =>
+                                  agentSaved?.isActive
+                                    ? deActiveAgentApi(agentSaved._id ?? id)
+                                    : activeAgentApi(agentSaved._id ?? id)
+                                }
+                              >
+                                {agentSaved?.isActive ? "Deactivate" : "Active"}
+                              </Button>
+                            )}
+                            {agentSaved.isActive && (
+                              <Button
+                                onClick={() => formRef.current?.submitForm()}
+                                loading={loadingDelete}
+                                primary
+                              >
+                                Save
+                              </Button>
+                            )}
+                          </ButtonGroup>
+                        )}
+                      </Stack>
+                    </div>
+                  </Card.Section>
+                </Card>
+              </Layout.Section>
+            </Layout>
+          </Page>
+        ) : (
+          "Loading..."
+        )}
+      </Suspense>
+    </>
   );
 };
 

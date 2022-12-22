@@ -38,6 +38,11 @@ export interface CreateAgentRequest {
 
 export type CreateAgentResponse = BaseResponse<Agent>;
 
+export enum ErrorCodeCreate {
+  INVITATION_EXISTS = "INVITATION_EXISTS",
+  USER_IS_EXISTS = "USER_IS_EXISTS",
+}
+
 // GET ONE
 export type GetOneAgentResponse = BaseResponse<Agent>;
 

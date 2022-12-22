@@ -40,7 +40,8 @@ export function LoadingProvider({
 
   const startLoading = useCallback(() => {
     turnOnLoading();
-    setCount((cur) => cur + 1);
+    // setCount((cur) => cur + 1);
+    setCount(1);
   }, []);
 
   const stopLoading = useCallback(() => {
@@ -53,10 +54,6 @@ export function LoadingProvider({
       return cur - 1;
     });
   }, []);
-
-  useEffect(() => {
-    console.log("loading", state);
-  }, [state]);
 
   return (
     <LoadingContext.Provider value={{ startLoading, stopLoading, state }}>

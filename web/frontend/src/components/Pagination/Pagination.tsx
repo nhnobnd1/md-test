@@ -70,7 +70,6 @@ const Pagination = ({
           list.push(0);
         }
       }
-      console.log(list, "list left");
       return list;
     }, [page, pageAmount]);
 
