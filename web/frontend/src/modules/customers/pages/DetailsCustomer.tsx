@@ -27,14 +27,12 @@ export default function DetailsCustomer() {
   const [disable, setDisable] = useState(true);
   const [banner, setBanner] = useState<{
     isShow: boolean;
-    message: string;
     type: BannerStatus;
-    title: string;
+    message: string;
   }>({
     isShow: false,
-    message: "",
     type: "success",
-    title: "",
+    message: "",
   });
   const { show } = useToast();
   const { run: fetDetailsCustomer, result } = useJob(
@@ -62,17 +60,15 @@ export default function DetailsCustomer() {
         if (data.statusCode === 200) {
           setBanner({
             isShow: true,
-            message: "Edit customer success",
             type: "success",
-            title: "Edit customer is successful",
+            message: "Customer Profile has been updated succcesfully.",
           });
           show("Edit customer success");
         } else {
           setBanner({
-            message: "Edit customer is success",
             isShow: true,
             type: "critical",
-            title: "There is an error with this customer initialization",
+            message: "Customer Profile has been updated failed.",
           });
           show("Edit customer failed", {
             isError: true,
@@ -82,9 +78,8 @@ export default function DetailsCustomer() {
       catchError((error) => {
         setBanner({
           isShow: true,
-          message: error.response.data.error[0],
           type: "critical",
-          title: "There is an error with this customer initialization",
+          message: "Customer Profile has been updated failed.",
         });
         show("Edit customer failed", {
           isError: true,
@@ -128,9 +123,8 @@ export default function DetailsCustomer() {
     if (state ? state.status === 200 : false) {
       setBanner({
         isShow: true,
-        message: "Create customer is success",
         type: "success",
-        title: "Create customer is successful",
+        message: "Customer Profile has been created successfully.",
       });
     }
   }, []);
@@ -157,10 +151,11 @@ export default function DetailsCustomer() {
           <Layout.Section>
             {banner.isShow ? (
               <Banner
-                title={banner.title}
                 status={banner.type}
                 onDismiss={() => setBanner({ ...banner, isShow: false })}
-              ></Banner>
+              >
+                {banner.message}
+              </Banner>
             ) : null}
           </Layout.Section>
           <Layout.Section>

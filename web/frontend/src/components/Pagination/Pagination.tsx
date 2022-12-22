@@ -139,7 +139,7 @@ const Pagination = ({
         setPage((value) => value - 1);
       }
     }
-  }, [currentPage, page]);
+  }, [currentPage, page, pageAmount]);
 
   const handleNext = useCallback(() => {
     if (props.onNext) {
@@ -149,7 +149,7 @@ const Pagination = ({
         setPage((value) => value + 1);
       }
     }
-  }, [currentPage, page]);
+  }, [currentPage, page, pageAmount]);
 
   useEffect(() => {
     onChangePage && onChangePage(page);

@@ -6,7 +6,6 @@ import CustomersRoutePaths from "src/modules/customers/routes/paths";
 const customersRoutes: IRoute = {
   path: CustomersRoutePaths.Index,
   title: "Customers",
-  showInNavigationMenu: true,
   navigation: {
     icon: () => <CustomersMajor />,
   },

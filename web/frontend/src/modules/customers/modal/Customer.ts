@@ -23,8 +23,11 @@ export type Customer = {
   phoneNumber: string;
   storeId: string;
 };
-
-export type GetListCustomerRequest = BaseListRequest;
+export interface BaseListCustomerRequest extends BaseListRequest {
+  sortBy: string;
+  sortOder: number;
+}
+export type GetListCustomerRequest = BaseListCustomerRequest;
 export type GetListCustomerResponse = BaseListResponse<Customer>;
 export type GetOneCustomerResponse = BaseListResponse<Customer>;
 export type CreateCustomerRequest = Omit<Customer, "id">;

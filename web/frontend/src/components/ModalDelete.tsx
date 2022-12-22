@@ -3,8 +3,7 @@ import { Modal, ModalProps, TextContainer } from "@shopify/polaris";
 export interface ModalDelete extends ModalProps {
   title: string;
   content?: string;
-  dataDelete: string[];
-  deleteAction: (dataDelete: string[]) => void;
+  deleteAction: () => void;
 }
 const ModalDelete = ({
   open,
@@ -12,7 +11,6 @@ const ModalDelete = ({
   title,
   content,
   deleteAction,
-  dataDelete,
 }: ModalDelete) => {
   return (
     <Modal
@@ -22,7 +20,7 @@ const ModalDelete = ({
       primaryAction={{
         content: "Delete",
         onAction: () => {
-          deleteAction(dataDelete);
+          deleteAction();
           onClose();
         },
         destructive: true,

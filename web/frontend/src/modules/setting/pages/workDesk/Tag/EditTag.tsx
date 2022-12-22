@@ -24,12 +24,10 @@ export default function DetailsTag() {
     isShow: boolean;
     message: string;
     type: BannerStatus;
-    title: string;
   }>({
     isShow: false,
     message: "",
     type: "success",
-    title: "",
   });
   const { show } = useToast();
   const { run: fetDetailsTag, result } = useJob(
@@ -52,19 +50,17 @@ export default function DetailsTag() {
         if (data.statusCode === 200) {
           setBanner({
             isShow: true,
-            message: "Edit tag success",
+            message: "Tag has been updated succcesfully.",
             type: "success",
-            title: "Edit tag is successful",
           });
           show("Edit tag success");
         } else {
           setBanner({
-            message: "Edit tag is success",
+            message: "Tag has been updated succcesfully.",
             isShow: true,
             type: "critical",
-            title: "There is an error with this tag initialization",
           });
-          show("Edit tag failed", {
+          show("Tag has been updated failed.", {
             isError: true,
           });
         }
@@ -74,7 +70,6 @@ export default function DetailsTag() {
           isShow: true,
           message: error.response.data.error[0],
           type: "critical",
-          title: "There is an error with this tag initialization",
         });
         show("Edit tag failed", {
           isError: true,
@@ -96,9 +91,8 @@ export default function DetailsTag() {
     if (state ? state.status === 200 : false) {
       setBanner({
         isShow: true,
-        message: "Create tag is success",
+        message: "Tag has been created successfully.",
         type: "success",
-        title: "Create tag is successful",
       });
     }
   }, []);
@@ -127,10 +121,12 @@ export default function DetailsTag() {
           <Layout.Section>
             {banner.isShow ? (
               <Banner
-                title={banner.title}
+                title={undefined}
                 status={banner.type}
                 onDismiss={() => setBanner({ ...banner, isShow: false })}
-              ></Banner>
+              >
+                {banner.message}
+              </Banner>
             ) : null}
           </Layout.Section>
           <Layout.Section>

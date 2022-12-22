@@ -70,7 +70,6 @@ export default function CreateTag() {
       />
       <Page
         title="Create tag"
-        subtitle="Profile tag"
         compactTitle
         breadcrumbs={[
           { onAction: () => navigate(SettingRoutePaths.Workdesk.Tag.Index) },
