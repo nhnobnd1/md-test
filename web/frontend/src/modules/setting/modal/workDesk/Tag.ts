@@ -23,7 +23,7 @@ export type Tag = {
 };
 export interface BaseListTagRequest extends BaseListRequest {
   sortBy: string;
-  sortOder: number;
+  sortOrder: number;
 }
 export type GetListTagRequest = BaseListTagRequest;
 export type GetListTagResponse = BaseListResponse<Tag>;

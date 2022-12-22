@@ -95,19 +95,19 @@ export default function SettingIndexPage() {
   const sortTemplate = [
     {
       sortBy: "name",
-      sortOder: 1,
+      sortOrder: 1,
     },
     {
       sortBy: "name",
-      sortOder: -1,
+      sortOrder: -1,
     },
     {
       sortBy: "email",
-      sortOder: 1,
+      sortOrder: 1,
     },
     {
       sortBy: "email",
-      sortOder: -1,
+      sortOrder: -1,
     },
   ];
   const [sortTag, setSortTag] = useState(0);

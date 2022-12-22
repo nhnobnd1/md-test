@@ -92,19 +92,19 @@ export default function CustomerIndexPage() {
   const sortTemplate = [
     {
       sortBy: "lastName",
-      sortOder: 1,
+      sortOrder: 1,
     },
     {
       sortBy: "lastName",
-      sortOder: -1,
+      sortOrder: -1,
     },
     {
       sortBy: "email",
-      sortOder: 1,
+      sortOrder: 1,
     },
     {
       sortBy: "email",
-      sortOder: -1,
+      sortOrder: -1,
     },
   ];
   const [sortCustomer, setSortCustomer] = useState(0);
