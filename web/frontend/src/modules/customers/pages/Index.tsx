@@ -1,15 +1,20 @@
 import { useToast } from "@shopify/app-bridge-react";
 import {
+  Button,
   Card,
+  ChoiceList,
   EmptySearchResult,
   Filters,
+  Icon,
   IndexTable,
   Link,
   Page,
+  Popover,
+  Stack,
   Text,
   useIndexResourceState,
 } from "@shopify/polaris";
-import { IndexTableSortDirection } from "@shopify/polaris/build/ts/latest/src/components/IndexTable";
+import { SortMinor } from "@shopify/polaris-icons";
 import { useCallback, useEffect, useState } from "react";
 import { generatePath, useNavigate } from "react-router-dom";
 import { catchError, map, of } from "rxjs";
@@ -17,14 +22,24 @@ import ModalDelete from "src/components/ModalDelete";
 import Pagination from "src/components/Pagination/Pagination";
 import env from "src/core/env";
 import { useDebounceFn, useJob } from "src/core/hooks";
-import { BaseListRequest } from "src/models/Request";
-import { Customer } from "src/modules/customers/modal/Customer";
+import {
+  BaseListCustomerRequest,
+  Customer,
+} from "src/modules/customers/modal/Customer";
 import CustomerRepository from "src/modules/customers/repositories/CustomerRepository";
 import CustomersRoutePaths from "src/modules/customers/routes/paths";
 export default function CustomerIndexPage() {
   const navigate = useNavigate();
   const { show } = useToast();
   const [customers, setCustomers] = useState<Customer[]>([]);
+
+  const [popoverSort, setPopoverSort] = useState(false);
+
+  const togglePopoverSort = useCallback(
+    () => setPopoverSort((popoverSort) => !popoverSort),
+    []
+  );
+
   const resourceName = {
     singular: "customer",
     plural: "customers",
@@ -74,12 +89,37 @@ export default function CustomerIndexPage() {
       onAction: () => handleOpenModalDelete(),
     },
   ];
+  const sortTemplate = [
+    {
+      sortBy: "lastName",
+      sortOder: 1,
+    },
+    {
+      sortBy: "lastName",
+      sortOder: -1,
+    },
+    {
+      sortBy: "email",
+      sortOder: 1,
+    },
+    {
+      sortBy: "email",
+      sortOder: -1,
+    },
+  ];
+  const [sortCustomer, setSortCustomer] = useState(0);
+  const [valueSortCustomer, setValueSortCustomer] = useState(
+    sortTemplate[Number(sortCustomer)]
+  );
+
   const defaultFilter = () => ({
     page: 1,
     limit: env.DEFAULT_PAGE_SIZE,
     query: "",
+    ...valueSortCustomer,
   });
-  const [filterData, setFilterData] = useState<BaseListRequest>(defaultFilter);
+  const [filterData, setFilterData] =
+    useState<BaseListCustomerRequest>(defaultFilter);
   const handleSearchChange = useCallback((value: string) => {
     setFilterData(() => ({
       page: 1,
@@ -98,22 +138,24 @@ export default function CustomerIndexPage() {
   const resetFilterData = useCallback(() => {
     setFilterData(defaultFilter());
   }, []);
-  const handleSort = useCallback(
-    (index, direction: IndexTableSortDirection) => {
-      if (index === 0) {
-        const sortFirstName = [...customers].sort((rowA, rowB) => {
-          const nameA = rowA.firstName;
-          const nameB = rowB.firstName;
-          if (direction === "descending")
-            return nameA > nameB ? 1 : nameB > nameA ? -1 : 0;
-          else return nameA > nameB ? -1 : nameB > nameA ? 1 : 0;
-        });
-        return setCustomers(sortFirstName);
-      }
-    },
-    [customers]
-  );
 
+  const choices = [
+    { label: "Sort by name A-Z", value: "0" },
+    { label: "Sort by name Z-A", value: "1" },
+    { label: "Sort by email A-Z", value: "2" },
+    { label: "Sort by email Z-A", value: "3" },
+  ];
+  const handleSortChange = useCallback((value) => {
+    setSortCustomer(parseInt(value[0]));
+  }, []);
+  const sortButton = (
+    <Button
+      onClick={togglePopoverSort}
+      icon={<Icon source={() => <SortMinor />} color="base" />}
+    >
+      Sort
+    </Button>
+  );
   const [isOpen, setIsOpen] = useState(false);
   const handleOpenModalDelete = () => {
     setIsOpen(true);
@@ -163,6 +205,15 @@ export default function CustomerIndexPage() {
     wait: 300,
   });
   useEffect(() => {
+    setValueSortCustomer(sortTemplate[sortCustomer]);
+  }, [sortCustomer]);
+  useEffect(() => {
+    setFilterData({
+      ...filterData,
+      ...valueSortCustomer,
+    });
+  }, [valueSortCustomer]);
+  useEffect(() => {
     callAPI();
   }, [filterData]);
   return (
@@ -183,19 +234,40 @@ export default function CustomerIndexPage() {
           content={
             "This customer will be removed permanently. All customer's tickets and his profile will no longer accessible."
           }
-          deleteAction={handleRemoveCustomer}
-          dataDelete={selectedResources}
+          deleteAction={() => handleRemoveCustomer(selectedResources)}
         />
-        <Card sectioned>
+        <Card>
           <div className="flex-1 px-4 pt-4 pb-2">
-            <Filters
-              queryValue={filterData.query}
-              onQueryChange={handleSearchChange}
-              onQueryClear={handleQueryValueRemove}
-              queryPlaceholder="Search"
-              filters={[]}
-              onClearAll={resetFilterData}
-            />
+            <Stack distribution="trailing" spacing="loose">
+              <Stack.Item fill={true}>
+                <Filters
+                  queryValue={filterData.query}
+                  onQueryChange={handleSearchChange}
+                  onQueryClear={handleQueryValueRemove}
+                  queryPlaceholder="Search"
+                  filters={[]}
+                  onClearAll={resetFilterData}
+                />
+              </Stack.Item>
+              <Stack.Item>
+                <Popover
+                  active={popoverSort}
+                  activator={sortButton}
+                  autofocusTarget="first-node"
+                  onClose={togglePopoverSort}
+                  preferredAlignment={"left"}
+                  sectioned
+                >
+                  <ChoiceList
+                    title="Sort customer"
+                    titleHidden
+                    choices={choices}
+                    selected={[sortCustomer.toString()] || []}
+                    onChange={handleSortChange}
+                  />
+                </Popover>
+              </Stack.Item>
+            </Stack>
           </div>
           <IndexTable
             resourceName={resourceName}
@@ -210,8 +282,6 @@ export default function CustomerIndexPage() {
               { title: "Number of tickets" },
             ]}
             hasMoreItems
-            sortable={[true, true, true]}
-            onSort={handleSort}
             promotedBulkActions={promotedBulkActions}
             loading={loadCustomer}
             emptyState={

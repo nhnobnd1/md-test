@@ -9,6 +9,8 @@ import {
   IndexTable,
   Link,
   Page,
+  Popover,
+  Stack,
   Text,
   useIndexResourceState,
 } from "@shopify/polaris";
@@ -31,6 +33,12 @@ export default function SettingIndexPage() {
   const navigate = useNavigate();
   const { show } = useToast();
   const [tags, setTags] = useState<Tag[]>([]);
+  const [popoverSort, setPopoverSort] = useState(false);
+
+  const togglePopoverSort = useCallback(
+    () => setPopoverSort((popoverSort) => !popoverSort),
+    []
+  );
   const resourceName = {
     singular: "tag",
     plural: "tags",
@@ -142,24 +150,14 @@ export default function SettingIndexPage() {
   const handleSortChange = useCallback((value) => {
     setSortTag(parseInt(value[0]));
   }, []);
-  const filters = [
-    {
-      key: "sort",
-      label: ` Sort`,
-      filter: (
-        <ChoiceList
-          title="Sort tag"
-          titleHidden
-          choices={choices}
-          selected={[sortTag.toString()] || []}
-          onChange={handleSortChange}
-        />
-      ),
-      shortcut: true,
-      hideClearButton: true,
-    },
-  ];
-
+  const sortButton = (
+    <Button
+      onClick={togglePopoverSort}
+      icon={<Icon source={() => <SortMinor />} color="base" />}
+    >
+      Sort
+    </Button>
+  );
   const [isOpen, setIsOpen] = useState(false);
   const handleOpenModalDelete = () => {
     setIsOpen(true);
@@ -241,20 +239,37 @@ export default function SettingIndexPage() {
           deleteAction={() => handleRemoveTag(selectedResources)}
         />
         <Card>
-          <div className="flex items-center px-4 pt-4 pb-2">
-            <Filters
-              queryValue={filterData.query}
-              onQueryChange={handleSearchChange}
-              onQueryClear={handleQueryValueRemove}
-              queryPlaceholder="Search"
-              filters={[]}
-              onClearAll={resetFilterData}
-            />
-            <div className="w-full">
-              <Button icon={<Icon source={() => <SortMinor />} color="base" />}>
-                Sort
-              </Button>
-            </div>
+          <div className="flex-1 px-4 pt-4 pb-2">
+            <Stack distribution="trailing" spacing="loose">
+              <Stack.Item fill={true}>
+                <Filters
+                  queryValue={filterData.query}
+                  onQueryChange={handleSearchChange}
+                  onQueryClear={handleQueryValueRemove}
+                  queryPlaceholder="Search"
+                  filters={[]}
+                  onClearAll={resetFilterData}
+                />
+              </Stack.Item>
+              <Stack.Item>
+                <Popover
+                  active={popoverSort}
+                  activator={sortButton}
+                  autofocusTarget="first-node"
+                  onClose={togglePopoverSort}
+                  preferredAlignment={"left"}
+                  sectioned
+                >
+                  <ChoiceList
+                    title="Sort tag"
+                    titleHidden
+                    choices={choices}
+                    selected={[sortTag.toString()] || []}
+                    onChange={handleSortChange}
+                  />
+                </Popover>
+              </Stack.Item>
+            </Stack>
           </div>
           <IndexTable
             resourceName={resourceName}

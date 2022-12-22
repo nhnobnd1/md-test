@@ -28,11 +28,11 @@ export default function DetailsCustomer() {
   const [banner, setBanner] = useState<{
     isShow: boolean;
     type: BannerStatus;
-    title: string;
+    message: string;
   }>({
     isShow: false,
     type: "success",
-    title: "",
+    message: "",
   });
   const { show } = useToast();
   const { run: fetDetailsCustomer, result } = useJob(
@@ -61,14 +61,14 @@ export default function DetailsCustomer() {
           setBanner({
             isShow: true,
             type: "success",
-            title: "Edit customer is successful",
+            message: "Customer Profile has been updated succcesfully.",
           });
           show("Edit customer success");
         } else {
           setBanner({
             isShow: true,
             type: "critical",
-            title: "There is an error with this customer initialization",
+            message: "Customer Profile has been updated failed.",
           });
           show("Edit customer failed", {
             isError: true,
@@ -79,7 +79,7 @@ export default function DetailsCustomer() {
         setBanner({
           isShow: true,
           type: "critical",
-          title: "There is an error with this customer initialization",
+          message: "Customer Profile has been updated failed.",
         });
         show("Edit customer failed", {
           isError: true,
@@ -124,7 +124,7 @@ export default function DetailsCustomer() {
       setBanner({
         isShow: true,
         type: "success",
-        title: "Create customer is successful",
+        message: "Customer Profile has been created successfully.",
       });
     }
   }, []);
@@ -151,10 +151,11 @@ export default function DetailsCustomer() {
           <Layout.Section>
             {banner.isShow ? (
               <Banner
-                title={banner.title}
                 status={banner.type}
                 onDismiss={() => setBanner({ ...banner, isShow: false })}
-              ></Banner>
+              >
+                {banner.message}
+              </Banner>
             ) : null}
           </Layout.Section>
           <Layout.Section>

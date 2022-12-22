@@ -32,7 +32,7 @@ const TagForm = (
   }, []);
   const validateObject = object({
     name: string().required("Required!"),
-    description: string().required("Required!"),
+    description: string(),
   });
   return (
     <Card sectioned>
