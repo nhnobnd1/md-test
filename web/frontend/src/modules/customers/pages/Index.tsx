@@ -9,6 +9,7 @@ import {
   Text,
   useIndexResourceState,
 } from "@shopify/polaris";
+import { IndexTableSortDirection } from "@shopify/polaris/build/ts/latest/src/components/IndexTable";
 import { useCallback, useEffect, useState } from "react";
 import { generatePath, useNavigate } from "react-router-dom";
 import { catchError, map, of } from "rxjs";
@@ -79,12 +80,13 @@ export default function CustomerIndexPage() {
     query: "",
   });
   const [filterData, setFilterData] = useState<BaseListRequest>(defaultFilter);
-  const handleSearchChange = (value: string) => {
+  const handleSearchChange = useCallback((value: string) => {
     setFilterData(() => ({
+      page: 1,
       ...filterData,
       query: value,
     }));
-  };
+  }, []);
   const handleQueryValueRemove = useCallback(() => {
     setFilterData((old) => {
       return {
@@ -96,6 +98,21 @@ export default function CustomerIndexPage() {
   const resetFilterData = useCallback(() => {
     setFilterData(defaultFilter());
   }, []);
+  const handleSort = useCallback(
+    (index, direction: IndexTableSortDirection) => {
+      if (index === 0) {
+        const sortFirstName = [...customers].sort((rowA, rowB) => {
+          const nameA = rowA.firstName;
+          const nameB = rowB.firstName;
+          if (direction === "descending")
+            return nameA > nameB ? 1 : nameB > nameA ? -1 : 0;
+          else return nameA > nameB ? -1 : nameB > nameA ? 1 : 0;
+        });
+        return setCustomers(sortFirstName);
+      }
+    },
+    [customers]
+  );
 
   const [isOpen, setIsOpen] = useState(false);
   const handleOpenModalDelete = () => {
@@ -146,8 +163,6 @@ export default function CustomerIndexPage() {
     wait: 300,
   });
   useEffect(() => {
-    console.log("asda");
-
     callAPI();
   }, [filterData]);
   return (
@@ -195,6 +210,8 @@ export default function CustomerIndexPage() {
               { title: "Number of tickets" },
             ]}
             hasMoreItems
+            sortable={[true, true, true]}
+            onSort={handleSort}
             promotedBulkActions={promotedBulkActions}
             loading={loadCustomer}
             emptyState={
@@ -214,6 +231,8 @@ export default function CustomerIndexPage() {
             pageSize={filterData.limit ?? 0}
             currentPage={filterData.page ?? 1}
             onChangePage={(page) => setFilterData((val) => ({ ...val, page }))}
+            previousTooltip={"Previous"}
+            nextTooltip={"Next"}
           />
         </div>
       </Page>

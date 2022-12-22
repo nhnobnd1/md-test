@@ -6,7 +6,6 @@ import SettingRoutePaths from "src/modules/setting/routes/paths";
 const settingRoutes: IRoute = {
   path: SettingRoutePaths.Index,
   title: "Setting",
-  showInNavigationMenu: true,
   component: lazy(() => import("src/layouts/MainLayout")),
   navigation: {
     icon: () => <SettingsMajor />,

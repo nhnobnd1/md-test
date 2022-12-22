@@ -27,12 +27,10 @@ export default function DetailsCustomer() {
   const [disable, setDisable] = useState(true);
   const [banner, setBanner] = useState<{
     isShow: boolean;
-    message: string;
     type: BannerStatus;
     title: string;
   }>({
     isShow: false,
-    message: "",
     type: "success",
     title: "",
   });
@@ -62,14 +60,12 @@ export default function DetailsCustomer() {
         if (data.statusCode === 200) {
           setBanner({
             isShow: true,
-            message: "Edit customer success",
             type: "success",
             title: "Edit customer is successful",
           });
           show("Edit customer success");
         } else {
           setBanner({
-            message: "Edit customer is success",
             isShow: true,
             type: "critical",
             title: "There is an error with this customer initialization",
@@ -82,7 +78,6 @@ export default function DetailsCustomer() {
       catchError((error) => {
         setBanner({
           isShow: true,
-          message: error.response.data.error[0],
           type: "critical",
           title: "There is an error with this customer initialization",
         });
@@ -128,7 +123,6 @@ export default function DetailsCustomer() {
     if (state ? state.status === 200 : false) {
       setBanner({
         isShow: true,
-        message: "Create customer is success",
         type: "success",
         title: "Create customer is successful",
       });

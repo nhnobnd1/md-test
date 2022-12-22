@@ -1,30 +1,33 @@
 import { useToast } from "@shopify/app-bridge-react";
 import {
+  Button,
   Card,
+  ChoiceList,
   EmptySearchResult,
   Filters,
+  Icon,
   IndexTable,
   Link,
   Page,
   Text,
   useIndexResourceState,
 } from "@shopify/polaris";
+import { SortMinor } from "@shopify/polaris-icons";
 import dayjs from "dayjs";
-import { isEmpty } from "lodash-es";
 import { useCallback, useEffect, useState } from "react";
-import { generatePath, useNavigate, useParams } from "react-router-dom";
+import { generatePath, useNavigate } from "react-router-dom";
 import { catchError, map, of } from "rxjs";
 import ModalDelete from "src/components/ModalDelete";
 import Pagination from "src/components/Pagination/Pagination";
 import env from "src/core/env";
-import { useDebounceFn, useJob, useMount } from "src/core/hooks";
-import useTable from "src/core/hooks/useTable";
-import { BaseListRequest } from "src/models/Request";
-import { Tag } from "src/modules/setting/modal/workDesk/Tag";
+import { useDebounceFn, useJob } from "src/core/hooks";
+import {
+  BaseListTagRequest,
+  Tag,
+} from "src/modules/setting/modal/workDesk/Tag";
 import TagRepository from "src/modules/setting/repository/workDesk/TagRepository";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
 export default function SettingIndexPage() {
-  const param = useParams();
   const navigate = useNavigate();
   const { show } = useToast();
   const [tags, setTags] = useState<Tag[]>([]);
@@ -81,33 +84,44 @@ export default function SettingIndexPage() {
       onAction: () => handleOpenModalDelete(),
     },
   ];
-  const { page, setPage, rowsPerPage } = useTable({
-    defaultRowsPerPage: env.DEFAULT_PAGE_SIZE,
-  });
+  const sortTemplate = [
+    {
+      sortBy: "name",
+      sortOder: 1,
+    },
+    {
+      sortBy: "name",
+      sortOder: -1,
+    },
+    {
+      sortBy: "email",
+      sortOder: 1,
+    },
+    {
+      sortBy: "email",
+      sortOder: -1,
+    },
+  ];
+  const [sortTag, setSortTag] = useState(0);
+  const [valueSortTag, setValueSortTag] = useState(
+    sortTemplate[Number(sortTag)]
+  );
+
   const defaultFilter = () => ({
     page: 1,
     limit: env.DEFAULT_PAGE_SIZE,
     query: "",
+    ...valueSortTag,
   });
-  const [filterData, setFilterData] = useState<BaseListRequest>(
-    !isEmpty(param)
-      ? {
-          page: page ? Number(page) : 1,
-          limit: rowsPerPage ? Number(rowsPerPage) : env.DEFAULT_PAGE_SIZE,
-          query: "",
-        }
-      : {
-          page: 1,
-          limit: env.DEFAULT_PAGE_SIZE,
-        }
-  );
-  const handleSearchChange = (value: string) => {
-    setPage(1);
+  const [filterData, setFilterData] =
+    useState<BaseListTagRequest>(defaultFilter);
+  const handleSearchChange = useCallback((value: string) => {
     setFilterData(() => ({
+      page: 1,
       ...filterData,
       query: value,
     }));
-  };
+  }, []);
   const handleQueryValueRemove = useCallback(() => {
     setFilterData((old) => {
       return {
@@ -119,6 +133,32 @@ export default function SettingIndexPage() {
   const resetFilterData = useCallback(() => {
     setFilterData(defaultFilter());
   }, []);
+  const choices = [
+    { label: "Sort by name A-Z", value: "0" },
+    { label: "Sort by name Z-A", value: "1" },
+    { label: "Sort by email A-Z", value: "2" },
+    { label: "Sort by email Z-A", value: "3" },
+  ];
+  const handleSortChange = useCallback((value) => {
+    setSortTag(parseInt(value[0]));
+  }, []);
+  const filters = [
+    {
+      key: "sort",
+      label: ` Sort`,
+      filter: (
+        <ChoiceList
+          title="Sort tag"
+          titleHidden
+          choices={choices}
+          selected={[sortTag.toString()] || []}
+          onChange={handleSortChange}
+        />
+      ),
+      shortcut: true,
+      hideClearButton: true,
+    },
+  ];
 
   const [isOpen, setIsOpen] = useState(false);
   const handleOpenModalDelete = () => {
@@ -169,15 +209,17 @@ export default function SettingIndexPage() {
     wait: 300,
   });
   useEffect(() => {
+    setValueSortTag(sortTemplate[sortTag]);
+  }, [sortTag]);
+  useEffect(() => {
     setFilterData({
       ...filterData,
-      page: page,
+      ...valueSortTag,
     });
-  }, [page]);
+  }, [valueSortTag]);
   useEffect(() => {
     callAPI();
   }, [filterData]);
-  useMount(() => setPage(1));
   return (
     <>
       <Page
@@ -196,11 +238,10 @@ export default function SettingIndexPage() {
           content={
             "This tag will be removed permanently. This action cannot be undone. All tickets which are using this tag will get affected too."
           }
-          deleteAction={handleRemoveTag}
-          dataDelete={selectedResources}
+          deleteAction={() => handleRemoveTag(selectedResources)}
         />
         <Card>
-          <div className="flex-1 px-4 pt-4 pb-2">
+          <div className="flex items-center px-4 pt-4 pb-2">
             <Filters
               queryValue={filterData.query}
               onQueryChange={handleSearchChange}
@@ -209,6 +250,11 @@ export default function SettingIndexPage() {
               filters={[]}
               onClearAll={resetFilterData}
             />
+            <div className="w-full">
+              <Button icon={<Icon source={() => <SortMinor />} color="base" />}>
+                Sort
+              </Button>
+            </div>
           </div>
           <IndexTable
             resourceName={resourceName}
@@ -240,24 +286,8 @@ export default function SettingIndexPage() {
           <Pagination
             total={result ? result.metadata.totalCount : 1}
             pageSize={filterData.limit ?? 0}
-            currentPage={page}
-            hasPrevious
-            onPrevious={() => {
-              if (page > 1) {
-                setPage(page - 1);
-              }
-            }}
-            hasNext
-            onNext={() => {
-              if (
-                page <
-                (result
-                  ? result.metadata.totalCount / env.DEFAULT_PAGE_SIZE
-                  : 1)
-              ) {
-                setPage(page + 1);
-              }
-            }}
+            currentPage={filterData.page ?? 1}
+            onChangePage={(page) => setFilterData((val) => ({ ...val, page }))}
             previousTooltip={"Previous"}
             nextTooltip={"Next"}
           />
