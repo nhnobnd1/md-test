@@ -3,12 +3,14 @@ import { Modal, ModalProps, TextContainer } from "@shopify/polaris";
 export interface ModalDelete extends ModalProps {
   title: string;
   content?: string;
+  textConfirm?: string;
   deleteAction: () => void;
 }
-const ModalDelete = ({
+export const ModalDelete = ({
   open,
   onClose,
   title,
+  textConfirm = "Delete",
   content,
   deleteAction,
 }: ModalDelete) => {
@@ -18,7 +20,7 @@ const ModalDelete = ({
       title={title}
       onClose={onClose}
       primaryAction={{
-        content: "Delete",
+        content: textConfirm,
         onAction: () => {
           deleteAction();
           onClose();

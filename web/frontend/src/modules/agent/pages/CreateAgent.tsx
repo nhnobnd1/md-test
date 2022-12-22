@@ -11,7 +11,7 @@ import { FormikProps } from "formik";
 import { useCallback, useRef } from "react";
 import { generatePath, useNavigate } from "react-router-dom";
 import { catchError, map, of } from "rxjs";
-import Banner from "src/components/Banner/Banner";
+import { Banner } from "src/components/Banner";
 import { useJob } from "src/core/hooks";
 import useAuth from "src/hooks/useAuth";
 import { useBanner } from "src/hooks/useBanner";

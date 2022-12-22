@@ -5,7 +5,7 @@ import { useCallback, useState } from "react";
 export interface TextFieldPasswordProps
   extends Omit<TextFieldProps, "type" | "suffix"> {}
 
-const TextFieldPassword = (props: TextFieldPasswordProps) => {
+export const TextFieldPassword = (props: TextFieldPasswordProps) => {
   const [typeField, setTypeField] = useState<"password" | "text">("password");
 
   const toggleVisiblePassword = useCallback(() => {

@@ -22,8 +22,8 @@ export type Tag = {
   _id: string;
 };
 export interface BaseListTagRequest extends BaseListRequest {
-  sortBy: string;
-  sortOder: number;
+  sortBy?: string;
+  sortOder?: number;
 }
 export type GetListTagRequest = BaseListTagRequest;
 export type GetListTagResponse = BaseListResponse<Tag>;

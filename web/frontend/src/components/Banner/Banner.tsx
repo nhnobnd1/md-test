@@ -7,7 +7,7 @@ interface BannerProps {
   onDismiss: () => void;
 }
 
-const Banner = ({ banner, onDismiss }: BannerProps) => {
+export const Banner = ({ banner, onDismiss }: BannerProps) => {
   return (
     <BannerPolaris
       title={banner.title}
