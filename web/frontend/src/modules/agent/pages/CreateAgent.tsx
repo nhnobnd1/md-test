@@ -50,7 +50,7 @@ const CreateAgent = (props: CreateAgentProps) => {
                 state: {
                   banner: {
                     status: "success",
-                    message: `Add agent Success`,
+                    message: `Create Agent Success`,
                   },
                 },
               }
