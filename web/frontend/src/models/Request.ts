@@ -17,6 +17,8 @@ export interface BaseListRequest {
   page?: number;
   limit?: number;
   query?: string;
+  sortBy?: string;
+  sortOrder?: string | number;
 }
 
 export interface BaseMetaDataListResponse {

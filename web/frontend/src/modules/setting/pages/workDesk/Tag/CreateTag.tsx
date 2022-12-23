@@ -1,21 +1,25 @@
 import { useToast } from "@shopify/app-bridge-react";
 import { Banner, ContextualSaveBar, Layout, Page } from "@shopify/polaris";
+import { FormikProps } from "formik";
 import { useCallback, useRef, useState } from "react";
 import { generatePath, useNavigate } from "react-router-dom";
 import { catchError, map, of } from "rxjs";
 import { useJob } from "src/core/hooks";
-import TagForm, { RefProperties } from "src/modules/setting/component/TagForm";
+import useAuth from "src/hooks/useAuth";
+import TagForm from "src/modules/setting/component/TagForm";
 import { CreateTagRequest } from "src/modules/setting/modal/workDesk/Tag";
 import TagRepository from "src/modules/setting/repository/workDesk/TagRepository";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
 
 export default function CreateTag() {
-  const formRef = useRef<RefProperties>(null);
+  const formRef = useRef<FormikProps<any>>(null);
+  const auth = useAuth();
   const navigate = useNavigate();
   const { show } = useToast();
   const [disable, setDisable] = useState(true);
   const [messageError, setMessageError] = useState("");
   const [banner, setBanner] = useState(false);
+
   const navigateShowDetails = useCallback((id: string, statusCode: number) => {
     navigate(generatePath(SettingRoutePaths.Workdesk.Tag.Edit, { id }), {
       state: { status: statusCode },
@@ -57,15 +61,19 @@ export default function CreateTag() {
       })
     );
   });
+
   const handleChangeValueForm = (value: boolean) => {
     setDisable(value);
   };
+
   const handleSubmitForm = useCallback(() => {
-    formRef.current?.save();
-  }, []);
+    formRef.current?.submitForm();
+  }, [formRef.current]);
+
   const handleResetForm = useCallback(() => {
-    formRef.current?.reset();
-  }, []);
+    formRef.current?.resetForm();
+  }, [formRef.current]);
+
   return (
     <>
       <ContextualSaveBar

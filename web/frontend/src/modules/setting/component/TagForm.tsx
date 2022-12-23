@@ -1,16 +1,8 @@
 import { Card, FormLayout, TextField } from "@shopify/polaris";
 import { FormikProps } from "formik";
-import {
-  ForwardedRef,
-  forwardRef,
-  useCallback,
-  useImperativeHandle,
-  useMemo,
-  useRef,
-} from "react";
+import { ForwardedRef, forwardRef, useCallback } from "react";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
-import useAuth from "src/hooks/useAuth";
 import { object, string } from "yup";
 export interface RefProperties {
   save: () => Promise<void> | undefined;
@@ -19,18 +11,12 @@ export interface RefProperties {
 
 const TagForm = (
   { initialValues, submit, change }: any,
-  ref: ForwardedRef<RefProperties>
+  ref: ForwardedRef<FormikProps<any>>
 ) => {
-  const auth = useAuth();
-  const formRef = useRef<FormikProps<any>>(null);
   const handleSubmit = useCallback((data: any) => {
-    formRef.current?.validateForm(validateObject);
     submit(data);
   }, []);
-  useImperativeHandle(ref, () => ({
-    save: () => formRef.current?.submitForm(),
-    reset: () => formRef.current?.resetForm(),
-  }));
+
   const handleChange = useCallback(() => {
     change(false);
   }, []);
@@ -38,18 +24,11 @@ const TagForm = (
     name: string().required("Required!"),
     description: string(),
   });
-  const initialValuesForm = useMemo(() => {
-    return {
-      name: "",
-      description: "",
-      storeId: auth.user?.id ?? "",
-    };
-  }, [auth.user]);
   return (
     <Card sectioned>
       <Form
-        ref={formRef}
-        initialValues={initialValues ?? initialValuesForm}
+        ref={ref}
+        initialValues={initialValues}
         onSubmit={handleSubmit}
         validationSchema={validateObject}
         onValuesChange={handleChange}

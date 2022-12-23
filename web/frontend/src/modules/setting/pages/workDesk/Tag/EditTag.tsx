@@ -6,11 +6,12 @@ import {
   Layout,
   Page,
 } from "@shopify/polaris";
+import { FormikProps } from "formik";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { catchError, map, of } from "rxjs";
 import { useJob, useMount } from "src/core/hooks";
-import TagForm, { RefProperties } from "src/modules/setting/component/TagForm";
+import TagForm from "src/modules/setting/component/TagForm";
 import TagRepository from "src/modules/setting/repository/workDesk/TagRepository";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
 export default function DetailsTag() {
@@ -19,7 +20,7 @@ export default function DetailsTag() {
   const { state } = useLocation();
   const [title, setTitle] = useState("");
 
-  const formRef = useRef<RefProperties>(null);
+  const formRef = useRef<FormikProps<any>>(null);
   const [disable, setDisable] = useState(true);
   const [banner, setBanner] = useState<{
     isShow: boolean;
@@ -82,11 +83,11 @@ export default function DetailsTag() {
     );
   });
   const handleSubmitForm = useCallback(() => {
-    formRef.current?.save();
-  }, []);
+    formRef.current?.submitForm();
+  }, [formRef.current]);
   const handleResetForm = useCallback(() => {
-    formRef.current?.reset();
-  }, []);
+    formRef.current?.submitForm();
+  }, [formRef.current]);
   useMount(() => {
     fetDetailsTag();
   });

@@ -6,23 +6,35 @@ import {
   Layout,
   Page,
 } from "@shopify/polaris";
-import { useCallback, useRef, useState } from "react";
+import { FormikProps } from "formik";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { generatePath, useNavigate } from "react-router-dom";
 import { catchError, map, of } from "rxjs";
 import { useJob } from "src/core/hooks";
-import CustomerForm, {
-  RefProperties,
-} from "src/modules/customers/component/CustomerForm";
+import useAuth from "src/hooks/useAuth";
+import CustomerForm from "src/modules/customers/component/CustomerForm";
 import CustomerRepository from "src/modules/customers/repositories/CustomerRepository";
 import CustomersRoutePaths from "src/modules/customers/routes/paths";
 
 export default function CreateCustomer() {
-  const formRef = useRef<RefProperties>(null);
+  const formRef = useRef<FormikProps<any>>(null);
+  const auth = useAuth();
   const navigate = useNavigate();
   const { show } = useToast();
   const [disable, setDisable] = useState(true);
   const [messageError, setMessageError] = useState("");
   const [banner, setBanner] = useState(false);
+
+  const initialValuesForm = useMemo(() => {
+    return {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phoneNumber: "",
+      storeId: auth.user?.id ?? "",
+    };
+  }, [auth.user]);
+
   const navigateShowDetails = useCallback((id: string, statusCode: number) => {
     navigate(generatePath(CustomersRoutePaths.Details, { id }), {
       state: { status: statusCode },
@@ -67,11 +79,13 @@ export default function CreateCustomer() {
     setDisable(value);
   };
   const handleSubmitForm = useCallback(() => {
-    formRef.current?.save();
-  }, []);
+    formRef.current?.submitForm();
+  }, [formRef.current]);
+
   const handleResetForm = useCallback(() => {
-    formRef.current?.reset();
-  }, []);
+    formRef.current?.resetForm();
+  }, [formRef.current]);
+
   return (
     <>
       <ContextualSaveBar
@@ -103,6 +117,7 @@ export default function CreateCustomer() {
             <Layout.Section>
               <CustomerForm
                 ref={formRef}
+                initialValues={initialValuesForm}
                 submit={submit}
                 change={handleChangeValueForm}
               />
