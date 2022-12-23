@@ -10,18 +10,20 @@ import {
   useIndexResourceState,
 } from "@shopify/polaris";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { generatePath, useLocation, useNavigate } from "react-router-dom";
+import { generatePath, useNavigate } from "react-router-dom";
 import { map } from "rxjs";
 import { Banner } from "src/components/Banner";
 import { useBannerState } from "src/components/Banner/useBannerState";
+import { ButtonSort } from "src/components/Button/ButtonSort";
 import Pagination from "src/components/Pagination/Pagination";
 import env from "src/core/env";
-import { useDebounceFn, useJob, usePrevious } from "src/core/hooks";
+import { useDebounceFn, useJob, usePrevious, useToggle } from "src/core/hooks";
 import { PageComponent } from "src/core/models/routes";
 import { useBanner } from "src/hooks/useBanner";
+import { SortOrderOptions } from "src/models/Form";
 import { BaseMetaDataListResponse } from "src/models/Request";
 import { Role } from "src/models/Rule";
-import { getStatusAgent } from "src/modules/agent/constant";
+import { getStatusAgent, optionsSort } from "src/modules/agent/constant";
 import { Agent, GetListAgentRequest } from "src/modules/agent/models/Agent";
 import AgentRepository from "src/modules/agent/repositories/AgentRepository";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
@@ -31,18 +33,19 @@ interface AgentIndexPageProps {}
 const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
   const [agents, setAgents] = useState<Agent[]>([]);
   const { banner, show: showBanner, close: closeBanner } = useBanner();
+  const [sortValue, setSortValue] = useState<string[]>([]);
   const navigate = useNavigate();
-  const { state } = useLocation();
+  const {
+    state: btnSort,
+    toggle: toggleBtnSort,
+    off: closeBtnSort,
+  } = useToggle();
   useBannerState(showBanner);
 
-  const defaultFilter = () => ({
+  const defaultFilter: () => GetListAgentRequest = () => ({
     page: 1,
     limit: env.DEFAULT_PAGE_SIZE,
   });
-
-  useEffect(() => {
-    console.log("state", state);
-  }, [state]);
 
   const [filterData, setFilterData] =
     useState<GetListAgentRequest>(defaultFilter);
@@ -119,7 +122,7 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
 
   const bulkActions = useMemo(() => {
     if (selectedResources.length > 1) {
-      return [{ content: "Remove agent", onAction: removeAgent }];
+      return [];
     } else {
       return [
         { content: "Edit agent", onAction: editAgent },
@@ -127,6 +130,20 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
       ];
     }
   }, [selectedResources, removeAgent, editAgent]);
+
+  const handleSort = useCallback(
+    (selected: string[]) => {
+      const arraySort = selected[0].split(":");
+      const sortBy = arraySort[0];
+      const sortOrder = arraySort[1] === SortOrderOptions.ACS ? 1 : -1;
+      setSortValue(selected);
+
+      setFilterData((value) => {
+        return { ...value, sortBy, sortOrder };
+      });
+    },
+    [filterData]
+  );
 
   useEffect(() => {
     if (prevFilter?.query !== filterData.query && filterData.query) {
@@ -159,11 +176,23 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
             queryPlaceholder="Search"
             filters={[]}
             onClearAll={resetFilterData}
-          />
+          >
+            <div className="pl-2">
+              <ButtonSort
+                active={btnSort}
+                sortValue={sortValue}
+                onSort={handleSort}
+                onShow={toggleBtnSort}
+                onClose={closeBtnSort}
+                options={optionsSort}
+              />
+            </div>
+          </Filters>
         </div>
         <IndexTable
           resourceName={{ singular: "agent", plural: "agents" }}
           itemCount={agents.length}
+          selectable={false}
           selectedItemsCount={
             allResourcesSelected ? "All" : selectedResources.length
           }
