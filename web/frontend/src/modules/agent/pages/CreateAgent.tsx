@@ -39,10 +39,6 @@ const CreateAgent = (props: CreateAgentProps) => {
       return AgentRepository.create(payload).pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
-            showBanner("success", {
-              title: `Add ${data.data.firstName} ${data.data.lastName}`,
-              message: "Add agent success",
-            });
             show("Create Agent Success");
             navigate(
               generatePath(AgentRoutePaths.Detail, { id: data.data._id }),
@@ -50,7 +46,7 @@ const CreateAgent = (props: CreateAgentProps) => {
                 state: {
                   banner: {
                     status: "success",
-                    message: `Create Agent Success`,
+                    message: `Invitation Email has been sent to Agent's email address.`,
                   },
                 },
               }
