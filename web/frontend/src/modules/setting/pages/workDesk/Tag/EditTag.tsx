@@ -59,25 +59,47 @@ export default function DetailsTag() {
           });
           show("Tag has been updated succcesfully.");
         } else {
-          setBanner({
-            message: "Tag has been updated succcesfully.",
-            isShow: true,
-            type: "critical",
-          });
-          show("Tag has been updated failed.", {
-            isError: true,
-          });
+          if (data.statusCode === 409) {
+            setBanner({
+              isShow: true,
+              type: "critical",
+              message: `Tag name is ${dataSubmit.name} already exists.`,
+            });
+            show(`Tag name is ${dataSubmit.name} already exists.`, {
+              isError: true,
+            });
+          } else {
+            setBanner({
+              isShow: true,
+              type: "critical",
+              message: "Customer Profile has been updated failed.",
+            });
+            show("Customer Profile has been updated failed.", {
+              isError: true,
+            });
+          }
         }
       }),
       catchError((error) => {
-        setBanner({
-          isShow: true,
-          message: error.response.data.error[0],
-          type: "critical",
-        });
-        show("Edit tag failed", {
-          isError: true,
-        });
+        if (error.response.status === 409) {
+          setBanner({
+            isShow: true,
+            type: "critical",
+            message: `Tag name is ${dataSubmit.name} already exists.`,
+          });
+          show(`Tag name is ${dataSubmit.name} already exists.`, {
+            isError: true,
+          });
+        } else {
+          setBanner({
+            isShow: true,
+            type: "critical",
+            message: "Customer Profile has been updated failed.",
+          });
+          show("Customer Profile has been updated failed.", {
+            isError: true,
+          });
+        }
         return of(error);
       })
     );

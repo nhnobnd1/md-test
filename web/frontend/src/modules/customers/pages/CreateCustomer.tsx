@@ -48,8 +48,8 @@ export default function CreateCustomer() {
           navigateShowDetails(data.data._id, data.statusCode);
         } else {
           if (data.statusCode === 409) {
-            setMessageError(`Email is ${dataSubmit.name} already exists.`);
-            show(`Email is ${dataSubmit.name} already exists.`, {
+            setMessageError(`Email is ${dataSubmit.email} already exists.`);
+            show(`Email is ${dataSubmit.email} already exists.`, {
               isError: true,
             });
           } else {
@@ -62,8 +62,8 @@ export default function CreateCustomer() {
       catchError((error) => {
         setBanner(true);
         if (error.response.status === 409) {
-          setMessageError(`Email is ${dataSubmit.name} already exists.`);
-          show(`Email is ${dataSubmit.name} already exists.`, {
+          setMessageError(`Email is ${dataSubmit.email} already exists.`);
+          show(`Email is ${dataSubmit.email} already exists.`, {
             isError: true,
           });
         } else {

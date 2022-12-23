@@ -66,25 +66,47 @@ export default function DetailsCustomer() {
           });
           show("Edit customer success");
         } else {
+          if (data.statusCode === 409) {
+            setBanner({
+              isShow: true,
+              type: "critical",
+              message: `Email is ${dataSubmit.email} already exists.`,
+            });
+            show(`Email is ${dataSubmit.email} already exists.`, {
+              isError: true,
+            });
+          } else {
+            setBanner({
+              isShow: true,
+              type: "critical",
+              message: "Customer Profile has been updated failed.",
+            });
+            show("Customer Profile has been updated failed.", {
+              isError: true,
+            });
+          }
+        }
+      }),
+      catchError((error) => {
+        if (error.response.status === 409) {
+          setBanner({
+            isShow: true,
+            type: "critical",
+            message: `Email is ${dataSubmit.email} already exists.`,
+          });
+          show(`Email is ${dataSubmit.email} already exists.`, {
+            isError: true,
+          });
+        } else {
           setBanner({
             isShow: true,
             type: "critical",
             message: "Customer Profile has been updated failed.",
           });
-          show("Edit customer failed", {
+          show("Customer Profile has been updated failed.", {
             isError: true,
           });
         }
-      }),
-      catchError((error) => {
-        setBanner({
-          isShow: true,
-          type: "critical",
-          message: "Customer Profile has been updated failed.",
-        });
-        show("Edit customer failed", {
-          isError: true,
-        });
         return of(error);
       })
     );
