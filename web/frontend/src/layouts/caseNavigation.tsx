@@ -57,7 +57,7 @@ const caseNavigation: NavigationItems[] = [
       {
         label: "People",
         url: AgentRoutePaths.Index,
-        tabBarNavigation: [{ label: "Agent", url: AgentRoutePaths.Index }],
+        tabBarNavigation: [{ label: "Agents", url: AgentRoutePaths.Index }],
       },
       {
         label: "Workdesk",
