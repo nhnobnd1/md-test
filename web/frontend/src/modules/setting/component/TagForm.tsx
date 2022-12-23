@@ -21,6 +21,7 @@ const TagForm = (
 ) => {
   const formRef = useRef<FormikProps<any>>(null);
   const handleSubmit = useCallback((data: any) => {
+    formRef.current?.validateForm(validateObject);
     submit(data);
   }, []);
   useImperativeHandle(ref, () => ({

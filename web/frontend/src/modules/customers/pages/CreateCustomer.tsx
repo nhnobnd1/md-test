@@ -34,7 +34,7 @@ export default function CreateCustomer() {
     return CustomerRepository.create(dataSubmit).pipe(
       map(({ data }) => {
         if (data.statusCode === 200) {
-          show("Create customer success");
+          show("Customer Profile has been created successfully.");
           navigateShowDetails(data.data._id, data.statusCode);
         } else {
           setBanner(true);

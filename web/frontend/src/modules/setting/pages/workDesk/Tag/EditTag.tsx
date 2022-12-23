@@ -17,6 +17,7 @@ export default function DetailsTag() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { state } = useLocation();
+  const [title, setTitle] = useState("");
 
   const formRef = useRef<RefProperties>(null);
   const [disable, setDisable] = useState(true);
@@ -34,6 +35,7 @@ export default function DetailsTag() {
     () => {
       return TagRepository.getOne(id).pipe(
         map(({ data }) => {
+          setTitle(`${data.data.name}`);
           return data.data;
         })
       );
@@ -48,12 +50,13 @@ export default function DetailsTag() {
     return TagRepository.update(_id, dataSubmit).pipe(
       map(({ data }) => {
         if (data.statusCode === 200) {
+          setTitle(`${data.data.name}`);
           setBanner({
             isShow: true,
             message: "Tag has been updated succcesfully.",
             type: "success",
           });
-          show("Edit tag success");
+          show("Tag has been updated succcesfully.");
         } else {
           setBanner({
             message: "Tag has been updated succcesfully.",
@@ -110,7 +113,7 @@ export default function DetailsTag() {
         }}
       />
       <Page
-        title={`${result?.name}`}
+        title={title}
         compactTitle
         breadcrumbs={[
           { onAction: () => navigate(SettingRoutePaths.Workdesk.Tag.Index) },

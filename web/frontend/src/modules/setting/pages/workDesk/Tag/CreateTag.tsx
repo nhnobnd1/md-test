@@ -26,7 +26,7 @@ export default function CreateTag() {
     return TagRepository.create(dataSubmit).pipe(
       map(({ data }) => {
         if (data.statusCode === 200) {
-          show("Create tag success");
+          show("Tag has been created successfully.");
           navigateShowDetails(data.data._id, data.statusCode);
         } else {
           setBanner(true);

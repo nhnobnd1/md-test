@@ -7,6 +7,7 @@ import {
   DeleteCustomerResponse,
   GetListCustomerRequest,
   GetListCustomerResponse,
+  GetOneCustomerResponse,
   UpdateCustomerRequest,
   UpdateCustomerResponse,
 } from "src/modules/customers/modal/Customer";
@@ -20,7 +21,7 @@ const CustomerRepository = createRepository(
       return api.get<GetListCustomerResponse>("", params);
     },
     getOne(api, id: string | undefined) {
-      return api.get(`/${id}`);
+      return api.get<GetOneCustomerResponse>(`/${id}`);
     },
     create(api, data: CreateCustomerRequest) {
       return api.post<CreateCustomerResponse>("", data);

@@ -29,9 +29,9 @@ export interface BaseListCustomerRequest extends BaseListRequest {
 }
 export type GetListCustomerRequest = BaseListCustomerRequest;
 export type GetListCustomerResponse = BaseListResponse<Customer>;
-export type GetOneCustomerResponse = BaseListResponse<Customer>;
+export type GetOneCustomerResponse = BaseResponse<Customer>;
 export type CreateCustomerRequest = Omit<Customer, "id">;
 export type CreateCustomerResponse = BaseResponse<Customer>;
 export type UpdateCustomerRequest = Customer;
-export type UpdateCustomerResponse = BaseListResponse<Customer>;
+export type UpdateCustomerResponse = BaseResponse<Customer>;
 export type DeleteCustomerResponse = BaseListResponse<Customer>;
