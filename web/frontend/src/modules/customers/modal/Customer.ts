@@ -24,8 +24,8 @@ export type Customer = {
   storeId: string;
 };
 export interface BaseListCustomerRequest extends BaseListRequest {
-  sortBy: string;
-  sortOrder: number;
+  sortBy?: string;
+  sortOrder?: number;
 }
 export type GetListCustomerRequest = BaseListCustomerRequest;
 export type GetListCustomerResponse = BaseListResponse<Customer>;

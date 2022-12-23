@@ -103,11 +103,11 @@ export default function CustomerIndexPage() {
       sortOrder: 1,
     },
     {
-      sortBy: "email",
-      sortOrder: -1,
+      sortBy: undefined,
+      sortOrder: undefined,
     },
   ];
-  const [sortCustomer, setSortCustomer] = useState(0);
+  const [sortCustomer, setSortCustomer] = useState(4);
   const [valueSortCustomer, setValueSortCustomer] = useState(
     sortTemplate[Number(sortCustomer)]
   );
