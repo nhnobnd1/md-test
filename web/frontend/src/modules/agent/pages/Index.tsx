@@ -155,7 +155,7 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
 
   return (
     <Page
-      title="List Agent"
+      title="Account"
       primaryAction={{
         content: "Add agent",
         onAction: () => navigate(generatePath(AgentRoutePaths.Create)),
