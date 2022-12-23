@@ -1,12 +1,6 @@
 import { Card, FormLayout, TextField } from "@shopify/polaris";
 import { FormikProps } from "formik";
-import {
-  ForwardedRef,
-  forwardRef,
-  useCallback,
-  useImperativeHandle,
-  useRef,
-} from "react";
+import { ForwardedRef, forwardRef, useCallback } from "react";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
 import { object, string } from "yup";
@@ -17,16 +11,12 @@ export interface RefProperties {
 
 const TagForm = (
   { initialValues, submit, change }: any,
-  ref: ForwardedRef<RefProperties>
+  ref: ForwardedRef<FormikProps<any>>
 ) => {
-  const formRef = useRef<FormikProps<any>>(null);
   const handleSubmit = useCallback((data: any) => {
     submit(data);
   }, []);
-  useImperativeHandle(ref, () => ({
-    save: () => formRef.current?.submitForm(),
-    reset: () => formRef.current?.resetForm(),
-  }));
+
   const handleChange = useCallback(() => {
     change(false);
   }, []);
@@ -37,7 +27,7 @@ const TagForm = (
   return (
     <Card sectioned>
       <Form
-        ref={formRef}
+        ref={ref}
         initialValues={initialValues}
         onSubmit={handleSubmit}
         validationSchema={validateObject}

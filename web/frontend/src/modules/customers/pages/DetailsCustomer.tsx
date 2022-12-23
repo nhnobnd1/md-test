@@ -8,13 +8,12 @@ import {
   Page,
   Tabs,
 } from "@shopify/polaris";
+import { FormikProps } from "formik";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { catchError, map, of } from "rxjs";
 import { useJob, useMount } from "src/core/hooks";
-import CustomerForm, {
-  RefProperties,
-} from "src/modules/customers/component/CustomerForm";
+import CustomerForm from "src/modules/customers/component/CustomerForm";
 import CustomerRepository from "src/modules/customers/repositories/CustomerRepository";
 import CustomersRoutePaths from "src/modules/customers/routes/paths";
 
@@ -23,7 +22,7 @@ export default function DetailsCustomer() {
   const navigate = useNavigate();
   const { state } = useLocation();
 
-  const formRef = useRef<RefProperties>(null);
+  const formRef = useRef<FormikProps<any>>(null);
   const [disable, setDisable] = useState(true);
   const [banner, setBanner] = useState<{
     isShow: boolean;
@@ -89,11 +88,13 @@ export default function DetailsCustomer() {
     );
   });
   const handleSubmitForm = useCallback(() => {
-    formRef.current?.save();
-  }, []);
+    formRef.current?.submitForm();
+  }, [formRef.current]);
+
   const handleResetForm = useCallback(() => {
-    formRef.current?.reset();
-  }, []);
+    formRef.current?.resetForm();
+  }, [formRef.current]);
+
   const profileCustomer = (
     <CustomerForm
       ref={formRef}
@@ -135,7 +136,7 @@ export default function DetailsCustomer() {
         message="Unsaved changes"
         saveAction={{
           onAction: handleSubmitForm,
-          disabled: disable,
+          disabled: !formRef.current?.dirty,
         }}
         discardAction={{
           onAction: handleResetForm,
