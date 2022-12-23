@@ -27,9 +27,9 @@ export interface BaseListTagRequest extends BaseListRequest {
 }
 export type GetListTagRequest = BaseListTagRequest;
 export type GetListTagResponse = BaseListResponse<Tag>;
-export type GetOneTagResponse = BaseListResponse<Tag>;
+export type GetOneTagResponse = BaseResponse<Tag>;
 export type CreateTagRequest = Omit<Tag, "id">;
 export type CreateTagResponse = BaseResponse<Tag>;
 export type UpdateTagRequest = Tag;
-export type UpdateTagResponse = BaseListResponse<Tag>;
+export type UpdateTagResponse = BaseResponse<Tag>;
 export type DeleteTagResponse = BaseListResponse<Tag>;

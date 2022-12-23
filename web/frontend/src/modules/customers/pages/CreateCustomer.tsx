@@ -44,21 +44,33 @@ export default function CreateCustomer() {
     return CustomerRepository.create(dataSubmit).pipe(
       map(({ data }) => {
         if (data.statusCode === 200) {
-          show("Create customer success");
+          show("Customer Profile has been created successfully.");
           navigateShowDetails(data.data._id, data.statusCode);
         } else {
-          setBanner(true);
-          show("Create customer failed", {
-            isError: true,
-          });
+          if (data.statusCode === 409) {
+            setMessageError(`Email is ${dataSubmit.email} already exists.`);
+            show(`Email is ${dataSubmit.email} already exists.`, {
+              isError: true,
+            });
+          } else {
+            show("Create tag failed", {
+              isError: true,
+            });
+          }
         }
       }),
       catchError((error) => {
-        setMessageError(error.response.data.error[0]);
         setBanner(true);
-        show("Create customer failed", {
-          isError: true,
-        });
+        if (error.response.status === 409) {
+          setMessageError(`Email is ${dataSubmit.email} already exists.`);
+          show(`Email is ${dataSubmit.email} already exists.`, {
+            isError: true,
+          });
+        } else {
+          show("Create tag failed", {
+            isError: true,
+          });
+        }
         return of(error);
       })
     );
@@ -97,11 +109,9 @@ export default function CreateCustomer() {
           <Layout>
             <Layout.Section>
               {banner ? (
-                <Banner
-                  title="There is an error with this customer initialization"
-                  status="critical"
-                  onDismiss={() => setBanner(false)}
-                ></Banner>
+                <Banner status="critical" onDismiss={() => setBanner(false)}>
+                  {messageError}
+                </Banner>
               ) : null}
             </Layout.Section>
             <Layout.Section>

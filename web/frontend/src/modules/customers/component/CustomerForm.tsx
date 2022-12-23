@@ -20,7 +20,7 @@ const CustomerForm = (
   const handleChange = useCallback(() => {
     change(false);
   }, []);
-  const validateObject = object({
+  const validateObject = object().shape({
     firstName: string().required("Required!"),
     lastName: string().required("Required!"),
     email: string().email("Invalid email format ").required("Required!"),

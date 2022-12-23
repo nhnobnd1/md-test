@@ -21,7 +21,7 @@ export default function DetailsCustomer() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { state } = useLocation();
-
+  const [title, setTitle] = useState("");
   const formRef = useRef<FormikProps<any>>(null);
   const [disable, setDisable] = useState(true);
   const [banner, setBanner] = useState<{
@@ -38,6 +38,7 @@ export default function DetailsCustomer() {
     () => {
       return CustomerRepository.getOne(id).pipe(
         map(({ data }) => {
+          setTitle(`${data.data.firstName} ${data.data.lastName}`);
           return data.data;
         })
       );
@@ -57,6 +58,7 @@ export default function DetailsCustomer() {
     return CustomerRepository.update(_id, dataSubmit).pipe(
       map(({ data }) => {
         if (data.statusCode === 200) {
+          setTitle(`${data.data.firstName} ${data.data.lastName}`);
           setBanner({
             isShow: true,
             type: "success",
@@ -64,25 +66,47 @@ export default function DetailsCustomer() {
           });
           show("Edit customer success");
         } else {
+          if (data.statusCode === 409) {
+            setBanner({
+              isShow: true,
+              type: "critical",
+              message: `Email is ${dataSubmit.email} already exists.`,
+            });
+            show(`Email is ${dataSubmit.email} already exists.`, {
+              isError: true,
+            });
+          } else {
+            setBanner({
+              isShow: true,
+              type: "critical",
+              message: "Customer Profile has been updated failed.",
+            });
+            show("Customer Profile has been updated failed.", {
+              isError: true,
+            });
+          }
+        }
+      }),
+      catchError((error) => {
+        if (error.response.status === 409) {
+          setBanner({
+            isShow: true,
+            type: "critical",
+            message: `Email is ${dataSubmit.email} already exists.`,
+          });
+          show(`Email is ${dataSubmit.email} already exists.`, {
+            isError: true,
+          });
+        } else {
           setBanner({
             isShow: true,
             type: "critical",
             message: "Customer Profile has been updated failed.",
           });
-          show("Edit customer failed", {
+          show("Customer Profile has been updated failed.", {
             isError: true,
           });
         }
-      }),
-      catchError((error) => {
-        setBanner({
-          isShow: true,
-          type: "critical",
-          message: "Customer Profile has been updated failed.",
-        });
-        show("Edit customer failed", {
-          isError: true,
-        });
         return of(error);
       })
     );
@@ -143,7 +167,7 @@ export default function DetailsCustomer() {
         }}
       />
       <Page
-        title={`${result?.firstName} ${result?.lastName}`}
+        title={title}
         compactTitle
         breadcrumbs={[{ onAction: () => navigate(CustomersRoutePaths.Index) }]}
         fullWidth

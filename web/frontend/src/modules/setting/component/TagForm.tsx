@@ -20,7 +20,7 @@ const TagForm = (
   const handleChange = useCallback(() => {
     change(false);
   }, []);
-  const validateObject = object({
+  const validateObject = object().shape({
     name: string().required("Required!"),
     description: string(),
   });
@@ -39,7 +39,7 @@ const TagForm = (
           <FormItem name="name">
             <TextField
               type="text"
-              placeholder="Tags name"
+              placeholder="Tag name"
               label="Tag name"
               autoComplete="off"
             />

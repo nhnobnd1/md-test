@@ -7,6 +7,7 @@ import {
   DeleteTagResponse,
   GetListTagRequest,
   GetListTagResponse,
+  GetOneTagResponse,
   UpdateTagRequest,
   UpdateTagResponse,
 } from "src/modules/setting/modal/workDesk/Tag";
@@ -20,7 +21,7 @@ const TagRepository = createRepository(
       return api.get<GetListTagResponse>("", params);
     },
     getOne(api, id: string | undefined) {
-      return api.get(`/${id}`);
+      return api.get<GetOneTagResponse>(`/${id}`);
     },
     create(api, data: CreateTagRequest) {
       return api.post<CreateTagResponse>("", data);
