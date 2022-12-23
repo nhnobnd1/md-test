@@ -109,8 +109,12 @@ export default function SettingIndexPage() {
       sortBy: "email",
       sortOrder: -1,
     },
+    {
+      sortBy: undefined,
+      sortOrder: undefined,
+    },
   ];
-  const [sortTag, setSortTag] = useState(0);
+  const [sortTag, setSortTag] = useState(4);
   const [valueSortTag, setValueSortTag] = useState(
     sortTemplate[Number(sortTag)]
   );
