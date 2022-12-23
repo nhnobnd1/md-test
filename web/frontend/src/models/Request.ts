@@ -10,6 +10,7 @@ export interface BaseResponse<T> {
   message?: string;
   error: string | string[];
   statusCode: number;
+  errorCode?: string;
   datetime: string;
 }
 export interface BaseListRequest {

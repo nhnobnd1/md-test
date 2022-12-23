@@ -40,7 +40,8 @@ export function LoadingProvider({
 
   const startLoading = useCallback(() => {
     turnOnLoading();
-    setCount((cur) => cur + 1);
+    // setCount((cur) => cur + 1);
+    setCount(1);
   }, []);
 
   const stopLoading = useCallback(() => {

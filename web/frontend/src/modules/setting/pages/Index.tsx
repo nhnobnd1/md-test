@@ -12,13 +12,15 @@ import { isEmpty } from "lodash-es";
 import { useCallback, useEffect, useState } from "react";
 import { generatePath, useNavigate, useParams } from "react-router-dom";
 import { catchError, map, of } from "rxjs";
-import ModalDelete from "src/components/ModalDelete";
+import { ModalDelete } from "src/components/Modal/ModalDelete";
 import Pagination from "src/components/Pagination/Pagination";
 import env from "src/core/env";
 import { useDebounceFn, useJob, useMount } from "src/core/hooks";
 import useTable from "src/core/hooks/useTable";
-import { BaseListRequest } from "src/models/Request";
-import { Tag } from "src/modules/setting/modal/workDesk/Tag";
+import {
+  BaseListTagRequest,
+  Tag,
+} from "src/modules/setting/modal/workDesk/Tag";
 import TagRepository from "src/modules/setting/repository/workDesk/TagRepository";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
 export default function SettingIndexPage() {
@@ -81,7 +83,7 @@ export default function SettingIndexPage() {
     limit: env.DEFAULT_PAGE_SIZE,
     query: "",
   });
-  const [filterData, setFilterData] = useState<BaseListRequest>(
+  const [filterData, setFilterData] = useState<BaseListTagRequest>(
     !isEmpty(param)
       ? {
           page: page ? Number(page) : 1,
@@ -187,8 +189,7 @@ export default function SettingIndexPage() {
           open={isOpen}
           onClose={() => setIsOpen(false)}
           content={"Are you sure you want to delete these tags?"}
-          deleteAction={handleRemoveTag}
-          dataDelete={selectedResources}
+          deleteAction={() => handleRemoveTag(selectedResources)}
         />
         <Card sectioned>
           <div className="mb-4">

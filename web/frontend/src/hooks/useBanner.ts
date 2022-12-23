@@ -4,8 +4,8 @@ import { useCallback, useState } from "react";
 export interface BannerState {
   visible: boolean;
   status: BannerStatus;
-  title: string;
-  message: string | string[];
+  title?: string;
+  message?: string | string[];
 }
 
 export function useBanner(defaultState?: BannerState) {
@@ -26,8 +26,7 @@ export function useBanner(defaultState?: BannerState) {
       setBanner({
         visible: true,
         status: status,
-        title: options.title,
-        message: options.message,
+        ...options,
       });
     },
     [banner]

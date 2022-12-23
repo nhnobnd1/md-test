@@ -8,25 +8,26 @@ import {
   Stack,
 } from "@shopify/polaris";
 import { FormikProps } from "formik";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef } from "react";
 import { generatePath, useNavigate } from "react-router-dom";
 import { catchError, map, of } from "rxjs";
-import Banner from "src/components/Banner/Banner";
+import { Banner } from "src/components/Banner";
 import { useJob } from "src/core/hooks";
 import useAuth from "src/hooks/useAuth";
 import { useBanner } from "src/hooks/useBanner";
 import AgentForm, {
   AgentFormValues,
 } from "src/modules/agent/components/AgentForm/AgentForm";
-import ModalSetPassword from "src/modules/agent/components/Modal/ModalSetPassword/ModalSetPassword";
-import { CreateAgentRequest } from "src/modules/agent/models/Agent";
+import {
+  CreateAgentRequest,
+  ErrorCodeCreate,
+} from "src/modules/agent/models/Agent";
 import AgentRepository from "src/modules/agent/repositories/AgentRepository";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
 
 interface CreateAgentProps {}
 
 const CreateAgent = (props: CreateAgentProps) => {
-  const [modalSetPassword, setModalSetPassword] = useState(false);
   const { show } = useToast();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -49,31 +50,46 @@ const CreateAgent = (props: CreateAgentProps) => {
                 state: {
                   banner: {
                     status: "success",
-                    title: `Add agent ${data.data.firstName} ${data.data.lastName}`,
-                    message:
-                      "Invitation Email has been sent to Agent’s email address.",
+                    message: `Add agent Success`,
                   },
                 },
               }
             );
           } else {
-            showBanner("critical", {
-              title: "There is an error with this agent",
-              message: "Add agent failed",
-            });
+            if (data.errorCode) {
+              showBanner("critical", {
+                message: getMessageCreateError(
+                  data.errorCode as ErrorCodeCreate
+                ),
+              });
+            }
           }
         }),
         catchError((err) => {
-          showBanner("critical", {
-            title: "There is an error with this agent",
-            message: "Add agent failed",
-          });
+          const errorCode = err.response.data.errorCode;
+          if (errorCode) {
+            showBanner("critical", {
+              message: getMessageCreateError(errorCode as ErrorCodeCreate),
+            });
+          }
           return of(err);
         })
       );
     },
     { showLoading: true }
   );
+
+  const getMessageCreateError = useCallback((errorCode: ErrorCodeCreate) => {
+    switch (errorCode) {
+      case ErrorCodeCreate.INVITATION_EXISTS:
+        return "The invitation is already sent to the user.";
+      case ErrorCodeCreate.USER_IS_EXISTS:
+        return "The invitation is sent to an existing user.";
+
+      default:
+        return "Add agent failed";
+    }
+  }, []);
 
   const handleSubmit = useCallback(
     (values: AgentFormValues) => {
@@ -110,7 +126,7 @@ const CreateAgent = (props: CreateAgentProps) => {
                     <Button onClick={() => formRef.current?.resetForm()}>
                       Cancel
                     </Button>
-                    <ModalSetPassword
+                    {/* <ModalSetPassword
                       activator={
                         <Button onClick={() => setModalSetPassword(true)}>
                           Set Password
@@ -118,7 +134,7 @@ const CreateAgent = (props: CreateAgentProps) => {
                       }
                       open={modalSetPassword}
                       onClose={() => setModalSetPassword(false)}
-                    />
+                    /> */}
                     <Button
                       onClick={() => formRef.current?.submitForm()}
                       primary
