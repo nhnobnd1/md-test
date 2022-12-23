@@ -10,7 +10,6 @@ import { useCallback, useRef, useState } from "react";
 import { generatePath, useNavigate } from "react-router-dom";
 import { catchError, map, of } from "rxjs";
 import { useJob } from "src/core/hooks";
-import useAuth from "src/hooks/useAuth";
 import CustomerForm, {
   RefProperties,
 } from "src/modules/customers/component/CustomerForm";
@@ -19,7 +18,6 @@ import CustomersRoutePaths from "src/modules/customers/routes/paths";
 
 export default function CreateCustomer() {
   const formRef = useRef<RefProperties>(null);
-  const auth = useAuth();
   const navigate = useNavigate();
   const { show } = useToast();
   const [disable, setDisable] = useState(true);
@@ -37,18 +35,30 @@ export default function CreateCustomer() {
           show("Customer Profile has been created successfully.");
           navigateShowDetails(data.data._id, data.statusCode);
         } else {
-          setBanner(true);
-          show("Create customer failed", {
-            isError: true,
-          });
+          if (data.statusCode === 409) {
+            setMessageError(`Email is ${dataSubmit.name} already exists.`);
+            show(`Email is ${dataSubmit.name} already exists.`, {
+              isError: true,
+            });
+          } else {
+            show("Create tag failed", {
+              isError: true,
+            });
+          }
         }
       }),
       catchError((error) => {
-        setMessageError(error.response.data.error[0]);
         setBanner(true);
-        show("Create customer failed", {
-          isError: true,
-        });
+        if (error.response.status === 409) {
+          setMessageError(`Email is ${dataSubmit.name} already exists.`);
+          show(`Email is ${dataSubmit.name} already exists.`, {
+            isError: true,
+          });
+        } else {
+          show("Create tag failed", {
+            isError: true,
+          });
+        }
         return of(error);
       })
     );
@@ -62,7 +72,6 @@ export default function CreateCustomer() {
   const handleResetForm = useCallback(() => {
     formRef.current?.reset();
   }, []);
-
   return (
     <>
       <ContextualSaveBar
@@ -86,19 +95,14 @@ export default function CreateCustomer() {
           <Layout>
             <Layout.Section>
               {banner ? (
-                <Banner
-                  title="There is an error with this customer initialization"
-                  status="critical"
-                  onDismiss={() => setBanner(false)}
-                ></Banner>
+                <Banner status="critical" onDismiss={() => setBanner(false)}>
+                  {messageError}
+                </Banner>
               ) : null}
             </Layout.Section>
             <Layout.Section>
               <CustomerForm
                 ref={formRef}
-                initialValues={{
-                  storeId: auth.user?.id ? auth.user?.id : "",
-                }}
                 submit={submit}
                 change={handleChangeValueForm}
               />

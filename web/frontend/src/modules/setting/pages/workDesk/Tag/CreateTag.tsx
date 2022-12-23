@@ -4,14 +4,13 @@ import { useCallback, useRef, useState } from "react";
 import { generatePath, useNavigate } from "react-router-dom";
 import { catchError, map, of } from "rxjs";
 import { useJob } from "src/core/hooks";
-import useAuth from "src/hooks/useAuth";
 import TagForm, { RefProperties } from "src/modules/setting/component/TagForm";
+import { CreateTagRequest } from "src/modules/setting/modal/workDesk/Tag";
 import TagRepository from "src/modules/setting/repository/workDesk/TagRepository";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
 
 export default function CreateTag() {
   const formRef = useRef<RefProperties>(null);
-  const auth = useAuth();
   const navigate = useNavigate();
   const { show } = useToast();
   const [disable, setDisable] = useState(true);
@@ -22,7 +21,7 @@ export default function CreateTag() {
       state: { status: statusCode },
     });
   }, []);
-  const { run: submit } = useJob((dataSubmit: any) => {
+  const { run: submit } = useJob((dataSubmit: CreateTagRequest) => {
     return TagRepository.create(dataSubmit).pipe(
       map(({ data }) => {
         if (data.statusCode === 200) {
@@ -30,17 +29,30 @@ export default function CreateTag() {
           navigateShowDetails(data.data._id, data.statusCode);
         } else {
           setBanner(true);
+          if (data.statusCode === 409) {
+            setMessageError(`Tag name is ${dataSubmit.name} already exists.`);
+            show(`Tag name is ${dataSubmit.name} already exists.`, {
+              isError: true,
+            });
+          } else {
+            show("Create tag failed", {
+              isError: true,
+            });
+          }
+        }
+      }),
+      catchError((error) => {
+        setBanner(true);
+        if (error.response.status === 409) {
+          setMessageError(`Tag name is ${dataSubmit.name} already exists.`);
+          show(`Tag name is ${dataSubmit.name} already exists.`, {
+            isError: true,
+          });
+        } else {
           show("Create tag failed", {
             isError: true,
           });
         }
-      }),
-      catchError((error) => {
-        setMessageError(error.response.data.error[0]);
-        setBanner(true);
-        show("Create tag failed", {
-          isError: true,
-        });
         return of(error);
       })
     );
@@ -54,7 +66,6 @@ export default function CreateTag() {
   const handleResetForm = useCallback(() => {
     formRef.current?.reset();
   }, []);
-
   return (
     <>
       <ContextualSaveBar
@@ -79,17 +90,14 @@ export default function CreateTag() {
         <Layout sectioned>
           <Layout.Section>
             {banner ? (
-              <Banner
-                title="There is an error with this tag initialization"
-                status="critical"
-                onDismiss={() => setBanner(false)}
-              ></Banner>
+              <Banner status="critical" onDismiss={() => setBanner(false)}>
+                {messageError}
+              </Banner>
             ) : null}
           </Layout.Section>
           <Layout.Section>
             <TagForm
               ref={formRef}
-              initialValues={{ storeId: auth.user ? auth.user : "storeID" }}
               submit={submit}
               change={handleChangeValueForm}
             />

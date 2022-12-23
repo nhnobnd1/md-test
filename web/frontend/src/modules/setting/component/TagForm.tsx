@@ -5,10 +5,12 @@ import {
   forwardRef,
   useCallback,
   useImperativeHandle,
+  useMemo,
   useRef,
 } from "react";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
+import useAuth from "src/hooks/useAuth";
 import { object, string } from "yup";
 export interface RefProperties {
   save: () => Promise<void> | undefined;
@@ -19,6 +21,7 @@ const TagForm = (
   { initialValues, submit, change }: any,
   ref: ForwardedRef<RefProperties>
 ) => {
+  const auth = useAuth();
   const formRef = useRef<FormikProps<any>>(null);
   const handleSubmit = useCallback((data: any) => {
     formRef.current?.validateForm(validateObject);
@@ -35,11 +38,18 @@ const TagForm = (
     name: string().required("Required!"),
     description: string(),
   });
+  const initialValuesForm = useMemo(() => {
+    return {
+      name: "",
+      description: "",
+      storeId: auth.user?.id ?? "",
+    };
+  }, [auth.user]);
   return (
     <Card sectioned>
       <Form
         ref={formRef}
-        initialValues={initialValues}
+        initialValues={initialValues ?? initialValuesForm}
         onSubmit={handleSubmit}
         validationSchema={validateObject}
         onValuesChange={handleChange}
