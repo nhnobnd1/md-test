@@ -1,27 +1,33 @@
-# Environment Configuration
-*.local
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# Dependency directory
+# dependencies
 node_modules
+.pnp
+.pnp.js
 
-# Test coverage directory
+# testing
 coverage
 
-# Ignore Apple macOS Desktop Services Store
+# next.js
+.next/
+out/
+build
+
+# misc
 .DS_Store
+*.pem
 
-# Logs
-logs
-*.log
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
 
-# ngrok tunnel file
-config/tunnel.pid
+# local env files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-# vite build output
-dist/
-
-# extensions build output
-extensions/*/build
-
-# Node library SQLite database
-web/database.sqlite
+# turbo
+.turbo

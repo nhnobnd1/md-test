@@ -1,0 +1,25 @@
+{
+	"name": "@moose-desk/shopify",
+	"version": "1.0.0",
+	"main": "web/index.js",
+	"license": "UNLICENSED",
+	"scripts": {
+		"shopify": "shopify",
+		"build": "shopify app build",
+		"dev": "shopify app dev",
+		"info": "shopify app info",
+		"generate": "shopify app generate",
+		"deploy": "shopify app deploy",
+		"frontend": "yarn --cwd web/frontend",
+		"web": "yarn --cwd web",
+		"postinstall": "yarn web && yarn frontend"
+	},
+	"dependencies": {
+		"@shopify/app": "3.30.1",
+		"@shopify/cli": "3.30.1",
+		"dotenv": "^16.0.3",
+		"node-fetch": "^3.3.0",
+		"@moose-desk/ui": "*",
+		"@moose-desk/core": "*"
+	}
+}

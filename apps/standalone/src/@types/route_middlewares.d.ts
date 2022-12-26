@@ -1,0 +1,1 @@
+type RouteMiddleware = "guest" | "user";
