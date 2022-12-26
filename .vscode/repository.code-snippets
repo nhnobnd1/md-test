@@ -19,8 +19,8 @@
   "Repository function": {
     "prefix": ["repo-func"],
     "body": [
-      "import env from 'src/core/env';",
-      "import { createRepository } from 'src/core/repository';",
+      "import env from \"src/core/env\";",
+      "import { createRepository } from \"@moose-desk/core\";",
       "",
       "const ${1:Demo}Repository = createRepository(",
       "\t{",

@@ -1,26 +1,4 @@
 {
-  "Reactjs Connect Redux Function Component": {
-    "prefix": ["rjs-redux-component"],
-    "body": [
-      "import { connect } from 'react-redux';",
-      "",
-      "interface ${1:ComponentName}Props {}",
-      "",
-      "const mapStateToProps = (state: RootReducer) => ({",
-      "",
-      "})",
-      "",
-      "const mapDispatchToProps = {}",
-      "",
-      "const ${1:ComponentName}Based = (props: ${1:ComponentName}Props) => {",
-      "\treturn ${2:<></>};",
-      "}",
-      "const ${1:ComponentName} = connect(mapStateToProps, mapDispatchToProps)(${1:ComponentName}Based);",
-      "",
-      "export default ${1:ComponentName};"
-    ],
-    "description": ""
-  },
   "Reactjs Function Component": {
     "prefix": ["rjs-component"],
     "body": [

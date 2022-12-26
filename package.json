@@ -1,24 +1,25 @@
 {
-	"name": "moose-desk",
-	"version": "1.0.0",
-	"main": "web/index.js",
-	"license": "UNLICENSED",
-	"scripts": {
-		"shopify": "shopify",
-		"build": "shopify app build",
-		"dev": "shopify app dev",
-		"info": "shopify app info",
-		"generate": "shopify app generate",
-		"deploy": "shopify app deploy",
-		"frontend": "yarn --cwd web/frontend",
-		"web": "yarn --cwd web",
-		"postinstall": "yarn web && yarn frontend"
-	},
-	"dependencies": {
-		"@shopify/app": "3.21.0",
-		"@shopify/cli": "3.21.0",
-		"dotenv": "^16.0.3",
-		"node-fetch": "^3.3.0"
-	},
-	"author": "phammanh"
+  "name": "new-moose-desk",
+  "version": "0.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+  },
+  "devDependencies": {
+    "eslint-config-custom": "*",
+    "prettier": "latest",
+    "turbo": "latest"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {},
+  "packageManager": "yarn@1.22.19"
 }

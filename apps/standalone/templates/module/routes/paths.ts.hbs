@@ -1,0 +1,8 @@
+import { createRoutePath } from "@moose-desk/core";
+
+const {{moduleName.pascal}}RoutePaths = createRoutePath({
+  Index: "{{moduleName.kebab}}",
+  Child: "child",
+} as const);
+
+export default {{moduleName.pascal}}RoutePaths;
