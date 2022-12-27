@@ -25,7 +25,7 @@ export interface PaginationProps extends PaginationShopifyProps {
   }: PaginationPack) => void;
 }
 
-const Pagination = ({
+export const Pagination = ({
   total,
   pageSize,
   currentPage,
@@ -90,7 +90,7 @@ const Pagination = ({
     }, [page, pageAmount]);
 
     return (
-      <div className="pagination-item-wrap flex items-center gap-3">
+      <div className="pagination-item-wrap flex items-center">
         {listLeft.map((item) => (
           <div
             className={classNames({

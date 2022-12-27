@@ -1,7 +1,9 @@
+import { LoadingOutlined } from "@ant-design/icons";
 import { Module, useRoutes, useToggle } from "@moose-desk/core";
 import { camelCase } from "lodash-es";
 import { memo, ReactElement, useEffect, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
+import { Loading } from "src/components/Loading";
 import { i18n } from "src/localization";
 import RoutePaths from "src/routes/paths";
 
@@ -88,7 +90,7 @@ const ModuleLoader = ({ children }: ModuleLoaderProps) => {
           className="fixed top-0 left-0 h-full w-full z-50 bg-white flex items-center justify-center"
           style={{ width: "100vw", height: "100vh" }}
         >
-          Loading...
+          <Loading indicator={<LoadingOutlined style={{ fontSize: 48 }} />} />
         </div>
       )}
       {firstLoad && children}

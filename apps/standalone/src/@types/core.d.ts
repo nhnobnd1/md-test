@@ -1,5 +1,7 @@
 declare module "@moose-desk/core" {
-  interface IRoute {}
+  interface IRoute {
+    showInNavigationMenu?: boolean;
+  }
 }
 
 export {};

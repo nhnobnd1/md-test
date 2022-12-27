@@ -9,21 +9,18 @@ import LazyComponent from "@moose-desk/core/components/LazyComponent";
 import { lazy, Suspense } from "react";
 import { CookiesProvider } from "react-cookie";
 import ReactDOM from "react-dom";
+import { Loading } from "src/components/Loading";
 import ModuleLoader from "src/core/utilities/ModuleLoader";
 import ErrorBoundary from "src/ErrorBoundary";
-import("src/styles/index.scss");
+import("antd/dist/reset.css").then(() => import("src/styles/index.scss"));
 
 ReactDOM.render(
   <ErrorBoundary>
     <BrowserRouter>
-      <Suspense
-        fallback={
-          <div className="flex items-center content-center w-screen h-screen">
-            Loading...
-          </div>
-        }
-      >
-        <LoadingProvider component={() => <>Loading...</>}>
+      <Suspense fallback={<Loading fullPage />}>
+        <LoadingProvider
+          component={({ state }) => <>{state && <Loading fullPage />}</>}
+        >
           <ApiLoadingHandlerProvider>
             <CookiesProvider>
               <AuthProvider
