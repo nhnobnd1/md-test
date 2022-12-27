@@ -11,7 +11,9 @@
     "gen-module": "yarn gen module src/modules"
   },
   "dependencies": {
+    "@moose-desk/core": "*",
     "@svgr/core": "^6.5.1",
+    "antd": "^5.1.1",
     "axios": "^1.2.1",
     "classnames": "^2.3.2",
     "dayjs": "^1.11.5",
@@ -23,8 +25,7 @@
     "react-google-login": "^5.2.2",
     "react-i18next": "^11.18.6",
     "react-query": "^3.34.19",
-    "unplugin-icons": "^0.14.14",
-    "@moose-desk/core": "*"
+    "unplugin-icons": "^0.14.14"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.18.2",
