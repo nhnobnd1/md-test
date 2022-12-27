@@ -7,6 +7,7 @@ import {
   usePrevious,
   useToggle,
 } from "@moose-desk/core";
+import { Agent, AgentRepository, GetListAgentRequest } from "@moose-desk/repo";
 import {
   Badge,
   Card,
@@ -30,8 +31,6 @@ import { SortOrderOptions } from "src/models/Form";
 import { BaseMetaDataListResponse } from "src/models/Request";
 import { Role } from "src/models/Rule";
 import { getStatusAgent, optionsSort } from "src/modules/agent/constant";
-import { Agent, GetListAgentRequest } from "src/modules/agent/models/Agent";
-import AgentRepository from "src/modules/agent/repositories/AgentRepository";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
 
 interface AgentIndexPageProps {}
