@@ -3,14 +3,25 @@
     cursor: pointer;
     color: #202223;
     font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    margin: 0 4px;
     &:hover {
       text-decoration: underline;
       color: rgba(44, 110, 203, 1);
     }
 
     &.active {
-      text-decoration: underline;
-      color: rgba(44, 110, 203, 1);
+      background-color: #fff;
+      border-color: #1677ff;
+      min-width: 32px;
+      height: 32px;
+      color: #1677ff;
+      font-weight: 600;
     }
     &__more {
       cursor: pointer;

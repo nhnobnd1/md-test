@@ -7,9 +7,12 @@ interface AuthIndexPageProps {}
 const AuthIndexPage: PageComponent<AuthIndexPageProps> = () => {
   return (
     <>
-      AuthIndexPage
+      <span>
+        AuthIndexPage
+        <Badge className="ml-2" count={11} showZero color="#faad14" />
+      </span>
+
       <img src={Images.Logo.LogoMooseDesk} width="40" alt="" />
-      <Badge count={11} showZero color="#faad14" />
     </>
   );
 };
