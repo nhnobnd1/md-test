@@ -12,7 +12,9 @@ import ReactDOM from "react-dom";
 import { Loading } from "src/components/Loading";
 import ModuleLoader from "src/core/utilities/ModuleLoader";
 import ErrorBoundary from "src/ErrorBoundary";
-import("antd/dist/reset.css").then(() => import("src/styles/index.scss"));
+import("src/styles/tailwind.scss").then(() =>
+  import("antd/dist/reset.css").then(() => import("src/styles/index.scss"))
+);
 
 ReactDOM.render(
   <ErrorBoundary>

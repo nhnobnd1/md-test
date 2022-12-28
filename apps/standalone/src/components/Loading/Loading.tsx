@@ -1,4 +1,3 @@
-import { LoadingOutlined } from "@ant-design/icons";
 import { Spin, SpinProps } from "antd";
 
 interface LoadingProps extends SpinProps {
@@ -9,10 +8,11 @@ export const Loading = ({ fullPage = false, ...props }: LoadingProps) => {
   return (
     <>
       {fullPage ? (
-        <div className="flex items-center content-center w-screen h-screen">
+        <div className="fixed left-0 top-0 right-0 bottom-0">
           <Spin
+            className="w-full h-full flex items-center justify-center"
             {...props}
-            indicator={<LoadingOutlined style={{ fontSize: 48 }} />}
+            size="large"
           ></Spin>
         </div>
       ) : (

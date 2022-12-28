@@ -1,0 +1,20 @@
+.on-boarding {
+  @apply py-6 text-base;
+  .card-boarding {
+    border-radius: 6px;
+    border: 1px solid #484242;
+    width: 800px;
+    margin: 0 auto;
+    padding: 24px;
+    background-color: #fff;
+
+    &__description {
+      padding-bottom: 16px;
+      border-bottom: 1px solid #202020;
+      margin-bottom: 16px;
+    }
+
+    &__actions {
+    }
+  }
+}
