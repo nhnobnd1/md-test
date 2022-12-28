@@ -1,9 +1,4 @@
-import {
-  BaseListRequest,
-  BaseListResponse,
-  BaseResponse,
-} from "src/models/Request";
-import { Role } from "src/models/Rule";
+import { BaseListRequest, BaseListResponse, BaseResponse, Role } from "../unty";
 
 export interface Agent {
   _id: string;

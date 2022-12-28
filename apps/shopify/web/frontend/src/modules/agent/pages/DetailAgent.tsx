@@ -7,6 +7,12 @@ import {
   useParams,
   useToggle,
 } from "@moose-desk/core";
+import {
+  Agent,
+  AgentRepository,
+  ResendEmailInvitationRequest,
+  UpdateAgentRequest,
+} from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Badge,
@@ -38,12 +44,6 @@ import AgentForm, {
   AgentFormValues,
 } from "src/modules/agent/components/AgentForm/AgentForm";
 import { getStatusAgent } from "src/modules/agent/constant";
-import {
-  Agent,
-  ResendEmailInvitationRequest,
-  UpdateAgentRequest,
-} from "src/modules/agent/models/Agent";
-import AgentRepository from "src/modules/agent/repositories/AgentRepository";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
 
 interface CreateAgentProps {}

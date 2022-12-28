@@ -1,5 +1,5 @@
 import { createRepository } from "@moose-desk/core";
-import env from "src/core/env";
+import env from "../env";
 import {
   ActiveNewAgentRequest,
   ActiveNewAgentResponse,
@@ -15,9 +15,9 @@ import {
   ResendEmailInvitationResponse,
   UpdateAgentRequest,
   UpdateAgentResponse,
-} from "src/modules/agent/models/Agent";
+} from "./Agent";
 
-const AgentRepository = createRepository(
+export const AgentRepository = createRepository(
   {
     baseURL: `${env.API_URL}/api/v1/account/agent`,
   },
