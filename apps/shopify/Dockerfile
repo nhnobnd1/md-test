@@ -5,6 +5,6 @@ ENV SHOPIFY_API_KEY=$SHOPIFY_API_KEY
 EXPOSE 8081
 WORKDIR /app
 COPY web .
-RUN npm install
-RUN cd frontend && npm install && npm run build
-CMD ["npm", "run", "serve"]
+RUN yarn --frozen-lockfile
+RUN cd frontend && yarn --frozen-lockfile && yarn build
+CMD ["yarn", "serve"]
