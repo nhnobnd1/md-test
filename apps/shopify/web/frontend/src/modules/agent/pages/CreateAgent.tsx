@@ -1,4 +1,9 @@
 import { generatePath, useJob, useNavigate } from "@moose-desk/core";
+import {
+  AgentRepository,
+  CreateAgentRequest,
+  ErrorCodeCreate,
+} from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Button,
@@ -17,11 +22,7 @@ import { useBanner } from "src/hooks/useBanner";
 import AgentForm, {
   AgentFormValues,
 } from "src/modules/agent/components/AgentForm/AgentForm";
-import {
-  CreateAgentRequest,
-  ErrorCodeCreate,
-} from "src/modules/agent/models/Agent";
-import AgentRepository from "src/modules/agent/repositories/AgentRepository";
+
 import AgentRoutePaths from "src/modules/agent/routes/paths";
 
 interface CreateAgentProps {}

@@ -1,8 +1,8 @@
+import { Role } from "@moose-desk/repo";
 import { FormLayout, Select, TextField } from "@shopify/polaris";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import Form, { FormProps } from "src/components/Form";
 import FormItem from "src/components/Form/Item";
-import { Role } from "src/models/Rule";
 import * as Yup from "yup";
 import "./AgentForm.scss";
 
@@ -52,62 +52,53 @@ const AgentForm = ({ disableForm = false, ...props }: AgentFormProps) => {
     role: Yup.string().required("You must enter your role"),
   });
 
-  const getLabelActive = useCallback((values: any) => {
-    return values.isActive && values.emailConfirmed ? "Active" : "Invited";
-  }, []);
-
   return (
     <Form
       {...props}
       initialValues={props.initialValues ?? initialValuesForm}
       validationSchema={AgentFormSchema}
     >
-      {({ values }) => (
-        <FormLayout>
-          <FormItem name="email">
-            <TextField
-              label="Email"
-              type="email"
-              autoComplete="off"
-              disabled={disableForm}
-              placeholder="Enter email"
-            />
-          </FormItem>
-          <FormItem name="firstName">
-            <TextField
-              label="First name"
-              type="text"
-              autoComplete="off"
-              disabled={disableForm}
-              placeholder="Enter first name"
-            />
-          </FormItem>
-          <FormItem name="lastName">
-            <TextField
-              label="Last name"
-              type="text"
-              autoComplete="off"
-              disabled={disableForm}
-              placeholder="Enter last name"
-            />
-          </FormItem>
-          <FormItem name="phoneNumber">
-            <TextField
-              label="Phone number"
-              type="tel"
-              autoComplete="off"
-              disabled={disableForm}
-              placeholder="Enter phone number"
-            />
-          </FormItem>
-          <FormItem name="role">
-            <Select
-              label="User role"
-              disabled={disableForm}
-              options={options}
-            />
-          </FormItem>
-          {/* {showStatus && (
+      <FormLayout>
+        <FormItem name="email">
+          <TextField
+            label="Email"
+            type="email"
+            autoComplete="off"
+            disabled={disableForm}
+            placeholder="Enter email"
+          />
+        </FormItem>
+        <FormItem name="firstName">
+          <TextField
+            label="First name"
+            type="text"
+            autoComplete="off"
+            disabled={disableForm}
+            placeholder="Enter first name"
+          />
+        </FormItem>
+        <FormItem name="lastName">
+          <TextField
+            label="Last name"
+            type="text"
+            autoComplete="off"
+            disabled={disableForm}
+            placeholder="Enter last name"
+          />
+        </FormItem>
+        <FormItem name="phoneNumber">
+          <TextField
+            label="Phone number"
+            type="tel"
+            autoComplete="off"
+            disabled={disableForm}
+            placeholder="Enter phone number"
+          />
+        </FormItem>
+        <FormItem name="role">
+          <Select label="User role" disabled={disableForm} options={options} />
+        </FormItem>
+        {/* {showStatus && (
             <Stack>
               <Stack.Item>Status:</Stack.Item>
               <Stack.Item>
@@ -117,8 +108,7 @@ const AgentForm = ({ disableForm = false, ...props }: AgentFormProps) => {
               </Stack.Item>
             </Stack>
           )} */}
-        </FormLayout>
-      )}
+      </FormLayout>
     </Form>
   );
 };
