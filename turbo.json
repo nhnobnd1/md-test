@@ -12,5 +12,12 @@
 			"cache": false
 		}
 	},
-	"globalDependencies": ["$HOST", "$SHOPIFY_API_KEY", "$FRONTEND_PORT"]
+	"globalDependencies": [
+		"$HOST",
+		"$SHOPIFY_API_KEY",
+		"$FRONTEND_PORT",
+		"$npm_lifecycle_event",
+		"$BACKEND_PORT",
+		"$CI"
+	]
 }
