@@ -7,8 +7,6 @@ export interface SwitchProps {
 }
 
 const Switch = ({ value, onChange, onClick }: SwitchProps) => {
-  console.log("value checked", value);
-
   return (
     <>
       <label className="switch small purple">

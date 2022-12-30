@@ -1,6 +1,6 @@
 import { useDidUpdate } from "@moose-desk/core";
 import { InlineError } from "@shopify/polaris";
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 export interface SwitchProps {
   inititalValue?: any[];
   disabled: boolean;
@@ -14,25 +14,44 @@ const InputDisableSubmit = ({
   inititalValue = [],
   disabled,
   value = "",
-  error,
+  error = "",
   setValue,
   onChange,
 }: SwitchProps) => {
+  const [messageError, setMessageError] = useState(error);
   const [domainSubmit, setDomainSubmit] = useState(value);
   const handleSubmitDomain = useCallback(
     (event: any) => {
-      if (event.key === "Enter" && !error) {
-        setValue &&
-          setValue([...inititalValue, domainSubmit.toLocaleLowerCase()]);
+      if (event.key === "Enter" && !messageError) {
+        if (
+          domainSubmit &&
+          inititalValue.indexOf(domainSubmit.toLocaleLowerCase()) === -1
+        ) {
+          setValue &&
+            setValue([...inititalValue, domainSubmit.toLocaleLowerCase()]);
+        }
         setDomainSubmit("");
         event.preventDefault();
       }
     },
-    [domainSubmit, setDomainSubmit, inititalValue, error]
+    [domainSubmit, setDomainSubmit, inititalValue, messageError]
   );
   useDidUpdate(() => {
     setDomainSubmit(value);
   }, [value]);
+  useEffect(() => {
+    if (inititalValue.length === 0 && !disabled) {
+      setMessageError("Please, enter domain!");
+    }
+  }, [inititalValue, setMessageError, disabled]);
+  useEffect(() => {
+    setMessageError(error);
+  }, [error, setMessageError]);
+  useEffect(() => {
+    if (disabled) {
+      setMessageError("");
+    }
+  }, [disabled]);
   return (
     <div className="">
       <div className="Polaris-Connected">
@@ -40,7 +59,6 @@ const InputDisableSubmit = ({
           <div className="Polaris-TextField">
             <input
               type="text"
-              placeholder="domainname.moosedesk.com"
               onKeyDown={handleSubmitDomain}
               value={domainSubmit}
               onChange={(e) => {
@@ -54,9 +72,9 @@ const InputDisableSubmit = ({
           </div>
         </div>
       </div>
-      {error ? (
+      {messageError ? (
         <div className="Polaris-Labelled__Error">
-          <InlineError message={error} fieldID="myFieldID" />
+          <InlineError message={messageError} fieldID="myFieldID" />
         </div>
       ) : null}
     </div>
