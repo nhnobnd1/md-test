@@ -2294,6 +2294,10 @@ function $h(e) {
     Object.prototype.hasOwnProperty.call(e, t) && (e[t] = void 0);
   return e;
 }
+const Ih = /(^[0-9]{9,16}$)\b/g, jh = /^[a-z0-9\-\d@._]+$/, Uh = /^(?=.*[a-z])(?=.*?[A-Z])(?=.*?[0-9])[a-zA-Z@$!%*#?&\d]{8,32}$/g;
+function Fh(e) {
+  return !/[^\x00-\x7F]/.test(e);
+}
 const Sr = (e, t = "", r = new FormData()) => (Object.keys(e).forEach((n) => {
   const o = t !== "" ? t + "." + n : n, i = e[n];
   Array.isArray(i) ? i.forEach((a, s) => {
@@ -2314,7 +2318,7 @@ class Cd {
   }
 }
 const Or = new Cd();
-function Ih(e, t) {
+function Mh(e, t) {
   return new Proxy(e, {
     set(r, n, o) {
       return r[n] = o, t(r), !0;
@@ -4954,7 +4958,7 @@ Check the top-level render call using <` + E + ">.");
 (function(e) {
   process.env.NODE_ENV === "production" ? e.exports = rh() : e.exports = nh();
 })(th);
-const Ue = Ke.Fragment, W = Ke.jsx, $r = Ke.jsxs, Uh = (e = () => {
+const Ue = Ke.Fragment, W = Ke.jsx, $r = Ke.jsxs, Vh = (e = () => {
 }) => {
   const [t, r] = z(!1);
   t || (e(), r(!0));
@@ -5167,7 +5171,7 @@ function Gi() {
     () => He.routes
   ), addRoutes: e, removeRoute: t };
 }
-const Fh = () => {
+const Wh = () => {
   const { routes: e } = Gi(), [t, r] = z(), n = ce(), o = V(
     (i) => {
       const a = i.filter(
@@ -5214,13 +5218,13 @@ function fh(e, t) {
     flush: o.flush
   };
 }
-function Mh(e, t) {
+function Hh(e, t) {
   const [r, n] = z(e), { run: o } = fh((i) => {
     n(i);
   }, t);
   return [r, o];
 }
-function Bh(e, t) {
+function kh(e, t) {
   const r = Ee(!1);
   J(() => {
     if (r.current)
@@ -5228,7 +5232,7 @@ function Bh(e, t) {
     r.current = !0;
   }, t);
 }
-const Vh = (e, t) => {
+const qh = (e, t) => {
   const r = Ee(e);
   r.current = e;
   const n = z()[1], o = V(() => {
@@ -5256,7 +5260,7 @@ const Vh = (e, t) => {
 }, Ji = Wo(
   void 0
 );
-function Wh({
+function zh({
   children: e,
   color: t,
   component: r
@@ -5317,7 +5321,7 @@ function ph(e, t) {
     error: d
   };
 }
-const hh = { attributes: !0, childList: !0, subtree: !0 }, Hh = (e, t) => {
+const hh = { attributes: !0, childList: !0, subtree: !0 }, Gh = (e, t) => {
   const r = Xe(() => new MutationObserver(t), [t]);
   J(() => {
     const n = e instanceof HTMLElement ? e : e.current;
@@ -5326,13 +5330,13 @@ const hh = { attributes: !0, childList: !0, subtree: !0 }, Hh = (e, t) => {
     };
   }, [r, e]);
 };
-function kh(e) {
+function Jh(e) {
   const t = Ee();
   return J(() => {
     t.current = e;
   }), t.current;
 }
-const qh = (e, t) => {
+const Kh = (e, t) => {
   const r = Ee(e);
   r.current = e;
   const n = z()[1], o = V(() => {
@@ -5349,11 +5353,11 @@ const qh = (e, t) => {
     cancel: i
   };
 };
-function zh({ get: e, set: t }, r) {
+function Yh({ get: e, set: t }, r) {
   const n = Xe(e, r), o = V(t, r);
   return [n, o];
 }
-const Yi = Wo(void 0), Gh = ({
+const Yi = Wo(void 0), Xh = ({
   children: e,
   defaultTokens: t = {},
   fetchUserOnLogin: r = () => new xt((n) => n.next(void 0))
@@ -5383,13 +5387,13 @@ const Yi = Wo(void 0), Gh = ({
     };
   }, [i]), /* @__PURE__ */ W(Yi.Provider, { value: { user: n, tokens: i, isLoggedIn: s, login: d, logout: p }, children: e });
 };
-function Jh() {
+function Zh() {
   const e = jr(Yi);
   if (!e)
     throw new Error("useAuthContext must be used in AuthProvider");
   return e;
 }
-const ln = Ye.createContext(void 0), Kh = ({
+const ln = Ye.createContext(void 0), Qh = ({
   userPermissions: e,
   isUser: t,
   children: r
@@ -5410,22 +5414,22 @@ const ln = Ye.createContext(void 0), Kh = ({
     granted: Xe(() => e ? t.can(e) : !0, [e, t.can]),
     ...t
   };
-}, Yh = Ho(
+}, em = Ho(
   ({ permissions: e, children: t, guestView: r }) => {
     const { granted: n } = mh(e);
     return typeof t == "function" ? t(n) : /* @__PURE__ */ W(Ue, { children: n ? t : r });
   }
 );
-function Xh(e) {
+function tm(e) {
   return (t) => (r) => /* @__PURE__ */ W(ln.Consumer, { children: (n) => /* @__PURE__ */ W(Ue, { children: (n == null ? void 0 : n.can(e || [])) && /* @__PURE__ */ W(t, { ...r }) }) });
 }
-function Zh({
+function rm({
   component: e,
   props: t
 }) {
   return /* @__PURE__ */ W(e, { ...t });
 }
-function Qh({
+function nm({
   children: e
 }) {
   const { startLoading: t, stopLoading: r } = Ki();
@@ -5442,7 +5446,7 @@ function Qh({
     }
   })), /* @__PURE__ */ W(Ue, { children: e });
 }
-function em(e, t) {
+function om(e, t) {
   const r = new ie(e.baseURL, e);
   return bd(t, (n) => (...o) => n(r, ...o));
 }
@@ -5494,7 +5498,7 @@ const gh = ({
   return J(() => {
     e && e(t);
   }, [t.pathname]), /* @__PURE__ */ W(Ue, {});
-}, tm = ({
+}, im = ({
   routes: e,
   notFoundElement: t,
   onRouteChange: r
@@ -5511,7 +5515,7 @@ const gh = ({
     ] })
   ] });
 };
-function rm(e) {
+function am(e) {
   const t = e;
   return (r) => {
     const n = Gi();
@@ -5520,67 +5524,71 @@ function rm(e) {
 }
 export {
   ie as Api,
-  Qh as ApiLoadingHandlerProvider,
-  Gh as AuthProvider,
-  Kh as AuthorizationProvider,
+  nm as ApiLoadingHandlerProvider,
+  Xh as AuthProvider,
+  Qh as AuthorizationProvider,
   un as AxiosObservable,
   Ah as BrowserRouter,
   Td as EventListenersManager,
   Ji as LoadingContext,
-  Wh as LoadingProvider,
+  zh as LoadingProvider,
   bh as LocationEffect,
   Ch as Navigate,
   gs as Outlet,
-  Yh as PrivateView,
+  em as PrivateView,
   _r as RequestHeaderContentType,
   Vo as RouteMiddleware,
   yh as RouteRenderer,
-  tm as RouterGenerator,
+  im as RouterGenerator,
   He as RouterHandler,
   Or as TokenManager,
   $h as clearObject,
   bo as clearUndefinedProperties,
-  em as createRepository,
+  om as createRepository,
   vh as createRoutePath,
-  Ih as createVariableWithWatcher,
+  Mh as createVariableWithWatcher,
   Lh as emptyObject,
   oh as findRouteHasPermission,
   Sr as formData,
   _h as generatePath,
   Xi as generateRoutes,
-  Zh as lazyComponent,
+  rm as lazyComponent,
   Eo as makeId,
+  Uh as passwordRegex,
   Fo as pathMatched,
+  Ih as phoneNumberRegex,
   _t as urlEncoded,
   xh as useActionData,
   Th as useAsyncError,
   Ph as useAsyncValue,
-  Jh as useAuthContext,
+  Zh as useAuthContext,
   mh as useAuthorization,
   Dh as useBeforeUnload,
-  Uh as useConstructor,
-  Fh as useCurrentRoute,
+  Vh as useConstructor,
+  Wh as useCurrentRoute,
   fh as useDebounceFn,
-  Mh as useDebounceState,
-  Bh as useDidUpdate,
-  Vh as useInterval,
+  Hh as useDebounceState,
+  kh as useDidUpdate,
+  qh as useInterval,
   ph as useJob,
   Ki as useLoading,
   ce as useLocation,
   cn as useMount,
   Pt as useNavigate,
   Rh as useNavigation,
-  Hh as useOnElementChange,
+  Gh as useOnElementChange,
   ss as useOutlet,
   Sh as useOutletContext,
   Oh as useParams,
-  kh as usePrevious,
+  Jh as usePrevious,
   Gi as useRoutes,
   Nh as useSearchParams,
-  qh as useTimeout,
+  Kh as useTimeout,
   dh as useToggle,
   lh as useUnMount,
-  zh as useWritableMemo,
-  Xh as withAuthorization,
-  rm as withRoutes
+  Yh as useWritableMemo,
+  jh as usernameRegex,
+  Fh as validateAsciiChars,
+  tm as withAuthorization,
+  am as withRoutes
 };

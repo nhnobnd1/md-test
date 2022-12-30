@@ -21,6 +21,7 @@ export default function App() {
   useEffect(() => {
     if ((shop && !isLoggedIn) || !user) {
       const payload = cookies[process.env.HOST ?? shop];
+      console.log(payload.offlineToken);
       if (payload && payload.email && payload.offlineToken) {
         api
           .request<LoginResponse>({
