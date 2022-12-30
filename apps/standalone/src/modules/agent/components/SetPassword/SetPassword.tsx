@@ -21,11 +21,12 @@ export const SetPassword = ({ agentName }: SetPasswordProps) => {
               required: true,
               message: "Please input your password!",
             },
-            // {
-            //   pattern: ^.*(?=.{6,}),
-            //   message:
-            //     "Password must be have 8 characters long with Capital letter, lowercase letter, wild cards",
-            // },
+            {
+              pattern:
+                /^(?=.*[a-z])(?=.*?[A-Z])(?=.*[@$!%*#?&])[a-zA-Z@$!%*#?&\d]{8,32}$/g,
+              message:
+                "Password must be have 8 characters long with Capital letter, lowercase letter, wild cards",
+            },
           ]}
           hasFeedback
         >

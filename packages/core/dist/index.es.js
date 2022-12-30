@@ -2294,7 +2294,7 @@ function $h(e) {
     Object.prototype.hasOwnProperty.call(e, t) && (e[t] = void 0);
   return e;
 }
-const Ih = /(^[0-9]{9,16}$)\b/g, jh = /^[a-z0-9\-\d@._]+$/, Uh = /^(?=.*[a-z])(?=.*?[A-Z])(?=.*?[0-9])[a-zA-Z@$!%*#?&\d]{8,32}$/g;
+const Ih = /(^[0-9]{9,16}$)\b/g, jh = /^[a-z0-9\-\d@._]+$/, Uh = /^(?=.*[a-z])(?=.*?[A-Z])(?=.*[@$!%*#?&])[a-zA-Z@$!%*#?&\d]{8,32}$/g;
 function Fh(e) {
   return !/[^\x00-\x7F]/.test(e);
 }
