@@ -42,7 +42,7 @@ const MainLayoutTopBar = ({ navigationToggle }: MainLayoutTopBarProps) => {
           <img src={Images.Logo.LogoMooseDesk} alt="" width={40} />
           <div className="Md-TopBar__TextBrand">
             <Text as="p" variant="headingLg" fontWeight="semibold">
-              Moose desk
+              MooseDesk
             </Text>
           </div>
         </div>
