@@ -40,8 +40,15 @@ const InputDisableSubmit = ({
     setDomainSubmit(value);
   }, [value]);
   useEffect(() => {
-    if (inititalValue.length === 0 && !disabled) {
+    if (inititalValue.length === 0 && disabled) {
       setMessageError("Please, enter domain!");
+      if (disabled) {
+        setMessageError("");
+      }
+    } else {
+      if (inititalValue.length === 0 && !disabled) {
+        setMessageError("Please, enter domain!");
+      }
     }
   }, [inititalValue, setMessageError, disabled]);
   useEffect(() => {
@@ -49,14 +56,20 @@ const InputDisableSubmit = ({
   }, [error, setMessageError]);
   useEffect(() => {
     if (disabled) {
-      setMessageError("");
+      document
+        .getElementById("div-input")
+        ?.classList.add("Polaris-TextField--disabled");
+    } else {
+      document
+        .getElementById("div-input")
+        ?.classList.remove("Polaris-TextField--disabled");
     }
   }, [disabled]);
   return (
     <div className="">
       <div className="Polaris-Connected">
         <div className="Polaris-Connected__Item Polaris-Connected__Item--primary">
-          <div className="Polaris-TextField">
+          <div id="div-input" className="Polaris-TextField">
             <input
               type="text"
               onKeyDown={handleSubmitDomain}

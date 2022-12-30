@@ -89,7 +89,7 @@ export default function IndexAccountManager({ props }: any) {
       return AccountManagerRepository.getData(auth.user?.id).pipe(
         map(({ data }) => {
           setSelectedDomain(data.data.whitelistDomains);
-          setDisabled(data.data.autoJoinEnabled);
+          setDisabled(!data.data.autoJoinEnabled);
           return data.data;
         })
       );
@@ -150,7 +150,7 @@ export default function IndexAccountManager({ props }: any) {
     <>
       <Page fullWidth>
         <Form
-          initialValues={initialValues}
+          initialValues={result || initialValues}
           ref={formRef}
           validationSchema={validateObject}
           onSubmit={handleSubmit}
@@ -166,7 +166,7 @@ export default function IndexAccountManager({ props }: any) {
                 ) : null}
               </Layout.Section>
               <Layout.Section>
-                <Card title="Auto-Join Setting" sectioned>
+                <Card title="Auto-Join Settings" sectioned>
                   <Stack spacing="baseTight" alignment="leading">
                     <Stack.Item>
                       <FormItem name="autoJoinEnabled">
@@ -182,7 +182,7 @@ export default function IndexAccountManager({ props }: any) {
                       </div>
                       <div className="mt-2">
                         <Link onClick={() => console.log(1)}>
-                          {`${auth.user?.name.toLocaleLowerCase()}.moosedesk.com/signup`}
+                          {`https://${auth.user?.name.toLocaleLowerCase()}.moosedesk.com/signup`}
                         </Link>
                       </div>
                     </Stack.Item>
