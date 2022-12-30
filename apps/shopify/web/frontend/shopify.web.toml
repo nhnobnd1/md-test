@@ -1,5 +1,5 @@
 type="frontend"
 
 [commands]
-dev = "npm run dev --force"
-build = "npm run build"
+dev = "yarn dev --force"
+build = "yarn build"

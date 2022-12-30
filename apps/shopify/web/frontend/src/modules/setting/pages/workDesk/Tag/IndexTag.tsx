@@ -34,7 +34,7 @@ import {
 import TagRepository from "src/modules/setting/repository/workDesk/TagRepository";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
 
-export default function SettingIndexPage() {
+export default function TagIndexPage() {
   const navigate = useNavigate();
   const { show } = useToast();
   const [tags, setTags] = useState<Tag[]>([]);
