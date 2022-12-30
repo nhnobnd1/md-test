@@ -1,7 +1,7 @@
 import { memo } from "react";
 import "./Switch.scss";
 export interface SwitchProps {
-  value?: any;
+  value?: boolean;
   onChange?: () => void;
   onClick?: () => void;
 }

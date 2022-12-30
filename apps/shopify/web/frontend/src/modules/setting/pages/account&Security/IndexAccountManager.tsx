@@ -30,11 +30,13 @@ export default function IndexAccountManager({ props }: any) {
   const [disabled, setDisabled] = useState(false);
   const removeSelectedDomain = useCallback(
     (domain) => () => {
-      setSelectedDomain((previousDomain) =>
-        previousDomain.filter((previousDomain) => previousDomain !== domain)
-      );
+      if (!disabled) {
+        setSelectedDomain((previousDomain) =>
+          previousDomain.filter((previousDomain) => previousDomain !== domain)
+        );
+      }
     },
-    []
+    [disabled, setDisabled]
   );
   const selectedMarkup = selectedDomain.map((domain) => (
     <Tag key={domain} onRemove={removeSelectedDomain(domain)}>
@@ -49,35 +51,45 @@ export default function IndexAccountManager({ props }: any) {
       autoJoinEnabled: false,
       whitelistDomains: [],
       twoFactorAuthEnabled: false,
-      listDomain: "",
+      domain: "",
     }),
     [props]
   );
   const formRef = useRef<FormikProps<any>>(null);
   const validateObject = useCallback(() => {
-    if (!formRef.current?.values.autoJoinEnabled) {
-      if (selectedDomain.length < 0) {
+    if (formRef.current?.values.autoJoinEnabled) {
+      if (selectedDomain.length === 0) {
         return object().shape({
-          listDomain: string()
-            .email("Invalid email format ")
-            .required("Please, enter email domain!"),
+          domain: string()
+            .matches(
+              /^((?!-))(xn--)?[a-z0-9][a-z0-9-_]{0,61}[a-z0-9]{0,1}.(xn--)?([a-z0-9-]{1,61}|[a-z0-9-]{1,30}.[a-z]{2,})$/,
+              "Invalid domain name."
+            )
+            .required("Please, enter domain!"),
         });
       } else {
         return object().shape({
-          listDomain: string().email("Invalid email format "),
+          domain: string().matches(
+            /^((?!-))(xn--)?[a-z0-9][a-z0-9-_]{0,61}[a-z0-9]{0,1}.(xn--)?([a-z0-9-]{1,61}|[a-z0-9-]{1,30}.[a-z]{2,})$/,
+            "Invalid domain name."
+          ),
         });
       }
     } else {
       return object().shape({});
     }
-  }, []);
+  }, [
+    formRef.current?.values.autoJoinEnabled,
+    selectedDomain,
+    setSelectedDomain,
+  ]);
   // fetch init data
   const { run: fetchAccountManagerStatus, result } = useJob(
     () => {
       return AccountManagerRepository.getData(auth.user?.id).pipe(
         map(({ data }) => {
           setSelectedDomain(data.data.whitelistDomains);
-          setDisabled(!data.data.autoJoinEnabled);
+          setDisabled(data.data.autoJoinEnabled);
           return data.data;
         })
       );
@@ -128,12 +140,17 @@ export default function IndexAccountManager({ props }: any) {
       })
     );
   });
+  // reset form
+  const handleResetForm = () => {
+    formRef.current?.resetForm();
+    fetchAccountManagerStatus();
+  };
   useEffect(() => fetchAccountManagerStatus(), []);
   return (
     <>
-      <Page title="Access manager" fullWidth compactTitle>
+      <Page fullWidth>
         <Form
-          initialValues={result ?? initialValues}
+          initialValues={initialValues}
           ref={formRef}
           validationSchema={validateObject}
           onSubmit={handleSubmit}
@@ -149,7 +166,7 @@ export default function IndexAccountManager({ props }: any) {
                 ) : null}
               </Layout.Section>
               <Layout.Section>
-                <Card title="Auto join setting" sectioned>
+                <Card title="Auto-Join Setting" sectioned>
                   <Stack spacing="baseTight" alignment="leading">
                     <Stack.Item>
                       <FormItem name="autoJoinEnabled">
@@ -165,7 +182,7 @@ export default function IndexAccountManager({ props }: any) {
                       </div>
                       <div className="mt-2">
                         <Link onClick={() => console.log(1)}>
-                          http://%domainName%.moosedesk.com/signup
+                          {`${auth.user?.name.toLocaleLowerCase()}.moosedesk.com/signup`}
                         </Link>
                       </div>
                     </Stack.Item>
@@ -178,24 +195,24 @@ export default function IndexAccountManager({ props }: any) {
                       </Text>
                     </Stack.Item>
                     <Stack.Item fill>
-                      <InputDisableSubmit
-                        inititalValue={selectedDomain}
-                        setValue={setSelectedDomain}
-                        disabled={disabled}
-                      />
+                      <FormItem name="domain">
+                        <InputDisableSubmit
+                          inititalValue={selectedDomain}
+                          setValue={setSelectedDomain}
+                          disabled={disabled}
+                        />
+                      </FormItem>
                       <div className="mt-2">
-                        {disabled ? null : (
-                          <FormItem name="whitelistDomains">
-                            <Stack spacing="tight">{selectedMarkup}</Stack>
-                          </FormItem>
-                        )}
+                        <FormItem name="whitelistDomains">
+                          <Stack spacing="tight">{selectedMarkup}</Stack>
+                        </FormItem>
                       </div>
                     </Stack.Item>
                   </Stack>
                 </Card>
               </Layout.Section>
               <Layout.Section>
-                <Card title="Two-Factor authentication (2FA)" sectioned>
+                <Card title="Two-Factor Authentication (2FA)" sectioned>
                   <Stack spacing="baseTight" alignment="leading">
                     <Stack.Item>
                       <FormItem name="twoFactorAuthEnabled">
@@ -213,7 +230,7 @@ export default function IndexAccountManager({ props }: any) {
               <Layout.Section fullWidth>
                 <Stack distribution="trailing">
                   <ButtonGroup>
-                    <Button>Cancel</Button>
+                    <Button onClick={handleResetForm}>Cancel</Button>
                     <Button submit primary>
                       Save
                     </Button>

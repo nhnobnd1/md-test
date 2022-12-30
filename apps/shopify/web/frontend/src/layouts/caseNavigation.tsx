@@ -79,7 +79,7 @@ const caseNavigation: NavigationItems[] = [
           //   url: SettingRoutePaths.AccountSecurity.Index,
           // },
           {
-            label: "Access manager",
+            label: "Access Manager",
             url: SettingRoutePaths.AccountSecurity.Index,
           },
         ],
