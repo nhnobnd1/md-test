@@ -5,6 +5,7 @@ export async function getOfflineSession(shopDomain) {
 	const offlineSession = await shopify.config.sessionStorage.loadSession(
 		offlineSessionId
 	);
+	console.log("🚀 ~ file: shop.js:8 ~ getOfflineSession ~ offlineSession", offlineSession)
 
 	if (offlineSession) {
 		return {
