@@ -1,0 +1,19 @@
+FROM node:18-alpine
+
+ENV SHOPIFY_API_KEY=
+ENV SHOPIFY_API_SECRET=
+ENV PORT=
+ENV BACKEND_PORT=
+ENV HOST=
+EXPOSE 8081
+WORKDIR /app
+
+COPY packages ./packages
+COPY package.json ./
+COPY yarn.lock ./
+COPY turbo.json ./
+COPY apps/shopify ./apps/shopify
+
+RUN yarn install
+RUN cd apps/shopify/web/frontend && yarn install --frozen-lockfile && yarn build
+CMD ["yarn", "shopify-app", "web", "serve"]
