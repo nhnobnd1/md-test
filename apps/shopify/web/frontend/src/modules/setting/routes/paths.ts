@@ -20,6 +20,11 @@ const SettingRoutePaths = createRoutePath({
       Edit: "edit/:id",
     },
   },
+  AccountSecurity: {
+    Index: "access-manager",
+    Profile: "profile",
+    Security: "security",
+  },
 } as const);
 
 export default SettingRoutePaths;

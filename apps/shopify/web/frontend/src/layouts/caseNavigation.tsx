@@ -66,6 +66,24 @@ const caseNavigation: NavigationItems[] = [
           { label: "Tags", url: SettingRoutePaths.Workdesk.Tag.Index },
         ],
       },
+      {
+        label: "Account & Security",
+        url: SettingRoutePaths.AccountSecurity.Index,
+        tabBarNavigation: [
+          // {
+          //   label: "Security",
+          //   url: SettingRoutePaths.AccountSecurity.Index,
+          // },
+          // {
+          //   label: "Profile",
+          //   url: SettingRoutePaths.AccountSecurity.Index,
+          // },
+          {
+            label: "Access manager",
+            url: SettingRoutePaths.AccountSecurity.Index,
+          },
+        ],
+      },
     ],
   },
 ];
