@@ -11,6 +11,7 @@ const agentRoutes: IRoute = {
     {
       path: AgentRoutePaths.Index,
       index: true,
+
       component: lazy(() => import("src/modules/agent/pages/Index")),
     },
     {

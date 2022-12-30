@@ -15,7 +15,8 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "baseUrl": "./"
+    "baseUrl": "./",
+    "types": ["unplugin-icons/types/react", "node", "lodash"]
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
