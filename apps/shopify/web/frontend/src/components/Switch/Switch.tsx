@@ -1,12 +1,14 @@
 import { memo } from "react";
 import "./Switch.scss";
 export interface SwitchProps {
-  value?: any;
+  value?: boolean;
   onChange?: () => void;
   onClick?: () => void;
 }
 
 const Switch = ({ value, onChange, onClick }: SwitchProps) => {
+  console.log("value checked", value);
+
   return (
     <>
       <label className="switch small purple">

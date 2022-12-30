@@ -49,28 +49,34 @@ export default function IndexAccountManager({ props }: any) {
       autoJoinEnabled: false,
       whitelistDomains: [],
       twoFactorAuthEnabled: false,
-      listDomain: "",
+      domain: "",
     }),
     [props]
   );
   const formRef = useRef<FormikProps<any>>(null);
   const validateObject = useCallback(() => {
-    if (!formRef.current?.values.autoJoinEnabled) {
-      if (selectedDomain.length < 0) {
+    if (formRef.current?.values.autoJoinEnabled && !disabled) {
+      if (selectedDomain.length === 0) {
         return object().shape({
-          listDomain: string()
+          domain: string()
             .email("Invalid email format ")
             .required("Please, enter email domain!"),
         });
       } else {
         return object().shape({
-          listDomain: string().email("Invalid email format "),
+          domain: string().email("Invalid email format"),
         });
       }
     } else {
+      console.log(3);
       return object().shape({});
     }
-  }, []);
+  }, [
+    formRef.current?.values.autoJoinEnabled,
+    selectedDomain,
+    setSelectedDomain,
+    disabled,
+  ]);
   // fetch init data
   const { run: fetchAccountManagerStatus, result } = useJob(
     () => {
@@ -128,12 +134,13 @@ export default function IndexAccountManager({ props }: any) {
       })
     );
   });
+  useEffect(() => console.log(disabled), [disabled]);
   useEffect(() => fetchAccountManagerStatus(), []);
   return (
     <>
       <Page title="Access manager" fullWidth compactTitle>
         <Form
-          initialValues={result ?? initialValues}
+          initialValues={initialValues}
           ref={formRef}
           validationSchema={validateObject}
           onSubmit={handleSubmit}
@@ -178,11 +185,13 @@ export default function IndexAccountManager({ props }: any) {
                       </Text>
                     </Stack.Item>
                     <Stack.Item fill>
-                      <InputDisableSubmit
-                        inititalValue={selectedDomain}
-                        setValue={setSelectedDomain}
-                        disabled={disabled}
-                      />
+                      <FormItem name="domain">
+                        <InputDisableSubmit
+                          inititalValue={selectedDomain}
+                          setValue={setSelectedDomain}
+                          disabled={disabled}
+                        />
+                      </FormItem>
                       <div className="mt-2">
                         {disabled ? null : (
                           <FormItem name="whitelistDomains">
