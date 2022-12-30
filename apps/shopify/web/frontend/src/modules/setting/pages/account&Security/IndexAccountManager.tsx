@@ -56,7 +56,6 @@ export default function IndexAccountManager({ props }: any) {
   const formRef = useRef<FormikProps<any>>(null);
   const validateObject = useCallback(() => {
     if (!formRef.current?.values.autoJoinEnabled) {
-      setDisabled(false);
       if (selectedDomain.length < 0) {
         return object().shape({
           listDomain: string()
@@ -69,16 +68,16 @@ export default function IndexAccountManager({ props }: any) {
         });
       }
     } else {
-      setDisabled(true);
       return object().shape({});
     }
-  }, [formRef.current?.values.autoJoinEnabled]);
+  }, []);
   // fetch init data
   const { run: fetchAccountManagerStatus, result } = useJob(
     () => {
       return AccountManagerRepository.getData(auth.user?.id).pipe(
         map(({ data }) => {
           setSelectedDomain(data.data.whitelistDomains);
+          setDisabled(!data.data.autoJoinEnabled);
           return data.data;
         })
       );
@@ -98,6 +97,7 @@ export default function IndexAccountManager({ props }: any) {
       map(({ data }) => {
         if (data.statusCode === 200) {
           show("Access manager updated successfully.");
+          fetchAccountManagerStatus();
         } else {
           setBanner(true);
           if (data.statusCode === 409) {
@@ -128,7 +128,6 @@ export default function IndexAccountManager({ props }: any) {
       })
     );
   });
-
   useEffect(() => fetchAccountManagerStatus(), []);
   return (
     <>
@@ -154,7 +153,7 @@ export default function IndexAccountManager({ props }: any) {
                   <Stack spacing="baseTight" alignment="leading">
                     <Stack.Item>
                       <FormItem name="autoJoinEnabled">
-                        <Switch />
+                        <Switch onClick={() => setDisabled(!disabled)} />
                       </FormItem>
                     </Stack.Item>
                     <Stack.Item>
