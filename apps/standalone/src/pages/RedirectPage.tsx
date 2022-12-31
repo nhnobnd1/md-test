@@ -6,7 +6,7 @@ interface RedirectPageProps {
 }
 
 const RedirectPage = ({ children }: RedirectPageProps) => {
-  return <Navigate to={generatePath(AgentRoutePaths.OnBoarding)} replace />;
+  return <Navigate to={generatePath(AgentRoutePaths.Login)} replace />;
 };
 
 export default RedirectPage;
