@@ -18,10 +18,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
-import InputDisableSubmit from "src/components/InputDisableSubmit/InputDisableSubmit";
 import Switch from "src/components/Switch/Switch";
 import useAuth from "src/hooks/useAuth";
-import { AccountManager } from "src/modules/setting/modal/account&Security/AccountManager";
+import InputDisableSubmit from "src/modules/setting/component/InputDisableSubmit/InputDisableSubmit";
+import {
+  AccountManager,
+  BannerPropsAccessManager,
+} from "src/modules/setting/modal/account&Security/AccountManager";
 import AccountManagerRepository from "src/modules/setting/repository/account&Security/AccountManagerRepository";
 import { object, string } from "yup";
 export default function IndexAccountManager({ props }: any) {
@@ -44,8 +47,11 @@ export default function IndexAccountManager({ props }: any) {
     </Tag>
   ));
   const { show } = useToast();
-  const [messageError, setMessageError] = useState("");
-  const [banner, setBanner] = useState(false);
+  const [banner, setBanner] = useState<BannerPropsAccessManager>({
+    status: "success",
+    message: "",
+    isShowBanner: false,
+  });
   const initialValues = useMemo(
     () => ({
       autoJoinEnabled: false,
@@ -62,7 +68,7 @@ export default function IndexAccountManager({ props }: any) {
         return object().shape({
           domain: string()
             .matches(
-              /^((?!-))(xn--)?[a-z0-9][a-z0-9-_]{0,61}[a-z0-9]{0,1}.(xn--)?([a-z0-9-]{1,61}|[a-z0-9-]{1,30}.[a-z]{2,})$/,
+              /^(?=.{1,253}\.?$)(?:(?!-|[^.]+_)[A-Za-z0-9-_]{1,63}(?<!-)(?:\.|$)){2,}$/,
               "Invalid domain name."
             )
             .required("Please, enter domain!"),
@@ -70,7 +76,7 @@ export default function IndexAccountManager({ props }: any) {
       } else {
         return object().shape({
           domain: string().matches(
-            /^((?!-))(xn--)?[a-z0-9][a-z0-9-_]{0,61}[a-z0-9]{0,1}.(xn--)?([a-z0-9-]{1,61}|[a-z0-9-]{1,30}.[a-z]{2,})$/,
+            /^(?=.{1,253}\.?$)(?:(?!-|[^.]+_)[A-Za-z0-9-_]{1,63}(?<!-)(?:\.|$)){2,}$/,
             "Invalid domain name."
           ),
         });
@@ -109,15 +115,25 @@ export default function IndexAccountManager({ props }: any) {
       map(({ data }) => {
         if (data.statusCode === 200) {
           show("Access manager updated successfully.");
+          setBanner({
+            isShowBanner: true,
+            message: "Access manager updated successfully.",
+            status: "success",
+          });
           fetchAccountManagerStatus();
         } else {
-          setBanner(true);
           if (data.statusCode === 409) {
-            setMessageError(`Domains cannot be the same.`);
-            show(`Domains cannot be the same.`, {
-              isError: true,
+            setBanner({
+              isShowBanner: true,
+              message: "Update failed.",
+              status: "critical",
             });
           } else {
+            setBanner({
+              isShowBanner: true,
+              message: "Update failed.",
+              status: "critical",
+            });
             show("Update failed", {
               isError: true,
             });
@@ -125,14 +141,22 @@ export default function IndexAccountManager({ props }: any) {
         }
       }),
       catchError((error) => {
-        setBanner(true);
         if (error.response.status === 409) {
-          setMessageError(`Domains cannot be the same.`);
+          setBanner({
+            isShowBanner: true,
+            message: "Update failed.",
+            status: "critical",
+          });
           show(`Domains cannot be the same.`, {
             isError: true,
           });
         } else {
-          show("Update failed", {
+          setBanner({
+            isShowBanner: true,
+            message: "`Domains cannot be the same.`",
+            status: "critical",
+          });
+          show("Update failed.", {
             isError: true,
           });
         }
@@ -157,14 +181,19 @@ export default function IndexAccountManager({ props }: any) {
           enableReinitialize
         >
           <FormLayout>
-            <Layout sectioned>
-              <Layout.Section>
-                {banner ? (
-                  <Banner status="critical" onDismiss={() => setBanner(false)}>
-                    {messageError}
+            <Layout>
+              {banner.isShowBanner ? (
+                <Layout.Section>
+                  <Banner
+                    status={banner.status}
+                    onDismiss={() =>
+                      setBanner({ ...banner, isShowBanner: false })
+                    }
+                  >
+                    {banner.message}
                   </Banner>
-                ) : null}
-              </Layout.Section>
+                </Layout.Section>
+              ) : null}
               <Layout.Section>
                 <Card title="Auto-Join Settings" sectioned>
                   <Stack spacing="baseTight" alignment="leading">
