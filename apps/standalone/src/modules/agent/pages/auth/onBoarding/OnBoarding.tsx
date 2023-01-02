@@ -49,7 +49,7 @@ export const OnBoarding = (props: OnBoardingProps) => {
               {stepPage === 1 ? (
                 <>
                   <div className="card-boarding__description">
-                    <img src="" alt="" />
+                    {/* <img src={Images.Logo.LogoMooseDesk} alt="" /> */}
                     <div className="text-center font-medium">
                       Lorem ipsum dolor sit amet consectetur adipisicing elit.
                       Sed ab incidunt iusto fugit. Adipisci, id. Possimus,
