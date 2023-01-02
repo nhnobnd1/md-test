@@ -3,13 +3,13 @@ import classNames from "classnames";
 
 interface LoadingProps extends SpinProps {
   fullPage?: boolean;
-  inherit?: boolean;
+  insteadView?: boolean;
   center?: boolean;
 }
 
 export const Loading = ({
   fullPage = false,
-  inherit = false,
+  insteadView = false,
   center = false,
   ...props
 }: LoadingProps) => {
@@ -21,7 +21,7 @@ export const Loading = ({
         </div>
       ) : (
         <>
-          {inherit ? (
+          {insteadView ? (
             <>
               <div
                 className={classNames([

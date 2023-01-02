@@ -7,6 +7,7 @@ import {
 import { Layout, Menu, MenuProps } from "antd";
 import { useMemo } from "react";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
+import DashboardRoutePaths from "src/modules/dashboard/routes/paths";
 import "./MainLayout.scss";
 
 interface MainLayoutProps {}
@@ -20,6 +21,7 @@ export const MainLayout = (props: MainLayoutProps) => {
       {
         key: `case-top-1`,
         label: "Our Solutions",
+        onClick: () => navigate(generatePath(DashboardRoutePaths.Index)),
       },
       {
         key: `case-top-2`,

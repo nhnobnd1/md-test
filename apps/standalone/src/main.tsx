@@ -6,6 +6,7 @@ import {
   TokenManager,
 } from "@moose-desk/core";
 import LazyComponent from "@moose-desk/core/components/LazyComponent";
+import { AccountRepository } from "@moose-desk/repo";
 import { lazy, Suspense } from "react";
 import { CookiesProvider } from "react-cookie";
 import ReactDOM from "react-dom";
@@ -34,6 +35,9 @@ ReactDOM.render(
                   base_token: TokenManager.getToken("base_token"),
                   refresh_token: TokenManager.getToken("refresh_token"),
                 }}
+                fetchRefreshToken={(refreshToken) =>
+                  AccountRepository.refreshToken({ refreshToken })
+                }
               >
                 <ModuleLoader>
                   <LazyComponent component={lazy(() => import("src/App"))} />
