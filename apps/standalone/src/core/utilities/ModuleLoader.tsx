@@ -2,7 +2,6 @@ import { Module, useRoutes, useToggle } from "@moose-desk/core";
 import { camelCase } from "lodash-es";
 import { memo, ReactElement, useEffect, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
-import { Loading } from "src/components/Loading";
 import { i18n } from "src/localization";
 import RoutePaths from "src/routes/paths";
 
@@ -14,7 +13,7 @@ const viteModules = import.meta.glob(`/src/modules/**/module.{tsx,ts}`);
 
 const ModuleLoader = ({ children }: ModuleLoaderProps) => {
   const [modules, setModules] = useState<Module[]>([]);
-  const { state: loading, on: startLoading, off: stopLoading } = useToggle();
+  const { on: startLoading, off: stopLoading } = useToggle();
   const { state: firstLoad, on: loaded } = useToggle();
   const { addRoutes, removeRoute } = useRoutes();
 
@@ -82,12 +81,7 @@ const ModuleLoader = ({ children }: ModuleLoaderProps) => {
     };
   }, [viteModules]);
 
-  return (
-    <>
-      {loading && <Loading fullPage />}
-      {firstLoad && children}
-    </>
-  );
+  return <>{firstLoad && children}</>;
 };
 
 export default memo(ModuleLoader);

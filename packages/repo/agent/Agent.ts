@@ -13,6 +13,8 @@ export interface Agent {
   emailConfirmed: boolean;
   timezone: string;
   role: Role;
+  twoFactorEnabled: boolean;
+  twoFactorMethod: string;
 }
 
 // GET LIST
@@ -63,7 +65,7 @@ export interface ActiveNewAgentRequest {
   confirmPassword: string;
 }
 
-export type ActiveNewAgentResponse = BaseListResponse<Agent>;
+export type ActiveNewAgentResponse = BaseResponse<Agent>;
 
 // RESEND EMAIL
 export interface ResendEmailInvitationRequest {

@@ -1,6 +1,6 @@
 import { BaseResponse } from "../unty";
 
-export interface Account {
+export interface User {
   _id: string;
   subdomain: string;
   storeId: string;
@@ -38,7 +38,7 @@ export interface SignupAccountShopifyRequest {
   timezone?: string;
 }
 
-export type SignupAccountResponse = BaseResponse<Account>;
+export type SignupAccountResponse = BaseResponse<User>;
 
 export interface SignInAccountAgentRequest {
   email: string;
