@@ -21,7 +21,12 @@ ReactDOM.render(
     <BrowserRouter>
       <Suspense fallback={<Loading fullPage />}>
         <LoadingProvider
-          component={({ state }) => <>{state && <Loading fullPage />}</>}
+          isWrap
+          component={({ state, children }) => (
+            <Loading spinning={state} fullPage>
+              {children}
+            </Loading>
+          )}
         >
           <ApiLoadingHandlerProvider>
             <CookiesProvider>

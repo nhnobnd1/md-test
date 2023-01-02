@@ -3,4 +3,8 @@
     display: inherit;
     text-align: center;
   }
+
+  .wrap-main-content {
+    min-height: calc(100vh - 64px - 48px);
+  }
 }

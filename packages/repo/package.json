@@ -5,6 +5,30 @@
   "types": "./index.tsx",
   "license": "MIT",
   "scripts": {
-    "lint": "TIMING=1 eslint \"**/*.ts*\""
+    "lint": "TIMING=1 eslint \"**/*.ts*\"",
+    "dev": "vite dev",
+    "build": "vite build"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.17",
+    "@types/lodash-es": "^4.17.6",
+    "vite": "^4.0.3",
+    "@vitejs/plugin-react": "3.0.0",
+    "@types/use-sync-external-store": "^0.0.3",
+    "vite-plugin-dts": "^1.7.1",
+    "eslint": "^7.32.0",
+    "eslint-config-custom": "*",
+    "react": "^17.0.2",
+    "tsconfig": "*",
+    "typescript": "^4.9.4",
+    "@typescript-eslint/eslint-plugin": "4.22.0",
+    "@typescript-eslint/parser": "4.22.0",
+    "eslint-config-prettier": "8.2.0",
+    "eslint-config-standard": "16.0.2",
+    "eslint-plugin-import": "2.22.1",
+    "eslint-plugin-node": "11.1.0",
+    "eslint-plugin-prettier": "3.4.0",
+    "eslint-plugin-promise": "5.1.0",
+    "eslint-plugin-react": "7.23.2"
   }
 }

@@ -22,17 +22,20 @@ export const LoadingContext = createContext<LoadingContextType | undefined>(
 export type LoadingComponentType = FunctionComponent<{
   state: boolean;
   color?: string;
+  children?: ReactNode;
 }>;
 
 interface LoadingProviderProps {
   color?: string;
   component: LoadingComponentType;
   children?: ReactNode;
+  isWrap?: boolean;
 }
 
 export function LoadingProvider({
   children,
   color,
+  isWrap = false,
   component: Component,
 }: LoadingProviderProps) {
   const { state, on: turnOnLoading, off: turnOffLoading } = useToggle();
@@ -57,8 +60,16 @@ export function LoadingProvider({
 
   return (
     <LoadingContext.Provider value={{ startLoading, stopLoading, state }}>
-      {children}
-      <Component state={state} color={color} />
+      {isWrap ? (
+        <Component state={state} color={color}>
+          {children}
+        </Component>
+      ) : (
+        <>
+          {children}
+          <Component state={state} color={color} />
+        </>
+      )}
     </LoadingContext.Provider>
   );
 }

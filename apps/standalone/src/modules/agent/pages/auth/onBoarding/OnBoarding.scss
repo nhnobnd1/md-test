@@ -1,5 +1,7 @@
 .on-boarding {
   @apply py-6 text-base;
+  height: calc(100vh - 64px - 48px);
+  display: flex;
   .card-boarding {
     border-radius: 6px;
     border: 1px solid #484242;
