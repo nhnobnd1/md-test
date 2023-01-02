@@ -69,7 +69,9 @@ export const MainLayout = (props: MainLayoutProps) => {
       </Layout.Header>
       <Layout className="p-6">
         <Layout.Content>
-          <Outlet />
+          <div className="wrap-main-content">
+            <Outlet />
+          </div>
         </Layout.Content>
       </Layout>
     </Layout>

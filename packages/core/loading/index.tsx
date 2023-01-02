@@ -57,8 +57,9 @@ export function LoadingProvider({
 
   return (
     <LoadingContext.Provider value={{ startLoading, stopLoading, state }}>
-      {children}
-      <Component state={state} color={color} />
+      <Component state={state} color={color}>
+        {children}
+      </Component>
     </LoadingContext.Provider>
   );
 }

@@ -1,22 +1,47 @@
 import { Spin, SpinProps } from "antd";
+import classNames from "classnames";
 
 interface LoadingProps extends SpinProps {
   fullPage?: boolean;
+  inherit?: boolean;
+  center?: boolean;
 }
 
-export const Loading = ({ fullPage = false, ...props }: LoadingProps) => {
+export const Loading = ({
+  fullPage = false,
+  inherit = false,
+  center = false,
+  ...props
+}: LoadingProps) => {
   return (
     <>
       {fullPage ? (
-        <div className="fixed left-0 top-0 right-0 bottom-0">
+        <div className="fixed inset-0">
           <Spin
-            className="w-full h-full flex items-center justify-center"
+            className="fixed top-[50%] left-[50%] translate-y-[-50%]"
             {...props}
-            size="large"
           ></Spin>
         </div>
       ) : (
-        <Spin {...props}></Spin>
+        <>
+          {inherit ? (
+            <>
+              <div
+                className={classNames([
+                  "w-full h-full flex justify-center",
+                  { "items-center": center },
+                ])}
+              >
+                <Spin
+                  className={classNames({ "pt-[30%]": !center })}
+                  {...props}
+                ></Spin>
+              </div>
+            </>
+          ) : (
+            <Spin {...props}></Spin>
+          )}
+        </>
       )}
     </>
   );

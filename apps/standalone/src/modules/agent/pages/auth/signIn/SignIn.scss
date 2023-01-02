@@ -1,4 +1,6 @@
 .signIn {
+  height: calc(100vh - 64px - 48px);
+  display: flex;
   @apply py-6 text-base;
   .card-signin {
     border-radius: 6px;
