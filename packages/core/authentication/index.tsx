@@ -148,6 +148,7 @@ export const AuthProvider = ({
 
           const token = TokenManager.getToken("refresh_token");
           if (!token) {
+            console.log("Not found refresh token app");
             return Promise.reject(error);
           }
 

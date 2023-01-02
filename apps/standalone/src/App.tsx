@@ -8,7 +8,6 @@ import { AppRoutes } from "src/routes";
 
 function App() {
   const { i18n } = useTranslation();
-  console.log(i18n);
 
   const config = useMemo<ConfigProviderProps>(() => {
     return {

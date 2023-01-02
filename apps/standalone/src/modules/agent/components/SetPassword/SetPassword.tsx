@@ -61,7 +61,6 @@ export const SetPassword = ({
       password: values.password,
       confirmPassword: values.confirmPassword,
     };
-    console.log(payload, "payload");
     activeNewAgent(payload);
   };
   return (
