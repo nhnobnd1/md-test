@@ -8,7 +8,7 @@ const appRootRoutes: IRoute[] = [
     title: "Index page",
     showInNavigationMenu: false,
     index: true,
-    component: lazy(() => import("src/modules/onBoarding/pages/Index")),
+    component: lazy(() => import("src/pages/RedirectPage")),
   },
 ];
 

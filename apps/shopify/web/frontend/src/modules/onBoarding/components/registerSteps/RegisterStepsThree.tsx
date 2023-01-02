@@ -1,5 +1,7 @@
 import { Card, Link, Page, Text, TextContainer } from "@shopify/polaris";
 import { useCallback } from "react";
+import StorageManager from "src/core/utilities/StorageManager";
+import useAuth from "src/hooks/useAuth";
 import "src/modules/onBoarding/assets/style/components/registerSteps/register-steps-three.scss";
 
 interface RegisterStepsThreeProps {
@@ -11,15 +13,18 @@ const RegisterStepsThree = ({
   previousStep,
   redirectIndex,
 }: RegisterStepsThreeProps) => {
+  const { user } = useAuth();
+
   const TitleCard = () => {
     return (
-      <Text variant="headingXl" as="h1">
-        You&apos;re ready to go
+      <Text variant="headingLg" as="h1">
+        You&apos;re ready to go!
       </Text>
     );
   };
 
   const redirectLandingPage = useCallback(() => {
+    StorageManager.setToken("isAcceptUsing", "accepted");
     redirectIndex();
   }, []);
   return (
@@ -33,8 +38,8 @@ const RegisterStepsThree = ({
         }}
         sectioned
       >
-        <Text variant="headingLg" as="h4">
-          Your helpdesk portal has been setup successfully
+        <Text variant="heading2xl" as="h4">
+          Your helpdesk portal has been setup successfully.
         </Text>
         <div className="mt-4 content-container">
           <div className="mb-4">
@@ -43,7 +48,7 @@ const RegisterStepsThree = ({
                 Your Support Portal address:
               </Text>
               <Text fontWeight="bold" variant="bodyMd" as="p">
-                <span className="ml-4">Sub-domain.moosedesk.com</span>
+                <span className="ml-4">md-jay-01.moosedesk.net</span>
               </Text>
             </TextContainer>
           </div>
@@ -53,7 +58,9 @@ const RegisterStepsThree = ({
                 Support email address:
               </Text>
               <Text fontWeight="bold" variant="bodyMd" as="p">
-                <span className="ml-4">email@mail.com</span>
+                <span className="ml-4">
+                  {user?.domain.split(".")[0]}@email.moosedesk.net
+                </span>
               </Text>
             </TextContainer>
           </div>
