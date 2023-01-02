@@ -22,6 +22,7 @@ export const LoadingContext = createContext<LoadingContextType | undefined>(
 export type LoadingComponentType = FunctionComponent<{
   state: boolean;
   color?: string;
+  children?: ReactNode;
 }>;
 
 interface LoadingProviderProps {

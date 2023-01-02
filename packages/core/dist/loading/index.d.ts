@@ -8,6 +8,7 @@ export declare const LoadingContext: import("react").Context<LoadingContextType 
 export declare type LoadingComponentType = FunctionComponent<{
     state: boolean;
     color?: string;
+    children?: ReactNode;
 }>;
 interface LoadingProviderProps {
     color?: string;

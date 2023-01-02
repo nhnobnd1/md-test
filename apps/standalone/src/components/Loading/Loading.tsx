@@ -17,10 +17,7 @@ export const Loading = ({
     <>
       {fullPage ? (
         <div className="fixed inset-0">
-          <Spin
-            className="fixed top-[50%] left-[50%] translate-y-[-50%]"
-            {...props}
-          ></Spin>
+          <Spin className="" {...props}></Spin>
         </div>
       ) : (
         <>
