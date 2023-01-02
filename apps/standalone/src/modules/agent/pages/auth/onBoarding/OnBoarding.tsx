@@ -10,7 +10,7 @@ interface OnBoardingProps {}
 export const OnBoarding = (props: OnBoardingProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [isPageErr, setIsPageErr] = useState(false);
-  const [stepPage, setStepPage] = useState(2);
+  const [stepPage, setStepPage] = useState(1);
   const [account, setAccount] = useState({
     storeId: "",
     email: "",
@@ -84,7 +84,7 @@ export const OnBoarding = (props: OnBoardingProps) => {
                   </div>
                 </>
               ) : (
-                <SetPassword agentName={account.agentName} />
+                <SetPassword {...account} />
               )}
             </>
           ) : (
