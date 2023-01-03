@@ -1,3 +1,8 @@
+import {
+  ImportOutlined,
+  LockOutlined,
+  WarningOutlined,
+} from "@ant-design/icons";
 import { useAuthContext, useJob, useNavigate } from "@moose-desk/core";
 import { AccountRepository, SignInAccountAgentRequest } from "@moose-desk/repo";
 import { Button, Form, Input } from "antd";
@@ -77,7 +82,9 @@ export const SignIn = (props: SignInProps) => {
             const totalAcceptFailed = error[0].split("/")[1];
             if (numberLoginFailed < totalAcceptFailed) {
               setErrorMessage(
-                "The email or password is incorrect. You have 3 remaining attempts to login"
+                `The email or password is incorrect. You have ${
+                  parseInt(totalAcceptFailed) - parseInt(numberLoginFailed)
+                } remaining attempts to login`
               );
             } else {
               setErrorMessage("");
@@ -107,8 +114,14 @@ export const SignIn = (props: SignInProps) => {
       <div className="card-signin">
         <div className="w-[80%] h-full mx-auto">
           {view === "login" ? (
-            <>
+            <div className="pt-[40px]">
               <div className="card-signin__image">
+                {!errorMessage ? (
+                  <ImportOutlined style={{ fontSize: 120 }} />
+                ) : (
+                  <WarningOutlined style={{ fontSize: 120 }} />
+                )}
+
                 <img src="" alt="" />
               </div>
               <div className="card-signin__form">
@@ -155,10 +168,7 @@ export const SignIn = (props: SignInProps) => {
                       Login
                     </Button>
                     {errorMessage && (
-                      <div className="error-message">
-                        The email or password is incorrect. You have 3 remaining
-                        attempts to login
-                      </div>
+                      <div className="error-message">{errorMessage}</div>
                     )}
 
                     <div className="link">Forgot Password?</div>
@@ -169,11 +179,14 @@ export const SignIn = (props: SignInProps) => {
                   </div>
                 </Form>
               </div>
-            </>
+            </div>
           ) : (
             <>
               {view === "lock" ? (
-                <div className="flex justify-center flex-col w-full h-full">
+                <div className="pt-[40px] w-full h-full">
+                  <div className="card-signin__image">
+                    <LockOutlined style={{ fontSize: 120 }} />
+                  </div>
                   <div className="mb-6">
                     You have failed to login more 3 times. Your account has been
                     deactivated. Please contact your system administrator.

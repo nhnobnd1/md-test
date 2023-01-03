@@ -18,7 +18,7 @@ const RegisterStepsThree = ({
   const TitleCard = () => {
     return (
       <Text variant="headingLg" as="h1">
-        You&apos;re ready to go!
+        {`Your're ready to go!`}
       </Text>
     );
   };
@@ -48,7 +48,9 @@ const RegisterStepsThree = ({
                 Your Support Portal address:
               </Text>
               <Text fontWeight="bold" variant="bodyMd" as="p">
-                <span className="ml-4">md-jay-01.moosedesk.net</span>
+                <span className="ml-4">
+                  {user?.domain.split(".")[0]}.moosedesk.net
+                </span>
               </Text>
             </TextContainer>
           </div>

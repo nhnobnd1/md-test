@@ -2,6 +2,7 @@ import { useSearchParams } from "@moose-desk/core";
 import { Button } from "antd";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
+import Images from "src/assets/images";
 import { SetPassword } from "src/modules/agent/components/SetPassword";
 import "./OnBoarding.scss";
 
@@ -49,7 +50,9 @@ export const OnBoarding = (props: OnBoardingProps) => {
               {stepPage === 1 ? (
                 <>
                   <div className="card-boarding__description">
-                    {/* <img src={Images.Logo.LogoMooseDesk} alt="" /> */}
+                    <div className="text-center">
+                      <img src={Images.Logo.LogoIcon} width={240} alt="" />
+                    </div>
                     <div className="text-center font-medium">
                       Lorem ipsum dolor sit amet consectetur adipisicing elit.
                       Sed ab incidunt iusto fugit. Adipisci, id. Possimus,
