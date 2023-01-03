@@ -6,6 +6,7 @@ import {
   useNavigate,
   useParams,
 } from "@moose-desk/core";
+import { BaseListTagRequest, Tag, TagRepository } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Card,
@@ -23,11 +24,6 @@ import { ModalDelete } from "src/components/Modal/ModalDelete";
 import Pagination from "src/components/Pagination/Pagination";
 import env from "src/core/env";
 import { useTable } from "src/hooks";
-import {
-  BaseListTagRequest,
-  Tag,
-} from "src/modules/setting/modal/workDesk/Tag";
-import TagRepository from "src/modules/setting/repository/workDesk/TagRepository";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
 
 export default function SettingIndexPage() {

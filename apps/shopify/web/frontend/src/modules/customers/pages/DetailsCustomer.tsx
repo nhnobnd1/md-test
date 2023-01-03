@@ -1,4 +1,5 @@
 import { useJob, useLocation, useMount, useParams } from "@moose-desk/core";
+import { CustomerRepository } from "@moose-desk/repo";
 import { useNavigate, useToast } from "@shopify/app-bridge-react";
 import {
   Banner,
@@ -13,7 +14,6 @@ import { FormikProps } from "formik";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import CustomerForm from "src/modules/customers/component/CustomerForm";
-import CustomerRepository from "src/modules/customers/repositories/CustomerRepository";
 import CustomersRoutePaths from "src/modules/customers/routes/paths";
 
 export default function DetailsCustomer() {

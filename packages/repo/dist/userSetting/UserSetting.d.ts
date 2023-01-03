@@ -4,8 +4,13 @@ export interface AccessManger {
     whitelistDomains: string[];
     twoFactorAuthEnabled: boolean;
 }
+export interface BaseAccessManagerRequest {
+    storeId?: string;
+}
 export declare type GetAccessMangerResponse = BaseResponse<AccessManger>;
+export declare type GetAccessManagerResponse = BaseResponse<AccessManger>;
 export declare type UpdateAccessManagerResponse = BaseResponse<AccessManger>;
+export declare type CreateAccessManagerRequest = Omit<AccessManger, "storeId">;
 export declare enum MethodOTP {
     Disabled = "Disabled",
     Email = "Email",

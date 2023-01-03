@@ -1,4 +1,5 @@
 import { generatePath, useJob, useNavigate } from "@moose-desk/core";
+import { CreateTagRequest, TagRepository } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import { Banner, ContextualSaveBar, Layout, Page } from "@shopify/polaris";
 import { FormikProps } from "formik";
@@ -6,8 +7,6 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import useAuth from "src/hooks/useAuth";
 import TagForm from "src/modules/setting/component/TagForm";
-import { CreateTagRequest } from "src/modules/setting/modal/workDesk/Tag";
-import TagRepository from "src/modules/setting/repository/workDesk/TagRepository";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
 
 export default function CreateTag() {

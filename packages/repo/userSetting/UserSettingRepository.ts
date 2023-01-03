@@ -3,8 +3,8 @@ import env from "../env";
 import {
   AccessManger,
   GetAccessMangerResponse,
-  SetupOtpRequest,
   SetUpResponse,
+  SetupOtpRequest,
   UpdateAccessManagerResponse,
   VerifySetupOTPRequest,
 } from "./UserSetting";
@@ -14,8 +14,8 @@ export const UserSettingRepository = createRepository(
     baseURL: `${env.API_URL}/api/v1/account/setting`,
   },
   {
-    getAccessManagerSetting(api, storeId: string) {
-      return api.get<GetAccessMangerResponse>(`/access-manager/${storeId}`);
+    getAccessManagerSetting(api, params: string | undefined) {
+      return api.get<GetAccessMangerResponse>(`/access-manager/${params}`);
     },
     updateAccessManagerSetting(api, data: AccessManger) {
       return api.post<UpdateAccessManagerResponse>("/access-manager", data);

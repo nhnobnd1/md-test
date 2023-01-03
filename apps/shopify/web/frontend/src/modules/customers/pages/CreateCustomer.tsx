@@ -1,4 +1,5 @@
 import { generatePath, useJob, useNavigate } from "@moose-desk/core";
+import { CustomerRepository } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Banner,
@@ -12,7 +13,6 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import useAuth from "src/hooks/useAuth";
 import CustomerForm from "src/modules/customers/component/CustomerForm";
-import CustomerRepository from "src/modules/customers/repositories/CustomerRepository";
 import CustomersRoutePaths from "src/modules/customers/routes/paths";
 
 export default function CreateCustomer() {

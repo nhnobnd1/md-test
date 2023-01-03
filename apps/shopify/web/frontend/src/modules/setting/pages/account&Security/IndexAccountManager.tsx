@@ -1,4 +1,5 @@
 import { useJob } from "@moose-desk/core";
+import { AccessManger, UserSettingRepository } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Banner,
@@ -21,11 +22,7 @@ import FormItem from "src/components/Form/Item";
 import Switch from "src/components/Switch/Switch";
 import useAuth from "src/hooks/useAuth";
 import InputDisableSubmit from "src/modules/setting/component/InputDisableSubmit/InputDisableSubmit";
-import {
-  AccountManager,
-  BannerPropsAccessManager,
-} from "src/modules/setting/modal/account&Security/AccountManager";
-import AccountManagerRepository from "src/modules/setting/repository/account&Security/AccountManagerRepository";
+import { BannerPropsAccessManager } from "src/modules/setting/modal/account&Security/AccountManager";
 import { object, string } from "yup";
 export default function IndexAccountManager({ props }: any) {
   const auth = useAuth();
@@ -92,7 +89,7 @@ export default function IndexAccountManager({ props }: any) {
   // fetch init data
   const { run: fetchAccountManagerStatus, result } = useJob(
     () => {
-      return AccountManagerRepository.getData(auth.user?.id).pipe(
+      return UserSettingRepository.getAccessManagerSetting(auth.user?.id).pipe(
         map(({ data }) => {
           setSelectedDomain(data.data.whitelistDomains);
           setDisabled(!data.data.autoJoinEnabled);
@@ -110,8 +107,8 @@ export default function IndexAccountManager({ props }: any) {
     },
     [selectedDomain]
   );
-  const { run: submit } = useJob((dataSubmit: AccountManager) => {
-    return AccountManagerRepository.postData(dataSubmit).pipe(
+  const { run: submit } = useJob((dataSubmit: AccessManger) => {
+    return UserSettingRepository.updateAccessManagerSetting(dataSubmit).pipe(
       map(({ data }) => {
         if (data.statusCode === 200) {
           show("Access manager updated successfully.");

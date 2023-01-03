@@ -1,4 +1,5 @@
 import { useJob, useLocation, useMount, useParams } from "@moose-desk/core";
+import { TagRepository } from "@moose-desk/repo";
 import { useNavigate, useToast } from "@shopify/app-bridge-react";
 import {
   Banner,
@@ -11,7 +12,6 @@ import { FormikProps } from "formik";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import TagForm from "src/modules/setting/component/TagForm";
-import TagRepository from "src/modules/setting/repository/workDesk/TagRepository";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
 
 export default function DetailsTag() {
