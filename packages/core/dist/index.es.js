@@ -5429,7 +5429,7 @@ const Zi = Ho(void 0), mm = ({
   }, O = te.addInterceptor({
     response: {
       error: (_, T) => {
-        if (console.log("Api error ", _), !(_ instanceof Wp))
+        if (!(_ instanceof Wp))
           return _;
         const { config: R, response: U } = _;
         if (!R || !U)
@@ -5450,7 +5450,7 @@ const Zi = Ho(void 0), mm = ({
             }).catch((J) => {
               console.log("err: ", J), h(!0), g(), D(J), ie(J);
             });
-          })) : (console.log("ccccc"), Promise.reject(_)) : (console.log("Not found refresh token app"), Promise.reject(_));
+          })) : Promise.reject(_) : (console.log("Not found refresh token app"), Promise.reject(_));
         }
         return Promise.reject(_);
       }

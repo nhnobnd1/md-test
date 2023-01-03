@@ -13,4 +13,10 @@
   color: #1677ff;
   text-decoration: underline;
   cursor: pointer;
+
+  &.disabled {
+    cursor: default;
+    text-decoration: none;
+    color: rgba(0, 0, 0, 0.45);
+  }
 }

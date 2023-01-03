@@ -3,6 +3,7 @@ import { AccountRepository, SignInAccountAgentRequest } from "@moose-desk/repo";
 import { Button, Form, Input } from "antd";
 import { useCallback, useMemo, useState } from "react";
 import { catchError, map, of } from "rxjs";
+import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { Factor2Auth } from "src/modules/agent/components/Factor2Auth";
 import DashboardRoutePaths from "src/modules/dashboard/routes/paths";
@@ -13,6 +14,7 @@ interface SignInProps {}
 export const SignIn = (props: SignInProps) => {
   const { login } = useAuthContext();
   const notification = useNotification();
+  const message = useMessage();
   const [view, setView] = useState<"login" | "lock" | "factor2Auth">("login");
   const [factor, setFactor] = useState<{
     type: "email" | "authenticator";
@@ -37,7 +39,7 @@ export const SignIn = (props: SignInProps) => {
   }, []);
 
   const { run: signInApi } = useJob(
-    (payload: SignInAccountAgentRequest) => {
+    (payload: SignInAccountAgentRequest, resend?: boolean) => {
       return AccountRepository.agentSignIn(payload).pipe(
         map(({ data }) => {
           notification.success("Login successfully");
@@ -48,6 +50,9 @@ export const SignIn = (props: SignInProps) => {
           navigate(DashboardRoutePaths.Index);
         }),
         catchError((err) => {
+          if (resend) {
+            message.success("Requested to resend OTP");
+          }
           const error = err.response.data.error;
           if (
             [
@@ -192,6 +197,7 @@ export const SignIn = (props: SignInProps) => {
                     type={factor.type}
                     state={factor.state}
                     onFinish={signInApi}
+                    onResend={signInApi}
                   />
                 </>
               )}
