@@ -10,6 +10,11 @@
     padding: 24px;
     background-color: #fff;
 
+    &__image {
+      @apply flex justify-center items-center;
+      margin-bottom: 40px;
+    }
+
     &__description {
       padding-bottom: 16px;
       border-bottom: 1px solid #202020;

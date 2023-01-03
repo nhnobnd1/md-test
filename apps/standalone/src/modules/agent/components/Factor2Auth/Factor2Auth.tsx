@@ -64,7 +64,7 @@ export const Factor2Auth = ({
   }, [state]);
   return (
     <div className="h-full pt-[20%]">
-      <h2 className="mb-6">2-Factor Authentication</h2>
+      <h2 className="mb-8 text-center">2-Factor Authentication</h2>
       <div className="form">
         {type === "email" ? (
           <p>Please enter the OTP which we sent to your email.</p>
