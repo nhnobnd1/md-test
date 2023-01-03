@@ -36,8 +36,7 @@ export const AuthProvider = ({
   defaultTokens = {},
   fetchUserOnLogin = () =>
     new Observable((observable) => observable.next(undefined)),
-  fetchRefreshToken = () =>
-    new Observable((observable) => observable.next(undefined)),
+  fetchRefreshToken,
 }: AuthProviderProps) => {
   const [user, setUser] = useState<any>();
   const [tokens, setTokens] = useState<Tokens>(defaultTokens);
@@ -121,7 +120,6 @@ export const AuthProvider = ({
   const signRefreshToken = Api.addInterceptor({
     response: {
       error: (error, axios) => {
-        console.log("Api error ", error);
         if (!(error instanceof AxiosError)) {
           return error;
         }
@@ -130,7 +128,6 @@ export const AuthProvider = ({
         if (!config || !response) {
           return Promise.reject(error);
         }
-
         if (response.status === 401) {
           if (isRefreshing) {
             return new Promise(function (resolve, reject) {
@@ -152,8 +149,8 @@ export const AuthProvider = ({
             return Promise.reject(error);
           }
 
-          console.log("Refresh token processing...");
           if (fetchRefreshToken) {
+            console.log("aaa");
             return new Promise((resolve, reject) => {
               lastValueFrom(fetchRefreshToken(token))
                 .then(({ data }) => {
@@ -167,21 +164,24 @@ export const AuthProvider = ({
                   resolve(lastValueFrom(axios.request(config)));
                 })
                 .catch((error) => {
+                  console.log("err: ", error);
                   setIsRefreshing(true);
                   logout();
                   processQueue(error);
                   reject(error);
                 });
             });
+          } else {
+            return Promise.reject(error);
           }
         }
-        return error;
+        return Promise.reject(error);
       },
     },
   });
 
   useMount(() => {
-    signRefreshToken();
+    return signRefreshToken();
   });
 
   return (

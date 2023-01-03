@@ -25,7 +25,6 @@ export default function ApiLoadingHandlerProvider({
       response: {
         success: (response) => {
           const config = response.config as ApiRequestConfig;
-
           if (config.showLoading) {
             stopLoading();
           }
