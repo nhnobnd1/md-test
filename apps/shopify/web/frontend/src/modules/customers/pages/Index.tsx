@@ -4,6 +4,11 @@ import {
   useJob,
   useNavigate,
 } from "@moose-desk/core";
+import {
+  BaseListCustomerRequest,
+  Customer,
+  CustomerRepository,
+} from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Button,
@@ -26,11 +31,6 @@ import { catchError, map, of } from "rxjs";
 import { ModalDelete } from "src/components/Modal/ModalDelete";
 import Pagination from "src/components/Pagination/Pagination";
 import env from "src/core/env";
-import {
-  BaseListCustomerRequest,
-  Customer,
-} from "src/modules/customers/modal/Customer";
-import CustomerRepository from "src/modules/customers/repositories/CustomerRepository";
 import CustomersRoutePaths from "src/modules/customers/routes/paths";
 
 export default function CustomerIndexPage() {
