@@ -1,3 +1,4 @@
+import { ImportOutlined, WarningOutlined } from "@ant-design/icons";
 import { useAuthContext, useJob, useNavigate } from "@moose-desk/core";
 import { AccountRepository, SignInAccountAgentRequest } from "@moose-desk/repo";
 import { Button, Form, Input } from "antd";
@@ -107,8 +108,14 @@ export const SignIn = (props: SignInProps) => {
       <div className="card-signin">
         <div className="w-[80%] h-full mx-auto">
           {view === "login" ? (
-            <>
+            <div className="pt-[10%]">
               <div className="card-signin__image">
+                {!errorMessage ? (
+                  <ImportOutlined style={{ fontSize: 120 }} />
+                ) : (
+                  <WarningOutlined style={{ fontSize: 120 }} />
+                )}
+
                 <img src="" alt="" />
               </div>
               <div className="card-signin__form">
@@ -169,7 +176,7 @@ export const SignIn = (props: SignInProps) => {
                   </div>
                 </Form>
               </div>
-            </>
+            </div>
           ) : (
             <>
               {view === "lock" ? (

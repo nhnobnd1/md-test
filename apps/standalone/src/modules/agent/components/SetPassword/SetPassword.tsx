@@ -73,7 +73,7 @@ export const SetPassword = ({
       <Form layout="vertical" className="w-full" onFinish={handleFinish}>
         <Form.Item
           name="password"
-          label="Password"
+          label="New Password"
           rules={[
             {
               required: true,
