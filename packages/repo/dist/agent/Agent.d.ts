@@ -56,4 +56,16 @@ export interface ResendEmailInvitationRequest {
 export declare type ResendEmailInvitationResponse = BaseResponse<string>;
 export declare type DeActiveAgentResponse = BaseResponse<string>;
 export declare type ReActiveResponse = BaseResponse<string>;
+export interface CheckTokenNewAgentRequest {
+    token: string;
+    email: string;
+    storeId: string;
+}
+export declare enum TypeCheckTokenNewAgent {
+    TOKEN_VALID = "TOKEN_VALID",
+    TOKEN_INVALID = "TOKEN_INVALID",
+    INVITATION_NOT_EXISTS = "INVITATION_NOT_EXISTS",
+    USER_ACTIVE = "USER_ACTIVE"
+}
+export declare type CheckTokenNewAgentResponse = BaseResponse<TypeCheckTokenNewAgent>;
 //# sourceMappingURL=Agent.d.ts.map
