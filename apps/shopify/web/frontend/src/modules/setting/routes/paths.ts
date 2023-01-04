@@ -21,8 +21,8 @@ const SettingRoutePaths = createRoutePath({
     },
   },
   AccountSecurity: {
-    Index: "access-manager",
-    Profile: "profile",
+    Index: "profile",
+    AccessManager: "access-manager",
     Security: "security",
   },
 } as const);

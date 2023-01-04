@@ -70,17 +70,17 @@ const caseNavigation: NavigationItems[] = [
         label: "Account & Security",
         url: SettingRoutePaths.AccountSecurity.Index,
         tabBarNavigation: [
+          {
+            label: "Profile",
+            url: SettingRoutePaths.AccountSecurity.Index,
+          },
           // {
           //   label: "Security",
           //   url: SettingRoutePaths.AccountSecurity.Index,
           // },
-          // {
-          //   label: "Profile",
-          //   url: SettingRoutePaths.AccountSecurity.Index,
-          // },
           {
             label: "Access Manager",
-            url: SettingRoutePaths.AccountSecurity.Index,
+            url: SettingRoutePaths.AccountSecurity.AccessManager,
           },
         ],
       },
