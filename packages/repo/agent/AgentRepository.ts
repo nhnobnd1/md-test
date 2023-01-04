@@ -27,7 +27,7 @@ export const AgentRepository = createRepository(
     getList(api, params: GetListAgentRequest) {
       return api.get<GetListAgentResponse>("", params);
     },
-    getOne(api, id: string | undefined) {
+    getOne(api, id: string) {
       return api.get<GetOneAgentResponse>(`/${id}`);
     },
     create(api, data: CreateAgentRequest) {

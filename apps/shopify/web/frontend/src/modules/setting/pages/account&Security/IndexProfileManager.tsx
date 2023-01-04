@@ -31,8 +31,8 @@ export default function IndexProfileManager() {
   });
   const { show } = useToast();
   const { run: fetDetailsProfile, result } = useJob(
-    () => {
-      return AgentRepository.getOne(token.sub).pipe(
+    (payload: string) => {
+      return AgentRepository.getOne(payload).pipe(
         map(({ data }) => {
           return data.data;
         })
@@ -109,7 +109,7 @@ export default function IndexProfileManager() {
     <ProfileForm ref={formRef} initialValues={result} submit={submit} />
   );
   useMount(() => {
-    fetDetailsProfile();
+    fetDetailsProfile(token.sub ?? "");
   });
   return (
     <>
