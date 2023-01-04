@@ -80,3 +80,18 @@ export type DeActiveAgentResponse = BaseResponse<string>;
 
 // REACTIVE
 export type ReActiveResponse = BaseResponse<string>;
+
+export interface CheckTokenNewAgentRequest {
+  token: string;
+  email: string;
+  storeId: string;
+}
+
+export enum TypeCheckTokenNewAgent {
+  TOKEN_VALID = "TOKEN_VALID",
+  TOKEN_INVALID = "TOKEN_INVALID",
+  INVITATION_NOT_EXISTS = "INVITATION_NOT_EXISTS",
+  USER_ACTIVE = "USER_ACTIVE",
+}
+
+export type CheckTokenNewAgentResponse = BaseResponse<TypeCheckTokenNewAgent>;

@@ -5,6 +5,7 @@ const Logo = {
 
 const Images = {
   Logo,
+  NotFound: new URL("./404.svg", import.meta.url).href,
 };
 
 export default Images;
