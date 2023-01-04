@@ -3,6 +3,8 @@ import env from "../env";
 import {
   ActiveNewAgentRequest,
   ActiveNewAgentResponse,
+  CheckTokenNewAgentRequest,
+  CheckTokenNewAgentResponse,
   CreateAgentRequest,
   CreateAgentResponse,
   DeActiveAgentResponse,
@@ -52,6 +54,12 @@ export const AgentRepository = createRepository(
 
     reActiveAgent(api, id: string) {
       return api.put<ReActiveResponse>(`/reactive/${id}`, {});
+    },
+    checkTokenActiveNewAgent(api, payload: CheckTokenNewAgentRequest) {
+      return api.put<CheckTokenNewAgentResponse>(
+        "/check-token-active-new-agent",
+        payload
+      );
     },
   }
 );

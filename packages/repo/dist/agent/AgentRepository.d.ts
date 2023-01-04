@@ -1,4 +1,4 @@
-import { ActiveNewAgentRequest, ActiveNewAgentResponse, CreateAgentRequest, CreateAgentResponse, DeActiveAgentResponse, DeleteAgentResponse, GetListAgentRequest, GetListAgentResponse, GetOneAgentResponse, ReActiveResponse, ResendEmailInvitationRequest, ResendEmailInvitationResponse, UpdateAgentRequest, UpdateAgentResponse } from "./Agent";
+import { ActiveNewAgentRequest, ActiveNewAgentResponse, CheckTokenNewAgentRequest, CheckTokenNewAgentResponse, CreateAgentRequest, CreateAgentResponse, DeActiveAgentResponse, DeleteAgentResponse, GetListAgentRequest, GetListAgentResponse, GetOneAgentResponse, ReActiveResponse, ResendEmailInvitationRequest, ResendEmailInvitationResponse, UpdateAgentRequest, UpdateAgentResponse } from "./Agent";
 export declare const AgentRepository: {
     delete: (id: string) => import("rxjs").Observable<import("axios").AxiosResponse<DeleteAgentResponse, any>>;
     getList: (params: GetListAgentRequest) => import("rxjs").Observable<import("axios").AxiosResponse<GetListAgentResponse, any>>;
@@ -9,6 +9,7 @@ export declare const AgentRepository: {
     resendEmailInvitation: (data: ResendEmailInvitationRequest) => import("rxjs").Observable<import("axios").AxiosResponse<ResendEmailInvitationResponse, any>>;
     deActiveAgent: (id: string) => import("rxjs").Observable<import("axios").AxiosResponse<DeActiveAgentResponse, any>>;
     reActiveAgent: (id: string) => import("rxjs").Observable<import("axios").AxiosResponse<ReActiveResponse, any>>;
+    checkTokenActiveNewAgent: (payload: CheckTokenNewAgentRequest) => import("rxjs").Observable<import("axios").AxiosResponse<CheckTokenNewAgentResponse, any>>;
 };
 export default AgentRepository;
 //# sourceMappingURL=AgentRepository.d.ts.map
