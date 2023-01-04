@@ -26,6 +26,7 @@ const settingRoutes: IRoute = {
       index: true,
       component: lazy(() => import("src/modules/setting/pages/Index")),
     },
+    // tag
     {
       path: SettingRoutePaths.Workdesk.Tag.Index,
       component: lazy(
@@ -44,32 +45,18 @@ const settingRoutes: IRoute = {
         () => import("src/modules/setting/pages/workDesk/Tag/EditTag")
       ),
     },
-    {
-      path: SettingRoutePaths.Workdesk.Tag.Edit,
-      component: lazy(
-        () => import("src/modules/setting/pages/workDesk/Tag/EditTag")
-      ),
-    },
+    // account & security
     {
       path: SettingRoutePaths.AccountSecurity.Index,
       component: lazy(
         () =>
           import(
-            "src/modules/setting/pages/account&Security/IndexAccountManager"
+            "src/modules/setting/pages/account&Security/IndexProfileManager"
           )
       ),
     },
     {
-      path: SettingRoutePaths.AccountSecurity.Index,
-      component: lazy(
-        () =>
-          import(
-            "src/modules/setting/pages/account&Security/IndexAccountManager"
-          )
-      ),
-    },
-    {
-      path: SettingRoutePaths.AccountSecurity.Index,
+      path: SettingRoutePaths.AccountSecurity.AccessManager,
       component: lazy(
         () =>
           import(
