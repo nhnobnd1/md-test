@@ -146,7 +146,7 @@ export const SignIn = (props: SignInProps) => {
         ...(factor.state.subdomain && { subdomain: factor.state.subdomain }),
       });
     },
-    [window.location]
+    [window.location, factor]
   );
 
   return (
