@@ -24,7 +24,7 @@ ReactDOM.render(
           isWrap
           component={({ state, children }) => (
             <Loading spinning={state} fullPage>
-              {children}
+              {children as any}
             </Loading>
           )}
         >
