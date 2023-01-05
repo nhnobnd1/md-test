@@ -113,8 +113,13 @@ export const SignIn = (props: SignInProps) => {
 
   useMount(() => {
     const domain = window.location.hostname;
+    console.log("🚀 ~ file: SignIn.tsx:116 ~ useMount ~ domain", domain);
     if (domain.includes(".moosedesk.net")) {
       const subdomain = domain.replace(".moosedesk.net", "");
+      console.log(
+        "🚀 ~ file: SignIn.tsx:119 ~ useMount ~ subdomain",
+        subdomain
+      );
       setFactor((value) => {
         return {
           type: value.type,
