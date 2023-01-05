@@ -56,11 +56,20 @@ const settingRoutes: IRoute = {
       ),
     },
     {
-      path: SettingRoutePaths.AccountSecurity.AccessManager,
+      path: SettingRoutePaths.AccountSecurity.AccessManager.Index,
       component: lazy(
         () =>
           import(
             "src/modules/setting/pages/account&Security/IndexAccountManager"
+          )
+      ),
+    },
+    {
+      path: SettingRoutePaths.AccountSecurity.Security.Index,
+      component: lazy(
+        () =>
+          import(
+            "src/modules/setting/pages/account&Security/IndexSecurityManager"
           )
       ),
     },
