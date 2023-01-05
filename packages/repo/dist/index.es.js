@@ -5726,6 +5726,9 @@ const ht = {
     },
     signOut(e, t) {
       return e.get("/sign-out", t);
+    },
+    changePassword(e, t) {
+      return e.post("/update-password", t);
     }
   }
 );

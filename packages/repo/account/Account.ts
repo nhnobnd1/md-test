@@ -78,3 +78,9 @@ export type RefreshTokenResponse = BaseResponse<{
   expiresIn: number;
   refreshToken: string;
 }>;
+
+export interface UpdatePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}

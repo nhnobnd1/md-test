@@ -11,6 +11,7 @@ import {
   SignupAccountAgentRequest,
   SignupAccountResponse,
   SignupAccountShopifyRequest,
+  UpdatePasswordRequest,
 } from "./Account";
 
 export const AccountRepository = createRepository(
@@ -44,6 +45,9 @@ export const AccountRepository = createRepository(
     },
     signOut(api, params: { Authorization: string }) {
       return api.get<BaseResponse<{}>>("/sign-out", params);
+    },
+    changePassword(api, params: UpdatePasswordRequest) {
+      return api.post<BaseResponse<{}>>("/update-password", params);
     },
   }
 );
