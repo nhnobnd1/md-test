@@ -5719,7 +5719,7 @@ const ht = {
       return e.post("/forgot-password-reset-code", t);
     },
     forgotPasswordResetWithToken(e, t) {
-      return e.post("/forgot-password-reset-code", t);
+      return e.post("/forgot-password-reset", t);
     },
     refreshToken(e, t) {
       return e.post("/refresh-token", t);
