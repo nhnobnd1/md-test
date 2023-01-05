@@ -81,9 +81,9 @@ export const SetPassword = ({
             },
             {
               pattern:
-                /^(?=.*[a-z])(?=.*?[A-Z])(?=.*[@$!%*#?&])[a-zA-Z@$!%*#?&\d]{8,32}$/g,
+                /^(?=.*[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*[@$!%*#?&])[a-zA-Z@$!%*#?&\d]{8,32}$/g,
               message:
-                "Password must be have 8 characters long with Capital letter, lowercase letter, wild cards",
+                "Password must be have 8 characters long with uppercase, lowercase, number and wildcards",
             },
           ]}
           hasFeedback

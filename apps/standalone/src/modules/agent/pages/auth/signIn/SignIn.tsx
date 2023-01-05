@@ -3,7 +3,12 @@ import {
   LockOutlined,
   WarningOutlined,
 } from "@ant-design/icons";
-import { useAuthContext, useJob, useNavigate } from "@moose-desk/core";
+import {
+  generatePath,
+  useAuthContext,
+  useJob,
+  useNavigate,
+} from "@moose-desk/core";
 import { AccountRepository, SignInAccountAgentRequest } from "@moose-desk/repo";
 import { Button, Form, Input } from "antd";
 import { useCallback, useMemo, useState } from "react";
@@ -11,6 +16,7 @@ import { catchError, map, of } from "rxjs";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { Factor2Auth } from "src/modules/agent/components/Factor2Auth";
+import AgentRoutePaths from "src/modules/agent/routes/paths";
 import DashboardRoutePaths from "src/modules/dashboard/routes/paths";
 import "./SignIn.scss";
 
@@ -150,9 +156,9 @@ export const SignIn = (props: SignInProps) => {
                       { required: true, message: "Please input your password" },
                       {
                         pattern:
-                          /^(?=.*[a-z])(?=.*?[A-Z])(?=.*[@$!%*#?&])[a-zA-Z@$!%*#?&\d]{8,32}$/g,
+                          /^(?=.*[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*[@$!%*#?&])[a-zA-Z@$!%*#?&\d]{8,32}$/g,
                         message:
-                          "Password must be have 8 characters long with Capital letter, lowercase letter, wild cards",
+                          "Password must be have 8 characters long with uppercase, lowercase, number and wildcards",
                       },
                     ]}
                   >
@@ -171,7 +177,16 @@ export const SignIn = (props: SignInProps) => {
                       <div className="error-message">{errorMessage}</div>
                     )}
 
-                    <div className="link">Forgot Password?</div>
+                    <div>
+                      <span
+                        className="link"
+                        onClick={() =>
+                          navigate(generatePath(AgentRoutePaths.ForgotPassword))
+                        }
+                      >
+                        Forgot Password?
+                      </span>
+                    </div>
                   </div>
                   <div className="mt-5 w-[80%] mx-auto text-center">
                     Want to get started with MooseDesk? Create a{" "}
