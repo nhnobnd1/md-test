@@ -3,11 +3,9 @@ import useAuth from "src/hooks/useAuth";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
 import DashboardRoutePaths from "src/modules/dashboard/routes/paths";
 
-interface RedirectPageProps {
-  children?: React.ReactElement | React.ReactNode;
-}
+interface RedirectPageProps {}
 
-const RedirectPage = ({ children }: RedirectPageProps) => {
+const RedirectPage = (props: RedirectPageProps) => {
   const { isLoggedIn } = useAuth();
   if (isLoggedIn) {
     return <Navigate to={generatePath(DashboardRoutePaths.Index)} replace />;

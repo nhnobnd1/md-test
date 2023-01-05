@@ -1183,7 +1183,11 @@ Did you call array.map(useContext)? Calling Hooks inside a loop is not supported
               } catch (ne) {
                 C = ne;
               }
+<<<<<<< HEAD
               C && !(C instanceof Error) && (er(R), F("%s: type specification of %s `%s` is invalid; the type checker function must return `null` or an `Error` but returned a %s. You may have forgotten to pass an argument to the type checker creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and shape all require an argument).", _ || "React class", v, x, typeof C), er(null)), C instanceof Error && !(C.message in eo) && (eo[C.message] = !0, er(R), F("Failed %s type: %s", v, C.message), er(null));
+=======
+              C && !(C instanceof Error) && (er(R), $("%s: type specification of %s `%s` is invalid; the type checker function must return `null` or an `Error` but returned a %s. You may have forgotten to pass an argument to the type checker creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and shape all require an argument).", _ || "React class", v, x, typeof C), er(null)), C instanceof Error && !(C.message in eo) && (eo[C.message] = !0, er(R), $("Failed %s type: %s", v, C.message), er(null));
+>>>>>>> 72a40d80f72f89a40121ae4ba74031dec8296fa0
             }
         }
       }
@@ -2217,7 +2221,11 @@ function Fc(e) {
 var $c = "__lodash_hash_undefined__";
 function Bc(e, t) {
   var r = this.__data__;
+<<<<<<< HEAD
   return this.size += this.has(e) ? 0 : 1, r[e] = At && t === void 0 ? $c : t, this;
+=======
+  return this.size += this.has(e) ? 0 : 1, r[e] = At && t === void 0 ? Fc : t, this;
+>>>>>>> 72a40d80f72f89a40121ae4ba74031dec8296fa0
 }
 function Xe(e) {
   var t = -1, r = e == null ? 0 : e.length;
@@ -2432,8 +2440,13 @@ function Pl(e, t) {
 function Al() {
   return [];
 }
+<<<<<<< HEAD
 var Cl = Object.prototype, Tl = Cl.propertyIsEnumerable, Fo = Object.getOwnPropertySymbols, xl = Fo ? function(e) {
   return e == null ? [] : (e = Object(e), Pl(Fo(e), function(t) {
+=======
+var Cl = Object.prototype, Tl = Cl.propertyIsEnumerable, $o = Object.getOwnPropertySymbols, xl = $o ? function(e) {
+  return e == null ? [] : (e = Object(e), Pl($o(e), function(t) {
+>>>>>>> 72a40d80f72f89a40121ae4ba74031dec8296fa0
     return Tl.call(e, t);
   }));
 } : Al;
@@ -2451,7 +2464,11 @@ var Il = tt(Te, "Promise");
 const ln = Il;
 var Ll = tt(Te, "Set");
 const ct = Ll;
+<<<<<<< HEAD
 var Bo = "[object Map]", Ul = "[object Object]", zo = "[object Promise]", Vo = "[object Set]", Wo = "[object WeakMap]", Mo = "[object DataView]", Fl = et(cn), $l = et(Ct), Bl = et(ln), zl = et(ct), Vl = et(un), Je = Ze;
+=======
+var Bo = "[object Map]", Ul = "[object Object]", zo = "[object Promise]", Vo = "[object Set]", Wo = "[object WeakMap]", Mo = "[object DataView]", $l = et(cn), Fl = et(Ct), Bl = et(ln), zl = et(ct), Vl = et(un), Je = Ze;
+>>>>>>> 72a40d80f72f89a40121ae4ba74031dec8296fa0
 (cn && Je(new cn(new ArrayBuffer(1))) != Mo || Ct && Je(new Ct()) != Bo || ln && Je(ln.resolve()) != zo || ct && Je(new ct()) != Vo || un && Je(new un()) != Wo) && (Je = function(e) {
   var t = Ze(e), r = t == Ul ? e.constructor : void 0, n = r ? et(r) : "";
   if (n)
@@ -5728,10 +5745,18 @@ const ht = {
       return e.get("/sign-out", t);
     },
     changePassword(e, t) {
+<<<<<<< HEAD
       return e.post("/update-password", t);
     },
     userGet2FAStatus(e) {
       return e.get("/2fa-status");
+=======
+      return e.post("/update-password", t, {
+        headers: {
+          Authorization: "Beareredf"
+        }
+      });
+>>>>>>> 72a40d80f72f89a40121ae4ba74031dec8296fa0
     }
   }
 );

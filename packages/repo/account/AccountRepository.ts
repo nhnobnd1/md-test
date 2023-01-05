@@ -27,7 +27,7 @@ export const AccountRepository = createRepository(
       return api.post<SignupAccountResponse>("/shopify/sign-up", data);
     },
     agentSignIn(api, data: SignInAccountAgentRequest) {
-      return api.post<SignInAccountResponse>("/sign-in", data);
+      return api.post<SignInAccountResponse>("/sign-in?test=1", data);
     },
     shopifySignIn(api, data: SignInAccountShopifyRequest) {
       return api.post<SignInAccountResponse>("/shopify/sign-in", data);
@@ -44,8 +44,8 @@ export const AccountRepository = createRepository(
     refreshToken(api, data: RefreshTokenRequest) {
       return api.post<RefreshTokenResponse>("/refresh-token", data);
     },
-    signOut(api, params: { Authorization: string }) {
-      return api.get<BaseResponse<{}>>("/sign-out", params);
+    signOut(api) {
+      return api.get<BaseResponse<{}>>("/sign-out");
     },
     changePassword(api, params: UpdatePasswordRequest) {
       return api.post<BaseResponse<{}>>("/update-password", params);
