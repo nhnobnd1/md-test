@@ -72,4 +72,9 @@ export interface UpdatePasswordRequest {
     newPassword: string;
     confirmNewPassword: string;
 }
+export declare type Status2FAResponse = BaseResponse<{
+    twoFactorStoreEnabled: boolean;
+    twoFactorEnabled: boolean;
+    twoFactorMethod: string;
+}>;
 //# sourceMappingURL=Account.d.ts.map

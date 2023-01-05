@@ -84,3 +84,8 @@ export interface UpdatePasswordRequest {
   newPassword: string;
   confirmNewPassword: string;
 }
+export type Status2FAResponse = BaseResponse<{
+  twoFactorStoreEnabled: boolean;
+  twoFactorEnabled: boolean;
+  twoFactorMethod: string;
+}>;

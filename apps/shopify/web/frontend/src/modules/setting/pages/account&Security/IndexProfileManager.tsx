@@ -1,4 +1,4 @@
-import { TokenManager, useJob, useMount } from "@moose-desk/core";
+import { TokenManager, useJob } from "@moose-desk/core";
 import { AgentRepository } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
@@ -13,7 +13,7 @@ import {
 } from "@shopify/polaris";
 import { FormikProps } from "formik";
 import * as jose from "jose";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import ProfileForm from "src/modules/setting/component/ProfileForm";
 
@@ -108,9 +108,11 @@ export default function IndexProfileManager() {
   const profileProfile = (
     <ProfileForm ref={formRef} initialValues={result} submit={submit} />
   );
-  useMount(() => {
-    fetDetailsProfile(token.sub ?? "");
-  });
+  useEffect(() => {
+    if (token.sub) {
+      fetDetailsProfile(token.sub);
+    }
+  }, [token.sub]);
   return (
     <>
       <Page fullWidth>
