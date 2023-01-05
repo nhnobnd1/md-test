@@ -26,7 +26,7 @@ export const AccountRepository = createRepository(
       return api.post<SignupAccountResponse>("/shopify/sign-up", data);
     },
     agentSignIn(api, data: SignInAccountAgentRequest) {
-      return api.post<SignInAccountResponse>("/sign-in?test=1", data);
+      return api.post<SignInAccountResponse>("/sign-in", data);
     },
     shopifySignIn(api, data: SignInAccountShopifyRequest) {
       return api.post<SignInAccountResponse>("/shopify/sign-in", data);
