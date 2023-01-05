@@ -1,11 +1,16 @@
 import {
   generatePath,
   Outlet,
+  useJob,
   useLocation,
   useNavigate,
 } from "@moose-desk/core";
+import { AccountRepository } from "@moose-desk/repo";
 import { Layout, Menu, MenuProps } from "antd";
 import { useMemo } from "react";
+import { catchError, map, of } from "rxjs";
+import useAuth from "src/hooks/useAuth";
+import useNotification from "src/hooks/useNotification";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
 import DashboardRoutePaths from "src/modules/dashboard/routes/paths";
 import "./MainLayout.scss";
@@ -15,6 +20,22 @@ interface MainLayoutProps {}
 export const MainLayout = (props: MainLayoutProps) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { isLoggedIn, logout } = useAuth();
+  const notification = useNotification();
+
+  const { run: signOut } = useJob(() => {
+    return AccountRepository.signOut().pipe(
+      map(({ data }) => {
+        logout();
+        navigate(generatePath(AgentRoutePaths.Login));
+        notification.success("Logout success");
+      }),
+      catchError((err) => {
+        notification.success("Logout failed");
+        return of(err);
+      })
+    );
+  });
 
   const caseTopMenu = useMemo<MenuProps["items"]>(() => {
     return [
@@ -41,15 +62,16 @@ export const MainLayout = (props: MainLayoutProps) => {
       },
       {
         key: `case-${AgentRoutePaths.Login}`,
-        label: "Login",
-        onClick: () => navigate(generatePath(AgentRoutePaths.Login)),
+        label: isLoggedIn ? "Logout" : "Login",
+        onClick: () =>
+          isLoggedIn ? signOut() : navigate(AgentRoutePaths.Login),
       },
       {
         key: `case-top-7`,
         label: "Register",
       },
     ];
-  }, [AgentRoutePaths]);
+  }, [AgentRoutePaths, isLoggedIn]);
 
   const activeKeys = useMemo(() => {
     return caseTopMenu?.find(

@@ -7,6 +7,7 @@ import {
   generatePath,
   useAuthContext,
   useJob,
+  useMount,
   useNavigate,
 } from "@moose-desk/core";
 import { AccountRepository, SignInAccountAgentRequest } from "@moose-desk/repo";
@@ -32,12 +33,14 @@ export const SignIn = (props: SignInProps) => {
     state: {
       email: string;
       password: string;
+      subdomain: string | null;
     };
   }>({
     type: "email",
     state: {
       email: "",
       password: "",
+      subdomain: "",
     },
   });
   const [errorMessage, setErrorMessage] = useState("");
@@ -72,15 +75,18 @@ export const SignIn = (props: SignInProps) => {
             ].includes(err.response.data.errorCode)
           ) {
             setView("factor2Auth");
-            setFactor({
-              type:
-                err.response.data.errorCode === "RequiresTwoFactor_Email"
-                  ? "email"
-                  : "authenticator",
-              state: {
-                email: payload.email,
-                password: payload.password,
-              },
+            setFactor((value) => {
+              return {
+                type:
+                  err.response.data.errorCode === "RequiresTwoFactor_Email"
+                    ? "email"
+                    : "authenticator",
+                state: {
+                  email: payload.email,
+                  password: payload.password,
+                  subdomain: value.state.subdomain,
+                },
+              };
             });
           } else {
             notification.error("Login failed");
@@ -105,14 +111,33 @@ export const SignIn = (props: SignInProps) => {
     { showLoading: true }
   );
 
+  useMount(() => {
+    const domain = window.location.hostname;
+    if (domain.includes(".moosedesk.net")) {
+      const subdomain = domain.replace(".moosedesk.net", "");
+      setFactor((value) => {
+        return {
+          type: value.type,
+          state: {
+            email: value.state.email,
+            password: value.state.password,
+            subdomain: subdomain,
+          },
+        };
+      });
+    }
+  });
+
   const handleSubmit = useCallback(
     (values: { email: string; password: string }) => {
+      console.log(factor, "factor");
       signInApi({
         email: values.email,
         password: values.password,
+        ...(factor.state.subdomain && { subdomain: factor.state.subdomain }),
       });
     },
-    []
+    [window.location]
   );
 
   return (

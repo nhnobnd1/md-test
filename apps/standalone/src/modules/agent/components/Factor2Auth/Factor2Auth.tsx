@@ -9,6 +9,7 @@ interface Factor2AuthProps {
   state: {
     email: string;
     password: string;
+    subdomain: string | null;
   };
   onFinish: (payload: SignInAccountAgentRequest) => void;
   onResend: (payload: SignInAccountAgentRequest, resend: boolean) => void;
@@ -28,6 +29,9 @@ export const Factor2Auth = ({
       onFinish({
         email: state.email,
         password: state.password,
+        ...(state.subdomain && {
+          subdomain: state.subdomain,
+        }),
         twoFactorCode: values.twoFactorCode,
       });
     },
@@ -58,6 +62,9 @@ export const Factor2Auth = ({
       {
         email: state.email,
         password: state.password,
+        ...(state.subdomain && {
+          subdomain: state.subdomain,
+        }),
       },
       true
     );
