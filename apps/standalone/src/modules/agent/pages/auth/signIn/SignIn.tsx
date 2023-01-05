@@ -130,6 +130,7 @@ export const SignIn = (props: SignInProps) => {
 
   const handleSubmit = useCallback(
     (values: { email: string; password: string }) => {
+      console.log(factor, "factor");
       signInApi({
         email: values.email,
         password: values.password,
