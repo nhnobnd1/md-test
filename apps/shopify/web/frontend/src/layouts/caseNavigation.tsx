@@ -74,13 +74,13 @@ const caseNavigation: NavigationItems[] = [
             label: "Profile",
             url: SettingRoutePaths.AccountSecurity.Index,
           },
-          // {
-          //   label: "Security",
-          //   url: SettingRoutePaths.AccountSecurity.Index,
-          // },
+          {
+            label: "Security",
+            url: SettingRoutePaths.AccountSecurity.Security.Index,
+          },
           {
             label: "Access Manager",
-            url: SettingRoutePaths.AccountSecurity.AccessManager,
+            url: SettingRoutePaths.AccountSecurity.AccessManager.Index,
           },
         ],
       },

@@ -1,7 +1,7 @@
 const Logo = {
   LogoMooseDesk: new URL("./logo/logoBase.png", import.meta.url).href,
   onBoardingLogo: new URL(
-    "./logo/file logo png/logo nguyên bản.png",
+    "./logo/file logo png/defaultLogo.png",
     import.meta.url
   ).href,
 };
