@@ -2,7 +2,6 @@ import { SyncOutlined } from "@ant-design/icons";
 import {
   generatePath,
   useJob,
-  useLoading,
   useNavigate,
   useSearchParams,
 } from "@moose-desk/core";
@@ -22,8 +21,6 @@ const ResetPassword = (props: ResetPasswordProps) => {
   const [finalPage, setFinalPage] = useState(false);
   const navigate = useNavigate();
   const message = useMessage();
-  const { startLoading } = useLoading();
-  startLoading();
   const notification = useNotification();
   const [account, setAccount] = useState({
     userId: "",
