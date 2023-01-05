@@ -37,7 +37,7 @@ export const AccountRepository = createRepository(
       return api.post<BaseResponse<{}>>("/forgot-password-reset-code", data);
     },
     forgotPasswordResetWithToken(api, data: ForgotPasswordRequest) {
-      return api.post<BaseResponse<{}>>("/forgot-password-reset-code", data);
+      return api.post<BaseResponse<{}>>("/forgot-password-reset", data);
     },
     refreshToken(api, data: RefreshTokenRequest) {
       return api.post<RefreshTokenResponse>("/refresh-token", data);

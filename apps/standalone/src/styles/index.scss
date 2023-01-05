@@ -20,3 +20,9 @@
     color: rgba(0, 0, 0, 0.45);
   }
 }
+
+.hide-label {
+  .ant-form-item-label {
+    visibility: hidden;
+  }
+}

@@ -24,6 +24,19 @@ const agentRoutes: IRoute = {
         () => import("src/modules/agent/pages/auth/signIn/SignIn")
       ),
     },
+    {
+      path: AgentRoutePaths.ForgotPassword,
+      component: lazy(
+        () =>
+          import("src/modules/agent/pages/auth/forgotPassword/ForgotPassword")
+      ),
+    },
+    {
+      path: AgentRoutePaths.ResetPassword,
+      component: lazy(
+        () => import("src/modules/agent/pages/auth/resetPassword/ResetPassword")
+      ),
+    },
   ],
 };
 
