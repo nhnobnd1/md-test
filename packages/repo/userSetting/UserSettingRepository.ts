@@ -3,16 +3,16 @@ import env from "../env";
 import {
   AccessManger,
   GetAccessMangerResponse,
-  SetUpResponse,
   SetupOtpRequest,
+  SetUpResponse,
   UpdateAccessManagerResponse,
   VerifySetupOTPRequest,
 } from "./UserSetting";
 
 export const UserSettingRepository = createRepository(
-  {
-    baseURL: `${env.API_URL}/api/v1/account/setting`,
-  },
+  () => ({
+    baseURL: `${env.getApiUrl()}/api/v1/account/setting`,
+  }),
   {
     getAccessManagerSetting(api, params: string | undefined) {
       return api.get<GetAccessMangerResponse>(`/access-manager/${params}`);

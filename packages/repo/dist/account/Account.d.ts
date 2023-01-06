@@ -38,6 +38,7 @@ export declare type SignupAccountResponse = BaseResponse<User>;
 export interface SignInAccountAgentRequest {
     email: string;
     password: string;
+    subdomain?: string;
     twoFactorCode?: string;
 }
 export interface SignInAccountShopifyRequest {

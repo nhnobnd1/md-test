@@ -1,6 +1,6 @@
 import { BaseResponse } from "../unty";
 import { ForgotPasswordRequest, RefreshTokenRequest, RefreshTokenResponse, SignInAccountAgentRequest, SignInAccountResponse, SignInAccountShopifyRequest, SignupAccountAgentRequest, SignupAccountResponse, SignupAccountShopifyRequest, UpdatePasswordRequest } from "./Account";
-export declare const AccountRepository: {
+export declare const AccountRepository: () => {
     agentSignUp: (data: SignupAccountAgentRequest) => import("rxjs").Observable<import("axios").AxiosResponse<SignupAccountResponse, any>>;
     shopifySignup: (data: SignupAccountShopifyRequest) => import("rxjs").Observable<import("axios").AxiosResponse<SignupAccountResponse, any>>;
     agentSignIn: (data: SignInAccountAgentRequest) => import("rxjs").Observable<import("axios").AxiosResponse<SignInAccountResponse, any>>;
@@ -13,9 +13,7 @@ export declare const AccountRepository: {
     }) => import("rxjs").Observable<import("axios").AxiosResponse<BaseResponse<{}>, any>>;
     forgotPasswordResetWithToken: (data: ForgotPasswordRequest) => import("rxjs").Observable<import("axios").AxiosResponse<BaseResponse<{}>, any>>;
     refreshToken: (data: RefreshTokenRequest) => import("rxjs").Observable<import("axios").AxiosResponse<RefreshTokenResponse, any>>;
-    signOut: (params: {
-        Authorization: string;
-    }) => import("rxjs").Observable<import("axios").AxiosResponse<BaseResponse<{}>, any>>;
+    signOut: () => import("rxjs").Observable<import("axios").AxiosResponse<BaseResponse<{}>, any>>;
     changePassword: (params: UpdatePasswordRequest) => import("rxjs").Observable<import("axios").AxiosResponse<BaseResponse<{}>, any>>;
 };
 export default AccountRepository;

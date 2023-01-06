@@ -5518,8 +5518,11 @@ function wm({
   })), /* @__PURE__ */ B(Ce, { children: e });
 }
 function _m(e, t) {
-  const r = new te(e.baseURL, e);
-  return wd(t, (n) => (...o) => n(r, ...o));
+  return () => {
+    console.log(e(), "config");
+    const r = new te(e().baseURL, e());
+    return wd(t, (n) => (...o) => n(r, ...o));
+  };
 }
 function bh(e, t = "/") {
   const r = {}, n = e.Index.length > 0 ? `${t}${e.Index}` : "";

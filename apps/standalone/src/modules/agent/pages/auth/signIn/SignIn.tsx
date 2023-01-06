@@ -54,59 +54,61 @@ export const SignIn = (props: SignInProps) => {
 
   const { run: signInApi } = useJob(
     (payload: SignInAccountAgentRequest, resend?: boolean) => {
-      return AccountRepository.agentSignIn(payload).pipe(
-        map(({ data }) => {
-          notification.success("Login successfully");
-          login({
-            base_token: data.data.accessToken,
-            refresh_token: data.data.refreshToken,
-          });
-          navigate(DashboardRoutePaths.Index);
-        }),
-        catchError((err) => {
-          if (resend) {
-            message.success("Requested to resend OTP");
-          }
-          const error = err.response.data.error;
-          if (
-            [
-              "RequiresTwoFactor_Authenticator",
-              "RequiresTwoFactor_Email",
-            ].includes(err.response.data.errorCode)
-          ) {
-            setView("factor2Auth");
-            setFactor((value) => {
-              return {
-                type:
-                  err.response.data.errorCode === "RequiresTwoFactor_Email"
-                    ? "email"
-                    : "authenticator",
-                state: {
-                  email: payload.email,
-                  password: payload.password,
-                  subdomain: value.state.subdomain,
-                },
-              };
+      return AccountRepository()
+        .agentSignIn(payload)
+        .pipe(
+          map(({ data }) => {
+            notification.success("Login successfully");
+            login({
+              base_token: data.data.accessToken,
+              refresh_token: data.data.refreshToken,
             });
-          } else {
-            notification.error("Login failed");
-            const numberLoginFailed = error[0].split("/")[0];
-            const totalAcceptFailed = error[0].split("/")[1];
-            if (numberLoginFailed < totalAcceptFailed) {
-              setErrorMessage(
-                `The email or password is incorrect. You have ${
-                  parseInt(totalAcceptFailed) - parseInt(numberLoginFailed)
-                } remaining attempts to login`
-              );
-            } else {
-              setErrorMessage("");
-              setView("lock");
+            navigate(DashboardRoutePaths.Index);
+          }),
+          catchError((err) => {
+            if (resend) {
+              message.success("Requested to resend OTP");
             }
-          }
+            const error = err.response.data.error;
+            if (
+              [
+                "RequiresTwoFactor_Authenticator",
+                "RequiresTwoFactor_Email",
+              ].includes(err.response.data.errorCode)
+            ) {
+              setView("factor2Auth");
+              setFactor((value) => {
+                return {
+                  type:
+                    err.response.data.errorCode === "RequiresTwoFactor_Email"
+                      ? "email"
+                      : "authenticator",
+                  state: {
+                    email: payload.email,
+                    password: payload.password,
+                    subdomain: value.state.subdomain,
+                  },
+                };
+              });
+            } else {
+              notification.error("Login failed");
+              const numberLoginFailed = error[0].split("/")[0];
+              const totalAcceptFailed = error[0].split("/")[1];
+              if (numberLoginFailed < totalAcceptFailed) {
+                setErrorMessage(
+                  `The email or password is incorrect. You have ${
+                    parseInt(totalAcceptFailed) - parseInt(numberLoginFailed)
+                  } remaining attempts to login`
+                );
+              } else {
+                setErrorMessage("");
+                setView("lock");
+              }
+            }
 
-          return of(err);
-        })
-      );
+            return of(err);
+          })
+        );
     },
     { showLoading: true }
   );

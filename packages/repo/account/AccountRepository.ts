@@ -15,9 +15,9 @@ import {
 } from "./Account";
 
 export const AccountRepository = createRepository(
-  {
-    baseURL: `${env.API_URL}/api/v1/account`,
-  },
+  () => ({
+    baseURL: `${env.getApiUrl()}/api/v1/account`,
+  }),
   {
     agentSignUp(api, data: SignupAccountAgentRequest) {
       return api.post<SignupAccountResponse>("/sign-up", data);
@@ -26,6 +26,7 @@ export const AccountRepository = createRepository(
       return api.post<SignupAccountResponse>("/shopify/sign-up", data);
     },
     agentSignIn(api, data: SignInAccountAgentRequest) {
+      console.log(env.getApiUrl(), "api url reppo");
       return api.post<SignInAccountResponse>("/sign-in", data);
     },
     shopifySignIn(api, data: SignInAccountShopifyRequest) {

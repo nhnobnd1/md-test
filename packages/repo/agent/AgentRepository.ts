@@ -20,9 +20,9 @@ import {
 } from "./Agent";
 
 export const AgentRepository = createRepository(
-  {
-    baseURL: `${env.API_URL}/api/v1/account/agent`,
-  },
+  () => ({
+    baseURL: `${env.getApiUrl()}/api/v1/account/agent`,
+  }),
   {
     getList(api, params: GetListAgentRequest) {
       return api.get<GetListAgentResponse>("", params);

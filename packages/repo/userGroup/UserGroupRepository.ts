@@ -14,9 +14,9 @@ import {
 } from "./UserGroup";
 
 export const UserGroupRepository = createRepository(
-  {
-    baseURL: `${env.API_URL}/api/v1/account/group`,
-  },
+  () => ({
+    baseURL: `${env.getApiUrl()}/api/v1/account/group`,
+  }),
   {
     getList(api, params: GetListUserGroupRequest) {
       return api.get<GetListUserGroupResponse>("", params);
