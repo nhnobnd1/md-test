@@ -40,13 +40,29 @@ export default function CreateCustomer() {
     });
   }, []);
   const { run: submit } = useJob((dataSubmit: any) => {
-    return CustomerRepository.create(dataSubmit).pipe(
-      map(({ data }) => {
-        if (data.statusCode === 200) {
-          show("Customer Profile has been created successfully.");
-          navigateShowDetails(data.data._id, data.statusCode);
-        } else {
-          if (data.statusCode === 409) {
+    return CustomerRepository()
+      .create(dataSubmit)
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            show("Customer Profile has been created successfully.");
+            navigateShowDetails(data.data._id, data.statusCode);
+          } else {
+            if (data.statusCode === 409) {
+              setMessageError(`Email is ${dataSubmit.email} already exists.`);
+              show(`Email is ${dataSubmit.email} already exists.`, {
+                isError: true,
+              });
+            } else {
+              show("Create tag failed", {
+                isError: true,
+              });
+            }
+          }
+        }),
+        catchError((error) => {
+          setBanner(true);
+          if (error.response.status === 409) {
             setMessageError(`Email is ${dataSubmit.email} already exists.`);
             show(`Email is ${dataSubmit.email} already exists.`, {
               isError: true,
@@ -56,23 +72,9 @@ export default function CreateCustomer() {
               isError: true,
             });
           }
-        }
-      }),
-      catchError((error) => {
-        setBanner(true);
-        if (error.response.status === 409) {
-          setMessageError(`Email is ${dataSubmit.email} already exists.`);
-          show(`Email is ${dataSubmit.email} already exists.`, {
-            isError: true,
-          });
-        } else {
-          show("Create tag failed", {
-            isError: true,
-          });
-        }
-        return of(error);
-      })
-    );
+          return of(error);
+        })
+      );
   });
   const handleChangeValueForm = (value: boolean) => {
     setDisable(value);

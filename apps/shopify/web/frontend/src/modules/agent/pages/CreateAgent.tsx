@@ -36,41 +36,43 @@ const CreateAgent = (props: CreateAgentProps) => {
 
   const { run: createAgentApi, processing: loadingCreate } = useJob(
     (payload: CreateAgentRequest) => {
-      return AgentRepository.create(payload).pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            show("Create Agent Success");
-            navigate(
-              generatePath(AgentRoutePaths.Detail, { id: data.data._id }),
-              {
-                state: {
-                  banner: {
-                    status: "success",
-                    message: `Invitation Email has been sent to Agent's email address.`,
+      return AgentRepository()
+        .create(payload)
+        .pipe(
+          map(({ data }) => {
+            if (data.statusCode === 200) {
+              show("Create Agent Success");
+              navigate(
+                generatePath(AgentRoutePaths.Detail, { id: data.data._id }),
+                {
+                  state: {
+                    banner: {
+                      status: "success",
+                      message: `Invitation Email has been sent to Agent's email address.`,
+                    },
                   },
-                },
+                }
+              );
+            } else {
+              if (data.errorCode) {
+                showBanner("critical", {
+                  message: getMessageCreateError(
+                    data.errorCode as ErrorCodeCreate
+                  ),
+                });
               }
-            );
-          } else {
-            if (data.errorCode) {
+            }
+          }),
+          catchError((err) => {
+            const errorCode = err.response.data.errorCode;
+            if (errorCode) {
               showBanner("critical", {
-                message: getMessageCreateError(
-                  data.errorCode as ErrorCodeCreate
-                ),
+                message: getMessageCreateError(errorCode as ErrorCodeCreate),
               });
             }
-          }
-        }),
-        catchError((err) => {
-          const errorCode = err.response.data.errorCode;
-          if (errorCode) {
-            showBanner("critical", {
-              message: getMessageCreateError(errorCode as ErrorCodeCreate),
-            });
-          }
-          return of(err);
-        })
-      );
+            return of(err);
+          })
+        );
     },
     { showLoading: true }
   );

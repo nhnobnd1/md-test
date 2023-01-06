@@ -34,12 +34,14 @@ export default function DetailsTag() {
   const { show } = useToast();
   const { run: fetDetailsTag, result } = useJob(
     () => {
-      return TagRepository.getOne(id).pipe(
-        map(({ data }) => {
-          setTitle(`${data.data.name}`);
-          return data.data;
-        })
-      );
+      return TagRepository()
+        .getOne(id)
+        .pipe(
+          map(({ data }) => {
+            setTitle(`${data.data.name}`);
+            return data.data;
+          })
+        );
     },
     { showLoading: false }
   );
@@ -48,18 +50,42 @@ export default function DetailsTag() {
   };
   const { run: submit } = useJob((dataSubmit: any) => {
     const { _id } = dataSubmit;
-    return TagRepository.update(_id, dataSubmit).pipe(
-      map(({ data }) => {
-        if (data.statusCode === 200) {
-          setTitle(`${data.data.name}`);
-          setBanner({
-            isShow: true,
-            message: "Tag has been updated succcesfully.",
-            type: "success",
-          });
-          show("Tag has been updated succcesfully.");
-        } else {
-          if (data.statusCode === 409) {
+    return TagRepository()
+      .update(_id, dataSubmit)
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            setTitle(`${data.data.name}`);
+            setBanner({
+              isShow: true,
+              message: "Tag has been updated succcesfully.",
+              type: "success",
+            });
+            show("Tag has been updated succcesfully.");
+          } else {
+            if (data.statusCode === 409) {
+              setBanner({
+                isShow: true,
+                type: "critical",
+                message: `Tag name is ${dataSubmit.name} already exists.`,
+              });
+              show(`Tag name is ${dataSubmit.name} already exists.`, {
+                isError: true,
+              });
+            } else {
+              setBanner({
+                isShow: true,
+                type: "critical",
+                message: "Customer Profile has been updated failed.",
+              });
+              show("Customer Profile has been updated failed.", {
+                isError: true,
+              });
+            }
+          }
+        }),
+        catchError((error) => {
+          if (error.response.status === 409) {
             setBanner({
               isShow: true,
               type: "critical",
@@ -78,31 +104,9 @@ export default function DetailsTag() {
               isError: true,
             });
           }
-        }
-      }),
-      catchError((error) => {
-        if (error.response.status === 409) {
-          setBanner({
-            isShow: true,
-            type: "critical",
-            message: `Tag name is ${dataSubmit.name} already exists.`,
-          });
-          show(`Tag name is ${dataSubmit.name} already exists.`, {
-            isError: true,
-          });
-        } else {
-          setBanner({
-            isShow: true,
-            type: "critical",
-            message: "Customer Profile has been updated failed.",
-          });
-          show("Customer Profile has been updated failed.", {
-            isError: true,
-          });
-        }
-        return of(error);
-      })
-    );
+          return of(error);
+        })
+      );
   });
   const handleSubmitForm = useCallback(() => {
     formRef.current?.submitForm();

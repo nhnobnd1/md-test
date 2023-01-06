@@ -59,27 +59,29 @@ const DetailAgent = (props: CreateAgentProps) => {
 
   const { run: getDetailAgentApi, processing: loadingGetDetail } = useJob(
     (id: string) => {
-      return AgentRepository.getOne(id).pipe(
-        map(
-          ({ data }) => {
-            if (data.statusCode === 200) {
-              setAgentSaved(data.data);
-            } else {
+      return AgentRepository()
+        .getOne(id)
+        .pipe(
+          map(
+            ({ data }) => {
+              if (data.statusCode === 200) {
+                setAgentSaved(data.data);
+              } else {
+                showBanner("critical", {
+                  message: "Get data agent failed",
+                });
+                show("Get data agent failed", { isError: true });
+              }
+            },
+            catchError((err) => {
               showBanner("critical", {
                 message: "Get data agent failed",
               });
               show("Get data agent failed", { isError: true });
-            }
-          },
-          catchError((err) => {
-            showBanner("critical", {
-              message: "Get data agent failed",
-            });
-            show("Get data agent failed", { isError: true });
-            return of(err);
-          })
-        )
-      );
+              return of(err);
+            })
+          )
+        );
     },
     { showLoading: true }
   );
@@ -106,163 +108,173 @@ const DetailAgent = (props: CreateAgentProps) => {
 
   const { run: updateAgentApi } = useJob(
     (id: string, payload: UpdateAgentRequest) => {
-      return AgentRepository.update(id, payload).pipe(
-        map(
-          ({ data }) => {
-            if (data.statusCode === 200) {
-              showBanner("success", {
-                title: `Update ${agentSaved?.firstName} ${agentSaved?.lastName}`,
-                message: "Agent has been updated successfully",
-              });
-              setAgentSaved(data.data);
-              show("Agent has been updated successfully");
-            } else {
+      return AgentRepository()
+        .update(id, payload)
+        .pipe(
+          map(
+            ({ data }) => {
+              if (data.statusCode === 200) {
+                showBanner("success", {
+                  title: `Update ${agentSaved?.firstName} ${agentSaved?.lastName}`,
+                  message: "Agent has been updated successfully",
+                });
+                setAgentSaved(data.data);
+                show("Agent has been updated successfully");
+              } else {
+                showBanner("critical", {
+                  title: `Update ${agentSaved?.firstName} ${agentSaved?.lastName}`,
+                  message: "Agent has been updated failed",
+                });
+                show("Agent has been updated failed", { isError: true });
+              }
+            },
+            catchError((err) => {
               showBanner("critical", {
                 title: `Update ${agentSaved?.firstName} ${agentSaved?.lastName}`,
                 message: "Agent has been updated failed",
               });
               show("Agent has been updated failed", { isError: true });
-            }
-          },
-          catchError((err) => {
-            showBanner("critical", {
-              title: `Update ${agentSaved?.firstName} ${agentSaved?.lastName}`,
-              message: "Agent has been updated failed",
-            });
-            show("Agent has been updated failed", { isError: true });
-            return of(err);
-          })
-        )
-      );
+              return of(err);
+            })
+          )
+        );
     }
   );
 
   const { run: resendMailApi } = useJob(
     (payload: ResendEmailInvitationRequest) => {
-      return AgentRepository.resendEmailInvitation(payload).pipe(
-        map(
-          ({ data }) => {
-            if (data.statusCode === 200) {
-              showBanner("success", {
-                title: `Resend invitation ${payload.email}`,
-                message: "Resend invitation mail success",
-              });
-              show("Resend mail success");
-            } else {
+      return AgentRepository()
+        .resendEmailInvitation(payload)
+        .pipe(
+          map(
+            ({ data }) => {
+              if (data.statusCode === 200) {
+                showBanner("success", {
+                  title: `Resend invitation ${payload.email}`,
+                  message: "Resend invitation mail success",
+                });
+                show("Resend mail success");
+              } else {
+                showBanner("critical", {
+                  message: "Resend invitation email failed",
+                });
+                show("Resend mail failed", { isError: true });
+              }
+            },
+
+            catchError((err) => {
               showBanner("critical", {
                 message: "Resend invitation email failed",
               });
               show("Resend mail failed", { isError: true });
-            }
-          },
-
-          catchError((err) => {
-            showBanner("critical", {
-              message: "Resend invitation email failed",
-            });
-            show("Resend mail failed", { isError: true });
-            return of(err);
-          })
-        )
-      );
+              return of(err);
+            })
+          )
+        );
     },
     { showLoading: true }
   );
 
   const { run: activeAgentApi, processing: loadingActive } = useJob(
     (id: string) => {
-      return AgentRepository.reActiveAgent(id).pipe(
-        map(
-          ({ data }) => {
-            if (data.statusCode === 200) {
-              showBanner("success", {
-                message: "Agent has been activated successfully.",
-              });
-              show("Active agent success");
-              getDetailAgentApi(id);
-            } else {
+      return AgentRepository()
+        .reActiveAgent(id)
+        .pipe(
+          map(
+            ({ data }) => {
+              if (data.statusCode === 200) {
+                showBanner("success", {
+                  message: "Agent has been activated successfully.",
+                });
+                show("Active agent success");
+                getDetailAgentApi(id);
+              } else {
+                showBanner("critical", {
+                  message: "Active agent failed",
+                });
+                show("Active agent failed", { isError: true });
+              }
+            },
+            catchError((err) => {
               showBanner("critical", {
                 message: "Active agent failed",
               });
               show("Active agent failed", { isError: true });
-            }
-          },
-          catchError((err) => {
-            showBanner("critical", {
-              message: "Active agent failed",
-            });
-            show("Active agent failed", { isError: true });
-            return of(err);
-          })
-        )
-      );
+              return of(err);
+            })
+          )
+        );
     },
     { showLoading: true }
   );
 
   const { run: deActiveAgentApi, processing: loadingDeactivate } = useJob(
     (id: string) => {
-      return AgentRepository.deActiveAgent(id).pipe(
-        map(
-          ({ data }) => {
-            if (data.statusCode === 200) {
-              showBanner("success", {
-                message: "Agent has been deactivated successfully.",
-              });
-              show("Deactivate agent success");
-              getDetailAgentApi(id);
-            } else {
+      return AgentRepository()
+        .deActiveAgent(id)
+        .pipe(
+          map(
+            ({ data }) => {
+              if (data.statusCode === 200) {
+                showBanner("success", {
+                  message: "Agent has been deactivated successfully.",
+                });
+                show("Deactivate agent success");
+                getDetailAgentApi(id);
+              } else {
+                showBanner("critical", {
+                  message: "Deactivate agent failed",
+                });
+                show("Deactivate agent failed", { isError: true });
+              }
+            },
+            catchError((err) => {
               showBanner("critical", {
                 message: "Deactivate agent failed",
               });
               show("Deactivate agent failed", { isError: true });
-            }
-          },
-          catchError((err) => {
-            showBanner("critical", {
-              message: "Deactivate agent failed",
-            });
-            show("Deactivate agent failed", { isError: true });
-            return of(err);
-          })
-        )
-      );
+              return of(err);
+            })
+          )
+        );
     },
     { showLoading: true }
   );
 
   const { run: deleteAgentApi, processing: loadingDelete } = useJob(
     (id: string) => {
-      return AgentRepository.delete(id).pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            show("Remove Agent Success");
-            navigate(generatePath(AgentRoutePaths.Index), {
-              state: {
-                banner: {
-                  status: "success",
-                  message:
-                    "The selected agent has been removed from the system.",
+      return AgentRepository()
+        .delete(id)
+        .pipe(
+          map(({ data }) => {
+            if (data.statusCode === 200) {
+              show("Remove Agent Success");
+              navigate(generatePath(AgentRoutePaths.Index), {
+                state: {
+                  banner: {
+                    status: "success",
+                    message:
+                      "The selected agent has been removed from the system.",
+                  },
                 },
-              },
-            });
-          } else {
+              });
+            } else {
+              showBanner("critical", {
+                title: "There is an error with remove agent",
+                message: "Remove agent failed",
+              });
+              show("Remove Agent Failed", { isError: true });
+            }
+          }),
+          catchError((err) => {
             showBanner("critical", {
               title: "There is an error with remove agent",
               message: "Remove agent failed",
             });
             show("Remove Agent Failed", { isError: true });
-          }
-        }),
-        catchError((err) => {
-          showBanner("critical", {
-            title: "There is an error with remove agent",
-            message: "Remove agent failed",
-          });
-          show("Remove Agent Failed", { isError: true });
-          return of(err);
-        })
-      );
+            return of(err);
+          })
+        );
     }
   );
 
