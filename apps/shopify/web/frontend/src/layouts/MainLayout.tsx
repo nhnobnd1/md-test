@@ -1,8 +1,8 @@
-import { generatePath, Outlet, useLocation, useRoutes } from "@moose-desk/core";
+import { Outlet, useLocation, useRoutes } from "@moose-desk/core";
 import { useNavigate } from "@shopify/app-bridge-react";
-import { Frame, Navigation, Tabs } from "@shopify/polaris";
+import { Frame, Navigation } from "@shopify/polaris";
 import { TabDescriptor } from "@shopify/polaris/build/ts/latest/src/components/Tabs/types";
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { ReactNode, useCallback, useMemo, useState } from "react";
 import "src/assets/styles/layouts/main-layout.scss";
 import caseNavigation, {
   NavigationItems,
@@ -21,8 +21,6 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileNavigationActive, setMobileNavigationActive] = useState(false);
-  const [tabBar, setTabBar] = useState<Array<TabBarMatches>>([]);
-  const [selected, setSelected] = useState(0);
 
   const getItemRouteNavigation = useCallback(
     (
@@ -61,8 +59,6 @@ const MainLayout = ({ children }: MainLayoutProps) => {
           panelID: `${item.label}-${index}`,
           active: item.matches,
         })) as TabBarMatches[];
-
-        setTabBar(tabBar);
       }
       return {
         ...routesItem,
@@ -86,24 +82,56 @@ const MainLayout = ({ children }: MainLayoutProps) => {
       const router = getItemRouteNavigation(routesItem, "main");
       router && navigationRender.push(router);
     });
-    return navigationRender;
+
+    // build section list
+    const sectionList: Array<{ title?: string; items: NavigationItems[] }> = [
+      { items: [] },
+    ];
+    navigationRender.forEach((item) => {
+      if (item.subNavigationItems?.length) {
+        let checkTabBar = false;
+        item.subNavigationItems.forEach((itemK) => {
+          if (itemK.tabBarNavigation?.length) {
+            checkTabBar = true;
+          }
+        });
+
+        if (checkTabBar) {
+          sectionList.push({
+            title: item.label,
+            items: [
+              ...(item.subNavigationItems?.map((value) => ({
+                ...value,
+                ...(value.tabBarNavigation?.length && {
+                  subNavigationItems: value.tabBarNavigation,
+                }),
+              })) as NavigationItems[]),
+            ],
+          });
+        } else {
+          sectionList[0].items.push(item);
+        }
+      } else {
+        sectionList[0].items.push(item);
+      }
+    });
+
+    return sectionList;
   }, [caseNavigation, routes, location.pathname]);
 
   const MainLayoutNavigation = () => {
     return (
       <Navigation location="/">
-        <Navigation.Section items={caseNavigationRender} />
+        {caseNavigationRender.map((item, index) => (
+          <Navigation.Section
+            key={`navigation-section-${index}`}
+            items={item.items}
+            title={item.title ?? undefined}
+          />
+        ))}
       </Navigation>
     );
   };
-
-  const handleTabChange = useCallback(
-    (selectedTabIndex) => {
-      navigate(generatePath(tabBar[selectedTabIndex].id));
-      setSelected(selectedTabIndex);
-    },
-    [tabBar]
-  );
 
   const toggleMobileNavigationActive = useCallback(
     () =>
@@ -112,12 +140,6 @@ const MainLayout = ({ children }: MainLayoutProps) => {
       ),
     []
   );
-
-  useEffect(() => {
-    tabBar.forEach((item, index) => {
-      item.active ? setSelected(index) : setSelected(0);
-    });
-  }, [tabBar]);
 
   return (
     <div className="Md-Layout">
@@ -129,17 +151,9 @@ const MainLayout = ({ children }: MainLayoutProps) => {
         showMobileNavigation={mobileNavigationActive}
         onNavigationDismiss={toggleMobileNavigationActive}
       >
-        {tabBar.length > 0 ? (
-          <Tabs tabs={tabBar} selected={selected} onSelect={handleTabChange}>
-            <div className="pb-[50px]">
-              <Outlet />
-            </div>
-          </Tabs>
-        ) : (
-          <div>
-            <Outlet />
-          </div>
-        )}
+        <div>
+          <Outlet />
+        </div>
       </Frame>
     </div>
   );
