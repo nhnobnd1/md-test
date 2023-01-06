@@ -91,18 +91,26 @@ export const SignIn = (props: SignInProps) => {
                 };
               });
             } else {
-              notification.error("Login failed");
-              const numberLoginFailed = error[0].split("/")[0];
-              const totalAcceptFailed = error[0].split("/")[1];
-              if (numberLoginFailed < totalAcceptFailed) {
-                setErrorMessage(
-                  `The email or password is incorrect. You have ${
-                    parseInt(totalAcceptFailed) - parseInt(numberLoginFailed)
-                  } remaining attempts to login`
-                );
+              if (
+                ["INVALID_AUTHENTICATOR_CODE"].includes(
+                  err.response.data.errorCode
+                )
+              ) {
+                setErrorMessage(`Wrong code. Try again.`);
               } else {
-                setErrorMessage("");
-                setView("lock");
+                notification.error("Login failed");
+                const numberLoginFailed = error[0].split("/")[0];
+                const totalAcceptFailed = error[0].split("/")[1];
+                if (numberLoginFailed < totalAcceptFailed) {
+                  setErrorMessage(
+                    `The email or password is incorrect. You have ${
+                      parseInt(totalAcceptFailed) - parseInt(numberLoginFailed)
+                    } remaining attempts to login`
+                  );
+                } else {
+                  setErrorMessage("");
+                  setView("lock");
+                }
               }
             }
 

@@ -19,9 +19,13 @@ export default function App() {
   const { login, isLoggedIn, user } = useAuth();
 
   useEffect(() => {
+    console.log("isLoggedIn: ", isLoggedIn);
+    console.log("user: ", user);
     if ((shop && !isLoggedIn) || (!user && shop)) {
+      console.log("Start login with token...");
       const payload = cookies[process.env.HOST ?? shop];
       if (payload && payload.email && payload.offlineToken) {
+        console.log("Processing login");
         api
           .request<LoginResponse>({
             url: "/v1/account/shopify/sign-in",
