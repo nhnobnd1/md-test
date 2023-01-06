@@ -1,7 +1,14 @@
-import { NavigationItemProps, SubNavigationItem } from "@shopify/polaris";
 import {
+  IconSource,
+  NavigationItemProps,
+  SubNavigationItem,
+} from "@shopify/polaris";
+import {
+  BehaviorMinor,
   CustomersMinor,
+  FraudProtectMinor,
   HomeMinor,
+  ProfileMinor,
   SettingsMinor,
 } from "@shopify/polaris-icons";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
@@ -16,7 +23,7 @@ export interface SubNavigation extends SubNavigationItem {
 
 export interface NavigationItems
   extends Omit<NavigationItemProps, "subNavigationItems" | "url"> {
-  subNavigationItems?: SubNavigation[];
+  subNavigationItems?: SubNavigation[] & { icon?: IconSource };
   tabBarNavigation?: SubNavigation[];
   url: string;
 }
@@ -57,11 +64,13 @@ const caseNavigation: NavigationItems[] = [
       {
         label: "People",
         url: AgentRoutePaths.Index,
+        icon: () => <ProfileMinor />,
         tabBarNavigation: [{ label: "Agents", url: AgentRoutePaths.Index }],
       },
       {
         label: "Workdesk",
         url: SettingRoutePaths.Workdesk.Tag.Index,
+        icon: () => <BehaviorMinor />,
         tabBarNavigation: [
           { label: "Tags", url: SettingRoutePaths.Workdesk.Tag.Index },
         ],
@@ -69,6 +78,7 @@ const caseNavigation: NavigationItems[] = [
       {
         label: "Account & Security",
         url: SettingRoutePaths.AccountSecurity.Index,
+        icon: () => <FraudProtectMinor />,
         tabBarNavigation: [
           {
             label: "Profile",
