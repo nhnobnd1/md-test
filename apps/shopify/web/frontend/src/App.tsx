@@ -24,6 +24,7 @@ export default function App() {
     if ((shop && !isLoggedIn) || (!user && shop)) {
       console.log("Start login with token...");
       const payload = cookies[process.env.HOST ?? shop];
+      console.log(payload, "cookies");
       if (payload && payload.email && payload.offlineToken) {
         console.log("Processing login");
         api
@@ -58,7 +59,7 @@ export default function App() {
           });
       }
     }
-  }, [shop, isLoggedIn, user]);
+  }, [shop, isLoggedIn, user, cookies]);
 
   const navigationLinks = useMemo((): NavigationLink[] => {
     return routes
