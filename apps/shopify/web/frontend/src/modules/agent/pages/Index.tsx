@@ -64,16 +64,18 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
 
   const { run: getListAgentApi, processing: loadingList } = useJob(
     (payload: GetListAgentRequest) => {
-      return AgentRepository.getList(payload).pipe(
-        map(({ data }) => {
-          const listAgent = data.data.map((item) => ({
-            ...item,
-            id: item._id,
-          }));
-          setAgents(listAgent);
-          setMeta(data.metadata);
-        })
-      );
+      return AgentRepository()
+        .getList(payload)
+        .pipe(
+          map(({ data }) => {
+            const listAgent = data.data.map((item) => ({
+              ...item,
+              id: item._id,
+            }));
+            setAgents(listAgent);
+            setMeta(data.metadata);
+          })
+        );
     }
   );
 

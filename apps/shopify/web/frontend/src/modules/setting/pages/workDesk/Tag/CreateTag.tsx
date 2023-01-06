@@ -31,14 +31,30 @@ export default function CreateTag() {
     });
   }, []);
   const { run: submit } = useJob((dataSubmit: CreateTagRequest) => {
-    return TagRepository.create(dataSubmit).pipe(
-      map(({ data }) => {
-        if (data.statusCode === 200) {
-          show("Tag has been created successfully.");
-          navigateShowDetails(data.data._id, data.statusCode);
-        } else {
+    return TagRepository()
+      .create(dataSubmit)
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            show("Tag has been created successfully.");
+            navigateShowDetails(data.data._id, data.statusCode);
+          } else {
+            setBanner(true);
+            if (data.statusCode === 409) {
+              setMessageError(`Tag name is ${dataSubmit.name} already exists.`);
+              show(`Tag name is ${dataSubmit.name} already exists.`, {
+                isError: true,
+              });
+            } else {
+              show("Create tag failed", {
+                isError: true,
+              });
+            }
+          }
+        }),
+        catchError((error) => {
           setBanner(true);
-          if (data.statusCode === 409) {
+          if (error.response.status === 409) {
             setMessageError(`Tag name is ${dataSubmit.name} already exists.`);
             show(`Tag name is ${dataSubmit.name} already exists.`, {
               isError: true,
@@ -48,23 +64,9 @@ export default function CreateTag() {
               isError: true,
             });
           }
-        }
-      }),
-      catchError((error) => {
-        setBanner(true);
-        if (error.response.status === 409) {
-          setMessageError(`Tag name is ${dataSubmit.name} already exists.`);
-          show(`Tag name is ${dataSubmit.name} already exists.`, {
-            isError: true,
-          });
-        } else {
-          show("Create tag failed", {
-            isError: true,
-          });
-        }
-        return of(error);
-      })
-    );
+          return of(error);
+        })
+      );
   });
 
   const handleChangeValueForm = (value: boolean) => {

@@ -166,25 +166,27 @@ export default function CustomerIndexPage() {
     setIsOpen(true);
   };
   const { run: handleRemoveCustomer } = useJob((dataDelete: string[]) => {
-    return CustomerRepository.delete({ ids: dataDelete }).pipe(
-      map(({ data }) => {
-        if (data.statusCode === 200) {
-          show("Delete customer success");
-          fetchListCustomer();
-          clearSelection();
-        } else {
+    return CustomerRepository()
+      .delete({ ids: dataDelete })
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            show("Delete customer success");
+            fetchListCustomer();
+            clearSelection();
+          } else {
+            show("Delete customer failed", {
+              isError: true,
+            });
+          }
+        }),
+        catchError((error) => {
           show("Delete customer failed", {
             isError: true,
           });
-        }
-      }),
-      catchError((error) => {
-        show("Delete customer failed", {
-          isError: true,
-        });
-        return of(error);
-      })
-    );
+          return of(error);
+        })
+      );
   });
   const {
     run: fetchListCustomer,
@@ -192,17 +194,19 @@ export default function CustomerIndexPage() {
     processing: loadCustomer,
   } = useJob(
     () => {
-      return CustomerRepository.getList(filterData).pipe(
-        map(({ data }) => {
-          setCustomers(
-            data.data.map((item) => ({
-              ...item,
-              id: item._id,
-            }))
-          );
-          return data;
-        })
-      );
+      return CustomerRepository()
+        .getList(filterData)
+        .pipe(
+          map(({ data }) => {
+            setCustomers(
+              data.data.map((item) => ({
+                ...item,
+                id: item._id,
+              }))
+            );
+            return data;
+          })
+        );
     },
     { showLoading: false }
   );

@@ -32,27 +32,53 @@ export default function IndexProfileManager() {
   const { show } = useToast();
   const { run: fetDetailsProfile, result } = useJob(
     (payload: string) => {
-      return AgentRepository.getOne(payload).pipe(
-        map(({ data }) => {
-          return data.data;
-        })
-      );
+      return AgentRepository()
+        .getOne(payload)
+        .pipe(
+          map(({ data }) => {
+            return data.data;
+          })
+        );
     },
     { showLoading: false }
   );
   const { run: submit } = useJob((dataSubmit: any) => {
     const { _id } = dataSubmit;
-    return AgentRepository.update(_id, dataSubmit).pipe(
-      map(({ data }) => {
-        if (data.statusCode === 200) {
-          setBanner({
-            isShow: true,
-            type: "success",
-            message: "Profile has been updated succcesfully.",
-          });
-          show("Edit profile success");
-        } else {
-          if (data.statusCode === 409) {
+    return AgentRepository()
+      .update(_id, dataSubmit)
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            setBanner({
+              isShow: true,
+              type: "success",
+              message: "Profile has been updated succcesfully.",
+            });
+            show("Edit profile success");
+          } else {
+            if (data.statusCode === 409) {
+              setBanner({
+                isShow: true,
+                type: "critical",
+                message: `Email is ${dataSubmit.email} already exists.`,
+              });
+              show(`Email is ${dataSubmit.email} already exists.`, {
+                isError: true,
+              });
+            } else {
+              setBanner({
+                isShow: true,
+                type: "critical",
+                message: "Profile has been updated failed.",
+              });
+              show("Profile has been updated failed.", {
+                isError: true,
+              });
+            }
+          }
+        }),
+        catchError((error) => {
+          if (error.response.status === 409) {
             setBanner({
               isShow: true,
               type: "critical",
@@ -71,31 +97,9 @@ export default function IndexProfileManager() {
               isError: true,
             });
           }
-        }
-      }),
-      catchError((error) => {
-        if (error.response.status === 409) {
-          setBanner({
-            isShow: true,
-            type: "critical",
-            message: `Email is ${dataSubmit.email} already exists.`,
-          });
-          show(`Email is ${dataSubmit.email} already exists.`, {
-            isError: true,
-          });
-        } else {
-          setBanner({
-            isShow: true,
-            type: "critical",
-            message: "Profile has been updated failed.",
-          });
-          show("Profile has been updated failed.", {
-            isError: true,
-          });
-        }
-        return of(error);
-      })
-    );
+          return of(error);
+        })
+      );
   });
   const handleSubmitForm = useCallback(() => {
     formRef.current?.submitForm();

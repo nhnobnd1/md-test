@@ -58,16 +58,18 @@ export default function IndexAccountManager({ props }: any) {
   // fetch init data
   const { run: fetchAccountManagerStatus, result } = useJob(
     () => {
-      return UserSettingRepository.getAccessManagerSetting(auth.user?.id).pipe(
-        map(({ data }) => {
-          console.log(data.data);
-          setMethod({
-            show: data.data.twoFactorAuthEnabled,
-            status: "Email OTP",
-          });
-          return data.data;
-        })
-      );
+      return UserSettingRepository()
+        .getAccessManagerSetting(auth.user?.id)
+        .pipe(
+          map(({ data }) => {
+            console.log(data.data);
+            setMethod({
+              show: data.data.twoFactorAuthEnabled,
+              status: "Email OTP",
+            });
+            return data.data;
+          })
+        );
     },
     { showLoading: false }
   );
@@ -77,58 +79,60 @@ export default function IndexAccountManager({ props }: any) {
     submit(dataSubmit);
   }, []);
   const { run: submit } = useJob((dataSubmit: UpdatePasswordRequest) => {
-    return AccountRepository.changePassword(dataSubmit).pipe(
-      map(({ data }) => {
-        if (data.statusCode === 200) {
-          show("Access manager updated successfully.");
-          setBanner({
-            isShowBanner: true,
-            message: "Access manager updated successfully.",
-            status: "success",
-          });
-          fetchAccountManagerStatus();
-        } else {
-          if (data.statusCode === 409) {
+    return AccountRepository()
+      .changePassword(dataSubmit)
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            show("Access manager updated successfully.");
+            setBanner({
+              isShowBanner: true,
+              message: "Access manager updated successfully.",
+              status: "success",
+            });
+            fetchAccountManagerStatus();
+          } else {
+            if (data.statusCode === 409) {
+              setBanner({
+                isShowBanner: true,
+                message: "Update failed.",
+                status: "critical",
+              });
+            } else {
+              setBanner({
+                isShowBanner: true,
+                message: "Update failed.",
+                status: "critical",
+              });
+              show("Update failed", {
+                isError: true,
+              });
+            }
+          }
+        }),
+        catchError((error) => {
+          if (error.response.status === 409) {
             setBanner({
               isShowBanner: true,
               message: "Update failed.",
               status: "critical",
+            });
+            show(`Domains cannot be the same.`, {
+              isError: true,
             });
           } else {
             setBanner({
               isShowBanner: true,
-              message: "Update failed.",
+              message: "`Domains cannot be the same.`",
               status: "critical",
             });
-            show("Update failed", {
+            show("Update failed.", {
               isError: true,
             });
           }
-        }
-      }),
-      catchError((error) => {
-        if (error.response.status === 409) {
-          setBanner({
-            isShowBanner: true,
-            message: "Update failed.",
-            status: "critical",
-          });
-          show(`Domains cannot be the same.`, {
-            isError: true,
-          });
-        } else {
-          setBanner({
-            isShowBanner: true,
-            message: "`Domains cannot be the same.`",
-            status: "critical",
-          });
-          show("Update failed.", {
-            isError: true,
-          });
-        }
-        return of(error);
-      })
-    );
+          return of(error);
+        })
+      );
   });
   useEffect(() => fetchAccountManagerStatus(), []);
   return (

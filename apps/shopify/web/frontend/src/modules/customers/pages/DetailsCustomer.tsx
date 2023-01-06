@@ -35,12 +35,14 @@ export default function DetailsCustomer() {
   const { show } = useToast();
   const { run: fetDetailsCustomer, result } = useJob(
     () => {
-      return CustomerRepository.getOne(id).pipe(
-        map(({ data }) => {
-          setTitle(`${data.data.firstName} ${data.data.lastName}`);
-          return data.data;
-        })
-      );
+      return CustomerRepository()
+        .getOne(id)
+        .pipe(
+          map(({ data }) => {
+            setTitle(`${data.data.firstName} ${data.data.lastName}`);
+            return data.data;
+          })
+        );
     },
     { showLoading: false }
   );
@@ -54,18 +56,42 @@ export default function DetailsCustomer() {
   };
   const { run: submit } = useJob((dataSubmit: any) => {
     const { _id } = dataSubmit;
-    return CustomerRepository.update(_id, dataSubmit).pipe(
-      map(({ data }) => {
-        if (data.statusCode === 200) {
-          setTitle(`${data.data.firstName} ${data.data.lastName}`);
-          setBanner({
-            isShow: true,
-            type: "success",
-            message: "Customer Profile has been updated succcesfully.",
-          });
-          show("Edit customer success");
-        } else {
-          if (data.statusCode === 409) {
+    return CustomerRepository()
+      .update(_id, dataSubmit)
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            setTitle(`${data.data.firstName} ${data.data.lastName}`);
+            setBanner({
+              isShow: true,
+              type: "success",
+              message: "Customer Profile has been updated succcesfully.",
+            });
+            show("Edit customer success");
+          } else {
+            if (data.statusCode === 409) {
+              setBanner({
+                isShow: true,
+                type: "critical",
+                message: `Email is ${dataSubmit.email} already exists.`,
+              });
+              show(`Email is ${dataSubmit.email} already exists.`, {
+                isError: true,
+              });
+            } else {
+              setBanner({
+                isShow: true,
+                type: "critical",
+                message: "Customer Profile has been updated failed.",
+              });
+              show("Customer Profile has been updated failed.", {
+                isError: true,
+              });
+            }
+          }
+        }),
+        catchError((error) => {
+          if (error.response.status === 409) {
             setBanner({
               isShow: true,
               type: "critical",
@@ -84,31 +110,9 @@ export default function DetailsCustomer() {
               isError: true,
             });
           }
-        }
-      }),
-      catchError((error) => {
-        if (error.response.status === 409) {
-          setBanner({
-            isShow: true,
-            type: "critical",
-            message: `Email is ${dataSubmit.email} already exists.`,
-          });
-          show(`Email is ${dataSubmit.email} already exists.`, {
-            isError: true,
-          });
-        } else {
-          setBanner({
-            isShow: true,
-            type: "critical",
-            message: "Customer Profile has been updated failed.",
-          });
-          show("Customer Profile has been updated failed.", {
-            isError: true,
-          });
-        }
-        return of(error);
-      })
-    );
+          return of(error);
+        })
+      );
   });
   const handleSubmitForm = useCallback(() => {
     formRef.current?.submitForm();
