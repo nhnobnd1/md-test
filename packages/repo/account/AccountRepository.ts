@@ -11,6 +11,7 @@ import {
   SignupAccountAgentRequest,
   SignupAccountResponse,
   SignupAccountShopifyRequest,
+  Status2FAResponse,
   UpdatePasswordRequest,
 } from "./Account";
 
@@ -49,6 +50,9 @@ export const AccountRepository = createRepository(
     },
     changePassword(api, params: UpdatePasswordRequest) {
       return api.post<BaseResponse<{}>>("/update-password", params);
+    },
+    userGet2FAStatus(api) {
+      return api.get<Status2FAResponse>("/2fa-status");
     },
   }
 );

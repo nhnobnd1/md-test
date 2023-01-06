@@ -19,6 +19,8 @@ import ProfileForm from "src/modules/setting/component/ProfileForm";
 
 export default function IndexProfileManager() {
   const token = jose.decodeJwt(TokenManager.getToken("base_token"));
+  console.log(TokenManager.getToken("base_token"));
+
   const formRef = useRef<FormikProps<any>>(null);
   const [banner, setBanner] = useState<{
     isShow: boolean;
@@ -112,9 +114,7 @@ export default function IndexProfileManager() {
   const profileProfile = (
     <ProfileForm ref={formRef} initialValues={result} submit={submit} />
   );
-  useMount(() => {
-    fetDetailsProfile(token.sub ?? "");
-  });
+  useMount(() => fetDetailsProfile(token.sub ?? ""));
   return (
     <>
       <Page fullWidth>
