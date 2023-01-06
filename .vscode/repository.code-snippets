@@ -19,13 +19,13 @@
   "Repository function": {
     "prefix": ["repo-func"],
     "body": [
-      "import env from \"src/core/env\";",
+      "import env from \"../env\";",
       "import { createRepository } from \"@moose-desk/core\";",
       "",
       "const ${1:Demo}Repository = createRepository(",
-      "\t{",
-      "\t\tbaseURL: `\\${env.API_URL}/${2:demo}`,",
-      "\t},",
+      "\t() => ({",
+      "\t\tbaseURL: `\\${env.getApiUrl()}/${2:demo}`,",
+      "\t}),",
       "\t{",
       "\t\tgetList(api, params: GetList${1:Demo}Request) {",
       "\t\t\treturn api.get<GetList${1:Demo}Response>('', params);",
