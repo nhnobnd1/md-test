@@ -123,24 +123,25 @@ export const SignIn = (props: SignInProps) => {
 
   useMount(() => {
     const domain = window.location.hostname;
-    console.log("🚀 ~ file: SignIn.tsx:116 ~ useMount ~ domain", domain);
+    let subdomain = "";
     if (domain.includes(".moosedesk.net")) {
-      const subdomain = domain.replace(".moosedesk.net", "");
-      console.log(
-        "🚀 ~ file: SignIn.tsx:119 ~ useMount ~ subdomain",
-        subdomain
-      );
-      setFactor((value) => {
-        return {
-          type: value.type,
-          state: {
-            email: value.state.email,
-            password: value.state.password,
-            subdomain: "md-jay-01",
-          },
-        };
-      });
+      subdomain = domain.replace(".moosedesk.net", "");
+    } else if (domain.includes("-dev.moosedesk.net")) {
+      subdomain = domain.replace("-dev.moosedesk.net", "");
+    } else {
+      subdomain = "";
     }
+
+    setFactor((value) => {
+      return {
+        type: value.type,
+        state: {
+          email: value.state.email,
+          password: value.state.password,
+          subdomain: subdomain,
+        },
+      };
+    });
   });
 
   useEffect(() => {
@@ -149,7 +150,6 @@ export const SignIn = (props: SignInProps) => {
 
   const handleSubmit = useCallback(
     (values: { email: string; password: string }) => {
-      console.log(factor, "factor");
       signInApi({
         email: values.email,
         password: values.password,
