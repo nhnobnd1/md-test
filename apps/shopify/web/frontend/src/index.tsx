@@ -6,6 +6,7 @@ import {
   TokenManager,
 } from "@moose-desk/core";
 import LazyComponent from "@moose-desk/core/components/LazyComponent";
+import { Env } from "@moose-desk/repo";
 import { Loading } from "@shopify/polaris";
 import { lazy, Suspense } from "react";
 import { CookiesProvider } from "react-cookie";
@@ -15,11 +16,14 @@ import {
   PolarisProvider,
   QueryProvider,
 } from "src/components";
+import env from "src/core/env";
 import ModuleLoader from "src/core/utilities/ModuleLoader";
 import ErrorBoundary from "src/ErrorBoundary";
 import("src/styles/index.scss").then(() => {
   import("@shopify/polaris/build/esm/styles.css");
 });
+
+Env.setApiUrl(env.API_URL);
 
 ReactDOM.render(
   <ErrorBoundary>

@@ -1,5 +1,14 @@
-const env = {
-  API_URL: "https://api.moosedesk.net",
-};
+class Env {
+  apiUrl: string = "";
 
-export default env;
+  getApiUrl() {
+    return this.apiUrl;
+  }
+
+  setApiUrl(url: string) {
+    console.log(url, "url");
+    this.apiUrl = url;
+  }
+}
+
+export default new Env();

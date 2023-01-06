@@ -13,9 +13,9 @@ import {
 } from "./Customer";
 
 export const CustomerRepository = createRepository(
-  {
-    baseURL: `${env.API_URL}/api/v1/customer`,
-  },
+  () => ({
+    baseURL: `${env.getApiUrl()}/api/v1/customer`,
+  }),
   {
     getList(api, params: GetListCustomerRequest) {
       return api.get<GetListCustomerResponse>("", params);

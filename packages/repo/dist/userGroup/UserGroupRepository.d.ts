@@ -1,6 +1,6 @@
 import { BaseResponse } from "../unty";
 import { CreateUserGroupRequest, CreateUserGroupResponse, GetListUserGroupRequest, GetListUserGroupResponse, GetMembersGroupRequest, GetMembersGroupResponse, GetOneUserGroupResponse, UpdateUserGroupRequest, UpdateUserGroupResponse } from "./UserGroup";
-export declare const UserGroupRepository: {
+export declare const UserGroupRepository: () => {
     delete: (id: string) => import("rxjs").Observable<import("axios").AxiosResponse<BaseResponse<{}>, any>>;
     getList: (params: GetListUserGroupRequest) => import("rxjs").Observable<import("axios").AxiosResponse<GetListUserGroupResponse, any>>;
     getOne: (id: string) => import("rxjs").Observable<import("axios").AxiosResponse<GetOneUserGroupResponse, any>>;

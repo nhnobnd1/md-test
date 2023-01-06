@@ -122,25 +122,27 @@ export default function SettingIndexPage() {
     setIsOpen(true);
   };
   const { run: handleRemoveTag } = useJob((dataDelete: string[]) => {
-    return TagRepository.delete({ ids: dataDelete }).pipe(
-      map(({ data }) => {
-        if (data.statusCode === 200) {
-          show("Delete tag success");
-          fetchListTag();
-          clearSelection();
-        } else {
+    return TagRepository()
+      .delete({ ids: dataDelete })
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            show("Delete tag success");
+            fetchListTag();
+            clearSelection();
+          } else {
+            show("Delete tag failed", {
+              isError: true,
+            });
+          }
+        }),
+        catchError((error) => {
           show("Delete tag failed", {
             isError: true,
           });
-        }
-      }),
-      catchError((error) => {
-        show("Delete tag failed", {
-          isError: true,
-        });
-        return of(error);
-      })
-    );
+          return of(error);
+        })
+      );
   });
   const {
     run: fetchListTag,
@@ -148,17 +150,19 @@ export default function SettingIndexPage() {
     processing: loadTag,
   } = useJob(
     () => {
-      return TagRepository.getList(filterData).pipe(
-        map(({ data }) => {
-          setTags(
-            data.data.map((item) => ({
-              ...item,
-              id: item._id,
-            }))
-          );
-          return data;
-        })
-      );
+      return TagRepository()
+        .getList(filterData)
+        .pipe(
+          map(({ data }) => {
+            setTags(
+              data.data.map((item) => ({
+                ...item,
+                id: item._id,
+              }))
+            );
+            return data;
+          })
+        );
     },
     { showLoading: false }
   );

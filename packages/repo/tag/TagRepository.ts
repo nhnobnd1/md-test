@@ -13,9 +13,9 @@ import {
 } from "./Tag";
 
 export const TagRepository = createRepository(
-  {
-    baseURL: `${env.API_URL}/api/v1/tag`,
-  },
+  () => ({
+    baseURL: `${env.getApiUrl()}/api/v1/tag`,
+  }),
   {
     getList(api, params: GetListTagRequest) {
       return api.get<GetListTagResponse>("", params);

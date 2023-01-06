@@ -69,18 +69,20 @@ export default function IndexAccountManager() {
   // const token = jose.decodeJwt(TokenManager.getToken("base_token"));
   const { run: fetch2FAStatus, result } = useJob(
     () => {
-      return AccountRepository.userGet2FAStatus().pipe(
-        map(({ data }) => {
-          console.log("data", data.data);
-          setMethod({
-            ...method,
-            show: data.data.twoFactorEnabled,
-            method: data.data.twoFactorMethod,
-          });
-          setStatus(data.data.twoFactorEnabled);
-          return data.data;
-        })
-      );
+      return AccountRepository()
+        .userGet2FAStatus()
+        .pipe(
+          map(({ data }) => {
+            console.log("data", data.data);
+            setMethod({
+              ...method,
+              show: data.data.twoFactorEnabled,
+              method: data.data.twoFactorMethod,
+            });
+            setStatus(data.data.twoFactorEnabled);
+            return data.data;
+          })
+        );
     },
     { showLoading: false }
   );
@@ -104,58 +106,63 @@ export default function IndexAccountManager() {
     // return AxiosObservable.prototype
     //   .post(`${env.API_URL}/api/v1/account/update-password`, dataSubmit)
     //   .pipe(map((data) => console.log(data)));
-    return AccountRepository.changePassword(dataSubmit).pipe(
-      map(({ data }) => {
-        if (data.statusCode === 200) {
-          show("Access manager updated successfully.");
-          setBanner({
-            isShowBanner: true,
-            message: "Password updated successfully.",
-            status: "success",
-          });
-          handleResetForm();
-        } else {
-          if (data.statusCode === 409) {
+    return AccountRepository()
+      .changePassword(dataSubmit)
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            show("Access manager updated successfully.");
+            setBanner({
+              isShowBanner: true,
+              message: "Password updated successfully.",
+              status: "success",
+            });
+            handleResetForm();
+          } else {
+            if (data.statusCode === 409) {
+              setBanner({
+                isShowBanner: true,
+                message: "Password updated failed.",
+                status: "critical",
+              });
+              show(`Domains cannot be the same.`, {
+                isError: true,
+              });
+            } else {
+              setBanner({
+                isShowBanner: true,
+                message: "Password updated failed.",
+                status: "critical",
+              });
+              show("Password updated failed", {
+                isError: true,
+              });
+            }
+          }
+        }),
+        catchError((error) => {
+          if (error.response.status === 409) {
             setBanner({
               isShowBanner: true,
               message: "Password updated failed.",
               status: "critical",
+            });
+            show(`Password updated failed.`, {
+              isError: true,
             });
           } else {
             setBanner({
               isShowBanner: true,
-              message: "Password updated failed.",
+              message: "`Password updated failed.`",
               status: "critical",
             });
-            show("Password updated failed", {
+            show("Password updated failed.", {
               isError: true,
             });
           }
-        }
-      }),
-      catchError((error) => {
-        if (error.response.status === 409) {
-          setBanner({
-            isShowBanner: true,
-            message: "Password updated failed.",
-            status: "critical",
-          });
-          show(`Password updated failed.`, {
-            isError: true,
-          });
-        } else {
-          setBanner({
-            isShowBanner: true,
-            message: "`Password updated failed.`",
-            status: "critical",
-          });
-          show("Password updated failed.", {
-            isError: true,
-          });
-        }
-        return of(error);
-      })
-    );
+          return of(error);
+        })
+      );
   });
   // reset form
   const handleResetForm = useCallback(() => {

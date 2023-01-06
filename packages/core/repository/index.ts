@@ -23,13 +23,16 @@ type RequireProperties<Ob, K extends keyof Ob> = {
 };
 
 export function createRepository<Input extends CreateRepositoryInput>(
-  config: RequireProperties<ApiRequestConfig, "baseURL">,
+  config: () => RequireProperties<ApiRequestConfig, "baseURL">,
   input: Input
-): CreateRepositoryOutput<Input> {
-  const api = new Api(config.baseURL, config);
-  return mapValues(input, (resourceCreator) => {
-    return (...params: any[]) => {
-      return resourceCreator(api, ...params);
-    };
-  }) as CreateRepositoryOutput<Input>;
+): () => CreateRepositoryOutput<Input> {
+  return () => {
+    console.log(config(), "config");
+    const api = new Api(config().baseURL, config());
+    return mapValues(input, (resourceCreator) => {
+      return (...params: any[]) => {
+        return resourceCreator(api, ...params);
+      };
+    }) as CreateRepositoryOutput<Input>;
+  };
 }
