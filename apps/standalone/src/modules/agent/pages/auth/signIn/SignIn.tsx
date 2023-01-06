@@ -12,7 +12,7 @@ import {
 } from "@moose-desk/core";
 import { AccountRepository, SignInAccountAgentRequest } from "@moose-desk/repo";
 import { Button, Form, Input } from "antd";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
@@ -113,20 +113,29 @@ export const SignIn = (props: SignInProps) => {
 
   useMount(() => {
     const domain = window.location.hostname;
+    console.log("🚀 ~ file: SignIn.tsx:116 ~ useMount ~ domain", domain);
     if (domain.includes(".moosedesk.net")) {
       const subdomain = domain.replace(".moosedesk.net", "");
+      console.log(
+        "🚀 ~ file: SignIn.tsx:119 ~ useMount ~ subdomain",
+        subdomain
+      );
       setFactor((value) => {
         return {
           type: value.type,
           state: {
             email: value.state.email,
             password: value.state.password,
-            subdomain: subdomain,
+            subdomain: "md-jay-01",
           },
         };
       });
     }
   });
+
+  useEffect(() => {
+    console.log("factor: ", factor);
+  }, [factor]);
 
   const handleSubmit = useCallback(
     (values: { email: string; password: string }) => {
@@ -137,7 +146,7 @@ export const SignIn = (props: SignInProps) => {
         ...(factor.state.subdomain && { subdomain: factor.state.subdomain }),
       });
     },
-    [window.location]
+    [window.location, factor]
   );
 
   return (
