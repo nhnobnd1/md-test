@@ -1,28 +1,40 @@
-import { AxiosObservable, useJob, useMount } from "@moose-desk/core";
+import { useJob, useMount } from "@moose-desk/core";
+import { MethodOTP, UserSettingRepository } from "@moose-desk/repo";
 import {
   Button,
   FormLayout,
+  InlineError,
   Layout,
   Link,
   Stack,
   Text,
   TextField,
 } from "@shopify/polaris";
-import axios from "axios";
-import { memo, useCallback, useState } from "react";
-import { map } from "rxjs";
+import { memo, useCallback, useEffect, useState } from "react";
+import { catchError, map, of } from "rxjs";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
-import env from "src/core/env";
 interface EmailOPT {
   initialValues?: {
     twoFactorEnabled: boolean;
     twoFactorMethod: string;
   };
   back: (value: any) => void;
+  handleCloseModal: () => void;
+  fetch2FAStatus: () => void;
+  show: (data: string, props?: any) => void;
+  setBanner: (data: any) => void;
 }
-const EmailOPT = ({ initialValues, back }: EmailOPT) => {
+const EmailOPT = ({
+  initialValues,
+  back,
+  handleCloseModal,
+  fetch2FAStatus,
+  show,
+  setBanner,
+}: EmailOPT) => {
   const [onResendEmail, setOnResendEmail] = useState(false);
+  const [error, setError] = useState(false);
   const handleSubmit = useCallback(
     (data: any) => {
       submit({ method: initialValues?.twoFactorMethod, ...data });
@@ -31,70 +43,65 @@ const EmailOPT = ({ initialValues, back }: EmailOPT) => {
   );
 
   const { run: submit } = useJob((dataSubmit: any) => {
-    axios
-      .post(
-        `${env.API_URL}/api/v1/account/setting/verify-setup-otp`,
-        dataSubmit,
-        {
-          headers: {
-            Authorization: `Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IkRGMEI1NTA0NDZFM0Y4NDU5Q0Q3Rjg0QjEwRjE0MkE3MjU3RkNEMTkiLCJ4NXQiOiIzd3RWQkViai1FV2MxX2hMRVBGQ3B5Vl96UmsiLCJ0eXAiOiJhdCtqd3QifQ.eyJzdWIiOiIzYTA4OTIyOC01ZTFkLTcxOTItM2I2NS01OWZmNTc5NDQ0YzYiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJob2FuZy5hZ2VudC4wMUBnbWFpbC5jb20iLCJlbWFpbCI6ImhvYW5nLmFnZW50LjAxQGdtYWlsLmNvbSIsInJvbGUiOiJCYXNpY0FnZW50IiwiZ2l2ZW5fbmFtZSI6Ik5ndXllbiIsImZhbWlseV9uYW1lIjoiSG9hbmciLCJwaG9uZV9udW1iZXIiOiIoKzg0KSA5MTc3NzY4OTYiLCJwaG9uZV9udW1iZXJfdmVyaWZpZWQiOiJGYWxzZSIsImVtYWlsX3ZlcmlmaWVkIjoiVHJ1ZSIsInVuaXF1ZV9uYW1lIjoiaG9hbmcuYWdlbnQuMDFAZ21haWwuY29tIiwic3RvcmVJZCI6IjY4MzY1MDU4MzYyIiwic3ViZG9tYWluIjoiZGV2Iiwib2lfcHJzdCI6Ik1vb3NlZGVza19Qb3N0bWFuIiwib2lfYXVfaWQiOiIzYTA4OTIyYS05YmM3LWRjNjQtYWJkYi00YjRmMzQ3NGRlNTIiLCJjbGllbnRfaWQiOiJNb29zZWRlc2tfUG9zdG1hbiIsIm9pX3Rrbl9pZCI6IjNhMDg5MjJhLTliZDctYWQzZC05OGU2LTMwMTJmZmQ1N2YwZCIsInNjb3BlIjoib2ZmbGluZV9hY2Nlc3MiLCJleHAiOjE2NzMxNDg4MTUsImlzcyI6Imh0dHBzOi8vYXV0aC5tb29zZWRlc2submV0LyIsImlhdCI6MTY3Mjg4OTYxNX0.oXq0FsV5ZsuPXCnAPnP6yei4SSlup_Gtcx8pCsUaF_uXamzpyZ-cHfbYN8pvacswcVkM537lmMDQQAdcClJ4JjcZUMLDeVoyw02vpXrwBvwXju2PPJoOlYV8mMm1yAzeDfocIP5C-SoAishESbudi_fYCHbvPiLTzb5DjnjJgf8amdJPMw0M7wzP47Ohq8ReJZk0Isavy3eR0IdrsTjLufBT38aHk8DfxAbUxZEipReeuQKgeddEWKAprxgOmrzC88AyHkB9_FHU4ib4r--ovAtpa2g6eXVJ2TjEL6FcLgNCPhW00-5LaF_OzIv9EC5SUt791wTMZMB8W2RD2Lh3nQ`,
-          },
-        }
-      )
-      .then((res) => {
-        console.log("res", res);
-      });
-    return AxiosObservable.prototype
-      .post(`${env.API_URL}/api/v1/account/update-password`, dataSubmit)
-      .pipe(map((data) => console.log(data)));
-    // return UserSettingRepository.setupOtp(dataSubmit).pipe(
-    //   map(({ data }) => {
-    //     console.log(data);
-    //     setProps(data.data);
-    //   }),
-    //   catchError((error) => {
-    //     return of(error);
-    //   })
-    // );
+    return UserSettingRepository()
+      .verifySetupOTP(dataSubmit)
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            setError(false);
+            handleCloseModal();
+            fetch2FAStatus();
+            back(1);
+            setBanner({
+              isShowBanner: true,
+              message:
+                "Your Two-Factor Authentication has been enabled successfully.",
+              status: "success",
+            });
+            show(
+              "Your Two-Factor Authentication has been enabled successfully."
+            );
+          } else {
+            setError(true);
+          }
+        }),
+        catchError((error) => {
+          setError(true);
+          return of(error);
+        })
+      );
   });
 
   // resend Email
 
-  const handleResendEmail = useCallback(() => resetEmail(), []);
+  const handleResendEmail = useCallback(() => {
+    if (onResendEmail) {
+      resetEmail();
+    }
+  }, []);
   const { run: resetEmail } = useJob(() => {
-    axios
-      .post(
-        `${env.API_URL}/api/v1/account/setting/setup-otp`,
-        { method: "Email" },
-        {
-          headers: {
-            Authorization: `Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IkRGMEI1NTA0NDZFM0Y4NDU5Q0Q3Rjg0QjEwRjE0MkE3MjU3RkNEMTkiLCJ4NXQiOiIzd3RWQkViai1FV2MxX2hMRVBGQ3B5Vl96UmsiLCJ0eXAiOiJhdCtqd3QifQ.eyJzdWIiOiIzYTA4OTIyOC01ZTFkLTcxOTItM2I2NS01OWZmNTc5NDQ0YzYiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJob2FuZy5hZ2VudC4wMUBnbWFpbC5jb20iLCJlbWFpbCI6ImhvYW5nLmFnZW50LjAxQGdtYWlsLmNvbSIsInJvbGUiOiJCYXNpY0FnZW50IiwiZ2l2ZW5fbmFtZSI6Ik5ndXllbiIsImZhbWlseV9uYW1lIjoiSG9hbmciLCJwaG9uZV9udW1iZXIiOiIoKzg0KSA5MTc3NzY4OTYiLCJwaG9uZV9udW1iZXJfdmVyaWZpZWQiOiJGYWxzZSIsImVtYWlsX3ZlcmlmaWVkIjoiVHJ1ZSIsInVuaXF1ZV9uYW1lIjoiaG9hbmcuYWdlbnQuMDFAZ21haWwuY29tIiwic3RvcmVJZCI6IjY4MzY1MDU4MzYyIiwic3ViZG9tYWluIjoiZGV2Iiwib2lfcHJzdCI6Ik1vb3NlZGVza19Qb3N0bWFuIiwib2lfYXVfaWQiOiIzYTA4OTIyYS05YmM3LWRjNjQtYWJkYi00YjRmMzQ3NGRlNTIiLCJjbGllbnRfaWQiOiJNb29zZWRlc2tfUG9zdG1hbiIsIm9pX3Rrbl9pZCI6IjNhMDg5MjJhLTliZDctYWQzZC05OGU2LTMwMTJmZmQ1N2YwZCIsInNjb3BlIjoib2ZmbGluZV9hY2Nlc3MiLCJleHAiOjE2NzMxNDg4MTUsImlzcyI6Imh0dHBzOi8vYXV0aC5tb29zZWRlc2submV0LyIsImlhdCI6MTY3Mjg4OTYxNX0.oXq0FsV5ZsuPXCnAPnP6yei4SSlup_Gtcx8pCsUaF_uXamzpyZ-cHfbYN8pvacswcVkM537lmMDQQAdcClJ4JjcZUMLDeVoyw02vpXrwBvwXju2PPJoOlYV8mMm1yAzeDfocIP5C-SoAishESbudi_fYCHbvPiLTzb5DjnjJgf8amdJPMw0M7wzP47Ohq8ReJZk0Isavy3eR0IdrsTjLufBT38aHk8DfxAbUxZEipReeuQKgeddEWKAprxgOmrzC88AyHkB9_FHU4ib4r--ovAtpa2g6eXVJ2TjEL6FcLgNCPhW00-5LaF_OzIv9EC5SUt791wTMZMB8W2RD2Lh3nQ`,
-          },
-        }
-      )
-      .then((res) => {
-        console.log("res", res);
-      });
-    return AxiosObservable.prototype
-      .post(`${env.API_URL}/api/v1/account/update-password`, {})
-      .pipe(map((data) => console.log(data)));
-    // return UserSettingRepository.setupOtp({ method: "Email" }).pipe(
-    //   map(({ data }) => {
-    //     console.log(data);
-    //     setProps(data.data);
-    //   }),
-    //   catchError((error) => {
-    //     return of(error);
-    //   })
-    // );
+    return UserSettingRepository()
+      .setupOtp({ method: MethodOTP.Email })
+      .pipe(
+        map(({ data }) => {
+          return data.data;
+        }),
+        catchError((error) => {
+          return of(error);
+        })
+      );
   });
   const handleOnResendEmail = useCallback(() => {
     setOnResendEmail(false);
     setTimeout(() => {
       setOnResendEmail(true);
-    }, 10000);
+    }, 300000);
   }, [onResendEmail]);
-  useMount(() => handleOnResendEmail());
+  useEffect(() => console.log(error), [error]);
+  useMount(() => {
+    setError(false);
+    handleOnResendEmail();
+  });
   return (
     <Form initialValues={{ code: "" }} onSubmit={handleSubmit}>
       <Layout sectioned>
@@ -121,6 +128,14 @@ const EmailOPT = ({ initialValues, back }: EmailOPT) => {
                       />
                     </FormItem>
                   </div>
+                  {error ? (
+                    <div className="Polaris-Labelled__Error ml-2">
+                      <InlineError
+                        message="Wrong code. Try again."
+                        fieldID="myFieldID"
+                      />
+                    </div>
+                  ) : null}
                 </div>
                 <div className="flex items-center">
                   <Text variant="bodyMd" as="span">
@@ -128,7 +143,7 @@ const EmailOPT = ({ initialValues, back }: EmailOPT) => {
                   </Text>
                   <div className="ml-2">
                     <Link
-                      monochrome={onResendEmail}
+                      monochrome={!onResendEmail}
                       onClick={handleResendEmail}
                     >
                       Re-send OTP Code

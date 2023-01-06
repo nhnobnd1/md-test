@@ -14,11 +14,17 @@ interface Enable2FAModal {
     show: boolean;
     method: string;
   };
+  fetch2FAStatus: () => void;
+  show: (data: string) => void;
+  setBanner: (data: any) => void;
 }
 export default function Enable2FAModal({
   open,
   setOpen,
   initialValue,
+  fetch2FAStatus,
+  show,
+  setBanner,
 }: Enable2FAModal) {
   const [value, setValue] = useState("");
   const [props, setProps] = useState<{
@@ -38,23 +44,13 @@ export default function Enable2FAModal({
   });
   const handleCloseModal = useCallback(() => {
     setOpen(false);
+    setStep(1);
   }, [open]);
   useEffect(() => {
     if (initialValue.show) {
       setValue(initialValue.method);
     }
   }, [initialValue]);
-  useEffect(() => {
-    if (status2FA.twoFactorMethod === MethodOTP.Email) {
-      setStep(2);
-    } else {
-      if (status2FA.twoFactorMethod === MethodOTP.Authenticator) {
-        setStep(3);
-      } else {
-        setStep(1);
-      }
-    }
-  }, [status2FA]);
   useEffect(() => {
     if (initialValue) {
       setStatus2FA({
@@ -63,8 +59,8 @@ export default function Enable2FAModal({
       });
     }
   }, [initialValue]);
-  useEffect(() => {}, [step]);
   useMount(() => setStep(1));
+
   return (
     <Modal
       large
@@ -78,16 +74,32 @@ export default function Enable2FAModal({
             initialValues={status2FA}
             handleData2FA={setStatus2FA}
             setProps={setProps}
+            handleCloseModal={handleCloseModal}
+            fetch2FAStatus={fetch2FAStatus}
+            show={show}
+            setBanner={setBanner}
+            setStep={setStep}
           />
         ) : null}
         {step === 2 ? (
-          <EmailOTP initialValues={status2FA} back={setStep} />
+          <EmailOTP
+            initialValues={status2FA}
+            back={setStep}
+            handleCloseModal={handleCloseModal}
+            fetch2FAStatus={fetch2FAStatus}
+            show={show}
+            setBanner={setBanner}
+          />
         ) : null}
         {step === 3 ? (
           <ExternalAuth
             initialValues={status2FA}
             props={props}
             back={setStep}
+            handleCloseModal={handleCloseModal}
+            fetch2FAStatus={fetch2FAStatus}
+            show={show}
+            setBanner={setBanner}
           />
         ) : null}
       </Modal.Section>
