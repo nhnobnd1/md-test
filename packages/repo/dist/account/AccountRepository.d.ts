@@ -13,9 +13,7 @@ export declare const AccountRepository: {
     }) => import("rxjs").Observable<import("axios").AxiosResponse<BaseResponse<{}>, any>>;
     forgotPasswordResetWithToken: (data: ForgotPasswordRequest) => import("rxjs").Observable<import("axios").AxiosResponse<BaseResponse<{}>, any>>;
     refreshToken: (data: RefreshTokenRequest) => import("rxjs").Observable<import("axios").AxiosResponse<RefreshTokenResponse, any>>;
-    signOut: (params: {
-        Authorization: string;
-    }) => import("rxjs").Observable<import("axios").AxiosResponse<BaseResponse<{}>, any>>;
+    signOut: () => import("rxjs").Observable<import("axios").AxiosResponse<BaseResponse<{}>, any>>;
     changePassword: (params: UpdatePasswordRequest) => import("rxjs").Observable<import("axios").AxiosResponse<BaseResponse<{}>, any>>;
     userGet2FAStatus: () => import("rxjs").Observable<import("axios").AxiosResponse<Status2FAResponse, any>>;
 };

@@ -5,6 +5,10 @@ export interface AccessManger {
   whitelistDomains: string[];
   twoFactorAuthEnabled: boolean;
 }
+export interface SetupOTP {
+  method: MethodOTP;
+  key: string;
+}
 export interface BaseAccessManagerRequest {
   storeId?: string;
 }
@@ -27,6 +31,4 @@ export interface VerifySetupOTPRequest {
   code: string;
 }
 
-export interface SetUpResponse {
-  statusCode: number;
-}
+export type SetUpResponse = BaseResponse<SetupOTP>;

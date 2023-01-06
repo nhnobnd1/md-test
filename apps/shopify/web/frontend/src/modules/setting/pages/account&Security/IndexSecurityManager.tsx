@@ -18,9 +18,10 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
+import Enable2FAModal from "src/modules/setting/component/Security/Enable2FAModal";
 import { BannerPropsAccessManager } from "src/modules/setting/modal/account&Security/AccountManager";
 import { object, ref, string } from "yup";
-export default function IndexAccountManager({ props }: any) {
+export default function IndexAccountManager() {
   const [status, setStatus] = useState(false);
   const [method, setMethod] = useState<{
     show: boolean;
@@ -61,7 +62,7 @@ export default function IndexAccountManager({ props }: any) {
       newPassword: "",
       confirmNewPassword: "",
     }),
-    [props]
+    []
   );
   const formRef = useRef<FormikProps<any>>(null);
   // fetch init data
@@ -160,15 +161,21 @@ export default function IndexAccountManager({ props }: any) {
   const handleResetForm = useCallback(() => {
     formRef.current?.resetForm();
   }, [formRef.current]);
-
+  // modal
+  const [open2FA, setOpen2FA] = useState(false);
+  // effect
   useMount(() => {
-    console.log(AccountRepository);
-
     fetch2FAStatus();
   });
-
   return (
     <>
+      {open2FA ? (
+        <Enable2FAModal
+          open={open2FA}
+          setOpen={setOpen2FA}
+          initialValue={{ ...method, status }}
+        />
+      ) : null}
       <Page fullWidth>
         <Layout>
           {banner.isShowBanner ? (
@@ -278,7 +285,9 @@ export default function IndexAccountManager({ props }: any) {
                 <Layout.Section>
                   <Stack distribution="equalSpacing">
                     <ButtonGroup>
-                      <Button primary>Enable 2FA</Button>
+                      <Button onClick={() => setOpen2FA(true)} primary>
+                        Enable 2FA
+                      </Button>
                     </ButtonGroup>
                   </Stack>
                 </Layout.Section>

@@ -4,6 +4,10 @@ export interface AccessManger {
     whitelistDomains: string[];
     twoFactorAuthEnabled: boolean;
 }
+export interface SetupOTP {
+    method: MethodOTP;
+    key: string;
+}
 export interface BaseAccessManagerRequest {
     storeId?: string;
 }
@@ -23,7 +27,5 @@ export interface VerifySetupOTPRequest {
     method: MethodOTP;
     code: string;
 }
-export interface SetUpResponse {
-    statusCode: number;
-}
+export declare type SetUpResponse = BaseResponse<SetupOTP>;
 //# sourceMappingURL=UserSetting.d.ts.map
