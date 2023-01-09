@@ -8,6 +8,7 @@ import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
+import { useStore } from "src/providers/StoreProviders";
 import "./ForgotPassword.scss";
 interface ForgotPasswordProps {}
 
@@ -18,37 +19,41 @@ export const ForgotPassword = (props: ForgotPasswordProps) => {
     isSuccess: false,
   });
   const message = useMessage();
+  const { storeId } = useStore();
   const navigate = useNavigate();
   const notification = useNotification();
 
-  const { run: sendForgotPassword } = useJob((payload: { email: string }) => {
-    message.loading.show("Sending request forgot password");
-    return AccountRepository()
-      .forgotPasswordReset(payload)
-      .pipe(
-        map(() => {
-          message.loading.hide();
-          notification.success("Sending request success");
-          setFinalPage({
-            status: true,
-            isSuccess: true,
-          });
-        }),
-        catchError((err) => {
-          message.loading.hide();
-          notification.error("Forgot password failed");
-          setFinalPage({
-            status: true,
-            isSuccess: false,
-          });
-          return of(err);
-        })
-      );
-  });
+  const { run: sendForgotPassword } = useJob(
+    (payload: { email: string; storeId: string }) => {
+      message.loading.show("Sending request forgot password");
+      return AccountRepository()
+        .forgotPasswordReset(payload)
+        .pipe(
+          map(() => {
+            message.loading.hide();
+            notification.success("Sending request success");
+            setFinalPage({
+              status: true,
+              isSuccess: true,
+            });
+          }),
+          catchError((err) => {
+            message.loading.hide();
+            notification.error("Forgot password failed");
+            setFinalPage({
+              status: true,
+              isSuccess: false,
+            });
+            return of(err);
+          })
+        );
+    }
+  );
 
   const handleFinish = useCallback((values: { email: string }) => {
     sendForgotPassword({
       email: values.email,
+      storeId: storeId,
     });
   }, []);
 

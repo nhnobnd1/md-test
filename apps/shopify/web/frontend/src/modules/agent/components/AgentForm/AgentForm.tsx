@@ -15,7 +15,7 @@ export interface AgentFormValues {
   email: string;
   firstName: string;
   lastName: "";
-  phone: "";
+  phoneNumber: "";
   role: Role.BasicAgent;
 }
 
@@ -26,15 +26,15 @@ const AgentForm = ({ disableForm = false, ...props }: AgentFormProps) => {
     { label: "Basic Agent", value: Role.BasicAgent },
   ];
 
-  const initialValuesForm = useMemo(() => {
+  const initialValuesForm = useMemo<AgentFormValues>(() => {
     return {
       email: "",
       firstName: "",
       lastName: "",
-      phone: "",
+      phoneNumber: "",
       role: Role.BasicAgent,
     };
-  }, []);
+  }, [Role]);
 
   const AgentFormSchema = Yup.object().shape({
     email: Yup.string()
@@ -46,7 +46,7 @@ const AgentForm = ({ disableForm = false, ...props }: AgentFormProps) => {
     lastName: Yup.string()
       .required("You must enter your last name")
       .max(255, "Last name up to 255 characters"),
-    phone: Yup.string()
+    phoneNumber: Yup.string()
       .min(9, "Phone at least 9 characters")
       .max(12, "Name up to 12 characters"),
     role: Yup.string().required("You must enter your role"),

@@ -7,6 +7,7 @@ import env from "src/core/env";
 import { useApi, useShopDomain } from "src/hooks";
 import useAuth from "src/hooks/useAuth";
 import { LoginResponse } from "src/models/Auth";
+import { useStore } from "src/providers/StoreProviders";
 import { AppRoutes } from "src/routes";
 
 export default function App() {
@@ -17,6 +18,7 @@ export default function App() {
   const [cookies, setCookie] = useCookies();
   const { show } = useToast();
   const { login, isLoggedIn, user } = useAuth();
+  const { storeId } = useStore();
 
   useEffect(() => {
     console.log("isLoggedIn: ", isLoggedIn);
@@ -25,7 +27,7 @@ export default function App() {
       console.log("Start login with token...");
       const payload = cookies[process.env.HOST ?? shop];
       console.log(payload, "cookies");
-      if (payload && payload.email && payload.offlineToken) {
+      if (payload && payload.email && payload.offlineToken && storeId) {
         console.log("Processing login");
         api
           .request<LoginResponse>({
@@ -35,6 +37,7 @@ export default function App() {
             data: {
               email: payload.email,
               password: payload.offlineToken,
+              storeId: storeId,
             },
           })
           .subscribe({
@@ -59,7 +62,7 @@ export default function App() {
           });
       }
     }
-  }, [shop, isLoggedIn, user, cookies]);
+  }, [shop, isLoggedIn, user, cookies, storeId]);
 
   const navigationLinks = useMemo((): NavigationLink[] => {
     return routes

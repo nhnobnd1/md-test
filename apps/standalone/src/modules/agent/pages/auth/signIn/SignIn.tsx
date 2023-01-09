@@ -16,9 +16,11 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
+import { useSubdomain } from "src/hooks/useSubdomain";
 import { Factor2Auth } from "src/modules/agent/components/Factor2Auth";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
 import DashboardRoutePaths from "src/modules/dashboard/routes/paths";
+import { useStore } from "src/providers/StoreProviders";
 import "./SignIn.scss";
 
 interface SignInProps {}
@@ -28,6 +30,8 @@ export const SignIn = (props: SignInProps) => {
   const notification = useNotification();
   const message = useMessage();
   const [view, setView] = useState<"login" | "lock" | "factor2Auth">("login");
+  const { getSubDomain } = useSubdomain();
+  const { storeId } = useStore();
   const [factor, setFactor] = useState<{
     type: "email" | "authenticator";
     state: {
@@ -122,23 +126,13 @@ export const SignIn = (props: SignInProps) => {
   );
 
   useMount(() => {
-    const domain = window.location.hostname;
-    let subdomain = "";
-    if (domain.includes(".moosedesk.net")) {
-      subdomain = domain.replace(".moosedesk.net", "");
-    } else if (domain.includes("-dev.moosedesk.net")) {
-      subdomain = domain.replace("-dev.moosedesk.net", "");
-    } else {
-      subdomain = "";
-    }
-
     setFactor((value) => {
       return {
         type: value.type,
         state: {
           email: value.state.email,
           password: value.state.password,
-          subdomain: subdomain,
+          subdomain: getSubDomain(),
         },
       };
     });
@@ -153,10 +147,11 @@ export const SignIn = (props: SignInProps) => {
       signInApi({
         email: values.email,
         password: values.password,
+        storeId: storeId,
         ...(factor.state.subdomain && { subdomain: factor.state.subdomain }),
       });
     },
-    [window.location, factor]
+    [window.location, factor, storeId]
   );
 
   return (

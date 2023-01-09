@@ -2,6 +2,7 @@ import { SignInAccountAgentRequest } from "@moose-desk/repo";
 import { Button, Form, Input } from "antd";
 import classNames from "classnames";
 import { useCallback, useEffect, useState } from "react";
+import { useStore } from "src/providers/StoreProviders";
 import "./Factor2Auth.scss";
 
 interface Factor2AuthProps {
@@ -23,6 +24,7 @@ export const Factor2Auth = ({
 }: Factor2AuthProps) => {
   const [intervalValue, setIntervalValue] = useState(30);
   const [activeResend, setActiveResend] = useState(true);
+  const { storeId } = useStore();
 
   const handleFinish = useCallback(
     (values: { twoFactorCode: string }) => {
@@ -32,6 +34,7 @@ export const Factor2Auth = ({
         ...(state.subdomain && {
           subdomain: state.subdomain,
         }),
+        storeId: storeId,
         twoFactorCode: values.twoFactorCode,
       });
     },
@@ -62,6 +65,7 @@ export const Factor2Auth = ({
       {
         email: state.email,
         password: state.password,
+        storeId: storeId,
         ...(state.subdomain && {
           subdomain: state.subdomain,
         }),

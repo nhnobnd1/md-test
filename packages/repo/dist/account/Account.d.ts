@@ -38,12 +38,14 @@ export declare type SignupAccountResponse = BaseResponse<User>;
 export interface SignInAccountAgentRequest {
     email: string;
     password: string;
+    storeId: string;
     subdomain?: string;
     twoFactorCode?: string;
 }
 export interface SignInAccountShopifyRequest {
     email: string;
     password: string;
+    storeId: string;
 }
 export declare type SignInAccountResponse = BaseResponse<{
     accessToken: string;
@@ -58,6 +60,7 @@ export interface ForgotPasswordRequest {
     userId: string;
     resetToken: string;
     password: string;
+    storeId: string;
 }
 export interface RefreshTokenRequest {
     refreshToken: string;
