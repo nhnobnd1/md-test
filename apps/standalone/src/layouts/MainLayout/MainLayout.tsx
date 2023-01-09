@@ -24,17 +24,19 @@ export const MainLayout = (props: MainLayoutProps) => {
   const notification = useNotification();
 
   const { run: signOut } = useJob(() => {
-    return AccountRepository.signOut().pipe(
-      map(({ data }) => {
-        logout();
-        navigate(generatePath(AgentRoutePaths.Login));
-        notification.success("Logout success");
-      }),
-      catchError((err) => {
-        notification.success("Logout failed");
-        return of(err);
-      })
-    );
+    return AccountRepository()
+      .signOut()
+      .pipe(
+        map(({ data }) => {
+          logout();
+          navigate(generatePath(AgentRoutePaths.Login));
+          notification.success("Logout success");
+        }),
+        catchError((err) => {
+          notification.success("Logout failed");
+          return of(err);
+        })
+      );
   });
 
   const caseTopMenu = useMemo<MenuProps["items"]>(() => {

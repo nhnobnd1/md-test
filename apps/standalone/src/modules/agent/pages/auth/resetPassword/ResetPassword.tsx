@@ -48,20 +48,22 @@ const ResetPassword = (props: ResetPasswordProps) => {
 
   const { run: resetPasswordApi } = useJob((payload: ForgotPasswordRequest) => {
     message.loading.show("Sending request reset password");
-    return AccountRepository.forgotPasswordResetWithToken(payload).pipe(
-      map(() => {
-        setFinalPage(true);
-        message.loading.hide().then(() => {
-          notification.success("Sending request success");
-        });
-      }),
-      catchError((err) => {
-        message.loading.hide().then(() => {
-          notification.error("Reset password failed");
-        });
-        return of(err);
-      })
-    );
+    return AccountRepository()
+      .forgotPasswordResetWithToken(payload)
+      .pipe(
+        map(() => {
+          setFinalPage(true);
+          message.loading.hide().then(() => {
+            notification.success("Sending request success");
+          });
+        }),
+        catchError((err) => {
+          message.loading.hide().then(() => {
+            notification.error("Reset password failed");
+          });
+          return of(err);
+        })
+      );
   });
 
   const handleSubmit = useCallback(

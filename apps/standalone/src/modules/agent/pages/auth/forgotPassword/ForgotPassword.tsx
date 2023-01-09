@@ -23,25 +23,27 @@ export const ForgotPassword = (props: ForgotPasswordProps) => {
 
   const { run: sendForgotPassword } = useJob((payload: { email: string }) => {
     message.loading.show("Sending request forgot password");
-    return AccountRepository.forgotPasswordReset(payload).pipe(
-      map(() => {
-        message.loading.hide();
-        notification.success("Sending request success");
-        setFinalPage({
-          status: true,
-          isSuccess: true,
-        });
-      }),
-      catchError((err) => {
-        message.loading.hide();
-        notification.error("Forgot password failed");
-        setFinalPage({
-          status: true,
-          isSuccess: false,
-        });
-        return of(err);
-      })
-    );
+    return AccountRepository()
+      .forgotPasswordReset(payload)
+      .pipe(
+        map(() => {
+          message.loading.hide();
+          notification.success("Sending request success");
+          setFinalPage({
+            status: true,
+            isSuccess: true,
+          });
+        }),
+        catchError((err) => {
+          message.loading.hide();
+          notification.error("Forgot password failed");
+          setFinalPage({
+            status: true,
+            isSuccess: false,
+          });
+          return of(err);
+        })
+      );
   });
 
   const handleFinish = useCallback((values: { email: string }) => {
