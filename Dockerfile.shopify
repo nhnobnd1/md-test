@@ -5,7 +5,6 @@ ENV SHOPIFY_API_SECRET=c50b641cbb0611d8e2b814e626d552fd
 ENV PORT=3680
 ENV BACKEND_PORT=3680
 ENV HOST=https://app-shopify-dev.moosedesk.net
-ENV VITE_API_URL=https://api-dev.moosedesk.net
 EXPOSE 3680
 WORKDIR /app
 
