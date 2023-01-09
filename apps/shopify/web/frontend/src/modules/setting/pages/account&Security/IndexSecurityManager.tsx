@@ -248,58 +248,90 @@ export default function IndexAccountManager() {
               </Card>
             </Form>
           </Layout.Section>
-          {status ? (
-            <Layout.Section>
-              <Card title="Two-Factor Authentication" sectioned>
-                <Layout>
+          <Layout.Section>
+            <Card subdued={!status} sectioned>
+              <Layout>
+                <Layout.Section>
+                  {status ? (
+                    <Text variant="headingMd" as="span" fontWeight="semibold">
+                      Two-Factor Authentication
+                    </Text>
+                  ) : (
+                    <Text
+                      variant="headingMd"
+                      as="span"
+                      color="subdued"
+                      fontWeight="semibold"
+                    >
+                      Two-Factor Authentication
+                    </Text>
+                  )}
+                </Layout.Section>
+                <Layout.Section>
+                  <div className="flex items-center">
+                    <div className="mr-4">
+                      {status ? (
+                        <Text variant="bodyMd" as="span">
+                          Status :
+                        </Text>
+                      ) : (
+                        <Text variant="bodyMd" as="span" color="subdued">
+                          Status :
+                        </Text>
+                      )}
+                    </div>
+                    <div>
+                      <Text
+                        variant="bodyMd"
+                        as="span"
+                        fontWeight="bold"
+                        color={
+                          method.show
+                            ? status
+                              ? "success"
+                              : "subdued"
+                            : status
+                            ? "critical"
+                            : "subdued"
+                        }
+                      >
+                        {method.show ? "Active" : "InActive"}
+                      </Text>
+                    </div>
+                  </div>
+                </Layout.Section>
+                {method.show ? (
                   <Layout.Section>
                     <div className="flex items-center">
                       <div className="mr-4">
                         <Text variant="bodyMd" as="span">
-                          Status :
+                          Method :
                         </Text>
                       </div>
                       <div>
-                        <Text
-                          variant="bodyMd"
-                          as="span"
-                          fontWeight="bold"
-                          color={method.show ? "success" : "critical"}
-                        >
-                          {method.show ? "Active" : "InActive"}
+                        <Text variant="bodyMd" as="span" fontWeight="bold">
+                          {method.method}
                         </Text>
                       </div>
                     </div>
                   </Layout.Section>
-                  {method.show ? (
-                    <Layout.Section>
-                      <div className="flex items-center">
-                        <div className="mr-4">
-                          <Text variant="bodyMd" as="span">
-                            Method :
-                          </Text>
-                        </div>
-                        <div>
-                          <Text variant="bodyMd" as="span" fontWeight="bold">
-                            {method.method}
-                          </Text>
-                        </div>
-                      </div>
-                    </Layout.Section>
-                  ) : null}
-                  <Layout.Section>
-                    <Stack distribution="equalSpacing">
-                      <ButtonGroup>
-                        <Button onClick={() => setOpen2FA(true)} primary>
-                          {method.show ? "Change 2FA Method" : "Enable 2FA"}
-                        </Button>
-                      </ButtonGroup>
-                    </Stack>
-                  </Layout.Section>
-                </Layout>
-              </Card>
-            </Layout.Section>
-          ) : null}
+                ) : null}
+                <Layout.Section>
+                  <Stack distribution="equalSpacing">
+                    <ButtonGroup>
+                      <Button
+                        onClick={() => setOpen2FA(true)}
+                        primary
+                        disabled={!status}
+                      >
+                        {method.show ? "Change 2FA Method" : "Enable 2FA"}
+                      </Button>
+                    </ButtonGroup>
+                  </Stack>
+                </Layout.Section>
+              </Layout>
+            </Card>
+          </Layout.Section>
         </Layout>
       </Page>
     </>
