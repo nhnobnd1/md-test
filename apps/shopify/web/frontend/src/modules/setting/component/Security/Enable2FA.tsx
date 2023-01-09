@@ -11,7 +11,7 @@ import {
 import { memo, useCallback, useEffect, useState } from "react";
 import { catchError, map, of } from "rxjs";
 interface Enable2FA {
-  initialValues?: {
+  initialValues: {
     twoFactorEnabled: boolean;
     twoFactorMethod: string;
   };
@@ -33,11 +33,14 @@ const Enable2FA = ({
   setBanner,
   setStep,
 }: Enable2FA) => {
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState("Disabled");
 
-  const handleChange = useCallback((_checked, newValue) => {
-    setValue(newValue);
-  }, []);
+  const handleChange = useCallback(
+    (_checked, newValue) => {
+      setValue(newValue);
+    },
+    [setValue]
+  );
   const handleSubmit = useCallback(() => {
     submit({ method: value });
   }, [value, initialValues]);
@@ -77,11 +80,11 @@ const Enable2FA = ({
         })
       );
   });
-  useEffect(
-    () =>
-      initialValues ? setValue(initialValues.twoFactorMethod) : setValue(""),
-    [initialValues]
-  );
+  useEffect(() => {
+    initialValues.twoFactorMethod
+      ? setValue(initialValues.twoFactorMethod)
+      : setValue("Disabled");
+  }, [initialValues]);
   return (
     <Form onSubmit={handleSubmit}>
       <Layout sectioned>
