@@ -28,7 +28,7 @@ export default function IndexAccountManager() {
     method: string;
   }>({
     show: false,
-    method: "",
+    method: "Disabled",
   });
   const validateObject = object().shape({
     currentPassword: string().min(8, "Must be at least 8 characters."),
