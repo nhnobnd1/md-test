@@ -39,40 +39,42 @@ export const OnBoarding = (props: OnBoardingProps) => {
 
   const { run: CheckValidTokenApi, processing } = useJob(
     (payload: CheckTokenNewAgentRequest) => {
-      return AgentRepository.checkTokenActiveNewAgent(payload).pipe(
-        map(({ data }) => {
-          switch (data.data) {
-            case TypeCheckTokenNewAgent.TOKEN_VALID:
-              setIsPageErr({
-                status: false,
-                message: "",
-              });
-              break;
-            case TypeCheckTokenNewAgent.TOKEN_INVALID:
-              setIsPageErr({
-                status: true,
-                message:
-                  "The link is no longer valid, please click on the link in the latest email.",
-              });
-              break;
-            case TypeCheckTokenNewAgent.INVITATION_NOT_EXISTS:
-              setIsPageErr({
-                status: true,
-                message:
-                  "No invitation found, please ask System Admin to resend invitation.",
-              });
-              break;
-            case TypeCheckTokenNewAgent.USER_ACTIVE:
-              setIsPageErr({
-                status: true,
-                message: "You have completed the onboarding process.",
-              });
-              break;
-            default:
-              break;
-          }
-        })
-      );
+      return AgentRepository()
+        .checkTokenActiveNewAgent(payload)
+        .pipe(
+          map(({ data }) => {
+            switch (data.data) {
+              case TypeCheckTokenNewAgent.TOKEN_VALID:
+                setIsPageErr({
+                  status: false,
+                  message: "",
+                });
+                break;
+              case TypeCheckTokenNewAgent.TOKEN_INVALID:
+                setIsPageErr({
+                  status: true,
+                  message:
+                    "The link is no longer valid, please click on the link in the latest email.",
+                });
+                break;
+              case TypeCheckTokenNewAgent.INVITATION_NOT_EXISTS:
+                setIsPageErr({
+                  status: true,
+                  message:
+                    "No invitation found, please ask System Admin to resend invitation.",
+                });
+                break;
+              case TypeCheckTokenNewAgent.USER_ACTIVE:
+                setIsPageErr({
+                  status: true,
+                  message: "You have completed the onboarding process.",
+                });
+                break;
+              default:
+                break;
+            }
+          })
+        );
     }
   );
 

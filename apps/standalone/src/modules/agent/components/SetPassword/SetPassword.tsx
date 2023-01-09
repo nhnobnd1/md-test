@@ -26,24 +26,26 @@ export const SetPassword = ({
   const { run: activeNewAgent } = useJob(
     (payload: ActiveNewAgentRequest) => {
       message.loading.show("Activating account");
-      return AgentRepository.activeNewAgent(payload).pipe(
-        map(({ data }) => {
-          message.loading.hide().then(() => {
-            if (data.statusCode === 200) {
-              notification.success("Account activation successful");
-              navigate(AgentRoutePaths.Login);
-            } else {
+      return AgentRepository()
+        .activeNewAgent(payload)
+        .pipe(
+          map(({ data }) => {
+            message.loading.hide().then(() => {
+              if (data.statusCode === 200) {
+                notification.success("Account activation successful");
+                navigate(AgentRoutePaths.Login);
+              } else {
+                notification.error("Account activation failed");
+              }
+            });
+          }),
+          catchError((err) => {
+            message.loading.hide().then(() => {
               notification.error("Account activation failed");
-            }
-          });
-        }),
-        catchError((err) => {
-          message.loading.hide().then(() => {
-            notification.error("Account activation failed");
-          });
-          return of(err);
-        })
-      );
+            });
+            return of(err);
+          })
+        );
     },
     {
       showLoading: true,
