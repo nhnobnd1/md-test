@@ -28,12 +28,9 @@ export const StoreProviders = ({ children }: StoreProvidersProps) => {
           map(({ data }) => {
             if (data.statusCode === 200) {
               setStoreId(data.data.storeId);
-            } else {
-              show("Get store failed", { isError: true });
             }
           }),
           catchError((err) => {
-            show("Get store failed", { isError: true });
             return of(err);
           })
         );
