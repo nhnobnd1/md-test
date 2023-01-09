@@ -11,6 +11,9 @@ export function useSubdomain() {
     } else if (domain.includes("-dev.moosedesk.net")) {
       return domain.replace("-dev.moosedesk.net", "");
     } else {
+      if (import.meta.env.MODE === "development") {
+        return import.meta.env.VITE_SUB_DOMAIN;
+      }
       return "";
     }
   }, [window.location]);
