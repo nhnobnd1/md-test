@@ -43,11 +43,7 @@ export const StoreProviders = ({ children }: StoreProvidersProps) => {
 
   useMount(() => {
     const subDomain = getSubDomain();
-    if (subDomain) {
-      fetchStoreId({ subdomain: subDomain });
-    } else {
-      notification.error("Get store failed");
-    }
+    fetchStoreId({ subdomain: subDomain });
   });
 
   return (
