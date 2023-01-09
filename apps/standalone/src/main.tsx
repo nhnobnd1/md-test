@@ -25,6 +25,7 @@ ReactDOM.render(
   <ErrorBoundary>
     <BrowserRouter>
       <Suspense fallback={<Loading fullPage />}>
+        {console.log("debug env: ", env)}
         <LoadingProvider
           isWrap
           component={({ state, children }) => (
