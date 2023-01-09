@@ -63,6 +63,7 @@ export interface Account {
 export interface LoginRequest {
   email: string;
   password: string;
+  storeId: string;
 }
 
 export interface RegisterRequest {

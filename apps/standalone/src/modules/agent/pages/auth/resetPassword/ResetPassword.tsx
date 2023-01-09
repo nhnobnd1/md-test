@@ -12,6 +12,7 @@ import { catchError, map, of } from "rxjs";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
+import { useStore } from "src/providers/StoreProviders";
 import "./ResetPassword.scss";
 
 interface ResetPasswordProps {}
@@ -21,6 +22,7 @@ const ResetPassword = (props: ResetPasswordProps) => {
   const [finalPage, setFinalPage] = useState(false);
   const navigate = useNavigate();
   const message = useMessage();
+  const { storeId } = useStore();
   const notification = useNotification();
   const [account, setAccount] = useState({
     userId: "",
@@ -72,6 +74,7 @@ const ResetPassword = (props: ResetPasswordProps) => {
         password: values.password,
         resetToken: account.token,
         userId: account.userId,
+        storeId: storeId,
       });
     },
     [account]

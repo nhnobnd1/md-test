@@ -27,7 +27,6 @@ export const AccountRepository = createRepository(
       return api.post<SignupAccountResponse>("/shopify/sign-up", data);
     },
     agentSignIn(api, data: SignInAccountAgentRequest) {
-      console.log(env.getApiUrl(), "api url reppo");
       return api.post<SignInAccountResponse>("/sign-in", data);
     },
     shopifySignIn(api, data: SignInAccountShopifyRequest) {
@@ -36,7 +35,7 @@ export const AccountRepository = createRepository(
     unlockAccount(api, data: { email: string }) {
       return api.post<BaseResponse<{}>>("/unlock", data);
     },
-    forgotPasswordReset(api, data: { email: string }) {
+    forgotPasswordReset(api, data: { email: string; storeId: string }) {
       return api.post<BaseResponse<{}>>("/forgot-password-reset-code", data);
     },
     forgotPasswordResetWithToken(api, data: ForgotPasswordRequest) {
