@@ -90,7 +90,7 @@ export default function IndexAccountManager({ props }: any) {
   const { run: fetchAccountManagerStatus, result } = useJob(
     () => {
       return UserSettingRepository()
-        .getAccessManagerSetting(auth.user?.id)
+        .getAccessManagerSetting()
         .pipe(
           map(({ data }) => {
             setSelectedDomain(data.data.whitelistDomains);
