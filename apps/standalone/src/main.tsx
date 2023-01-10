@@ -14,6 +14,7 @@ import { Loading } from "src/components/Loading";
 import env from "src/core/env";
 import ModuleLoader from "src/core/utilities/ModuleLoader";
 import ErrorBoundary from "src/ErrorBoundary";
+import AppConfigProviders from "src/providers/AppConfigProviders";
 import { StoreProviders } from "src/providers/StoreProviders";
 import("src/styles/tailwind.scss").then(() =>
   import("antd/dist/reset.css").then(() => import("src/styles/index.scss"))
@@ -42,9 +43,13 @@ ReactDOM.render(
                 }}
               >
                 <StoreProviders>
-                  <ModuleLoader>
-                    <LazyComponent component={lazy(() => import("src/App"))} />
-                  </ModuleLoader>
+                  <AppConfigProviders>
+                    <ModuleLoader>
+                      <LazyComponent
+                        component={lazy(() => import("src/App"))}
+                      />
+                    </ModuleLoader>
+                  </AppConfigProviders>
                 </StoreProviders>
               </AuthProvider>
             </CookiesProvider>
