@@ -21,6 +21,7 @@ export default function App() {
   const { storeId } = useStore();
 
   useEffect(() => {
+    console.log("--- debug env: ", env);
     console.log("isLoggedIn: ", isLoggedIn);
     console.log("user: ", user);
     if ((shop && !isLoggedIn) || (!user && shop)) {
