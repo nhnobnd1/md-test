@@ -19,7 +19,6 @@ export default defineConfig({
       { find: "src", replacement: path.resolve(__dirname, "src") },
       { find: "templates", replacement: path.resolve(__dirname, "templates") },
       { find: /^~antd/, replacement: "antd" },
-      { find: /^~/, replacement: "" },
     ],
   },
   server: {

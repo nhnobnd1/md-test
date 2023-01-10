@@ -1,6 +1,7 @@
 const Logo = {
   LogoMooseDesk: new URL("./logo/logoBase.png", import.meta.url).href,
   LogoIcon: new URL("./logo/logoIcon.png", import.meta.url).href,
+  LogoBaseInside: new URL("./logo/logo-base-inside.jpg", import.meta.url).href,
 };
 
 const Images = {

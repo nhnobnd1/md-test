@@ -6,6 +6,7 @@ import {
 } from "@moose-desk/core";
 import { memo, useEffect, useState } from "react";
 import useAuth from "src/hooks/useAuth";
+import AgentRoutePaths from "src/modules/agent/routes/paths";
 import NotFound from "src/pages/NotFound";
 
 import("./routes").then(({ default: newRoutes }) => {
@@ -20,7 +21,7 @@ const AppRoutesBased = () => {
   useEffect(() => {
     RouterHandler.registerMiddleware({
       guest: () => true,
-      user: () => isLoggedIn || <Navigate to="/" />,
+      user: () => isLoggedIn || <Navigate to={AgentRoutePaths.Login} />,
     });
     setIsRegisteredMiddleware(true);
 
