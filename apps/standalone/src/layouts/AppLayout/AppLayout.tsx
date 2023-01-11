@@ -239,8 +239,15 @@ export const AppLayout = (props: AppLayoutProps) => {
             items={caseTopMenu}
           />
         </Layout.Sider>
-        <Layout style={{ padding: "0 24px 24px" }}>
-          <Breadcrumb className="my-4" {...breadCrumb} />
+
+        <div
+          className="w-full p-6"
+          style={{
+            maxHeight: "calc(100vh - 64px)",
+            overflow: "auto",
+          }}
+        >
+          <Breadcrumb className="mb-4" {...breadCrumb} />
           <Layout.Content
             style={{
               padding: 24,
@@ -249,13 +256,13 @@ export const AppLayout = (props: AppLayoutProps) => {
               background: "#fff",
             }}
           >
-            <div className="wrap-main-content">
+            <div className="wrap-main-content pb-[32px]">
               <Suspense fallback={<Loading spinning={true} fullPage />}>
                 <Outlet />
               </Suspense>
             </div>
           </Layout.Content>
-        </Layout>
+        </div>
       </Layout>
     </Layout>
   );

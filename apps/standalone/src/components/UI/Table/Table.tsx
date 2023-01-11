@@ -4,7 +4,14 @@ import "./Table.scss";
 interface TableProps extends ATableProps<any> {}
 
 export const Table = (props: TableProps) => {
-  return <ATable className="Table" {...props} rowKey={props.rowKey ?? "_id"} />;
+  return (
+    <ATable
+      className="Table"
+      pagination={false}
+      {...props}
+      rowKey={props.rowKey ?? "_id"}
+    />
+  );
 };
 
 Table.Column = ATable.Column;

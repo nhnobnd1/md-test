@@ -15,6 +15,7 @@ import { useCallback, useEffect, useState } from "react";
 import { map } from "rxjs";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
 import { Header } from "src/components/UI/Header";
+import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
 import TableAction from "src/components/UI/Table/TableAction/TableAction";
 import env from "src/core/env";
@@ -88,6 +89,20 @@ const AgentsIndex = (props: AgentsIndexProps) => {
     [Role]
   );
 
+  const handleEdit = (record: Agent) => {
+    console.log(record);
+  };
+
+  const onPagination = useCallback(({ page, limit }) => {
+    setFilterData((value) => {
+      return {
+        ...value,
+        page,
+        limit,
+      };
+    });
+  }, []);
+
   useEffect(() => {
     if (prevFilter?.query !== filterData.query && filterData.query) {
       getListDebounce(filterData);
@@ -95,10 +110,6 @@ const AgentsIndex = (props: AgentsIndexProps) => {
       getListAgentApi(filterData);
     }
   }, [filterData]);
-
-  const handleEdit = (record: Agent) => {
-    console.log(record);
-  };
 
   return (
     <div>
@@ -109,66 +120,81 @@ const AgentsIndex = (props: AgentsIndexProps) => {
       </Header>
       <div>
         {agents && (
-          <Table dataSource={agents} loading={loadingList}>
-            <Table.Column
-              key="agent"
-              title="Agent"
-              render={(_, record: Agent) => (
-                <span>
-                  {record.lastName === "admin"
-                    ? record.firstName
-                    : record.firstName + " " + record.lastName}
-                </span>
-              )}
-            />
-            <Table.Column
-              key="email"
-              title="Email"
-              dataIndex="email"
-            ></Table.Column>
-            <Table.Column
-              key="roles"
-              title="Roles"
-              render={(_, record: Agent) => (
-                <span>{getLabelRole(record.role)}</span>
-              )}
-            />
-            <Table.Column
-              key="status"
-              title="Status"
-              render={(_, record: Agent) => (
-                <Tag
-                  color={
-                    getStatusAgent(record.isActive, record.emailConfirmed).color
-                  }
-                >
-                  {getStatusAgent(record.isActive, record.emailConfirmed).label}
-                </Tag>
-              )}
-            />
-            <Table.Column
-              key="2Fa"
-              align="center"
-              title="2FA Availability"
-              render={(_, record: Agent) => (
-                <span>
-                  {record.twoFactorEnabled ? record.twoFactorMethod : "Off"}
-                </span>
-              )}
-            />
-            <Table.Column
-              align="center"
-              title="Action"
-              render={(_, record: Agent) => (
-                <TableAction
-                  record={record}
-                  edit
-                  onlyIcon
-                  onEdit={handleEdit}
-                />
-              )}
-            />
-          </Table>
+          <>
+            <Table dataSource={agents} loading={loadingList}>
+              <Table.Column
+                key="agent"
+                title="Agent"
+                render={(_, record: Agent) => (
+                  <span>
+                    {record.lastName === "admin"
+                      ? record.firstName
+                      : record.firstName + " " + record.lastName}
+                  </span>
+                )}
+              />
+              <Table.Column
+                key="email"
+                title="Email"
+                dataIndex="email"
+              ></Table.Column>
+              <Table.Column
+                key="roles"
+                title="Roles"
+                render={(_, record: Agent) => (
+                  <span>{getLabelRole(record.role)}</span>
+                )}
+              />
+              <Table.Column
+                key="status"
+                title="Status"
+                render={(_, record: Agent) => (
+                  <Tag
+                    color={
+                      getStatusAgent(record.isActive, record.emailConfirmed)
+                        .color
+                    }
+                  >
+                    {
+                      getStatusAgent(record.isActive, record.emailConfirmed)
+                        .label
+                    }
+                  </Tag>
+                )}
+              />
+              <Table.Column
+                key="2Fa"
+                align="center"
+                title="2FA Availability"
+                render={(_, record: Agent) => (
+                  <span>
+                    {record.twoFactorEnabled ? record.twoFactorMethod : "Off"}
+                  </span>
+                )}
+              />
+              <Table.Column
+                align="center"
+                title="Action"
+                render={(_, record: Agent) => (
+                  <TableAction
+                    record={record}
+                    edit
+                    onlyIcon
+                    onEdit={handleEdit}
+                  />
+                )}
+              />
+            </Table>
+            {meta && (
+              <Pagination
+                className="mt-4 flex justify-end"
+                currentPage={filterData.page ?? 1}
+                total={meta?.totalCount}
+                pageSize={filterData.limit ?? env.DEFAULT_PAGE_SIZE}
+                onChange={onPagination}
+              />
+            )}
+          </>
         )}
       </div>
     </div>
