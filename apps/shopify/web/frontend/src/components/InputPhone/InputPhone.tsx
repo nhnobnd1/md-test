@@ -1,5 +1,6 @@
 import {
   Button,
+  Filters,
   OptionList,
   Popover,
   Scrollable,
@@ -18,7 +19,12 @@ interface InputPhoneProps {
 }
 
 const InputPhone = (props: InputPhoneProps) => {
+  // config UI
+
   const [labelHidden, setLabelHidden] = useState(false);
+
+  // init data
+
   const optionSelectPhone = constaint.countryList.country.map(
     (item: Country) => {
       return {
@@ -29,10 +35,28 @@ const InputPhone = (props: InputPhoneProps) => {
       };
     }
   );
-  const choices = optionSelectPhone.map((item) => ({
+
+  // filter
+
+  const [dataSelect, setDataSelect] = useState(optionSelectPhone);
+  const [filterValue, setFilterValue] = useState("");
+  const handleSearchChange = useCallback((value: string) => {
+    setFilterValue(value);
+  }, []);
+
+  const handleQueryValueRemove = useCallback(() => {
+    setFilterValue("");
+  }, []);
+  const resetFilterData = useCallback(() => {
+    setFilterValue("");
+  }, []);
+  const choices = dataSelect.map((item) => ({
     label: `${item.countryName} (+${item.phonePrefix})`,
     value: item.code,
   }));
+
+  // set flag and value
+
   const [flagValue, setFlagValue] = useState<string>("84");
   const [valueInput, setValueInput] = useState<{
     countryName: string;
@@ -58,13 +82,13 @@ const InputPhone = (props: InputPhoneProps) => {
     [valueSelect]
   );
 
-  const [popoverSelect, setPopoverSelect] = useState(false);
+  // popup modal select
 
+  const [popoverSelect, setPopoverSelect] = useState(false);
   const togglePopoverSelect = useCallback(
     () => setPopoverSelect((popoverSelect) => !popoverSelect),
     [popoverSelect]
   );
-
   const selectButton = (
     <Button
       onClick={togglePopoverSelect}
@@ -78,27 +102,34 @@ const InputPhone = (props: InputPhoneProps) => {
       {`+${valueInput?.phonePrefix}`}
     </Button>
   );
+
+  // handle Effect
+
   useEffect(() => {
-    setValueInput(
-      optionSelectPhone.find((option) => option.code === valueSelect[0])
+    setDataSelect(
+      optionSelectPhone.filter((option) =>
+        option.countryName
+          .toLocaleLowerCase()
+          .match(filterValue.toLocaleLowerCase())
+      )
     );
+  }, [filterValue]);
+  useEffect(() => {
+    setValueInput(dataSelect.find((option) => option.code === valueSelect[0]));
     setFlagValue(
-      optionSelectPhone.find((option) => option.code === valueSelect[0])
+      dataSelect.find((option) => option.code === valueSelect[0])
         ?.phonePrefix || "84"
     );
   }, [valueSelect]);
   useEffect(() => {
-    console.log("flagValue", flagValue);
     setValueSelect([
-      optionSelectPhone.find((option) => option.phonePrefix === flagValue)
-        ?.code || "VN",
+      dataSelect.find((option) => option.phonePrefix === flagValue)?.code ||
+        "VN",
     ]);
   }, [flagValue]);
   useEffect(() => {
     if (props.value) {
       setFlagValue(props.value?.slice(0, props.value?.indexOf("-")) || "84");
-      console.log("props value", props.value);
-
       setValueField(props.value?.slice(props.value?.indexOf("-") + 1) || "");
     }
     if (props.label) {
@@ -122,7 +153,15 @@ const InputPhone = (props: InputPhoneProps) => {
           onClose={togglePopoverSelect}
           preferredAlignment={"right"}
         >
-          <Scrollable shadow style={{ height: "380px", width: "300px" }}>
+          <Filters
+            queryValue={filterValue}
+            onQueryChange={handleSearchChange}
+            onQueryClear={handleQueryValueRemove}
+            queryPlaceholder="Search"
+            filters={[]}
+            onClearAll={resetFilterData}
+          />
+          <Scrollable shadow style={{ height: "330px", width: "330px" }}>
             <OptionList
               onChange={handleChangeValueSelect}
               options={choices}
