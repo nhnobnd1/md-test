@@ -1,0 +1,52 @@
+.app-layout {
+  .header {
+    background-color: #fff;
+    box-shadow: 0 0.125rem 0.125rem -0.0625rem #00000026;
+    position: relative;
+    transition: 200ms background-color cubic-bezier(0.42, 0, 0.58, 1);
+  }
+  // .layout-menu {
+  //   background-color: rgb(251, 127, 0);
+  //   color: #fff;
+  //   font-size: 14px;
+
+  //   .ant-menu-sub {
+  //     background-color: rgba(245, 151, 52, 0.98) !important;
+  //     .ant-menu-sub {
+  //       background-color: rgba(249, 195, 138, 0.95) !important;
+  //     }
+  //   }
+
+  //   .ant-menu-item {
+  //     margin: 0;
+  //     border-radius: 0;
+  //     width: 100%;
+  //   }
+
+  //   .ant-menu-submenu {
+  //     .ant-menu-submenu-title {
+  //       margin: 0;
+  //       border-radius: 0;
+  //       width: 100%;
+  //     }
+  //   }
+
+  //   .ant-menu-submenu-title:active,
+  //   .ant-menu-item:not(.ant-menu-item-selected):active {
+  //     background-color: #ff1744 !important;
+  //   }
+
+  //   .ant-menu-item-selected {
+  //     background-color: #ff1744 !important;
+  //   }
+  // }
+
+  .btn-logout {
+    @apply flex justify-center items-center gap-2;
+    cursor: pointer;
+
+    &:hover {
+      color: #1677ff;
+    }
+  }
+}

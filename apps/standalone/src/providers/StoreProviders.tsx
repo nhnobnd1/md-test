@@ -5,7 +5,7 @@ import { catchError, map, of } from "rxjs";
 import useNotification from "src/hooks/useNotification";
 import { useSubdomain } from "src/hooks/useSubdomain";
 
-interface StoreContextType {
+export interface StoreContextType {
   storeId: string;
 }
 
