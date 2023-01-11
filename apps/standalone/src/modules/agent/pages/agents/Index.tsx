@@ -113,7 +113,7 @@ const AgentsIndex = (props: AgentsIndexProps) => {
 
   return (
     <div>
-      <Header title="Account" back>
+      <Header title="Account">
         <div className="flex-1 flex justify-end">
           <ButtonAdd>Add agent</ButtonAdd>
         </div>
