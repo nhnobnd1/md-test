@@ -3,6 +3,8 @@ import { FormLayout, Select, TextField } from "@shopify/polaris";
 import { useMemo } from "react";
 import Form, { FormProps } from "src/components/Form";
 import FormItem from "src/components/Form/Item";
+import InputPhone from "src/components/InputPhone/InputPhone";
+import { regexPhoneValidate } from "src/constaint/country";
 import * as Yup from "yup";
 import "./AgentForm.scss";
 
@@ -46,9 +48,10 @@ const AgentForm = ({ disableForm = false, ...props }: AgentFormProps) => {
     lastName: Yup.string()
       .required("You must enter your last name")
       .max(255, "Last name up to 255 characters"),
-    phoneNumber: Yup.string()
-      .min(9, "Phone at least 9 characters")
-      .max(12, "Name up to 12 characters"),
+    phoneNumber: Yup.string().matches(
+      regexPhoneValidate,
+      "Invalid number phone format."
+    ),
     role: Yup.string().required("You must enter your role"),
   });
 
@@ -87,13 +90,7 @@ const AgentForm = ({ disableForm = false, ...props }: AgentFormProps) => {
           />
         </FormItem>
         <FormItem name="phoneNumber">
-          <TextField
-            label="Phone number"
-            type="tel"
-            autoComplete="off"
-            disabled={disableForm}
-            placeholder="Enter phone number"
-          />
+          <InputPhone label="Phone number" placeholder="Enter phone number" />
         </FormItem>
         <FormItem name="role">
           <Select label="User role" disabled={disableForm} options={options} />
