@@ -6,11 +6,13 @@ import "./ButtonView.scss";
 interface ButtonViewProps extends Omit<ButtonProps, "icon"> {
   onlyIcon?: boolean;
   className?: string;
+  children?: any;
 }
 
 export const ButtonView = ({
   onlyIcon = false,
-  className,
+  className = "",
+  children,
   ...props
 }: ButtonViewProps) => {
   return (
@@ -20,7 +22,7 @@ export const ButtonView = ({
       {...props}
       icon={<EyeOutlined />}
     >
-      {!onlyIcon && "Detail"}
+      {!onlyIcon && <>{children ?? "Detail"}</>}
     </Button>
   );
 };

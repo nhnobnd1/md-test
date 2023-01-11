@@ -5,12 +5,12 @@ import "./ButtonAdd.scss";
 interface ButtonAddProps extends Omit<ButtonProps, "icon"> {
   onlyIcon?: boolean;
   className?: string;
-  children: React.ReactNode;
+  children?: any;
 }
 
 export const ButtonAdd = ({
   onlyIcon = false,
-  className,
+  className = "",
   children,
   ...props
 }: ButtonAddProps) => {
@@ -21,7 +21,7 @@ export const ButtonAdd = ({
       {...props}
       icon={<PlusOutlined style={{ color: "#fff" }} />}
     >
-      {!onlyIcon && children}
+      {!onlyIcon && <>{children && children}</>}
     </Button>
   );
 };

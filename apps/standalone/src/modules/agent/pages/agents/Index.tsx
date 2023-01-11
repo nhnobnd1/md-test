@@ -9,6 +9,7 @@ import {
   AgentRepository,
   BaseMetaDataListResponse,
   GetListAgentRequest,
+  Role,
 } from "@moose-desk/repo";
 import { Tag } from "antd";
 import { useCallback, useEffect, useState } from "react";
@@ -20,8 +21,8 @@ import { Table } from "src/components/UI/Table";
 import TableAction from "src/components/UI/Table/TableAction/TableAction";
 import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
-import { Role } from "src/models/Rule";
 import { getStatusAgent } from "src/modules/agent/constant";
+import AgentRoutePaths from "src/modules/agent/routes/paths";
 
 interface AgentsIndexProps {}
 
@@ -93,15 +94,18 @@ const AgentsIndex = (props: AgentsIndexProps) => {
     console.log(record);
   };
 
-  const onPagination = useCallback(({ page, limit }) => {
-    setFilterData((value) => {
-      return {
-        ...value,
-        page,
-        limit,
-      };
-    });
-  }, []);
+  const onPagination = useCallback(
+    ({ page, limit }: { page: number; limit: number }) => {
+      setFilterData((value) => {
+        return {
+          ...value,
+          page,
+          limit,
+        };
+      });
+    },
+    []
+  );
 
   useEffect(() => {
     if (prevFilter?.query !== filterData.query && filterData.query) {
@@ -115,7 +119,9 @@ const AgentsIndex = (props: AgentsIndexProps) => {
     <div>
       <Header title="Account">
         <div className="flex-1 flex justify-end">
-          <ButtonAdd>Add agent</ButtonAdd>
+          <ButtonAdd onClick={() => navigate(AgentRoutePaths.Agents.New)}>
+            Add agent
+          </ButtonAdd>
         </div>
       </Header>
       <div>
@@ -179,6 +185,7 @@ const AgentsIndex = (props: AgentsIndexProps) => {
                   <TableAction
                     record={record}
                     edit
+                    showDelete
                     onlyIcon
                     onEdit={handleEdit}
                   />

@@ -1,7 +1,7 @@
 import { useDidUpdate } from "@moose-desk/core";
 import { Form as AntForm, FormProps as AntFormProps } from "antd";
 
-interface FormProps extends AntFormProps {
+export interface FormProps extends AntFormProps {
   enableReinitialize?: boolean;
 }
 

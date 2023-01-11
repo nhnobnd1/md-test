@@ -1,17 +1,24 @@
 import { LeftOutlined } from "@ant-design/icons";
 import { useNavigate } from "@moose-desk/core";
 import { Button } from "antd";
+import classNames from "classnames";
 
 interface HeaderProps {
   back?: boolean;
   title: string;
   children?: React.ReactNode;
+  className?: string;
 }
 
-export const Header = ({ back = false, title, children }: HeaderProps) => {
+export const Header = ({
+  back = false,
+  title,
+  children,
+  className = "",
+}: HeaderProps) => {
   const navigate = useNavigate();
   return (
-    <div className="mb-5">
+    <div className={classNames([className, "mb-5"])}>
       <div className="flex items-center mb-0 pb-0">
         {back && (
           <Button

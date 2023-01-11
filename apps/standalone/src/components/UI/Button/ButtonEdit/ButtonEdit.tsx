@@ -5,11 +5,13 @@ import "./ButtonEdit.scss";
 interface ButtonEditProps extends Omit<ButtonProps, "icon"> {
   onlyIcon?: boolean;
   className?: string;
+  children?: any;
 }
 
 export const ButtonEdit = ({
   onlyIcon = false,
-  className,
+  className = "",
+  children,
   ...props
 }: ButtonEditProps) => {
   return (
@@ -30,7 +32,7 @@ export const ButtonEdit = ({
           {...props}
           icon={<EditOutlined />}
         >
-          Edit
+          {children ?? "Edit"}
         </Button>
       )}
     </>

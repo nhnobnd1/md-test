@@ -6,14 +6,16 @@ interface ButtonDeleteProps extends Omit<ButtonProps, "icon"> {
   onlyIcon?: boolean;
   className?: string;
   confirmTitle?: string;
+  children?: any;
   onClick?: () => void;
 }
 
 export const ButtonDelete = ({
   onlyIcon = false,
   confirmTitle = "Are you sure to delete",
+  children,
   onClick,
-  className,
+  className = "",
   ...props
 }: ButtonDeleteProps) => {
   return (
@@ -37,7 +39,7 @@ export const ButtonDelete = ({
           {...props}
           icon={<DeleteOutlined />}
         >
-          Delete
+          {children ?? "Delete"}
         </Button>
       )}
     </>

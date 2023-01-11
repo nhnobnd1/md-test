@@ -101,7 +101,9 @@ export const AppLayout = (props: AppLayoutProps) => {
         link?: string;
       }> = []
     ) => {
-      const activeKey = list.find((item) => item.key === key);
+      const activeKey = list.find((item) => {
+        return item.key === key || key.includes(item.key);
+      });
       if (activeKey) {
         return {
           activeKey: activeKey.key,
