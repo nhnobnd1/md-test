@@ -3,6 +3,8 @@ import { FormikProps } from "formik";
 import { ForwardedRef, forwardRef, useCallback } from "react";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
+import InputPhone from "src/components/InputPhone/InputPhone";
+import { regexPhoneValidate } from "src/constaint/country";
 import { object, string } from "yup";
 export interface RefProperties {
   save: () => Promise<void> | undefined;
@@ -21,6 +23,10 @@ const ProfileForm = (
     firstName: string().required("Required!"),
     lastName: string().required("Required!"),
     email: string().email("Invalid email format ").required("Required!"),
+    phoneNumber: string().matches(
+      regexPhoneValidate,
+      "Invalid number phone format."
+    ),
   });
   return (
     <Form
@@ -58,12 +64,7 @@ const ProfileForm = (
           />
         </FormItem>
         <FormItem name="phoneNumber">
-          <TextField
-            type="tel"
-            placeholder="Your phone number"
-            label="Phone No."
-            autoComplete="tel"
-          />
+          <InputPhone label="Phone No." placeholder="Your phone number" />
         </FormItem>
 
         <FormItem name="storeId" />

@@ -1,7 +1,7 @@
 import { useDidUpdate } from "@moose-desk/core";
 import { InlineError } from "@shopify/polaris";
 import { memo, useCallback, useEffect, useState } from "react";
-export interface SwitchProps {
+export interface InputDisableSubmit {
   inititalValue?: any[];
   disabled: boolean;
   value?: any;
@@ -17,7 +17,7 @@ const InputDisableSubmit = ({
   error = "",
   setValue,
   onChange,
-}: SwitchProps) => {
+}: InputDisableSubmit) => {
   const [messageError, setMessageError] = useState(error);
   const [domainSubmit, setDomainSubmit] = useState(value);
   const handleSubmitDomain = useCallback(
