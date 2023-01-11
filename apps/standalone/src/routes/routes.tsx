@@ -1,12 +1,12 @@
 import { IRoute } from "@moose-desk/core";
-import RedirectPage from "src/pages/RedirectPage";
+import { lazy } from "react";
 import RoutePaths from "src/routes/paths";
 
 const appRootRoutes: IRoute[] = [
   {
     path: RoutePaths.Index,
     title: "Index page",
-    element: <RedirectPage />,
+    component: lazy(() => import("src/pages/RedirectPage")),
     index: true,
   },
 ];

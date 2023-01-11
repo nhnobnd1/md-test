@@ -12,10 +12,9 @@ import {
 } from "@moose-desk/core";
 import { AccountRepository, SignInAccountAgentRequest } from "@moose-desk/repo";
 import { Button, Form, Input } from "antd";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import useMessage from "src/hooks/useMessage";
-import useNotification from "src/hooks/useNotification";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { Factor2Auth } from "src/modules/agent/components/Factor2Auth";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
@@ -27,7 +26,6 @@ interface SignInProps {}
 
 export const SignIn = (props: SignInProps) => {
   const { login } = useAuthContext();
-  const notification = useNotification();
   const message = useMessage();
   const [view, setView] = useState<"login" | "lock" | "factor2Auth">("login");
   const { getSubDomain } = useSubdomain();
@@ -62,7 +60,7 @@ export const SignIn = (props: SignInProps) => {
         .agentSignIn(payload)
         .pipe(
           map(({ data }) => {
-            notification.success("Login successfully");
+            message.success("Login successfully");
             login({
               base_token: data.data.accessToken,
               refresh_token: data.data.refreshToken,
@@ -102,7 +100,7 @@ export const SignIn = (props: SignInProps) => {
               ) {
                 setErrorMessage(`Wrong code. Try again.`);
               } else {
-                notification.error("Login failed");
+                message.error("Login failed");
                 const numberLoginFailed = error[0].split("/")[0];
                 const totalAcceptFailed = error[0].split("/")[1];
                 if (numberLoginFailed < totalAcceptFailed) {
@@ -137,10 +135,6 @@ export const SignIn = (props: SignInProps) => {
       };
     });
   });
-
-  useEffect(() => {
-    console.log("factor: ", factor);
-  }, [factor]);
 
   const handleSubmit = useCallback(
     (values: { email: string; password: string }) => {

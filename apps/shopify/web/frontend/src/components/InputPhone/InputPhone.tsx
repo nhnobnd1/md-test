@@ -151,16 +151,21 @@ const InputPhone = (props: InputPhoneProps) => {
           activator={selectButton}
           autofocusTarget="first-node"
           onClose={togglePopoverSelect}
-          preferredAlignment={"right"}
+          preferredAlignment={"left"}
         >
-          <Filters
-            queryValue={filterValue}
-            onQueryChange={handleSearchChange}
-            onQueryClear={handleQueryValueRemove}
-            queryPlaceholder="Search"
-            filters={[]}
-            onClearAll={resetFilterData}
-          />
+          <div
+            className="py-2"
+            style={{ width: "calc(100% - 16px)", margin: "0 auto" }}
+          >
+            <Filters
+              queryValue={filterValue}
+              onQueryChange={handleSearchChange}
+              onQueryClear={handleQueryValueRemove}
+              queryPlaceholder="Search"
+              filters={[]}
+              onClearAll={resetFilterData}
+            />
+          </div>
           <Scrollable shadow style={{ height: "330px", width: "330px" }}>
             <OptionList
               onChange={handleChangeValueSelect}

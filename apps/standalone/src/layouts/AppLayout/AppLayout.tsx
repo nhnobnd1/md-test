@@ -7,9 +7,10 @@ import {
 } from "@moose-desk/core";
 import { AccountRepository } from "@moose-desk/repo";
 import { Layout, Menu, MenuProps } from "antd";
-import { useCallback, useEffect, useMemo } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { map } from "rxjs";
 import Images from "src/assets/images";
+import { Loading } from "src/components/Loading";
 import Breadcrumb from "src/components/UI/Breadcrums/Breadcrumb";
 import useAuth from "src/hooks/useAuth";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
@@ -30,6 +31,7 @@ export const AppLayout = (props: AppLayoutProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { breadCrumb, setBreadCrumb } = useAppConfig();
+  const [collapsed, setCollapsed] = useState(false);
   const { logout } = useAuth();
   const caseTopMenu = useMemo<MenuProps["items"]>(() => {
     return [
@@ -99,7 +101,9 @@ export const AppLayout = (props: AppLayoutProps) => {
         link?: string;
       }> = []
     ) => {
-      const activeKey = list.find((item) => item.key === key);
+      const activeKey = list.find((item) => {
+        return item.key === key || key.includes(item.key);
+      });
       if (activeKey) {
         return {
           activeKey: activeKey.key,
@@ -221,7 +225,12 @@ export const AppLayout = (props: AppLayoutProps) => {
         </div>
       </Layout.Header>
       <Layout>
-        <Layout.Sider width={240}>
+        <Layout.Sider
+          width={200}
+          collapsible
+          collapsed={collapsed}
+          onCollapse={(value) => setCollapsed(value)}
+        >
           <Menu
             className="layout-menu"
             mode="inline"
@@ -232,8 +241,15 @@ export const AppLayout = (props: AppLayoutProps) => {
             items={caseTopMenu}
           />
         </Layout.Sider>
-        <Layout style={{ padding: "0 24px 24px" }}>
-          <Breadcrumb className="my-4" {...breadCrumb} />
+
+        <div
+          className="w-full p-6"
+          style={{
+            maxHeight: "calc(100vh - 64px)",
+            overflow: "auto",
+          }}
+        >
+          <Breadcrumb className="mb-4" {...breadCrumb} />
           <Layout.Content
             style={{
               padding: 24,
@@ -242,11 +258,13 @@ export const AppLayout = (props: AppLayoutProps) => {
               background: "#fff",
             }}
           >
-            <div className="wrap-main-content">
-              <Outlet />
+            <div className="wrap-main-content pb-[32px]">
+              <Suspense fallback={<Loading spinning={true} fullPage />}>
+                <Outlet />
+              </Suspense>
             </div>
           </Layout.Content>
-        </Layout>
+        </div>
       </Layout>
     </Layout>
   );
