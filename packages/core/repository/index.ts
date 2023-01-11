@@ -27,7 +27,6 @@ export function createRepository<Input extends CreateRepositoryInput>(
   input: Input
 ): () => CreateRepositoryOutput<Input> {
   return () => {
-    console.log(config(), "config");
     const api = new Api(config().baseURL, config());
     return mapValues(input, (resourceCreator) => {
       return (...params: any[]) => {

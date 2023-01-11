@@ -5441,7 +5441,7 @@ const Zi = Ho(void 0), mm = ({
             }).then(() => lr(T.request(R))).catch((F) => F);
           h(!0);
           const $ = dt.getToken("refresh_token");
-          return $ ? n ? (console.log("aaa"), new Promise((F, ie) => {
+          return $ ? n ? new Promise((F, ie) => {
             lr(n($)).then(({ data: J }) => {
               console.log("refresh tokens", J), h(!1), D(null, J.accessToken), p({
                 base_token: J.accessToken,
@@ -5450,7 +5450,7 @@ const Zi = Ho(void 0), mm = ({
             }).catch((J) => {
               console.log("err: ", J), h(!0), g(), D(J), ie(J);
             });
-          })) : Promise.reject(_) : (console.log("Not found refresh token app"), Promise.reject(_));
+          }) : Promise.reject(_) : (console.log("Not found refresh token app"), Promise.reject(_));
         }
         return Promise.reject(_);
       }
@@ -5519,7 +5519,6 @@ function wm({
 }
 function _m(e, t) {
   return () => {
-    console.log(e(), "config");
     const r = new te(e().baseURL, e());
     return wd(t, (n) => (...o) => n(r, ...o));
   };

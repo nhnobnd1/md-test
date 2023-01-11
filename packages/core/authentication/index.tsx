@@ -150,7 +150,6 @@ export const AuthProvider = ({
           }
 
           if (fetchRefreshToken) {
-            console.log("aaa");
             return new Promise((resolve, reject) => {
               lastValueFrom(fetchRefreshToken(token))
                 .then(({ data }) => {

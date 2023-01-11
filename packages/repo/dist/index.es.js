@@ -5704,7 +5704,7 @@ class $d {
     return this.apiUrl;
   }
   setApiUrl(t) {
-    console.log(t, "url"), this.apiUrl = t;
+    this.apiUrl = t;
   }
 }
 const nt = new $d(), qd = rt(

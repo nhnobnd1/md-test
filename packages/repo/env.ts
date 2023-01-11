@@ -6,7 +6,6 @@ class Env {
   }
 
   setApiUrl(url: string) {
-    console.log(url, "url");
     this.apiUrl = url;
   }
 }

@@ -7,9 +7,10 @@ import {
 } from "@moose-desk/core";
 import { AccountRepository } from "@moose-desk/repo";
 import { Layout, Menu, MenuProps } from "antd";
-import { useCallback, useEffect, useMemo } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { map } from "rxjs";
 import Images from "src/assets/images";
+import { Loading } from "src/components/Loading";
 import Breadcrumb from "src/components/UI/Breadcrums/Breadcrumb";
 import useAuth from "src/hooks/useAuth";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
@@ -30,6 +31,7 @@ export const AppLayout = (props: AppLayoutProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { breadCrumb, setBreadCrumb } = useAppConfig();
+  const [collapsed, setCollapsed] = useState(false);
   const { logout } = useAuth();
   const caseTopMenu = useMemo<MenuProps["items"]>(() => {
     return [
@@ -221,7 +223,12 @@ export const AppLayout = (props: AppLayoutProps) => {
         </div>
       </Layout.Header>
       <Layout>
-        <Layout.Sider width={240}>
+        <Layout.Sider
+          width={200}
+          collapsible
+          collapsed={collapsed}
+          onCollapse={(value) => setCollapsed(value)}
+        >
           <Menu
             className="layout-menu"
             mode="inline"
@@ -243,7 +250,9 @@ export const AppLayout = (props: AppLayoutProps) => {
             }}
           >
             <div className="wrap-main-content">
-              <Outlet />
+              <Suspense fallback={<Loading spinning={true} fullPage />}>
+                <Outlet />
+              </Suspense>
             </div>
           </Layout.Content>
         </Layout>

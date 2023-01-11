@@ -7,11 +7,16 @@ interface RedirectPageProps {}
 
 const RedirectPage = (props: RedirectPageProps) => {
   const { isLoggedIn } = useAuth();
-  if (isLoggedIn) {
-    return <Navigate to={generatePath(DashboardRoutePaths.Index)} replace />;
-  } else {
-    return <Navigate to={generatePath(AgentRoutePaths.Login)} replace />;
-  }
+
+  return (
+    <>
+      {isLoggedIn ? (
+        <Navigate to={generatePath(DashboardRoutePaths.Index)} replace />
+      ) : (
+        <Navigate to={generatePath(AgentRoutePaths.Login)} replace />
+      )}
+    </>
+  );
 };
 
 export default RedirectPage;

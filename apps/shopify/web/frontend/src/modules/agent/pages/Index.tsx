@@ -272,9 +272,11 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
                 </Text>
               </IndexTable.Cell>
               <IndexTable.Cell className="py-3">
-                {/* <Text variant="bodyMd" as="span">
-                    {agentItem.isAvailability ? "Yes" : "No"}
-                  </Text> */}
+                <Text variant="bodyMd" as="span">
+                  {agentItem.twoFactorEnabled
+                    ? agentItem.twoFactorMethod
+                    : "Off"}
+                </Text>
               </IndexTable.Cell>
             </IndexTable.Row>
           ))}
