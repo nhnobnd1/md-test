@@ -4,6 +4,7 @@ import { ForwardedRef, forwardRef, useCallback } from "react";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
 import InputPhone from "src/components/InputPhone/InputPhone";
+import { regexPhoneValidate } from "src/constaint/country";
 import { object, string } from "yup";
 export interface RefProperties {
   save: () => Promise<void> | undefined;
@@ -26,7 +27,7 @@ const CustomerForm = (
     lastName: string().required("Required!"),
     email: string().email("Invalid email format ").required("Required!"),
     phoneNumber: string().matches(
-      /^(?:[0-9]{1,4})+-(?:[0-9]{5,14})$/,
+      regexPhoneValidate,
       "Invalid number phone format."
     ),
   });

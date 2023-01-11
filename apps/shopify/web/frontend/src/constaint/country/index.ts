@@ -10,3 +10,4 @@ export type Country = {
   continent: string;
   phoneNumberPrefix: number;
 };
+export const regexPhoneValidate = /^(?:[0-9]{1,4})+-(?:[0-9]{5,14})$/;
