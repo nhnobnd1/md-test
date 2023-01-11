@@ -3,6 +3,7 @@ import { FormLayout, Select, TextField } from "@shopify/polaris";
 import { useMemo } from "react";
 import Form, { FormProps } from "src/components/Form";
 import FormItem from "src/components/Form/Item";
+import InputPhone from "src/components/InputPhone/InputPhone";
 import * as Yup from "yup";
 import "./AgentForm.scss";
 
@@ -87,13 +88,7 @@ const AgentForm = ({ disableForm = false, ...props }: AgentFormProps) => {
           />
         </FormItem>
         <FormItem name="phoneNumber">
-          <TextField
-            label="Phone number"
-            type="tel"
-            autoComplete="off"
-            disabled={disableForm}
-            placeholder="Enter phone number"
-          />
+          <InputPhone label="Phone number" placeholder="Enter phone number" />
         </FormItem>
         <FormItem name="role">
           <Select label="User role" disabled={disableForm} options={options} />
