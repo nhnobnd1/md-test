@@ -2,6 +2,7 @@ import { useDidUpdate, useMount } from "@moose-desk/core";
 import { Form as AntForm, FormProps as AntFormProps } from "antd";
 import { useCallback, useRef, useState } from "react";
 import { Loading } from "src/components/Loading";
+import "./Form.scss";
 
 export interface FormProps extends AntFormProps {
   enableReinitialize?: boolean;
@@ -9,7 +10,7 @@ export interface FormProps extends AntFormProps {
   durationInit?: number;
 }
 
-const Form = ({
+export const Form = ({
   enableReinitialize = false,
   enableLoadForm = false,
   durationInit = 200,
@@ -43,7 +44,7 @@ const Form = ({
   }, [props.initialValues]);
 
   return (
-    <div className="min-h-[250px]">
+    <div className="Form min-h-[250px]">
       {loadForm && enableLoadForm ? (
         <Loading insteadView spinning={true} />
       ) : (
