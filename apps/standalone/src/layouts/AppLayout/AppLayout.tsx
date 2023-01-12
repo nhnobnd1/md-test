@@ -7,6 +7,7 @@ import {
 } from "@moose-desk/core";
 import { AccountRepository } from "@moose-desk/repo";
 import { Layout, Menu, MenuProps } from "antd";
+import classNames from "classnames";
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { map } from "rxjs";
 import Images from "src/assets/images";
@@ -38,6 +39,7 @@ export const AppLayout = (props: AppLayoutProps) => {
       {
         key: `case-${DashboardRoutePaths.Index}`,
         label: "Home",
+        link: DashboardRoutePaths.Index,
         icon: <JamDashboard />,
         onClick: () => navigate(generatePath(DashboardRoutePaths.Index)),
       },
@@ -59,6 +61,7 @@ export const AppLayout = (props: AppLayoutProps) => {
               {
                 key: `case-${AgentRoutePaths.Agents.Index}`,
                 label: "Agents",
+                link: AgentRoutePaths.Index,
                 onClick: () =>
                   navigate(generatePath(AgentRoutePaths.Agents.Index)),
               },
@@ -134,6 +137,7 @@ export const AppLayout = (props: AppLayoutProps) => {
                 {
                   key: it.key,
                   label: it.label,
+                  ...(it.link && { link: it.link }),
                 },
               ]
             );
@@ -172,6 +176,9 @@ export const AppLayout = (props: AppLayoutProps) => {
               <>
                 {bread.link ? (
                   <a
+                    className={classNames({
+                      active: bread.link === location.pathname,
+                    })}
                     onClick={() =>
                       bread.link && navigate(generatePath(bread.link))
                     }
