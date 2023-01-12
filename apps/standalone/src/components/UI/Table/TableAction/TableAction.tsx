@@ -13,7 +13,7 @@ interface TableActionProps {
   onlyIcon?: boolean;
 
   specialDelete?: {
-    name: string;
+    title: string;
     description: string;
   };
 
@@ -55,10 +55,10 @@ const TableAction = ({
           onClick={() => onDelete && onDelete(record)}
         />
       )}
-      {specialDelete && specialDelete.name && (
+      {specialDelete && specialDelete.title && (
         <ButtonModalDelete
           onlyIcon={onlyIcon}
-          name={specialDelete.name}
+          title={specialDelete.title}
           description={specialDelete.description}
           onConfirm={() => onSpecialDelete && onSpecialDelete(record)}
         />

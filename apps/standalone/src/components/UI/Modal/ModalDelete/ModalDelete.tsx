@@ -1,19 +1,19 @@
 import { Modal, ModalProps } from "antd";
 import "./ModalDelete.scss";
 interface ModalDeleteProps extends Omit<ModalProps, "name"> {
-  name: string;
+  title: string;
   description: string;
 }
 
 export const ModalDelete = ({
-  name,
+  title,
   description,
   ...props
 }: ModalDeleteProps) => {
   return (
     <Modal
       {...props}
-      title={`Are you sure that you want to remove ${name}`}
+      title={title}
       okText={props.okText ?? "Delete"}
       okButtonProps={{
         type: "primary",

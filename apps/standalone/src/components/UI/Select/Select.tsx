@@ -166,7 +166,7 @@ Select.Ajax = ({
       {renderOption
         ? _.uniqBy(options, "value").map((option, index) => (
             <Select.Option key={index} value={option.value}>
-              {renderOption(option, index)}
+              {renderOption(option, index) as any}
             </Select.Option>
           ))
         : null}
