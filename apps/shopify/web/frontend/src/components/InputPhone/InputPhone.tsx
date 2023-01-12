@@ -65,21 +65,27 @@ const InputPhone = (props: InputPhoneProps) => {
     flagImage: string;
   }>();
   const [valueSelect, setValueSelect] = useState(["VN"]);
-  const [valueField, setValueField] = useState(props.value);
+  const [valueField, setValueField] = useState("");
   const handleChangeValueInput = useCallback(
     (value: string) => {
       setValueField(value);
       props.onChange && props.onChange(`${flagValue}-${value}`);
     },
-    [valueField, flagValue]
+    [flagValue]
   );
 
   const handleChangeValueSelect = useCallback(
     (value: string[]) => {
       setValueSelect([...value]);
+      props.onChange &&
+        props.onChange(
+          `${
+            dataSelect.find((option) => option.code === value[0])?.phonePrefix
+          }-${valueField}`
+        );
       togglePopoverSelect();
     },
-    [valueSelect]
+    [valueSelect, valueField]
   );
 
   // popup modal select
@@ -128,6 +134,8 @@ const InputPhone = (props: InputPhoneProps) => {
     ]);
   }, [flagValue]);
   useEffect(() => {
+    console.log("props", props.value);
+
     if (props.value) {
       setFlagValue(props.value?.slice(0, props.value?.indexOf("-")) || "84");
       setValueField(props.value?.slice(props.value?.indexOf("-") + 1) || "");
