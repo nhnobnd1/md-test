@@ -1,6 +1,6 @@
 import { useDidUpdate, useMount } from "@moose-desk/core";
 import { Form as AntForm, FormProps as AntFormProps } from "antd";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Loading } from "src/components/Loading";
 
 export interface FormProps extends AntFormProps {
@@ -16,13 +16,17 @@ const Form = ({
   ...props
 }: FormProps) => {
   const [form] = AntForm.useForm(props.form);
+  const isFirst = useRef(true);
   const [loadForm, setLoadForm] = useState(false);
 
   const resetFormInit = useCallback(() => {
-    setLoadForm(true);
+    if (isFirst.current) {
+      setLoadForm(true);
+    }
     setTimeout(() => {
       form.resetFields();
       setLoadForm(false);
+      isFirst.current = false;
     }, durationInit);
   }, [form, durationInit]);
 

@@ -123,9 +123,11 @@ const AgentsIndex = (props: AgentsIndexProps) => {
     []
   );
 
-  const handleChangePopup = useCallback(() => {
+  const handleChangePopup = useCallback((closeModal?: boolean) => {
     getListAgentApi(filterData);
-    closePopupAgent();
+    if (closeModal) {
+      closePopupAgent();
+    }
   }, []);
 
   useEffect(() => {
@@ -140,7 +142,7 @@ const AgentsIndex = (props: AgentsIndexProps) => {
     <div>
       <PopupAgent
         open={popupAgent}
-        dataForm={dataPopup as Agent}
+        data={dataPopup as Agent}
         onCancel={closePopupAgent}
         onChange={handleChangePopup}
       />
@@ -185,6 +187,7 @@ const AgentsIndex = (props: AgentsIndexProps) => {
               />
               <Table.Column
                 key="status"
+                align="center"
                 title="Status"
                 render={(_, record: Agent) => (
                   <Tag
