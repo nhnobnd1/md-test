@@ -115,7 +115,7 @@ const DetailAgent = (props: CreateAgentProps) => {
             ({ data }) => {
               if (data.statusCode === 200) {
                 showBanner("success", {
-                  title: `Update ${agentSaved?.firstName} ${agentSaved?.lastName}`,
+                  title: `Update ${data.data?.firstName} ${data.data?.lastName}`,
                   message: "Agent has been updated successfully",
                 });
                 setAgentSaved(data.data);
