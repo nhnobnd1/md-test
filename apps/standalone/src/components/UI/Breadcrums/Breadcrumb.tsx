@@ -11,7 +11,7 @@ export interface BreadcrumbProps extends ABreadcrumbProps {
     key: string;
     props: ABreadcrumbItemProps;
   }>;
-  className: string;
+  className?: string;
 }
 
 export const Breadcrumb = (props: BreadcrumbProps) => {
