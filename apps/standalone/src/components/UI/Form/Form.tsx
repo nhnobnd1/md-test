@@ -1,22 +1,52 @@
-import { useDidUpdate } from "@moose-desk/core";
+import { useDidUpdate, useMount } from "@moose-desk/core";
 import { Form as AntForm, FormProps as AntFormProps } from "antd";
+import { useCallback, useState } from "react";
+import { Loading } from "src/components/Loading";
 
 export interface FormProps extends AntFormProps {
   enableReinitialize?: boolean;
+  enableLoadForm?: boolean;
+  durationInit?: number;
 }
 
-const Form = ({ enableReinitialize, ...props }: FormProps) => {
+const Form = ({
+  enableReinitialize = false,
+  enableLoadForm = false,
+  durationInit = 200,
+  ...props
+}: FormProps) => {
   const [form] = AntForm.useForm(props.form);
+  const [loadForm, setLoadForm] = useState(false);
+
+  const resetFormInit = useCallback(() => {
+    setLoadForm(true);
+    setTimeout(() => {
+      form.resetFields();
+      setLoadForm(false);
+    }, durationInit);
+  }, [form, durationInit]);
+
+  useMount(() => {
+    if (enableReinitialize) {
+      resetFormInit();
+    }
+  });
 
   useDidUpdate(() => {
     if (enableReinitialize) {
-      setTimeout(() => {
-        form.resetFields();
-      }, 200);
+      resetFormInit();
     }
   }, [props.initialValues]);
 
-  return <AntForm {...(props as any)} form={form} />;
+  return (
+    <div className="min-h-[250px]">
+      {loadForm && enableLoadForm ? (
+        <Loading insteadView spinning={true} />
+      ) : (
+        <AntForm {...(props as any)} form={form} />
+      )}
+    </div>
+  );
 };
 
 Form.Item = AntForm.Item;

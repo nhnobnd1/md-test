@@ -1,29 +1,34 @@
 import { Role } from "@moose-desk/repo";
-import { FormProps, Input } from "antd";
+import { Input } from "antd";
 import { useMemo } from "react";
-import Form from "src/components/UI/Form/Form";
+import Form, { FormProps } from "src/components/UI/Form/Form";
 import Select from "src/components/UI/Select/Select";
 import "./AgentForm.scss";
 
 export interface AgentFormValues {
+  _id?: string;
   email: string;
   firstName: string;
   lastName: string;
   phoneNumber: string;
   role: Role;
 }
-interface AgentFormProps extends FormProps {}
+interface AgentFormProps extends FormProps {
+  disabled?: boolean;
+}
 
-export const AgentForm = (props: AgentFormProps) => {
+export const AgentForm = ({ disabled = false, ...props }: AgentFormProps) => {
   const initialValues = useMemo(() => {
-    return {
-      email: "",
-      firstName: "",
-      lastName: "",
-      phoneNumber: "",
-      role: Role.BasicAgent,
-    };
-  }, []);
+    return (
+      props.initialValues ?? {
+        email: "",
+        firstName: "",
+        lastName: "",
+        phoneNumber: "",
+        role: Role.BasicAgent,
+      }
+    );
+  }, [props.initialValues]);
 
   const options = [
     { label: "Super Admin", value: Role.Admin },
@@ -41,7 +46,7 @@ export const AgentForm = (props: AgentFormProps) => {
           { type: "email", message: "Email is invalid!" },
         ]}
       >
-        <Input />
+        <Input disabled={disabled} placeholder="Enter email" />
       </Form.Item>
 
       <Form.Item
@@ -55,7 +60,7 @@ export const AgentForm = (props: AgentFormProps) => {
           },
         ]}
       >
-        <Input />
+        <Input disabled={disabled} placeholder="Enter first name" />
       </Form.Item>
       <Form.Item
         label="Last name"
@@ -68,7 +73,7 @@ export const AgentForm = (props: AgentFormProps) => {
           },
         ]}
       >
-        <Input />
+        <Input disabled={disabled} placeholder="Enter last name" />
       </Form.Item>
       <Form.Item
         label="Phone number"
@@ -80,14 +85,14 @@ export const AgentForm = (props: AgentFormProps) => {
           },
         ]}
       >
-        <Input />
+        <Input disabled={disabled} placeholder="Enter phone number" />
       </Form.Item>
       <Form.Item
         label="User role"
         name="role"
         rules={[{ required: true, message: "You must enter your role!" }]}
       >
-        <Select options={options} />
+        <Select options={options} disabled={disabled} />
       </Form.Item>
     </Form>
   );

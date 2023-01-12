@@ -3,6 +3,7 @@ import {
   useJob,
   useNavigate,
   usePrevious,
+  useToggle,
 } from "@moose-desk/core";
 import {
   Agent,
@@ -21,8 +22,9 @@ import { Table } from "src/components/UI/Table";
 import TableAction from "src/components/UI/Table/TableAction/TableAction";
 import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
+import { AgentFormValues } from "src/modules/agent/components/AgentForm";
+import { PopupAgent } from "src/modules/agent/components/PopupAgent";
 import { getStatusAgent } from "src/modules/agent/constant";
-import AgentRoutePaths from "src/modules/agent/routes/paths";
 
 interface AgentsIndexProps {}
 
@@ -30,6 +32,19 @@ const AgentsIndex = (props: AgentsIndexProps) => {
   const [agents, setAgents] = useState<Agent[]>([]);
   const navigate = useNavigate();
   const message = useMessage();
+  const {
+    state: popupAgent,
+    on: openPopupAgent,
+    off: closePopupAgent,
+  } = useToggle();
+
+  const [dataPopup, setDataPopup] = useState<AgentFormValues | undefined>({
+    email: "",
+    firstName: "",
+    lastName: "",
+    phoneNumber: "",
+    role: Role.BasicAgent,
+  });
 
   const defaultFilter: () => GetListAgentRequest = () => ({
     page: 1,
@@ -91,7 +106,8 @@ const AgentsIndex = (props: AgentsIndexProps) => {
   );
 
   const handleEdit = (record: Agent) => {
-    console.log(record);
+    setDataPopup(record);
+    openPopupAgent();
   };
 
   const onPagination = useCallback(
@@ -107,6 +123,11 @@ const AgentsIndex = (props: AgentsIndexProps) => {
     []
   );
 
+  const handleChangePopup = useCallback(() => {
+    getListAgentApi(filterData);
+    closePopupAgent();
+  }, []);
+
   useEffect(() => {
     if (prevFilter?.query !== filterData.query && filterData.query) {
       getListDebounce(filterData);
@@ -117,9 +138,20 @@ const AgentsIndex = (props: AgentsIndexProps) => {
 
   return (
     <div>
+      <PopupAgent
+        open={popupAgent}
+        dataForm={dataPopup as Agent}
+        onCancel={closePopupAgent}
+        onChange={handleChangePopup}
+      />
       <Header title="Account">
         <div className="flex-1 flex justify-end">
-          <ButtonAdd onClick={() => navigate(AgentRoutePaths.Agents.New)}>
+          <ButtonAdd
+            onClick={() => {
+              openPopupAgent();
+              setDataPopup(undefined);
+            }}
+          >
             Add agent
           </ButtonAdd>
         </div>
@@ -185,7 +217,6 @@ const AgentsIndex = (props: AgentsIndexProps) => {
                   <TableAction
                     record={record}
                     edit
-                    showDelete
                     onlyIcon
                     onEdit={handleEdit}
                   />

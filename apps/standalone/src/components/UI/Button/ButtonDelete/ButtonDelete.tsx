@@ -26,8 +26,8 @@ export const ButtonDelete = ({
             className={classNames([className, "btn-delete"])}
             danger
             type="primary"
-            {...props}
             icon={<DeleteOutlined />}
+            {...props}
           ></Button>
         </Popconfirm>
       ) : (
@@ -36,8 +36,8 @@ export const ButtonDelete = ({
           danger
           type="primary"
           onClick={onClick}
-          {...props}
           icon={<DeleteOutlined />}
+          {...props}
         >
           {children ?? "Delete"}
         </Button>

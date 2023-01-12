@@ -5684,7 +5684,6 @@ N.memo(
 );
 function rt(e, t) {
   return () => {
-    console.log(e(), "config");
     const r = new lt(e().baseURL, e());
     return Wf(t, (n) => (...o) => n(r, ...o));
   };
