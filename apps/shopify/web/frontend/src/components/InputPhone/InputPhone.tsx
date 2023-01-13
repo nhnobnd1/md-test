@@ -134,8 +134,6 @@ const InputPhone = (props: InputPhoneProps) => {
     ]);
   }, [flagValue]);
   useEffect(() => {
-    console.log("props", props.value);
-
     if (props.value) {
       setFlagValue(props.value?.slice(0, props.value?.indexOf("-")) || "84");
       setValueField(props.value?.slice(props.value?.indexOf("-") + 1) || "");
