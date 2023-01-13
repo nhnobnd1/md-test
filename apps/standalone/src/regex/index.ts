@@ -7,3 +7,4 @@ export function validateAsciiChars(input: string) {
   // eslint-disable-next-line no-control-regex
   return !/[^\x00-\x7F]/.test(input);
 }
+export const regexPhoneValidate = /^(?:[0-9]{1,4})+-(?:[0-9]{5,14})$/;

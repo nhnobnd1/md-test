@@ -1,6 +1,7 @@
 import { Input } from "antd";
 import { useMemo } from "react";
 import Form, { FormProps } from "src/components/UI/Form/Form";
+import InputPhone from "src/components/UI/InputPhone/InputPhone";
 
 export interface CustomerFormValues {
   _id?: string;
@@ -74,12 +75,12 @@ export const CustomerForm = ({
         name="phoneNumber"
         rules={[
           {
-            max: 255,
-            message: "Last name up to 255 characters",
+            pattern: /^(?:[0-9]{1,4})+-(?:[0-9]{5,14})$/,
+            message: "Invalid number phone format.",
           },
         ]}
       >
-        <Input disabled={disabled} placeholder="Enter phone number" />
+        <InputPhone placeholder="Enter phone number" />
       </Form.Item>
     </Form>
   );

@@ -1,0 +1,1424 @@
+[
+  {
+    "name": "Afghanistan",
+    "code": "AF",
+    "continent": "Asia",
+    "phoneNumberPrefix": 93
+  },
+  {
+    "name": "Åland Islands",
+    "code": "AX",
+    "continent": "Europe",
+    "phoneNumberPrefix": 358
+  },
+  {
+    "name": "Albania",
+    "code": "AL",
+    "continent": "Europe",
+    "phoneNumberPrefix": 355
+  },
+  {
+    "name": "Algeria",
+    "code": "DZ",
+    "continent": "Africa",
+    "phoneNumberPrefix": 213
+  },
+  {
+    "name": "Andorra",
+    "code": "AD",
+    "continent": "Europe",
+    "phoneNumberPrefix": 376
+  },
+  {
+    "name": "Angola",
+    "code": "AO",
+    "continent": "Africa",
+    "phoneNumberPrefix": 244
+  },
+  {
+    "name": "Anguilla",
+    "code": "AI",
+    "continent": "Central America",
+    "phoneNumberPrefix": 1
+  },
+  {
+    "name": "Antigua & Barbuda",
+    "code": "AG",
+    "continent": "Central America",
+    "phoneNumberPrefix": 1
+  },
+  {
+    "name": "Argentina",
+    "code": "AR",
+    "continent": "South America",
+    "phoneNumberPrefix": 54
+  },
+  {
+    "name": "Armenia",
+    "code": "AM",
+    "continent": "Europe",
+    "phoneNumberPrefix": 374
+  },
+  {
+    "name": "Aruba",
+    "code": "AW",
+    "continent": "Central America",
+    "phoneNumberPrefix": 297
+  },
+  {
+    "name": "Ascension Island",
+    "code": "AC",
+    "continent": "Africa",
+    "phoneNumberPrefix": 247
+  },
+  {
+    "name": "Australia",
+    "code": "AU",
+    "continent": "Oceania",
+    "phoneNumberPrefix": 61
+  },
+  {
+    "name": "Austria",
+    "code": "AT",
+    "continent": "Europe",
+    "phoneNumberPrefix": 43
+  },
+  {
+    "name": "Azerbaijan",
+    "code": "AZ",
+    "continent": "Asia",
+    "phoneNumberPrefix": 994
+  },
+  {
+    "name": "Bahamas",
+    "code": "BS",
+    "continent": "Central America",
+    "phoneNumberPrefix": 1
+  },
+  {
+    "name": "Bahrain",
+    "code": "BH",
+    "continent": "Asia",
+    "phoneNumberPrefix": 973
+  },
+  {
+    "name": "Bangladesh",
+    "code": "BD",
+    "continent": "Asia",
+    "phoneNumberPrefix": 880
+  },
+  {
+    "name": "Barbados",
+    "code": "BB",
+    "continent": "Central America",
+    "phoneNumberPrefix": 1
+  },
+  {
+    "name": "Belarus",
+    "code": "BY",
+    "continent": "Europe",
+    "phoneNumberPrefix": 375
+  },
+  {
+    "name": "Belgium",
+    "code": "BE",
+    "continent": "Europe",
+    "phoneNumberPrefix": 32
+  },
+  {
+    "name": "Belize",
+    "code": "BZ",
+    "continent": "Central America",
+    "phoneNumberPrefix": 501
+  },
+  {
+    "name": "Benin",
+    "code": "BJ",
+    "continent": "Africa",
+    "phoneNumberPrefix": 229
+  },
+  {
+    "name": "Bermuda",
+    "code": "BM",
+    "continent": "Central America",
+    "phoneNumberPrefix": 1
+  },
+  {
+    "name": "Bhutan",
+    "code": "BT",
+    "continent": "Asia",
+    "phoneNumberPrefix": 975
+  },
+  {
+    "name": "Bolivia",
+    "code": "BO",
+    "continent": "South America",
+    "phoneNumberPrefix": 591
+  },
+  {
+    "name": "Bosnia & Herzegovina",
+    "code": "BA",
+    "continent": "Europe",
+    "phoneNumberPrefix": 387
+  },
+  {
+    "name": "Botswana",
+    "code": "BW",
+    "continent": "Africa",
+    "phoneNumberPrefix": 267
+  },
+  {
+    "name": "Brazil",
+    "code": "BR",
+    "continent": "South America",
+    "phoneNumberPrefix": 55
+  },
+  {
+    "name": "British Indian Ocean Territory",
+    "code": "IO",
+    "continent": "Asia",
+    "phoneNumberPrefix": 246
+  },
+  {
+    "name": "British Virgin Islands",
+    "code": "VG",
+    "continent": "Central America",
+    "phoneNumberPrefix": 1
+  },
+  {
+    "name": "Brunei",
+    "code": "BN",
+    "continent": "Asia",
+    "phoneNumberPrefix": 673
+  },
+  {
+    "name": "Bulgaria",
+    "code": "BG",
+    "continent": "Europe",
+    "phoneNumberPrefix": 359
+  },
+  {
+    "name": "Burkina Faso",
+    "code": "BF",
+    "continent": "Africa",
+    "phoneNumberPrefix": 226
+  },
+  {
+    "name": "Burundi",
+    "code": "BI",
+    "continent": "Africa",
+    "phoneNumberPrefix": 257
+  },
+  {
+    "name": "Cambodia",
+    "code": "KH",
+    "continent": "Asia",
+    "phoneNumberPrefix": 855
+  },
+  {
+    "name": "Cameroon",
+    "code": "CM",
+    "continent": "Africa",
+    "phoneNumberPrefix": 237
+  },
+  {
+    "name": "Canada",
+    "code": "CA",
+    "continent": "North America",
+    "phoneNumberPrefix": 1
+  },
+  {
+    "name": "Cape Verde",
+    "code": "CV",
+    "continent": "Africa",
+    "phoneNumberPrefix": 238
+  },
+  {
+    "name": "Caribbean Netherlands",
+    "code": "BQ",
+    "continent": "South America",
+    "phoneNumberPrefix": 599
+  },
+  {
+    "name": "Cayman Islands",
+    "code": "KY",
+    "continent": "Central America",
+    "phoneNumberPrefix": 1
+  },
+  {
+    "name": "Central African Republic",
+    "code": "CF",
+    "continent": "Africa",
+    "phoneNumberPrefix": 236
+  },
+  {
+    "name": "Chad",
+    "code": "TD",
+    "continent": "Africa",
+    "phoneNumberPrefix": 235
+  },
+  {
+    "name": "Chile",
+    "code": "CL",
+    "continent": "South America",
+    "phoneNumberPrefix": 56
+  },
+  {
+    "name": "China",
+    "code": "CN",
+    "continent": "Asia",
+    "phoneNumberPrefix": 86
+  },
+  {
+    "name": "Christmas Island",
+    "code": "CX",
+    "continent": "Asia",
+    "phoneNumberPrefix": 61
+  },
+  {
+    "name": "Cocos (Keeling) Islands",
+    "code": "CC",
+    "continent": "Asia",
+    "phoneNumberPrefix": 891
+  },
+  {
+    "name": "Colombia",
+    "code": "CO",
+    "continent": "South America",
+    "phoneNumberPrefix": 57
+  },
+  {
+    "name": "Comoros",
+    "code": "KM",
+    "continent": "Africa",
+    "phoneNumberPrefix": 269
+  },
+  {
+    "name": "Congo - Brazzaville",
+    "code": "CG",
+    "continent": "Africa",
+    "phoneNumberPrefix": 242
+  },
+  {
+    "name": "Congo - Kinshasa",
+    "code": "CD",
+    "continent": "Africa",
+    "phoneNumberPrefix": 243
+  },
+  {
+    "name": "Cook Islands",
+    "code": "CK",
+    "continent": "Oceania",
+    "phoneNumberPrefix": 682
+  },
+  {
+    "name": "Costa Rica",
+    "code": "CR",
+    "continent": "Central America",
+    "phoneNumberPrefix": 506
+  },
+  {
+    "name": "Croatia",
+    "code": "HR",
+    "continent": "Europe",
+    "phoneNumberPrefix": 385
+  },
+  {
+    "name": "Curaçao",
+    "code": "CW",
+    "continent": "Central America",
+    "phoneNumberPrefix": 599
+  },
+  {
+    "name": "Cyprus",
+    "code": "CY",
+    "continent": "Europe",
+    "phoneNumberPrefix": 357
+  },
+  {
+    "name": "Czechia",
+    "code": "CZ",
+    "continent": "Europe",
+    "phoneNumberPrefix": 420
+  },
+  {
+    "name": "Côte d’Ivoire",
+    "code": "CI",
+    "continent": "Africa",
+    "phoneNumberPrefix": 225
+  },
+  {
+    "name": "Denmark",
+    "code": "DK",
+    "continent": "Europe",
+    "phoneNumberPrefix": 45
+  },
+  {
+    "name": "Djibouti",
+    "code": "DJ",
+    "continent": "Africa",
+    "phoneNumberPrefix": 253
+  },
+  {
+    "name": "Dominica",
+    "code": "DM",
+    "continent": "Central America",
+    "phoneNumberPrefix": 1
+  },
+  {
+    "name": "Dominican Republic",
+    "code": "DO",
+    "continent": "Central America",
+    "phoneNumberPrefix": 1
+  },
+  {
+    "name": "Ecuador",
+    "code": "EC",
+    "continent": "South America",
+    "phoneNumberPrefix": 593
+  },
+  {
+    "name": "Egypt",
+    "code": "EG",
+    "continent": "Africa",
+    "phoneNumberPrefix": 20
+  },
+  {
+    "name": "El Salvador",
+    "code": "SV",
+    "continent": "Central America",
+    "phoneNumberPrefix": 503
+  },
+  {
+    "name": "Equatorial Guinea",
+    "code": "GQ",
+    "continent": "Africa",
+    "phoneNumberPrefix": 240
+  },
+  {
+    "name": "Eritrea",
+    "code": "ER",
+    "continent": "Africa",
+    "phoneNumberPrefix": 291
+  },
+  {
+    "name": "Estonia",
+    "code": "EE",
+    "continent": "Europe",
+    "phoneNumberPrefix": 372
+  },
+  {
+    "name": "Eswatini",
+    "code": "SZ",
+    "continent": "Africa",
+    "phoneNumberPrefix": 268
+  },
+  {
+    "name": "Ethiopia",
+    "code": "ET",
+    "continent": "Africa",
+    "phoneNumberPrefix": 251
+  },
+  {
+    "name": "Falkland Islands",
+    "code": "FK",
+    "continent": "South America",
+    "phoneNumberPrefix": 500
+  },
+  {
+    "name": "Faroe Islands",
+    "code": "FO",
+    "continent": "Europe",
+    "phoneNumberPrefix": 298
+  },
+  {
+    "name": "Fiji",
+    "code": "FJ",
+    "continent": "Oceania",
+    "phoneNumberPrefix": 679
+  },
+  {
+    "name": "Finland",
+    "code": "FI",
+    "continent": "Europe",
+    "phoneNumberPrefix": 358
+  },
+  {
+    "name": "France",
+    "code": "FR",
+    "continent": "Europe",
+    "phoneNumberPrefix": 33
+  },
+  {
+    "name": "French Guiana",
+    "code": "GF",
+    "continent": "South America",
+    "phoneNumberPrefix": 594
+  },
+  {
+    "name": "French Polynesia",
+    "code": "PF",
+    "continent": "Oceania",
+    "phoneNumberPrefix": 689
+  },
+  {
+    "name": "French Southern Territories",
+    "code": "TF",
+    "continent": "Other",
+    "phoneNumberPrefix": 262
+  },
+  {
+    "name": "Gabon",
+    "code": "GA",
+    "continent": "Africa",
+    "phoneNumberPrefix": 241
+  },
+  {
+    "name": "Gambia",
+    "code": "GM",
+    "continent": "Africa",
+    "phoneNumberPrefix": 220
+  },
+  {
+    "name": "Georgia",
+    "code": "GE",
+    "continent": "Europe",
+    "phoneNumberPrefix": 995
+  },
+  {
+    "name": "Germany",
+    "code": "DE",
+    "continent": "Europe",
+    "phoneNumberPrefix": 49
+  },
+  {
+    "name": "Ghana",
+    "code": "GH",
+    "continent": "Africa",
+    "phoneNumberPrefix": 233
+  },
+  {
+    "name": "Gibraltar",
+    "code": "GI",
+    "continent": "Europe",
+    "phoneNumberPrefix": 350
+  },
+  {
+    "name": "Greece",
+    "code": "GR",
+    "continent": "Europe",
+    "phoneNumberPrefix": 30
+  },
+  {
+    "name": "Greenland",
+    "code": "GL",
+    "continent": "Europe",
+    "phoneNumberPrefix": 299
+  },
+  {
+    "name": "Grenada",
+    "code": "GD",
+    "continent": "Central America",
+    "phoneNumberPrefix": 1
+  },
+  {
+    "name": "Guadeloupe",
+    "code": "GP",
+    "continent": "Europe",
+    "phoneNumberPrefix": 590
+  },
+  {
+    "name": "Guatemala",
+    "code": "GT",
+    "continent": "Central America",
+    "phoneNumberPrefix": 502
+  },
+  {
+    "name": "Guernsey",
+    "code": "GG",
+    "continent": "Europe",
+    "phoneNumberPrefix": 44
+  },
+  {
+    "name": "Guinea",
+    "code": "GN",
+    "continent": "Africa",
+    "phoneNumberPrefix": 224
+  },
+  {
+    "name": "Guinea-Bissau",
+    "code": "GW",
+    "continent": "Africa",
+    "phoneNumberPrefix": 245
+  },
+  {
+    "name": "Guyana",
+    "code": "GY",
+    "continent": "South America",
+    "phoneNumberPrefix": 592
+  },
+  {
+    "name": "Haiti",
+    "code": "HT",
+    "continent": "Central America",
+    "phoneNumberPrefix": 509
+  },
+  {
+    "name": "Honduras",
+    "code": "HN",
+    "continent": "Central America",
+    "phoneNumberPrefix": 504
+  },
+  {
+    "name": "Hong Kong SAR",
+    "code": "HK",
+    "continent": "Asia",
+    "phoneNumberPrefix": 852
+  },
+  {
+    "name": "Hungary",
+    "code": "HU",
+    "continent": "Europe",
+    "phoneNumberPrefix": 36
+  },
+  {
+    "name": "Iceland",
+    "code": "IS",
+    "continent": "Europe",
+    "phoneNumberPrefix": 354
+  },
+  {
+    "name": "India",
+    "code": "IN",
+    "continent": "Asia",
+    "phoneNumberPrefix": 91
+  },
+  {
+    "name": "Indonesia",
+    "code": "ID",
+    "continent": "Asia",
+    "phoneNumberPrefix": 62
+  },
+  {
+    "name": "Iraq",
+    "code": "IQ",
+    "continent": "Asia",
+    "phoneNumberPrefix": 964
+  },
+  {
+    "name": "Ireland",
+    "code": "IE",
+    "continent": "Europe",
+    "phoneNumberPrefix": 353
+  },
+  {
+    "name": "Isle of Man",
+    "code": "IM",
+    "continent": "Europe",
+    "phoneNumberPrefix": 44
+  },
+  {
+    "name": "Israel",
+    "code": "IL",
+    "continent": "Asia",
+    "phoneNumberPrefix": 972
+  },
+  {
+    "name": "Italy",
+    "code": "IT",
+    "continent": "Europe",
+    "phoneNumberPrefix": 39
+  },
+  {
+    "name": "Jamaica",
+    "code": "JM",
+    "continent": "Central America",
+    "phoneNumberPrefix": 1
+  },
+  {
+    "name": "Japan",
+    "code": "JP",
+    "continent": "Asia",
+    "phoneNumberPrefix": 81
+  },
+  {
+    "name": "Jersey",
+    "code": "JE",
+    "continent": "Europe",
+    "phoneNumberPrefix": 44
+  },
+  {
+    "name": "Jordan",
+    "code": "JO",
+    "continent": "Asia",
+    "phoneNumberPrefix": 962
+  },
+  {
+    "name": "Kazakhstan",
+    "code": "KZ",
+    "continent": "Asia",
+    "phoneNumberPrefix": 7
+  },
+  {
+    "name": "Kenya",
+    "code": "KE",
+    "continent": "Africa",
+    "phoneNumberPrefix": 254
+  },
+  {
+    "name": "Kiribati",
+    "code": "KI",
+    "continent": "Oceania",
+    "phoneNumberPrefix": 686
+  },
+  {
+    "name": "Kosovo",
+    "code": "XK",
+    "continent": "Europe",
+    "phoneNumberPrefix": 383
+  },
+  {
+    "name": "Kuwait",
+    "code": "KW",
+    "continent": "Asia",
+    "phoneNumberPrefix": 965
+  },
+  {
+    "name": "Kyrgyzstan",
+    "code": "KG",
+    "continent": "Asia",
+    "phoneNumberPrefix": 996
+  },
+  {
+    "name": "Laos",
+    "code": "LA",
+    "continent": "Asia",
+    "phoneNumberPrefix": 856
+  },
+  {
+    "name": "Latvia",
+    "code": "LV",
+    "continent": "Europe",
+    "phoneNumberPrefix": 371
+  },
+  {
+    "name": "Lebanon",
+    "code": "LB",
+    "continent": "Asia",
+    "phoneNumberPrefix": 961
+  },
+  {
+    "name": "Lesotho",
+    "code": "LS",
+    "continent": "Africa",
+    "phoneNumberPrefix": 266
+  },
+  {
+    "name": "Liberia",
+    "code": "LR",
+    "continent": "Africa",
+    "phoneNumberPrefix": 231
+  },
+  {
+    "name": "Libya",
+    "code": "LY",
+    "continent": "Africa",
+    "phoneNumberPrefix": 218
+  },
+  {
+    "name": "Liechtenstein",
+    "code": "LI",
+    "continent": "Europe",
+    "phoneNumberPrefix": 423
+  },
+  {
+    "name": "Lithuania",
+    "code": "LT",
+    "continent": "Europe",
+    "phoneNumberPrefix": 370
+  },
+  {
+    "name": "Luxembourg",
+    "code": "LU",
+    "continent": "Europe",
+    "phoneNumberPrefix": 352
+  },
+  {
+    "name": "Macao SAR",
+    "code": "MO",
+    "continent": "Asia",
+    "phoneNumberPrefix": 853
+  },
+  {
+    "name": "Madagascar",
+    "code": "MG",
+    "continent": "Africa",
+    "phoneNumberPrefix": 261
+  },
+  {
+    "name": "Malawi",
+    "code": "MW",
+    "continent": "Africa",
+    "phoneNumberPrefix": 265
+  },
+  {
+    "name": "Malaysia",
+    "code": "MY",
+    "continent": "Asia",
+    "phoneNumberPrefix": 60
+  },
+  {
+    "name": "Maldives",
+    "code": "MV",
+    "continent": "Asia",
+    "phoneNumberPrefix": 960
+  },
+  {
+    "name": "Mali",
+    "code": "ML",
+    "continent": "Africa",
+    "phoneNumberPrefix": 223
+  },
+  {
+    "name": "Malta",
+    "code": "MT",
+    "continent": "Europe",
+    "phoneNumberPrefix": 356
+  },
+  {
+    "name": "Martinique",
+    "code": "MQ",
+    "continent": "Central America",
+    "phoneNumberPrefix": 596
+  },
+  {
+    "name": "Mauritania",
+    "code": "MR",
+    "continent": "Africa",
+    "phoneNumberPrefix": 222
+  },
+  {
+    "name": "Mauritius",
+    "code": "MU",
+    "continent": "Africa",
+    "phoneNumberPrefix": 230
+  },
+  {
+    "name": "Mayotte",
+    "code": "YT",
+    "continent": "Europe",
+    "phoneNumberPrefix": 262
+  },
+  {
+    "name": "Mexico",
+    "code": "MX",
+    "continent": "North America",
+    "phoneNumberPrefix": 52
+  },
+  {
+    "name": "Moldova",
+    "code": "MD",
+    "continent": "Europe",
+    "phoneNumberPrefix": 373
+  },
+  {
+    "name": "Monaco",
+    "code": "MC",
+    "continent": "Europe",
+    "phoneNumberPrefix": 377
+  },
+  {
+    "name": "Mongolia",
+    "code": "MN",
+    "continent": "Asia",
+    "phoneNumberPrefix": 976
+  },
+  {
+    "name": "Montenegro",
+    "code": "ME",
+    "continent": "Europe",
+    "phoneNumberPrefix": 382
+  },
+  {
+    "name": "Montserrat",
+    "code": "MS",
+    "continent": "Central America",
+    "phoneNumberPrefix": 1
+  },
+  {
+    "name": "Morocco",
+    "code": "MA",
+    "continent": "Africa",
+    "phoneNumberPrefix": 212
+  },
+  {
+    "name": "Mozambique",
+    "code": "MZ",
+    "continent": "Africa",
+    "phoneNumberPrefix": 258
+  },
+  {
+    "name": "Myanmar (Burma)",
+    "code": "MM",
+    "continent": "Asia",
+    "phoneNumberPrefix": 95
+  },
+  {
+    "name": "Namibia",
+    "code": "NA",
+    "continent": "Africa",
+    "phoneNumberPrefix": 264
+  },
+  {
+    "name": "Nauru",
+    "code": "NR",
+    "continent": "Oceania",
+    "phoneNumberPrefix": 674
+  },
+  {
+    "name": "Nepal",
+    "code": "NP",
+    "continent": "Asia",
+    "phoneNumberPrefix": 977
+  },
+  {
+    "name": "Netherlands",
+    "code": "NL",
+    "continent": "Europe",
+    "phoneNumberPrefix": 31
+  },
+  {
+    "name": "New Caledonia",
+    "code": "NC",
+    "continent": "Oceania",
+    "phoneNumberPrefix": 687
+  },
+  {
+    "name": "New Zealand",
+    "code": "NZ",
+    "continent": "Oceania",
+    "phoneNumberPrefix": 64
+  },
+  {
+    "name": "Nicaragua",
+    "code": "NI",
+    "continent": "Central America",
+    "phoneNumberPrefix": 505
+  },
+  {
+    "name": "Niger",
+    "code": "NE",
+    "continent": "Africa",
+    "phoneNumberPrefix": 227
+  },
+  {
+    "name": "Nigeria",
+    "code": "NG",
+    "continent": "Africa",
+    "phoneNumberPrefix": 234
+  },
+  {
+    "name": "Niue",
+    "code": "NU",
+    "continent": "Oceania",
+    "phoneNumberPrefix": 683
+  },
+  {
+    "name": "Norfolk Island",
+    "code": "NF",
+    "continent": "Oceania",
+    "phoneNumberPrefix": 672
+  },
+  {
+    "name": "North Macedonia",
+    "code": "MK",
+    "continent": "Europe",
+    "phoneNumberPrefix": 389
+  },
+  {
+    "name": "Norway",
+    "code": "NO",
+    "continent": "Europe",
+    "phoneNumberPrefix": 47
+  },
+  {
+    "name": "Oman",
+    "code": "OM",
+    "continent": "Asia",
+    "phoneNumberPrefix": 968
+  },
+  {
+    "name": "Pakistan",
+    "code": "PK",
+    "continent": "Asia",
+    "phoneNumberPrefix": 92
+  },
+  {
+    "name": "Palestinian Territories",
+    "code": "PS",
+    "continent": "Asia",
+    "phoneNumberPrefix": 970
+  },
+  {
+    "name": "Panama",
+    "code": "PA",
+    "continent": "Central America",
+    "phoneNumberPrefix": 507
+  },
+  {
+    "name": "Papua New Guinea",
+    "code": "PG",
+    "continent": "Oceania",
+    "phoneNumberPrefix": 675
+  },
+  {
+    "name": "Paraguay",
+    "code": "PY",
+    "continent": "South America",
+    "phoneNumberPrefix": 595
+  },
+  {
+    "name": "Peru",
+    "code": "PE",
+    "continent": "South America",
+    "phoneNumberPrefix": 51
+  },
+  {
+    "name": "Philippines",
+    "code": "PH",
+    "continent": "Asia",
+    "phoneNumberPrefix": 63
+  },
+  {
+    "name": "Pitcairn Islands",
+    "code": "PN",
+    "continent": "Oceania",
+    "phoneNumberPrefix": 64
+  },
+  {
+    "name": "Poland",
+    "code": "PL",
+    "continent": "Europe",
+    "phoneNumberPrefix": 48
+  },
+  {
+    "name": "Portugal",
+    "code": "PT",
+    "continent": "Europe",
+    "phoneNumberPrefix": 351
+  },
+  {
+    "name": "Qatar",
+    "code": "QA",
+    "continent": "Asia",
+    "phoneNumberPrefix": 974
+  },
+  {
+    "name": "Réunion",
+    "code": "RE",
+    "continent": "Europe",
+    "phoneNumberPrefix": 262
+  },
+  {
+    "name": "Romania",
+    "code": "RO",
+    "continent": "Europe",
+    "phoneNumberPrefix": 40
+  },
+  {
+    "name": "Russia",
+    "code": "RU",
+    "continent": "Asia",
+    "phoneNumberPrefix": 7
+  },
+  {
+    "name": "Rwanda",
+    "code": "RW",
+    "continent": "Africa",
+    "phoneNumberPrefix": 250
+  },
+  {
+    "name": "Samoa",
+    "code": "WS",
+    "continent": "Oceania",
+    "phoneNumberPrefix": 685
+  },
+  {
+    "name": "San Marino",
+    "code": "SM",
+    "continent": "Europe",
+    "phoneNumberPrefix": 378
+  },
+  {
+    "name": "São Tomé & Príncipe",
+    "code": "ST",
+    "continent": "Africa",
+    "phoneNumberPrefix": 239
+  },
+  {
+    "name": "Saudi Arabia",
+    "code": "SA",
+    "continent": "Asia",
+    "phoneNumberPrefix": 966
+  },
+  {
+    "name": "Senegal",
+    "code": "SN",
+    "continent": "Africa",
+    "phoneNumberPrefix": 221
+  },
+  {
+    "name": "Serbia",
+    "code": "RS",
+    "continent": "Europe",
+    "phoneNumberPrefix": 381
+  },
+  {
+    "name": "Seychelles",
+    "code": "SC",
+    "continent": "Africa",
+    "phoneNumberPrefix": 248
+  },
+  {
+    "name": "Sierra Leone",
+    "code": "SL",
+    "continent": "Africa",
+    "phoneNumberPrefix": 232
+  },
+  {
+    "name": "Singapore",
+    "code": "SG",
+    "continent": "Asia",
+    "phoneNumberPrefix": 65
+  },
+  {
+    "name": "Sint Maarten",
+    "code": "SX",
+    "continent": "Central America",
+    "phoneNumberPrefix": 1
+  },
+  {
+    "name": "Slovakia",
+    "code": "SK",
+    "continent": "Europe",
+    "phoneNumberPrefix": 421
+  },
+  {
+    "name": "Slovenia",
+    "code": "SI",
+    "continent": "Europe",
+    "phoneNumberPrefix": 386
+  },
+  {
+    "name": "Solomon Islands",
+    "code": "SB",
+    "continent": "Oceania",
+    "phoneNumberPrefix": 677
+  },
+  {
+    "name": "Somalia",
+    "code": "SO",
+    "continent": "Africa",
+    "phoneNumberPrefix": 252
+  },
+  {
+    "name": "South Africa",
+    "code": "ZA",
+    "continent": "Africa",
+    "phoneNumberPrefix": 27
+  },
+  {
+    "name": "South Georgia & South Sandwich Islands",
+    "code": "GS",
+    "continent": "Other",
+    "phoneNumberPrefix": 500
+  },
+  {
+    "name": "South Korea",
+    "code": "KR",
+    "continent": "Asia",
+    "phoneNumberPrefix": 82
+  },
+  {
+    "name": "South Sudan",
+    "code": "SS",
+    "continent": "Africa",
+    "phoneNumberPrefix": 211
+  },
+  {
+    "name": "Spain",
+    "code": "ES",
+    "continent": "Europe",
+    "phoneNumberPrefix": 34
+  },
+  {
+    "name": "Sri Lanka",
+    "code": "LK",
+    "continent": "Asia",
+    "phoneNumberPrefix": 94
+  },
+  {
+    "name": "St. Barthélemy",
+    "code": "BL",
+    "continent": "Central America",
+    "phoneNumberPrefix": 590
+  },
+  {
+    "name": "St. Helena",
+    "code": "SH",
+    "continent": "Africa",
+    "phoneNumberPrefix": 290
+  },
+  {
+    "name": "St. Kitts & Nevis",
+    "code": "KN",
+    "continent": "Central America",
+    "phoneNumberPrefix": 1
+  },
+  {
+    "name": "St. Lucia",
+    "code": "LC",
+    "continent": "Central America",
+    "phoneNumberPrefix": 1
+  },
+  {
+    "name": "St. Martin",
+    "code": "MF",
+    "continent": "Central America",
+    "phoneNumberPrefix": 590
+  },
+  {
+    "name": "St. Pierre & Miquelon",
+    "code": "PM",
+    "continent": "Central America",
+    "phoneNumberPrefix": 508
+  },
+  {
+    "name": "St. Vincent & Grenadines",
+    "code": "VC",
+    "continent": "Central America",
+    "phoneNumberPrefix": 1
+  },
+  {
+    "name": "Sudan",
+    "code": "SD",
+    "continent": "Africa",
+    "phoneNumberPrefix": 249
+  },
+  {
+    "name": "Suriname",
+    "code": "SR",
+    "continent": "South America",
+    "phoneNumberPrefix": 597
+  },
+  {
+    "name": "Svalbard & Jan Mayen",
+    "code": "SJ",
+    "continent": "Europe",
+    "phoneNumberPrefix": 47
+  },
+  {
+    "name": "Sweden",
+    "code": "SE",
+    "continent": "Europe",
+    "phoneNumberPrefix": 46
+  },
+  {
+    "name": "Switzerland",
+    "code": "CH",
+    "continent": "Europe",
+    "phoneNumberPrefix": 41
+  },
+  {
+    "name": "Taiwan",
+    "code": "TW",
+    "continent": "Asia",
+    "phoneNumberPrefix": 886
+  },
+  {
+    "name": "Tajikistan",
+    "code": "TJ",
+    "continent": "Asia",
+    "phoneNumberPrefix": 992
+  },
+  {
+    "name": "Tanzania",
+    "code": "TZ",
+    "continent": "Africa",
+    "phoneNumberPrefix": 255
+  },
+  {
+    "name": "Thailand",
+    "code": "TH",
+    "continent": "Asia",
+    "phoneNumberPrefix": 66
+  },
+  {
+    "name": "Timor-Leste",
+    "code": "TL",
+    "continent": "Oceania",
+    "phoneNumberPrefix": 670
+  },
+  {
+    "name": "Togo",
+    "code": "TG",
+    "continent": "Africa",
+    "phoneNumberPrefix": 228
+  },
+  {
+    "name": "Tokelau",
+    "code": "TK",
+    "continent": "Oceania",
+    "phoneNumberPrefix": 690
+  },
+  {
+    "name": "Tonga",
+    "code": "TO",
+    "continent": "Oceania",
+    "phoneNumberPrefix": 676
+  },
+  {
+    "name": "Trinidad & Tobago",
+    "code": "TT",
+    "continent": "Central America",
+    "phoneNumberPrefix": 1
+  },
+  {
+    "name": "Tristan da Cunha",
+    "code": "TA",
+    "continent": "Africa",
+    "phoneNumberPrefix": 2908
+  },
+  {
+    "name": "Tunisia",
+    "code": "TN",
+    "continent": "Africa",
+    "phoneNumberPrefix": 216
+  },
+  {
+    "name": "Turkey",
+    "code": "TR",
+    "continent": "Europe",
+    "phoneNumberPrefix": 90
+  },
+  {
+    "name": "Turkmenistan",
+    "code": "TM",
+    "continent": "Asia",
+    "phoneNumberPrefix": 993
+  },
+  {
+    "name": "Turks & Caicos Islands",
+    "code": "TC",
+    "continent": "Central America",
+    "phoneNumberPrefix": 1
+  },
+  {
+    "name": "Tuvalu",
+    "code": "TV",
+    "continent": "Oceania",
+    "phoneNumberPrefix": 688
+  },
+  {
+    "name": "U.S. Outlying Islands",
+    "code": "UM",
+    "continent": "Central America",
+    "phoneNumberPrefix": 1
+  },
+  {
+    "name": "Uganda",
+    "code": "UG",
+    "continent": "Africa",
+    "phoneNumberPrefix": 256
+  },
+  {
+    "name": "Ukraine",
+    "code": "UA",
+    "continent": "Europe",
+    "phoneNumberPrefix": 380
+  },
+  {
+    "name": "United Arab Emirates",
+    "code": "AE",
+    "continent": "Asia",
+    "phoneNumberPrefix": 971
+  },
+  {
+    "name": "United Kingdom",
+    "code": "GB",
+    "continent": "Europe",
+    "phoneNumberPrefix": 44
+  },
+  {
+    "name": "United States",
+    "code": "US",
+    "continent": "North America",
+    "phoneNumberPrefix": 1
+  },
+  {
+    "name": "Uruguay",
+    "code": "UY",
+    "continent": "South America",
+    "phoneNumberPrefix": 598
+  },
+  {
+    "name": "Uzbekistan",
+    "code": "UZ",
+    "continent": "Asia",
+    "phoneNumberPrefix": 998
+  },
+  {
+    "name": "Vanuatu",
+    "code": "VU",
+    "continent": "Oceania",
+    "phoneNumberPrefix": 678
+  },
+  {
+    "name": "Vatican City",
+    "code": "VA",
+    "continent": "Europe",
+    "phoneNumberPrefix": 39
+  },
+  {
+    "name": "Venezuela",
+    "code": "VE",
+    "continent": "South America",
+    "phoneNumberPrefix": 58
+  },
+  {
+    "name": "Vietnam",
+    "code": "VN",
+    "continent": "Asia",
+    "phoneNumberPrefix": 84
+  },
+  {
+    "name": "Wallis & Futuna",
+    "code": "WF",
+    "continent": "Oceania",
+    "phoneNumberPrefix": 681
+  },
+  {
+    "name": "Western Sahara",
+    "code": "EH",
+    "continent": "Africa",
+    "phoneNumberPrefix": 212
+  },
+  {
+    "name": "Yemen",
+    "code": "YE",
+    "continent": "Asia",
+    "phoneNumberPrefix": 967
+  },
+  {
+    "name": "Zambia",
+    "code": "ZM",
+    "continent": "Africa",
+    "phoneNumberPrefix": 260
+  },
+  {
+    "name": "Zimbabwe",
+    "code": "ZW",
+    "continent": "Africa",
+    "phoneNumberPrefix": 263
+  }
+]
