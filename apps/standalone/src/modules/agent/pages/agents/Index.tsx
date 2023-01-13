@@ -12,7 +12,7 @@ import {
   GetListAgentRequest,
   Role,
 } from "@moose-desk/repo";
-import { Tag } from "antd";
+import { Input, Tag } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import { map } from "rxjs";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
@@ -158,6 +158,21 @@ const AgentsIndex = (props: AgentsIndexProps) => {
           </ButtonAdd>
         </div>
       </Header>
+      <div className="search">
+        <Input.Search
+          placeholder="Search"
+          enterButton
+          onSearch={(searchText: string) => {
+            setFilterData((value) => {
+              return {
+                ...value,
+                query: searchText,
+                page: 1,
+              };
+            });
+          }}
+        />
+      </div>
       <div>
         {agents && (
           <>
@@ -172,6 +187,8 @@ const AgentsIndex = (props: AgentsIndexProps) => {
                       : record.firstName + " " + record.lastName}
                   </span>
                 )}
+                sortDirections={["ascend", "descend"]}
+                sortOrder={"ascend"}
               />
               <Table.Column
                 key="email"
