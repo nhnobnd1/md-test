@@ -92,7 +92,6 @@ const InputPhone = (props: InputPhoneProps) => {
     );
   }, [flagValue]);
   useEffect(() => {
-    console.log("props", props);
     if (props.value) {
       setFlagValue(props.value?.slice(0, props.value?.indexOf("-")));
       setValueField(props.value?.slice(props.value?.indexOf("-") + 1));

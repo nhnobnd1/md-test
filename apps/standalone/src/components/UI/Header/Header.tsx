@@ -5,7 +5,7 @@ import classNames from "classnames";
 
 interface HeaderProps {
   back?: boolean;
-  title: string;
+  title: string | React.ReactElement;
   children?: React.ReactNode;
   className?: string;
 }
