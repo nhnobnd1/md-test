@@ -54,7 +54,7 @@ export default function CreateCustomer() {
                 isError: true,
               });
             } else {
-              show("Create tag failed", {
+              show("Create customer failed", {
                 isError: true,
               });
             }
@@ -68,7 +68,7 @@ export default function CreateCustomer() {
               isError: true,
             });
           } else {
-            show("Create tag failed", {
+            show("Create customer failed", {
               isError: true,
             });
           }

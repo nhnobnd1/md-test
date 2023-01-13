@@ -108,6 +108,10 @@ export default function CustomerIndexPage() {
       sortOrder: 1,
     },
     {
+      sortBy: "email",
+      sortOrder: -1,
+    },
+    {
       sortBy: undefined,
       sortOrder: undefined,
     },

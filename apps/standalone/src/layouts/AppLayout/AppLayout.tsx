@@ -15,6 +15,7 @@ import { Loading } from "src/components/Loading";
 import Breadcrumb from "src/components/UI/Breadcrums/Breadcrumb";
 import useAuth from "src/hooks/useAuth";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
+import CustomersRoutePaths from "src/modules/customer/routes/paths";
 import DashboardRoutePaths from "src/modules/dashboard/routes/paths";
 import { useAppConfig } from "src/providers/AppConfigProviders";
 import ClarityUsersSolid from "~icons/clarity/users-solid";
@@ -44,9 +45,11 @@ export const AppLayout = (props: AppLayoutProps) => {
         onClick: () => navigate(generatePath(DashboardRoutePaths.Index)),
       },
       {
-        key: `case-2`,
+        key: `case-${CustomersRoutePaths.Index}`,
         icon: <ClarityUsersSolid />,
+        link: CustomersRoutePaths.Index,
         label: "Customers",
+        onClick: () => navigate(generatePath(CustomersRoutePaths.Index)),
       },
       {
         key: `case-3`,
