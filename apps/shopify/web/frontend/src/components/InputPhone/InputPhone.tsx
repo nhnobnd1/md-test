@@ -77,12 +77,14 @@ const InputPhone = (props: InputPhoneProps) => {
   const handleChangeValueSelect = useCallback(
     (value: string[]) => {
       setValueSelect([...value]);
-      props.onChange &&
-        props.onChange(
-          `${
-            dataSelect.find((option) => option.code === value[0])?.phonePrefix
-          }-${valueField}`
-        );
+      if (valueField !== "") {
+        props.onChange &&
+          props.onChange(
+            `${
+              dataSelect.find((option) => option.code === value[0])?.phonePrefix
+            }-${valueField}`
+          );
+      }
       togglePopoverSelect();
     },
     [valueSelect, valueField]
