@@ -12,7 +12,8 @@ import {
   GetListAgentRequest,
   Role,
 } from "@moose-desk/repo";
-import { Tag } from "antd";
+import { Input, TableProps, Tag } from "antd";
+import { SorterResult } from "antd/es/table/interface";
 import { useCallback, useEffect, useState } from "react";
 import { map } from "rxjs";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
@@ -138,6 +139,19 @@ const AgentsIndex = (props: AgentsIndexProps) => {
     }
   }, [filterData]);
 
+  const onChangeTable = useCallback(
+    (pagination, filters, sorter: SorterResult<Agent>, extra) => {
+      if (sorter.order && sorter.columnKey) {
+        setFilterData((value) => ({
+          ...value,
+          sortBy: sorter.columnKey as string,
+          sortOrder: sorter.order === "ascend" ? 1 : -1,
+        }));
+      }
+    },
+    [setFilterData]
+  ) as TableProps<Agent>["onChange"];
+
   return (
     <div>
       <PopupAgent
@@ -158,12 +172,31 @@ const AgentsIndex = (props: AgentsIndexProps) => {
           </ButtonAdd>
         </div>
       </Header>
+      <div className="search mb-6">
+        <Input.Search
+          placeholder="Search"
+          enterButton
+          onSearch={(searchText: string) => {
+            setFilterData((value) => {
+              return {
+                ...value,
+                query: searchText,
+                page: 1,
+              };
+            });
+          }}
+        />
+      </div>
       <div>
         {agents && (
           <>
-            <Table dataSource={agents} loading={loadingList}>
+            <Table
+              dataSource={agents}
+              loading={loadingList}
+              onChange={onChangeTable}
+            >
               <Table.Column
-                key="agent"
+                key="lastName"
                 title="Agent"
                 render={(_, record: Agent) => (
                   <span>
@@ -172,23 +205,35 @@ const AgentsIndex = (props: AgentsIndexProps) => {
                       : record.firstName + " " + record.lastName}
                   </span>
                 )}
+                sorter={{
+                  compare: (a: any, b: any) => a.lastName - b.lastName,
+                }}
               />
               <Table.Column
                 key="email"
                 title="Email"
                 dataIndex="email"
+                sorter={{
+                  compare: (a: any, b: any) => a.email - b.email,
+                }}
               ></Table.Column>
               <Table.Column
-                key="roles"
+                key="role"
                 title="Roles"
                 render={(_, record: Agent) => (
                   <span>{getLabelRole(record.role)}</span>
                 )}
+                sorter={{
+                  compare: (a: any, b: any) => a.roles - b.roles,
+                }}
               />
               <Table.Column
-                key="status"
+                key="isActive"
                 align="center"
                 title="Status"
+                sorter={{
+                  compare: (a: any, b: any) => a.isActive - b.isActive,
+                }}
                 render={(_, record: Agent) => (
                   <Tag
                     color={
