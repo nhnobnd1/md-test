@@ -55,6 +55,8 @@ export default function DetailsCustomer() {
     setDisable(value);
   };
   const { run: submit } = useJob((dataSubmit: any) => {
+    console.log(dataSubmit);
+
     const { _id } = dataSubmit;
     return CustomerRepository()
       .update(_id, dataSubmit)
