@@ -10,7 +10,7 @@ import {
 import { lastValueFrom, Observable } from "rxjs";
 import { Api } from "../api";
 import { useJob, useMount } from "../hooks";
-import TokenManager from "../utilities/TokenManager";
+import { TokenManager } from "../utilities/StorageManager";
 
 type Tokens = Partial<Record<TokenTypes, string>>;
 

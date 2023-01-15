@@ -3,6 +3,7 @@ export * from "./api";
 export * from "./authentication";
 export * from "./authorization";
 export * from "./components";
+export { default as coreConfig } from "./config";
 export * from "./hooks";
 export * from "./loading";
 export * from "./models";

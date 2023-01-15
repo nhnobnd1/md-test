@@ -1,15 +1,15 @@
 import { AxiosResponse } from "axios";
 import { merge } from "lodash-es";
 import {
-    ApiRequestConfig,
-    Interceptor,
-    RequestHeaderContentType
+  ApiRequestConfig,
+  Interceptor,
+  RequestHeaderContentType,
 } from "../models/api";
 import {
-    clearUndefinedProperties,
-    formData,
-    TokenManager,
-    urlEncoded
+  clearUndefinedProperties,
+  formData,
+  TokenManager,
+  urlEncoded,
 } from "../utilities";
 import createAxiosInstance from "./axios";
 import { AxiosObservable } from "./AxiosObservable";

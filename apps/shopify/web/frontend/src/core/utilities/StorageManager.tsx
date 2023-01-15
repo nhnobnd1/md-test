@@ -1,13 +1,7 @@
-type StorageType = "isAcceptUsing";
+import { StorageManagerClass } from "@moose-desk/core";
 
-class StorageManager<Types extends StorageType> {
-  getToken(type: Types) {
-    return localStorage.getItem(type) || "";
-  }
+type TokenTypes = "base_token" | "refresh_token";
 
-  setToken(type: Types, token: string) {
-    return localStorage.setItem(type, token);
-  }
-}
+type StorageType = "isAcceptUsing" | TokenTypes;
 
-export default new StorageManager();
+export default new StorageManagerClass<StorageType>();
