@@ -19,6 +19,7 @@ import {
 import env from "src/core/env";
 import ModuleLoader from "src/core/utilities/ModuleLoader";
 import ErrorBoundary from "src/ErrorBoundary";
+import InitApp from "src/providers/InitAppProviders";
 import { StoreProviders } from "src/providers/StoreProviders";
 import("src/styles/index.scss").then(() => {
   import("@shopify/polaris/build/esm/styles.css");
@@ -47,20 +48,22 @@ ReactDOM.render(
               >
                 <ApiLoadingHandlerProvider>
                   <CookiesProvider>
-                    <AuthProvider
-                      defaultTokens={{
-                        base_token: TokenManager.getToken("base_token"),
-                        refresh_token: TokenManager.getToken("refresh_token"),
-                      }}
-                    >
-                      <StoreProviders>
-                        <ModuleLoader>
-                          <LazyComponent
-                            component={lazy(() => import("src/App"))}
-                          />
-                        </ModuleLoader>
-                      </StoreProviders>
-                    </AuthProvider>
+                    <InitApp>
+                      <AuthProvider
+                        defaultTokens={{
+                          base_token: TokenManager.getToken("base_token"),
+                          refresh_token: TokenManager.getToken("refresh_token"),
+                        }}
+                      >
+                        <StoreProviders>
+                          <ModuleLoader>
+                            <LazyComponent
+                              component={lazy(() => import("src/App"))}
+                            />
+                          </ModuleLoader>
+                        </StoreProviders>
+                      </AuthProvider>
+                    </InitApp>
                   </CookiesProvider>
                 </ApiLoadingHandlerProvider>
               </LoadingProvider>

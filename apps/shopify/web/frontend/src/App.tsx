@@ -6,6 +6,7 @@ import { useCookies } from "react-cookie";
 import env from "src/core/env";
 import { useApi, useShopDomain } from "src/hooks";
 import useAuth from "src/hooks/useAuth";
+import { useSubdomain } from "src/hooks/useSubdomain";
 import { LoginResponse } from "src/models/Auth";
 import { useStore } from "src/providers/StoreProviders";
 import { AppRoutes } from "src/routes";
@@ -14,6 +15,7 @@ export default function App() {
   const { routes } = useRoutes();
 
   const shop = useShopDomain();
+  const { subDomain } = useSubdomain();
   const api = useApi();
   const [cookies, setCookie] = useCookies();
   const { show } = useToast();
@@ -24,6 +26,7 @@ export default function App() {
     console.log("--- debug env: ", env);
     console.log("isLoggedIn: ", isLoggedIn);
     console.log("user: ", user);
+
     if ((shop && !isLoggedIn) || (!user && shop)) {
       console.log("Start login with token...");
       const payload = cookies[process.env.HOST ?? shop];
