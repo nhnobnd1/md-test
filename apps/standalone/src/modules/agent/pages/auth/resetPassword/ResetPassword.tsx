@@ -60,7 +60,7 @@ const ResetPassword = (props: ResetPasswordProps) => {
           });
         }),
         catchError((err) => {
-          if (["TOKEN_INVALID"].includes(err.response.data.errorCode)) {
+          if (["TOKEN_INVALID"].includes(err.response.data.error)) {
             message.loading.hide().then(() => {
               notification.error("Token has expired or is not valid.", {
                 description: "Please submit a new request.",
