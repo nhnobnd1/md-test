@@ -8,7 +8,7 @@ export declare type Customer = {
     updatedDatetime?: string;
     updatedTimestamp?: string;
     updatedBy?: string;
-    deleted: boolean;
+    deleted?: boolean;
     deletedDatetime?: string;
     deletedTimestamp?: string;
     deletedBy?: string;

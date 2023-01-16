@@ -17,6 +17,7 @@ import useAuth from "src/hooks/useAuth";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
 import CustomersRoutePaths from "src/modules/customer/routes/paths";
 import DashboardRoutePaths from "src/modules/dashboard/routes/paths";
+import SettingRoutePaths from "src/modules/setting/routes/paths";
 import { useAppConfig } from "src/providers/AppConfigProviders";
 import ClarityUsersSolid from "~icons/clarity/users-solid";
 import FeUsers from "~icons/fe/users";
@@ -76,8 +77,11 @@ export const AppLayout = (props: AppLayoutProps) => {
             icon: <MdiFolderNetworkOutline />,
             children: [
               {
-                key: `case-3-2-1`,
+                key: `case-${SettingRoutePaths.Workdesk.Tag.Index}`,
                 label: "Tags",
+                link: SettingRoutePaths.Workdesk.Tag.Index,
+                onClick: () =>
+                  navigate(generatePath(SettingRoutePaths.Workdesk.Tag.Index)),
               },
             ],
           },
