@@ -9,6 +9,7 @@ import {
 } from "react";
 import { lastValueFrom, Observable } from "rxjs";
 import { Api } from "../api";
+import config from "../config";
 import { useJob, useMount } from "../hooks";
 import { TokenManager } from "../utilities/StorageManager";
 
@@ -26,14 +27,14 @@ const AuthContext = createContext<AuthContextType<any> | undefined>(undefined);
 
 interface AuthProviderProps {
   children?: ReactNode;
-  defaultTokens?: Tokens;
+  defaultTokens?: () => Tokens;
   fetchUserOnLogin?: (tokens: Tokens) => Observable<any>;
   fetchRefreshToken?: (refreshToken: string) => Observable<any>;
 }
 
 export const AuthProvider = ({
   children,
-  defaultTokens = {},
+  defaultTokens = () => ({}),
   fetchUserOnLogin = () =>
     new Observable((observable) => observable.next(undefined)),
   fetchRefreshToken,
@@ -63,12 +64,12 @@ export const AuthProvider = ({
   }, []);
 
   // Fetch user and change login state on mount
-  useMount(() => {
-    if (Object.values(defaultTokens)[0]?.length) {
-      fetchUser(defaultTokens);
+  useEffect(() => {
+    if (Object.values(defaultTokens())[0]?.length) {
+      fetchUser(defaultTokens());
       setIsLoggedIn(true);
     }
-  });
+  }, [config.subdomain]);
 
   // Set fetched user
   useEffect(() => {

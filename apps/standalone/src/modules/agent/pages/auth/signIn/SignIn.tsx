@@ -72,17 +72,18 @@ export const SignIn = (props: SignInProps) => {
               message.success("Requested to resend OTP");
             }
             const error = err.response.data.error;
+            const errorCode = err.response.data.errorCode;
             if (
               [
                 "RequiresTwoFactor_Authenticator",
                 "RequiresTwoFactor_Email",
-              ].includes(err.response.data.errorCode)
+              ].includes(errorCode)
             ) {
               setView("factor2Auth");
               setFactor((value) => {
                 return {
                   type:
-                    err.response.data.errorCode === "RequiresTwoFactor_Email"
+                    errorCode === "RequiresTwoFactor_Email"
                       ? "email"
                       : "authenticator",
                   state: {
@@ -93,12 +94,10 @@ export const SignIn = (props: SignInProps) => {
                 };
               });
             } else {
-              if (
-                ["INVALID_AUTHENTICATOR_CODE"].includes(
-                  err.response.data.errorCode
-                )
-              ) {
+              if (["INVALID_AUTHENTICATOR_CODE"].includes(errorCode)) {
                 setErrorMessage(`Wrong code. Try again.`);
+              } else if (["USER_NOT_FOUND"].includes(errorCode)) {
+                setErrorMessage("This account does not exist");
               } else {
                 message.error("Login failed");
                 const numberLoginFailed = error[0].split("/")[0];

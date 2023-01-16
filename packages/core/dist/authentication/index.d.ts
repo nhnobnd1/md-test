@@ -10,7 +10,7 @@ interface AuthContextType<AccountType> {
 }
 interface AuthProviderProps {
     children?: ReactNode;
-    defaultTokens?: Tokens;
+    defaultTokens?: () => Tokens;
     fetchUserOnLogin?: (tokens: Tokens) => Observable<any>;
     fetchRefreshToken?: (refreshToken: string) => Observable<any>;
 }

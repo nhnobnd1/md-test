@@ -19,6 +19,7 @@ const AppRoutesBased = () => {
   const { routes } = useRoutes();
 
   useEffect(() => {
+    console.log("isLoggedIn", isLoggedIn);
     RouterHandler.registerMiddleware({
       guest: () => true,
       user: () => isLoggedIn || <Navigate to={AgentRoutePaths.Login} />,

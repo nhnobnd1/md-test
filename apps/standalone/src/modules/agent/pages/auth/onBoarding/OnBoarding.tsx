@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { map } from "rxjs";
 import Images from "src/assets/images";
 import { Loading } from "src/components/Loading";
+import { useSubdomain } from "src/hooks/useSubdomain";
 import { SetPassword } from "src/modules/agent/components/SetPassword";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
 import "./OnBoarding.scss";
@@ -36,6 +37,8 @@ export const OnBoarding = (props: OnBoardingProps) => {
     agentName: "",
     token: "",
   });
+
+  const { getSubDomain } = useSubdomain();
 
   const { run: CheckValidTokenApi, processing } = useJob(
     (payload: CheckTokenNewAgentRequest) => {
@@ -66,7 +69,7 @@ export const OnBoarding = (props: OnBoardingProps) => {
                 break;
               case TypeCheckTokenNewAgent.USER_ACTIVE:
                 setIsPageErr({
-                  status: true,
+                  status: false,
                   message: "You have completed the onboarding process.",
                 });
                 break;
@@ -134,8 +137,13 @@ export const OnBoarding = (props: OnBoardingProps) => {
                         </div>
                         <div className="p-5">
                           <div className="text-center mb-4">
-                            <span className="link font-medium">
-                              https://%sub-domain%.moosedesk.com/login
+                            <span
+                              className="link font-medium"
+                              onClick={() =>
+                                navigate(generatePath(AgentRoutePaths.Login))
+                              }
+                            >
+                              https://{getSubDomain()}.moosedesk.com/login
                             </span>
                           </div>
                           <div className="text-center">
