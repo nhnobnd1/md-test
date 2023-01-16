@@ -14,6 +14,7 @@ import {
 import AgentRoutePaths from "src/modules/agent/routes/paths";
 import CustomersRoutePaths from "src/modules/customers/routes/paths";
 import DashboardRoutePaths from "src/modules/dashboard/routes/paths";
+import GroupsRoutePaths from "src/modules/groups/routes/paths";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
 
 export interface SubNavigation extends SubNavigationItem {
@@ -65,7 +66,10 @@ const caseNavigation: NavigationItems[] = [
         label: "People",
         url: AgentRoutePaths.Index,
         icon: () => <ProfileMinor />,
-        tabBarNavigation: [{ label: "Agents", url: AgentRoutePaths.Index }],
+        tabBarNavigation: [
+          { label: "Agents", url: AgentRoutePaths.Index },
+          { label: "Groups", url: GroupsRoutePaths.Index },
+        ],
       },
       {
         label: "Workdesk",

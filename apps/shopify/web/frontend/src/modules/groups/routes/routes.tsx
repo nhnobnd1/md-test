@@ -1,12 +1,12 @@
 import { IRoute } from "@moose-desk/core";
 import { lazy } from "react";
 import StorageManager from "src/core/utilities/StorageManager";
-import AgentRoutePaths from "src/modules/agent/routes/paths";
+import GroupsRoutePaths from "src/modules/groups/routes/paths";
 import OnBoardingRoutePaths from "src/modules/onBoarding/routes/paths";
 
-const agentRoutes: IRoute = {
-  path: AgentRoutePaths.Index,
-  title: "Agents",
+const groupsRoutes: IRoute = {
+  path: GroupsRoutePaths.Index,
+  title: "Groups",
   component: lazy(() => import("src/layouts/MainLayout")),
   middleware: (route, navigate) => {
     if (StorageManager.getToken("isAcceptUsing")) {
@@ -16,22 +16,21 @@ const agentRoutes: IRoute = {
       return false;
     }
   },
-
   routes: [
     {
-      path: AgentRoutePaths.Index,
+      path: GroupsRoutePaths.Index,
       index: true,
-      component: lazy(() => import("src/modules/agent/pages/Index")),
+      component: lazy(() => import("src/modules/groups/pages/Index")),
     },
     {
-      path: AgentRoutePaths.Create,
-      component: lazy(() => import("src/modules/agent/pages/CreateAgent")),
+      path: GroupsRoutePaths.Create,
+      component: lazy(() => import("src/modules/groups/pages/CreateGroup")),
     },
     {
-      path: AgentRoutePaths.Detail,
-      component: lazy(() => import("src/modules/agent/pages/DetailAgent")),
+      path: GroupsRoutePaths.Detail,
+      component: lazy(() => import("src/modules/groups/pages/DetailGroup")),
     },
   ],
 };
 
-export default agentRoutes;
+export default groupsRoutes;

@@ -37,7 +37,7 @@ const ResetPassword = (props: ResetPasswordProps) => {
 
   useEffect(() => {
     const userId = searchParams.get("userId");
-    const token = searchParams.get("token");
+    const token = searchParams.get("resetToken");
     if (userId && token) {
       setAccount({
         userId,

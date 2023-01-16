@@ -141,6 +141,7 @@ const InputPhone = (props: InputPhoneProps) => {
     ]);
   }, [flagValue]);
   useEffect(() => {
+    console.log(props.value, "value");
     if (props.value) {
       setFlagValue(props.value?.slice(0, props.value?.indexOf("-")) || "84");
       setValueField(props.value?.slice(props.value?.indexOf("-") + 1) || "");
@@ -150,7 +151,7 @@ const InputPhone = (props: InputPhoneProps) => {
     } else {
       setLabelHidden(true);
     }
-  }, [props]);
+  }, [props.value, props.label]);
   return (
     <TextField
       type="tel"
