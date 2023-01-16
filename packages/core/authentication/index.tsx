@@ -154,17 +154,15 @@ export const AuthProvider = ({
             return new Promise((resolve, reject) => {
               lastValueFrom(fetchRefreshToken(token))
                 .then(({ data }) => {
-                  console.log("refresh tokens", data);
                   setIsRefreshing(false);
-                  processQueue(null, data.accessToken);
+                  processQueue(null, data.data.accessToken);
                   login({
-                    base_token: data.accessToken,
-                    refresh_token: data.refreshToken,
+                    base_token: data.data.accessToken,
+                    refresh_token: data.data.refreshToken,
                   });
                   resolve(lastValueFrom(axios.request(config)));
                 })
                 .catch((error) => {
-                  console.log("err: ", error);
                   setIsRefreshing(true);
                   logout();
                   processQueue(error);
