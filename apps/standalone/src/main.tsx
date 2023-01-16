@@ -15,6 +15,7 @@ import env from "src/core/env";
 import ModuleLoader from "src/core/utilities/ModuleLoader";
 import ErrorBoundary from "src/ErrorBoundary";
 import AppConfigProviders from "src/providers/AppConfigProviders";
+import InitApp from "src/providers/InitAppProviders";
 import { StoreProviders } from "src/providers/StoreProviders";
 import("src/styles/tailwind.scss").then(() =>
   import("antd/dist/reset.css").then(() => import("src/styles/index.scss"))
@@ -36,22 +37,24 @@ ReactDOM.render(
         >
           <ApiLoadingHandlerProvider>
             <CookiesProvider>
-              <AuthProvider
-                defaultTokens={{
-                  base_token: TokenManager.getToken("base_token"),
-                  refresh_token: TokenManager.getToken("refresh_token"),
-                }}
-              >
-                <StoreProviders>
-                  <AppConfigProviders>
-                    <ModuleLoader>
-                      <LazyComponent
-                        component={lazy(() => import("src/App"))}
-                      />
-                    </ModuleLoader>
-                  </AppConfigProviders>
-                </StoreProviders>
-              </AuthProvider>
+              <InitApp>
+                <AuthProvider
+                  defaultTokens={{
+                    base_token: TokenManager.getToken("base_token"),
+                    refresh_token: TokenManager.getToken("refresh_token"),
+                  }}
+                >
+                  <StoreProviders>
+                    <AppConfigProviders>
+                      <ModuleLoader>
+                        <LazyComponent
+                          component={lazy(() => import("src/App"))}
+                        />
+                      </ModuleLoader>
+                    </AppConfigProviders>
+                  </StoreProviders>
+                </AuthProvider>
+              </InitApp>
             </CookiesProvider>
           </ApiLoadingHandlerProvider>
         </LoadingProvider>
