@@ -1,4 +1,3 @@
-import { SearchOutlined, SortAscendingOutlined } from "@ant-design/icons";
 import {
   PageComponent,
   useDebounceFn,
@@ -13,7 +12,8 @@ import {
   CustomerRepository,
   GetListCustomerRequest,
 } from "@moose-desk/repo";
-import { Button, Input, Popover, Radio, Space } from "antd";
+import { Input, TableProps } from "antd";
+import { SorterResult } from "antd/es/table/interface";
 import { useCallback, useEffect, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
@@ -44,70 +44,22 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
     lastName: "",
     phoneNumber: "",
   });
-  const sortTemplate = [
-    {
-      sortBy: "lastName",
-      sortOrder: 1,
-    },
-    {
-      sortBy: "lastName",
-      sortOrder: -1,
-    },
-    {
-      sortBy: "email",
-      sortOrder: 1,
-    },
-    {
-      sortBy: "email",
-      sortOrder: -1,
-    },
-    {
-      sortBy: undefined,
-      sortOrder: undefined,
-    },
-  ];
-  const choices = [
-    { label: "Sort by name A-Z", value: 0 },
-    { label: "Sort by name Z-A", value: 1 },
-    { label: "Sort by email A-Z", value: 2 },
-    { label: "Sort by email Z-A", value: 3 },
-  ];
-  const [sortCustomer, setSortCustomer] = useState(4);
-  const optionChoices = (
-    <Radio.Group
-      name="sortChoice"
-      defaultValue={4}
-      value={sortCustomer}
-      onChange={(e) => setSortCustomer(e.target.value)}
-    >
-      <Space direction="vertical">
-        {choices.map((option) => (
-          <Radio key={option.value} value={option.value}>
-            {option.label}
-          </Radio>
-        ))}
-      </Space>
-    </Radio.Group>
-  );
-  const [valueSortCustomer, setValueSortCustomer] = useState(
-    sortTemplate[sortCustomer]
-  );
-
   const defaultFilter: () => GetListCustomerRequest = () => ({
     page: 1,
     limit: env.DEFAULT_PAGE_SIZE,
     query: "",
-    ...valueSortCustomer,
+    sortBy: undefined,
+    sortOrder: undefined,
   });
 
   const [filterData, setFilterData] =
     useState<BaseListCustomerRequest>(defaultFilter);
 
-  const handleChangeValueInput = useCallback((e) => {
+  const handleChangeValueInput = useCallback((value: string) => {
     setFilterData(() => ({
       page: 1,
       ...filterData,
-      query: e.target.value,
+      query: value,
     }));
   }, []);
   const [meta, setMeta] = useState<BaseMetaDataListResponse>();
@@ -164,58 +116,47 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
     getListCustomerApi(filterData);
     closePopupCustomer();
   }, []);
-  const { run: deleteCustomerApi, processing: loadingDelete } = useJob(
-    (id: string[]) => {
-      message.loading.show("Removing customer");
-      return CustomerRepository()
-        .delete({
-          ids: id,
-        })
-        .pipe(
-          map(({ data }) => {
-            message.loading.hide();
-            if (data.statusCode === 200) {
-              notification.success(
-                "The selected customer has been removed from the system."
-              );
-              getListCustomerApi({
-                page: 1,
-                limit: env.DEFAULT_PAGE_SIZE,
-              });
-            } else {
-              notification.error("There is an error with remove customer", {
-                description: "Remove customer failed",
-                style: {
-                  width: 450,
-                },
-              });
-            }
-          }),
-          catchError((err) => {
+  const { run: deleteCustomerApi } = useJob((id: string[]) => {
+    message.loading.show("Removing customer");
+    return CustomerRepository()
+      .delete({
+        ids: id,
+      })
+      .pipe(
+        map(({ data }) => {
+          message.loading.hide();
+          if (data.statusCode === 200) {
+            notification.success(
+              "The selected customer has been removed from the system."
+            );
+            getListCustomerApi({
+              page: 1,
+              limit: env.DEFAULT_PAGE_SIZE,
+            });
+          } else {
             notification.error("There is an error with remove customer", {
               description: "Remove customer failed",
               style: {
                 width: 450,
               },
             });
-            return of(err);
-          })
-        );
-    }
-  );
+          }
+        }),
+        catchError((err) => {
+          notification.error("There is an error with remove customer", {
+            description: "Remove customer failed",
+            style: {
+              width: 450,
+            },
+          });
+          return of(err);
+        })
+      );
+  });
 
   const handleDeleteCustomer = useCallback((customer: Customer) => {
     deleteCustomerApi([customer._id]);
   }, []);
-  useEffect(() => {
-    setValueSortCustomer(sortTemplate[sortCustomer]);
-  }, [sortCustomer]);
-  useEffect(() => {
-    setFilterData({
-      ...filterData,
-      ...valueSortCustomer,
-    });
-  }, [valueSortCustomer]);
   useEffect(() => {
     if (prevFilter?.query !== filterData.query && filterData.query) {
       getListDebounce(filterData);
@@ -223,7 +164,18 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
       getListCustomerApi(filterData);
     }
   }, [filterData]);
-
+  const onChangeTable = useCallback(
+    (pagination: any, filters: any, sorter: SorterResult<Customer>) => {
+      if (sorter.order && sorter.columnKey) {
+        setFilterData((value) => ({
+          ...value,
+          sortBy: sorter.columnKey as string,
+          sortOrder: sorter.order === "ascend" ? 1 : -1,
+        }));
+      }
+    },
+    [setFilterData]
+  ) as TableProps<Customer>["onChange"];
   return (
     <div>
       <PopupCustomer
@@ -245,41 +197,39 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
         </div>
       </Header>
       <div className="pb-2">
-        <div className="flex">
-          <Input
-            placeholder=""
-            prefix={<SearchOutlined />}
-            className="mr-2"
-            value={filterData.query}
-            onChange={handleChangeValueInput}
-            allowClear
-          />
-          <Popover
-            content={optionChoices}
-            placement="bottomRight"
-            trigger="click"
-          >
-            <Button icon={<SortAscendingOutlined />} className="pl-4 pr-4">
-              Sort
-            </Button>
-          </Popover>
-        </div>
+        <Input.Search
+          placeholder="Search"
+          className="mr-2"
+          onSearch={handleChangeValueInput}
+          allowClear
+          enterButton
+        />
       </div>
       <div>
         {customers && (
           <>
-            <Table dataSource={customers} loading={loadingList}>
+            <Table
+              dataSource={customers}
+              loading={loadingList}
+              onChange={onChangeTable}
+            >
               <Table.Column
-                key="customer"
+                key="lastName"
                 title="Customer name"
                 render={(_, record: Customer) => (
                   <span>{`${record.firstName} ${record.lastName}`}</span>
                 )}
+                sorter={{
+                  compare: (a: any, b: any) => a.lastName - b.lastName,
+                }}
               />
               <Table.Column
                 key="email"
                 title="Email address"
                 dataIndex="email"
+                sorter={{
+                  compare: (a: any, b: any) => a.email - b.email,
+                }}
               ></Table.Column>
               <Table.Column
                 key="numberOfTicket"

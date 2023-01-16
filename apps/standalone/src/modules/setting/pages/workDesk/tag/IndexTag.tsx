@@ -1,4 +1,3 @@
-import { SearchOutlined, SortAscendingOutlined } from "@ant-design/icons";
 import {
   PageComponent,
   useDebounceFn,
@@ -13,7 +12,8 @@ import {
   Tag,
   TagRepository,
 } from "@moose-desk/repo";
-import { Button, Input, Popover, Radio, Space } from "antd";
+import { Input, TableProps } from "antd";
+import { SorterResult } from "antd/es/table/interface";
 import dayjs from "dayjs";
 import { useCallback, useEffect, useState } from "react";
 import { catchError, map, of } from "rxjs";
@@ -39,68 +39,22 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
     name: "",
     description: "",
   });
-  const sortTemplate = [
-    {
-      sortBy: "name",
-      sortOrder: 1,
-    },
-    {
-      sortBy: "name",
-      sortOrder: -1,
-    },
-    {
-      sortBy: "email",
-      sortOrder: 1,
-    },
-    {
-      sortBy: "email",
-      sortOrder: -1,
-    },
-    {
-      sortBy: undefined,
-      sortOrder: undefined,
-    },
-  ];
-  const choices = [
-    { label: "Sort by tag name A-Z", value: 0 },
-    { label: "Sort by tag name Z-A", value: 1 },
-    { label: "Sort by email A-Z", value: 2 },
-    { label: "Sort by email Z-A", value: 3 },
-  ];
-  const [sortTag, setSortTag] = useState(4);
-  const optionChoices = (
-    <Radio.Group
-      name="sortChoice"
-      defaultValue={4}
-      value={sortTag}
-      onChange={(e) => setSortTag(e.target.value)}
-    >
-      <Space direction="vertical">
-        {choices.map((option) => (
-          <Radio key={option.value} value={option.value}>
-            {option.label}
-          </Radio>
-        ))}
-      </Space>
-    </Radio.Group>
-  );
-  const [valueSortTag, setValueSortTag] = useState(sortTemplate[sortTag]);
-
   const defaultFilter: () => GetListTagRequest = () => ({
     page: 1,
     limit: env.DEFAULT_PAGE_SIZE,
     query: "",
-    ...valueSortTag,
+    sortBy: undefined,
+    sortOrder: undefined,
   });
 
   const [filterData, setFilterData] =
     useState<BaseListTagRequest>(defaultFilter);
 
-  const handleChangeValueInput = useCallback((e) => {
+  const handleChangeValueInput = useCallback((value: string) => {
     setFilterData(() => ({
       page: 1,
       ...filterData,
-      query: e.target.value,
+      query: value,
     }));
   }, []);
   const [meta, setMeta] = useState<BaseMetaDataListResponse>();
@@ -157,58 +111,47 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
     getListTagApi(filterData);
     closePopupTag();
   }, []);
-  const { run: deleteTagApi, processing: loadingDelete } = useJob(
-    (id: string[]) => {
-      message.loading.show("Removing tag...");
-      return TagRepository()
-        .delete({
-          ids: id,
-        })
-        .pipe(
-          map(({ data }) => {
-            message.loading.hide();
-            if (data.statusCode === 200) {
-              notification.success(
-                "The selected tag has been removed from the system."
-              );
-              getListTagApi({
-                page: 1,
-                limit: env.DEFAULT_PAGE_SIZE,
-              });
-            } else {
-              notification.error("There is an error with remove tag.", {
-                description: "Remove tag failed",
-                style: {
-                  width: 450,
-                },
-              });
-            }
-          }),
-          catchError((err) => {
+  const { run: deleteTagApi } = useJob((id: string[]) => {
+    message.loading.show("Removing tag...");
+    return TagRepository()
+      .delete({
+        ids: id,
+      })
+      .pipe(
+        map(({ data }) => {
+          message.loading.hide();
+          if (data.statusCode === 200) {
+            notification.success(
+              "The selected tag has been removed from the system."
+            );
+            getListTagApi({
+              page: 1,
+              limit: env.DEFAULT_PAGE_SIZE,
+            });
+          } else {
             notification.error("There is an error with remove tag.", {
               description: "Remove tag failed",
               style: {
                 width: 450,
               },
             });
-            return of(err);
-          })
-        );
-    }
-  );
+          }
+        }),
+        catchError((err) => {
+          notification.error("There is an error with remove tag.", {
+            description: "Remove tag failed",
+            style: {
+              width: 450,
+            },
+          });
+          return of(err);
+        })
+      );
+  });
 
   const handleDeleteTag = useCallback((tag: Tag) => {
     deleteTagApi([tag._id]);
   }, []);
-  useEffect(() => {
-    setValueSortTag(sortTemplate[sortTag]);
-  }, [sortTag]);
-  useEffect(() => {
-    setFilterData({
-      ...filterData,
-      ...valueSortTag,
-    });
-  }, [valueSortTag]);
   useEffect(() => {
     if (prevFilter?.query !== filterData.query && filterData.query) {
       getListDebounce(filterData);
@@ -217,6 +160,18 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
     }
   }, [filterData]);
 
+  const onChangeTable = useCallback(
+    (pagination: any, filters: any, sorter: SorterResult<Tag>) => {
+      if (sorter.order && sorter.columnKey) {
+        setFilterData((value) => ({
+          ...value,
+          sortBy: sorter.columnKey as string,
+          sortOrder: sorter.order === "ascend" ? 1 : -1,
+        }));
+      }
+    },
+    [setFilterData]
+  ) as TableProps<Tag>["onChange"];
   return (
     <div>
       <PopupTag
@@ -238,34 +193,29 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
         </div>
       </Header>
       <div className="pb-2">
-        <div className="flex">
-          <Input
-            placeholder=""
-            prefix={<SearchOutlined />}
-            className="mr-2"
-            value={filterData.query}
-            onChange={handleChangeValueInput}
-            allowClear
-          />
-          <Popover
-            content={optionChoices}
-            placement="bottomRight"
-            trigger="click"
-          >
-            <Button icon={<SortAscendingOutlined />} className="pl-4 pr-4">
-              Sort
-            </Button>
-          </Popover>
-        </div>
+        <Input.Search
+          placeholder="Search"
+          className="mr-2"
+          onSearch={handleChangeValueInput}
+          allowClear
+          enterButton
+        />
       </div>
       <div>
         {tags && (
           <>
-            <Table dataSource={tags} loading={loadingList}>
+            <Table
+              dataSource={tags}
+              loading={loadingList}
+              onChange={onChangeTable}
+            >
               <Table.Column
-                key="tag"
+                key="name"
                 title="Name"
                 render={(_, record: Tag) => <span>{`${record.name}`}</span>}
+                sorter={{
+                  compare: (a: any, b: any) => a.name - b.name,
+                }}
               />
               <Table.Column
                 key="numberOfTicket"
