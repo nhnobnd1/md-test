@@ -78,6 +78,23 @@ const InputPhone = (props: InputPhoneProps) => {
     [flagValue]
   );
 
+  const handleChangeValueSelect = useCallback(
+    (value: string[]) => {
+      setValueSelect([...value]);
+
+      if (valueField !== "") {
+        props.onChange &&
+          props.onChange(
+            `${
+              dataSelect.find((option) => option.code === value[0])?.phonePrefix
+            }-${valueField}`
+          );
+      }
+      togglePopoverSelect();
+    },
+    [valueField]
+  );
+
   // popup modal select
 
   const [popoverSelect, setPopoverSelect] = useState(false);
@@ -99,26 +116,6 @@ const InputPhone = (props: InputPhoneProps) => {
     </Button>
   );
 
-  const handleChangeValueSelect = useCallback(
-    (value: string[]) => {
-      setValueSelect([...value]);
-      setFlagValue(
-        dataSelect.find((option) => option.code === [...value][0])
-          ?.phonePrefix || "84"
-      );
-      if (valueField !== "") {
-        props.onChange &&
-          props.onChange(
-            `${
-              dataSelect.find((option) => option.code === value[0])?.phonePrefix
-            }-${valueField}`
-          );
-      }
-      togglePopoverSelect();
-    },
-    [valueField]
-  );
-
   // handle Effect
 
   useEffect(() => {
@@ -132,7 +129,6 @@ const InputPhone = (props: InputPhoneProps) => {
   }, [filterValue]);
 
   useEffect(() => {
-    console.log("value Select");
     setValueInput(dataSelect.find((option) => option.code === valueSelect[0]));
     setFlagValue(
       dataSelect.find((option) => option.code === valueSelect[0])
@@ -141,16 +137,11 @@ const InputPhone = (props: InputPhoneProps) => {
   }, [valueSelect]);
 
   useEffect(() => {
-    console.log("flagValue", flagValue);
-  }, [flagValue]);
-
-  useEffect(() => {
     if (props.value) {
       const flag = props.value?.slice(0, props.value?.indexOf("-")) || "84";
       setFlagValue(flag);
       setValueSelect([
-        dataSelect.find((option) => option.phonePrefix === flagValue)?.code ||
-          "VN",
+        dataSelect.find((option) => option.phonePrefix === flag)?.code || "VN",
       ]);
       setValueField(props.value?.slice(props.value?.indexOf("-") + 1) || "");
     }
