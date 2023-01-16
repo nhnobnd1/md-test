@@ -140,7 +140,7 @@ const AgentsIndex = (props: AgentsIndexProps) => {
   }, [filterData]);
 
   const onChangeTable = useCallback(
-    (pagination, filters, sorter: SorterResult<Agent>, extra) => {
+    (pagination: any, filters: any, sorter: SorterResult<Agent>) => {
       if (sorter.order && sorter.columnKey) {
         setFilterData((value) => ({
           ...value,

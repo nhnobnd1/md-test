@@ -9,6 +9,7 @@ import {
 } from "react";
 import { lastValueFrom, Observable } from "rxjs";
 import { Api } from "../api";
+import config from "../config";
 import { useJob, useMount } from "../hooks";
 import { TokenManager } from "../utilities/StorageManager";
 
@@ -26,14 +27,14 @@ const AuthContext = createContext<AuthContextType<any> | undefined>(undefined);
 
 interface AuthProviderProps {
   children?: ReactNode;
-  defaultTokens?: Tokens;
+  defaultTokens?: () => Tokens;
   fetchUserOnLogin?: (tokens: Tokens) => Observable<any>;
   fetchRefreshToken?: (refreshToken: string) => Observable<any>;
 }
 
 export const AuthProvider = ({
   children,
-  defaultTokens = {},
+  defaultTokens = () => ({}),
   fetchUserOnLogin = () =>
     new Observable((observable) => observable.next(undefined)),
   fetchRefreshToken,
@@ -63,12 +64,12 @@ export const AuthProvider = ({
   }, []);
 
   // Fetch user and change login state on mount
-  useMount(() => {
-    if (Object.values(defaultTokens)[0]?.length) {
-      fetchUser(defaultTokens);
+  useEffect(() => {
+    if (Object.values(defaultTokens())[0]?.length) {
+      fetchUser(defaultTokens());
       setIsLoggedIn(true);
     }
-  });
+  }, [config.subdomain]);
 
   // Set fetched user
   useEffect(() => {
@@ -153,17 +154,15 @@ export const AuthProvider = ({
             return new Promise((resolve, reject) => {
               lastValueFrom(fetchRefreshToken(token))
                 .then(({ data }) => {
-                  console.log("refresh tokens", data);
                   setIsRefreshing(false);
-                  processQueue(null, data.accessToken);
+                  processQueue(null, data.data.accessToken);
                   login({
-                    base_token: data.accessToken,
-                    refresh_token: data.refreshToken,
+                    base_token: data.data.accessToken,
+                    refresh_token: data.data.refreshToken,
                   });
                   resolve(lastValueFrom(axios.request(config)));
                 })
                 .catch((error) => {
-                  console.log("err: ", error);
                   setIsRefreshing(true);
                   logout();
                   processQueue(error);

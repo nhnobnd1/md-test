@@ -1,9 +1,10 @@
+import { useDidUpdate } from "@moose-desk/core";
 import {
   Pagination as PaginationShopify,
   PaginationProps as PaginationShopifyProps,
 } from "@shopify/polaris";
 import classNames from "classnames";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import "./Pagination.scss";
 
 export interface PaginationPack {
@@ -151,7 +152,7 @@ export const Pagination = ({
     }
   }, [currentPage, page, pageAmount]);
 
-  useEffect(() => {
+  useDidUpdate(() => {
     onChangePage && onChangePage(page);
     onChangePagination &&
       onChangePagination({
