@@ -60,9 +60,17 @@ const ResetPassword = (props: ResetPasswordProps) => {
           });
         }),
         catchError((err) => {
-          message.loading.hide().then(() => {
-            notification.error("Reset password failed");
-          });
+          if (["TOKEN_INVALID"].includes(err.response.data.errorCode)) {
+            message.loading.hide().then(() => {
+              notification.error("Token has expired or is not valid.", {
+                description: "Please submit a new request.",
+              });
+            });
+          } else {
+            message.loading.hide().then(() => {
+              notification.error("Reset password failed");
+            });
+          }
           return of(err);
         })
       );
