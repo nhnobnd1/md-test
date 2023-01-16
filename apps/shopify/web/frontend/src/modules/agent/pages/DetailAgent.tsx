@@ -106,7 +106,7 @@ const DetailAgent = (props: CreateAgentProps) => {
     }
   }, [state]);
 
-  const { run: updateAgentApi } = useJob(
+  const { run: updateAgentApi, processing: loadingUpdate } = useJob(
     (id: string, payload: UpdateAgentRequest) => {
       return AgentRepository()
         .update(id, payload)
@@ -138,6 +138,9 @@ const DetailAgent = (props: CreateAgentProps) => {
             })
           )
         );
+    },
+    {
+      showLoading: true,
     }
   );
 
@@ -363,7 +366,11 @@ const DetailAgent = (props: CreateAgentProps) => {
             breadcrumbs={[
               { content: "Agents", url: generatePath(AgentRoutePaths.Index) },
             ]}
-            title={`${agentSaved?.firstName} ${agentSaved?.lastName}`}
+            title={
+              agentSaved.lastName === "admin"
+                ? `${agentSaved.firstName}`
+                : `${agentSaved?.firstName} ${agentSaved?.lastName}`
+            }
             titleMetadata={
               <Badge status={agentStatus.status}>{agentStatus.label}</Badge>
             }
@@ -471,7 +478,7 @@ const DetailAgent = (props: CreateAgentProps) => {
                             {agentSaved.isActive && (
                               <Button
                                 onClick={() => formRef.current?.submitForm()}
-                                loading={loadingDelete}
+                                loading={loadingUpdate}
                                 primary
                               >
                                 Save
