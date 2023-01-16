@@ -6,7 +6,7 @@ import {
   Scrollable,
   TextField,
 } from "@shopify/polaris";
-import { memo, useCallback, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import constaint from "src/constaint";
 import { Country } from "src/constaint/country";
 
@@ -16,6 +16,7 @@ interface InputPhoneProps {
   value?: string;
   error?: string;
   onChange?: (value: any) => void;
+  disabled?: boolean;
 }
 
 const InputPhone = (props: InputPhoneProps) => {
@@ -50,10 +51,13 @@ const InputPhone = (props: InputPhoneProps) => {
   const resetFilterData = useCallback(() => {
     setFilterValue("");
   }, []);
-  const choices = dataSelect.map((item) => ({
-    label: `${item.countryName} (+${item.phonePrefix})`,
-    value: item.code,
-  }));
+  const choices = useMemo(() => {
+    return dataSelect.map((item) => ({
+      label: `${item.countryName} (+${item.phonePrefix})`,
+      value: item.code,
+      disabled: props.disabled,
+    }));
+  }, [props.disabled]);
 
   // set flag and value
 
@@ -87,7 +91,7 @@ const InputPhone = (props: InputPhoneProps) => {
       }
       togglePopoverSelect();
     },
-    [valueSelect, valueField]
+    [valueField]
   );
 
   // popup modal select
@@ -130,6 +134,7 @@ const InputPhone = (props: InputPhoneProps) => {
     );
   }, [valueSelect]);
   useEffect(() => {
+    console.log("flagValue", flagValue);
     setValueSelect([
       dataSelect.find((option) => option.phonePrefix === flagValue)?.code ||
         "VN",
@@ -187,6 +192,7 @@ const InputPhone = (props: InputPhoneProps) => {
       value={valueField}
       onChange={handleChangeValueInput}
       error={props.error ?? false}
+      disabled={props.disabled ?? props.disabled}
     />
   );
 };

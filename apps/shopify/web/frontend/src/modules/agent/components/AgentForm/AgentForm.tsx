@@ -90,7 +90,11 @@ const AgentForm = ({ disableForm = false, ...props }: AgentFormProps) => {
           />
         </FormItem>
         <FormItem name="phoneNumber">
-          <InputPhone label="Phone number" placeholder="Enter phone number" />
+          <InputPhone
+            disabled={disableForm}
+            label="Phone number"
+            placeholder="Enter phone number"
+          />
         </FormItem>
         <FormItem name="role">
           <Select label="User role" disabled={disableForm} options={options} />
