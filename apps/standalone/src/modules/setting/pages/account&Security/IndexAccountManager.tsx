@@ -1,0 +1,221 @@
+import { useJob } from "@moose-desk/core";
+import { AccessManger, UserSettingRepository } from "@moose-desk/repo";
+import { Button, Card, Space, Tag } from "antd";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { catchError, map, of } from "rxjs";
+import { Form } from "src/components/UI/Form";
+import useAuth from "src/hooks/useAuth";
+import useMessage from "src/hooks/useMessage";
+import useNotification from "src/hooks/useNotification";
+import InputDisableSubmit from "src/modules/setting/component/InputDisableSubmit/InputDisableSubmit";
+import SwitchForm from "src/modules/setting/component/Switch/Switch";
+export default function IndexAccountManager({ props }: any) {
+  const auth = useAuth();
+  const [form] = Form.useForm();
+  const [valueInput, setValueInput] = useState("");
+  const message = useMessage();
+  const notification = useNotification();
+  const [stateErrorInput, setStateErrorInput] = useState(false);
+  const [selectedDomain, setSelectedDomain] = useState<string[]>([]);
+  const [disabled, setDisabled] = useState(false);
+  const removeSelectedDomain = useCallback(
+    (domain) => () => {
+      if (!disabled) {
+        setSelectedDomain((previousDomain) =>
+          previousDomain.filter((previousDomain) => previousDomain !== domain)
+        );
+      }
+    },
+    [disabled, setDisabled]
+  );
+  const initialValues = useMemo(
+    () => ({
+      autoJoinEnabled: false,
+      whitelistDomains: [],
+      twoFactorAuthEnabled: false,
+      domain: "",
+    }),
+    [props]
+  );
+  const selectedMarkup = selectedDomain.map((domain) => (
+    <Tag
+      className="m-0 pl-2 pr-2"
+      key={domain}
+      closable={!disabled}
+      onClose={removeSelectedDomain(domain)}
+    >
+      {domain}
+    </Tag>
+  ));
+  const validateObject = useCallback(() => {
+    if (selectedDomain.length === 0) {
+      return [
+        {
+          pattern:
+            /^(?=.{1,253}\.?$)(?:(?!-|[^.]+_)[A-Za-z0-9-_]{1,63}(?<!-)(?:\.|$)){2,}$/,
+          message: "Invalid domain name.",
+        },
+        { required: true, message: "You must enter domain name!" },
+      ];
+    } else {
+      return [
+        {
+          pattern:
+            /^(?=.{1,253}\.?$)(?:(?!-|[^.]+_)[A-Za-z0-9-_]{1,63}(?<!-)(?:\.|$)){2,}$/,
+          message: "Invalid domain name.",
+        },
+      ];
+    }
+  }, [selectedDomain]);
+  const handleSubmitDomain = useCallback(
+    (event: any) => {
+      if (event.key === "Enter") {
+        if (!stateErrorInput) {
+          if (
+            valueInput &&
+            selectedDomain.indexOf(valueInput.toLocaleLowerCase()) === -1
+          ) {
+            setSelectedDomain([
+              ...selectedDomain,
+              valueInput.toLocaleLowerCase(),
+            ]);
+          }
+          form.setFieldValue("domain", "");
+          setValueInput("");
+        }
+        event.preventDefault();
+      }
+    },
+    [selectedDomain, valueInput, stateErrorInput]
+  );
+  // fetch init data
+  const { run: fetchAccountManagerStatus, result } = useJob(
+    () => {
+      return UserSettingRepository()
+        .getAccessManagerSetting()
+        .pipe(
+          map(({ data }) => {
+            setSelectedDomain(data.data.whitelistDomains);
+            return data.data;
+          })
+        );
+    },
+    { showLoading: false }
+  );
+  // update data
+  const handleSubmit = useCallback(
+    (data: any) => {
+      const dataSubmit = { ...data, whitelistDomains: selectedDomain };
+      submit(dataSubmit);
+    },
+    [selectedDomain]
+  );
+  const { run: submit } = useJob((dataSubmit: AccessManger) => {
+    message.loading.show("Updating account manager ...");
+    return UserSettingRepository()
+      .updateAccessManagerSetting(dataSubmit)
+      .pipe(
+        map(({ data }) => {
+          message.loading.hide();
+          if (data.statusCode === 200) {
+            notification.success("Access manager updated successfully.");
+            fetchAccountManagerStatus();
+          } else {
+            notification.error("Update failed.");
+          }
+        }),
+        catchError((error) => {
+          message.loading.hide();
+          notification.error("Update failed.");
+          return of(error);
+        })
+      );
+  });
+  // reset form
+  const handleResetForm = () => {
+    form.resetFields();
+    fetchAccountManagerStatus();
+  };
+
+  useEffect(() => fetchAccountManagerStatus(), []);
+  return (
+    <Form
+      initialValues={result || initialValues}
+      onFinish={handleSubmit}
+      enableLoadForm
+      enableReinitialize
+      form={form}
+    >
+      <Card title="Auto-Join Settings">
+        <div className="flex">
+          <div className="flex items-center  mt-1">
+            <Form.Item name="autoJoinEnabled">
+              <SwitchForm setDisabledInput={setDisabled} />
+            </Form.Item>
+          </div>
+          <div className="ml-4">
+            <p className="mb-2 mt-2">
+              Allow users with email addresses from an approved email domain to
+              use the sign up link.
+            </p>
+            <div>
+              <a
+                onClick={() => console.log(1)}
+              >{`https://${auth.user?.name.toLocaleLowerCase()}.moosedesk.com/signup`}</a>
+            </div>
+          </div>
+        </div>
+        <div className="flex items-start mt-4">
+          <div className="w-36">
+            <span>Email domain:</span>
+          </div>
+          <div className="w-full">
+            {!disabled ? (
+              <Form.Item
+                name="domain"
+                className="mb-0"
+                rules={!disabled ? validateObject() : []}
+              >
+                <InputDisableSubmit
+                  setValueInput={setValueInput}
+                  handleSubmitDomain={handleSubmitDomain}
+                  setStateErrorInput={setStateErrorInput}
+                />
+              </Form.Item>
+            ) : (
+              <InputDisableSubmit
+                valueInput={valueInput}
+                setValueInput={setValueInput}
+                handleSubmitDomain={handleSubmitDomain}
+                disabled={true}
+              />
+            )}
+            <Form.Item name="whitelistDomains" className="mb-0">
+              <Space className="mt-1" wrap>
+                {selectedMarkup}
+              </Space>
+            </Form.Item>
+          </div>
+        </div>
+      </Card>
+      <Card title="Two-Factor Authentication (2FA)" className="mt-8">
+        <div className="flex">
+          <div className="flex items-center">
+            <Form.Item name="twoFactorAuthEnabled">
+              <SwitchForm />
+            </Form.Item>
+          </div>
+          <div className="ml-4">
+            <p className="mt-1">Toggle 2FA for all users.</p>
+          </div>
+        </div>
+      </Card>
+      <div className="flex-1 text-right mt-4">
+        <Button onClick={handleResetForm}>Cancel</Button>
+        <Button htmlType="submit" type="primary" className="ml-4">
+          Save
+        </Button>
+      </div>
+    </Form>
+  );
+}
