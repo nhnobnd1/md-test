@@ -81,12 +81,12 @@ const caseNavigation: NavigationItems[] = [
       },
       {
         label: "Account & Security",
-        url: SettingRoutePaths.AccountSecurity.Index,
+        url: SettingRoutePaths.AccountSecurity.Profile.Index,
         icon: () => <FraudProtectMinor />,
         tabBarNavigation: [
           {
             label: "Profile",
-            url: SettingRoutePaths.AccountSecurity.Index,
+            url: SettingRoutePaths.AccountSecurity.Profile.Index,
           },
           {
             label: "Security",

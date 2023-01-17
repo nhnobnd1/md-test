@@ -1,5 +1,4 @@
 import { Outlet, useLocation, useRoutes } from "@moose-desk/core";
-import { useNavigate } from "@shopify/app-bridge-react";
 import { Frame, Navigation } from "@shopify/polaris";
 import { TabDescriptor } from "@shopify/polaris/build/ts/latest/src/components/Tabs/types";
 import { ReactNode, useCallback, useMemo, useState } from "react";
@@ -18,7 +17,6 @@ type TabBarMatches = TabDescriptor & { active: boolean; url: string };
 
 const MainLayout = ({ children }: MainLayoutProps) => {
   const { routes } = useRoutes();
-  const navigate = useNavigate();
   const location = useLocation();
   const [mobileNavigationActive, setMobileNavigationActive] = useState(false);
 
@@ -50,16 +48,10 @@ const MainLayout = ({ children }: MainLayoutProps) => {
           : routesItem.tabBarNavigation &&
             routesItem.tabBarNavigation.length > 0
           ? location.pathname.includes(routesItem.url ?? "")
-          : location.pathname === routesItem.url;
+          : routesItem.url.includes(
+              location.pathname.split("/").splice(0, 4).join("/")
+            );
 
-      if (matches && tabBarNavigationList.length > 0) {
-        const tabBar = tabBarNavigationList.map((item, index) => ({
-          id: item.url,
-          content: item.label,
-          panelID: `${item.label}-${index}`,
-          active: item.matches,
-        })) as TabBarMatches[];
-      }
       return {
         ...routesItem,
         matches: matches,

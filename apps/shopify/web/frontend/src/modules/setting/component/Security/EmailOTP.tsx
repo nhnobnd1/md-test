@@ -10,7 +10,7 @@ import {
   Text,
   TextField,
 } from "@shopify/polaris";
-import { memo, useCallback, useEffect, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
@@ -97,7 +97,6 @@ const EmailOPT = ({
       setOnResendEmail(true);
     }, 300000);
   }, [onResendEmail]);
-  useEffect(() => console.log(error), [error]);
   useMount(() => {
     setError(false);
     handleOnResendEmail();
