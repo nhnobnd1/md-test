@@ -47,7 +47,7 @@ const settingRoutes: IRoute = {
     },
     // account & security
     {
-      path: SettingRoutePaths.AccountSecurity.Index,
+      path: SettingRoutePaths.AccountSecurity.Profile.Index,
       component: lazy(
         () =>
           import(
