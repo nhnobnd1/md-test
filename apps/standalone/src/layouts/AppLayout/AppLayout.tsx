@@ -92,7 +92,17 @@ export const AppLayout = (props: AppLayoutProps) => {
             children: [
               { key: `case-3-3-1`, label: "Profile" },
               { key: `case-3-3-2`, label: "Security" },
-              { key: `case-3-3-3`, label: "Access Manager" },
+              {
+                key: `case-${SettingRoutePaths.AccountSecurity.AccessManager.Index}`,
+                label: "Access Manager",
+                link: SettingRoutePaths.AccountSecurity.AccessManager.Index,
+                onClick: () =>
+                  navigate(
+                    generatePath(
+                      SettingRoutePaths.AccountSecurity.AccessManager.Index
+                    )
+                  ),
+              },
             ],
           },
         ],
