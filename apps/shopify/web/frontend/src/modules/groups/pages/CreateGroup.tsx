@@ -22,6 +22,7 @@ const CreateGroup = (props: CreateGroupProps) => {
   const { storeId } = useStore();
   const navigate = useNavigate();
   const formRef = useRef<FormikProps<any>>(null);
+  console.log(storeId);
 
   const handleSubmit = useCallback(
     (values: GroupFormValues) => {

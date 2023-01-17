@@ -13,6 +13,7 @@ import {
   UserGroup,
   UserGroupRepository,
 } from "@moose-desk/repo";
+import { useToast } from "@shopify/app-bridge-react";
 import {
   Card,
   EmptySearchResult,
@@ -23,9 +24,12 @@ import {
   Text,
   useIndexResourceState,
 } from "@shopify/polaris";
+import { SelectionType } from "@shopify/polaris/build/ts/latest/src/utilities/index-provider";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { map } from "rxjs";
+import { catchError, map, of } from "rxjs";
 import { ButtonSort } from "src/components/Button/ButtonSort";
+import { ModalDelete } from "src/components/Modal/ModalDelete";
+import { Pagination } from "src/components/Pagination";
 import env from "src/core/env";
 import { SortOrderOptions } from "src/models/Form";
 import GroupsRoutePaths from "src/modules/groups/routes/paths";
@@ -36,11 +40,18 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
   const navigate = useNavigate();
   const [sortValue, setSortValue] = useState<string[]>([]);
   const [groups, setGroups] = useState<UserGroup[]>([]);
+  const { show } = useToast();
   const {
     state: btnSort,
     toggle: toggleBtnSort,
     off: closeBtnSort,
   } = useToggle();
+
+  const {
+    state: modalDelete,
+    on: openModalDelete,
+    off: closeModalDelete,
+  } = useToggle(false);
 
   const defaultFilter: () => GetListUserGroupRequest = () => ({
     page: 1,
@@ -70,6 +81,32 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
     }
   );
 
+  const { run: deleteGroup, processing: loadingDelete } = useJob(
+    (id: string) => {
+      return UserGroupRepository()
+        .delete(id)
+        .pipe(
+          map(({ data }) => {
+            clearSelection();
+            if (data.statusCode === 200) {
+              getListGroupApi(filterData);
+              show("Delete group success");
+            } else {
+              show("Delete group failed", {
+                isError: true,
+              });
+            }
+          }),
+          catchError((error) => {
+            show("Delete group failed", {
+              isError: true,
+            });
+            return of(error);
+          })
+        );
+    }
+  );
+
   const { run: getListDebounce } = useDebounceFn(
     (payload: GetListUserGroupRequest) => {
       getListGroupApi(payload);
@@ -77,22 +114,31 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
     { wait: 300 }
   );
 
-  const { selectedResources, allResourcesSelected, handleSelectionChange } =
-    useIndexResourceState<any>(groups);
+  const {
+    selectedResources,
+    allResourcesSelected,
+    handleSelectionChange,
+    clearSelection,
+  } = useIndexResourceState<any>(groups);
 
   const editGroup = useCallback(() => {
     navigate(generatePath(GroupsRoutePaths.Detail));
   }, [navigate, GroupsRoutePaths]);
 
-  const removeGroup = useCallback(() => {}, []);
+  const removeGroup = useCallback(() => {
+    openModalDelete();
+  }, []);
 
   const bulkActions = useMemo(() => {
     if (selectedResources.length > 1) {
       return [];
     } else {
       return [
-        { content: "Edit agent", onAction: editGroup },
-        { content: "Remove agent", onAction: removeGroup },
+        {
+          content: "Edit group",
+          onAction: editGroup,
+        },
+        { content: "Remove group", onAction: removeGroup },
       ];
     }
   }, [selectedResources, removeGroup, editGroup]);
@@ -133,6 +179,14 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
     });
   }, []);
 
+  const handleSelection = useCallback(
+    (selectionType: SelectionType, toggleType: boolean, selection?: any) => {
+      clearSelection();
+      handleSelectionChange(selectionType, toggleType, selection);
+    },
+    []
+  );
+
   useEffect(() => {
     if (prevFilter?.query !== filterData.query && filterData.query) {
       getListDebounce(filterData);
@@ -150,6 +204,16 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
       }}
       fullWidth
     >
+      <ModalDelete
+        title="Are you sure that you want to remove this tag?"
+        open={modalDelete}
+        onClose={closeModalDelete}
+        content={
+          "This tag will be removed permanently. This action cannot be undone. All tickets which are using this tag will get affected too."
+        }
+        deleteAction={() => deleteGroup(selectedResources[0])}
+        loadingConfirm={loadingDelete}
+      />
       <Card>
         <div className="flex-1 px-4 pt-4 pb-2">
           <Filters
@@ -174,15 +238,14 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
         <IndexTable
           resourceName={{ singular: "group", plural: "groups" }}
           itemCount={groups.length}
-          selectable={true}
           selectedItemsCount={
             allResourcesSelected ? "All" : selectedResources.length
           }
-          onSelectionChange={handleSelectionChange}
+          onSelectionChange={handleSelection}
           hasMoreItems
-          loading={false}
-          promotedBulkActions={bulkActions}
           lastColumnSticky
+          loading={loadingList}
+          promotedBulkActions={bulkActions}
           emptyState={
             <EmptySearchResult
               title={"No group yet"}
@@ -223,6 +286,20 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
             </IndexTable.Row>
           ))}
         </IndexTable>
+        <div className="flex items-center justify-center py-8">
+          {filterData.page && filterData.limit && meta?.totalCount && (
+            <Pagination
+              total={meta.totalCount}
+              pageSize={filterData.limit ?? 0}
+              currentPage={filterData.page}
+              onChangePage={(page) =>
+                setFilterData((val) => {
+                  return { ...val, page };
+                })
+              }
+            />
+          )}
+        </div>
       </Card>
     </Page>
   );
