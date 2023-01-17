@@ -17,15 +17,15 @@ const settingRoutes: IRoute = {
       ),
     },
     // account & security
-    // {
-    //   path: SettingRoutePaths.AccountSecurity.Index,
-    //   component: lazy(
-    //     () =>
-    //       import(
-    //         "src/modules/setting/pages/account&Security/IndexProfileManager"
-    //       )
-    //   ),
-    // },
+    {
+      path: SettingRoutePaths.AccountSecurity.Profile.Index,
+      component: lazy(
+        () =>
+          import(
+            "src/modules/setting/pages/account&Security/IndexProfileManager"
+          )
+      ),
+    },
     {
       path: SettingRoutePaths.AccountSecurity.AccessManager.Index,
       component: lazy(
