@@ -110,7 +110,7 @@ export default function IndexAccountManager() {
       .pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
-            show("Access manager updated successfully.");
+            show("Password updated successfully.");
             setBanner({
               isShowBanner: true,
               message: "Password updated successfully.",
@@ -124,7 +124,7 @@ export default function IndexAccountManager() {
                 message: "Password updated failed.",
                 status: "critical",
               });
-              show(`Domains cannot be the same.`, {
+              show(`Password updated failed`, {
                 isError: true,
               });
             } else {
