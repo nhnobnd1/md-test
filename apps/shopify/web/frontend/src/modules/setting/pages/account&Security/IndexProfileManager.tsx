@@ -18,7 +18,12 @@ import { catchError, map, of } from "rxjs";
 import ProfileForm from "src/modules/setting/component/ProfileForm";
 
 export default function IndexProfileManager() {
+<<<<<<< HEAD
+  const token = jose.decodeJwt(TokenManager.getToken("base_token") || "");
+  console.log(TokenManager.getToken("base_token"));
+=======
   const token = jose.decodeJwt(TokenManager.getToken("base_token") ?? "");
+>>>>>>> e93b2309e409d79da7d70eb12738afe9b9c4d4a8
 
   const formRef = useRef<FormikProps<any>>(null);
   const [banner, setBanner] = useState<{

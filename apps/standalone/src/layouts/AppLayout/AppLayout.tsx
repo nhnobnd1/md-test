@@ -90,8 +90,28 @@ export const AppLayout = (props: AppLayoutProps) => {
             label: "Account & Security",
             icon: <MdiSecurity />,
             children: [
-              { key: `case-3-3-1`, label: "Profile" },
-              { key: `case-3-3-2`, label: "Security" },
+              {
+                key: `case-${SettingRoutePaths.AccountSecurity.Profile.Index}`,
+                label: "Profile",
+                link: SettingRoutePaths.AccountSecurity.Profile.Index,
+                onClick: () =>
+                  navigate(
+                    generatePath(
+                      SettingRoutePaths.AccountSecurity.Profile.Index
+                    )
+                  ),
+              },
+              {
+                key: `case-${SettingRoutePaths.AccountSecurity.Security.Index}`,
+                label: "Security",
+                link: SettingRoutePaths.AccountSecurity.Security.Index,
+                onClick: () =>
+                  navigate(
+                    generatePath(
+                      SettingRoutePaths.AccountSecurity.Security.Index
+                    )
+                  ),
+              },
               {
                 key: `case-${SettingRoutePaths.AccountSecurity.AccessManager.Index}`,
                 label: "Access Manager",
