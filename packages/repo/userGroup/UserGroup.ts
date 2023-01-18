@@ -8,7 +8,7 @@ export interface UserGroup {
   description?: string;
 }
 
-export interface Member {
+export interface GroupMembers {
   _id: string;
   name: string;
   email: string;
@@ -34,6 +34,8 @@ export type UpdateUserGroupResponse = BaseResponse<Required<UserGroup>>;
 
 export type GetOneUserGroupResponse = BaseResponse<Required<UserGroup>>;
 
-export interface GetMembersGroupRequest extends BaseListRequest {}
+export interface GetMembersGroupRequest extends BaseListRequest {
+  id?: string;
+}
 
-export type GetMembersGroupResponse = BaseListResponse<Member>;
+export type GetMembersGroupResponse = BaseListResponse<GroupMembers>;

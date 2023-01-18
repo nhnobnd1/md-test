@@ -6,7 +6,7 @@ export interface UserGroup {
     creationTime: string;
     description?: string;
 }
-export interface Member {
+export interface GroupMembers {
     _id: string;
     name: string;
     email: string;
@@ -29,6 +29,7 @@ export interface UpdateUserGroupRequest {
 export declare type UpdateUserGroupResponse = BaseResponse<Required<UserGroup>>;
 export declare type GetOneUserGroupResponse = BaseResponse<Required<UserGroup>>;
 export interface GetMembersGroupRequest extends BaseListRequest {
+    id?: string;
 }
-export declare type GetMembersGroupResponse = BaseListResponse<Member>;
+export declare type GetMembersGroupResponse = BaseListResponse<GroupMembers>;
 //# sourceMappingURL=UserGroup.d.ts.map

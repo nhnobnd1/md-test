@@ -1,13 +1,15 @@
-import { FormLayout, TextField } from "@shopify/polaris";
-import { useMemo } from "react";
+import { Button, FormLayout, Text, TextField } from "@shopify/polaris";
+import { useMemo, useState } from "react";
 import Form, { FormProps } from "src/components/Form";
 import FormItem from "src/components/Form/Item";
+import GroupFormMembers from "src/modules/groups/components/GroupForm/GroupFormMembers";
 import * as Yup from "yup";
 import "./GroupForm.scss";
 
 interface GroupFormProps extends Omit<FormProps, "initialValues"> {
   disableForm?: boolean;
   initialValues?: any;
+  id?: string;
 }
 
 export interface GroupFormValues {
@@ -18,6 +20,7 @@ export interface GroupFormValues {
 
 export const GroupForm = ({
   disableForm = false,
+  id,
   ...props
 }: GroupFormProps) => {
   const initialValuesForm = useMemo<GroupFormValues>(() => {
@@ -28,16 +31,15 @@ export const GroupForm = ({
     };
   }, []);
 
+  const [viewAddGroup, setViewAddGroup] = useState(true);
+
   const GroupFormSchema = Yup.object().shape({
-    email: Yup.string()
-      .email("Email is invalid")
-      .required("You must enter your email"),
-    firstName: Yup.string()
-      .required("You must enter your first name")
-      .max(255, "First name up to 255 characters"),
-    lastName: Yup.string()
-      .required("You must enter your last name")
-      .max(255, "Last name up to 255 characters"),
+    name: Yup.string()
+      .required("You must enter your group name")
+      .max(255, "Group name up to 255 characters"),
+    description: Yup.string()
+      .required("You must enter your description")
+      .max(255, "Description up to 255 characters"),
   });
 
   return (
@@ -65,7 +67,35 @@ export const GroupForm = ({
             multiline={10}
           />
         </FormItem>
-        <FormItem name="groupMembers"></FormItem>
+        <div className="pt-2">
+          <div className="flex gap-2 items-center">
+            <Text variant="bodyMd" as="p">
+              Group members:
+            </Text>
+            {viewAddGroup ? (
+              <Button
+                size="slim"
+                destructive
+                onClick={() => setViewAddGroup(false)}
+              >
+                Close add group member
+              </Button>
+            ) : (
+              <Button
+                size="slim"
+                dataPrimaryLink
+                onClick={() => setViewAddGroup(true)}
+              >
+                Add group member
+              </Button>
+            )}
+          </div>
+          {viewAddGroup && (
+            <div className="pt-6">
+              <GroupFormMembers id={id} />
+            </div>
+          )}
+        </div>
       </FormLayout>
     </Form>
   );
