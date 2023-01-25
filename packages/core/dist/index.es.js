@@ -5325,7 +5325,9 @@ function pm({
   const { state: o, on: i, off: s } = gh(), a = q(0)[1], u = H(() => {
     i(), a((f) => f + 1), a(1);
   }, []), l = H(() => {
-    a((f) => f === 1 ? (s(), 0) : f - 1);
+    setTimeout(() => {
+      a((f) => f === 1 ? (s(), 0) : f - 1);
+    }, 500);
   }, []);
   return /* @__PURE__ */ B(Zi.Provider, { value: { startLoading: u, stopLoading: l, state: o }, children: r ? /* @__PURE__ */ B(n, { state: o, color: t, children: e }) : /* @__PURE__ */ jr(Ce, { children: [
     e,

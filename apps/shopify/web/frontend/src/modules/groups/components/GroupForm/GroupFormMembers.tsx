@@ -108,6 +108,7 @@ const GroupFormMembers = ({ id }: GroupFormMembersProps) => {
                   ? item.firstName
                   : item.firstName + item.lastName,
                 value: item._id,
+                obj: item,
               })),
               canLoadMore: params.page < data.metadata.totalPage,
             };
@@ -117,6 +118,10 @@ const GroupFormMembers = ({ id }: GroupFormMembersProps) => {
     [AgentRepository]
   );
 
+  const handleSelectAgent = useCallback((value) => {
+    console.log(value, "value change");
+  }, []);
+
   return (
     <>
       <div className="pb-6">
@@ -124,6 +129,7 @@ const GroupFormMembers = ({ id }: GroupFormMembersProps) => {
           label="Add members"
           placeholder="Search agents"
           height="250px"
+          onChange={handleSelectAgent}
           loadMore={fetchAgents}
         />
       </div>
@@ -132,6 +138,7 @@ const GroupFormMembers = ({ id }: GroupFormMembersProps) => {
           queryValue={filterData.query}
           onQueryChange={handleFiltersQueryChange}
           onQueryClear={handleQueryValueRemove}
+          queryPlaceholder="Search"
           filters={[]}
           onClearAll={resetFilterData}
         ></Filters>

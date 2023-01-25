@@ -222,6 +222,7 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
             queryValue={filterData.query}
             onQueryChange={handleFiltersQueryChange}
             onQueryClear={handleQueryValueRemove}
+            queryPlaceholder="Search"
             filters={[]}
             onClearAll={resetFilterData}
           >

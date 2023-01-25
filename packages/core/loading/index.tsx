@@ -48,14 +48,16 @@ export function LoadingProvider({
   }, []);
 
   const stopLoading = useCallback(() => {
-    setCount((cur) => {
-      if (cur === 1) {
-        turnOffLoading();
-        return 0;
-      }
+    setTimeout(() => {
+      setCount((cur) => {
+        if (cur === 1) {
+          turnOffLoading();
+          return 0;
+        }
 
-      return cur - 1;
-    });
+        return cur - 1;
+      });
+    }, 500);
   }, []);
 
   return (

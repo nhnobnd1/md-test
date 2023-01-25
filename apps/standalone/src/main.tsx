@@ -26,7 +26,13 @@ Env.setApiUrl(env.API_URL);
 ReactDOM.render(
   <ErrorBoundary>
     <BrowserRouter>
-      <Suspense fallback={<Loading fullPage />}>
+      <Suspense
+        fallback={
+          <Loading fullPage>
+            <div className="w-[100vw] h-[100vh]"></div>
+          </Loading>
+        }
+      >
         <LoadingProvider
           isWrap
           component={({ state, children }) => (

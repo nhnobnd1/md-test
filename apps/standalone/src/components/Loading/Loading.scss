@@ -1,0 +1,7 @@
+.LoadingPage {
+  &__full-page {
+    position: fixed !important;
+    inset: 0;
+    max-height: 100vh !important;
+  }
+}

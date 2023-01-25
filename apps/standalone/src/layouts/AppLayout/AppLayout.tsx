@@ -8,10 +8,9 @@ import {
 import { AccountRepository } from "@moose-desk/repo";
 import { Layout, Menu, MenuProps } from "antd";
 import classNames from "classnames";
-import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { map } from "rxjs";
 import Images from "src/assets/images";
-import { Loading } from "src/components/Loading";
 import Breadcrumb from "src/components/UI/Breadcrums/Breadcrumb";
 import useAuth from "src/hooks/useAuth";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
@@ -273,9 +272,7 @@ export const AppLayout = (props: AppLayoutProps) => {
             }}
           >
             <div className="wrap-main-content pb-[32px]">
-              <Suspense fallback={<Loading spinning={true} fullPage />}>
-                <Outlet />
-              </Suspense>
+              <Outlet />
             </div>
           </Layout.Content>
         </div>

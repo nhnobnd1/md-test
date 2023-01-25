@@ -16,6 +16,15 @@ import { map, Observable } from "rxjs";
 export interface SelectOptions {
   value: string | number;
   label: string;
+  obj: any;
+}
+
+export interface SelectedObj {
+  key: string;
+  value: {
+    label: string;
+    [key: string]: any;
+  };
 }
 
 interface SelectProps extends Omit<ComboboxProps, "activator"> {
@@ -25,7 +34,7 @@ interface SelectProps extends Omit<ComboboxProps, "activator"> {
   options: SelectOptions[];
   value?: any[];
   onSearch?: (value: string) => any;
-  onChange?: (selectedOptions: any[]) => void;
+  onChange?: (selectedObj: SelectedObj[]) => void;
   activator?: React.ReactElement<TextFieldProps>;
 }
 
@@ -39,7 +48,9 @@ export const Select = ({
   options,
   ...props
 }: SelectProps) => {
-  const [selectedOptions, setSelectedOptions] = useState<any[]>(value);
+  const [selectedOptions, setSelectedOptions] =
+    useState<Array<string | number>>(value);
+  const [selectedObj, setSelectedObj] = useState<SelectedObj[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [optionsData, setOptions] = useState<SelectOptions[]>(options);
 
@@ -67,23 +78,49 @@ export const Select = ({
         setSelectedOptions(
           selectedOptions.filter((option: any) => option !== selected)
         );
+        setSelectedObj(selectedObj.filter((option) => option.key !== selected));
       } else {
-        props.allowMultiple
-          ? setSelectedOptions([...selectedOptions, selected])
-          : setSelectedOptions([selected]);
-      }
+        const selectItemObj = optionsData.find(
+          (item) => item.value === selected
+        );
 
-      const matchedOption = options.find((option) => {
-        return option.value.toString().match(selected);
-      });
+        if (props.allowMultiple) {
+          setSelectedOptions([...selectedOptions, selected]);
 
-      if (props.allowMultiple) {
-        updateText("");
-      } else {
-        setInputValue((matchedOption && matchedOption.label) || "");
+          if (selectItemObj) {
+            setSelectedObj([
+              ...selectedObj,
+              {
+                key: selected,
+                value: {
+                  label: selectItemObj.label,
+                  ...selectItemObj.obj,
+                },
+              },
+            ]);
+          }
+          updateText("");
+        } else {
+          const matchedOption = options.find((option) => {
+            return option.value.toString().match(selected);
+          });
+          setSelectedOptions([selected]);
+          if (selectItemObj) {
+            setSelectedObj([
+              {
+                key: selected,
+                value: {
+                  label: selectItemObj.label,
+                  ...selectItemObj.obj,
+                },
+              },
+            ]);
+          }
+          setInputValue((matchedOption && matchedOption.label) || "");
+        }
       }
     },
-    [options, selectedOptions, updateText]
+    [options, selectedOptions, updateText, optionsData]
   );
 
   const removeTag = useCallback(
@@ -91,13 +128,15 @@ export const Select = ({
       const options = [...selectedOptions];
       options.splice(options.indexOf(tag), 1);
       setSelectedOptions(options);
+
+      setSelectedObj(selectedObj.filter((item) => options.includes(item.key)));
     },
     [selectedOptions]
   );
 
-  const tagsMarkup = selectedOptions.map((option: any) => (
-    <Tag key={`option-${option}`} onRemove={removeTag(option)}>
-      {optionsData.find((item) => item.value === option)?.label}
+  const tagsMarkup = selectedObj.map((option) => (
+    <Tag key={`option-${option.key}`} onRemove={removeTag(option.key)}>
+      {option.value.label}
     </Tag>
   ));
 
@@ -120,8 +159,8 @@ export const Select = ({
       : null;
 
   useEffect(() => {
-    onChange && onChange(selectedOptions);
-  }, [selectedOptions]);
+    onChange && onChange(selectedObj);
+  }, [selectedObj]);
 
   useEffect(() => {
     setOptions(options);
@@ -131,7 +170,7 @@ export const Select = ({
     () => {
       onSearch && onSearch(inputValue);
     },
-    { wait: 300 }
+    { wait: 100 }
   );
 
   useEffect(() => {
@@ -191,7 +230,6 @@ export interface LoadMoreValue {
 interface AjaxSelectProps extends Omit<SelectProps, "options" | "onSearch"> {
   loadMore: (params: LoadMoreValue) => Observable<LoadMoreResult>;
   renderOption?: (record: SelectOptions, index: number) => React.ReactNode;
-  extra?: any;
   dependencies?: any[];
   dependenciesWait?: number;
   onDependenciesChanged?: () => void;
@@ -203,7 +241,6 @@ Select.Ajax = ({
   renderOption,
   dependencies = [],
   dependenciesWait = 500,
-  extra,
   onDependenciesChanged,
   ...props
 }: AjaxSelectProps) => {
@@ -269,8 +306,8 @@ Select.Ajax = ({
 
   const onSearch = useCallback(async (text: string) => {
     setSearchText(text);
-    // setPage(1);
-    // setCanLoadMore(true);
+    setPage(1);
+    setCanLoadMore(true);
   }, []);
 
   const { run: reloadData } = useDebounceFn(
