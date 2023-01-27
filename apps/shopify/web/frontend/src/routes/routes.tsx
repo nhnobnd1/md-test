@@ -10,6 +10,13 @@ const appRootRoutes: IRoute[] = [
     index: true,
     component: lazy(() => import("src/pages/RedirectPage")),
   },
+
+  // Don't remove this route
+  {
+    path: "/exit-iframe",
+    index: true,
+    component: lazy(() => import("src/pages/ExitIframe")),
+  },
 ];
 
 export default appRootRoutes;
