@@ -1,4 +1,9 @@
-import { useDebounceFn, useJob, useToggle } from "@moose-desk/core";
+import {
+  useDebounceFn,
+  useDidUpdate,
+  useJob,
+  useToggle,
+} from "@moose-desk/core";
 import {
   Combobox,
   ComboboxProps,
@@ -298,7 +303,7 @@ Select.Ajax = ({
     );
   });
 
-  useEffect(() => {
+  useDidUpdate(() => {
     if (canFetch) {
       fetchData();
     }
@@ -327,6 +332,10 @@ Select.Ajax = ({
     setCanLoadMore(true);
     reloadData();
   }, [...(dependencies || [])]);
+
+  useEffect(() => {
+    console.log(options, "op");
+  }, [options]);
 
   return (
     <Select

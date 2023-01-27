@@ -1,9 +1,10 @@
-import { usePrevious, useToggle } from "@moose-desk/core";
+import { useDidUpdate, useJob, usePrevious, useToggle } from "@moose-desk/core";
 import {
   AgentRepository,
   BaseMetaDataListResponse,
   GetMembersGroupRequest,
   GroupMembers,
+  UserGroupRepository,
 } from "@moose-desk/repo";
 import {
   EmptySearchResult,
@@ -13,17 +14,19 @@ import {
   useIndexResourceState,
 } from "@shopify/polaris";
 import { SelectionType } from "@shopify/polaris/build/ts/latest/src/utilities/index-provider";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { map } from "rxjs";
 import { Pagination } from "src/components/Pagination";
-import { LoadMoreValue, Select } from "src/components/Select";
+import { LoadMoreValue, Select, SelectedObj } from "src/components/Select";
 import env from "src/core/env";
 
 interface GroupFormMembersProps {
   id?: string;
+  value?: GroupMembers[];
+  onChange?: (value: string[]) => void;
 }
 
-const GroupFormMembers = ({ id }: GroupFormMembersProps) => {
+const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
   const defaultFilter: () => GetMembersGroupRequest = () => ({
     page: 1,
     limit: env.DEFAULT_PAGE_SIZE,
@@ -35,6 +38,9 @@ const GroupFormMembers = ({ id }: GroupFormMembersProps) => {
   const prevFilter = usePrevious<GetMembersGroupRequest>(filterData);
 
   const [groupMembers, setGroupMembers] = useState<GroupMembers[]>([]);
+  const [groupMembersTable, setGroupMembersTable] = useState<GroupMembers[]>(
+    []
+  );
   const [meta, setMeta] = useState<BaseMetaDataListResponse>();
   const {
     state: modalDelete,
@@ -61,6 +67,22 @@ const GroupFormMembers = ({ id }: GroupFormMembersProps) => {
       };
     });
   }, []);
+
+  useDidUpdate(() => {
+    if (isDetail) {
+      console.log("aaa");
+    } else {
+      if (filterData.query) {
+        setGroupMembersTable(
+          groupMembers.filter((item) =>
+            item.name.includes(filterData.query ?? "")
+          )
+        );
+      } else {
+        setGroupMembersTable(groupMembers);
+      }
+    }
+  }, [filterData.query]);
 
   const handleQueryValueRemove = useCallback(() => {
     setFilterData((old) => {
@@ -91,9 +113,28 @@ const GroupFormMembers = ({ id }: GroupFormMembersProps) => {
     return [{ content: "Remove member group", onAction: removeMemberGroup }];
   }, [selectedResources, removeMemberGroup]);
 
+  const [isFirst, setIsFirst] = useState(true);
+
   const fetchAgents = useCallback(
     (params: LoadMoreValue) => {
       const limit = env.DEFAULT_PAGE_SIZE;
+      if (isDetail && isFirst && id) {
+        return UserGroupRepository()
+          .getListMembers(id, filterData)
+          .pipe(
+            map(({ data }) => {
+              setIsFirst(false);
+              return {
+                options: data.data.map((item) => ({
+                  label: item.name,
+                  value: item._id,
+                  obj: item,
+                })),
+                canLoadMore: true,
+              };
+            })
+          );
+      }
       return AgentRepository()
         .getList({
           page: params.page,
@@ -115,12 +156,44 @@ const GroupFormMembers = ({ id }: GroupFormMembersProps) => {
           })
         );
     },
-    [AgentRepository]
+    [AgentRepository, groupMembers]
   );
 
-  const handleSelectAgent = useCallback((value) => {
-    console.log(value, "value change");
+  const handleSelectAgent = useCallback((value: SelectedObj[]) => {
+    setGroupMembers(
+      value.map((item) => ({
+        _id: item.key,
+        email: item.value.email,
+        name: item.value.label,
+      }))
+    );
   }, []);
+
+  useEffect(() => {
+    setGroupMembersTable(groupMembers);
+    const ids = groupMembers.map((item) => item._id);
+    onChange && onChange(ids);
+  }, [groupMembers]);
+
+  const { run: getListMemberGroupApi, processing: loadingGetList } = useJob(
+    (id: string, payload: GetMembersGroupRequest) => {
+      return UserGroupRepository()
+        .getListMembers(id, payload)
+        .pipe(
+          map(({ data }) => {
+            setGroupMembers(data.data);
+            setMeta(data.metadata);
+          })
+        );
+    },
+    { showLoading: true }
+  );
+
+  useEffect(() => {
+    if (isDetail && id) {
+      getListMemberGroupApi(id, filterData);
+    }
+  }, [filterData, id]);
 
   return (
     <>
@@ -144,8 +217,9 @@ const GroupFormMembers = ({ id }: GroupFormMembersProps) => {
         ></Filters>
       </div>
       <IndexTable
+        loading={loadingGetList}
         resourceName={{ singular: "group", plural: "groups" }}
-        itemCount={groupMembers.length}
+        itemCount={groupMembersTable.length}
         selectedItemsCount={
           allResourcesSelected ? "All" : selectedResources.length
         }
@@ -163,7 +237,7 @@ const GroupFormMembers = ({ id }: GroupFormMembersProps) => {
         }
         headings={[{ title: "Name" }, { title: "Email" }]}
       >
-        {groupMembers.map((membersItem, index) => (
+        {groupMembersTable.map((membersItem, index) => (
           <IndexTable.Row
             id={membersItem._id}
             key={membersItem._id}

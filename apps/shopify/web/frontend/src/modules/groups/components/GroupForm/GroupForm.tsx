@@ -15,7 +15,7 @@ interface GroupFormProps extends Omit<FormProps, "initialValues"> {
 export interface GroupFormValues {
   name: string;
   description: string;
-  groupMembers: number;
+  groupMembers: string[];
 }
 
 export const GroupForm = ({
@@ -27,7 +27,7 @@ export const GroupForm = ({
     return {
       name: "",
       description: "",
-      groupMembers: 0,
+      groupMembers: [],
     };
   }, []);
 
@@ -37,9 +37,7 @@ export const GroupForm = ({
     name: Yup.string()
       .required("You must enter your group name")
       .max(255, "Group name up to 255 characters"),
-    description: Yup.string()
-      .required("You must enter your description")
-      .max(255, "Description up to 255 characters"),
+    description: Yup.string().max(255, "Description up to 255 characters"),
   });
 
   return (
@@ -92,7 +90,9 @@ export const GroupForm = ({
           </div>
           {viewAddGroup && (
             <div className="pt-6">
-              <GroupFormMembers id={id} />
+              <FormItem name="groupMembers">
+                <GroupFormMembers id={id} />
+              </FormItem>
             </div>
           )}
         </div>
