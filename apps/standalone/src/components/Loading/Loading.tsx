@@ -1,24 +1,27 @@
 import { Spin, SpinProps } from "antd";
 import classNames from "classnames";
+import "./Loading.scss";
 
 interface LoadingProps extends SpinProps {
   fullPage?: boolean;
   insteadView?: boolean;
   center?: boolean;
+  children?: any;
 }
 
 export const Loading = ({
   fullPage = false,
   insteadView = false,
   center = false,
+  children,
   ...props
 }: LoadingProps) => {
   return (
-    <>
+    <div className="LoadingPage">
       {fullPage ? (
-        <div className="fixed inset-0">
-          <Spin className="" {...props}></Spin>
-        </div>
+        <Spin className="LoadingPage__full-page" {...props}>
+          {children}
+        </Spin>
       ) : (
         <>
           {insteadView ? (
@@ -32,7 +35,9 @@ export const Loading = ({
                 <Spin
                   className={classNames({ "pt-[30%]": !center })}
                   {...props}
-                ></Spin>
+                >
+                  {children}
+                </Spin>
               </div>
             </>
           ) : (
@@ -40,7 +45,7 @@ export const Loading = ({
           )}
         </>
       )}
-    </>
+    </div>
   );
 };
 

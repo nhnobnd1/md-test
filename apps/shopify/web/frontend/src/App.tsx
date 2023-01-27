@@ -23,16 +23,9 @@ export default function App() {
   const { storeId } = useStore();
 
   useEffect(() => {
-    console.log("--- debug env: ", env);
-    console.log("isLoggedIn: ", isLoggedIn);
-    console.log("user: ", user);
-
     if ((shop && !isLoggedIn) || (!user && shop)) {
       console.log("Start login with token...");
       const payload = cookies[process.env.HOST ?? shop];
-      console.log(payload, "cookies");
-      console.log("storeId:", storeId);
-
       if (payload && payload.email && payload.offlineToken && storeId) {
         console.log("Processing login");
         api
@@ -48,7 +41,6 @@ export default function App() {
           })
           .subscribe({
             next({ data }) {
-              console.log(data, "data");
               TokenManager.setToken("base_token", data.data.accessToken);
               TokenManager.setToken("refresh_token", data.data.refreshToken);
               login(

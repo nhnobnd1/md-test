@@ -32,6 +32,7 @@ import { ModalDelete } from "src/components/Modal/ModalDelete";
 import { Pagination } from "src/components/Pagination";
 import env from "src/core/env";
 import { SortOrderOptions } from "src/models/Form";
+import { optionsSort } from "src/modules/groups/constant";
 import GroupsRoutePaths from "src/modules/groups/routes/paths";
 
 interface GroupsIndexPageProps {}
@@ -58,8 +59,9 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
     limit: env.DEFAULT_PAGE_SIZE,
   });
 
-  const [filterData, setFilterData] =
-    useState<GetListUserGroupRequest>(defaultFilter);
+  const [filterData, setFilterData] = useState<GetListUserGroupRequest>(
+    defaultFilter()
+  );
   const prevFilter = usePrevious<GetListUserGroupRequest>(filterData);
 
   const [meta, setMeta] = useState<BaseMetaDataListResponse>();
@@ -220,6 +222,7 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
             queryValue={filterData.query}
             onQueryChange={handleFiltersQueryChange}
             onQueryClear={handleQueryValueRemove}
+            queryPlaceholder="Search"
             filters={[]}
             onClearAll={resetFilterData}
           >
@@ -230,7 +233,7 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
                 onSort={handleSort}
                 onShow={toggleBtnSort}
                 onClose={closeBtnSort}
-                options={[]}
+                options={optionsSort}
               />
             </div>
           </Filters>

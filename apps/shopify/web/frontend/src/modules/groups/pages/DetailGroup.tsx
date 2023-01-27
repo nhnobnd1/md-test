@@ -1,7 +1,148 @@
+import {
+  generatePath,
+  useJob,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "@moose-desk/core";
+import {
+  UpdateUserGroupRequest,
+  UserGroup,
+  UserGroupRepository,
+} from "@moose-desk/repo";
+import { useToast } from "@shopify/app-bridge-react";
+import { Card, ContextualSaveBar, Layout, Page } from "@shopify/polaris";
+import { FormikProps } from "formik";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { catchError, map, of } from "rxjs";
+import { Banner } from "src/components/Banner";
+import useAuth from "src/hooks/useAuth";
+import { useBanner } from "src/hooks/useBanner";
+import { GroupForm } from "src/modules/groups/components/GroupForm";
+import GroupsRoutePaths from "src/modules/groups/routes/paths";
+
 interface DetailGroupProps {}
 
 const DetailGroup = (props: DetailGroupProps) => {
-  return <></>;
+  const { show } = useToast();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const formRef = useRef<FormikProps<any>>(null);
+  const { banner, show: showBanner, close: closeBanner } = useBanner();
+  const [group, setGroup] = useState<UserGroup>();
+  const { state } = useLocation();
+  const { id } = useParams();
+
+  const { run: getGroupApi } = useJob(() => {
+    return UserGroupRepository()
+      .getOne(id ?? "")
+      .pipe(
+        map(({ data }) => {
+          setGroup(data.data);
+        }),
+        catchError((err) => {
+          return of(err);
+        })
+      );
+  });
+
+  const { run: updateGroupApi, processing: loadingUpdateGroup } = useJob(
+    (id: string, payload: UpdateUserGroupRequest) => {
+      return UserGroupRepository()
+        .update(id, payload)
+        .pipe(
+          map(({ data }) => {
+            console.log(data);
+            if (data.statusCode === 200) {
+              show("Create Group Success");
+              navigate(
+                generatePath(GroupsRoutePaths.Detail, { id: data.data._id }),
+                {
+                  state: {
+                    banner: {
+                      status: "success",
+                      message: `Create group success.`,
+                    },
+                  },
+                }
+              );
+            } else {
+              if (data.errorCode) {
+                showBanner("critical", {
+                  message: "Create group failed.",
+                });
+              }
+            }
+          })
+        );
+    },
+    {
+      showLoading: true,
+    }
+  );
+
+  const initialValues = useMemo(() => {
+    return {
+      name: group?.name ?? "",
+      description: group?.description ?? "",
+    };
+  }, [group]);
+
+  const handleSubmit = useCallback((values) => {
+    console.log(values);
+  }, []);
+
+  useEffect(() => {
+    if (state?.banner && state.banner?.status) {
+      showBanner(state.banner.status, {
+        title: state.banner.title ?? "",
+        message: state.banner.message ?? "",
+      });
+    }
+  }, [state]);
+
+  useEffect(() => {
+    getGroupApi();
+  }, []);
+
+  return (
+    <>
+      <ContextualSaveBar
+        fullWidth
+        message="Unsaved changes"
+        saveAction={{
+          onAction: () => formRef.current?.submitForm(),
+          disabled: false,
+          loading: loadingUpdateGroup,
+        }}
+        discardAction={{
+          onAction: () => {},
+        }}
+      />
+      <Page
+        breadcrumbs={[
+          { content: "Groups", url: generatePath(GroupsRoutePaths.Index) },
+        ]}
+        title={group?.name || "Detail Group"}
+        fullWidth
+      >
+        <Layout>
+          {banner.visible && (
+            <Layout.Section>
+              <Banner banner={banner} onDismiss={closeBanner}></Banner>
+            </Layout.Section>
+          )}
+          <Layout.Section>
+            <Card>
+              <Card.Section>
+                <GroupForm id={id} innerRef={formRef} onSubmit={handleSubmit} />
+              </Card.Section>
+            </Card>
+          </Layout.Section>
+        </Layout>
+      </Page>
+    </>
+  );
 };
 
 export default DetailGroup;

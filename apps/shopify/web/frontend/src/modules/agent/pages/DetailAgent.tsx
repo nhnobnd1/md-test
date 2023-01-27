@@ -354,7 +354,7 @@ const DetailAgent = (props: CreateAgentProps) => {
       <Suspense
         fallback={
           <div
-            className="flex items-center content-center w"
+            className="flex items-center content-center"
             style={{ width: "100vw", height: "100vh" }}
           >
             <Loading />

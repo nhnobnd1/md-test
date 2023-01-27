@@ -1,8 +1,10 @@
-import { generatePath, useNavigate } from "@moose-desk/core";
+import { generatePath, useJob, useNavigate } from "@moose-desk/core";
+import { CreateUserGroupRequest, UserGroupRepository } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import { Card, ContextualSaveBar, Layout, Page } from "@shopify/polaris";
 import { FormikProps } from "formik";
 import { useCallback, useRef } from "react";
+import { map } from "rxjs";
 import { Banner } from "src/components/Banner";
 import useAuth from "src/hooks/useAuth";
 import { useBanner } from "src/hooks/useBanner";
@@ -22,13 +24,53 @@ const CreateGroup = (props: CreateGroupProps) => {
   const { storeId } = useStore();
   const navigate = useNavigate();
   const formRef = useRef<FormikProps<any>>(null);
-  console.log(storeId);
+
+  const { run: createGroupApi, processing: loadingAddGroup } = useJob(
+    (payload: CreateUserGroupRequest) => {
+      return UserGroupRepository()
+        .create(payload)
+        .pipe(
+          map(({ data }) => {
+            console.log(data);
+            if (data.statusCode === 200) {
+              show("Create Group Success");
+              navigate(
+                generatePath(GroupsRoutePaths.Detail, { id: data.data._id }),
+                {
+                  state: {
+                    banner: {
+                      status: "success",
+                      message: `Create group success.`,
+                    },
+                  },
+                }
+              );
+            } else {
+              if (data.errorCode) {
+                showBanner("critical", {
+                  message: "Create group failed.",
+                });
+              }
+            }
+          })
+        );
+    },
+    {
+      showLoading: true,
+    }
+  );
 
   const handleSubmit = useCallback(
     (values: GroupFormValues) => {
-      console.log(values, storeId);
+      const payload: CreateUserGroupRequest = {
+        name: values.name,
+        description: values.description,
+        groupMembers: values.groupMembers,
+        storeId,
+      };
+      createGroupApi(payload);
     },
-    [user]
+    [storeId]
   );
 
   return (
@@ -37,8 +79,9 @@ const CreateGroup = (props: CreateGroupProps) => {
         fullWidth
         message="Unsaved changes"
         saveAction={{
-          onAction: () => {},
+          onAction: () => formRef.current?.submitForm(),
           disabled: false,
+          loading: loadingAddGroup,
         }}
         discardAction={{
           onAction: () => {},
