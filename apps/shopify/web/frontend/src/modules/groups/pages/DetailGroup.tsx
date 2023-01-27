@@ -54,14 +54,14 @@ const DetailGroup = (props: DetailGroupProps) => {
           map(({ data }) => {
             console.log(data);
             if (data.statusCode === 200) {
-              show("Create Group Success");
+              show("Update Group Success");
               navigate(
                 generatePath(GroupsRoutePaths.Detail, { id: data.data._id }),
                 {
                   state: {
                     banner: {
                       status: "success",
-                      message: `Create group success.`,
+                      message: `Update group success.`,
                     },
                   },
                 }
@@ -69,7 +69,7 @@ const DetailGroup = (props: DetailGroupProps) => {
             } else {
               if (data.errorCode) {
                 showBanner("critical", {
-                  message: "Create group failed.",
+                  message: "Update group failed.",
                 });
               }
             }
@@ -85,12 +85,19 @@ const DetailGroup = (props: DetailGroupProps) => {
     return {
       name: group?.name ?? "",
       description: group?.description ?? "",
+      groupMembers: [],
     };
   }, [group]);
 
-  const handleSubmit = useCallback((values) => {
-    console.log(values);
-  }, []);
+  const handleSubmit = useCallback(
+    (values) => {
+      if (id) {
+        updateGroupApi(id, values);
+        window.scrollTo(0, 0);
+      }
+    },
+    [id]
+  );
 
   useEffect(() => {
     if (state?.banner && state.banner?.status) {
@@ -116,7 +123,7 @@ const DetailGroup = (props: DetailGroupProps) => {
           loading: loadingUpdateGroup,
         }}
         discardAction={{
-          onAction: () => {},
+          onAction: () => formRef.current?.resetForm(),
         }}
       />
       <Page
@@ -135,7 +142,13 @@ const DetailGroup = (props: DetailGroupProps) => {
           <Layout.Section>
             <Card>
               <Card.Section>
-                <GroupForm id={id} innerRef={formRef} onSubmit={handleSubmit} />
+                <GroupForm
+                  initialValues={initialValues}
+                  enableReinitialize
+                  id={id}
+                  innerRef={formRef}
+                  onSubmit={handleSubmit}
+                />
               </Card.Section>
             </Card>
           </Layout.Section>

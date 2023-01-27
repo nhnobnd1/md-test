@@ -123,10 +123,6 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
     clearSelection,
   } = useIndexResourceState<any>(groups);
 
-  const editGroup = useCallback(() => {
-    navigate(generatePath(GroupsRoutePaths.Detail));
-  }, [navigate, GroupsRoutePaths]);
-
   const removeGroup = useCallback(() => {
     openModalDelete();
   }, []);
@@ -135,15 +131,9 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
     if (selectedResources.length > 1) {
       return [];
     } else {
-      return [
-        {
-          content: "Edit group",
-          onAction: editGroup,
-        },
-        { content: "Remove group", onAction: removeGroup },
-      ];
+      return [{ content: "Remove group", onAction: removeGroup }];
     }
-  }, [selectedResources, removeGroup, editGroup]);
+  }, [selectedResources, removeGroup]);
 
   const handleSort = useCallback(
     (selected: string[]) => {

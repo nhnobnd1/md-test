@@ -69,6 +69,7 @@ const CreateGroup = (props: CreateGroupProps) => {
         storeId,
       };
       createGroupApi(payload);
+      window.scrollTo(0, 0);
     },
     [storeId]
   );
@@ -84,7 +85,7 @@ const CreateGroup = (props: CreateGroupProps) => {
           loading: loadingAddGroup,
         }}
         discardAction={{
-          onAction: () => {},
+          onAction: () => formRef.current?.resetForm(),
         }}
       />
       <Page
