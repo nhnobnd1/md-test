@@ -1,4 +1,4 @@
-import { generatePath, useJob, useNavigate } from "@moose-desk/core";
+import { generatePath, useJob, useNavigate, useToggle } from "@moose-desk/core";
 import { CreateUserGroupRequest, UserGroupRepository } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import { Card, ContextualSaveBar, Layout, Page } from "@shopify/polaris";
@@ -23,6 +23,7 @@ const CreateGroup = (props: CreateGroupProps) => {
   const { banner, show: showBanner, close: closeBanner } = useBanner();
   const { storeId } = useStore();
   const navigate = useNavigate();
+  const { toggle } = useToggle();
   const formRef = useRef<FormikProps<any>>(null);
 
   const { run: createGroupApi, processing: loadingAddGroup } = useJob(
@@ -78,10 +79,10 @@ const CreateGroup = (props: CreateGroupProps) => {
     <>
       <ContextualSaveBar
         fullWidth
-        message="Unsaved changes"
+        message={formRef.current?.dirty ? "Unsaved changes" : ""}
         saveAction={{
           onAction: () => formRef.current?.submitForm(),
-          disabled: false,
+          disabled: !formRef.current?.dirty,
           loading: loadingAddGroup,
         }}
         discardAction={{
@@ -105,7 +106,12 @@ const CreateGroup = (props: CreateGroupProps) => {
           <Layout.Section>
             <Card>
               <Card.Section>
-                <GroupForm innerRef={formRef} onSubmit={handleSubmit} />
+                <GroupForm
+                  innerRef={formRef}
+                  enableReinitialize
+                  onValuesChange={toggle}
+                  onSubmit={handleSubmit}
+                />
               </Card.Section>
             </Card>
           </Layout.Section>
