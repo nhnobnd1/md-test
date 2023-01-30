@@ -3,9 +3,8 @@ import { AccessManger, UserSettingRepository } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Banner,
-  Button,
-  ButtonGroup,
   Card,
+  ContextualSaveBar,
   FormLayout,
   Layout,
   Link,
@@ -20,12 +19,39 @@ import { catchError, map, of } from "rxjs";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
 import Switch from "src/components/Switch/Switch";
-import useAuth from "src/hooks/useAuth";
+import { useSubdomain } from "src/hooks/useSubdomain";
 import InputDisableSubmit from "src/modules/setting/component/InputDisableSubmit/InputDisableSubmit";
 import { BannerPropsAccessManager } from "src/modules/setting/modal/account&Security/AccountManager";
 import { object, string } from "yup";
 export default function IndexAccountManager({ props }: any) {
-  const auth = useAuth();
+  const { subDomain } = useSubdomain();
+  const [subDomainName, setSubDomainName] = useState("");
+  const getLinkSignUp = useCallback(
+    (mode: string) => {
+      if (subDomain) {
+        switch (mode) {
+          case "development":
+            setSubDomainName(
+              `https://${subDomain.toLocaleLowerCase()}-dev.moosedesk.net/signup`
+            );
+            break;
+          case "stagging":
+            setSubDomainName(
+              `https://${subDomain.toLocaleLowerCase()}.moosedesk.net/signup`
+            );
+            break;
+          case "production":
+            setSubDomainName(
+              `https://${subDomain.toLocaleLowerCase()}.moosedesk.com/signup`
+            );
+            break;
+          default:
+            break;
+        }
+      }
+    },
+    [import.meta.env.MODE, subDomain]
+  );
   const [selectedDomain, setSelectedDomain] = useState<string[]>([]);
   const [disabled, setDisabled] = useState(false);
   const removeSelectedDomain = useCallback(
@@ -165,14 +191,35 @@ export default function IndexAccountManager({ props }: any) {
         })
       );
   });
+  // handle submit form
+
+  const handleSubmitForm = useCallback(() => {
+    formRef.current?.submitForm();
+  }, []);
   // reset form
   const handleResetForm = () => {
     formRef.current?.resetForm();
     fetchAccountManagerStatus();
   };
-  useEffect(() => fetchAccountManagerStatus(), []);
+  //
+  useEffect(() => {
+    fetchAccountManagerStatus();
+    getLinkSignUp(import.meta.env.MODE);
+  }, []);
   return (
     <>
+      {!formRef.current?.dirty ? null : (
+        <ContextualSaveBar
+          fullWidth
+          message="Unsaved changes"
+          saveAction={{
+            onAction: handleSubmitForm,
+          }}
+          discardAction={{
+            onAction: handleResetForm,
+          }}
+        />
+      )}
       <Page fullWidth>
         <Form
           initialValues={result || initialValues}
@@ -212,7 +259,7 @@ export default function IndexAccountManager({ props }: any) {
                       </div>
                       <div className="mt-2">
                         <Link onClick={() => console.log(1)}>
-                          {`https://${auth.user?.name.toLocaleLowerCase()}.moosedesk.com/signup`}
+                          {subDomainName}
                         </Link>
                       </div>
                     </Stack.Item>
@@ -256,16 +303,6 @@ export default function IndexAccountManager({ props }: any) {
                     </Stack.Item>
                   </Stack>
                 </Card>
-              </Layout.Section>
-              <Layout.Section fullWidth>
-                <Stack distribution="trailing">
-                  <ButtonGroup>
-                    <Button onClick={handleResetForm}>Cancel</Button>
-                    <Button submit primary>
-                      Save
-                    </Button>
-                  </ButtonGroup>
-                </Stack>
               </Layout.Section>
             </Layout>
             <FormItem name="whitelistDomains"></FormItem>

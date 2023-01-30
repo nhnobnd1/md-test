@@ -123,6 +123,7 @@ export const PopupCustomer = ({
     },
     [isUpdate]
   );
+
   useEffect(() => {
     setIsUpdate(!!dataForm?._id);
   }, [dataForm]);
@@ -133,7 +134,7 @@ export const PopupCustomer = ({
       onCancel={onCancel}
       footer={
         <Space>
-          <Button onClick={() => form.resetFields()}>Cancel</Button>
+          <Button onClick={onCancel}>Cancel</Button>
           <Button type="primary" onClick={() => form.submit()}>
             Save
           </Button>

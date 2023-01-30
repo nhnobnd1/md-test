@@ -21,7 +21,15 @@ export const ButtonDelete = ({
   return (
     <>
       {onlyIcon ? (
-        <Popconfirm title={confirmTitle} onConfirm={onClick}>
+        <Popconfirm
+          okText="Delete"
+          cancelText="Cancel"
+          okButtonProps={{
+            danger: true,
+          }}
+          title={confirmTitle}
+          onConfirm={onClick}
+        >
           <Button
             className={classNames([className, "btn-delete"])}
             danger

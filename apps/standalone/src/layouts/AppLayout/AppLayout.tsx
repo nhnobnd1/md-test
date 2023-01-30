@@ -230,7 +230,7 @@ export const AppLayout = (props: AppLayoutProps) => {
         };
       }),
     });
-  }, [caseTopMenu, keys]);
+  }, [caseTopMenu, keys, location.pathname]);
 
   const { run: SignOutApi } = useJob(
     () => {

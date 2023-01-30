@@ -4,16 +4,43 @@ import { Button, Card, Space, Tag } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import { Form } from "src/components/UI/Form";
-import useAuth from "src/hooks/useAuth";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
+import { useSubdomain } from "src/hooks/useSubdomain";
 import InputDisableSubmit from "src/modules/setting/component/InputDisableSubmit/InputDisableSubmit";
 import SwitchForm from "src/modules/setting/component/Switch/Switch";
 export default function IndexAccountManager({ props }: any) {
-  const auth = useAuth();
   const [form] = Form.useForm();
   const [valueInput, setValueInput] = useState("");
   const message = useMessage();
+  const { subDomain } = useSubdomain();
+  const [subDomainName, setSubDomainName] = useState("");
+  const getLinkSignUp = useCallback(
+    (mode: string) => {
+      if (subDomain) {
+        switch (mode) {
+          case "development":
+            setSubDomainName(
+              `https://${subDomain.toLocaleLowerCase()}-dev.moosedesk.net/signup`
+            );
+            break;
+          case "stagging":
+            setSubDomainName(
+              `https://${subDomain.toLocaleLowerCase()}.moosedesk.net/signup`
+            );
+            break;
+          case "production":
+            setSubDomainName(
+              `https://${subDomain.toLocaleLowerCase()}.moosedesk.com/signup`
+            );
+            break;
+          default:
+            break;
+        }
+      }
+    },
+    [import.meta.env.MODE, subDomain]
+  );
   const notification = useNotification();
   const [stateErrorInput, setStateErrorInput] = useState(false);
   const [selectedDomain, setSelectedDomain] = useState<string[]>([]);
@@ -137,7 +164,10 @@ export default function IndexAccountManager({ props }: any) {
     fetchAccountManagerStatus();
   };
 
-  useEffect(() => fetchAccountManagerStatus(), []);
+  useEffect(() => {
+    fetchAccountManagerStatus();
+    getLinkSignUp(import.meta.env.MODE);
+  }, []);
   return (
     <Form
       initialValues={result || initialValues}
@@ -159,9 +189,7 @@ export default function IndexAccountManager({ props }: any) {
               use the sign up link.
             </p>
             <div>
-              <a
-                onClick={() => console.log(1)}
-              >{`https://${auth.user?.name.toLocaleLowerCase()}.moosedesk.com/signup`}</a>
+              <a onClick={() => console.log(1)}>{subDomainName}</a>
             </div>
           </div>
         </div>

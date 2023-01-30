@@ -4,12 +4,10 @@ import { useToast } from "@shopify/app-bridge-react";
 import {
   Banner,
   BannerStatus,
-  Button,
-  ButtonGroup,
   Card,
+  ContextualSaveBar,
   Layout,
   Page,
-  Stack,
 } from "@shopify/polaris";
 import { FormikProps } from "formik";
 import * as jose from "jose";
@@ -116,6 +114,18 @@ export default function IndexProfileManager() {
   useMount(() => fetDetailsProfile(token.sub ?? ""));
   return (
     <>
+      {!formRef.current?.dirty ? null : (
+        <ContextualSaveBar
+          fullWidth
+          message="Unsaved changes"
+          saveAction={{
+            onAction: handleSubmitForm,
+          }}
+          discardAction={{
+            onAction: handleResetForm,
+          }}
+        />
+      )}
       <Page fullWidth>
         <Layout>
           <Layout.Section>
@@ -130,16 +140,6 @@ export default function IndexProfileManager() {
           </Layout.Section>
           <Layout.Section>
             <Card sectioned>{profileProfile}</Card>
-          </Layout.Section>
-          <Layout.Section fullWidth>
-            <Stack distribution="trailing">
-              <ButtonGroup>
-                <Button onClick={handleResetForm}>Cancel</Button>
-                <Button onClick={handleSubmitForm} primary>
-                  Save
-                </Button>
-              </ButtonGroup>
-            </Stack>
           </Layout.Section>
         </Layout>
       </Page>

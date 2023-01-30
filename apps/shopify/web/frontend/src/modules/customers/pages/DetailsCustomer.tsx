@@ -160,17 +160,20 @@ export default function DetailsCustomer() {
   }, []);
   return (
     <>
-      <ContextualSaveBar
-        fullWidth
-        message="Unsaved changes"
-        saveAction={{
-          onAction: handleSubmitForm,
-          disabled: !formRef.current?.dirty,
-        }}
-        discardAction={{
-          onAction: handleResetForm,
-        }}
-      />
+      {!formRef.current?.dirty ? null : (
+        <ContextualSaveBar
+          fullWidth
+          message="Unsaved changes"
+          saveAction={{
+            onAction: handleSubmitForm,
+            disabled: !formRef.current?.dirty,
+          }}
+          discardAction={{
+            onAction: handleResetForm,
+          }}
+        />
+      )}
+
       <Page
         title={title}
         compactTitle
