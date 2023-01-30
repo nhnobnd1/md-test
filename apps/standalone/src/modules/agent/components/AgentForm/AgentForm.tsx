@@ -2,6 +2,7 @@ import { Role } from "@moose-desk/repo";
 import { Input } from "antd";
 import { useMemo } from "react";
 import Form, { FormProps } from "src/components/UI/Form/Form";
+import InputPhone from "src/components/UI/InputPhone/InputPhone";
 import Select from "src/components/UI/Select/Select";
 import "./AgentForm.scss";
 
@@ -15,9 +16,14 @@ export interface AgentFormValues {
 }
 interface AgentFormProps extends FormProps {
   disabled?: boolean;
+  disabledEmail?: boolean;
 }
 
-export const AgentForm = ({ disabled = false, ...props }: AgentFormProps) => {
+export const AgentForm = ({
+  disabled = false,
+  disabledEmail = false,
+  ...props
+}: AgentFormProps) => {
   const initialValues = useMemo(() => {
     return (
       props.initialValues ?? {
@@ -46,7 +52,7 @@ export const AgentForm = ({ disabled = false, ...props }: AgentFormProps) => {
           { type: "email", message: "Email is invalid!" },
         ]}
       >
-        <Input disabled={disabled} placeholder="Enter email" />
+        <Input disabled={disabled || disabledEmail} placeholder="Enter email" />
       </Form.Item>
 
       <Form.Item
@@ -75,17 +81,8 @@ export const AgentForm = ({ disabled = false, ...props }: AgentFormProps) => {
       >
         <Input disabled={disabled} placeholder="Enter last name" />
       </Form.Item>
-      <Form.Item
-        label="Phone number"
-        name="phoneNumber"
-        rules={[
-          {
-            max: 255,
-            message: "Last name up to 255 characters",
-          },
-        ]}
-      >
-        <Input disabled={disabled} placeholder="Enter phone number" />
+      <Form.Item label="Phone number" name="phoneNumber">
+        <InputPhone disabled={disabled} placeholder="Enter phone number" />
       </Form.Item>
       <Form.Item
         label="User role"
