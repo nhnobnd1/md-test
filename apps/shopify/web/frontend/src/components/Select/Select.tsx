@@ -333,10 +333,6 @@ Select.Ajax = ({
     reloadData();
   }, [...(dependencies || [])]);
 
-  useEffect(() => {
-    console.log(options, "op");
-  }, [options]);
-
   return (
     <Select
       options={options}
