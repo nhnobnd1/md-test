@@ -86,7 +86,7 @@ export const PopupAgent = ({
     }
   }, [data]);
 
-  const { run: createAgent } = useJob(
+  const { run: createAgent, processing: loadingCreate } = useJob(
     (payload: CreateAgentRequest) => {
       message.loading.show("Creating Agent");
       return AgentRepository()
@@ -120,11 +120,10 @@ export const PopupAgent = ({
             })
           )
         );
-    },
-    { showLoading: true }
+    }
   );
 
-  const { run: updateAgentApi } = useJob(
+  const { run: updateAgentApi, processing: loadingUpdate } = useJob(
     (id: string, payload: UpdateAgentRequest) => {
       message.loading.show("Updating agent");
       return AgentRepository()
@@ -141,6 +140,7 @@ export const PopupAgent = ({
                     description: "Agent has been updated successfully",
                   }
                 );
+                onChange && onChange(true);
               } else {
                 notification.error("Agent has been updated failed");
               }
@@ -216,8 +216,7 @@ export const PopupAgent = ({
             return of(err);
           })
         );
-    },
-    { showLoading: true }
+    }
   );
 
   const { run: deActiveAgentApi, processing: loadingDeactivate } = useJob(
@@ -242,8 +241,7 @@ export const PopupAgent = ({
             })
           )
         );
-    },
-    { showLoading: true }
+    }
   );
 
   const { run: activeAgentApi, processing: loadingActive } = useJob(
@@ -268,8 +266,7 @@ export const PopupAgent = ({
             })
           )
         );
-    },
-    { showLoading: true }
+    }
   );
 
   const resendMail = useCallback(() => {
@@ -397,7 +394,7 @@ export const PopupAgent = ({
       }
     >
       <div>
-        <Loading spinning={loadingSentMail}>
+        <Loading spinning={loadingSentMail || loadingUpdate || loadingCreate}>
           <Header
             title={
               dataForm?._id ? (
@@ -412,6 +409,7 @@ export const PopupAgent = ({
           ></Header>
           <AgentForm
             initialValues={dataForm}
+            disabledEmail={!!dataForm?._id}
             enableLoadForm
             enableReinitialize
             disabled={
