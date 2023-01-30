@@ -1,4 +1,4 @@
-import { generatePath, useJob, useNavigate } from "@moose-desk/core";
+import { generatePath, useJob, useNavigate, useToggle } from "@moose-desk/core";
 import {
   AgentRepository,
   CreateAgentRequest,
@@ -33,6 +33,7 @@ const CreateAgent = (props: CreateAgentProps) => {
   const navigate = useNavigate();
   const formRef = useRef<FormikProps<any>>(null);
   const { banner, show: showBanner, close: closeBanner } = useBanner();
+  const { toggle } = useToggle();
 
   const { run: createAgentApi, processing: loadingCreate } = useJob(
     (payload: CreateAgentRequest) => {
@@ -117,22 +118,17 @@ const CreateAgent = (props: CreateAgentProps) => {
         <Layout.Section>
           <Card>
             <Card.Section>
-              <AgentForm innerRef={formRef} onSubmit={handleSubmit} />
+              <AgentForm
+                innerRef={formRef}
+                onSubmit={handleSubmit}
+                onValuesChange={toggle}
+              />
               <div className="pt-6">
                 <Stack distribution="trailing">
                   <ButtonGroup>
                     <Button onClick={() => formRef.current?.resetForm()}>
                       Cancel
                     </Button>
-                    {/* <ModalSetPassword
-                      activator={
-                        <Button onClick={() => setModalSetPassword(true)}>
-                          Set Password
-                        </Button>
-                      }
-                      open={modalSetPassword}
-                      onClose={() => setModalSetPassword(false)}
-                    /> */}
                     <Button
                       onClick={() => formRef.current?.submitForm()}
                       primary

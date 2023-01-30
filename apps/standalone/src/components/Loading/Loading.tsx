@@ -41,7 +41,7 @@ export const Loading = ({
               </div>
             </>
           ) : (
-            <Spin {...props}></Spin>
+            <Spin {...props}>{children}</Spin>
           )}
         </>
       )}
