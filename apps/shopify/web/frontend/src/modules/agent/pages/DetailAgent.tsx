@@ -19,23 +19,16 @@ import {
   Button,
   ButtonGroup,
   Card,
+  ContextualSaveBar,
   Layout,
   Link,
-  Loading,
   Page,
   Stack,
   Text,
 } from "@shopify/polaris";
 import { Status } from "@shopify/polaris/build/ts/latest/src/components/Badge";
 import { FormikProps } from "formik";
-import {
-  Suspense,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import Banner from "src/components/Banner/Banner";
 import { ModalDelete } from "src/components/Modal/ModalDelete";
@@ -54,6 +47,7 @@ const DetailAgent = (props: CreateAgentProps) => {
   const formRef = useRef<FormikProps<any>>(null);
   const { banner, show: showBanner, close: closeBanner } = useBanner();
   const [agentSaved, setAgentSaved] = useState<Agent>();
+  const { toggle } = useToggle();
   const { state } = useLocation();
   const { id } = useParams();
 
@@ -351,150 +345,143 @@ const DetailAgent = (props: CreateAgentProps) => {
 
   return (
     <>
-      <Suspense
-        fallback={
-          <div
-            className="flex items-center content-center"
-            style={{ width: "100vw", height: "100vh" }}
-          >
-            <Loading />
-          </div>
-        }
-      >
-        {agentSaved && (
-          <Page
-            breadcrumbs={[
-              { content: "Agents", url: generatePath(AgentRoutePaths.Index) },
-            ]}
-            title={
-              agentSaved.lastName === "admin"
-                ? `${agentSaved.firstName}`
-                : `${agentSaved?.firstName} ${agentSaved?.lastName}`
-            }
-            titleMetadata={
-              <Badge status={agentStatus.status}>{agentStatus.label}</Badge>
-            }
-          >
-            <Layout>
-              {banner.visible && (
-                <Layout.Section>
-                  <Banner banner={banner} onDismiss={closeBanner}></Banner>
-                </Layout.Section>
-              )}
-
+      <ContextualSaveBar
+        fullWidth
+        message={formRef.current?.dirty ? "Unsaved changes" : ""}
+        saveAction={{
+          onAction: () => formRef.current?.submitForm(),
+          disabled: !formRef.current?.dirty,
+          loading: loadingUpdate,
+        }}
+        discardAction={{
+          onAction: () => formRef.current?.resetForm(),
+        }}
+      />
+      {agentSaved && (
+        <Page
+          breadcrumbs={[
+            { content: "Agents", url: generatePath(AgentRoutePaths.Index) },
+          ]}
+          title={
+            agentSaved.lastName === "admin"
+              ? `${agentSaved.firstName}`
+              : `${agentSaved?.firstName} ${agentSaved?.lastName}`
+          }
+          titleMetadata={
+            <Badge status={agentStatus.status}>{agentStatus.label}</Badge>
+          }
+        >
+          <Layout>
+            {banner.visible && (
               <Layout.Section>
-                <Card>
-                  <Card.Section>
-                    <AgentForm
-                      innerRef={formRef}
-                      initialValues={agentSaved}
-                      disableForm={
-                        (agentSaved.isActive && !agentSaved?.emailConfirmed) ||
-                        !agentSaved.isActive
-                      }
-                      enableReinitialize
-                      onSubmit={handleSubmit}
-                    />
-                    {!agentSaved?.emailConfirmed && (
-                      <div className="pt-4">
-                        <Link dataPrimaryLink onClick={resendMail}>
-                          <Text variant="bodyLg" as="p">
-                            Re-send Invitation Email
-                          </Text>
-                        </Link>
-                      </div>
-                    )}
-
-                    <div className="pt-6">
-                      <Stack distribution="trailing">
-                        {!agentSaved?.emailConfirmed && agentSaved?.isActive ? (
-                          <ButtonGroup>
-                            <Button
-                              onClick={() =>
-                                navigate(generatePath(AgentRoutePaths.Index))
-                              }
-                            >
-                              Cancel
-                            </Button>
-                            <ModalDelete
-                              open={modalRemove}
-                              activator={
-                                <Button onClick={showModalRemove} destructive>
-                                  Remove
-                                </Button>
-                              }
-                              onClose={closeModalRemove}
-                              title="Are you sure that you want to permanently remove this Agent"
-                              content="This Agent will be removed permanently. This action cannot be undone"
-                              loading={loadingDelete}
-                              deleteAction={handleDeleteAgent}
-                            />
-                          </ButtonGroup>
-                        ) : (
-                          <ButtonGroup>
-                            <Button
-                              onClick={() =>
-                                navigate(generatePath(AgentRoutePaths.Index))
-                              }
-                            >
-                              Cancel
-                            </Button>
-                            {agentSaved?._id && (
-                              <>
-                                {agentSaved.isActive ? (
-                                  <ModalDelete
-                                    open={modalDeactivate}
-                                    textConfirm="Deactivate"
-                                    activator={
-                                      <Button
-                                        destructive
-                                        loading={loadingDeactivate}
-                                        onClick={showModalDeactivate}
-                                      >
-                                        Deactivate
-                                      </Button>
-                                    }
-                                    onClose={closeModalDeactivate}
-                                    title="Are you sure that you want to deactivate this Agent"
-                                    content="This Agent will set to Inactive. He/She will no longer have access to system"
-                                    loading={loadingDeactivate}
-                                    deleteAction={() =>
-                                      deActiveAgentApi(agentSaved._id ?? id)
-                                    }
-                                  />
-                                ) : (
-                                  <Button
-                                    primary
-                                    loading={loadingActive}
-                                    onClick={() =>
-                                      activeAgentApi(agentSaved._id ?? id)
-                                    }
-                                  >
-                                    Active
-                                  </Button>
-                                )}
-                              </>
-                            )}
-                            {agentSaved.isActive && (
-                              <Button
-                                onClick={() => formRef.current?.submitForm()}
-                                loading={loadingUpdate}
-                                primary
-                              >
-                                Save
-                              </Button>
-                            )}
-                          </ButtonGroup>
-                        )}
-                      </Stack>
-                    </div>
-                  </Card.Section>
-                </Card>
+                <Banner banner={banner} onDismiss={closeBanner}></Banner>
               </Layout.Section>
-            </Layout>
-          </Page>
-        )}
-      </Suspense>
+            )}
+
+            <Layout.Section>
+              <Card>
+                <Card.Section>
+                  <AgentForm
+                    innerRef={formRef}
+                    initialValues={agentSaved}
+                    disableForm={
+                      (agentSaved.isActive && !agentSaved?.emailConfirmed) ||
+                      !agentSaved.isActive
+                    }
+                    enableReinitialize
+                    onValuesChange={toggle}
+                    onSubmit={handleSubmit}
+                  />
+                  {!agentSaved?.emailConfirmed && (
+                    <div className="pt-4">
+                      <Link dataPrimaryLink onClick={resendMail}>
+                        <Text variant="bodyLg" as="p">
+                          Re-send Invitation Email
+                        </Text>
+                      </Link>
+                    </div>
+                  )}
+
+                  <div className="pt-6">
+                    <Stack distribution="trailing">
+                      {!agentSaved?.emailConfirmed && agentSaved?.isActive ? (
+                        <ButtonGroup>
+                          <Button
+                            onClick={() =>
+                              navigate(generatePath(AgentRoutePaths.Index))
+                            }
+                          >
+                            Cancel
+                          </Button>
+                          <ModalDelete
+                            open={modalRemove}
+                            activator={
+                              <Button onClick={showModalRemove} destructive>
+                                Remove
+                              </Button>
+                            }
+                            onClose={closeModalRemove}
+                            title="Are you sure that you want to permanently remove this Agent"
+                            content="This Agent will be removed permanently. This action cannot be undone"
+                            loading={loadingDelete}
+                            deleteAction={handleDeleteAgent}
+                          />
+                        </ButtonGroup>
+                      ) : (
+                        <ButtonGroup>
+                          <Button
+                            onClick={() =>
+                              navigate(generatePath(AgentRoutePaths.Index))
+                            }
+                          >
+                            Cancel
+                          </Button>
+                          {agentSaved?._id && (
+                            <>
+                              {agentSaved.isActive ? (
+                                <ModalDelete
+                                  open={modalDeactivate}
+                                  textConfirm="Deactivate"
+                                  activator={
+                                    <Button
+                                      destructive
+                                      loading={loadingDeactivate}
+                                      onClick={showModalDeactivate}
+                                    >
+                                      Deactivate
+                                    </Button>
+                                  }
+                                  onClose={closeModalDeactivate}
+                                  title="Are you sure that you want to deactivate this Agent"
+                                  content="This Agent will set to Inactive. He/She will no longer have access to system"
+                                  loading={loadingDeactivate}
+                                  deleteAction={() =>
+                                    deActiveAgentApi(agentSaved._id ?? id)
+                                  }
+                                />
+                              ) : (
+                                <Button
+                                  primary
+                                  loading={loadingActive}
+                                  onClick={() =>
+                                    activeAgentApi(agentSaved._id ?? id)
+                                  }
+                                >
+                                  Active
+                                </Button>
+                              )}
+                            </>
+                          )}
+                        </ButtonGroup>
+                      )}
+                    </Stack>
+                  </div>
+                </Card.Section>
+              </Card>
+            </Layout.Section>
+          </Layout>
+        </Page>
+      )}
     </>
   );
 };

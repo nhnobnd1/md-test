@@ -50,16 +50,6 @@ const agentRoutes: IRoute = {
           path: AgentRoutePaths.Agents.Index,
           component: lazy(() => import("src/modules/agent/pages/agents/Index")),
         },
-        {
-          path: AgentRoutePaths.Agents.New,
-          component: lazy(() => import("src/modules/agent/pages/agents/New")),
-        },
-        {
-          path: AgentRoutePaths.Agents.Detail,
-          component: lazy(
-            () => import("src/modules/agent/pages/agents/Detail")
-          ),
-        },
       ],
     },
   ],

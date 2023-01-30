@@ -172,6 +172,12 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
           sortBy: sorter.columnKey as string,
           sortOrder: sorter.order === "ascend" ? 1 : -1,
         }));
+      } else {
+        setFilterData((value) => ({
+          ...value,
+          sortBy: undefined,
+          sortOrder: undefined,
+        }));
       }
     },
     [setFilterData]

@@ -119,7 +119,7 @@ const DetailGroup = (props: DetailGroupProps) => {
         message="Unsaved changes"
         saveAction={{
           onAction: () => formRef.current?.submitForm(),
-          disabled: false,
+          disabled: !formRef.current?.dirty,
           loading: loadingUpdateGroup,
         }}
         discardAction={{
