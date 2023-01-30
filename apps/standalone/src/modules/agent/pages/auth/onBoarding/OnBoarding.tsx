@@ -143,7 +143,7 @@ export const OnBoarding = (props: OnBoardingProps) => {
                                 navigate(generatePath(AgentRoutePaths.Login))
                               }
                             >
-                              https://{getSubDomain()}.moosedesk.com/login
+                              https://{getSubDomain()}.moosedesk.net/agent/login
                             </span>
                           </div>
                           <div className="text-center">
