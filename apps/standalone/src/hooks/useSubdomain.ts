@@ -16,12 +16,26 @@ export function useSubdomain() {
     }
   }, [window.location]);
 
+  const getDomain = useCallback(() => {
+    switch (import.meta.env.MODE) {
+      case "development":
+        return "-dev.moosedesk.net";
+
+      case "staging":
+        return ".moosedesk.net";
+
+      default:
+        return ".moosedesk.com";
+    }
+  }, [import.meta.env.MODE]);
+
   useMount(() => {
     setSubDomain(getSubDomain());
   });
 
   return {
     subDomain,
+    getDomain,
     setSubDomain,
     getSubDomain,
   };

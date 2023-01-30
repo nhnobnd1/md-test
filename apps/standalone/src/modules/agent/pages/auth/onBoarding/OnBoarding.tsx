@@ -38,7 +38,7 @@ export const OnBoarding = (props: OnBoardingProps) => {
     token: "",
   });
 
-  const { getSubDomain } = useSubdomain();
+  const { getSubDomain, getDomain } = useSubdomain();
 
   const { run: CheckValidTokenApi, processing } = useJob(
     (payload: CheckTokenNewAgentRequest) => {
@@ -143,7 +143,8 @@ export const OnBoarding = (props: OnBoardingProps) => {
                                 navigate(generatePath(AgentRoutePaths.Login))
                               }
                             >
-                              https://{getSubDomain()}.moosedesk.net/agent/login
+                              https://{getSubDomain()}
+                              {getDomain()}/agent/login
                             </span>
                           </div>
                           <div className="text-center">
