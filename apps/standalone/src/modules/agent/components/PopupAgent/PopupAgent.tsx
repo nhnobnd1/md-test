@@ -10,6 +10,7 @@ import {
 import { Button, Modal, ModalProps, Space, Tag } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { catchError, map, of } from "rxjs";
+import { Loading } from "src/components/Loading";
 import { ButtonModalDelete } from "src/components/UI/Button/ButtonModalDelete";
 import Form from "src/components/UI/Form/Form";
 import { Header } from "src/components/UI/Header";
@@ -26,12 +27,14 @@ interface PopupAgentProps extends Omit<ModalProps, "onCancel"> {
   data?: Agent;
   onChange?: (closeModal?: boolean) => void;
   onCancel?: () => void;
+  loading?: boolean;
 }
 
 export const PopupAgent = ({
   data,
   onChange,
   onCancel,
+  loading = false,
   ...props
 }: PopupAgentProps) => {
   const [form] = Form.useForm();
@@ -72,8 +75,7 @@ export const PopupAgent = ({
             })
           )
         );
-    },
-    { showLoading: true }
+    }
   );
 
   useEffect(() => {
@@ -153,7 +155,7 @@ export const PopupAgent = ({
     }
   );
 
-  const { run: resendMailApi } = useJob(
+  const { run: resendMailApi, processing: loadingSentMail } = useJob(
     (payload: ResendEmailInvitationRequest) => {
       return AgentRepository()
         .resendEmailInvitation(payload)
@@ -178,8 +180,7 @@ export const PopupAgent = ({
             })
           )
         );
-    },
-    { showLoading: true }
+    }
   );
 
   const { run: deleteAgentApi, processing: loadingDelete } = useJob(
@@ -396,36 +397,38 @@ export const PopupAgent = ({
       }
     >
       <div>
-        <Header
-          title={
-            dataForm?._id ? (
-              <div className="flex items-center gap-2">
-                <span>{`${dataForm.firstName} ${dataForm.lastName}`}</span>
-                <Tag color={agentStatus.color}>{agentStatus.label}</Tag>
-              </div>
-            ) : (
-              <span>Create new agent</span>
-            )
-          }
-        ></Header>
-        <AgentForm
-          initialValues={dataForm}
-          enableLoadForm
-          enableReinitialize
-          disabled={
-            dataForm && dataForm._id
-              ? (dataForm.isActive && !dataForm?.emailConfirmed) ||
-                !dataForm.isActive
-              : false
-          }
-          form={form}
-          onFinish={handleFinish}
-        />
-        {!dataForm?.emailConfirmed && dataForm?._id && (
-          <div className="link" onClick={resendMail}>
-            Re-send Invitation Email
-          </div>
-        )}
+        <Loading spinning={loadingSentMail}>
+          <Header
+            title={
+              dataForm?._id ? (
+                <div className="flex items-center gap-2">
+                  <span>{`${dataForm.firstName} ${dataForm.lastName}`}</span>
+                  <Tag color={agentStatus.color}>{agentStatus.label}</Tag>
+                </div>
+              ) : (
+                <span>Create new agent</span>
+              )
+            }
+          ></Header>
+          <AgentForm
+            initialValues={dataForm}
+            enableLoadForm
+            enableReinitialize
+            disabled={
+              dataForm && dataForm._id
+                ? (dataForm.isActive && !dataForm?.emailConfirmed) ||
+                  !dataForm.isActive
+                : false
+            }
+            form={form}
+            onFinish={handleFinish}
+          />
+          {!dataForm?.emailConfirmed && dataForm?._id && (
+            <div className="link" onClick={resendMail}>
+              Re-send Invitation Email
+            </div>
+          )}
+        </Loading>
       </div>
     </Modal>
   );
