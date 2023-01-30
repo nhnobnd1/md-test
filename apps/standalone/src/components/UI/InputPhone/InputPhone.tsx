@@ -36,7 +36,10 @@ const InputPhone = (props: InputPhoneProps) => {
       <div>
         <img width={40} height={30} src={item?.flagImage} />
         <span>
-          {item.countryName} (+{item.phonePrefix})
+          {item.countryName.length < 30
+            ? item.countryName
+            : item.countryName.slice(0, 24) + " ..."}{" "}
+          (+{item.phonePrefix})
         </span>
       </div>
     ),
@@ -111,7 +114,7 @@ const InputPhone = (props: InputPhoneProps) => {
         value={valueSelect}
         onChange={(value) => handleChangeValueSelect(value)}
         options={choices}
-        style={{ maxWidth: "230px", maxHeight: "330px" }}
+        style={{ maxWidth: "300px", maxHeight: "330px" }}
         className="flex mr-2"
       />
       <Input
