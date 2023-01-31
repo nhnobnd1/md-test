@@ -1,15 +1,22 @@
-import { Input, Select } from "antd";
-import { memo, useCallback, useEffect, useState } from "react";
+import { Input, InputProps } from "antd";
+import { useCallback, useEffect, useState } from "react";
+import Select from "src/components/UI/Select/Select";
 import constaint from "src/constaint";
 import { Country } from "src/constaint/country";
 import "./InputPhone.scss";
-interface InputPhoneProps {
-  placeholder?: string;
+interface InputPhoneProps
+  extends Omit<InputProps, "value" | "onChange" | "disabled"> {
   value?: string;
+  disabled?: boolean;
   onChange?: (value: any) => void;
 }
 
-const InputPhone = (props: InputPhoneProps) => {
+const InputPhone = ({
+  value,
+  disabled,
+  onChange,
+  ...props
+}: InputPhoneProps) => {
   // init data
 
   const optionSelectPhone = constaint.countryList.country.map(
@@ -27,35 +34,29 @@ const InputPhone = (props: InputPhoneProps) => {
 
   const [dataSelect, setDataSelect] = useState(optionSelectPhone);
   const [filterValue, setFilterValue] = useState("");
-  const handleSearchChange = useCallback((value: string) => {
-    setFilterValue(value);
-  }, []);
 
-  const choices = dataSelect.map((item) => ({
-    label: (
-      <div>
-        <img width={40} height={30} src={item?.flagImage} />
-        <span>
-          {item.countryName.length < 30
-            ? item.countryName
-            : item.countryName.slice(0, 24) + " ..."}{" "}
-          (+{item.phonePrefix})
-        </span>
-      </div>
-    ),
-    // `${item.countryName} (+${item.phonePrefix})`,
-    value: item.code,
-  }));
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      setFilterValue(value);
+      const filterRegex = new RegExp(value.toLowerCase(), "g");
+      const optionFilter = optionSelectPhone.filter((option) =>
+        option.countryName.toLowerCase().match(filterRegex)
+      );
+      setDataSelect(optionFilter);
+    },
+    [optionSelectPhone]
+  );
 
   // set flag and value
-
   const [flagValue, setFlagValue] = useState<string>("84");
   const [valueSelect, setValueSelect] = useState("VN");
   const [valueField, setValueField] = useState("");
   const handleChangeValueInput = useCallback(
     (value: string) => {
       setValueField(value);
-      props.onChange && props.onChange(`${flagValue}-${value}`);
+      if (onChange) {
+        value ? onChange(`${flagValue}-${value}`) : onChange("");
+      }
     },
     [flagValue]
   );
@@ -63,8 +64,8 @@ const InputPhone = (props: InputPhoneProps) => {
     (value: string) => {
       setValueSelect(value);
       if (valueField !== "") {
-        props.onChange &&
-          props.onChange(
+        onChange &&
+          onChange(
             `${
               dataSelect.find((option) => option.code === value)?.phonePrefix
             }-${valueField}`
@@ -73,38 +74,32 @@ const InputPhone = (props: InputPhoneProps) => {
     },
     [valueField]
   );
-  // handle Effect
 
-  useEffect(() => {
-    setDataSelect(
-      optionSelectPhone.filter((option) =>
-        option.countryName
-          .toLocaleLowerCase()
-          .match(filterValue.toLocaleLowerCase())
-      )
-    );
-  }, [filterValue]);
+  // handle Effect
   useEffect(() => {
     setFlagValue(
       dataSelect.find((option) => option.code === valueSelect)?.phonePrefix ||
         "84"
     );
   }, [valueSelect]);
+
   useEffect(() => {
     setValueSelect(
       dataSelect.find((option) => option.phonePrefix === flagValue)?.code ||
         "VN"
     );
   }, [flagValue]);
+
   useEffect(() => {
-    if (props.value) {
-      setFlagValue(props.value?.slice(0, props.value?.indexOf("-")));
-      setValueField(props.value?.slice(props.value?.indexOf("-") + 1));
+    if (value) {
+      setFlagValue(value?.slice(0, value?.indexOf("-")));
+      setValueField(value?.slice(value?.indexOf("-") + 1));
     } else {
       setFlagValue("84");
       setValueField("");
     }
   }, [props]);
+
   return (
     <div className="flex">
       <Select
@@ -113,19 +108,38 @@ const InputPhone = (props: InputPhoneProps) => {
         onSearch={(value) => handleSearchChange(value)}
         value={valueSelect}
         onChange={(value) => handleChangeValueSelect(value)}
-        options={choices}
+        disabled={disabled}
         style={{ maxWidth: "300px", maxHeight: "330px" }}
         className="flex mr-2"
-      />
+      >
+        {dataSelect.map((item) => (
+          <Select.Option
+            value={item.code}
+            label={item.countryName}
+            key={item.code}
+          >
+            <div>
+              <img width={40} height={30} src={item?.flagImage} />
+              <span>
+                {item.countryName.length < 30
+                  ? item.countryName
+                  : item.countryName.slice(0, 24) + " ..."}{" "}
+                (+{item.phonePrefix})
+              </span>
+            </div>
+          </Select.Option>
+        ))}
+      </Select>
       <Input
         type="tel"
-        placeholder={props.placeholder}
+        {...props}
         autoComplete="tel"
         value={valueField}
+        disabled={disabled}
         onChange={(e) => handleChangeValueInput(e.target.value)}
       />
     </div>
   );
 };
 
-export default memo(InputPhone);
+export default InputPhone;

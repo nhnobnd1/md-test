@@ -118,7 +118,8 @@ const ResetPassword = (props: ResetPasswordProps) => {
                       },
                       {
                         pattern:
-                          /^(?=.*[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*[@$!%*#?&])[a-zA-Z@$!%*#?&\d]{8,32}$/g,
+                          // eslint-disable-next-line no-useless-escape
+                          /^(?=.*[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*[@$!%*#=\/^?&])[a-zA-Z@$!%*#=\/^?&\d]{8,}$/g,
                         message:
                           "Password must be have 8 characters long with uppercase, lowercase, number and wildcards",
                       },

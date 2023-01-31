@@ -5,8 +5,7 @@ import { SelectProps as AntSelectProps, SelectValue } from "antd/lib/select";
 import _ from "lodash";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-interface SelectProps<VT extends SelectValue = SelectValue>
-  extends AntSelectProps<VT> {
+interface SelectProps<VT extends SelectValue = any> extends AntSelectProps<VT> {
   size?: SizeType;
 }
 
