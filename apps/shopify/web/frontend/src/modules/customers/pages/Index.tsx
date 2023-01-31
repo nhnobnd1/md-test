@@ -12,6 +12,7 @@ import {
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Button,
+  ButtonGroup,
   Card,
   ChoiceList,
   EmptySearchResult,
@@ -23,9 +24,8 @@ import {
   Popover,
   Stack,
   Text,
-  useIndexResourceState,
 } from "@shopify/polaris";
-import { SortMinor } from "@shopify/polaris-icons";
+import { DeleteMajor, EditMajor, SortMinor } from "@shopify/polaris-icons";
 import { useCallback, useEffect, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import { ModalDelete } from "src/components/Modal/ModalDelete";
@@ -37,7 +37,7 @@ export default function CustomerIndexPage() {
   const navigate = useNavigate();
   const { show } = useToast();
   const [customers, setCustomers] = useState<Customer[]>([]);
-
+  const [deleteCustomer, setDeleteCustomer] = useState<string>("");
   const [popoverSort, setPopoverSort] = useState(false);
 
   const togglePopoverSort = useCallback(
@@ -49,25 +49,12 @@ export default function CustomerIndexPage() {
     singular: "customer",
     plural: "customers",
   };
-  const {
-    selectedResources,
-    allResourcesSelected,
-    handleSelectionChange,
-    clearSelection,
-  } = useIndexResourceState<Customer>(customers);
-
   const rowMarkup = customers.map(
     ({ id, firstName, lastName, email, storeId }, index) => (
-      <IndexTable.Row
-        id={id}
-        key={id}
-        selected={selectedResources.includes(id)}
-        position={index}
-      >
+      <IndexTable.Row id={id} key={id} position={index}>
         <IndexTable.Cell className="py-3">
           <Link
             monochrome
-            dataPrimaryLink
             onClick={() => navigateShowDetails(id)}
             removeUnderline
           >
@@ -78,6 +65,24 @@ export default function CustomerIndexPage() {
         </IndexTable.Cell>
         <IndexTable.Cell className="py-3">{email}</IndexTable.Cell>
         <IndexTable.Cell className="py-3">{storeId}</IndexTable.Cell>
+        <IndexTable.Cell className="py-3">
+          <ButtonGroup>
+            <Button
+              onClick={() => navigateShowDetails(id)}
+              icon={() => <Icon source={() => <EditMajor />} color="base" />}
+            />
+            <Button
+              icon={() => (
+                <Icon
+                  accessibilityLabel="Delete"
+                  source={() => <DeleteMajor />}
+                />
+              )}
+              onClick={() => handleOpenModalDelete(id)}
+              destructive
+            />
+          </ButtonGroup>
+        </IndexTable.Cell>
       </IndexTable.Row>
     )
   );
@@ -88,12 +93,6 @@ export default function CustomerIndexPage() {
   const navigateShowDetails = useCallback((id: string) => {
     navigate(generatePath(CustomersRoutePaths.Details, { id }));
   }, []);
-  const promotedBulkActions = [
-    {
-      content: "Remove customer",
-      onAction: () => handleOpenModalDelete(),
-    },
-  ];
   const sortTemplate = [
     {
       sortBy: "lastName",
@@ -166,8 +165,9 @@ export default function CustomerIndexPage() {
     </Button>
   );
   const [isOpen, setIsOpen] = useState(false);
-  const handleOpenModalDelete = () => {
+  const handleOpenModalDelete = (id: string) => {
     setIsOpen(true);
+    setDeleteCustomer(id);
   };
   const { run: handleRemoveCustomer } = useJob((dataDelete: string[]) => {
     return CustomerRepository()
@@ -177,7 +177,7 @@ export default function CustomerIndexPage() {
           if (data.statusCode === 200) {
             show("Delete customer success");
             fetchListCustomer();
-            clearSelection();
+            setDeleteCustomer("");
           } else {
             show("Delete customer failed", {
               isError: true,
@@ -247,7 +247,7 @@ export default function CustomerIndexPage() {
           content={
             "This customer will be removed permanently. All customer's tickets and his profile will no longer accessible."
           }
-          deleteAction={() => handleRemoveCustomer(selectedResources)}
+          deleteAction={() => handleRemoveCustomer([deleteCustomer])}
         />
         <Card>
           <div className="flex-1 px-4 pt-4 pb-2">
@@ -285,17 +285,13 @@ export default function CustomerIndexPage() {
           <IndexTable
             resourceName={resourceName}
             itemCount={customers.length}
-            selectedItemsCount={
-              allResourcesSelected ? "All" : selectedResources.length
-            }
-            onSelectionChange={handleSelectionChange}
+            selectable={false}
             headings={[
               { title: "Customer name" },
               { title: "Email address" },
               { title: "Number of tickets" },
             ]}
             hasMoreItems
-            promotedBulkActions={promotedBulkActions}
             loading={loadCustomer}
             emptyState={
               <EmptySearchResult

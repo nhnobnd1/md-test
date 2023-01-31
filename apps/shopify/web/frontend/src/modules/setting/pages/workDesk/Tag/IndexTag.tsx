@@ -8,6 +8,7 @@ import { BaseListTagRequest, Tag, TagRepository } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Button,
+  ButtonGroup,
   Card,
   ChoiceList,
   EmptySearchResult,
@@ -19,9 +20,8 @@ import {
   Popover,
   Stack,
   Text,
-  useIndexResourceState,
 } from "@shopify/polaris";
-import { SortMinor } from "@shopify/polaris-icons";
+import { DeleteMajor, EditMajor, SortMinor } from "@shopify/polaris-icons";
 import dayjs from "dayjs";
 import { useCallback, useEffect, useState } from "react";
 import { catchError, map, of } from "rxjs";
@@ -35,6 +35,7 @@ export default function TagIndexPage() {
   const { show } = useToast();
   const [tags, setTags] = useState<Tag[]>([]);
   const [popoverSort, setPopoverSort] = useState(false);
+  const [deleteTag, setDeleteTag] = useState<string>("");
 
   const togglePopoverSort = useCallback(
     () => setPopoverSort((popoverSort) => !popoverSort),
@@ -44,25 +45,12 @@ export default function TagIndexPage() {
     singular: "tag",
     plural: "tags",
   };
-  const {
-    selectedResources,
-    allResourcesSelected,
-    handleSelectionChange,
-    clearSelection,
-  } = useIndexResourceState<Tag>(tags);
-
   const rowMarkup = tags.map(
     ({ id, name, updatedDatetime, createdDatetime }, index) => (
-      <IndexTable.Row
-        id={id}
-        key={id}
-        selected={selectedResources.includes(id)}
-        position={index}
-      >
+      <IndexTable.Row id={id} key={id} position={index}>
         <IndexTable.Cell className="py-3">
           <Link
             monochrome
-            dataPrimaryLink
             onClick={() => navigateShowDetails(id)}
             removeUnderline
           >
@@ -77,6 +65,24 @@ export default function TagIndexPage() {
             ? dayjs(updatedDatetime).format("DD-MM-YYYY")
             : dayjs(createdDatetime).format("DD-MM-YYYY")}
         </IndexTable.Cell>
+        <IndexTable.Cell className="py-3">
+          <ButtonGroup>
+            <Button
+              onClick={() => navigateShowDetails(id)}
+              icon={() => <Icon source={() => <EditMajor />} color="base" />}
+            />
+            <Button
+              icon={() => (
+                <Icon
+                  accessibilityLabel="Delete"
+                  source={() => <DeleteMajor />}
+                />
+              )}
+              onClick={() => handleOpenModalDelete(id)}
+              destructive
+            />
+          </ButtonGroup>
+        </IndexTable.Cell>
       </IndexTable.Row>
     )
   );
@@ -87,12 +93,6 @@ export default function TagIndexPage() {
   const navigateShowDetails = useCallback((id: string) => {
     navigate(generatePath(SettingRoutePaths.Workdesk.Tag.Edit, { id }));
   }, []);
-  const promotedBulkActions = [
-    {
-      content: "Remove tag",
-      onAction: () => handleOpenModalDelete(),
-    },
-  ];
   const sortTemplate = [
     {
       sortBy: "name",
@@ -164,8 +164,9 @@ export default function TagIndexPage() {
     </Button>
   );
   const [isOpen, setIsOpen] = useState(false);
-  const handleOpenModalDelete = () => {
+  const handleOpenModalDelete = (id: string) => {
     setIsOpen(true);
+    setDeleteTag(id);
   };
   const { run: handleRemoveTag } = useJob((dataDelete: string[]) => {
     return TagRepository()
@@ -175,7 +176,7 @@ export default function TagIndexPage() {
           if (data.statusCode === 200) {
             show("Delete tag success");
             fetchListTag();
-            clearSelection();
+            setDeleteTag("");
           } else {
             show("Delete tag failed", {
               isError: true,
@@ -245,7 +246,7 @@ export default function TagIndexPage() {
           content={
             "This tag will be removed permanently. This action cannot be undone. All tickets which are using this tag will get affected too."
           }
-          deleteAction={() => handleRemoveTag(selectedResources)}
+          deleteAction={() => handleRemoveTag([deleteTag])}
         />
         <Card>
           <div className="flex-1 px-4 pt-4 pb-2">
@@ -283,17 +284,13 @@ export default function TagIndexPage() {
           <IndexTable
             resourceName={resourceName}
             itemCount={tags.length}
-            selectedItemsCount={
-              allResourcesSelected ? "All" : selectedResources.length
-            }
-            onSelectionChange={handleSelectionChange}
+            selectable={false}
             headings={[
               { title: "Name" },
               { title: "Number of tickets" },
               { title: "Last updated" },
             ]}
             hasMoreItems
-            promotedBulkActions={promotedBulkActions}
             loading={loadTag}
             emptyState={
               <EmptySearchResult

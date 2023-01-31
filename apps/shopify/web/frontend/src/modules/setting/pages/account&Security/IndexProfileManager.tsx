@@ -11,7 +11,7 @@ import {
 } from "@shopify/polaris";
 import { FormikProps } from "formik";
 import * as jose from "jose";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import ProfileForm from "src/modules/setting/component/ProfileForm";
 
@@ -19,6 +19,7 @@ export default function IndexProfileManager() {
   const token = jose.decodeJwt(TokenManager.getToken("base_token") ?? "");
 
   const formRef = useRef<FormikProps<any>>(null);
+  const [disable, setDisable] = useState(true);
   const [banner, setBanner] = useState<{
     isShow: boolean;
     type: BannerStatus;
@@ -108,10 +109,22 @@ export default function IndexProfileManager() {
     formRef.current?.resetForm();
   }, [formRef.current]);
 
+  const handleChangeValueForm = (value: boolean) => {
+    setDisable(value);
+  };
   const profileProfile = (
-    <ProfileForm ref={formRef} initialValues={result} submit={submit} />
+    <ProfileForm
+      ref={formRef}
+      change={handleChangeValueForm}
+      initialValues={result}
+      submit={submit}
+    />
   );
   useMount(() => fetDetailsProfile(token.sub ?? ""));
+
+  useEffect(() => {
+    console.log(formRef.current?.dirty);
+  }, [formRef.current?.dirty]);
   return (
     <>
       {!formRef.current?.dirty ? null : (
@@ -120,6 +133,7 @@ export default function IndexProfileManager() {
           message="Unsaved changes"
           saveAction={{
             onAction: handleSubmitForm,
+            disabled: disable,
           }}
           discardAction={{
             onAction: handleResetForm,

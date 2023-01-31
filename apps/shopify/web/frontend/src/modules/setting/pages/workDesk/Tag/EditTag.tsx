@@ -128,17 +128,19 @@ export default function DetailsTag() {
   }, []);
   return (
     <>
-      <ContextualSaveBar
-        fullWidth
-        message="Unsaved changes"
-        saveAction={{
-          onAction: handleSubmitForm,
-          disabled: disable,
-        }}
-        discardAction={{
-          onAction: handleResetForm,
-        }}
-      />
+      {!formRef.current?.dirty ? null : (
+        <ContextualSaveBar
+          fullWidth
+          message="Unsaved changes"
+          saveAction={{
+            onAction: handleSubmitForm,
+            disabled: disable,
+          }}
+          discardAction={{
+            onAction: handleResetForm,
+          }}
+        />
+      )}
       <Page
         title={title}
         compactTitle

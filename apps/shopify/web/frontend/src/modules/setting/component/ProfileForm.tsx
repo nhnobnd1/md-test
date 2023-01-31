@@ -12,13 +12,15 @@ export interface RefProperties {
 }
 
 const ProfileForm = (
-  { initialValues, submit }: any,
+  { initialValues, submit, change }: any,
   ref: ForwardedRef<FormikProps<any>>
 ) => {
   const handleSubmit = useCallback((data: any) => {
     submit(data);
   }, []);
-
+  const handleChange = useCallback(() => {
+    change(false);
+  }, []);
   const validateObject = object().shape({
     firstName: string().required("Required!"),
     lastName: string().required("Required!"),
@@ -33,6 +35,7 @@ const ProfileForm = (
       ref={ref}
       initialValues={initialValues}
       onSubmit={handleSubmit}
+      onValuesChange={handleChange}
       validationSchema={validateObject}
       enableReinitialize
     >
