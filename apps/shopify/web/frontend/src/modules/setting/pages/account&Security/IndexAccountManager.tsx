@@ -1,4 +1,4 @@
-import { useJob } from "@moose-desk/core";
+import { useJob, useToggle } from "@moose-desk/core";
 import { AccessManger, UserSettingRepository } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
@@ -24,34 +24,33 @@ import InputDisableSubmit from "src/modules/setting/component/InputDisableSubmit
 import { BannerPropsAccessManager } from "src/modules/setting/modal/account&Security/AccountManager";
 import { object, string } from "yup";
 export default function IndexAccountManager({ props }: any) {
-  const { subDomain } = useSubdomain();
-  const [subDomainName, setSubDomainName] = useState("");
-  const getLinkSignUp = useCallback(
-    (mode: string) => {
-      if (subDomain) {
-        switch (mode) {
-          case "development":
-            setSubDomainName(
-              `https://${subDomain.toLocaleLowerCase()}-dev.moosedesk.net/signup`
-            );
-            break;
-          case "stagging":
-            setSubDomainName(
-              `https://${subDomain.toLocaleLowerCase()}.moosedesk.net/signup`
-            );
-            break;
-          case "production":
-            setSubDomainName(
-              `https://${subDomain.toLocaleLowerCase()}.moosedesk.com/signup`
-            );
-            break;
-          default:
-            break;
-        }
+  const { getSubDomain } = useSubdomain();
+  const [subDomainName, setSubDomainName] = useState<string>();
+  const { toggle } = useToggle();
+  const getLinkSignUp = useCallback((mode: string) => {
+    const subDomain = getSubDomain();
+    if (subDomain) {
+      switch (mode) {
+        case "development":
+          setSubDomainName(
+            `https://${subDomain.toLocaleLowerCase()}-dev.moosedesk.net/signup`
+          );
+          break;
+        case "stagging":
+          setSubDomainName(
+            `https://${subDomain.toLocaleLowerCase()}.moosedesk.net/signup`
+          );
+          break;
+        case "production":
+          setSubDomainName(
+            `https://${subDomain.toLocaleLowerCase()}.moosedesk.com/signup`
+          );
+          break;
+        default:
+          break;
       }
-    },
-    [import.meta.env.MODE, subDomain]
-  );
+    }
+  }, []);
   const [selectedDomain, setSelectedDomain] = useState<string[]>([]);
   const [disabled, setDisabled] = useState(false);
   const removeSelectedDomain = useCallback(
@@ -225,6 +224,7 @@ export default function IndexAccountManager({ props }: any) {
           initialValues={result || initialValues}
           ref={formRef}
           validationSchema={validateObject}
+          onValuesChange={toggle}
           onSubmit={handleSubmit}
           enableReinitialize
         >

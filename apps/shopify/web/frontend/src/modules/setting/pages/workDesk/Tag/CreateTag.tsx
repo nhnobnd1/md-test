@@ -83,17 +83,19 @@ export default function CreateTag() {
 
   return (
     <>
-      <ContextualSaveBar
-        fullWidth
-        message="Unsaved changes"
-        saveAction={{
-          onAction: handleSubmitForm,
-          disabled: disable,
-        }}
-        discardAction={{
-          onAction: handleResetForm,
-        }}
-      />
+      {!formRef.current?.dirty ? null : (
+        <ContextualSaveBar
+          fullWidth
+          message="Unsaved changes"
+          saveAction={{
+            onAction: handleSubmitForm,
+            disabled: disable,
+          }}
+          discardAction={{
+            onAction: handleResetForm,
+          }}
+        />
+      )}
       <Page
         title="Create tag"
         compactTitle
