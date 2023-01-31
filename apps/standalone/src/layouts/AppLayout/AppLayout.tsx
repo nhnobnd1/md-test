@@ -64,7 +64,7 @@ export const AppLayout = (props: AppLayoutProps) => {
               {
                 key: `case-${AgentRoutePaths.Agents.Index}`,
                 label: "Agents",
-                link: AgentRoutePaths.Index,
+                link: AgentRoutePaths.Agents.Index,
                 onClick: () =>
                   navigate(generatePath(AgentRoutePaths.Agents.Index)),
               },
@@ -152,7 +152,7 @@ export const AppLayout = (props: AppLayoutProps) => {
             {
               label: activeKey.label,
               key: activeKey.key,
-              link: location.pathname,
+              link: activeKey.link,
             },
           ],
         };
