@@ -4,6 +4,7 @@ import {
   useLocation,
   useNavigate,
   useParams,
+  useToggle,
 } from "@moose-desk/core";
 import {
   UpdateUserGroupRequest,
@@ -31,6 +32,7 @@ const DetailGroup = (props: DetailGroupProps) => {
   const { banner, show: showBanner, close: closeBanner } = useBanner();
   const [group, setGroup] = useState<UserGroup>();
   const { state } = useLocation();
+  const { toggle } = useToggle();
   const { id } = useParams();
 
   const { run: getGroupApi } = useJob(() => {
@@ -52,7 +54,6 @@ const DetailGroup = (props: DetailGroupProps) => {
         .update(id, payload)
         .pipe(
           map(({ data }) => {
-            console.log(data);
             if (data.statusCode === 200) {
               show("Update Group Success");
               navigate(
@@ -85,7 +86,7 @@ const DetailGroup = (props: DetailGroupProps) => {
     return {
       name: group?.name ?? "",
       description: group?.description ?? "",
-      groupMembers: [],
+      groupMembers: group?.memberIds ?? [],
     };
   }, [group]);
 
@@ -116,7 +117,7 @@ const DetailGroup = (props: DetailGroupProps) => {
     <>
       <ContextualSaveBar
         fullWidth
-        message="Unsaved changes"
+        message={formRef.current?.dirty ? "Unsaved changes" : ""}
         saveAction={{
           onAction: () => formRef.current?.submitForm(),
           disabled: !formRef.current?.dirty,
@@ -145,6 +146,7 @@ const DetailGroup = (props: DetailGroupProps) => {
                 <GroupForm
                   initialValues={initialValues}
                   enableReinitialize
+                  onValuesChange={toggle}
                   id={id}
                   innerRef={formRef}
                   onSubmit={handleSubmit}

@@ -8,12 +8,10 @@ export default function PageName() {
         title="Page name"
         primaryAction={{
           content: "Primary action",
-          onAction: () => console.log("Primary action"),
         }}
         secondaryActions={[
           {
             content: "Secondary action",
-            onAction: () => console.log("Secondary action"),
           },
         ]}
       />

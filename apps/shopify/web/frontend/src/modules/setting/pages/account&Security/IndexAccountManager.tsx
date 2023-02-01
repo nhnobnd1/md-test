@@ -258,9 +258,7 @@ export default function IndexAccountManager({ props }: any) {
                         </Text>
                       </div>
                       <div className="mt-2">
-                        <Link onClick={() => console.log(1)}>
-                          {subDomainName}
-                        </Link>
+                        <Link>{subDomainName}</Link>
                       </div>
                     </Stack.Item>
                   </Stack>

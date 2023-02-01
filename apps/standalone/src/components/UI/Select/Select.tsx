@@ -1,49 +1,66 @@
-import { useDebounceFn, useToggle } from "@moose-desk/core";
+import { useDebounceFn, useJob, useToggle } from "@moose-desk/core";
 import { Select as AntSelect } from "antd";
 import { SizeType } from "antd/lib/config-provider/SizeContext";
 import { SelectProps as AntSelectProps, SelectValue } from "antd/lib/select";
 import _ from "lodash";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-
-interface SelectProps<VT extends SelectValue = any> extends AntSelectProps<VT> {
-  size?: SizeType;
-}
-
-const Select = ({ size = "middle", ...props }: SelectProps) => {
-  return <AntSelect {...props} optionFilterProp="label" size={size} />;
-};
-
-Select.Option = AntSelect.Option;
-Select.OptGroup = AntSelect.OptGroup;
+import { map, Observable } from "rxjs";
 
 export type OptionType = {
   value: string | number;
   label: string;
   additional_data?: any;
+  obj?: any;
 };
 
-export interface SelectFetchResponse {
-  hasMore?: boolean;
-  options: OptionType[];
+export interface SelectedObj {
+  key: string;
+  value: {
+    label: string;
+    [key: string]: any;
+  };
+}
+interface SelectProps<VT extends SelectValue = any>
+  extends Omit<AntSelectProps<VT>, "options" | "onChange"> {
+  size?: SizeType;
+  options?: OptionType[];
+  onChange: (value: SelectedObj | string) => void;
 }
 
-export interface SelectFetchFunc {
-  (
-    searchText: string,
-    page: number,
-    extra: any,
-    dependencies: any[]
-  ): Promise<SelectFetchResponse>;
+const Select = ({ size = "middle", options, ...props }: SelectProps) => {
+  return (
+    <AntSelect
+      {...props}
+      options={options as any}
+      optionFilterProp="label"
+      size={size}
+    />
+  );
+};
+
+Select.Option = AntSelect.Option;
+Select.OptGroup = AntSelect.OptGroup;
+
+export interface LoadMoreResult {
+  options: OptionType[];
+  canLoadMore: boolean;
+  page?: number;
+}
+
+export interface LoadMoreValue {
+  page: number;
+  searchText: string;
+  isFirst: boolean;
 }
 
 interface AjaxSelectProps extends SelectProps {
-  fetchFunc: SelectFetchFunc;
+  loadMore: (params: LoadMoreValue) => Observable<LoadMoreResult>;
   renderOption?: (record: OptionType, index: number) => React.ReactNode;
   extra?: any;
   dependencies?: any[];
   dependenciesWait?: number;
   onFetched?: (
-    response: SelectFetchResponse,
+    response: LoadMoreResult,
     page: number,
     extra: any,
     dependencies: any[]
@@ -52,7 +69,7 @@ interface AjaxSelectProps extends SelectProps {
 }
 
 Select.Ajax = ({
-  fetchFunc,
+  loadMore,
   renderOption,
   dependencies = [],
   dependenciesWait = 500,
@@ -64,42 +81,53 @@ Select.Ajax = ({
   const [options, setOptions] = useState<OptionType[]>([]);
   const [page, setPage] = useState(1);
   const [searchText, setSearchText] = useState("");
-  const [hasMore, setHasMore] = useState(true);
+  const [canLoadMore, setCanLoadMore] = useState(true);
   const { state: loading, on: startLoading, off: stopLoading } = useToggle();
+  const [isFirst, setIsFirst] = useState(true);
 
   const canFetch = useMemo(() => {
-    return !loading && hasMore;
-  }, [loading, hasMore]);
+    return !loading && canLoadMore;
+  }, [loading, canLoadMore]);
 
-  const updateStatesFromFetchResponse = useCallback(
-    (fetchResponse: SelectFetchResponse) => {
-      setOptions((state) => {
-        if (page === 1) {
-          return fetchResponse.options;
-        }
-        return [...state, ...fetchResponse.options];
+  const fetchData = useCallback(() => {
+    try {
+      fetchDataApi({
+        searchText: searchText,
+        page: page,
+        isFirst: isFirst,
       });
-      setHasMore(fetchResponse.hasMore || false);
+    } catch (error) {
+      setCanLoadMore(false);
+      setPage(1);
+      setIsFirst(true);
+    }
+  }, [searchText, page, isFirst]);
 
-      onFetched && onFetched(fetchResponse, page, extra, dependencies);
+  const { run: fetchDataDebounce } = useDebounceFn(
+    () => {
+      fetchData();
     },
-    [page, extra, dependencies, onFetched]
+    { wait: 300 }
   );
 
-  const fetchData = useCallback(async () => {
+  const { run: fetchDataApi } = useJob((params: LoadMoreValue) => {
     startLoading();
-    try {
-      updateStatesFromFetchResponse(
-        await fetchFunc(searchText, page, extra, dependencies)
-      );
-    } catch (error) {
-      updateStatesFromFetchResponse({
-        hasMore: false,
-        options: [],
-      });
-    }
-    stopLoading();
-  }, [page, searchText, canFetch, dependencies, extra]);
+    return loadMore(params).pipe(
+      map((data) => {
+        stopLoading();
+        setOptions((value) => {
+          return (data.page ?? page) === 1
+            ? [...data.options]
+            : _.uniqBy([...value, ...data.options], "value");
+        });
+        setCanLoadMore(data.canLoadMore);
+        setPage((value) => {
+          return data.page ?? value;
+        });
+        setIsFirst(false);
+      })
+    );
+  });
 
   const { run: reloadData } = useDebounceFn(
     useCallback(() => {
@@ -124,6 +152,7 @@ Select.Ajax = ({
   const onSearch = useCallback(async (text: string) => {
     setSearchText(text);
     setPage(1);
+    setCanLoadMore(true);
   }, []);
 
   const onPopupScroll = useCallback(
@@ -137,18 +166,24 @@ Select.Ajax = ({
         setPage((state) => state + 1);
       }
     },
-    [loading, options, fetchFunc]
+    [loading, options, loadMore]
   );
 
   useEffect(() => {
     if (canFetch) {
       fetchData();
     }
-  }, [searchText, page]);
+  }, [page]);
+
+  useEffect(() => {
+    if (canFetch) {
+      fetchDataDebounce();
+    }
+  }, [searchText]);
 
   useEffect(() => {
     onDependenciesChanged && onDependenciesChanged();
-    setHasMore(true);
+    setCanLoadMore(true);
     reloadData();
   }, [...(dependencies || [])]);
 

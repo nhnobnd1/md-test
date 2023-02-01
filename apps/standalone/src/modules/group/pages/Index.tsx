@@ -18,8 +18,13 @@ import { useCallback, useEffect, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
 import { Header } from "src/components/UI/Header";
+import Pagination from "src/components/UI/Pagination/Pagination";
+import { Table } from "src/components/UI/Table";
+import TableAction from "src/components/UI/Table/TableAction/TableAction";
 import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
+import useNotification from "src/hooks/useNotification";
+import GroupRoutePaths from "src/modules/group/routes/paths";
 
 interface GroupIndexPageProps {}
 
@@ -27,6 +32,7 @@ const GroupIndexPage: PageComponent<GroupIndexPageProps> = () => {
   const [groups, setGroups] = useState<UserGroup[]>([]);
   const navigate = useNavigate();
   const message = useMessage();
+  const notification = useNotification();
 
   const defaultFilter: () => GetListUserGroupRequest = () => ({
     page: 1,
@@ -64,6 +70,36 @@ const GroupIndexPage: PageComponent<GroupIndexPageProps> = () => {
           )
         );
     }
+  );
+
+  const { run: deleteGroupApi } = useJob(
+    (id: string) => {
+      message.loading.show("Deleting the group");
+      return UserGroupRepository()
+        .delete(id)
+        .pipe(
+          map(({ data }) => {
+            console.log(data);
+            if (data.statusCode === 200) {
+              message.loading.hide().then(() => {
+                notification.success("Delete group successfully");
+                getListGroup(filterData);
+              });
+            } else {
+              message.loading.hide().then(() => {
+                notification.error("Delete group failed");
+              });
+            }
+          }),
+          catchError((err) => {
+            message.loading.hide().then(() => {
+              notification.error("Delete group failed");
+            });
+            return of(err);
+          })
+        );
+    },
+    { showLoading: true }
   );
 
   const { run: getListGroupDebounce } = useDebounceFn(
@@ -109,6 +145,10 @@ const GroupIndexPage: PageComponent<GroupIndexPageProps> = () => {
     [setFilterData]
   ) as TableProps<Agent>["onChange"];
 
+  const handleDelete = useCallback((record: UserGroup) => {
+    deleteGroupApi(record._id);
+  }, []);
+
   useEffect(() => {
     if (prevFilter?.query !== filterData.query && filterData.query) {
       getListGroupDebounce(filterData);
@@ -121,7 +161,13 @@ const GroupIndexPage: PageComponent<GroupIndexPageProps> = () => {
     <div>
       <Header title="Group">
         <div className="flex-1 flex justify-end">
-          <ButtonAdd onClick={() => {}}>Add Group</ButtonAdd>
+          <ButtonAdd
+            onClick={() => {
+              navigate(GroupRoutePaths.Create);
+            }}
+          >
+            Add Group
+          </ButtonAdd>
         </div>
       </Header>
       <div className="search mb-6">
@@ -138,6 +184,59 @@ const GroupIndexPage: PageComponent<GroupIndexPageProps> = () => {
             });
           }}
         />
+      </div>
+      <div>
+        {groups.length > 0 && (
+          <>
+            <Table
+              dataSource={groups}
+              loading={loadingList}
+              onChange={onChangeTable}
+            >
+              <Table.Column
+                key="name"
+                title="Group name"
+                render={(_, record: UserGroup) => <span>{record.name}</span>}
+                sorter={{
+                  compare: (a: any, b: any) => a.name - b.name,
+                }}
+              />
+              <Table.Column
+                key="memberCount"
+                title="Number of Agents"
+                align="center"
+                dataIndex="memberCount"
+                sorter={{
+                  compare: (a: any, b: any) => a.memberCount - b.memberCount,
+                }}
+              ></Table.Column>
+
+              <Table.Column
+                align="center"
+                title="Action"
+                render={(_, record: Agent) => (
+                  <TableAction
+                    record={record}
+                    edit
+                    showDelete
+                    onDelete={handleDelete}
+                    onlyIcon
+                    onEdit={() => {}}
+                  />
+                )}
+              />
+            </Table>
+            {meta && (
+              <Pagination
+                className="mt-4 flex justify-end"
+                currentPage={filterData.page ?? 1}
+                total={meta?.totalCount}
+                pageSize={filterData.limit ?? env.DEFAULT_PAGE_SIZE}
+                onChange={onPagination}
+              />
+            )}
+          </>
+        )}
       </div>
     </div>
   );

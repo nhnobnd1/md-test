@@ -1,4 +1,9 @@
-import { useDebounceFn, useJob, usePrevious } from "@moose-desk/core";
+import {
+  useDebounceFn,
+  useJob,
+  usePrevious,
+  useToggle,
+} from "@moose-desk/core";
 import {
   AgentRepository,
   BaseMetaDataListResponse,
@@ -6,23 +11,24 @@ import {
   GroupMembers,
   UserGroupRepository,
 } from "@moose-desk/repo";
-import {
-  EmptySearchResult,
-  Filters,
-  IndexTable,
-  Text,
-  useIndexResourceState,
-} from "@shopify/polaris";
-import { SelectionType } from "@shopify/polaris/build/ts/latest/src/utilities/index-provider";
+import { EmptySearchResult, Filters, IndexTable, Text } from "@shopify/polaris";
+import { uniqBy } from "lodash-es";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { map } from "rxjs";
+import { ButtonDelete } from "src/components/Button/ButtonDelete";
+import { ModalDelete } from "src/components/Modal/ModalDelete";
 import { Pagination } from "src/components/Pagination";
-import { LoadMoreValue, Select, SelectedObj } from "src/components/Select";
+import {
+  LoadMoreValue,
+  Select,
+  SelectedObj,
+  SelectOptions,
+} from "src/components/Select";
 import env from "src/core/env";
 
 interface GroupFormMembersProps {
   id?: string;
-  value?: GroupMembers[];
+  value?: string[];
   onChange?: (value: string[]) => void;
 }
 
@@ -30,25 +36,25 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
   const defaultFilter: () => GetMembersGroupRequest = () => ({
     page: 1,
     limit: env.DEFAULT_PAGE_SIZE,
+    query: "",
   });
 
   const [filterData, setFilterData] = useState<GetMembersGroupRequest>(
     defaultFilter()
   );
   const prevFilter = usePrevious<GetMembersGroupRequest>(filterData);
-
+  // create onChange groupMembers, edit onChange groupIds
   const [groupMembers, setGroupMembers] = useState<GroupMembers[]>([]);
+  const [groupIds, setGroupIds] = useState<string[]>(value ?? []);
   const [groupMembersTable, setGroupMembersTable] = useState<GroupMembers[]>(
     []
   );
   const [meta, setMeta] = useState<BaseMetaDataListResponse>();
-
   const {
-    selectedResources,
-    allResourcesSelected,
-    handleSelectionChange,
-    clearSelection,
-  } = useIndexResourceState<any>(groupMembers);
+    state: modalRemoveMember,
+    on: openModalRemoveMember,
+    off: closeModalRemoveMember,
+  } = useToggle();
 
   const isDetail = useMemo(() => {
     return !!id;
@@ -56,24 +62,14 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
 
   const handleFiltersQueryChange = useCallback(
     (queryValue: string) => {
-      if (isDetail) {
-        setFilterData((old) => {
-          return {
-            ...old,
-            query: queryValue,
-          };
-        });
-      } else {
-        if (queryValue) {
-          setGroupMembersTable(
-            groupMembers.filter((item) => item.name.includes(queryValue ?? ""))
-          );
-        } else {
-          setGroupMembersTable(groupMembers);
-        }
-      }
+      setFilterData((old) => {
+        return {
+          ...old,
+          query: queryValue,
+        };
+      });
     },
-    [groupMembers, filterData, isDetail]
+    [filterData]
   );
 
   const handleQueryValueRemove = useCallback(() => {
@@ -89,49 +85,12 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
     setFilterData(defaultFilter());
   }, []);
 
-  const handleSelection = useCallback(
-    (selectionType: SelectionType, toggleType: boolean, selection?: any) => {
-      handleSelectionChange(selectionType, toggleType, selection);
-    },
-    []
-  );
-
-  const removeMemberGroup = useCallback(() => {
-    setGroupMembers(
-      groupMembers.filter((item) => !selectedResources.includes(item._id))
-    );
-    clearSelection();
-  }, [selectedResources]);
-
-  const bulkActions = useMemo(() => {
-    return [{ content: "Remove member group", onAction: removeMemberGroup }];
-  }, [selectedResources, removeMemberGroup]);
-
   const [isFirst, setIsFirst] = useState(true);
 
   const fetchAgents = useCallback(
     (params: LoadMoreValue) => {
       const limit = env.DEFAULT_PAGE_SIZE;
-      // if (isDetail && isFirst && id) {
-      //   setIsFirst(false);
-      //   return UserGroupRepository()
-      //     .getListMembers(id, {
-      //       ...filterData,
-      //       limit: 10000,
-      //     })
-      //     .pipe(
-      //       map(({ data }) => {
-      //         return {
-      //           options: data.data.map((item) => ({
-      //             label: item.name,
-      //             value: item._id,
-      //             obj: item,
-      //           })),
-      //           canLoadMore: true,
-      //         };
-      //       })
-      //     );
-      // }
+
       return AgentRepository()
         .getList({
           page: params.page,
@@ -140,7 +99,6 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
         })
         .pipe(
           map(({ data }) => {
-            console.log(data, "data");
             return {
               options: data.data.map((item) => ({
                 label: item.lastName.includes("admin")
@@ -157,21 +115,29 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
     [AgentRepository, groupMembers, isFirst, id]
   );
 
-  const handleSelectAgent = useCallback((value: SelectedObj[]) => {
-    setGroupMembers(
-      value.map((item) => ({
-        _id: item.key,
-        email: item.value.email,
-        name: item.value.label,
-      }))
-    );
-  }, []);
-
-  useEffect(() => {
-    setGroupMembersTable(groupMembers);
-    const ids = groupMembers.map((item) => item._id);
-    onChange && onChange(ids);
-  }, [groupMembers]);
+  const handleSelectAgent = useCallback(
+    (value: SelectedObj | SelectedObj[]) => {
+      if (!Array.isArray(value) && value) {
+        if (isDetail) {
+          setGroupIds([...groupIds, value.key]);
+        }
+        const memberExist = groupMembers.find((item) => item._id === value.key);
+        if (!memberExist) {
+          setGroupMembers((values) => {
+            return [
+              {
+                _id: value.key,
+                email: value.value?.email,
+                name: value.value?.label,
+              },
+              ...values,
+            ];
+          });
+        }
+      }
+    },
+    [groupMembers]
+  );
 
   const { run: getListMemberGroupApi, processing: loadingGetList } = useJob(
     (id: string, payload: GetMembersGroupRequest) => {
@@ -179,7 +145,7 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
         .getListMembers(id, payload)
         .pipe(
           map(({ data }) => {
-            setGroupMembers(data.data);
+            setGroupMembers(uniqBy([...data.data, ...groupMembers], "_id"));
             setMeta(data.metadata);
           })
         );
@@ -194,6 +160,37 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
     { wait: 300 }
   );
 
+  const [memberRemove, setMemberRemove] = useState<GroupMembers | null>(null);
+
+  const prevMemberRemove = usePrevious<GroupMembers | null>(memberRemove);
+
+  const handleOpenModalRemove = useCallback((member: GroupMembers) => {
+    setMemberRemove(member);
+  }, []);
+
+  const removeMembersItem = useCallback(
+    (id: string) => {
+      if (isDetail) {
+        setGroupIds(groupIds.filter((item) => item !== id));
+      }
+      setGroupMembers(groupMembers.filter((item) => item._id !== id));
+    },
+    [groupMembers]
+  );
+
+  const handleChangePagination = useCallback((page: number) => {
+    setFilterData((value) => ({
+      ...value,
+      page: page,
+    }));
+  }, []);
+
+  useEffect(() => {
+    if (prevMemberRemove?._id !== memberRemove?._id && memberRemove) {
+      openModalRemoveMember();
+    }
+  }, [memberRemove]);
+
   useEffect(() => {
     if (isDetail && id) {
       if (prevFilter?.query !== filterData.query && filterData.query) {
@@ -201,16 +198,55 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
       } else {
         getListMemberGroupApi(id, filterData);
       }
+    } else {
+      if (filterData.query) {
+        setGroupMembersTable(
+          groupMembers.filter((item) =>
+            item.name.includes(filterData.query ?? "")
+          )
+        );
+      } else {
+        setGroupMembersTable(groupMembers);
+      }
     }
   }, [filterData, id]);
 
+  useEffect(() => {
+    setGroupMembersTable(groupMembers);
+    if (isDetail) {
+      onChange && onChange(groupIds);
+    } else {
+      const ids = groupMembers.map((item) => item._id);
+      onChange && onChange(ids);
+    }
+  }, [groupMembers, groupIds]);
+
+  useEffect(() => {
+    value && setGroupIds(value);
+  }, [value]);
+
   return (
     <>
+      <ModalDelete
+        open={modalRemoveMember}
+        title={`Remove member ${memberRemove?.name} from group`}
+        content="This Agent will be removed permanently. This action cannot be undone."
+        onClose={closeModalRemoveMember}
+        textConfirm={"Remove"}
+        deleteAction={() =>
+          memberRemove?._id && removeMembersItem(memberRemove._id)
+        }
+      />
       <div className="pb-6">
         <Select.Ajax
           label="Add members"
           placeholder="Search agents"
+          disableValues={groupIds}
           height="250px"
+          chooseRefresh
+          renderOption={(record: SelectOptions, index: number) =>
+            `${record.label} - ${record.obj.email}`
+          }
           onChange={handleSelectAgent}
           loadMore={fetchAgents}
         />
@@ -227,15 +263,10 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
       </div>
       <IndexTable
         loading={loadingGetList}
-        resourceName={{ singular: "group", plural: "groups" }}
         itemCount={groupMembersTable.length}
-        selectedItemsCount={
-          allResourcesSelected ? "All" : selectedResources.length
-        }
-        onSelectionChange={handleSelection}
         hasMoreItems
+        selectable={false}
         lastColumnSticky
-        promotedBulkActions={bulkActions}
         emptyState={
           <EmptySearchResult
             title={"No member group yet"}
@@ -243,13 +274,12 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
             withIllustration
           />
         }
-        headings={[{ title: "Name" }, { title: "Email" }]}
+        headings={[{ title: "Name" }, { title: "Email" }, { title: "Action" }]}
       >
         {groupMembersTable.map((membersItem, index) => (
           <IndexTable.Row
             id={membersItem._id}
             key={membersItem._id}
-            selected={selectedResources.includes(membersItem._id)}
             position={index}
           >
             <IndexTable.Cell className="py-3">
@@ -264,6 +294,11 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
                 {membersItem.email}
               </Text>
             </IndexTable.Cell>
+            <IndexTable.Cell className="py-3">
+              <ButtonDelete
+                onClick={() => handleOpenModalRemove(membersItem)}
+              ></ButtonDelete>
+            </IndexTable.Cell>
           </IndexTable.Row>
         ))}
       </IndexTable>
@@ -273,11 +308,7 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
             total={meta.totalCount}
             pageSize={filterData.limit ?? 0}
             currentPage={filterData.page}
-            onChangePage={(page) =>
-              setFilterData((val) => {
-                return { ...val, page };
-              })
-            }
+            onChangePage={handleChangePagination}
           />
         )}
       </div>
