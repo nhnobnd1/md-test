@@ -66,6 +66,7 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
         return {
           ...old,
           query: queryValue,
+          page: 1,
         };
       });
     },
@@ -140,12 +141,19 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
   );
 
   const { run: getListMemberGroupApi, processing: loadingGetList } = useJob(
-    (id: string, payload: GetMembersGroupRequest) => {
+    (
+      id: string,
+      payload: GetMembersGroupRequest,
+      option?: { reset: boolean }
+    ) => {
       return UserGroupRepository()
         .getListMembers(id, payload)
         .pipe(
           map(({ data }) => {
-            setGroupMembers(uniqBy([...data.data, ...groupMembers], "_id"));
+            option?.reset
+              ? setGroupMembers(data.data)
+              : setGroupMembers(uniqBy([...data.data, ...groupMembers], "_id"));
+
             setMeta(data.metadata);
           })
         );
@@ -155,7 +163,7 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
 
   const { run: getListMemberGroupDebounce } = useDebounceFn(
     (id: string, payload: GetMembersGroupRequest) => {
-      getListMemberGroupApi(id, payload);
+      getListMemberGroupApi(id, payload, { reset: true });
     },
     { wait: 300 }
   );
@@ -194,7 +202,9 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
   useEffect(() => {
     if (isDetail && id) {
       if (prevFilter?.query !== filterData.query && filterData.query) {
-        getListMemberGroupDebounce(id, filterData);
+        getListMemberGroupDebounce(id, {
+          ...filterData,
+        });
       } else {
         getListMemberGroupApi(id, filterData);
       }
@@ -303,14 +313,17 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
         ))}
       </IndexTable>
       <div className="flex items-center justify-center py-8">
-        {filterData.page && filterData.limit && meta?.totalCount && (
-          <Pagination
-            total={meta.totalCount}
-            pageSize={filterData.limit ?? 0}
-            currentPage={filterData.page}
-            onChangePage={handleChangePagination}
-          />
-        )}
+        {filterData.page &&
+          filterData.limit &&
+          meta?.totalCount &&
+          groupMembers.length > 0 && (
+            <Pagination
+              total={meta.totalCount}
+              pageSize={filterData.limit ?? 0}
+              currentPage={filterData.page}
+              onChangePage={handleChangePagination}
+            />
+          )}
       </div>
     </>
   );
