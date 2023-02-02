@@ -129,7 +129,7 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
               {
                 _id: value.key,
                 email: value.value?.email,
-                name: value.value?.label,
+                name: value.value?.firstName,
               },
               ...values,
             ];
@@ -137,7 +137,7 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
         }
       }
     },
-    [groupMembers]
+    [groupMembers, groupIds]
   );
 
   const { run: getListMemberGroupApi, processing: loadingGetList } = useJob(
@@ -210,9 +210,12 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
       }
     } else {
       if (filterData.query) {
+        const filterRegex = new RegExp(filterData.query.toLowerCase(), "g");
         setGroupMembersTable(
-          groupMembers.filter((item) =>
-            item.name.includes(filterData.query ?? "")
+          groupMembers.filter(
+            (item) =>
+              item.name.toLocaleLowerCase().match(filterRegex) ||
+              item.email.toLocaleLowerCase().match(filterRegex)
           )
         );
       } else {
@@ -229,7 +232,7 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
       const ids = groupMembers.map((item) => item._id);
       onChange && onChange(ids);
     }
-  }, [groupMembers, groupIds]);
+  }, [groupMembers]);
 
   useEffect(() => {
     value && setGroupIds(value);

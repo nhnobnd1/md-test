@@ -1,4 +1,10 @@
-import { useDebounceFn, useJob, useToggle } from "@moose-desk/core";
+import {
+  useDebounceFn,
+  useDidUpdate,
+  useJob,
+  usePrevious,
+  useToggle,
+} from "@moose-desk/core";
 import { Select as AntSelect } from "antd";
 import { SizeType } from "antd/lib/config-provider/SizeContext";
 import { SelectProps as AntSelectProps, SelectValue } from "antd/lib/select";
@@ -23,18 +29,42 @@ export interface SelectedObj {
 interface SelectProps<VT extends SelectValue = any>
   extends Omit<AntSelectProps<VT>, "options" | "onChange"> {
   size?: SizeType;
+  disableValues?: any[];
   options?: OptionType[];
-  onChange: (value: SelectedObj | string) => void;
+  onChange?: (value: string, option: OptionType | OptionType[]) => void;
 }
 
-const Select = ({ size = "middle", options, ...props }: SelectProps) => {
+const Select = ({
+  size = "middle",
+  options,
+  disableValues = [],
+  onChange,
+  ...props
+}: SelectProps) => {
+  const handleChange = useCallback(
+    (value: string, option: any) => {
+      onChange && onChange(value, option as OptionType | OptionType[]);
+    },
+    [onChange]
+  );
+
   return (
     <AntSelect
       {...props}
-      options={options as any}
       optionFilterProp="label"
       size={size}
-    />
+      onChange={handleChange}
+    >
+      {_.uniqBy(options, "value").map((option, index) => (
+        <Select.Option
+          {...option}
+          key={`${index}-${option.value}`}
+          disabled={disableValues.includes(option.value)}
+        >
+          {option.label}
+        </Select.Option>
+      ))}
+    </AntSelect>
   );
 };
 
@@ -81,6 +111,7 @@ Select.Ajax = ({
   const [options, setOptions] = useState<OptionType[]>([]);
   const [page, setPage] = useState(1);
   const [searchText, setSearchText] = useState("");
+  const prevSearchText = usePrevious(searchText);
   const [canLoadMore, setCanLoadMore] = useState(true);
   const { state: loading, on: startLoading, off: stopLoading } = useToggle();
   const [isFirst, setIsFirst] = useState(true);
@@ -169,22 +200,16 @@ Select.Ajax = ({
     [loading, options, loadMore]
   );
 
-  useEffect(() => {
+  useDidUpdate(() => {
     if (canFetch) {
-      fetchData();
+      prevSearchText !== searchText ? fetchDataDebounce() : fetchData();
     }
-  }, [page]);
-
-  useEffect(() => {
-    if (canFetch) {
-      fetchDataDebounce();
-    }
-  }, [searchText]);
+  }, [page, searchText]);
 
   useEffect(() => {
     onDependenciesChanged && onDependenciesChanged();
-    setCanLoadMore(true);
     reloadData();
+    setCanLoadMore(true);
   }, [...(dependencies || [])]);
 
   return (

@@ -34,9 +34,9 @@ const Pagination = ({
 
   return (
     <APagination
+      showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
       {...props}
       total={total}
-      showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
       defaultPageSize={pageSize}
       pageSize={pageSize}
       defaultCurrent={1}

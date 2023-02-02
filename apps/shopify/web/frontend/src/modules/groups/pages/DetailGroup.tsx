@@ -62,7 +62,7 @@ const DetailGroup = (props: DetailGroupProps) => {
                   state: {
                     banner: {
                       status: "success",
-                      message: `Update group success.`,
+                      message: `Group has been updated succcesfully.`,
                     },
                   },
                 }

@@ -1,4 +1,5 @@
 import {
+  generatePath,
   PageComponent,
   useDebounceFn,
   useJob,
@@ -186,56 +187,61 @@ const GroupIndexPage: PageComponent<GroupIndexPageProps> = () => {
         />
       </div>
       <div>
-        {groups.length > 0 && (
-          <>
-            <Table
-              dataSource={groups}
-              loading={loadingList}
-              onChange={onChangeTable}
-            >
-              <Table.Column
-                key="name"
-                title="Group name"
-                render={(_, record: UserGroup) => <span>{record.name}</span>}
-                sorter={{
-                  compare: (a: any, b: any) => a.name - b.name,
-                }}
-              />
-              <Table.Column
-                key="memberCount"
-                title="Number of Agents"
-                align="center"
-                dataIndex="memberCount"
-                sorter={{
-                  compare: (a: any, b: any) => a.memberCount - b.memberCount,
-                }}
-              ></Table.Column>
+        <Table
+          dataSource={groups}
+          loading={loadingList}
+          onChange={onChangeTable}
+        >
+          <Table.Column
+            key="name"
+            title="Group name"
+            render={(_, record: UserGroup) => <span>{record.name}</span>}
+            sorter={{
+              compare: (a: any, b: any) => a.name - b.name,
+            }}
+          />
+          <Table.Column
+            key="memberCount"
+            title="Number of Agents"
+            align="center"
+            dataIndex="memberCount"
+            sorter={{
+              compare: (a: any, b: any) => a.memberCount - b.memberCount,
+            }}
+          ></Table.Column>
 
-              <Table.Column
-                align="center"
-                title="Action"
-                render={(_, record: Agent) => (
-                  <TableAction
-                    record={record}
-                    edit
-                    showDelete
-                    onDelete={handleDelete}
-                    onlyIcon
-                    onEdit={() => {}}
-                  />
-                )}
-              />
-            </Table>
-            {meta && (
-              <Pagination
-                className="mt-4 flex justify-end"
-                currentPage={filterData.page ?? 1}
-                total={meta?.totalCount}
-                pageSize={filterData.limit ?? env.DEFAULT_PAGE_SIZE}
-                onChange={onPagination}
+          <Table.Column
+            align="center"
+            title="Action"
+            render={(_, record: Agent) => (
+              <TableAction
+                record={record}
+                edit
+                specialDelete={{
+                  title:
+                    "Are you sure that you want to permanently remove this group",
+                  description:
+                    "This group will be removed permanently. This action cannot be undone",
+                }}
+                onDelete={handleDelete}
+                onlyIcon
+                onEdit={() => {
+                  navigate(
+                    generatePath(GroupRoutePaths.Detail, { id: record._id })
+                  );
+                }}
               />
             )}
-          </>
+          />
+        </Table>
+        {meta && (
+          <Pagination
+            className="mt-4 flex justify-end"
+            currentPage={filterData.page ?? 1}
+            total={meta?.totalCount}
+            pageSize={filterData.limit ?? env.DEFAULT_PAGE_SIZE}
+            onChange={onPagination}
+          />
         )}
       </div>
     </div>
