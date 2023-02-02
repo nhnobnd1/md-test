@@ -1,6 +1,7 @@
-import { Card, FormProps, Input } from "antd";
+import { useToggle } from "@moose-desk/core";
+import { Button, Card, Input } from "antd";
 import { useMemo } from "react";
-import { Form } from "src/components/UI/Form";
+import { Form, FormProps } from "src/components/UI/Form";
 import GroupFormMember from "src/modules/group/components/GroupForm/GroupFormMember";
 import "./GroupForm.scss";
 
@@ -21,6 +22,8 @@ export const GroupForm = ({
   id,
   ...props
 }: GroupFormProps) => {
+  const { state: viewAddMember, toggle: toggleViewAddMember } = useToggle(!!id);
+
   const initialValues = useMemo(() => {
     return (
       props.initialValues ?? {
@@ -32,7 +35,12 @@ export const GroupForm = ({
   }, [props.initialValues]);
 
   return (
-    <Form {...props} layout="vertical" initialValues={initialValues}>
+    <Form
+      {...props}
+      enableReinitialize
+      layout="vertical"
+      initialValues={initialValues}
+    >
       <div className="grid grid-cols-2 gap-6">
         <Card>
           <Form.Item name="name" label="Name">
@@ -44,13 +52,24 @@ export const GroupForm = ({
               placeholder="Enter description"
             ></Input.TextArea>
           </Form.Item>
+          <div className="flex items-baseline gap-4">
+            <div className="label">Group members</div>
+            <Button
+              type="primary"
+              danger={viewAddMember}
+              onClick={toggleViewAddMember}
+            >
+              {!viewAddMember ? "Add group member" : "Close add group member"}
+            </Button>
+          </div>
         </Card>
-
-        <Card>
-          <Form.Item name="">
-            <GroupFormMember id={id ?? undefined} />
-          </Form.Item>
-        </Card>
+        {viewAddMember && (
+          <Card>
+            <Form.Item name="groupMembers" label="Add members">
+              <GroupFormMember groupId={id} />
+            </Form.Item>
+          </Card>
+        )}
       </div>
     </Form>
   );

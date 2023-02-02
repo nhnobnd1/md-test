@@ -31,7 +31,7 @@ export const GroupForm = ({
     };
   }, []);
 
-  const [viewAddGroup, setViewAddGroup] = useState(true);
+  const [viewAddGroup, setViewAddGroup] = useState(!!id);
 
   const GroupFormSchema = Yup.object().shape({
     name: Yup.string()

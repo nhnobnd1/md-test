@@ -40,7 +40,7 @@ const CreateGroup = (props: CreateGroupProps) => {
                   state: {
                     banner: {
                       status: "success",
-                      message: `Create group success.`,
+                      message: `Group has been added succcesfully.`,
                     },
                   },
                 }

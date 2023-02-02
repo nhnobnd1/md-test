@@ -187,8 +187,8 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
       <ModalDelete
         open={modalDelete}
         onClose={closeModalDelete}
-        title="Are you sure that you want to permanently remove this Agent"
-        content="This Agent will be removed permanently. This action cannot be undone"
+        title="Are you sure that you want to permanently remove this group."
+        content="This group will be removed permanently. This action cannot be undone."
         loading={loadingDelete}
         deleteAction={() => idDelete && deleteGroup(idDelete)}
       />
