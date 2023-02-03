@@ -1,6 +1,7 @@
 export * from "./account";
 export * from "./agent";
 export * from "./cusomter";
+export * from "./emailIntegration";
 export { default as Env } from "./env";
 export * from "./store";
 export * from "./tag";
