@@ -5727,7 +5727,7 @@ class zd {
     this.apiUrl = t;
   }
 }
-const nt = new zd(), Yd = rt(
+const nt = new zd(), Kd = rt(
   () => ({
     baseURL: `${nt.getApiUrl()}/api/v1/account`
   }),
@@ -5768,7 +5768,7 @@ const nt = new zd(), Yd = rt(
   }
 );
 var Vd = /* @__PURE__ */ ((e) => (e.INVITATION_EXISTS = "INVITATION_EXISTS", e.USER_IS_EXISTS = "USER_IS_EXISTS", e))(Vd || {}), Wd = /* @__PURE__ */ ((e) => (e.TOKEN_VALID = "TOKEN_VALID", e.TOKEN_INVALID = "TOKEN_INVALID", e.INVITATION_NOT_EXISTS = "INVITATION_NOT_EXISTS", e.USER_ACTIVE = "USER_ACTIVE", e))(Wd || {});
-const Kd = rt(
+const Jd = rt(
   () => ({
     baseURL: `${nt.getApiUrl()}/api/v1/account/agent`
   }),
@@ -5807,7 +5807,7 @@ const Kd = rt(
       );
     }
   }
-), Jd = rt(
+), Gd = rt(
   () => ({
     baseURL: `${nt.getApiUrl()}/api/v1/customer`
   }),
@@ -5828,7 +5828,9 @@ const Kd = rt(
       return e.delete("", {}, { data: t });
     }
   }
-), Gd = rt(
+);
+var Md = /* @__PURE__ */ ((e) => (e.Plain = "Plain", e.Login = "Login", e.MD5 = "CRAM - MD5", e))(Md || {});
+const Xd = rt(
   () => ({
     baseURL: `${nt.getApiUrl()}/api/v1/store`
   }),
@@ -5837,7 +5839,7 @@ const Kd = rt(
       return e.get("/store-id", t);
     }
   }
-), Xd = rt(
+), Qd = rt(
   () => ({
     baseURL: `${nt.getApiUrl()}/api/v1/tag`
   }),
@@ -5859,8 +5861,8 @@ const Kd = rt(
     }
   }
 );
-var Md = /* @__PURE__ */ ((e) => (e.READ_PRODUCTS = "read_products", e))(Md || {}), qd = /* @__PURE__ */ ((e) => (e.Admin = "Admin", e.BasicAgent = "BasicAgent", e.AgentLeader = "AgentLeader", e))(qd || {});
-const Qd = rt(
+var qd = /* @__PURE__ */ ((e) => (e.READ_PRODUCTS = "read_products", e))(qd || {}), Hd = /* @__PURE__ */ ((e) => (e.Admin = "Admin", e.BasicAgent = "BasicAgent", e.AgentLeader = "AgentLeader", e))(Hd || {});
+const Zd = rt(
   () => ({
     baseURL: `${nt.getApiUrl()}/api/v1/account/group`
   }),
@@ -5885,8 +5887,8 @@ const Qd = rt(
     }
   }
 );
-var Hd = /* @__PURE__ */ ((e) => (e.Disabled = "Disabled", e.Email = "Email", e.Authenticator = "Authenticator", e))(Hd || {});
-const Zd = rt(
+var Yd = /* @__PURE__ */ ((e) => (e.Disabled = "Disabled", e.Email = "Email", e.Authenticator = "Authenticator", e))(Yd || {});
+const eh = rt(
   () => ({
     baseURL: `${nt.getApiUrl()}/api/v1/account/setting`
   }),
@@ -5906,17 +5908,18 @@ const Zd = rt(
   }
 );
 export {
-  Yd as AccountRepository,
-  Kd as AgentRepository,
-  Jd as CustomerRepository,
+  Kd as AccountRepository,
+  Jd as AgentRepository,
+  Md as AuthenticationSMTP,
+  Gd as CustomerRepository,
   nt as Env,
   Vd as ErrorCodeCreate,
-  Hd as MethodOTP,
-  Md as PermissionScopesShopify,
-  qd as Role,
-  Gd as StoreRepository,
-  Xd as TagRepository,
+  Yd as MethodOTP,
+  qd as PermissionScopesShopify,
+  Hd as Role,
+  Xd as StoreRepository,
+  Qd as TagRepository,
   Wd as TypeCheckTokenNewAgent,
-  Qd as UserGroupRepository,
-  Zd as UserSettingRepository
+  Zd as UserGroupRepository,
+  eh as UserSettingRepository
 };
