@@ -9,6 +9,7 @@ import { useSubdomain } from "src/hooks/useSubdomain";
 import CardSettingExternalMail, {
   TypePort,
 } from "src/modules/settingChannel/components/ChannelEmail/CardSelectEmail/CardSettingExternalMail";
+import { MailServer } from "src/modules/settingChannel/components/ChannelEmail/ChannelEmailForm";
 import EntypoMail from "~icons/entypo/mail";
 import LogosGoogleIcon from "~icons/logos/google-icon";
 import LogosMicrosoftWindows from "~icons/logos/microsoft-windows";
@@ -33,7 +34,7 @@ export const CardSelectEmail = ({
         .pipe(
           map(({ data }) => {
             if (data.statusCode === 200) {
-              window.open(data.data);
+              window.location.href = data.data;
             }
           })
         );
@@ -62,7 +63,7 @@ export const CardSelectEmail = ({
           <span className="font-bold">abc@gmail.com</span>
           <span className="ml-4 link">Change email address</span>
         </div>
-        <Form.Item name="emailFor">
+        <Form.Item name="accessType">
           <Radio.Group>
             <Radio className="mr-4" value="both">
               Both
@@ -86,15 +87,15 @@ export const CardSelectEmail = ({
     <Card className={className} type="inner" title="Mail Server">
       <Form.Item className="mb-[40px]" name="mailServer">
         <Radio.Group>
-          <Radio className="mr-4" value="gmail">
+          <Radio className="mr-4" value={MailServer.Gmail}>
             <LogosGoogleIcon className="text-[16px] mr-1 ml-[4px] translate-y-1" />
             <span>Gmail</span>
           </Radio>
-          <Radio className="mr-4" value="microsoft">
+          <Radio className="mr-4" value={MailServer.Microsoft}>
             <LogosMicrosoftWindows className="text-[16px] mr-1 ml-[4px] translate-y-1" />
             <span>Microsoft</span>
           </Radio>
-          <Radio value="externalEmail">
+          <Radio value={MailServer.ExternalEmail}>
             <EntypoMail className="text-[16px] mr-1 ml-[4px] translate-y-1" />
             <span>External Email</span>
           </Radio>
@@ -102,7 +103,7 @@ export const CardSelectEmail = ({
       </Form.Item>
       <div>
         {/* gmail */}
-        {form.getFieldValue("mailServer") === "gmail" && (
+        {form.getFieldValue("mailServer") === MailServer.Gmail && (
           <>
             {!form.getFieldValue("isLoggedServer") ? (
               <Button
@@ -124,7 +125,7 @@ export const CardSelectEmail = ({
         )}
 
         {/* microsoft */}
-        {form.getFieldValue("mailServer") === "microsoft" && (
+        {form.getFieldValue("mailServer") === MailServer.Microsoft && (
           <>
             {!form.getFieldValue("isLoggedServer") ? (
               <Button
@@ -145,7 +146,7 @@ export const CardSelectEmail = ({
         )}
 
         {/* external mail */}
-        {form.getFieldValue("mailServer") === "externalEmail" && (
+        {form.getFieldValue("mailServer") === MailServer.ExternalEmail && (
           <>
             <Form.Item name="imap">
               <CardSettingExternalMail

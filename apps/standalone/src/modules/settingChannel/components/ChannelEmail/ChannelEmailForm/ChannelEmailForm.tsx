@@ -1,34 +1,45 @@
 import { useMount, useToggle } from "@moose-desk/core";
+import { MailBoxType } from "@moose-desk/repo";
 import { Checkbox, Input, Radio } from "antd";
 import { useMemo } from "react";
 import { Form, FormProps } from "src/components/UI/Form";
 import { CardSelectEmail } from "src/modules/settingChannel/components/ChannelEmail/CardSelectEmail";
-
-enum SELECT_SERVICE_EMAIL {
-  YOUR_EMAIL = "YOUR_EMAIL",
-  MOOSEDESK_EMAIL = "MOOSEDESK_EMAIL",
-}
+import { useAppSelector } from "src/redux/hook";
 
 interface ChannelEmailFormProps extends FormProps {
   type: "new" | "update";
 }
 
-export const ChannelEmailForm = ({ ...props }: ChannelEmailFormProps) => {
+export enum MailServer {
+  Gmail = "Gmail",
+  Microsoft = "Microsoft",
+  ExternalEmail = "ExternalEmail",
+}
+
+export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
   const [form] = Form.useForm(props.form);
   const { toggle: updateForm } = useToggle();
 
+  const signInCallback = useAppSelector(
+    (state) => state.channelEmail.signInCallback
+  );
+  console.log(signInCallback);
   const initialValues = useMemo(() => {
     return (
       props.initialValues ?? {
-        emailService: SELECT_SERVICE_EMAIL.YOUR_EMAIL,
-        mailServer: "externalEmail",
+        name: signInCallback.name || "",
+        mailboxType: MailBoxType.CUSTOM,
+        accessType: signInCallback.accessType || "",
+        refKey: signInCallback.refKey || undefined,
+        supportEmail: signInCallback.supportEmail || "",
+        mailServer: MailServer.Gmail,
         isLoggedServer: false,
         imap: {
           serverName: "ABC",
         },
       }
     );
-  }, [props.initialValues]);
+  }, [props.initialValues, signInCallback]);
 
   useMount(() => {
     updateForm();
@@ -45,28 +56,38 @@ export const ChannelEmailForm = ({ ...props }: ChannelEmailFormProps) => {
     >
       <div className="md:w-[70%] lg:w-[70%]">
         <Form.Item name="name" label="Name">
-          <Input />
+          <Input
+            disabled={
+              !!signInCallback.name &&
+              form.getFieldValue("mailServer") !== MailServer.ExternalEmail
+            }
+          />
         </Form.Item>
-        <Form.Item name="email" label="Email Address">
-          <Input />
+        <Form.Item name="supportEmail" label="Email Address">
+          <Input
+            disabled={
+              !!signInCallback.supportEmail &&
+              form.getFieldValue("mailServer") !== MailServer.ExternalEmail
+            }
+          />
         </Form.Item>
-        <Form.Item name="emailService">
+        <Form.Item name="mailboxType">
           <Radio.Group>
-            <Radio value={SELECT_SERVICE_EMAIL.YOUR_EMAIL}>
-              Use your email address
-            </Radio>
-            <Radio value={SELECT_SERVICE_EMAIL.MOOSEDESK_EMAIL}>
+            <Radio value={MailBoxType.CUSTOM}>Use your email address</Radio>
+            <Radio value={MailBoxType.MOOSEDESK}>
               Use Moosedesk email address
             </Radio>
           </Radio.Group>
         </Form.Item>
+
+        {/* form bot */}
         <div>
-          {form.getFieldValue("emailService") ===
-            SELECT_SERVICE_EMAIL.YOUR_EMAIL && (
-            <CardSelectEmail className="mb-4" type="new" form={form} />
+          {form.getFieldValue("mailboxType") === MailBoxType.CUSTOM && (
+            <CardSelectEmail className="mb-4" type={type} form={form} />
           )}
+
           <div className="flex gap-8">
-            <Form.Item name="maskEmail" valuePropName="checked">
+            <Form.Item name="isPrimaryEmail" valuePropName="checked">
               <Checkbox>Mask as Primary Email</Checkbox>
             </Form.Item>
             {form.getFieldValue("mailServer") === "externalEmail" && (

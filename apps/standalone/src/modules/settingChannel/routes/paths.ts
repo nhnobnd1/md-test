@@ -5,6 +5,7 @@ const SettingChannelRoutePaths = createRoutePath({
   ChannelEmail: {
     Index: "channel-email",
     Create: "new",
+    Update: ":id",
   },
   EmailIntegration: "email-integration/gmail/callback",
 } as const);

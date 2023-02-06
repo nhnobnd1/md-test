@@ -16,6 +16,15 @@ export enum MailBoxType {
   CUSTOM = "CUSTOM",
   MOOSEDESK = "MOOSEDESK",
 }
+
+export interface SignInCallbackResponse {
+  refKey: string;
+  accessType: string;
+  name: string;
+  oauthStatus: string;
+  supportEmail: string;
+  type: "new" | "update" | null;
+}
 export interface MailSetting {
   mailServer: string;
   port: number;
