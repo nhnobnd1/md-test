@@ -1,17 +1,9 @@
-import {
-  generatePath,
-  useJob,
-  useNavigate,
-  usePrevious,
-} from "@moose-desk/core";
-import EmailIntegrationRepository from "@moose-desk/repo/emailIntegration/EmailIntegrationRepository";
+import { generatePath, useNavigate, usePrevious } from "@moose-desk/core";
 import { Input } from "antd";
-import { useCallback, useState } from "react";
-import { map } from "rxjs";
+import { useState } from "react";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
 import { Header } from "src/components/UI/Header";
 import env from "src/core/env";
-import { useSubdomain } from "src/hooks/useSubdomain";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
 
 interface ChannelEmailProps {}
@@ -98,28 +90,6 @@ const ChannelEmail = (props: ChannelEmailProps) => {
   //   },
   //   [setFilterData]
   // ) as TableProps<Agent>["onChange"];
-
-  const { getSubDomain } = useSubdomain();
-  const { run: getEmailIntegration } = useJob(
-    () => {
-      return EmailIntegrationRepository()
-        .getEmail("http://localhost:3580")
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              window.open(data.data, "_blank");
-            }
-          })
-        );
-    },
-    {
-      showLoading: true,
-    }
-  );
-
-  const handleIntegrationEmail = useCallback(() => {
-    getEmailIntegration();
-  }, []);
 
   return (
     <>

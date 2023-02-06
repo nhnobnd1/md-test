@@ -1,3 +1,4 @@
+import { Module } from "@moose-desk/core";
 import groupLocales from "src/modules/group/locales";
 import GroupRoutePaths from "src/modules/group/routes/paths";
 import groupRoutes from "src/modules/group/routes/routes";

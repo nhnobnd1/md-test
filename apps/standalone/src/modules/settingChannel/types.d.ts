@@ -7,6 +7,7 @@ declare global {
   }
 
   interface Localizations {
-    settingChannel: typeof settingChannelLocales.en & typeof settingChannelLocales.vi;
+    settingChannel: typeof settingChannelLocales.en &
+      typeof settingChannelLocales.vi;
   }
 }

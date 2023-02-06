@@ -4,7 +4,9 @@ import antEnLocale from "antd/es/locale/en_US";
 import antViLocale from "antd/es/locale/vi_VN";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { Provider } from "react-redux";
 import { AppRoutes } from "src/routes";
+import { store } from "./redux";
 
 function App() {
   const { i18n } = useTranslation();
@@ -17,7 +19,9 @@ function App() {
 
   return (
     <ConfigProvider {...config}>
-      <AppRoutes />
+      <Provider store={store}>
+        <AppRoutes />
+      </Provider>
     </ConfigProvider>
   );
 }

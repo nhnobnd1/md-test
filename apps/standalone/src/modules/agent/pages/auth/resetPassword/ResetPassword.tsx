@@ -41,7 +41,7 @@ const ResetPassword = (props: ResetPasswordProps) => {
     if (userId && token) {
       setAccount({
         userId,
-        token,
+        token: decodeURIComponent(token),
       });
     } else {
       navigate(generatePath(AgentRoutePaths.ResetPassword + "/error"));

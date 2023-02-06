@@ -10,4 +10,5 @@ export interface Module {
     paths: ModulePath;
   };
   locales?: Record<string, any>;
+  store?: any;
 }
