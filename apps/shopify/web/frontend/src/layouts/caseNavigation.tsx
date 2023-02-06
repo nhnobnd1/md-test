@@ -9,6 +9,7 @@ import {
   FraudProtectMinor,
   HomeMinor,
   ProfileMinor,
+  SettingsMajor,
   SettingsMinor,
 } from "@shopify/polaris-icons";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
@@ -62,6 +63,26 @@ const caseNavigation: NavigationItems[] = [
     subNavigationItems: [
       // { label: "General Settings", url: "/settings" },
       // { label: "Account Profile", url: "/settings/account-profile" },
+
+      {
+        label: "Genaral Settings",
+        url: SettingRoutePaths.GenaralSetting.BusinessHours.Index,
+        icon: () => <SettingsMajor />,
+        tabBarNavigation: [
+          {
+            label: "Business Hours",
+            url: SettingRoutePaths.GenaralSetting.BusinessHours.Index,
+          },
+          // {
+          //   label: "Security",
+          //   url: SettingRoutePaths.AccountSecurity.Security.Index,
+          // },
+          // {
+          //   label: "Access Manager",
+          //   url: SettingRoutePaths.AccountSecurity.AccessManager.Index,
+          // },
+        ],
+      },
       {
         label: "People",
         url: AgentRoutePaths.Index,
