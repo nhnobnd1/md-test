@@ -9,7 +9,9 @@ enum SELECT_SERVICE_EMAIL {
   MOOSEDESK_EMAIL = "MOOSEDESK_EMAIL",
 }
 
-interface ChannelEmailFormProps extends FormProps {}
+interface ChannelEmailFormProps extends FormProps {
+  type: "new" | "update";
+}
 
 export const ChannelEmailForm = ({ ...props }: ChannelEmailFormProps) => {
   const [form] = Form.useForm(props.form);
@@ -61,7 +63,7 @@ export const ChannelEmailForm = ({ ...props }: ChannelEmailFormProps) => {
         <div>
           {form.getFieldValue("emailService") ===
             SELECT_SERVICE_EMAIL.YOUR_EMAIL && (
-            <CardSelectEmail className="mb-4" form={form} />
+            <CardSelectEmail className="mb-4" type="new" form={form} />
           )}
           <div className="flex gap-8">
             <Form.Item name="maskEmail" valuePropName="checked">

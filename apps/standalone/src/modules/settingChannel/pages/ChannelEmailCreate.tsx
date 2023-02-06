@@ -7,7 +7,7 @@ const ChannelEmailCreate = (props: ChannelEmailCreateProps) => {
   return (
     <>
       <Header className="mb-[40px]" title="Email Configuration" back />
-      <ChannelEmailForm />
+      <ChannelEmailForm type="new" />
     </>
   );
 };

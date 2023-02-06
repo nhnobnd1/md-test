@@ -1,5 +1,11 @@
+import { useJob } from "@moose-desk/core";
+import { GetEmailGoogleAuthRequest } from "@moose-desk/repo";
+import EmailIntegrationRepository from "@moose-desk/repo/emailIntegration/EmailIntegrationRepository";
 import { Button, Card, Checkbox, FormInstance, Radio } from "antd";
+import { useCallback } from "react";
+import { map } from "rxjs";
 import { Form } from "src/components/UI/Form";
+import { useSubdomain } from "src/hooks/useSubdomain";
 import CardSettingExternalMail, {
   TypePort,
 } from "src/modules/settingChannel/components/ChannelEmail/CardSelectEmail/CardSettingExternalMail";
@@ -10,9 +16,44 @@ import LogosMicrosoftWindows from "~icons/logos/microsoft-windows";
 interface CardSelectEmailProps {
   form: FormInstance<any>;
   className?: string;
+  type: "new" | "update";
 }
 
-export const CardSelectEmail = ({ form, className }: CardSelectEmailProps) => {
+export const CardSelectEmail = ({
+  form,
+  className,
+  type,
+}: CardSelectEmailProps) => {
+  const { getSubDomain } = useSubdomain();
+
+  const { run: getEmailGoogleAuth } = useJob(
+    (payload: GetEmailGoogleAuthRequest) => {
+      return EmailIntegrationRepository()
+        .getEmailGoogleAuth(payload)
+        .pipe(
+          map(({ data }) => {
+            if (data.statusCode === 200) {
+              window.open(data.data);
+            }
+          })
+        );
+    },
+    {
+      showLoading: true,
+    }
+  );
+
+  const handleSignInGoogle = useCallback(() => {
+    const payload: GetEmailGoogleAuthRequest = {
+      type: type,
+      ...(import.meta.env.MODE === "development" && {
+        subdomainForTest: "http://localhost:3580",
+      }),
+    };
+
+    getEmailGoogleAuth(payload);
+  }, [import.meta.env]);
+
   const SettingUpMail = (props: any) => {
     return (
       <>
@@ -72,6 +113,7 @@ export const CardSelectEmail = ({ form, className }: CardSelectEmailProps) => {
                     <LogosGoogleIcon />
                   </span>
                 }
+                onClick={handleSignInGoogle}
               >
                 Sign In Gmail
               </Button>
