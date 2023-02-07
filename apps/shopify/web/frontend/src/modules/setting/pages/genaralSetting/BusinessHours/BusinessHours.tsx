@@ -1,3 +1,4 @@
+import { BusinessHoursType } from "@moose-desk/repo";
 import {
   Button,
   ButtonGroup,
@@ -9,9 +10,10 @@ import {
   Text,
 } from "@shopify/polaris";
 import { FormikProps } from "formik";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
+import AutoReplyTab from "src/modules/setting/component/AutoReply/AutoReplyTab";
 import BoxSelectAutoReply from "src/modules/setting/component/BusinessHours/BoxSelectAutoReply";
 import BusinessHoursTab from "src/modules/setting/component/BusinessHours/BusinessHoursTab";
 import HolidayTab from "src/modules/setting/component/Holidays/HolidayTab";
@@ -35,10 +37,10 @@ const BusinessHours = (props: BusinessHoursProps) => {
   const handleChangeValues = useCallback((value) => {
     if (value.businessHoursType) {
       switch (value.businessHoursType) {
-        case "24/7":
+        case BusinessHoursType.Full:
           setDisabled(true);
           break;
-        case "CUSTOM":
+        case BusinessHoursType.Custom:
           setDisabled(false);
           break;
         default:
@@ -46,9 +48,6 @@ const BusinessHours = (props: BusinessHoursProps) => {
       }
     }
   }, []);
-  useEffect(() => {
-    console.log("selected", selected);
-  }, [selected]);
   return (
     <>
       <Page title="Business Hours" fullWidth>
@@ -84,15 +83,19 @@ const BusinessHours = (props: BusinessHoursProps) => {
                       {selected === 0 ? (
                         <BusinessHoursTab disabled={disabled} />
                       ) : null}
-
                       {selected === 1 ? (
                         <FormItem name="holidays">
                           <HolidayTab />
                         </FormItem>
                       ) : null}
+                      {selected === 2 ? (
+                        <FormItem name="auto-reply">
+                          <AutoReplyTab />
+                        </FormItem>
+                      ) : null}
                     </div>
                   </Tabs>
-                  <FormItem name="auto-reply" />
+
                   {!disabled && selected === 0 ? (
                     <Card.Section>
                       <div className="flex items-center content-between">

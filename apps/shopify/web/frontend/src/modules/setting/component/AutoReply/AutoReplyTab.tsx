@@ -12,43 +12,32 @@ import { DeleteMajor, EditMajor } from "@shopify/polaris-icons";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ModalDelete } from "src/components/Modal/ModalDelete";
 import { Pagination } from "src/components/Pagination";
-import ModalHoliday from "src/modules/setting/component/Holidays/ModalHoliday";
+import ModalAutoReply from "src/modules/setting/component/AutoReply/ModalAutoReply";
 
-interface HolidayTabProps {
+interface AutoReplyTabProps {
   disabled?: boolean;
   value?: {
     name: string;
-    date: {
-      start: Date | Range | undefined;
-      end: Date | Range | undefined;
-    };
+    content: any;
   }[];
   onChange?: () => void;
 }
 
-const HolidayTab = ({
+const AutoReplyTab = ({
   disabled,
   value,
   onChange,
   ...props
-}: HolidayTabProps) => {
-  const [valueListHolidays, setValueListHolidays] = useState<
+}: AutoReplyTabProps) => {
+  const [valueListAutoReplys, setValueListAutoReplys] = useState<
     {
       name: string;
-      date: {
-        start: Date | Range | undefined;
-        end: Date | Range | undefined;
-      };
-      autoReply: string;
+      content: any;
     }[]
   >([
     {
-      name: "holiday 1",
-      date: {
-        start: undefined,
-        end: undefined,
-      },
-      autoReply: "111111",
+      name: "autoReply 1",
+      content: "ahihi",
     },
   ]);
   const defaultFilter = () => ({
@@ -57,23 +46,16 @@ const HolidayTab = ({
   });
   const [filterData, setFilterData] = useState<any>(defaultFilter);
   const resourceName = {
-    singular: "holiday",
-    plural: "holidays",
+    singular: "autoReply",
+    plural: "autoReplys",
   };
-
-  // const valueTest = "Jun 20";
-  // console.log(dayjs(valueTest, "MM DD").format("DD MM"));
 
   const [dataForm, setDataForm] = useState<{
     name: string;
-    date: {
-      start: Date | Range | undefined;
-      end: Date | Range | undefined;
-    };
-    autoReply: string;
+    content: any;
     index: number;
   }>();
-  const rowMarkup = valueListHolidays.map((value, index) => (
+  const rowMarkup = valueListAutoReplys.map((value, index) => (
     <IndexTable.Row id={value.name} key={value.name} position={index}>
       <IndexTable.Cell className="py-3">
         <Link monochrome onClick={() => handleDetails(index)} removeUnderline>
@@ -82,8 +64,7 @@ const HolidayTab = ({
           </Text>
         </Link>
       </IndexTable.Cell>
-      <IndexTable.Cell className="py-3">1</IndexTable.Cell>
-      <IndexTable.Cell className="py-3">{value.autoReply}</IndexTable.Cell>
+      <IndexTable.Cell className="py-3">{value.content}</IndexTable.Cell>
       <IndexTable.Cell className="py-3">
         <ButtonGroup>
           <Button
@@ -107,23 +88,23 @@ const HolidayTab = ({
   // details
   const handleDetails = useCallback(
     (index: number) => {
-      const dataDetails = { ...valueListHolidays[index] };
+      const dataDetails = { ...valueListAutoReplys[index] };
       setDataForm({
         ...dataDetails,
         index,
       });
-      setOpenModalHoliday(true);
+      setOpenModalAutoReply(true);
     },
-    [valueListHolidays]
+    [valueListAutoReplys]
   );
   // delete
   const [isOpen, setIsOpen] = useState(false);
-  const [deleteHoliday, setDeleteHoliday] = useState<string>("");
+  const [deleteAutoReply, setDeleteAutoReply] = useState<string>("");
   const handleOpenModalDelete = (id: string) => {
     setIsOpen(true);
-    setDeleteHoliday(id);
+    setDeleteAutoReply(id);
   };
-  const handleRemoveHoliday = useCallback((dataDelete: string[]) => {}, []);
+  const handleRemoveAutoReply = useCallback((dataDelete: string[]) => {}, []);
   // modal
   const isDetail = useMemo(() => {
     return !!dataForm?.name;
@@ -131,58 +112,54 @@ const HolidayTab = ({
   const handleUpdateValue = useCallback(
     (value: any) => {
       if (isDetail && dataForm?.name) {
-        setValueListHolidays((init: any[]) => [
+        setValueListAutoReplys((init: any[]) => [
           ...init.splice(dataForm.index, 1, value),
         ]);
       } else {
-        setValueListHolidays((init: any[]) => [...init, { ...value }]);
+        setValueListAutoReplys((init: any[]) => [...init, { ...value }]);
       }
     },
     [isDetail, dataForm]
   );
-  const [openModalHoliday, setOpenModalHoliday] = useState(false);
+  const [openModalAutoReply, setOpenModalAutoReply] = useState(false);
 
   const handleOnpen = useCallback(() => {
-    setOpenModalHoliday(true);
+    setOpenModalAutoReply(true);
   }, []);
 
   useEffect(() => {
-    console.log("valueListHolidays", valueListHolidays);
-  }, [valueListHolidays]);
+    console.log("valueListAutoReplys", valueListAutoReplys);
+  }, [valueListAutoReplys]);
   return (
     <div className="p-2 mt-2">
-      <ModalHoliday
-        title="Add a holiday"
-        open={openModalHoliday}
-        onClose={() => setOpenModalHoliday(false)}
+      <ModalAutoReply
+        title="Add an Auto-Reply"
+        open={openModalAutoReply}
+        onClose={() => setOpenModalAutoReply(false)}
         dataForm={dataForm}
         onChange={handleUpdateValue}
       />
-      {valueListHolidays.length ? (
+      {valueListAutoReplys.length ? (
         <div>
           <ModalDelete
-            title="Are you sure that you want to remove this holiday?"
+            title="Are you sure that you want to remove this autoReply?"
             open={isOpen}
             onClose={() => setIsOpen(false)}
             content={
-              "This holiday will be removed permanently. This action cannot be undone. All tickets which are using this holiday will get affected too."
+              "This auto-reply will be removed permanently. This action cannot be undone. All tickets which are using this autoReply will get affected too."
             }
-            deleteAction={() => handleRemoveHoliday([deleteHoliday])}
+            deleteAction={() => handleRemoveAutoReply([deleteAutoReply])}
           />
           <Card>
             <IndexTable
               resourceName={resourceName}
-              itemCount={valueListHolidays.length}
+              itemCount={valueListAutoReplys.length}
               selectable={false}
-              headings={[
-                { title: "Name" },
-                { title: "Date" },
-                { title: "Auto-Reply" },
-              ]}
+              headings={[{ title: "Name" }, { title: "Date Created" }]}
               hasMoreItems
               emptyState={
                 <EmptySearchResult
-                  title={"No holiday yet"}
+                  title={"No auto-reply yet"}
                   description={"Try changing the filters or search term"}
                   withIllustration
                 />
@@ -193,7 +170,7 @@ const HolidayTab = ({
           </Card>
           <div className="flex items-center justify-center mt-4">
             <Pagination
-              total={valueListHolidays ? valueListHolidays.length : 1}
+              total={valueListAutoReplys ? valueListAutoReplys.length : 1}
               pageSize={5}
               currentPage={1}
               onChangePage={(page) =>
@@ -205,9 +182,9 @@ const HolidayTab = ({
           </div>
         </div>
       ) : null}
-      <Link onClick={handleOnpen}>Add a holiday...</Link>
+      <Link onClick={handleOnpen}>Add an auto-reply...</Link>
     </div>
   );
 };
 
-export default HolidayTab;
+export default AutoReplyTab;

@@ -1,44 +1,35 @@
 import { FormLayout, Modal, ModalProps, TextField } from "@shopify/polaris";
 import { FormikProps, FormikValues } from "formik";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useRef } from "react";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
-import BoxSelectAutoReply from "src/modules/setting/component/BusinessHours/BoxSelectAutoReply";
-import SelectDateHolidays from "src/modules/setting/component/Holidays/SelectDateHolidays";
 
-interface ModalHolidayProps extends ModalProps {
+interface ModalAutoReplyProps extends ModalProps {
   dataForm?: {
     name: string;
-    date: {
-      start: Date | Range | undefined;
-      end: Date | Range | undefined;
-    };
-    autoReply: string;
+    content: any;
     index: number;
   };
   open: boolean;
   onChange?: (value: any) => void;
 }
 
-const ModalHoliday = ({
+const ModalAutoReply = ({
   dataForm,
   onChange,
   open,
   ...props
-}: ModalHolidayProps) => {
+}: ModalAutoReplyProps) => {
   const formRef = useRef<FormikProps<any>>(null);
   const handleSubmitValue = useCallback((values: FormikValues) => {
     onChange && onChange(values);
     props.onClose && props.onClose();
   }, []);
 
-  useEffect(() => {
-    console.log("dataForm", dataForm);
-  }, [dataForm]);
-
   return (
     <Modal
       {...props}
+      large
       open={open}
       primaryAction={{
         content: "Save",
@@ -51,7 +42,7 @@ const ModalHoliday = ({
         },
       ]}
     >
-      <div style={{ height: "400px" }}>
+      <div style={{ height: "500px" }}>
         <Modal.Section>
           <Form
             initialValues={dataForm || {}}
@@ -63,15 +54,17 @@ const ModalHoliday = ({
               <FormItem name="name">
                 <TextField
                   autoComplete="off"
-                  placeholder="Enter name holiday"
-                  label="Name:"
+                  placeholder="Enter name auto-reply"
+                  label="Name"
                 />
               </FormItem>
               <FormItem name="date">
-                <SelectDateHolidays />
-              </FormItem>
-              <FormItem name="autoReply">
-                <BoxSelectAutoReply label="Auto-Reply:" />
+                <TextField
+                  autoComplete="off"
+                  placeholder="Enter content"
+                  label="Content"
+                  multiline={10}
+                />
               </FormItem>
             </FormLayout>
           </Form>
@@ -81,4 +74,4 @@ const ModalHoliday = ({
   );
 };
 
-export default ModalHoliday;
+export default ModalAutoReply;

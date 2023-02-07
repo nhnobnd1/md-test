@@ -12,7 +12,10 @@ import dayjs from "dayjs";
 import { useCallback, useEffect, useState } from "react";
 
 interface SelectDateHolidaysProps {
-  value?: any;
+  value?: {
+    start: Date;
+    end: Date;
+  };
   onChange?: (value: any) => void;
 }
 
@@ -31,12 +34,18 @@ const SelectDateHolidays = ({ value, onChange }: SelectDateHolidaysProps) => {
   }>();
 
   const handleMonthChange = useCallback((month) => setMonth(month), []);
-  useEffect(() => {
-    onChange && onChange(selectedDates);
-  }, [selectedDates]);
+
+  // useEffect(() => {
+  //   onChange && onChange(selectedDates);
+  // }, [selectedDates]);
 
   useEffect(() => {
-    setSelectedDates(value);
+    console.log("valueDate", value);
+    if (value?.start) {
+      setSelectedDates(value);
+    } else {
+      setSelectedDates(undefined);
+    }
   }, [value]);
   return (
     <Stack alignment="trailing">
@@ -84,7 +93,10 @@ const SelectDateHolidays = ({ value, onChange }: SelectDateHolidaysProps) => {
         <DatePicker
           month={month}
           year={dateNow.getFullYear()}
-          onChange={(date) => setSelectedDates(date)}
+          onChange={(date) => {
+            setSelectedDates(date);
+            onChange && onChange(date);
+          }}
           onMonthChange={handleMonthChange}
           selected={selectedDates}
           multiMonth
