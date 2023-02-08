@@ -8,6 +8,7 @@ import {
   GetEmailGoogleAuthResponse,
   GetListEmailRequest,
   GetListEmailResponse,
+  GetOneEmailResponse,
   UpdateEmailIntegrationRequest,
   UpdateEmailIntegrationResponse,
 } from "./EmailIntegration";
@@ -28,6 +29,9 @@ export const EmailIntegrationRepository = createRepository(
     },
     createEmailIntegration(api, payload: CreateEmailIntegrationRequest) {
       return api.post<CreateEmailIntegrationResponse>("", payload);
+    },
+    getOneEmail(api, id: string) {
+      return api.get<GetOneEmailResponse>(`/${id}`);
     },
     updateEmailIntegration(api, id, payload: UpdateEmailIntegrationRequest) {
       return api.put<UpdateEmailIntegrationResponse>(`/${id}`, payload);

@@ -5847,6 +5847,9 @@ const eh = He(
     createEmailIntegration(e, t) {
       return e.post("", t);
     },
+    getOneEmail(e, t) {
+      return e.get(`/${t}`);
+    },
     updateEmailIntegration(e, t, r) {
       return e.put(`/${t}`, r);
     },

@@ -79,6 +79,8 @@ export interface GetListEmailRequest extends BaseListRequest {}
 
 export type GetListEmailResponse = BaseListResponse<EmailIntegration>;
 
+export type GetOneEmailResponse = BaseResponse<EmailIntegration>;
+
 export interface CreateEmailIntegrationRequest {
   name: string;
   supportEmail: string;

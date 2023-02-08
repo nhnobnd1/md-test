@@ -71,6 +71,7 @@ export declare type GetEmailGoogleAuthResponse = BaseResponse<string>;
 export interface GetListEmailRequest extends BaseListRequest {
 }
 export declare type GetListEmailResponse = BaseListResponse<EmailIntegration>;
+export declare type GetOneEmailResponse = BaseResponse<EmailIntegration>;
 export interface CreateEmailIntegrationRequest {
     name: string;
     supportEmail: string;
