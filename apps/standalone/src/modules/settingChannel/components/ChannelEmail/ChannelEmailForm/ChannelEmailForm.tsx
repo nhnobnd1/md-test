@@ -1,38 +1,171 @@
-import { useMount, useToggle } from "@moose-desk/core";
+import { useLocation, useMount, useToggle } from "@moose-desk/core";
+import {
+  AccessType,
+  MailBoxType,
+  MailSetting,
+  MailSettingType,
+} from "@moose-desk/repo";
 import { Checkbox, Input, Radio } from "antd";
-import { useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Form, FormProps } from "src/components/UI/Form";
+import { useSubdomain } from "src/hooks/useSubdomain";
 import { CardSelectEmail } from "src/modules/settingChannel/components/ChannelEmail/CardSelectEmail";
-
-enum SELECT_SERVICE_EMAIL {
-  YOUR_EMAIL = "YOUR_EMAIL",
-  MOOSEDESK_EMAIL = "MOOSEDESK_EMAIL",
-}
+import {
+  initialState,
+  setSignInCallback,
+} from "src/modules/settingChannel/redux/channelEmail";
+import { useAppDispatch, useAppSelector } from "src/redux/hook";
 
 interface ChannelEmailFormProps extends FormProps {
   type: "new" | "update";
 }
 
-export const ChannelEmailForm = ({ ...props }: ChannelEmailFormProps) => {
+export interface ValuesForm {
+  name: string;
+  supportEmail: string;
+  mailSettingType: MailSettingType;
+  isPrimaryEmail: boolean;
+  mailboxType: MailBoxType;
+  accessType?: AccessType;
+  deleteFromServer?: boolean;
+  incoming?: MailSetting;
+  outgoing?: MailSetting;
+}
+
+export interface IsLoggedServer {
+  callBackName: "gmail" | "microsoft";
+  success: boolean;
+}
+
+export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
   const [form] = Form.useForm(props.form);
   const { toggle: updateForm } = useToggle();
+  const { getSubDomain } = useSubdomain();
+  const { state } = useLocation();
+  const [isLoggedServer, setIsLoggedServer] = useState<IsLoggedServer | null>(
+    null
+  );
+
+  const signInCallback = useAppSelector(
+    (state) => state.channelEmail.signInCallback
+  );
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    return () => {
+      dispatch(setSignInCallback(initialState.signInCallback));
+    };
+  }, []);
+
+  useEffect(() => {
+    if (signInCallback.callbackName && signInCallback.oauthStatus) {
+      setIsLoggedServer({
+        callBackName: signInCallback.callbackName,
+        success: signInCallback.oauthStatus === "success",
+      });
+    }
+  }, [signInCallback]);
+
+  useEffect(() => {
+    if (type === "update" && props.initialValues?.mailboxType) {
+      const mailBoxType = props.initialValues.mailboxType;
+      console.log(mailBoxType);
+      if ([MailBoxType.GMAIL, MailBoxType.OUTLOOK].includes(mailBoxType)) {
+        setIsLoggedServer({
+          callBackName:
+            mailBoxType === MailBoxType.GMAIL ? "gmail" : "microsoft",
+          success: true,
+        });
+      }
+    }
+  }, [props.initialValues]);
+
+  const mailBoxType = useMemo(() => {
+    return form.getFieldValue("mailboxType");
+  }, [form.getFieldValue("mailboxType")]);
+
+  const mailSettingType = useMemo(() => {
+    return form.getFieldValue("mailSettingType");
+  }, [form.getFieldValue("mailSettingType")]);
 
   const initialValues = useMemo(() => {
-    return (
-      props.initialValues ?? {
-        emailService: SELECT_SERVICE_EMAIL.YOUR_EMAIL,
-        mailServer: "externalEmail",
-        isLoggedServer: false,
-        imap: {
-          serverName: "ABC",
-        },
-      }
-    );
-  }, [props.initialValues]);
+    return props.initialValues
+      ? {
+          ...props.initialValues,
+        }
+      : {
+          name: signInCallback.name || "",
+          mailSettingType: MailSettingType.CUSTOM,
+          mailboxType: MailBoxType.GMAIL,
+          accessType: signInCallback.accessType || "",
+          refKey: signInCallback.refKey || undefined,
+          supportEmail: signInCallback.supportEmail || "",
+          isPrimaryEmail: false,
+          deleteFromServer: false,
+        };
+  }, [props.initialValues, signInCallback]);
 
   useMount(() => {
     updateForm();
   });
+
+  const isDisabledInput = useCallback(() => {
+    const signedEmailState =
+      mailBoxType === MailBoxType.GMAIL &&
+      isLoggedServer?.callBackName === "gmail";
+
+    const signedMicrosoftState =
+      mailBoxType === MailBoxType.OUTLOOK &&
+      isLoggedServer?.callBackName === "microsoft";
+
+    if (mailSettingType === MailBoxType.MOOSEDESK) {
+      return false;
+    } else {
+      return signedEmailState || signedMicrosoftState;
+    }
+  }, [mailBoxType, mailSettingType, signInCallback]);
+
+  const handleFormChange = useCallback(
+    (changedValue: any) => {
+      if (changedValue.mailSettingType) {
+        if (changedValue.mailSettingType === MailSettingType.MOOSEDESK) {
+          form.setFieldValue("name", "");
+          form.setFieldValue(
+            "supportEmail",
+            `${getSubDomain()}@email.moosedesk.net`
+          );
+        } else {
+          form.setFieldValue("name", signInCallback.name);
+          form.setFieldValue("supportEmail", signInCallback.supportEmail);
+        }
+      }
+
+      if (changedValue.mailboxType) {
+        if (
+          (changedValue.mailboxType === MailBoxType.GMAIL &&
+            isLoggedServer?.callBackName === "gmail") ||
+          (changedValue.mailboxType === MailBoxType.OUTLOOK &&
+            isLoggedServer?.callBackName === "microsoft")
+        ) {
+          if (signInCallback.callbackName === isLoggedServer.callBackName) {
+            form.setFieldValue("name", signInCallback.name);
+            form.setFieldValue("supportEmail", signInCallback.supportEmail);
+          } else {
+            form.setFieldValue("name", props.initialValues?.name ?? "");
+            form.setFieldValue(
+              "supportEmail",
+              props.initialValues?.supportEmail ?? ""
+            );
+            form.validateFields();
+          }
+        }
+      }
+      updateForm();
+    },
+
+    [signInCallback, props.initialValues]
+  );
 
   return (
     <Form
@@ -40,40 +173,72 @@ export const ChannelEmailForm = ({ ...props }: ChannelEmailFormProps) => {
       form={form}
       initialValues={initialValues}
       enableReinitialize
-      onValuesChange={updateForm}
+      onValuesChange={handleFormChange}
       layout="vertical"
     >
       <div className="md:w-[70%] lg:w-[70%]">
-        <Form.Item name="name" label="Name">
-          <Input />
+        <Form.Item
+          name="name"
+          label="Name"
+          rules={[
+            {
+              required: true,
+              message: "Please enter your name",
+            },
+            {
+              max: 255,
+              type: "string",
+              message: "Your name up to 255 characters",
+            },
+          ]}
+        >
+          <Input disabled={isDisabledInput() && isLoggedServer?.success} />
         </Form.Item>
-        <Form.Item name="email" label="Email Address">
-          <Input />
+        <Form.Item
+          name="supportEmail"
+          label="Email Address"
+          rules={[
+            {
+              required: true,
+              message: "Please enter your email",
+            },
+            {
+              type: "email",
+              message: "Email is invalid",
+            },
+          ]}
+        >
+          <Input
+            disabled={
+              (isDisabledInput() && isLoggedServer?.success) ||
+              mailSettingType === MailSettingType.MOOSEDESK
+            }
+          />
         </Form.Item>
-        <Form.Item name="emailService">
+        <Form.Item name="mailSettingType">
           <Radio.Group>
-            <Radio value={SELECT_SERVICE_EMAIL.YOUR_EMAIL}>
-              Use your email address
-            </Radio>
-            <Radio value={SELECT_SERVICE_EMAIL.MOOSEDESK_EMAIL}>
+            <Radio value={MailSettingType.CUSTOM}>Use your email address</Radio>
+            <Radio value={MailSettingType.MOOSEDESK}>
               Use Moosedesk email address
             </Radio>
           </Radio.Group>
         </Form.Item>
+
+        {/* form bot */}
         <div>
-          {form.getFieldValue("emailService") ===
-            SELECT_SERVICE_EMAIL.YOUR_EMAIL && (
-            <CardSelectEmail className="mb-4" type="new" form={form} />
+          {form.getFieldValue("mailSettingType") === MailSettingType.CUSTOM && (
+            <CardSelectEmail
+              loggedServer={isLoggedServer}
+              className="mb-4"
+              type={type}
+              form={form}
+            />
           )}
+
           <div className="flex gap-8">
-            <Form.Item name="maskEmail" valuePropName="checked">
+            <Form.Item name="isPrimaryEmail" valuePropName="checked">
               <Checkbox>Mask as Primary Email</Checkbox>
             </Form.Item>
-            {form.getFieldValue("mailServer") === "externalEmail" && (
-              <Form.Item name="deleteFetching" valuePropName="checked">
-                <Checkbox>Delete from server after fetching?</Checkbox>
-              </Form.Item>
-            )}
           </div>
         </div>
       </div>

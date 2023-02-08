@@ -48,6 +48,7 @@ export const ButtonModalDelete = ({
           setOpenModal(false);
         }}
         loading={loading}
+        centered
         title={title}
         description={description}
         destroyOnClose

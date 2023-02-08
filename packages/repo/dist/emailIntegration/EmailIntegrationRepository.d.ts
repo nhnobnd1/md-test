@@ -1,11 +1,13 @@
 import { BaseResponse } from "../unty";
-import { CreateEmailIntegrationRequest, CreateEmailIntegrationResponse, GetEmailGoogleAuthRequest, GetEmailGoogleAuthResponse, UpdateEmailIntegrationRequest, UpdateEmailIntegrationResponse } from "./EmailIntegration";
-declare const EmailIntegrationRepository: () => {
+import { CreateEmailIntegrationRequest, CreateEmailIntegrationResponse, GetEmailGoogleAuthRequest, GetEmailGoogleAuthResponse, GetListEmailRequest, GetListEmailResponse, GetOneEmailResponse, UpdateEmailIntegrationRequest, UpdateEmailIntegrationResponse } from "./EmailIntegration";
+export declare const EmailIntegrationRepository: () => {
     getEmailGoogleAuth: (payload: GetEmailGoogleAuthRequest) => import("rxjs").Observable<import("axios").AxiosResponse<GetEmailGoogleAuthResponse, any>>;
     getEmailGoogleCallback: () => import("rxjs").Observable<import("axios").AxiosResponse<BaseResponse<any>, any>>;
-    CreateEmailIntegration: (payload: CreateEmailIntegrationRequest) => import("rxjs").Observable<import("axios").AxiosResponse<CreateEmailIntegrationResponse, any>>;
-    UpdateEmailIntegration: (id: any, payload: UpdateEmailIntegrationRequest) => import("rxjs").Observable<import("axios").AxiosResponse<UpdateEmailIntegrationResponse, any>>;
-    DeleteEmailIntegration: (id: any) => import("rxjs").Observable<import("axios").AxiosResponse<BaseResponse<any>, any>>;
+    getListEmail: (params: GetListEmailRequest) => import("rxjs").Observable<import("axios").AxiosResponse<GetListEmailResponse, any>>;
+    createEmailIntegration: (payload: CreateEmailIntegrationRequest) => import("rxjs").Observable<import("axios").AxiosResponse<CreateEmailIntegrationResponse, any>>;
+    getOneEmail: (id: string) => import("rxjs").Observable<import("axios").AxiosResponse<GetOneEmailResponse, any>>;
+    updateEmailIntegration: (id: any, payload: UpdateEmailIntegrationRequest) => import("rxjs").Observable<import("axios").AxiosResponse<UpdateEmailIntegrationResponse, any>>;
+    deleteEmailIntegration: (id: any) => import("rxjs").Observable<import("axios").AxiosResponse<BaseResponse<any>, any>>;
 };
 export default EmailIntegrationRepository;
 //# sourceMappingURL=EmailIntegrationRepository.d.ts.map
