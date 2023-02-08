@@ -7,7 +7,7 @@ import {
   MailSettingType,
 } from "@moose-desk/repo";
 import { Button } from "antd";
-import { useCallback, useRef } from "react";
+import { useCallback } from "react";
 import { map } from "rxjs";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
@@ -24,9 +24,9 @@ import {
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
 import { useAppSelector } from "src/redux/hook";
 
-interface ChannelEmailCreateProps {}
+interface ChannelEmailUpdateProps {}
 
-const ChannelEmailCreate = (props: ChannelEmailCreateProps) => {
+const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
   const [form] = Form.useForm(undefined);
   const navigate = useNavigate();
   const message = useMessage();
@@ -35,13 +35,11 @@ const ChannelEmailCreate = (props: ChannelEmailCreateProps) => {
     (state) => state.channelEmail.signInCallback
   );
 
-  const formRef = useRef<{ submit: () => void }>(null);
-
   const { run: createMailAPI } = useJob(
     (payload: CreateEmailIntegrationRequest) => {
       message.loading.show("Creating new email");
       return EmailIntegrationRepository()
-        .CreateEmailIntegration(payload)
+        .createEmailIntegration(payload)
         .pipe(
           map(({ data }) => {
             if (data.statusCode === 200) {
@@ -185,4 +183,4 @@ const ChannelEmailCreate = (props: ChannelEmailCreateProps) => {
   );
 };
 
-export default ChannelEmailCreate;
+export default ChannelEmailUpdate;

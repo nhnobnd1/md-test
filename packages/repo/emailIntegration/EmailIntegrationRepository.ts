@@ -6,6 +6,8 @@ import {
   CreateEmailIntegrationResponse,
   GetEmailGoogleAuthRequest,
   GetEmailGoogleAuthResponse,
+  GetListEmailRequest,
+  GetListEmailResponse,
   UpdateEmailIntegrationRequest,
   UpdateEmailIntegrationResponse,
 } from "./EmailIntegration";
@@ -21,13 +23,16 @@ export const EmailIntegrationRepository = createRepository(
     getEmailGoogleCallback(api) {
       return api.get<BaseResponse<any>>("/google-callback");
     },
-    CreateEmailIntegration(api, payload: CreateEmailIntegrationRequest) {
+    getListEmail(api, params: GetListEmailRequest) {
+      return api.get<GetListEmailResponse>("", params);
+    },
+    createEmailIntegration(api, payload: CreateEmailIntegrationRequest) {
       return api.post<CreateEmailIntegrationResponse>("", payload);
     },
-    UpdateEmailIntegration(api, id, payload: UpdateEmailIntegrationRequest) {
+    updateEmailIntegration(api, id, payload: UpdateEmailIntegrationRequest) {
       return api.put<UpdateEmailIntegrationResponse>(`/${id}`, payload);
     },
-    DeleteEmailIntegration(api, id) {
+    deleteEmailIntegration(api, id) {
       return api.delete<BaseResponse<any>>(`/${id}`);
     },
   }

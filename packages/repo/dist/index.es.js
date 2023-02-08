@@ -5841,13 +5841,16 @@ const eh = He(
     getEmailGoogleCallback(e) {
       return e.get("/google-callback");
     },
-    CreateEmailIntegration(e, t) {
+    getListEmail(e, t) {
+      return e.get("", t);
+    },
+    createEmailIntegration(e, t) {
       return e.post("", t);
     },
-    UpdateEmailIntegration(e, t, r) {
+    updateEmailIntegration(e, t, r) {
       return e.put(`/${t}`, r);
     },
-    DeleteEmailIntegration(e, t) {
+    deleteEmailIntegration(e, t) {
       return e.delete(`/${t}`);
     }
   }

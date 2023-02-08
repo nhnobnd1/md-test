@@ -1,4 +1,4 @@
-import { BaseResponse } from "../unty";
+import { BaseListRequest, BaseListResponse, BaseResponse } from "../unty";
 export declare enum AuthenticationSMTP {
     Plain = "Plain",
     Login = "Login",
@@ -58,7 +58,7 @@ export interface EmailIntegration {
     supportEmail: string;
     isPrimaryEmail: boolean;
     mailboxType: MailBoxType;
-    mailboxConfig: {
+    mailboxConfig: MailBoxConfig | {
         forwardEmail: string;
     };
     storeId: string;
@@ -68,6 +68,9 @@ export interface GetEmailGoogleAuthRequest {
     type?: "update" | "new";
 }
 export declare type GetEmailGoogleAuthResponse = BaseResponse<string>;
+export interface GetListEmailRequest extends BaseListRequest {
+}
+export declare type GetListEmailResponse = BaseListResponse<EmailIntegration>;
 export interface CreateEmailIntegrationRequest {
     name: string;
     supportEmail: string;

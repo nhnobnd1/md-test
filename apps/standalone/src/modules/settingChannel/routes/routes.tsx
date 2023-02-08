@@ -17,20 +17,37 @@ const settingChannelRoutes: IRoute = {
       path: SettingChannelRoutePaths.ChannelEmail.Index,
       middleware: "user",
       component: lazy(
-        () => import("src/modules/settingChannel/pages/ChannelEmail")
+        () =>
+          import("src/modules/settingChannel/pages/ChannelEmail/ChannelEmail")
       ),
     },
     {
       path: SettingChannelRoutePaths.ChannelEmail.Create,
       middleware: "user",
       component: lazy(
-        () => import("src/modules/settingChannel/pages/ChannelEmailCreate")
+        () =>
+          import(
+            "src/modules/settingChannel/pages/ChannelEmail/ChannelEmailCreate"
+          )
+      ),
+    },
+    {
+      path: SettingChannelRoutePaths.ChannelEmail.Update,
+      middleware: "user",
+      component: lazy(
+        () =>
+          import(
+            "src/modules/settingChannel/pages/ChannelEmail/ChannelEmailUpdate"
+          )
       ),
     },
     {
       path: SettingChannelRoutePaths.EmailIntegration,
       component: lazy(
-        () => import("src/modules/settingChannel/pages/ChannelEmailIntegration")
+        () =>
+          import(
+            "src/modules/settingChannel/pages/ChannelEmail/ChannelEmailIntegration"
+          )
       ),
     },
   ],
