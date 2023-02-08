@@ -10,7 +10,7 @@ import {
   UpdateEmailIntegrationResponse,
 } from "./EmailIntegration";
 
-const EmailIntegrationRepository = createRepository(
+export const EmailIntegrationRepository = createRepository(
   () => ({
     baseURL: `${env.getApiUrl()}/api/v1/email-integration`,
   }),

@@ -1,7 +1,9 @@
 import { SignInCallbackResponse } from "@moose-desk/repo";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-const initialState: { signInCallback: SignInCallbackResponse } = {
+const initialState: {
+  signInCallback: SignInCallbackResponse;
+} = {
   signInCallback: {
     refKey: "",
     accessType: "",

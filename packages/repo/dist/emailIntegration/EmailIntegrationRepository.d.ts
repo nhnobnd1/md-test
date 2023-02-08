@@ -1,6 +1,6 @@
 import { BaseResponse } from "../unty";
 import { CreateEmailIntegrationRequest, CreateEmailIntegrationResponse, GetEmailGoogleAuthRequest, GetEmailGoogleAuthResponse, UpdateEmailIntegrationRequest, UpdateEmailIntegrationResponse } from "./EmailIntegration";
-declare const EmailIntegrationRepository: () => {
+export declare const EmailIntegrationRepository: () => {
     getEmailGoogleAuth: (payload: GetEmailGoogleAuthRequest) => import("rxjs").Observable<import("axios").AxiosResponse<GetEmailGoogleAuthResponse, any>>;
     getEmailGoogleCallback: () => import("rxjs").Observable<import("axios").AxiosResponse<BaseResponse<any>, any>>;
     CreateEmailIntegration: (payload: CreateEmailIntegrationRequest) => import("rxjs").Observable<import("axios").AxiosResponse<CreateEmailIntegrationResponse, any>>;

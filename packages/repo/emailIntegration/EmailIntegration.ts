@@ -12,8 +12,15 @@ export enum AccessType {
   Outgoing = "outgoing",
 }
 
-export enum MailBoxType {
+export enum MailSettingType {
   CUSTOM = "CUSTOM",
+  MOOSEDESK = "MOOSEDESK",
+}
+
+export enum MailBoxType {
+  GMAIL = "GMAIL",
+  OUTLOOK = "OUTLOOK",
+  OTHER = "OTHER",
   MOOSEDESK = "MOOSEDESK",
 }
 
@@ -28,16 +35,16 @@ export interface SignInCallbackResponse {
 export interface MailSetting {
   mailServer: string;
   port: number;
-  useSsl: true;
-  deleteFromServer?: false;
+  useSsl: boolean;
+  deleteFromServer?: boolean;
   authentication: string;
   email: string;
   password: string;
 }
 
 export interface MailBoxConfig {
-  accessType: AccessType;
-  refKey: string;
+  accessType?: AccessType;
+  refKey?: string;
   incoming: MailSetting;
   outgoing: MailSetting;
 }
@@ -75,7 +82,7 @@ export interface CreateEmailIntegrationRequest {
   supportEmail: string;
   isPrimaryEmail: boolean;
   mailboxType: MailBoxType;
-  mailboxConfig: MailBoxConfig;
+  mailboxConfig: MailBoxConfig | { forwardEmail: string };
 }
 
 export type CreateEmailIntegrationResponse = BaseResponse<EmailIntegration>;
@@ -85,6 +92,6 @@ export interface UpdateEmailIntegrationRequest {
   supportEmail: string;
   isPrimaryEmail: boolean;
   mailboxType: MailBoxType;
-  mailboxConfig: MailBoxConfig;
+  mailboxConfig: MailBoxConfig | { forwardEmail: string };
 }
 export type UpdateEmailIntegrationResponse = BaseResponse<EmailIntegration>;
