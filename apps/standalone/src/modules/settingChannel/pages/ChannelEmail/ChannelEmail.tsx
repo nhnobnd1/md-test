@@ -124,7 +124,6 @@ const ChannelEmail = (props: ChannelEmailProps) => {
         .deleteEmailIntegration(id)
         .pipe(
           map(({ data }) => {
-            console.log(data);
             if (data.statusCode === 200) {
               message.loading.hide().then(() => {
                 notification.success("Delete email successfully");

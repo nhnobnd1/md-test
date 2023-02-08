@@ -13,6 +13,7 @@ import { useSubdomain } from "src/hooks/useSubdomain";
 import CardSettingExternalMail, {
   TypePort,
 } from "src/modules/settingChannel/components/ChannelEmail/CardSelectEmail/CardSettingExternalMail";
+import { IsLoggedServer } from "src/modules/settingChannel/components/ChannelEmail/ChannelEmailForm";
 import { useAppSelector } from "src/redux/hook";
 import EntypoMail from "~icons/entypo/mail";
 import LogosGoogleIcon from "~icons/logos/google-icon";
@@ -22,11 +23,13 @@ interface CardSelectEmailProps {
   form: FormInstance<any>;
   className?: string;
   type: "new" | "update";
+  loggedServer: IsLoggedServer | null;
 }
 
 export const CardSelectEmail = ({
   form,
   className,
+  loggedServer,
   type,
 }: CardSelectEmailProps) => {
   const { getSubDomain } = useSubdomain();
@@ -121,7 +124,9 @@ export const CardSelectEmail = ({
         {/* gmail and logged */}
         {form.getFieldValue("mailboxType") === MailBoxType.GMAIL && (
           <>
-            {!form.getFieldValue("isLoggedServer") ? (
+            {loggedServer?.success && loggedServer?.callBackName === "gmail" ? (
+              <SettingUpMail />
+            ) : (
               <Button
                 className="flex items-center mb-4"
                 size="middle"
@@ -134,8 +139,6 @@ export const CardSelectEmail = ({
               >
                 Sign In Gmail
               </Button>
-            ) : (
-              <SettingUpMail />
             )}
           </>
         )}
@@ -143,7 +146,10 @@ export const CardSelectEmail = ({
         {/* microsoft and logged */}
         {form.getFieldValue("mailboxType") === MailBoxType.OUTLOOK && (
           <>
-            {!form.getFieldValue("isLoggedServer") ? (
+            {loggedServer?.success &&
+            loggedServer?.callBackName === "microsoft" ? (
+              <SettingUpMail />
+            ) : (
               <Button
                 className="flex items-center mb-4"
                 size="middle"
@@ -155,8 +161,6 @@ export const CardSelectEmail = ({
               >
                 Sign In Microsoft Live Email
               </Button>
-            ) : (
-              <SettingUpMail />
             )}
           </>
         )}

@@ -6,7 +6,7 @@ import {
   MailSettingType,
 } from "@moose-desk/repo";
 import { Checkbox, Input, Radio } from "antd";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Form, FormProps } from "src/components/UI/Form";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { CardSelectEmail } from "src/modules/settingChannel/components/ChannelEmail/CardSelectEmail";
@@ -32,11 +32,19 @@ export interface ValuesForm {
   outgoing?: MailSetting;
 }
 
+export interface IsLoggedServer {
+  callBackName: "gmail" | "microsoft";
+  success: boolean;
+}
+
 export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
   const [form] = Form.useForm(props.form);
   const { toggle: updateForm } = useToggle();
   const { getSubDomain } = useSubdomain();
   const { state } = useLocation();
+  const [isLoggedServer, setIsLoggedServer] = useState<IsLoggedServer | null>(
+    null
+  );
 
   const signInCallback = useAppSelector(
     (state) => state.channelEmail.signInCallback
@@ -50,6 +58,29 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
     };
   }, []);
 
+  useEffect(() => {
+    if (signInCallback.callbackName && signInCallback.oauthStatus) {
+      setIsLoggedServer({
+        callBackName: signInCallback.callbackName,
+        success: signInCallback.oauthStatus === "success",
+      });
+    }
+  }, [signInCallback]);
+
+  useEffect(() => {
+    if (type === "update" && props.initialValues?.mailboxType) {
+      const mailBoxType = props.initialValues.mailboxType;
+      console.log(mailBoxType);
+      if ([MailBoxType.GMAIL, MailBoxType.OUTLOOK].includes(mailBoxType)) {
+        setIsLoggedServer({
+          callBackName:
+            mailBoxType === MailBoxType.GMAIL ? "gmail" : "microsoft",
+          success: true,
+        });
+      }
+    }
+  }, [props.initialValues]);
+
   const mailBoxType = useMemo(() => {
     return form.getFieldValue("mailboxType");
   }, [form.getFieldValue("mailboxType")]);
@@ -57,26 +88,6 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
   const mailSettingType = useMemo(() => {
     return form.getFieldValue("mailSettingType");
   }, [form.getFieldValue("mailSettingType")]);
-
-  const checkLoggedInServer = useMemo(() => {
-    if (mailBoxType === MailBoxType.GMAIL) {
-      return (
-        signInCallback.oauthStatus === "success" &&
-        signInCallback.callbackName === "gmail"
-      );
-    } else if (mailBoxType === MailBoxType.OUTLOOK) {
-      return (
-        signInCallback.oauthStatus === "success" &&
-        signInCallback.callbackName === "microsoft"
-      );
-    } else {
-      return false;
-    }
-  }, [signInCallback, mailBoxType]);
-
-  useEffect(() => {
-    form.setFieldValue("isLoggedServer", checkLoggedInServer);
-  }, [checkLoggedInServer]);
 
   const initialValues = useMemo(() => {
     return props.initialValues
@@ -90,8 +101,8 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
           accessType: signInCallback.accessType || "",
           refKey: signInCallback.refKey || undefined,
           supportEmail: signInCallback.supportEmail || "",
-          isLoggedServer: false,
           isPrimaryEmail: false,
+          deleteFromServer: false,
         };
   }, [props.initialValues, signInCallback]);
 
@@ -102,11 +113,11 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
   const isDisabledInput = useCallback(() => {
     const signedEmailState =
       mailBoxType === MailBoxType.GMAIL &&
-      signInCallback.callbackName === "gmail";
+      isLoggedServer?.callBackName === "gmail";
 
     const signedMicrosoftState =
       mailBoxType === MailBoxType.OUTLOOK &&
-      signInCallback.callbackName === "microsoft";
+      isLoggedServer?.callBackName === "microsoft";
 
     if (mailSettingType === MailBoxType.MOOSEDESK) {
       return false;
@@ -133,21 +144,27 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
       if (changedValue.mailboxType) {
         if (
           (changedValue.mailboxType === MailBoxType.GMAIL &&
-            signInCallback.callbackName === "gmail") ||
+            isLoggedServer?.callBackName === "gmail") ||
           (changedValue.mailboxType === MailBoxType.OUTLOOK &&
-            signInCallback.callbackName === "microsoft")
+            isLoggedServer?.callBackName === "microsoft")
         ) {
-          form.setFieldValue("name", signInCallback.name);
-          form.setFieldValue("supportEmail", signInCallback.supportEmail);
-        } else {
-          form.setFieldValue("name", "");
-          form.setFieldValue("supportEmail", "");
+          if (signInCallback.callbackName === isLoggedServer.callBackName) {
+            form.setFieldValue("name", signInCallback.name);
+            form.setFieldValue("supportEmail", signInCallback.supportEmail);
+          } else {
+            form.setFieldValue("name", props.initialValues?.name ?? "");
+            form.setFieldValue(
+              "supportEmail",
+              props.initialValues?.supportEmail ?? ""
+            );
+            form.validateFields();
+          }
         }
       }
       updateForm();
     },
 
-    [signInCallback]
+    [signInCallback, props.initialValues]
   );
 
   return (
@@ -175,7 +192,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
             },
           ]}
         >
-          <Input disabled={!!signInCallback.name && isDisabledInput()} />
+          <Input disabled={isDisabledInput() && isLoggedServer?.success} />
         </Form.Item>
         <Form.Item
           name="supportEmail"
@@ -193,7 +210,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
         >
           <Input
             disabled={
-              (!!signInCallback.supportEmail && isDisabledInput()) ||
+              (isDisabledInput() && isLoggedServer?.success) ||
               mailSettingType === MailSettingType.MOOSEDESK
             }
           />
@@ -210,18 +227,18 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
         {/* form bot */}
         <div>
           {form.getFieldValue("mailSettingType") === MailSettingType.CUSTOM && (
-            <CardSelectEmail className="mb-4" type={type} form={form} />
+            <CardSelectEmail
+              loggedServer={isLoggedServer}
+              className="mb-4"
+              type={type}
+              form={form}
+            />
           )}
 
           <div className="flex gap-8">
             <Form.Item name="isPrimaryEmail" valuePropName="checked">
               <Checkbox>Mask as Primary Email</Checkbox>
             </Form.Item>
-            {form.getFieldValue("mailboxType") === MailBoxType.OTHER && (
-              <Form.Item name="deleteFetching" valuePropName="checked">
-                <Checkbox>Delete from server after fetching?</Checkbox>
-              </Form.Item>
-            )}
           </div>
         </div>
       </div>

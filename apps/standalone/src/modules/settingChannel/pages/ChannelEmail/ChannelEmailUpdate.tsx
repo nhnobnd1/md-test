@@ -3,6 +3,7 @@ import {
   CreateEmailIntegrationRequest,
   EmailIntegration,
   EmailIntegrationRepository,
+  MailBoxConfig,
   MailBoxType,
   MailSettingType,
 } from "@moose-desk/repo";
@@ -36,18 +37,46 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
 
   const initialForm = useMemo(() => {
     console.log(email);
-    return email
-      ? {
-          name: email.name,
-          supportEmail: email.supportEmail || "",
-          mailSettingType:
-            email.mailboxType === MailBoxType.MOOSEDESK
-              ? MailSettingType.MOOSEDESK
-              : MailSettingType.CUSTOM,
-          mailboxType: email.mailboxType,
-          isPrimaryEmail: email.isPrimaryEmail,
-        }
-      : undefined;
+    if (email && email.mailboxType) {
+      const mailBoxConfig = email.mailboxConfig as MailBoxConfig;
+      switch (email.mailboxType) {
+        case MailBoxType.GMAIL:
+          return {
+            name: email.name,
+            supportEmail: email.supportEmail || "",
+            mailSettingType: MailSettingType.CUSTOM,
+            mailboxType: email.mailboxType,
+            isPrimaryEmail: email.isPrimaryEmail,
+            accessType: mailBoxConfig?.accessType,
+            deleteFromServer: mailBoxConfig.incoming.deleteFromServer,
+          };
+
+        case MailBoxType.MOOSEDESK:
+          return {
+            name: email.name,
+            supportEmail: email.supportEmail || "",
+            mailSettingType: MailSettingType.MOOSEDESK,
+            mailboxType: email.mailboxType,
+            isPrimaryEmail: email.isPrimaryEmail,
+          };
+
+        case MailBoxType.OTHER:
+          return {
+            name: email.name,
+            supportEmail: email.supportEmail || "",
+            mailSettingType: MailSettingType.CUSTOM,
+            mailboxType: email.mailboxType,
+            isPrimaryEmail: email.isPrimaryEmail,
+            incoming: mailBoxConfig.incoming,
+            outgoing: mailBoxConfig.outgoing,
+          };
+
+        default:
+          break;
+      }
+    } else {
+      return undefined;
+    }
   }, [email]);
 
   const { run: getChannelEmail } = useJob(
@@ -71,14 +100,14 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
 
   const { run: updateEmailIntegration } = useJob(
     (payload: CreateEmailIntegrationRequest) => {
-      message.loading.show("Creating new email");
+      message.loading.show("Updating new email");
       return EmailIntegrationRepository()
         .createEmailIntegration(payload)
         .pipe(
           map(({ data }) => {
             if (data.statusCode === 200) {
               message.loading.hide().then(() => {
-                notification.success("Create email successfully");
+                notification.success("Update email successfully");
                 navigate(
                   generatePath(SettingChannelRoutePaths.ChannelEmail.Index)
                 );
@@ -86,7 +115,7 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
             } else {
               message.loading.hide().then(() => {
                 message.loading.hide().then(() => {
-                  notification.error("Create email failed");
+                  notification.error("Update email failed");
                 });
               });
             }
@@ -105,11 +134,11 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
     (values: ValuesForm) => {
       if (values.mailSettingType === MailSettingType.CUSTOM) {
         if (values.mailboxType === MailBoxType.GMAIL) {
-          createMailGoogle(values);
+          updateMailGoogle(values);
         } else if (values.mailboxType === MailBoxType.OUTLOOK) {
-          createMailOutLook(values);
+          updateMailOutLook(values);
         } else {
-          createMailExternal(values);
+          updateMailExternal(values);
         }
       } else {
         createMailMooseDesk(values);
@@ -121,19 +150,19 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
   const { payloadEmailGoogle, payloadMailExternal, payloadMailMooseDesk } =
     useFormChannelEmail();
 
-  const createMailGoogle = useCallback(
+  const updateMailGoogle = useCallback(
     (values: ValuesForm) => {
       updateEmailIntegration(payloadEmailGoogle(values));
     },
     [signCallback]
   );
 
-  const createMailOutLook = useCallback(
+  const updateMailOutLook = useCallback(
     (values: ValuesForm) => {},
     [signCallback]
   );
 
-  const createMailExternal = useCallback(
+  const updateMailExternal = useCallback(
     (values: ValuesForm) => {
       if (!!values.incoming && !!values.outgoing) {
         updateEmailIntegration(
