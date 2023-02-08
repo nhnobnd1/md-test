@@ -28,7 +28,7 @@ const ChannelEmailIntegration = (props: ChannelEmailIntegrationProps) => {
       payload[key] = value;
     }
 
-    dispatch(setSignInCallback(payload));
+    dispatch(setSignInCallback({ ...payload, callbackName: "gmail" }));
   }, [searchParams]);
 
   useDidUpdate(() => {
@@ -41,7 +41,11 @@ const ChannelEmailIntegration = (props: ChannelEmailIntegrationProps) => {
       signInCallback.type
     ) {
       if (signInCallback.type === "new") {
-        navigate(generatePath(SettingChannelRoutePaths.ChannelEmail.Create));
+        navigate(generatePath(SettingChannelRoutePaths.ChannelEmail.Create), {
+          state: {
+            callBack: true,
+          },
+        });
       } else {
         navigate(generatePath(SettingChannelRoutePaths.ChannelEmail.Update));
       }

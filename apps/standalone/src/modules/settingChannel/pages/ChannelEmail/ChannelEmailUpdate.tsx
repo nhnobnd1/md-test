@@ -1,13 +1,13 @@
-import { generatePath, useJob, useNavigate } from "@moose-desk/core";
+import { generatePath, useJob, useNavigate, useParams } from "@moose-desk/core";
 import {
-  AccessType,
   CreateEmailIntegrationRequest,
+  EmailIntegration,
   EmailIntegrationRepository,
   MailBoxType,
   MailSettingType,
 } from "@moose-desk/repo";
 import { Button } from "antd";
-import { useCallback } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { map } from "rxjs";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
@@ -17,10 +17,7 @@ import {
   ChannelEmailForm,
   ValuesForm,
 } from "src/modules/settingChannel/components/ChannelEmail/ChannelEmailForm";
-import {
-  settingIncoming,
-  settingOutgoing,
-} from "src/modules/settingChannel/constant/setting";
+import { useFormChannelEmail } from "src/modules/settingChannel/hook/useFormChannelEmail";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
 import { useAppSelector } from "src/redux/hook";
 
@@ -28,14 +25,51 @@ interface ChannelEmailUpdateProps {}
 
 const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
   const [form] = Form.useForm(undefined);
+  const [email, setEmail] = useState<EmailIntegration>();
   const navigate = useNavigate();
   const message = useMessage();
   const notification = useNotification();
+  const { id } = useParams();
   const signCallback = useAppSelector(
     (state) => state.channelEmail.signInCallback
   );
 
-  const { run: createMailAPI } = useJob(
+  const initialForm = useMemo(() => {
+    console.log(email);
+    return email
+      ? {
+          name: email.name,
+          supportEmail: email.supportEmail || "",
+          mailSettingType:
+            email.mailboxType === MailBoxType.MOOSEDESK
+              ? MailSettingType.MOOSEDESK
+              : MailSettingType.CUSTOM,
+          mailboxType: email.mailboxType,
+          isPrimaryEmail: email.isPrimaryEmail,
+        }
+      : undefined;
+  }, [email]);
+
+  const { run: getChannelEmail } = useJob(
+    (id: string) => {
+      return EmailIntegrationRepository()
+        .getOneEmail(id)
+        .pipe(
+          map(({ data }) => {
+            if (data.statusCode === 200) {
+              setEmail(data.data);
+            } else {
+              message.error("Get email failed");
+            }
+          })
+        );
+    },
+    {
+      showLoading: true,
+    }
+  );
+
+  const { run: updateEmailIntegration } = useJob(
     (payload: CreateEmailIntegrationRequest) => {
       message.loading.show("Creating new email");
       return EmailIntegrationRepository()
@@ -61,6 +95,12 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
     }
   );
 
+  useEffect(() => {
+    if (id) {
+      getChannelEmail(id);
+    }
+  }, [id]);
+
   const handleFinishForm = useCallback(
     (values: ValuesForm) => {
       if (values.mailSettingType === MailSettingType.CUSTOM) {
@@ -78,48 +118,12 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
     [signCallback]
   );
 
-  const getSettingIncomingMail = useCallback(
-    (values: ValuesForm) => {
-      return {
-        port: settingIncoming.port,
-        mailServer: settingIncoming.mailServer,
-        authentication: settingIncoming.authentication,
-        useSsl: settingIncoming.useSsl,
-        email: values.supportEmail,
-        password: "",
-        deleteFromServer: !!values.deleteFromServer,
-      };
-    },
-    [settingIncoming]
-  );
-
-  const getSettingOutGoingMail = useCallback((values: ValuesForm) => {
-    return {
-      port: settingOutgoing.port,
-      mailServer: settingOutgoing.mailServer,
-      authentication: settingOutgoing.authentication,
-      useSsl: settingOutgoing.useSsl,
-      email: values.supportEmail,
-      password: "",
-    };
-  }, []);
+  const { payloadEmailGoogle, payloadMailExternal, payloadMailMooseDesk } =
+    useFormChannelEmail();
 
   const createMailGoogle = useCallback(
     (values: ValuesForm) => {
-      const payload: CreateEmailIntegrationRequest = {
-        name: values.name,
-        supportEmail: values.supportEmail,
-        isPrimaryEmail: values.isPrimaryEmail,
-        mailboxType: values.mailboxType,
-        mailboxConfig: {
-          accessType: values.accessType ?? AccessType.Both,
-          refKey: signCallback.refKey,
-          incoming: getSettingIncomingMail(values),
-          outgoing: getSettingOutGoingMail(values),
-        },
-      };
-
-      createMailAPI(payload);
+      updateEmailIntegration(payloadEmailGoogle(values));
     },
     [signCallback]
   );
@@ -132,33 +136,16 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
   const createMailExternal = useCallback(
     (values: ValuesForm) => {
       if (!!values.incoming && !!values.outgoing) {
-        const payload: CreateEmailIntegrationRequest = {
-          name: values.name,
-          isPrimaryEmail: values.isPrimaryEmail,
-          supportEmail: values.supportEmail,
-          mailboxType: values.mailboxType,
-          mailboxConfig: {
-            incoming: values.incoming,
-            outgoing: values.outgoing,
-          },
-        };
-        createMailAPI(payload);
+        updateEmailIntegration(
+          payloadMailExternal(values as Required<ValuesForm>)
+        );
       }
     },
     [signCallback]
   );
 
   const createMailMooseDesk = useCallback((values: ValuesForm) => {
-    const payload: CreateEmailIntegrationRequest = {
-      name: values.name,
-      supportEmail: values.supportEmail,
-      isPrimaryEmail: values.isPrimaryEmail,
-      mailboxType: MailBoxType.MOOSEDESK,
-      mailboxConfig: {
-        forwardEmail: values.supportEmail,
-      },
-    };
-    createMailAPI(payload);
+    updateEmailIntegration(payloadMailMooseDesk(values));
   }, []);
 
   return (
@@ -177,8 +164,14 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
           </Button>
         </div>
       </Header>
-
-      <ChannelEmailForm form={form} type="new" onFinish={handleFinishForm} />
+      {email && (
+        <ChannelEmailForm
+          form={form}
+          initialValues={initialForm}
+          type="update"
+          onFinish={handleFinishForm}
+        />
+      )}
     </>
   );
 };
