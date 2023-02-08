@@ -9,14 +9,14 @@ import {
 } from "@shopify/polaris";
 import { CalendarMajor } from "@shopify/polaris-icons";
 import dayjs from "dayjs";
-import { useCallback, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 
 interface SelectDateHolidaysProps {
   value?: {
-    start: Date;
-    end: Date;
+    startDate: Date;
+    endDate: Date;
   };
-  onChange?: (value: any) => void;
+  onChange?: (value: { startDate: Date; endDate: Date }) => void;
 }
 
 const SelectDateHolidays = ({ value, onChange }: SelectDateHolidaysProps) => {
@@ -34,15 +34,24 @@ const SelectDateHolidays = ({ value, onChange }: SelectDateHolidaysProps) => {
   }>();
 
   const handleMonthChange = useCallback((month) => setMonth(month), []);
-
+  const handleChangeDate = useCallback((date: { start: Date; end: Date }) => {
+    setSelectedDates(date);
+    onChange &&
+      onChange({
+        startDate: date.start,
+        endDate: date.end,
+      });
+  }, []);
   // useEffect(() => {
   //   onChange && onChange(selectedDates);
   // }, [selectedDates]);
 
   useEffect(() => {
-    console.log("valueDate", value);
-    if (value?.start) {
-      setSelectedDates(value);
+    if (value?.startDate) {
+      setSelectedDates({
+        start: value.startDate,
+        end: value.endDate,
+      });
     } else {
       setSelectedDates(undefined);
     }
@@ -93,13 +102,9 @@ const SelectDateHolidays = ({ value, onChange }: SelectDateHolidaysProps) => {
         <DatePicker
           month={month}
           year={dateNow.getFullYear()}
-          onChange={(date) => {
-            setSelectedDates(date);
-            onChange && onChange(date);
-          }}
+          onChange={(date) => handleChangeDate(date)}
           onMonthChange={handleMonthChange}
           selected={selectedDates}
-          multiMonth
           allowRange
         />
       </Popover>
@@ -107,4 +112,4 @@ const SelectDateHolidays = ({ value, onChange }: SelectDateHolidaysProps) => {
   );
 };
 
-export default SelectDateHolidays;
+export default memo(SelectDateHolidays);

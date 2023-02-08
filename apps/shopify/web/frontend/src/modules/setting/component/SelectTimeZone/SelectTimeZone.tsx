@@ -25,7 +25,7 @@ const SelectTimeZone = (props: SelectTimeZoneProps) => {
   const deselectedOptions = useMemo(() => {
     return optionSelectTimeZone.map((item) => ({
       label: item.description,
-      value: item.olsonName,
+      value: item.description,
     }));
   }, []);
 
@@ -36,12 +36,10 @@ const SelectTimeZone = (props: SelectTimeZoneProps) => {
   const updateText = useCallback(
     (value) => {
       setInputValue(value);
-
       if (value === "") {
         setOptions(deselectedOptions);
         return;
       }
-
       const filterRegex = new RegExp(value, "i");
       const resultOptions = deselectedOptions.filter((option) =>
         option.label.match(filterRegex)
@@ -54,7 +52,7 @@ const SelectTimeZone = (props: SelectTimeZoneProps) => {
   const updateSelection = useCallback(
     (selected) => {
       const matchedOption = options.find((option) => {
-        return option.value.match(selected);
+        return option.value === selected;
       });
       setSelectedOption(selected);
       setInputValue((matchedOption && matchedOption.label) || "");
@@ -67,12 +65,11 @@ const SelectTimeZone = (props: SelectTimeZoneProps) => {
 
   const optionsMarkup =
     options.length > 0
-      ? options.map((option) => {
+      ? options.map((option, index) => {
           const { label, value } = option;
-
           return (
             <Listbox.Option
-              key={`${value}`}
+              key={index}
               value={value}
               selected={selectedOption === value}
               accessibilityLabel={label}

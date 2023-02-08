@@ -1,7 +1,7 @@
+import { AutoReply } from "@moose-desk/repo";
 import { Combobox, Icon, Listbox } from "@shopify/polaris";
 import { ChevronDownMinor } from "@shopify/polaris-icons";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
-import timeZoneList from "src/constaint/timeZone";
 
 interface BoxSelectAutoReplyProps {
   placeholder?: string;
@@ -10,6 +10,7 @@ interface BoxSelectAutoReplyProps {
   error?: string;
   onChange?: (value: any) => void;
   disabled?: boolean;
+  dataAutoReply: AutoReply[];
 }
 
 const BoxSelectAutoReply = (props: BoxSelectAutoReplyProps) => {
@@ -17,22 +18,21 @@ const BoxSelectAutoReply = (props: BoxSelectAutoReplyProps) => {
 
   // init data
 
-  const optionSelectTimeZone = timeZoneList.timeZone.map(
-    (item: { olsonName: string; description: string }) => {
-      return item;
-    }
-  );
-
   const deselectedOptions = useMemo(() => {
-    return optionSelectTimeZone.map((item) => ({
-      label: item.description,
-      value: item.olsonName,
+    return props.dataAutoReply.map((item) => ({
+      label: item.name,
+      value: item.code,
     }));
-  }, []);
+  }, [props.dataAutoReply]);
 
   const [selectedOption, setSelectedOption] = useState();
   const [inputValue, setInputValue] = useState("");
-  const [options, setOptions] = useState(deselectedOptions);
+  const [options, setOptions] = useState<
+    {
+      label: string;
+      value: string;
+    }[]
+  >(deselectedOptions);
 
   const updateText = useCallback(
     (value) => {
@@ -55,12 +55,15 @@ const BoxSelectAutoReply = (props: BoxSelectAutoReplyProps) => {
   const updateSelection = useCallback(
     (selected) => {
       const matchedOption = options.find((option) => {
-        return option.value.match(selected);
+        return option.value === selected;
       });
       setSelectedOption(selected);
       setInputValue((matchedOption && matchedOption.label) || "");
       if (selected !== props.value) {
         props.onChange && props.onChange(selected);
+      }
+      if (selected === undefined) {
+        props.onChange && props.onChange(null);
       }
     },
     [options, props.value]
@@ -84,7 +87,14 @@ const BoxSelectAutoReply = (props: BoxSelectAutoReplyProps) => {
         })
       : null;
   // handle Effect
-
+  useEffect(() => {
+    setOptions(
+      props.dataAutoReply.map((item) => ({
+        label: item.name,
+        value: item.code,
+      }))
+    );
+  }, [props.dataAutoReply]);
   useEffect(() => {
     updateSelection(props.value);
   }, [props.value]);

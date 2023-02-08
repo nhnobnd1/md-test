@@ -9,10 +9,10 @@ import {
 
 const BusinessCalendarRepository = createRepository(
   () => ({
-    baseURL: `${env.getApiUrl()}/business-calendar`,
+    baseURL: `${env.getApiUrl()}/api/v1/business-calendar`,
   }),
   {
-    getListBusinessCalendar(api, params: GetListBusinessCalendarRequest) {
+    getListBusinessCalendar(api, params?: GetListBusinessCalendarRequest) {
       return api.get<GetListBusinessCalendarResponse>("", params);
     },
     updateBusinessCalendar(

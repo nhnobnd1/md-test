@@ -1,3 +1,5 @@
+import { Day } from "@moose-desk/repo";
+
 export const optionSelectTime = [
   { value: "00:00", label: "00:00 AM", valueSelect: 0 },
   { value: "00:30", label: "00:30 AM", valueSelect: 0.5 },
@@ -70,59 +72,55 @@ export const tabs = [
 
 export const initialValueCustomHours = [
   {
-    id: "Sunday",
-    timeRanges: {
-      startTime: "00:00",
-      endTime: "00:00",
-    },
+    day: Day.Sunday,
+    startTime: "00:00",
+    endTime: "00:00",
     checked: false,
   },
   {
-    id: "Monday",
-    timeRanges: {
-      startTime: "09:00",
-      endTime: "17:00",
-    },
+    day: Day.Monday,
+    startTime: "09:00",
+    endTime: "17:00",
     checked: true,
   },
   {
-    id: "Tuesday",
-    timeRanges: {
-      startTime: "09:00",
-      endTime: "17:00",
-    },
+    day: Day.Tuesday,
+    startTime: "09:00",
+    endTime: "17:00",
     checked: true,
   },
   {
-    id: "Wednesday",
-    timeRanges: {
-      startTime: "09:00",
-      endTime: "17:00",
-    },
+    day: Day.Wednesday,
+    startTime: "09:00",
+    endTime: "17:00",
     checked: true,
   },
   {
-    id: "Thursday",
-    timeRanges: {
-      startTime: "09:00",
-      endTime: "17:00",
-    },
+    day: Day.Thursday,
+    startTime: "09:00",
+    endTime: "17:00",
     checked: true,
   },
   {
-    id: "Friday",
-    timeRanges: {
-      startTime: "09:00",
-      endTime: "17:00",
-    },
+    day: Day.Friday,
+    startTime: "09:00",
+    endTime: "17:00",
     checked: true,
   },
   {
-    id: "Saturday",
-    timeRanges: {
-      startTime: "00:00",
-      endTime: "00:00",
-    },
+    day: Day.Saturday,
+    startTime: "00:00",
+    endTime: "00:00",
     checked: false,
   },
 ];
+
+const optionDay = {
+  MONDAY: "Monday",
+  TUESDAY: "Tuesday",
+  WEDNESDAY: "Wednesday",
+  THURSDAY: "Thursday",
+  FRIDAY: "Friday",
+  SATURDAY: "Saturday",
+  SUNDAY: "Sunday",
+};

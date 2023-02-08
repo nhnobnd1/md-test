@@ -1,3 +1,4 @@
+import { AutoReply } from "@moose-desk/repo";
 import { FormLayout, Modal, ModalProps, TextField } from "@shopify/polaris";
 import { FormikProps, FormikValues } from "formik";
 import { useCallback, useRef } from "react";
@@ -6,12 +7,11 @@ import FormItem from "src/components/Form/Item";
 
 interface ModalAutoReplyProps extends ModalProps {
   dataForm?: {
-    name: string;
-    content: any;
+    value: AutoReply;
     index: number;
   };
   open: boolean;
-  onChange?: (value: any) => void;
+  onChange?: (value?: AutoReply) => void;
 }
 
 const ModalAutoReply = ({
@@ -22,7 +22,12 @@ const ModalAutoReply = ({
 }: ModalAutoReplyProps) => {
   const formRef = useRef<FormikProps<any>>(null);
   const handleSubmitValue = useCallback((values: FormikValues) => {
-    onChange && onChange(values);
+    onChange &&
+      onChange({
+        name: values.name,
+        code: values.code,
+        content: values.content,
+      });
     props.onClose && props.onClose();
   }, []);
 
@@ -45,8 +50,8 @@ const ModalAutoReply = ({
       <div style={{ height: "500px" }}>
         <Modal.Section>
           <Form
-            initialValues={dataForm || {}}
-            innerRef={formRef}
+            initialValues={dataForm?.value || {}}
+            ref={formRef}
             enableReinitialize
             onSubmit={handleSubmitValue}
           >
@@ -58,7 +63,14 @@ const ModalAutoReply = ({
                   label="Name"
                 />
               </FormItem>
-              <FormItem name="date">
+              <FormItem name="code">
+                <TextField
+                  autoComplete="off"
+                  placeholder="Enter code"
+                  label="Code"
+                />
+              </FormItem>
+              <FormItem name="content">
                 <TextField
                   autoComplete="off"
                   placeholder="Enter content"

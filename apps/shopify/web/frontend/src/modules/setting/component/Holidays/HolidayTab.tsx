@@ -1,3 +1,4 @@
+import { AutoReply, Holidays } from "@moose-desk/repo";
 import {
   Button,
   ButtonGroup,
@@ -15,42 +16,18 @@ import { Pagination } from "src/components/Pagination";
 import ModalHoliday from "src/modules/setting/component/Holidays/ModalHoliday";
 
 interface HolidayTabProps {
-  disabled?: boolean;
-  value?: {
-    name: string;
-    date: {
-      start: Date | Range | undefined;
-      end: Date | Range | undefined;
-    };
-  }[];
-  onChange?: () => void;
+  value?: Holidays[];
+  onChange?: (value: Holidays[]) => void;
+  dataAutoReply: AutoReply[];
 }
 
 const HolidayTab = ({
-  disabled,
   value,
   onChange,
+  dataAutoReply,
   ...props
 }: HolidayTabProps) => {
-  const [valueListHolidays, setValueListHolidays] = useState<
-    {
-      name: string;
-      date: {
-        start: Date | Range | undefined;
-        end: Date | Range | undefined;
-      };
-      autoReply: string;
-    }[]
-  >([
-    {
-      name: "holiday 1",
-      date: {
-        start: undefined,
-        end: undefined,
-      },
-      autoReply: "111111",
-    },
-  ]);
+  const [valueListHolidays, setValueListHolidays] = useState<Holidays[]>([]);
   const defaultFilter = () => ({
     page: 1,
     limit: 5,
@@ -61,16 +38,8 @@ const HolidayTab = ({
     plural: "holidays",
   };
 
-  // const valueTest = "Jun 20";
-  // console.log(dayjs(valueTest, "MM DD").format("DD MM"));
-
   const [dataForm, setDataForm] = useState<{
-    name: string;
-    date: {
-      start: Date | Range | undefined;
-      end: Date | Range | undefined;
-    };
-    autoReply: string;
+    value: Holidays;
     index: number;
   }>();
   const rowMarkup = valueListHolidays.map((value, index) => (
@@ -82,8 +51,10 @@ const HolidayTab = ({
           </Text>
         </Link>
       </IndexTable.Cell>
-      <IndexTable.Cell className="py-3">1</IndexTable.Cell>
-      <IndexTable.Cell className="py-3">{value.autoReply}</IndexTable.Cell>
+      <IndexTable.Cell className="py-3">
+        {value.startDate} - {value.endDate}
+      </IndexTable.Cell>
+      <IndexTable.Cell className="py-3">{value.autoReplyCode}</IndexTable.Cell>
       <IndexTable.Cell className="py-3">
         <ButtonGroup>
           <Button
@@ -97,7 +68,7 @@ const HolidayTab = ({
                 source={() => <DeleteMajor />}
               />
             )}
-            onClick={() => handleOpenModalDelete(value.name)}
+            onClick={() => handleOpenModalDelete(index)}
             destructive
           />
         </ButtonGroup>
@@ -109,7 +80,7 @@ const HolidayTab = ({
     (index: number) => {
       const dataDetails = { ...valueListHolidays[index] };
       setDataForm({
-        ...dataDetails,
+        value: { ...dataDetails },
         index,
       });
       setOpenModalHoliday(true);
@@ -118,24 +89,39 @@ const HolidayTab = ({
   );
   // delete
   const [isOpen, setIsOpen] = useState(false);
-  const [deleteHoliday, setDeleteHoliday] = useState<string>("");
-  const handleOpenModalDelete = (id: string) => {
+  const [deleteHoliday, setDeleteHoliday] = useState<number>(0);
+  const handleOpenModalDelete = (index: number) => {
     setIsOpen(true);
-    setDeleteHoliday(id);
+    setDeleteHoliday(index);
   };
-  const handleRemoveHoliday = useCallback((dataDelete: string[]) => {}, []);
+  const handleRemoveHoliday = useCallback(
+    (indexDelete: number) => {
+      setValueListHolidays((init: Holidays[]) => {
+        init.splice(indexDelete, 1);
+        onChange && onChange([...init]);
+        return init;
+      });
+    },
+    [deleteHoliday, setValueListHolidays, valueListHolidays]
+  );
   // modal
   const isDetail = useMemo(() => {
-    return !!dataForm?.name;
-  }, [dataForm?.name]);
+    return !!dataForm?.value.name;
+  }, [dataForm?.value.name]);
+
   const handleUpdateValue = useCallback(
     (value: any) => {
-      if (isDetail && dataForm?.name) {
-        setValueListHolidays((init: any[]) => [
-          ...init.splice(dataForm.index, 1, value),
-        ]);
+      if (isDetail && dataForm?.value.name) {
+        setValueListHolidays((init: Holidays[]) => {
+          init.splice(dataForm.index, 1, value);
+          onChange && onChange([...init]);
+          return init;
+        });
       } else {
-        setValueListHolidays((init: any[]) => [...init, { ...value }]);
+        setValueListHolidays((init: Holidays[]) => {
+          onChange && onChange([...init, { ...value }]);
+          return [...init, { ...value }];
+        });
       }
     },
     [isDetail, dataForm]
@@ -145,18 +131,23 @@ const HolidayTab = ({
   const handleOnpen = useCallback(() => {
     setOpenModalHoliday(true);
   }, []);
+  const handleCloseModal = useCallback(() => {
+    setOpenModalHoliday(false);
+    setDataForm(undefined);
+  }, []);
 
   useEffect(() => {
-    console.log("valueListHolidays", valueListHolidays);
-  }, [valueListHolidays]);
+    setValueListHolidays(value?.length ? [...value] : []);
+  }, [value]);
   return (
     <div className="p-2 mt-2">
       <ModalHoliday
         title="Add a holiday"
         open={openModalHoliday}
-        onClose={() => setOpenModalHoliday(false)}
+        onClose={handleCloseModal}
         dataForm={dataForm}
         onChange={handleUpdateValue}
+        dataAutoReply={dataAutoReply}
       />
       {valueListHolidays.length ? (
         <div>
@@ -167,7 +158,7 @@ const HolidayTab = ({
             content={
               "This holiday will be removed permanently. This action cannot be undone. All tickets which are using this holiday will get affected too."
             }
-            deleteAction={() => handleRemoveHoliday([deleteHoliday])}
+            deleteAction={() => handleRemoveHoliday(deleteHoliday)}
           />
           <Card>
             <IndexTable

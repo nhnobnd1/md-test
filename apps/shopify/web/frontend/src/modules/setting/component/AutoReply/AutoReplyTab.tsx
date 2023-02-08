@@ -1,3 +1,4 @@
+import { AutoReply } from "@moose-desk/repo";
 import {
   Button,
   ButtonGroup,
@@ -16,11 +17,8 @@ import ModalAutoReply from "src/modules/setting/component/AutoReply/ModalAutoRep
 
 interface AutoReplyTabProps {
   disabled?: boolean;
-  value?: {
-    name: string;
-    content: any;
-  }[];
-  onChange?: () => void;
+  value?: AutoReply[];
+  onChange?: (value: AutoReply[]) => void;
 }
 
 const AutoReplyTab = ({
@@ -29,17 +27,9 @@ const AutoReplyTab = ({
   onChange,
   ...props
 }: AutoReplyTabProps) => {
-  const [valueListAutoReplys, setValueListAutoReplys] = useState<
-    {
-      name: string;
-      content: any;
-    }[]
-  >([
-    {
-      name: "autoReply 1",
-      content: "ahihi",
-    },
-  ]);
+  const [valueListAutoReplys, setValueListAutoReplys] = useState<AutoReply[]>(
+    []
+  );
   const defaultFilter = () => ({
     page: 1,
     limit: 5,
@@ -51,8 +41,7 @@ const AutoReplyTab = ({
   };
 
   const [dataForm, setDataForm] = useState<{
-    name: string;
-    content: any;
+    value: AutoReply;
     index: number;
   }>();
   const rowMarkup = valueListAutoReplys.map((value, index) => (
@@ -78,7 +67,7 @@ const AutoReplyTab = ({
                 source={() => <DeleteMajor />}
               />
             )}
-            onClick={() => handleOpenModalDelete(value.name)}
+            onClick={() => handleOpenModalDelete(index)}
             destructive
           />
         </ButtonGroup>
@@ -90,7 +79,7 @@ const AutoReplyTab = ({
     (index: number) => {
       const dataDetails = { ...valueListAutoReplys[index] };
       setDataForm({
-        ...dataDetails,
+        value: { ...dataDetails },
         index,
       });
       setOpenModalAutoReply(true);
@@ -99,24 +88,39 @@ const AutoReplyTab = ({
   );
   // delete
   const [isOpen, setIsOpen] = useState(false);
-  const [deleteAutoReply, setDeleteAutoReply] = useState<string>("");
-  const handleOpenModalDelete = (id: string) => {
+  const [deleteAutoReply, setDeleteAutoReply] = useState<number>(0);
+  const handleOpenModalDelete = (index: number) => {
     setIsOpen(true);
-    setDeleteAutoReply(id);
+    setDeleteAutoReply(index);
   };
-  const handleRemoveAutoReply = useCallback((dataDelete: string[]) => {}, []);
+  const handleRemoveAutoReply = useCallback(
+    (indexDelete: number) => {
+      setValueListAutoReplys((init: AutoReply[]) => {
+        init.splice(indexDelete, 1);
+        onChange && onChange([...init]);
+        return init;
+      });
+    },
+    [deleteAutoReply, setValueListAutoReplys, valueListAutoReplys]
+  );
   // modal
   const isDetail = useMemo(() => {
-    return !!dataForm?.name;
-  }, [dataForm?.name]);
+    return !!dataForm?.value.name;
+  }, [dataForm?.value.name]);
+
   const handleUpdateValue = useCallback(
     (value: any) => {
-      if (isDetail && dataForm?.name) {
-        setValueListAutoReplys((init: any[]) => [
-          ...init.splice(dataForm.index, 1, value),
-        ]);
+      if (isDetail && dataForm?.value.name) {
+        setValueListAutoReplys((init: AutoReply[]) => {
+          init.splice(dataForm.index, 1, value);
+          onChange && onChange([...init]);
+          return init;
+        });
       } else {
-        setValueListAutoReplys((init: any[]) => [...init, { ...value }]);
+        setValueListAutoReplys((init: AutoReply[]) => {
+          onChange && onChange([...init, { ...value }]);
+          return [...init, { ...value }];
+        });
       }
     },
     [isDetail, dataForm]
@@ -126,16 +130,25 @@ const AutoReplyTab = ({
   const handleOnpen = useCallback(() => {
     setOpenModalAutoReply(true);
   }, []);
+  const handleCloseModal = useCallback(() => {
+    setOpenModalAutoReply(false);
+  }, []);
 
   useEffect(() => {
-    console.log("valueListAutoReplys", valueListAutoReplys);
-  }, [valueListAutoReplys]);
+    if (!openModalAutoReply) {
+      setDataForm(undefined);
+    }
+  }, [openModalAutoReply]);
+
+  useEffect(() => {
+    setValueListAutoReplys(value?.length ? [...value] : []);
+  }, [value]);
   return (
     <div className="p-2 mt-2">
       <ModalAutoReply
         title="Add an Auto-Reply"
         open={openModalAutoReply}
-        onClose={() => setOpenModalAutoReply(false)}
+        onClose={handleCloseModal}
         dataForm={dataForm}
         onChange={handleUpdateValue}
       />
@@ -148,7 +161,7 @@ const AutoReplyTab = ({
             content={
               "This auto-reply will be removed permanently. This action cannot be undone. All tickets which are using this autoReply will get affected too."
             }
-            deleteAction={() => handleRemoveAutoReply([deleteAutoReply])}
+            deleteAction={() => handleRemoveAutoReply(deleteAutoReply)}
           />
           <Card>
             <IndexTable

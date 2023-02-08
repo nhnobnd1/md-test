@@ -51,9 +51,10 @@ export interface BusinessCalendar {
   name: string;
   description: string;
   timezone: string;
-  businessHoursType: BusinessHoursType.Full;
+  businessHoursType: BusinessHoursType;
   businessHours: BusinessHours[];
   holidays: Holidays[];
+  autoReply: AutoReply[];
   storeId: string;
 }
 

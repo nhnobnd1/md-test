@@ -5,17 +5,17 @@ import { optionSelectTime } from "src/modules/setting/constaint/constaint";
 
 interface BoxSelectTimeProps {
   value: {
-    id: string;
-    checked: boolean;
-    timeRanges: {
+    checked?: boolean;
+    day?: string;
+    timeRanges?: {
       startTime: string;
       endTime: string;
     };
   };
   initialValue: {
-    id: string;
-    checked: boolean;
-    timeRanges: {
+    checked?: boolean;
+    day?: string;
+    timeRanges?: {
       startTime: string;
       endTime: string;
     };
@@ -30,12 +30,14 @@ const BoxSelectTime = ({
   onChange,
   value,
   initialValue,
+  disabled,
   ...props
 }: BoxSelectTimeProps) => {
   const [timeWorking, setTimeWorking] = useState(0);
-  const [disabled, setDisabled] = useState(false);
+  const [disabledTextField, setDisabledTextField] = useState<boolean>();
+  const [selectedOptionStart, setSelectedOptionStart] = useState();
+  const [selectedOptionEnd, setSelectedOptionEnd] = useState();
   // value start
-  const [selectedOptionStart, setSelectedOptionStart] = useState("");
   const [inputValueStart, setInputValueStart] = useState("");
   const [optionsStart, setOptionsStart] = useState(optionSelectTime);
   const updateSelectionStart = useCallback(
@@ -45,24 +47,23 @@ const BoxSelectTime = ({
       });
       setSelectedOptionStart(selected);
       onChange &&
-        onChange(() => {
-          initialValue[index].timeRanges.startTime = selected;
-          return [...initialValue];
+        onChange({
+          startTime: selected,
+          endTime: selectedOptionEnd,
         });
       setInputValueStart((matchedOption && matchedOption.label) || "");
     },
-    [optionsStart]
+    [optionsStart, selectedOptionEnd]
   );
   const optionsMarkupStart = optionsStart.map((option) => {
     const { label, value } = option;
-
     return (
       <Listbox.Option
         key={`${value}`}
         value={value}
         selected={selectedOptionStart === value}
         accessibilityLabel={label}
-        disabled={disabled}
+        disabled={disabledTextField}
       >
         {label}
       </Listbox.Option>
@@ -70,7 +71,6 @@ const BoxSelectTime = ({
   });
 
   // value End
-  const [selectedOptionEnd, setSelectedOptionEnd] = useState("");
   const [inputValueEnd, setInputValueEnd] = useState("");
   const [optionsEnd, setOptionsEnd] = useState(optionSelectTime);
 
@@ -80,14 +80,15 @@ const BoxSelectTime = ({
         return option.value.match(selected);
       });
       onChange &&
-        onChange(() => {
-          initialValue[index].timeRanges.endTime = selected;
-          return [...initialValue];
+        onChange({
+          startTime: selectedOptionStart,
+          endTime: selected,
         });
+
       setSelectedOptionEnd(selected);
       setInputValueEnd((matchedOption && matchedOption.label) || "");
     },
-    [optionsEnd]
+    [optionsEnd, selectedOptionStart]
   );
   const optionsMarkupEnd = optionsEnd.map((option) => {
     const { label, value } = option;
@@ -98,7 +99,7 @@ const BoxSelectTime = ({
         value={value}
         selected={selectedOptionEnd === value}
         accessibilityLabel={label}
-        disabled={disabled}
+        disabled={disabledTextField}
       >
         {label}
       </Listbox.Option>
@@ -117,6 +118,38 @@ const BoxSelectTime = ({
     }
   }, [selectedOptionStart, selectedOptionEnd]);
 
+  // handle Disabled
+
+  const handleSetDisabled = useCallback(() => {
+    if (disabled) {
+      setDisabledTextField(true);
+    } else {
+      if (initialValue[index].checked) {
+        setDisabledTextField(false);
+      } else {
+        setDisabledTextField(true);
+      }
+    }
+  }, [initialValue, index, disabled]);
+  // middle
+  const handleSlelected = useCallback(
+    (value: { startTime: any; endTime: any }) => {
+      setSelectedOptionStart(value.startTime);
+      setSelectedOptionEnd(value.endTime);
+      const matchedOptionStart = optionsStart.find((option) => {
+        return option.value.match(value.startTime);
+      });
+      const matchedOptionEnd = optionsEnd.find((option) => {
+        return option.value.match(value.endTime);
+      });
+      setInputValueStart(
+        (matchedOptionStart && matchedOptionStart.label) || ""
+      );
+      setInputValueEnd((matchedOptionEnd && matchedOptionEnd.label) || "");
+      onChange && onChange(value);
+    },
+    []
+  );
   // handle Effect
 
   useEffect(() => {
@@ -132,18 +165,22 @@ const BoxSelectTime = ({
   }, [selectedOptionEnd]);
 
   useEffect(() => {
-    updateSelectionStart(value?.timeRanges.startTime);
-    updateSelectionEnd(value?.timeRanges.endTime);
+    if (value?.timeRanges?.startTime && value?.timeRanges?.endTime) {
+      handleSlelected({
+        startTime: value?.timeRanges?.startTime,
+        endTime: value?.timeRanges?.endTime,
+      });
+    }
   }, [value]);
 
   useEffect(() => {
-    if (props.disabled) {
-      setDisabled(props.disabled);
-    } else setDisabled(!initialValue[index]?.checked);
-  }, [props.disabled]);
+    handleSetDisabled();
+  }, [disabled]);
+
   useEffect(() => {
-    setDisabled(!initialValue[index]?.checked);
+    handleSetDisabled();
   }, [initialValue]);
+
   return (
     <div className="mb-2">
       <Stack spacing="extraTight" alignment="center">
@@ -158,7 +195,7 @@ const BoxSelectTime = ({
                 suffix={
                   <Icon source={() => <ChevronDownMinor />} color="base" />
                 }
-                disabled={disabled}
+                disabled={disabledTextField}
               />
             }
             height="300px"
@@ -186,7 +223,7 @@ const BoxSelectTime = ({
                   <Icon source={() => <ChevronDownMinor />} color="base" />
                 }
                 autoComplete="off"
-                disabled={disabled}
+                disabled={disabledTextField}
               />
             }
             height="300px"
