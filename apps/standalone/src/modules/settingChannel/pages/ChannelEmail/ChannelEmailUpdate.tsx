@@ -36,7 +36,6 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
   );
 
   const initialForm = useMemo(() => {
-    console.log(email);
     if (email && email.mailboxType) {
       const mailBoxConfig = email.mailboxConfig as MailBoxConfig;
       switch (email.mailboxType) {
