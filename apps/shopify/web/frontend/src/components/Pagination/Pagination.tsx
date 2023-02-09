@@ -164,7 +164,6 @@ export const Pagination = ({
   }, [page]);
 
   useEffect(() => {
-    console.log(page, "page");
     setPage(currentPage);
   }, [currentPage]);
 
