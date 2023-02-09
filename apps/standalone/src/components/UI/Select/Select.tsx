@@ -30,6 +30,7 @@ interface SelectProps<VT extends SelectValue = any>
   extends Omit<AntSelectProps<VT>, "options" | "onChange"> {
   size?: SizeType;
   disableValues?: any[];
+  getDisabledValues?: (disableValues: any[]) => void;
   options?: OptionType[];
   onChange?: (value: string, option: OptionType | OptionType[]) => void;
 }
@@ -38,6 +39,7 @@ const Select = ({
   size = "middle",
   options,
   disableValues = [],
+  getDisabledValues,
   onChange,
   ...props
 }: SelectProps) => {
@@ -48,6 +50,10 @@ const Select = ({
     [onChange]
   );
 
+  useEffect(() => {
+    getDisabledValues && getDisabledValues(disableValues);
+  }, [disableValues]);
+
   return (
     <AntSelect
       {...props}
@@ -55,15 +61,21 @@ const Select = ({
       size={size}
       onChange={handleChange}
     >
-      {_.uniqBy(options, "value").map((option, index) => (
-        <Select.Option
-          {...option}
-          key={`${index}-${option.value}`}
-          disabled={disableValues.includes(option.value)}
-        >
-          {option.label}
-        </Select.Option>
-      ))}
+      {!props.children ? (
+        <>
+          {_.uniqBy(options, "value").map((option, index) => (
+            <Select.Option
+              {...option}
+              key={`${index}-${option.value}`}
+              disabled={disableValues.includes(option.value)}
+            >
+              {option.label}
+            </Select.Option>
+          ))}
+        </>
+      ) : (
+        props.children
+      )}
     </AntSelect>
   );
 };

@@ -1,5 +1,6 @@
-import { Input, InputProps } from "antd";
+import { InputProps } from "antd";
 import { useCallback, useEffect, useState } from "react";
+import { InputTextNumber } from "src/components/UI/InputTextNumber";
 import Select from "src/components/UI/Select/Select";
 import constaint from "src/constaint";
 import { Country } from "src/constaint/country";
@@ -31,7 +32,6 @@ const InputPhone = ({
   );
 
   // filter
-
   const [dataSelect, setDataSelect] = useState(optionSelectPhone);
   const [filterValue, setFilterValue] = useState("");
 
@@ -130,13 +130,13 @@ const InputPhone = ({
           </Select.Option>
         ))}
       </Select>
-      <Input
+      <InputTextNumber
         type="tel"
         {...props}
         autoComplete="tel"
         value={valueField}
         disabled={disabled}
-        onChange={(e) => handleChangeValueInput(e.target.value)}
+        onChange={(value) => handleChangeValueInput(value)}
       />
     </div>
   );
