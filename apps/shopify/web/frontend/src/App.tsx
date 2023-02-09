@@ -3,6 +3,7 @@ import { NavigationMenu, useToast } from "@shopify/app-bridge-react";
 import { NavigationLink } from "@shopify/app-bridge-react/components/NavigationMenu/NavigationMenu";
 import { useEffect, useMemo } from "react";
 import { useCookies } from "react-cookie";
+import { RichText } from "src/components/RichText";
 import env from "src/core/env";
 import { useApi, useShopDomain } from "src/hooks";
 import useAuth from "src/hooks/useAuth";
@@ -78,6 +79,9 @@ export default function App() {
     <>
       <NavigationMenu navigationLinks={navigationLinks} />
       <AppRoutes />
+      <div className="hidden">
+        <RichText />
+      </div>
     </>
   );
 }

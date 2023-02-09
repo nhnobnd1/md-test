@@ -57,7 +57,9 @@ const AutoReplyTab = ({
             </Text>
           </Link>
         </IndexTable.Cell>
-        <IndexTable.Cell className="py-3">{value.content}</IndexTable.Cell>
+        <IndexTable.Cell className="py-3">
+          <div dangerouslySetInnerHTML={{ __html: value.content }}></div>
+        </IndexTable.Cell>
         <IndexTable.Cell className="py-3">
           <ButtonGroup>
             <Button
@@ -161,6 +163,7 @@ const AutoReplyTab = ({
   useEffect(() => {
     setValueListAutoReplys(value?.length ? [...value] : []);
   }, [value]);
+
   return (
     <div className="p-2 mt-2">
       <ModalAutoReply
@@ -213,7 +216,9 @@ const AutoReplyTab = ({
           </div>
         </div>
       ) : null}
-      <Link onClick={handleOnpen}>Add an auto-reply...</Link>
+      <>
+        <Link onClick={handleOnpen}>Add an auto-reply...</Link>
+      </>
     </div>
   );
 };
