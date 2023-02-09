@@ -1,9 +1,11 @@
+import { useToggle } from "@moose-desk/core";
 import { AutoReply } from "@moose-desk/repo";
 import { FormLayout, Modal, ModalProps, TextField } from "@shopify/polaris";
 import { FormikProps, FormikValues } from "formik";
 import { useCallback, useRef } from "react";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
+import { RichText } from "src/components/RichText";
 import { object, string } from "yup";
 
 interface ModalAutoReplyProps extends ModalProps {
@@ -22,6 +24,7 @@ const ModalAutoReply = ({
   ...props
 }: ModalAutoReplyProps) => {
   const formRef = useRef<FormikProps<any>>(null);
+  const { toggle: updateForm } = useToggle();
   const handleSubmitValue = useCallback((values: FormikValues) => {
     onChange &&
       onChange({
@@ -56,12 +59,16 @@ const ModalAutoReply = ({
       <div style={{ height: "500px" }}>
         <Modal.Section>
           <Form
-            initialValues={dataForm?.value || {}}
+            initialValues={
+              dataForm?.value || {
+                name: "",
+                content: "",
+              }
+            }
             ref={formRef}
             validationSchema={validateObject}
             enableReinitialize
             onSubmit={handleSubmitValue}
-            // validateOnChange
           >
             <FormLayout>
               <FormItem name="name">
@@ -73,12 +80,7 @@ const ModalAutoReply = ({
               </FormItem>
               <FormItem name="code"></FormItem>
               <FormItem name="content">
-                <TextField
-                  autoComplete="off"
-                  placeholder="Enter content"
-                  label="Content"
-                  multiline={10}
-                />
+                <RichText />
               </FormItem>
             </FormLayout>
           </Form>
