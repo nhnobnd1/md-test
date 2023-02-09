@@ -9,6 +9,10 @@ interface RichTextProps extends Omit<IAllProps, "onChange" | "value"> {
 export const RichText = ({ value, onChange, ...props }: RichTextProps) => {
   const editorRef = useRef<any>(null);
 
+  const initEditor = useCallback((evt, editor) => {
+    editorRef.current = editor;
+  }, []);
+
   const handleChange = useCallback(() => {
     onChange && onChange(editorRef.current.getContent());
   }, []);
@@ -18,7 +22,7 @@ export const RichText = ({ value, onChange, ...props }: RichTextProps) => {
       <Editor
         {...props}
         apiKey="t4mxpsmop8giuev4szkrl7etgn43rtilju95m2tnst9m9uod"
-        onInit={(evt, editor) => (editorRef.current = editor)}
+        onInit={initEditor}
         onChange={handleChange}
         initialValue={value}
         init={{
