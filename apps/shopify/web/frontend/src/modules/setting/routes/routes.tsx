@@ -26,6 +26,16 @@ const settingRoutes: IRoute = {
       index: true,
       component: lazy(() => import("src/modules/setting/pages/Index")),
     },
+    // genaral setting
+    {
+      path: SettingRoutePaths.GenaralSetting.BusinessHours.Index,
+      component: lazy(
+        () =>
+          import(
+            "src/modules/setting/pages/genaralSetting/BusinessHours/BusinessHours"
+          )
+      ),
+    },
     // tag
     {
       path: SettingRoutePaths.Workdesk.Tag.Index,

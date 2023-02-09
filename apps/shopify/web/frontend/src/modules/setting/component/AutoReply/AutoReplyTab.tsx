@@ -1,0 +1,221 @@
+import { AutoReply } from "@moose-desk/repo";
+import {
+  Button,
+  ButtonGroup,
+  Card,
+  EmptySearchResult,
+  Icon,
+  IndexTable,
+  Link,
+  Text,
+} from "@shopify/polaris";
+import { DeleteMajor, EditMajor } from "@shopify/polaris-icons";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { ModalDelete } from "src/components/Modal/ModalDelete";
+import { Pagination } from "src/components/Pagination";
+import ModalAutoReply from "src/modules/setting/component/AutoReply/ModalAutoReply";
+
+interface AutoReplyTabProps {
+  disabled?: boolean;
+  value?: AutoReply[];
+  onChange?: (value: AutoReply[]) => void;
+}
+
+const AutoReplyTab = ({
+  disabled,
+  value,
+  onChange,
+  ...props
+}: AutoReplyTabProps) => {
+  const [valueListAutoReplys, setValueListAutoReplys] = useState<AutoReply[]>(
+    []
+  );
+  const [valueTableAutoReply, setValueTableAutoReply] = useState<AutoReply[]>(
+    []
+  );
+  const defaultFilter = () => ({
+    page: 1,
+    limit: 5,
+  });
+  const [filterData, setFilterData] = useState(defaultFilter);
+  const resourceName = {
+    singular: "autoReply",
+    plural: "autoReplys",
+  };
+
+  const [dataForm, setDataForm] = useState<{
+    value: AutoReply;
+    index: number;
+  }>();
+  const rowMarkup = useMemo(() => {
+    return valueTableAutoReply.map((value, index) => (
+      <IndexTable.Row id={value.name} key={value.name} position={index}>
+        <IndexTable.Cell className="py-3">
+          <Link monochrome onClick={() => handleDetails(index)} removeUnderline>
+            <Text variant="bodyMd" fontWeight="bold" as="span">
+              {`${value.name}`}
+            </Text>
+          </Link>
+        </IndexTable.Cell>
+        <IndexTable.Cell className="py-3">{value.content}</IndexTable.Cell>
+        <IndexTable.Cell className="py-3">
+          <ButtonGroup>
+            <Button
+              onClick={() => handleDetails(index)}
+              icon={() => <Icon source={() => <EditMajor />} color="base" />}
+            />
+            <Button
+              icon={() => (
+                <Icon
+                  accessibilityLabel="Delete"
+                  source={() => <DeleteMajor />}
+                />
+              )}
+              onClick={() => handleOpenModalDelete(index)}
+              destructive
+            />
+          </ButtonGroup>
+        </IndexTable.Cell>
+      </IndexTable.Row>
+    ));
+  }, [valueTableAutoReply]);
+  // details
+  const handleDetails = useCallback(
+    (index: number) => {
+      const dataDetails = { ...valueListAutoReplys[index] };
+      setDataForm({
+        value: { ...dataDetails },
+        index,
+      });
+      setOpenModalAutoReply(true);
+    },
+    [valueListAutoReplys]
+  );
+  // delete
+  const [isOpen, setIsOpen] = useState(false);
+  const [deleteAutoReply, setDeleteAutoReply] = useState<number>(0);
+  const handleOpenModalDelete = (index: number) => {
+    setIsOpen(true);
+    setDeleteAutoReply(index);
+  };
+  const handleRemoveAutoReply = useCallback(
+    (indexDelete: number) => {
+      setValueListAutoReplys((init: AutoReply[]) => {
+        init.splice(indexDelete, 1);
+        onChange && onChange([...init]);
+        return init;
+      });
+    },
+    [deleteAutoReply, setValueListAutoReplys, valueListAutoReplys]
+  );
+  // modal
+  const isDetail = useMemo(() => {
+    return !!dataForm?.value.name;
+  }, [dataForm?.value.name]);
+
+  const handleUpdateValue = useCallback(
+    (value: any) => {
+      if (isDetail && dataForm?.value.name) {
+        setValueListAutoReplys((init: AutoReply[]) => {
+          init.splice(dataForm.index, 1, value);
+          onChange && onChange([...init]);
+          return init;
+        });
+      } else {
+        setValueListAutoReplys((init: AutoReply[]) => {
+          onChange && onChange([...init, { ...value }]);
+          return [...init, { ...value }];
+        });
+      }
+    },
+    [isDetail, dataForm]
+  );
+  const [openModalAutoReply, setOpenModalAutoReply] = useState(false);
+
+  const handleOnpen = useCallback(() => {
+    setOpenModalAutoReply(true);
+  }, []);
+  const handleCloseModal = useCallback(() => {
+    setOpenModalAutoReply(false);
+  }, []);
+  // handle table
+  const handleUpdateTable = useCallback(() => {
+    setValueTableAutoReply(
+      valueListAutoReplys.slice(
+        (filterData.page - 1) * filterData.limit,
+        filterData.page * filterData.limit
+      )
+    );
+  }, [filterData, valueListAutoReplys]);
+  // handle Effect
+
+  useEffect(() => {
+    handleUpdateTable();
+  }, [filterData, valueListAutoReplys]);
+  useEffect(() => {
+    if (!openModalAutoReply) {
+      setDataForm(undefined);
+    }
+  }, [openModalAutoReply]);
+
+  useEffect(() => {
+    setValueListAutoReplys(value?.length ? [...value] : []);
+  }, [value]);
+  return (
+    <div className="p-2 mt-2">
+      <ModalAutoReply
+        title="Add an Auto-Reply"
+        open={openModalAutoReply}
+        onClose={handleCloseModal}
+        dataForm={dataForm}
+        onChange={handleUpdateValue}
+      />
+      {valueListAutoReplys.length ? (
+        <div>
+          <ModalDelete
+            title="Are you sure that you want to remove this autoReply?"
+            open={isOpen}
+            onClose={() => setIsOpen(false)}
+            content={
+              "This auto-reply will be removed permanently. This action cannot be undone. All tickets which are using this autoReply will get affected too."
+            }
+            deleteAction={() => handleRemoveAutoReply(deleteAutoReply)}
+          />
+          <Card>
+            <IndexTable
+              resourceName={resourceName}
+              itemCount={valueListAutoReplys.length}
+              selectable={false}
+              headings={[{ title: "Name" }, { title: "Date Created" }]}
+              hasMoreItems
+              emptyState={
+                <EmptySearchResult
+                  title={"No auto-reply yet"}
+                  description={"Try changing the filters or search term"}
+                  withIllustration
+                />
+              }
+            >
+              {rowMarkup}
+            </IndexTable>
+          </Card>
+          <div className="flex items-center justify-center mt-4">
+            <Pagination
+              total={valueListAutoReplys ? valueListAutoReplys.length : 1}
+              pageSize={filterData.limit}
+              currentPage={filterData.page}
+              onChangePage={(page) =>
+                setFilterData((val: any) => ({ ...val, page }))
+              }
+              previousTooltip={"Previous"}
+              nextTooltip={"Next"}
+            />
+          </div>
+        </div>
+      ) : null}
+      <Link onClick={handleOnpen}>Add an auto-reply...</Link>
+    </div>
+  );
+};
+
+export default AutoReplyTab;

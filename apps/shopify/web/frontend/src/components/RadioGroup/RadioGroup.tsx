@@ -16,50 +16,63 @@ interface RadioGroupProps {
   vertical?: boolean;
 }
 
-const RadioGroup = (props: RadioGroupProps) => {
+const RadioGroup = ({
+  title,
+  value,
+  error,
+  onChange,
+  options,
+  vertical,
+  ...props
+}: RadioGroupProps) => {
   const [titleHidden, setTitleHidden] = useState(false);
-  const [value, setValue] = useState("");
+  const [valueRadio, setValueRadio] = useState("");
   const optionRadioGroup = useCallback(() => {
-    return props.options.map((option) => (
+    return options.map((option) => (
       <RadioButton
+        key={option.id}
         label={option.label}
         labelHidden={option.labelHidden}
         helpText={option.helpText}
         name="radioGroup"
-        checked={value === option.id}
-        key={option.id}
         id={option.id}
+        checked={valueRadio === option.id}
         onChange={handleChangeValue}
+        {...options}
       />
     ));
-  }, [props.options]);
+  }, [options, valueRadio]);
   const handleChangeValue = useCallback(
     (checked: boolean, newValue: string) => {
-      props.onChange && props.onChange(newValue);
+      setValueRadio(newValue);
+      onChange && onChange(newValue);
     },
-    [value]
+    []
   );
   // handle Effect
 
   useEffect(() => {
-    if (props.value) {
-      setValue(props.value);
+    if (value) {
+      setValueRadio(value);
     }
-    if (props.title) {
+    if (title) {
       setTitleHidden(false);
     } else {
       setTitleHidden(true);
     }
-  }, [props]);
+  }, [title, value]);
   return (
     <Layout>
       {titleHidden ? null : (
         <Text variant="headingMd" as="h6">
-          {props.title}
+          {title}
         </Text>
       )}
       <Layout.Section>
-        <Stack vertical={props.vertical !== undefined ? props.vertical : true}>
+        <Stack
+          vertical={vertical !== undefined ? vertical : true}
+          distribution={vertical === false ? "fill" : undefined}
+        >
           {optionRadioGroup()}
         </Stack>
       </Layout.Section>

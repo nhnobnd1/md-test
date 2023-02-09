@@ -98,9 +98,9 @@ export default function DetailsTag() {
             setBanner({
               isShow: true,
               type: "critical",
-              message: "Customer Profile has been updated failed.",
+              message: "Tag name has been updated failed.",
             });
-            show("Customer Profile has been updated failed.", {
+            show("Tag name has been updated failed.", {
               isError: true,
             });
           }
