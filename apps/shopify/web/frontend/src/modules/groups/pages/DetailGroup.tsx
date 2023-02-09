@@ -32,7 +32,7 @@ const DetailGroup = (props: DetailGroupProps) => {
   const { banner, show: showBanner, close: closeBanner } = useBanner();
   const [group, setGroup] = useState<UserGroup>();
   const { state } = useLocation();
-  const { toggle } = useToggle();
+  const { toggle: updateForm } = useToggle();
   const { id } = useParams();
 
   const { run: getGroupApi } = useJob(() => {
@@ -67,6 +67,7 @@ const DetailGroup = (props: DetailGroupProps) => {
                   },
                 }
               );
+              setGroup(data.data);
             } else {
               if (data.errorCode) {
                 showBanner("critical", {
@@ -113,6 +114,8 @@ const DetailGroup = (props: DetailGroupProps) => {
     getGroupApi();
   }, []);
 
+  console.log(formRef);
+
   return (
     <>
       <ContextualSaveBar
@@ -146,7 +149,7 @@ const DetailGroup = (props: DetailGroupProps) => {
                 <GroupForm
                   initialValues={initialValues}
                   enableReinitialize
-                  onValuesChange={toggle}
+                  onValuesChange={updateForm}
                   id={id}
                   innerRef={formRef}
                   onSubmit={handleSubmit}
