@@ -114,8 +114,6 @@ const DetailGroup = (props: DetailGroupProps) => {
     getGroupApi();
   }, []);
 
-  console.log(formRef);
-
   return (
     <>
       <ContextualSaveBar
