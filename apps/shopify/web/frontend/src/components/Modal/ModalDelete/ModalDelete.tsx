@@ -16,7 +16,6 @@ export const ModalDelete = ({
   return (
     <Modal
       {...props}
-      fullScreen={true}
       primaryAction={{
         content: textConfirm,
         onAction: () => {

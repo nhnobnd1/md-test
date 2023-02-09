@@ -5,6 +5,7 @@ import classNames from "classnames";
 
 interface HeaderProps {
   back?: boolean;
+  backAction?: () => void;
   title: string | React.ReactElement;
   children?: React.ReactNode;
   className?: string;
@@ -12,6 +13,7 @@ interface HeaderProps {
 
 export const Header = ({
   back = false,
+  backAction,
   title,
   children,
   className = "",
@@ -23,7 +25,7 @@ export const Header = ({
         {back && (
           <Button
             className="w-9 h-9 mr-4 flex justify-center items-center"
-            onClick={() => navigate(-1)}
+            onClick={() => (backAction ? backAction() : navigate(-1))}
           >
             <LeftOutlined />
           </Button>

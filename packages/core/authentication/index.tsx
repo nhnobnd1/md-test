@@ -130,6 +130,7 @@ export const AuthProvider = ({
           return Promise.reject(error);
         }
         if (response.status === 401) {
+          console.log("Refresh Token...");
           if (isRefreshing) {
             return new Promise(function (resolve, reject) {
               failedQueue.push({ resolve, reject });

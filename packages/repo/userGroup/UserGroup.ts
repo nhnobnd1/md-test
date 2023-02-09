@@ -6,6 +6,7 @@ export interface UserGroup {
   memberCount: number;
   creationTime: string;
   description?: string;
+  memberIds: string[];
 }
 
 export interface GroupMembers {

@@ -194,100 +194,94 @@ const AgentsIndex = (props: AgentsIndexProps) => {
         />
       </div>
       <div>
-        {agents && (
-          <>
-            <Table
-              dataSource={agents}
-              loading={loadingList}
-              onChange={onChangeTable}
-            >
-              <Table.Column
-                key="lastName"
-                title="Agent"
-                render={(_, record: Agent) => (
-                  <span>
-                    {record.lastName === "admin"
-                      ? record.firstName
-                      : record.firstName + " " + record.lastName}
-                  </span>
-                )}
-                sorter={{
-                  compare: (a: any, b: any) => a.lastName - b.lastName,
-                }}
-              />
-              <Table.Column
-                key="email"
-                title="Email"
-                dataIndex="email"
-                sorter={{
-                  compare: (a: any, b: any) => a.email - b.email,
-                }}
-              ></Table.Column>
-              <Table.Column
-                key="role"
-                title="Roles"
-                render={(_, record: Agent) => (
-                  <span>{getLabelRole(record.role)}</span>
-                )}
-                sorter={{
-                  compare: (a: any, b: any) => a.roles - b.roles,
-                }}
-              />
-              <Table.Column
-                key="isActive"
-                align="center"
-                title="Status"
-                sorter={{
-                  compare: (a: any, b: any) => a.isActive - b.isActive,
-                }}
-                render={(_, record: Agent) => (
-                  <Tag
-                    color={
-                      getStatusAgent(record.isActive, record.emailConfirmed)
-                        .color
-                    }
-                  >
-                    {
-                      getStatusAgent(record.isActive, record.emailConfirmed)
-                        .label
-                    }
-                  </Tag>
-                )}
-              />
-              <Table.Column
-                key="2Fa"
-                align="center"
-                title="2FA Availability"
-                render={(_, record: Agent) => (
-                  <span>
-                    {record.twoFactorEnabled ? record.twoFactorMethod : "Off"}
-                  </span>
-                )}
-              />
-              <Table.Column
-                align="center"
-                title="Action"
-                render={(_, record: Agent) => (
-                  <TableAction
-                    record={record}
-                    edit
-                    onlyIcon
-                    onEdit={handleEdit}
-                  />
-                )}
-              />
-            </Table>
-            {meta && (
-              <Pagination
-                className="mt-4 flex justify-end"
-                currentPage={filterData.page ?? 1}
-                total={meta?.totalCount}
-                pageSize={filterData.limit ?? env.DEFAULT_PAGE_SIZE}
-                onChange={onPagination}
-              />
-            )}
-          </>
-        )}
+        <>
+          <Table
+            dataSource={agents}
+            loading={loadingList}
+            onChange={onChangeTable}
+          >
+            <Table.Column
+              key="lastName"
+              title="Agent"
+              render={(_, record: Agent) => (
+                <span>
+                  {record.lastName === "admin"
+                    ? record.firstName
+                    : record.firstName + " " + record.lastName}
+                </span>
+              )}
+              sorter={{
+                compare: (a: any, b: any) => a.lastName - b.lastName,
+              }}
+            />
+            <Table.Column
+              key="email"
+              title="Email"
+              dataIndex="email"
+              sorter={{
+                compare: (a: any, b: any) => a.email - b.email,
+              }}
+            ></Table.Column>
+            <Table.Column
+              key="role"
+              title="Roles"
+              render={(_, record: Agent) => (
+                <span>{getLabelRole(record.role)}</span>
+              )}
+              sorter={{
+                compare: (a: any, b: any) => a.roles - b.roles,
+              }}
+            />
+            <Table.Column
+              key="isActive"
+              align="center"
+              title="Status"
+              sorter={{
+                compare: (a: any, b: any) => a.isActive - b.isActive,
+              }}
+              render={(_, record: Agent) => (
+                <Tag
+                  color={
+                    getStatusAgent(record.isActive, record.emailConfirmed).color
+                  }
+                >
+                  {getStatusAgent(record.isActive, record.emailConfirmed).label}
+                </Tag>
+              )}
+            />
+            <Table.Column
+              key="2Fa"
+              align="center"
+              title="2FA Availability"
+              render={(_, record: Agent) => (
+                <span>
+                  {record.twoFactorEnabled ? record.twoFactorMethod : "Off"}
+                </span>
+              )}
+            />
+            <Table.Column
+              align="center"
+              title="Action"
+              render={(_, record: Agent) => (
+                <TableAction
+                  record={record}
+                  edit
+                  onlyIcon
+                  onEdit={handleEdit}
+                />
+              )}
+            />
+          </Table>
+          {meta && (
+            <Pagination
+              className="mt-4 flex justify-end"
+              currentPage={filterData.page ?? 1}
+              total={meta?.totalCount}
+              pageSize={filterData.limit ?? env.DEFAULT_PAGE_SIZE}
+              onChange={onPagination}
+            />
+          )}
+        </>
       </div>
     </div>
   );

@@ -21,7 +21,7 @@ import { map, Observable } from "rxjs";
 export interface SelectOptions {
   value: string | number;
   label: string;
-  obj: any;
+  obj?: any;
 }
 
 export interface SelectedObj {
@@ -36,10 +36,15 @@ interface SelectProps extends Omit<ComboboxProps, "activator"> {
   placeholder?: string;
   label: string;
   labelHidden?: boolean;
+  renderOption?: (record: SelectOptions, index: number) => string;
   options: SelectOptions[];
+  chooseRefresh?: boolean;
+  disableValues?: any[];
+  showTag?: boolean;
+  loading?: boolean;
   value?: any[];
   onSearch?: (value: string) => any;
-  onChange?: (selectedObj: SelectedObj[]) => void;
+  onChange?: (selectedObj: SelectedObj[] | SelectedObj) => void;
   activator?: React.ReactElement<TextFieldProps>;
 }
 
@@ -48,6 +53,11 @@ export const Select = ({
   label,
   labelHidden = false,
   value = [],
+  renderOption,
+  chooseRefresh = false,
+  showTag = false,
+  loading = false,
+  disableValues = [],
   onSearch,
   onChange,
   options,
@@ -122,6 +132,9 @@ export const Select = ({
             ]);
           }
           setInputValue((matchedOption && matchedOption.label) || "");
+          if (chooseRefresh) {
+            updateText("");
+          }
         }
       }
     },
@@ -145,26 +158,16 @@ export const Select = ({
     </Tag>
   ));
 
-  const optionsMarkup =
-    optionsData.length > 0
-      ? optionsData.map((option) => {
-          const { label, value } = option;
-
-          return (
-            <Listbox.Option
-              key={`${value}`}
-              value={String(value)}
-              selected={selectedOptions.includes(value)}
-              accessibilityLabel={label}
-            >
-              {label}
-            </Listbox.Option>
-          );
-        })
-      : null;
+  const loadingMarkup = loading ? (
+    <Listbox.Loading accessibilityLabel="loading" />
+  ) : null;
 
   useEffect(() => {
-    onChange && onChange(selectedObj);
+    if (props.allowMultiple) {
+      onChange && onChange(selectedObj);
+    } else {
+      onChange && selectedObj.length && onChange(selectedObj[0]);
+    }
   }, [selectedObj]);
 
   useEffect(() => {
@@ -179,7 +182,11 @@ export const Select = ({
   );
 
   useEffect(() => {
-    onSearchDebounce();
+    if (!inputValue) {
+      onSearch && onSearch("");
+    } else {
+      onSearchDebounce();
+    }
   }, [inputValue]);
 
   return (
@@ -198,19 +205,24 @@ export const Select = ({
           />
         }
       >
-        {props.allowMultiple ? (
-          optionsMarkup ? (
-            <Listbox onSelect={updateSelection}>{optionsMarkup}</Listbox>
-          ) : null
-        ) : (
-          <>
-            {options.length > 0 ? (
-              <Listbox onSelect={updateSelection}>{optionsMarkup}</Listbox>
-            ) : null}
-          </>
-        )}
+        {optionsData.length > 0 ? (
+          <Listbox onSelect={updateSelection}>
+            {optionsData.map((option, index) => (
+              <Listbox.Option
+                key={`${option.value}`}
+                value={String(option.value)}
+                selected={selectedOptions.includes(option.value)}
+                disabled={disableValues.includes(option.value as any)}
+                accessibilityLabel={option.label}
+              >
+                {renderOption ? renderOption(option, index) : option.label}
+              </Listbox.Option>
+            ))}
+            {loadingMarkup}
+          </Listbox>
+        ) : null}
       </Combobox>
-      {props.allowMultiple && (
+      {props.allowMultiple && showTag && (
         <div className="pt-2">
           <Stack spacing="tight">{tagsMarkup}</Stack>
         </div>
@@ -234,7 +246,6 @@ export interface LoadMoreValue {
 
 interface AjaxSelectProps extends Omit<SelectProps, "options" | "onSearch"> {
   loadMore: (params: LoadMoreValue) => Observable<LoadMoreResult>;
-  renderOption?: (record: SelectOptions, index: number) => React.ReactNode;
   dependencies?: any[];
   dependenciesWait?: number;
   onDependenciesChanged?: () => void;
@@ -243,7 +254,6 @@ interface AjaxSelectProps extends Omit<SelectProps, "options" | "onSearch"> {
 Select.Ajax = ({
   label,
   loadMore,
-  renderOption,
   dependencies = [],
   dependenciesWait = 500,
   onDependenciesChanged,
@@ -336,8 +346,8 @@ Select.Ajax = ({
   return (
     <Select
       options={options}
+      loading={loading}
       label={label}
-      allowMultiple
       willLoadMoreOptions={false}
       onScrolledToBottom={canFetch ? onPopupScroll : undefined}
       onSearch={onSearch}

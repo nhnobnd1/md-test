@@ -32,7 +32,6 @@ const CreateGroup = (props: CreateGroupProps) => {
         .create(payload)
         .pipe(
           map(({ data }) => {
-            console.log(data);
             if (data.statusCode === 200) {
               show("Create Group Success");
               navigate(
@@ -41,7 +40,7 @@ const CreateGroup = (props: CreateGroupProps) => {
                   state: {
                     banner: {
                       status: "success",
-                      message: `Create group success.`,
+                      message: `Group has been added succcesfully.`,
                     },
                   },
                 }

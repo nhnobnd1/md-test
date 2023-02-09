@@ -4,7 +4,7 @@ import {
   PaginationProps as PaginationShopifyProps,
 } from "@shopify/polaris";
 import classNames from "classnames";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import "./Pagination.scss";
 
 export interface PaginationPack {
@@ -162,6 +162,11 @@ export const Pagination = ({
         total: total,
       });
   }, [page]);
+
+  useEffect(() => {
+    console.log(page, "page");
+    setPage(currentPage);
+  }, [currentPage]);
 
   return (
     <PaginationShopify

@@ -2,6 +2,7 @@ import {
   generatePath,
   PageComponent,
   useDebounceFn,
+  useDidUpdate,
   useJob,
   useNavigate,
   usePrevious,
@@ -15,6 +16,7 @@ import {
 } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
+  ButtonGroup,
   Card,
   EmptySearchResult,
   Filters,
@@ -22,11 +24,11 @@ import {
   Link,
   Page,
   Text,
-  useIndexResourceState,
 } from "@shopify/polaris";
-import { SelectionType } from "@shopify/polaris/build/ts/latest/src/utilities/index-provider";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { catchError, map, of } from "rxjs";
+import { ButtonDelete } from "src/components/Button/ButtonDelete";
+import { ButtonEdit } from "src/components/Button/ButtonEdit";
 import { ButtonSort } from "src/components/Button/ButtonSort";
 import { ModalDelete } from "src/components/Modal/ModalDelete";
 import { Pagination } from "src/components/Pagination";
@@ -89,7 +91,6 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
         .delete(id)
         .pipe(
           map(({ data }) => {
-            clearSelection();
             if (data.statusCode === 200) {
               getListGroupApi(filterData);
               show("Delete group success");
@@ -115,25 +116,6 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
     },
     { wait: 300 }
   );
-
-  const {
-    selectedResources,
-    allResourcesSelected,
-    handleSelectionChange,
-    clearSelection,
-  } = useIndexResourceState<any>(groups);
-
-  const removeGroup = useCallback(() => {
-    openModalDelete();
-  }, []);
-
-  const bulkActions = useMemo(() => {
-    if (selectedResources.length > 1) {
-      return [];
-    } else {
-      return [{ content: "Remove group", onAction: removeGroup }];
-    }
-  }, [selectedResources, removeGroup]);
 
   const handleSort = useCallback(
     (selected: string[]) => {
@@ -171,13 +153,19 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
     });
   }, []);
 
-  const handleSelection = useCallback(
-    (selectionType: SelectionType, toggleType: boolean, selection?: any) => {
-      clearSelection();
-      handleSelectionChange(selectionType, toggleType, selection);
-    },
-    []
-  );
+  const [idDelete, setIdDelete] = useState<string | null>(null);
+
+  const prevIdDelete = usePrevious(idDelete);
+
+  const handleOpenModalDelete = useCallback((id: string) => {
+    setIdDelete(id);
+  }, []);
+
+  useDidUpdate(() => {
+    if (prevIdDelete !== idDelete && idDelete) {
+      openModalDelete();
+    }
+  }, [idDelete]);
 
   useEffect(() => {
     if (prevFilter?.query !== filterData.query && filterData.query) {
@@ -197,14 +185,12 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
       fullWidth
     >
       <ModalDelete
-        title="Are you sure that you want to remove this tag?"
         open={modalDelete}
         onClose={closeModalDelete}
-        content={
-          "This tag will be removed permanently. This action cannot be undone. All tickets which are using this tag will get affected too."
-        }
-        deleteAction={() => deleteGroup(selectedResources[0])}
-        loadingConfirm={loadingDelete}
+        title="Are you sure that you want to permanently remove this group."
+        content="This group will be removed permanently. This action cannot be undone."
+        loading={loadingDelete}
+        deleteAction={() => idDelete && deleteGroup(idDelete)}
       />
       <Card>
         <div className="flex-1 px-4 pt-4 pb-2">
@@ -231,14 +217,10 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
         <IndexTable
           resourceName={{ singular: "group", plural: "groups" }}
           itemCount={groups.length}
-          selectedItemsCount={
-            allResourcesSelected ? "All" : selectedResources.length
-          }
-          onSelectionChange={handleSelection}
+          selectable={false}
           hasMoreItems
           lastColumnSticky
           loading={loadingList}
-          promotedBulkActions={bulkActions}
           emptyState={
             <EmptySearchResult
               title={"No group yet"}
@@ -246,19 +228,21 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
               withIllustration
             />
           }
-          headings={[{ title: "Group name" }, { title: "Number of Agents" }]}
+          headings={[
+            { title: "Group name" },
+            { title: "Number of Agents" },
+            { title: "Action" },
+          ]}
         >
           {groups.map((groupItem, index) => (
             <IndexTable.Row
               id={groupItem._id}
               key={groupItem._id}
-              selected={selectedResources.includes(groupItem._id)}
               position={index}
             >
               <IndexTable.Cell className="py-3">
                 <div className="unstyle-link">
                   <Link
-                    dataPrimaryLink
                     data-polaris-unstyled
                     url={generatePath(GroupsRoutePaths.Detail, {
                       id: groupItem._id,
@@ -275,6 +259,25 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
                 <Text variant="bodyMd" as="span">
                   {groupItem.memberCount}
                 </Text>
+              </IndexTable.Cell>
+              <IndexTable.Cell className="py-3">
+                <ButtonGroup>
+                  <ButtonEdit
+                    onClick={() =>
+                      navigate(
+                        generatePath(GroupsRoutePaths.Detail, {
+                          id: groupItem._id,
+                        })
+                      )
+                    }
+                  ></ButtonEdit>
+                  <ButtonDelete
+                    onClick={() => handleOpenModalDelete(groupItem._id)}
+                    destructive
+                  >
+                    Remove
+                  </ButtonDelete>
+                </ButtonGroup>
               </IndexTable.Cell>
             </IndexTable.Row>
           ))}

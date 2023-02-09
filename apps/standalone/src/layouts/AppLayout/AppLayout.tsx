@@ -8,20 +8,24 @@ import {
 import { AccountRepository } from "@moose-desk/repo";
 import { Layout, Menu, MenuProps } from "antd";
 import classNames from "classnames";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { map } from "rxjs";
 import Images from "src/assets/images";
+import { Loading } from "src/components/Loading";
 import Breadcrumb from "src/components/UI/Breadcrums/Breadcrumb";
 import useAuth from "src/hooks/useAuth";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
 import CustomersRoutePaths from "src/modules/customer/routes/paths";
 import DashboardRoutePaths from "src/modules/dashboard/routes/paths";
+import GroupRoutePaths from "src/modules/group/routes/paths";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
+import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
 import { useAppConfig } from "src/providers/AppConfigProviders";
 import ClarityUsersSolid from "~icons/clarity/users-solid";
 import FeUsers from "~icons/fe/users";
 import JamDashboard from "~icons/jam/dashboard";
 import MaterialSymbolsSettings from "~icons/material-symbols/settings";
+import MaterialSymbolsSettingsInputComponentOutline from "~icons/material-symbols/settings-input-component-outline";
 import MdiFolderNetworkOutline from "~icons/mdi/folder-network-outline";
 import MdiSecurity from "~icons/mdi/security";
 import RiLogoutCircleRLine from "~icons/ri/logout-circle-r-line";
@@ -57,6 +61,20 @@ export const AppLayout = (props: AppLayoutProps) => {
         icon: <MaterialSymbolsSettings />,
         children: [
           {
+            key: `case-3-0`,
+            label: "General Settings",
+            icon: <MaterialSymbolsSettingsInputComponentOutline />,
+            children: [
+              {
+                key: `case-${SettingChannelRoutePaths.Index}`,
+                label: "Channels",
+                link: SettingChannelRoutePaths.Index,
+                onClick: () =>
+                  navigate(generatePath(SettingChannelRoutePaths.Index)),
+              },
+            ],
+          },
+          {
             key: `case-3-1`,
             label: "People",
             icon: <FeUsers />,
@@ -67,6 +85,12 @@ export const AppLayout = (props: AppLayoutProps) => {
                 link: AgentRoutePaths.Agents.Index,
                 onClick: () =>
                   navigate(generatePath(AgentRoutePaths.Agents.Index)),
+              },
+              {
+                key: `case-${GroupRoutePaths.Index}`,
+                label: "Groups",
+                link: GroupRoutePaths.Index,
+                onClick: () => navigate(generatePath(GroupRoutePaths.Index)),
               },
             ],
           },
@@ -302,7 +326,15 @@ export const AppLayout = (props: AppLayoutProps) => {
             }}
           >
             <div className="wrap-main-content pb-[32px]">
-              <Outlet />
+              <Suspense
+                fallback={
+                  <Loading fullPage>
+                    <div className="w-[100vw] h-[100vh]"></div>
+                  </Loading>
+                }
+              >
+                <Outlet />
+              </Suspense>
             </div>
           </Layout.Content>
         </div>
