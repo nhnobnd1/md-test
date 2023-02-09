@@ -84,7 +84,9 @@ export default function IndexAccountManager() {
         map(({ data }) => {
           message.loading.hide();
           if (data.statusCode === 200) {
-            notification.success("Password updated successfully.");
+            notification.success(
+              "Your password has been updated successfully."
+            );
             handleResetForm();
           } else {
             notification.error("Password updated failed.");
@@ -97,6 +99,20 @@ export default function IndexAccountManager() {
         })
       );
   });
+  // name method
+
+  // const getNameMethod = useCallback((method: string) => {
+  //   switch (method) {
+  //     case "Email":
+  //       // code block
+  //       break;
+  //     case "":
+  //       // code block
+  //       break;
+  //     default:
+  //     // code block
+  //   }
+  // }, [])
   // reset form
   const handleResetForm = useCallback(() => {
     form.resetFields();
@@ -192,10 +208,20 @@ export default function IndexAccountManager() {
             </div>
             <div>
               {status ? (
-                <Typography.Text strong>{method.method}</Typography.Text>
+                <Typography.Text strong>
+                  {method.method === "Email"
+                    ? "Email OTP"
+                    : method.method === "Authenticator"
+                    ? "External Authentication Application"
+                    : method.method}
+                </Typography.Text>
               ) : (
                 <Typography.Text strong type="secondary">
-                  {method.method}
+                  {method.method === "Email"
+                    ? "Email OTP"
+                    : method.method === "Authenticator"
+                    ? "External Authentication Application"
+                    : method.method}
                 </Typography.Text>
               )}
             </div>
