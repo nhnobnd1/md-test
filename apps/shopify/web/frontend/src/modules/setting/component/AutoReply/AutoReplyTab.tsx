@@ -30,11 +30,14 @@ const AutoReplyTab = ({
   const [valueListAutoReplys, setValueListAutoReplys] = useState<AutoReply[]>(
     []
   );
+  const [valueTableAutoReply, setValueTableAutoReply] = useState<AutoReply[]>(
+    []
+  );
   const defaultFilter = () => ({
     page: 1,
     limit: 5,
   });
-  const [filterData, setFilterData] = useState<any>(defaultFilter);
+  const [filterData, setFilterData] = useState(defaultFilter);
   const resourceName = {
     singular: "autoReply",
     plural: "autoReplys",
@@ -44,36 +47,38 @@ const AutoReplyTab = ({
     value: AutoReply;
     index: number;
   }>();
-  const rowMarkup = valueListAutoReplys.map((value, index) => (
-    <IndexTable.Row id={value.name} key={value.name} position={index}>
-      <IndexTable.Cell className="py-3">
-        <Link monochrome onClick={() => handleDetails(index)} removeUnderline>
-          <Text variant="bodyMd" fontWeight="bold" as="span">
-            {`${value.name}`}
-          </Text>
-        </Link>
-      </IndexTable.Cell>
-      <IndexTable.Cell className="py-3">{value.content}</IndexTable.Cell>
-      <IndexTable.Cell className="py-3">
-        <ButtonGroup>
-          <Button
-            onClick={() => handleDetails(index)}
-            icon={() => <Icon source={() => <EditMajor />} color="base" />}
-          />
-          <Button
-            icon={() => (
-              <Icon
-                accessibilityLabel="Delete"
-                source={() => <DeleteMajor />}
-              />
-            )}
-            onClick={() => handleOpenModalDelete(index)}
-            destructive
-          />
-        </ButtonGroup>
-      </IndexTable.Cell>
-    </IndexTable.Row>
-  ));
+  const rowMarkup = useMemo(() => {
+    return valueTableAutoReply.map((value, index) => (
+      <IndexTable.Row id={value.name} key={value.name} position={index}>
+        <IndexTable.Cell className="py-3">
+          <Link monochrome onClick={() => handleDetails(index)} removeUnderline>
+            <Text variant="bodyMd" fontWeight="bold" as="span">
+              {`${value.name}`}
+            </Text>
+          </Link>
+        </IndexTable.Cell>
+        <IndexTable.Cell className="py-3">{value.content}</IndexTable.Cell>
+        <IndexTable.Cell className="py-3">
+          <ButtonGroup>
+            <Button
+              onClick={() => handleDetails(index)}
+              icon={() => <Icon source={() => <EditMajor />} color="base" />}
+            />
+            <Button
+              icon={() => (
+                <Icon
+                  accessibilityLabel="Delete"
+                  source={() => <DeleteMajor />}
+                />
+              )}
+              onClick={() => handleOpenModalDelete(index)}
+              destructive
+            />
+          </ButtonGroup>
+        </IndexTable.Cell>
+      </IndexTable.Row>
+    ));
+  }, [valueTableAutoReply]);
   // details
   const handleDetails = useCallback(
     (index: number) => {
@@ -133,7 +138,20 @@ const AutoReplyTab = ({
   const handleCloseModal = useCallback(() => {
     setOpenModalAutoReply(false);
   }, []);
+  // handle table
+  const handleUpdateTable = useCallback(() => {
+    setValueTableAutoReply(
+      valueListAutoReplys.slice(
+        (filterData.page - 1) * filterData.limit,
+        filterData.page * filterData.limit
+      )
+    );
+  }, [filterData, valueListAutoReplys]);
+  // handle Effect
 
+  useEffect(() => {
+    handleUpdateTable();
+  }, [filterData, valueListAutoReplys]);
   useEffect(() => {
     if (!openModalAutoReply) {
       setDataForm(undefined);
@@ -184,8 +202,8 @@ const AutoReplyTab = ({
           <div className="flex items-center justify-center mt-4">
             <Pagination
               total={valueListAutoReplys ? valueListAutoReplys.length : 1}
-              pageSize={5}
-              currentPage={1}
+              pageSize={filterData.limit}
+              currentPage={filterData.page}
               onChangePage={(page) =>
                 setFilterData((val: any) => ({ ...val, page }))
               }

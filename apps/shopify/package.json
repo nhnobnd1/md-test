@@ -16,12 +16,13 @@
 		"postinstall": "yarn web && yarn frontend"
 	},
 	"dependencies": {
+		"@moose-desk/core": "*",
+		"@moose-desk/repo": "*",
+		"@moose-desk/ui": "*",
 		"@shopify/app": "3.30.1",
 		"@shopify/cli": "3.30.1",
 		"dotenv": "^16.0.3",
 		"node-fetch": "^3.3.0",
-		"@moose-desk/ui": "*",
-		"@moose-desk/core": "*",
-		"@moose-desk/repo": "*"
+		"uuidv4": "^6.2.13"
 	}
 }

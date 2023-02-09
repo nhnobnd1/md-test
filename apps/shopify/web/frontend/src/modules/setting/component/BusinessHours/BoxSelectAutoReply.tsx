@@ -86,7 +86,17 @@ const BoxSelectAutoReply = (props: BoxSelectAutoReplyProps) => {
           );
         })
       : null;
+
+  // handleResetValueText
+
+  // const handleResetValueText = useCallback(() => {
+  //   const matchedOption = options.find((option) => {
+  //     return option.value === selectedOption;
+  //   });
+  //   setInputValue((matchedOption && matchedOption.label) || "");
+  // }, [options, selectedOption]);
   // handle Effect
+
   useEffect(() => {
     setOptions(
       props.dataAutoReply.map((item) => ({
@@ -94,10 +104,9 @@ const BoxSelectAutoReply = (props: BoxSelectAutoReplyProps) => {
         value: item.code,
       }))
     );
-  }, [props.dataAutoReply]);
-  useEffect(() => {
     updateSelection(props.value);
-  }, [props.value]);
+  }, [props.dataAutoReply, props.value]);
+
   return (
     <Combobox
       activator={
@@ -114,6 +123,8 @@ const BoxSelectAutoReply = (props: BoxSelectAutoReplyProps) => {
               source={() => <ChevronDownMinor />}
             />
           }
+          error={props.error}
+          // onBlur={handleResetValueText}
         />
       }
     >

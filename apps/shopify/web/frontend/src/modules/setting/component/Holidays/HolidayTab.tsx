@@ -28,53 +28,69 @@ const HolidayTab = ({
   ...props
 }: HolidayTabProps) => {
   const [valueListHolidays, setValueListHolidays] = useState<Holidays[]>([]);
+  const [valueTableHolidays, setValueTableHolidays] = useState<Holidays[]>([]);
   const defaultFilter = () => ({
     page: 1,
     limit: 5,
   });
-  const [filterData, setFilterData] = useState<any>(defaultFilter);
+  const [filterData, setFilterData] = useState(defaultFilter);
   const resourceName = {
     singular: "holiday",
     plural: "holidays",
   };
-
+  const getAutoReplyName = useCallback(
+    (value?: string) => {
+      const matchedOption = dataAutoReply.find((option) => {
+        return option.code === value;
+      });
+      if (matchedOption) {
+        return matchedOption?.name;
+      }
+      return "";
+    },
+    [dataAutoReply, valueTableHolidays]
+  );
   const [dataForm, setDataForm] = useState<{
     value: Holidays;
     index: number;
   }>();
-  const rowMarkup = valueListHolidays.map((value, index) => (
-    <IndexTable.Row id={value.name} key={value.name} position={index}>
-      <IndexTable.Cell className="py-3">
-        <Link monochrome onClick={() => handleDetails(index)} removeUnderline>
-          <Text variant="bodyMd" fontWeight="bold" as="span">
-            {`${value.name}`}
-          </Text>
-        </Link>
-      </IndexTable.Cell>
-      <IndexTable.Cell className="py-3">
-        {value.startDate} - {value.endDate}
-      </IndexTable.Cell>
-      <IndexTable.Cell className="py-3">{value.autoReplyCode}</IndexTable.Cell>
-      <IndexTable.Cell className="py-3">
-        <ButtonGroup>
-          <Button
-            onClick={() => handleDetails(index)}
-            icon={() => <Icon source={() => <EditMajor />} color="base" />}
-          />
-          <Button
-            icon={() => (
-              <Icon
-                accessibilityLabel="Delete"
-                source={() => <DeleteMajor />}
-              />
-            )}
-            onClick={() => handleOpenModalDelete(index)}
-            destructive
-          />
-        </ButtonGroup>
-      </IndexTable.Cell>
-    </IndexTable.Row>
-  ));
+  const rowMarkup = useMemo(() => {
+    return valueTableHolidays.map((value, index) => (
+      <IndexTable.Row id={value.name} key={value.name} position={index}>
+        <IndexTable.Cell className="py-3">
+          <Link monochrome onClick={() => handleDetails(index)} removeUnderline>
+            <Text variant="bodyMd" fontWeight="bold" as="span">
+              {`${value.name}`}
+            </Text>
+          </Link>
+        </IndexTable.Cell>
+        <IndexTable.Cell className="py-3">
+          {value.startDate} - {value.endDate}
+        </IndexTable.Cell>
+        <IndexTable.Cell className="py-3">
+          {getAutoReplyName(value.autoReplyCode)}
+        </IndexTable.Cell>
+        <IndexTable.Cell className="py-3">
+          <ButtonGroup>
+            <Button
+              onClick={() => handleDetails(index)}
+              icon={() => <Icon source={() => <EditMajor />} color="base" />}
+            />
+            <Button
+              icon={() => (
+                <Icon
+                  accessibilityLabel="Delete"
+                  source={() => <DeleteMajor />}
+                />
+              )}
+              onClick={() => handleOpenModalDelete(index)}
+              destructive
+            />
+          </ButtonGroup>
+        </IndexTable.Cell>
+      </IndexTable.Row>
+    ));
+  }, [valueTableHolidays]);
   // details
   const handleDetails = useCallback(
     (index: number) => {
@@ -135,7 +151,22 @@ const HolidayTab = ({
     setOpenModalHoliday(false);
     setDataForm(undefined);
   }, []);
+  //
+  const handleUpdateTable = useCallback(() => {
+    setValueTableHolidays(
+      valueListHolidays.slice(
+        (filterData.page - 1) * filterData.limit,
+        filterData.page * filterData.limit
+      )
+    );
+  }, [filterData, valueListHolidays]);
+  //
 
+  // handle Effect
+
+  useEffect(() => {
+    handleUpdateTable();
+  }, [filterData, valueListHolidays]);
   useEffect(() => {
     setValueListHolidays(value?.length ? [...value] : []);
   }, [value]);
@@ -185,8 +216,8 @@ const HolidayTab = ({
           <div className="flex items-center justify-center mt-4">
             <Pagination
               total={valueListHolidays ? valueListHolidays.length : 1}
-              pageSize={5}
-              currentPage={1}
+              pageSize={filterData.limit}
+              currentPage={filterData.page}
               onChangePage={(page) =>
                 setFilterData((val: any) => ({ ...val, page }))
               }

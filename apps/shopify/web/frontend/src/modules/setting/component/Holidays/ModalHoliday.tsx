@@ -7,6 +7,7 @@ import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
 import BoxSelectAutoReply from "src/modules/setting/component/BusinessHours/BoxSelectAutoReply";
 import SelectDateHolidays from "src/modules/setting/component/Holidays/SelectDateHolidays";
+import { object, string } from "yup";
 
 interface ModalHolidayProps extends ModalProps {
   dataForm?: {
@@ -49,6 +50,13 @@ const ModalHoliday = ({
     },
     [valueDate]
   );
+  // handle Validate regex
+  const validateObject = object().shape({
+    name: string().required("Required!"),
+    autoReplyCode: string().required("Required!"),
+    // date: string().required("Required!"),
+  });
+  // handle Effect
   useEffect(() => {
     if (dataForm) {
       setValueDate({
@@ -91,6 +99,7 @@ const ModalHoliday = ({
           <Form
             initialValues={dataForm?.value || {}}
             ref={formRef}
+            validationSchema={validateObject}
             enableReinitialize
             onSubmit={handleSubmitValue}
           >
@@ -102,9 +111,10 @@ const ModalHoliday = ({
                   label="Name:"
                 />
               </FormItem>
+              {/* <FormItem name="date"></FormItem> */}
               <SelectDateHolidays
-                value={valueDate}
-                onChange={(value) => setValueDate(value)}
+                valueDate={valueDate}
+                onChangeValueDate={(value) => setValueDate(value)}
               />
               <FormItem name="autoReplyCode">
                 <BoxSelectAutoReply

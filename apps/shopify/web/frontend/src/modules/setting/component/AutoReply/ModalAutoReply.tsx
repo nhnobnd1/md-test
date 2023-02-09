@@ -4,6 +4,7 @@ import { FormikProps, FormikValues } from "formik";
 import { useCallback, useRef } from "react";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
+import { object, string } from "yup";
 
 interface ModalAutoReplyProps extends ModalProps {
   dataForm?: {
@@ -25,12 +26,17 @@ const ModalAutoReply = ({
     onChange &&
       onChange({
         name: values.name,
-        code: values.code,
+        code: self.crypto.randomUUID(),
         content: values.content,
       });
     props.onClose && props.onClose();
   }, []);
-
+  // handle Validate regex
+  const validateObject = object().shape({
+    name: string().required("Required!"),
+    content: string().required("Required!"),
+    // date: string().required("Required!"),
+  });
   return (
     <Modal
       {...props}
@@ -52,8 +58,10 @@ const ModalAutoReply = ({
           <Form
             initialValues={dataForm?.value || {}}
             ref={formRef}
+            validationSchema={validateObject}
             enableReinitialize
             onSubmit={handleSubmitValue}
+            // validateOnChange
           >
             <FormLayout>
               <FormItem name="name">
@@ -63,13 +71,7 @@ const ModalAutoReply = ({
                   label="Name"
                 />
               </FormItem>
-              <FormItem name="code">
-                <TextField
-                  autoComplete="off"
-                  placeholder="Enter code"
-                  label="Code"
-                />
-              </FormItem>
+              <FormItem name="code"></FormItem>
               <FormItem name="content">
                 <TextField
                   autoComplete="off"

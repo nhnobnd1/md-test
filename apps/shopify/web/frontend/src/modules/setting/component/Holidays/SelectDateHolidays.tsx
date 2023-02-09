@@ -12,14 +12,23 @@ import dayjs from "dayjs";
 import { memo, useCallback, useEffect, useState } from "react";
 
 interface SelectDateHolidaysProps {
-  value?: {
+  valueDate?: {
     startDate: Date;
     endDate: Date;
   };
-  onChange?: (value: { startDate: Date; endDate: Date }) => void;
+  onChangeValueDate?: (value: { startDate: Date; endDate: Date }) => void;
+  error?: string;
+  onChange?: (value: any) => void;
+  value?: string;
 }
 
-const SelectDateHolidays = ({ value, onChange }: SelectDateHolidaysProps) => {
+const SelectDateHolidays = ({
+  valueDate,
+  onChangeValueDate,
+  error,
+  onChange,
+  value,
+}: SelectDateHolidaysProps) => {
   const [popoverActive, setPopoverActive] = useState(true);
 
   const togglePopoverActive = useCallback(
@@ -36,26 +45,28 @@ const SelectDateHolidays = ({ value, onChange }: SelectDateHolidaysProps) => {
   const handleMonthChange = useCallback((month) => setMonth(month), []);
   const handleChangeDate = useCallback((date: { start: Date; end: Date }) => {
     setSelectedDates(date);
-    onChange &&
-      onChange({
+    onChangeValueDate &&
+      onChangeValueDate({
         startDate: date.start,
         endDate: date.end,
       });
+    onChange && onChange(date.start);
   }, []);
-  // useEffect(() => {
-  //   onChange && onChange(selectedDates);
-  // }, [selectedDates]);
+  useEffect(() => {
+    console.log("err", error);
+  }, [error]);
 
   useEffect(() => {
-    if (value?.startDate) {
+    if (valueDate?.startDate) {
+      console.log(1);
       setSelectedDates({
-        start: value.startDate,
-        end: value.endDate,
+        start: valueDate.startDate,
+        end: valueDate.endDate,
       });
     } else {
       setSelectedDates(undefined);
     }
-  }, [value]);
+  }, [valueDate]);
   return (
     <Stack alignment="trailing">
       <div className="w-28">
@@ -65,6 +76,7 @@ const SelectDateHolidays = ({ value, onChange }: SelectDateHolidaysProps) => {
           value={
             selectedDates ? dayjs(selectedDates.start).format("DD-MM-YYYY") : ""
           }
+          error={error}
         />
       </div>
       <div className="mb-1">
@@ -80,6 +92,7 @@ const SelectDateHolidays = ({ value, onChange }: SelectDateHolidaysProps) => {
           value={
             selectedDates ? dayjs(selectedDates.end).format("DD-MM-YYYY") : ""
           }
+          error={error}
         />
       </div>
       <Popover
