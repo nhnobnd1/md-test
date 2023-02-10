@@ -13,7 +13,7 @@ interface ModalAutoReplyProps extends ModalProps {
     index: number;
   };
   open: boolean;
-  onChange?: (value?: AutoReply) => void;
+  onChange?: (value?: AutoReply, isDetais?: boolean) => void;
 }
 
 const ModalAutoReply = ({
@@ -24,16 +24,22 @@ const ModalAutoReply = ({
 }: ModalAutoReplyProps) => {
   const formRef = useRef<FormikProps<any>>(null);
   const day = new Date();
-  const handleSubmitValue = useCallback((values: FormikValues) => {
-    onChange &&
-      onChange({
-        name: values.name,
-        code: values.code || self.crypto.randomUUID(),
-        content: values.content,
-        createAt: values.createAt || day,
-      });
-    props.onClose && props.onClose();
-  }, []);
+  const handleSubmitValue = useCallback(
+    (values: FormikValues) => {
+      onChange &&
+        onChange(
+          {
+            name: values.name,
+            code: values.code || self.crypto.randomUUID(),
+            content: values.content,
+            createAt: values.createAt || day,
+          },
+          dataForm?.value ? true : undefined
+        );
+      props.onClose && props.onClose();
+    },
+    [dataForm?.value]
+  );
   // handle Validate regex
   const validateObject = object().shape({
     name: string().required("Required!"),
