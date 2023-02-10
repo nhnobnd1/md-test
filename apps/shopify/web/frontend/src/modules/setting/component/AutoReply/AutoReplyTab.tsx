@@ -125,14 +125,11 @@ const AutoReplyTab = ({ value, onChange, dataHolidays }: AutoReplyTabProps) => {
   // modal
 
   const handleUpdateValue = useCallback(
-    (value: any) => {
-      console.log("isDetailForm", isDetail);
-      if (isDetail && dataForm?.value.name) {
-        console.log(1);
+    (value: any, isDetais?: boolean) => {
+      if (isDetais && dataForm?.value.name) {
         setValueListAutoReplys((init: AutoReply[]) => {
           if (
             !init.find((data) => {
-              console.log("data.code", data.code, "value.code", value.code);
               return data.name === value.name && data.code !== value.code;
             })
           ) {
@@ -150,7 +147,6 @@ const AutoReplyTab = ({ value, onChange, dataHolidays }: AutoReplyTabProps) => {
           }
         });
       } else {
-        console.log(2);
         setValueListAutoReplys((init: AutoReply[]) => {
           if (!init.find((data) => data.name === value.name)) {
             onChange && onChange([...init, { ...value }]);

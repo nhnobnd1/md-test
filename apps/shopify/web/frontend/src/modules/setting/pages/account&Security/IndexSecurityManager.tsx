@@ -105,6 +105,38 @@ export default function IndexAccountManager() {
             });
             handleResetForm();
           } else {
+            if (data.statusCode === 500) {
+              setBanner({
+                isShowBanner: true,
+                message: "System error. Please try again later.",
+                status: "critical",
+              });
+              show(`System error. Please try again later.`, {
+                isError: true,
+              });
+            } else {
+              setBanner({
+                isShowBanner: true,
+                message: "Password updated failed.",
+                status: "critical",
+              });
+              show(`Password updated failed`, {
+                isError: true,
+              });
+            }
+          }
+        }),
+        catchError((error) => {
+          if (error.response.status === 500) {
+            setBanner({
+              isShowBanner: true,
+              message: "System error. Please try again later.",
+              status: "critical",
+            });
+            show(`System error. Please try again later.`, {
+              isError: true,
+            });
+          } else {
             setBanner({
               isShowBanner: true,
               message: "Password updated failed.",
@@ -114,16 +146,6 @@ export default function IndexAccountManager() {
               isError: true,
             });
           }
-        }),
-        catchError((error) => {
-          setBanner({
-            isShowBanner: true,
-            message: "Password updated failed.",
-            status: "critical",
-          });
-          show(`Password updated failed.`, {
-            isError: true,
-          });
           return of(error);
         })
       );
