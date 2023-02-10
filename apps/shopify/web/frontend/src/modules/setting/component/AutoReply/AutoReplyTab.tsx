@@ -12,26 +12,21 @@ import {
 } from "@shopify/polaris";
 import { DeleteMajor, EditMajor } from "@shopify/polaris-icons";
 import dayjs from "dayjs";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { ModalDelete } from "src/components/Modal/ModalDelete";
 import { Pagination } from "src/components/Pagination";
 import ModalAutoReply from "src/modules/setting/component/AutoReply/ModalAutoReply";
 
 interface AutoReplyTabProps {
-  disabled?: boolean;
   value?: AutoReply[];
   onChange?: (value: AutoReply[]) => void;
   dataHolidays: Holidays[];
 }
 
-const AutoReplyTab = ({
-  disabled,
-  value,
-  onChange,
-  dataHolidays,
-  ...props
-}: AutoReplyTabProps) => {
+const AutoReplyTab = ({ value, onChange, dataHolidays }: AutoReplyTabProps) => {
   const { show } = useToast();
+  const [isDetail, setIsDetail] = useState<boolean>(false);
+  console.log("is detail", isDetail);
   const [valueListAutoReplys, setValueListAutoReplys] = useState<AutoReply[]>(
     []
   );
@@ -96,6 +91,7 @@ const AutoReplyTab = ({
         index,
       });
       setOpenModalAutoReply(true);
+      setIsDetail(true);
     },
     [valueListAutoReplys]
   );
@@ -127,15 +123,19 @@ const AutoReplyTab = ({
     [deleteAutoReply, valueListAutoReplys, dataHolidays]
   );
   // modal
-  const isDetail = useMemo(() => {
-    return !!dataForm?.value.name;
-  }, [dataForm?.value.name]);
 
   const handleUpdateValue = useCallback(
     (value: any) => {
+      console.log("isDetailForm", isDetail);
       if (isDetail && dataForm?.value.name) {
+        console.log(1);
         setValueListAutoReplys((init: AutoReply[]) => {
-          if (!init.find((data) => data.name === value.name)) {
+          if (
+            !init.find((data) => {
+              console.log("data.code", data.code, "value.code", value.code);
+              return data.name === value.name && data.code !== value.code;
+            })
+          ) {
             init.splice(dataForm.index, 1, value);
             onChange && onChange([...init]);
             return init;
@@ -150,6 +150,7 @@ const AutoReplyTab = ({
           }
         });
       } else {
+        console.log(2);
         setValueListAutoReplys((init: AutoReply[]) => {
           if (!init.find((data) => data.name === value.name)) {
             onChange && onChange([...init, { ...value }]);
@@ -166,11 +167,13 @@ const AutoReplyTab = ({
         });
       }
     },
-    [isDetail, dataForm, valueListAutoReplys, setValueListAutoReplys]
+    [dataForm, valueListAutoReplys, isDetail]
   );
   const [openModalAutoReply, setOpenModalAutoReply] = useState(false);
 
-  const handleOnpen = useCallback(() => {
+  const handleOpen = useCallback(() => {
+    setDataForm(undefined);
+    setIsDetail(false);
     setOpenModalAutoReply(true);
   }, []);
   const handleCloseModal = useCallback(() => {
@@ -190,11 +193,6 @@ const AutoReplyTab = ({
   useEffect(() => {
     handleUpdateTable();
   }, [filterData, valueListAutoReplys]);
-  useEffect(() => {
-    if (!openModalAutoReply) {
-      setDataForm(undefined);
-    }
-  }, [openModalAutoReply]);
 
   useEffect(() => {
     setValueListAutoReplys(value?.length ? [...value] : []);
@@ -253,10 +251,10 @@ const AutoReplyTab = ({
         </div>
       ) : null}
       <>
-        <Link onClick={handleOnpen}>Add an auto-reply...</Link>
+        <Link onClick={handleOpen}>Add an auto-reply...</Link>
       </>
     </div>
   );
 };
 
-export default AutoReplyTab;
+export default memo(AutoReplyTab);
