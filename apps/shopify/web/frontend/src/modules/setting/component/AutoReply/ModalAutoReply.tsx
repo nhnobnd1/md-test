@@ -1,7 +1,7 @@
 import { AutoReply } from "@moose-desk/repo";
 import { FormLayout, Modal, ModalProps, TextField } from "@shopify/polaris";
 import { FormikProps, FormikValues } from "formik";
-import { useCallback, useRef } from "react";
+import { memo, useCallback, useRef } from "react";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
 import { RichText } from "src/components/RichText";
@@ -54,6 +54,7 @@ const ModalAutoReply = ({
           onAction: () => props.onClose(),
         },
       ]}
+      onClose={() => props.onClose()}
     >
       <div style={{ height: "500px" }}>
         <Modal.Section>
@@ -141,4 +142,4 @@ const ModalAutoReply = ({
   );
 };
 
-export default ModalAutoReply;
+export default memo(ModalAutoReply);
