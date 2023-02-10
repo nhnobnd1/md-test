@@ -394,19 +394,19 @@ export const PopupAgent = ({
       }
     >
       <div>
+        <Header
+          title={
+            dataForm?._id ? (
+              <div className="flex items-center gap-2">
+                <span>{`${dataForm.firstName} ${dataForm.lastName}`}</span>
+                <Tag color={agentStatus.color}>{agentStatus.label}</Tag>
+              </div>
+            ) : (
+              <span>Create new agent</span>
+            )
+          }
+        ></Header>
         <Loading spinning={loadingSentMail || loadingUpdate || loadingCreate}>
-          <Header
-            title={
-              dataForm?._id ? (
-                <div className="flex items-center gap-2">
-                  <span>{`${dataForm.firstName} ${dataForm.lastName}`}</span>
-                  <Tag color={agentStatus.color}>{agentStatus.label}</Tag>
-                </div>
-              ) : (
-                <span>Create new agent</span>
-              )
-            }
-          ></Header>
           <AgentForm
             initialValues={dataForm}
             disabledEmail={!!dataForm?._id}
