@@ -1,8 +1,7 @@
-import { useToggle } from "@moose-desk/core";
 import { AutoReply } from "@moose-desk/repo";
 import { FormLayout, Modal, ModalProps, TextField } from "@shopify/polaris";
 import { FormikProps, FormikValues } from "formik";
-import { useCallback, useRef } from "react";
+import { memo, useCallback, useRef } from "react";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
 import { RichText } from "src/components/RichText";
@@ -24,15 +23,14 @@ const ModalAutoReply = ({
   ...props
 }: ModalAutoReplyProps) => {
   const formRef = useRef<FormikProps<any>>(null);
-  const { toggle: updateForm } = useToggle();
   const day = new Date();
   const handleSubmitValue = useCallback((values: FormikValues) => {
     onChange &&
       onChange({
         name: values.name,
-        code: self.crypto.randomUUID(),
+        code: values.code || self.crypto.randomUUID(),
         content: values.content,
-        createAt: day,
+        createAt: values.createAt || day,
       });
     props.onClose && props.onClose();
   }, []);
@@ -40,7 +38,6 @@ const ModalAutoReply = ({
   const validateObject = object().shape({
     name: string().required("Required!"),
     content: string().required("Required!"),
-    // date: string().required("Required!"),
   });
   return (
     <Modal
@@ -57,6 +54,7 @@ const ModalAutoReply = ({
           onAction: () => props.onClose(),
         },
       ]}
+      onClose={() => props.onClose()}
     >
       <div style={{ height: "500px" }}>
         <Modal.Section>
@@ -81,6 +79,7 @@ const ModalAutoReply = ({
                 />
               </FormItem>
               <FormItem name="code"></FormItem>
+              <FormItem name="createAt"></FormItem>
               <FormItem name="content">
                 <RichText
                   labelProps={{
@@ -143,4 +142,4 @@ const ModalAutoReply = ({
   );
 };
 
-export default ModalAutoReply;
+export default memo(ModalAutoReply);
