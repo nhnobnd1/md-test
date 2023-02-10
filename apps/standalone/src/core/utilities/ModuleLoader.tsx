@@ -38,7 +38,6 @@ const ModuleLoader = ({ children }: ModuleLoaderProps) => {
         const moduleInstance = module.default as Module;
 
         addRoutes(moduleInstance.route.item);
-        addRoutes(...appRootRoutes);
 
         if (moduleInstance.locales) {
           for (const lang in moduleInstance.locales) {
@@ -56,6 +55,8 @@ const ModuleLoader = ({ children }: ModuleLoaderProps) => {
           }
         }
       }
+
+      addRoutes(...appRootRoutes);
 
       setTimeout(() => {
         unstable_batchedUpdates(() => {
