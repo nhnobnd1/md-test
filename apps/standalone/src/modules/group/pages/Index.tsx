@@ -80,7 +80,6 @@ const GroupIndexPage: PageComponent<GroupIndexPageProps> = () => {
         .delete(id)
         .pipe(
           map(({ data }) => {
-            console.log(data);
             if (data.statusCode === 200) {
               message.loading.hide().then(() => {
                 notification.success("Delete group successfully");

@@ -4,6 +4,7 @@ import { memo, ReactElement, useEffect, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { i18n } from "src/localization";
 import RoutePaths from "src/routes/paths";
+import appRootRoutes from "src/routes/routes";
 
 interface ModuleLoaderProps {
   children: ReactElement;
@@ -37,6 +38,7 @@ const ModuleLoader = ({ children }: ModuleLoaderProps) => {
         const moduleInstance = module.default as Module;
 
         addRoutes(moduleInstance.route.item);
+        addRoutes(...appRootRoutes);
 
         if (moduleInstance.locales) {
           for (const lang in moduleInstance.locales) {

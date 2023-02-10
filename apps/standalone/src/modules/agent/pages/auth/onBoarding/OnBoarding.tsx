@@ -18,7 +18,7 @@ import Images from "src/assets/images";
 import { Loading } from "src/components/Loading";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { SetPassword } from "src/modules/agent/components/SetPassword";
-import AgentRoutePaths from "src/modules/agent/routes/paths";
+import RoutePaths from "src/routes/paths";
 import "./OnBoarding.scss";
 
 interface OnBoardingProps {}
@@ -99,7 +99,7 @@ export const OnBoarding = (props: OnBoardingProps) => {
         token,
       });
     } else {
-      navigate(generatePath(AgentRoutePaths.OnBoarding + "/error"));
+      navigate(generatePath(RoutePaths.OnBoarding + "/error"));
     }
   }, [searchParams]);
 
@@ -140,11 +140,11 @@ export const OnBoarding = (props: OnBoardingProps) => {
                             <span
                               className="link font-medium"
                               onClick={() =>
-                                navigate(generatePath(AgentRoutePaths.Login))
+                                navigate(generatePath(RoutePaths.Login))
                               }
                             >
                               https://{getSubDomain()}
-                              {getDomain()}/agent/login
+                              {getDomain()}/login
                             </span>
                           </div>
                           <div className="text-center">

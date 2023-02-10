@@ -70,7 +70,6 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
   useEffect(() => {
     if (type === "update" && props.initialValues?.mailboxType) {
       const mailBoxType = props.initialValues.mailboxType;
-      console.log(mailBoxType);
       if ([MailBoxType.GMAIL, MailBoxType.OUTLOOK].includes(mailBoxType)) {
         setIsLoggedServer({
           callBackName:

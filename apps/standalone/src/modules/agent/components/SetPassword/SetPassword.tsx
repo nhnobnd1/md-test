@@ -4,7 +4,7 @@ import { Button, Form, Input } from "antd";
 import { catchError, map, of } from "rxjs";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
-import AgentRoutePaths from "src/modules/agent/routes/paths";
+import RoutePaths from "src/routes/paths";
 import "./SetPassword.scss";
 interface SetPasswordProps {
   agentName: string;
@@ -33,7 +33,7 @@ export const SetPassword = ({
             message.loading.hide().then(() => {
               if (data.statusCode === 200) {
                 notification.success("Account activation successful");
-                navigate(AgentRoutePaths.Login);
+                navigate(RoutePaths.Login);
               } else {
                 notification.error("Account activation failed");
               }

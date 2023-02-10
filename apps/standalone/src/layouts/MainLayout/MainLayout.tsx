@@ -13,6 +13,7 @@ import useAuth from "src/hooks/useAuth";
 import useNotification from "src/hooks/useNotification";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
 import DashboardRoutePaths from "src/modules/dashboard/routes/paths";
+import RoutePaths from "src/routes/paths";
 import "./MainLayout.scss";
 
 interface MainLayoutProps {}
@@ -29,7 +30,7 @@ export const MainLayout = (props: MainLayoutProps) => {
       .pipe(
         map(({ data }) => {
           logout();
-          navigate(generatePath(AgentRoutePaths.Login));
+          navigate(generatePath(RoutePaths.Login));
           notification.success("Logout success");
         }),
         catchError((err) => {
@@ -63,10 +64,9 @@ export const MainLayout = (props: MainLayoutProps) => {
         label: "Company",
       },
       {
-        key: `case-${AgentRoutePaths.Login}`,
+        key: `case-${RoutePaths.Login}`,
         label: isLoggedIn ? "Logout" : "Login",
-        onClick: () =>
-          isLoggedIn ? signOut() : navigate(AgentRoutePaths.Login),
+        onClick: () => (isLoggedIn ? signOut() : navigate(RoutePaths.Login)),
       },
       {
         key: `case-top-7`,

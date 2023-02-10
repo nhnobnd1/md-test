@@ -7,8 +7,8 @@ import { catchError, map, of } from "rxjs";
 import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
-import AgentRoutePaths from "src/modules/agent/routes/paths";
 import { useStore } from "src/providers/StoreProviders";
+import RoutePaths from "src/routes/paths";
 import "./ForgotPassword.scss";
 interface ForgotPasswordProps {}
 
@@ -130,7 +130,7 @@ export const ForgotPassword = (props: ForgotPasswordProps) => {
               <div className="text-center">
                 <span
                   className="link"
-                  onClick={() => navigate(generatePath(AgentRoutePaths.Login))}
+                  onClick={() => navigate(generatePath(RoutePaths.Login))}
                 >
                   Back to login page
                 </span>
