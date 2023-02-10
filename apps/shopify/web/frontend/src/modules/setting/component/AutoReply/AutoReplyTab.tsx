@@ -1,4 +1,5 @@
-import { AutoReply } from "@moose-desk/repo";
+import { AutoReply, Holidays } from "@moose-desk/repo";
+import { useToast } from "@shopify/app-bridge-react";
 import {
   Button,
   ButtonGroup,
@@ -10,6 +11,7 @@ import {
   Text,
 } from "@shopify/polaris";
 import { DeleteMajor, EditMajor } from "@shopify/polaris-icons";
+import dayjs from "dayjs";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ModalDelete } from "src/components/Modal/ModalDelete";
 import { Pagination } from "src/components/Pagination";
@@ -19,14 +21,17 @@ interface AutoReplyTabProps {
   disabled?: boolean;
   value?: AutoReply[];
   onChange?: (value: AutoReply[]) => void;
+  dataHolidays: Holidays[];
 }
 
 const AutoReplyTab = ({
   disabled,
   value,
   onChange,
+  dataHolidays,
   ...props
 }: AutoReplyTabProps) => {
+  const { show } = useToast();
   const [valueListAutoReplys, setValueListAutoReplys] = useState<AutoReply[]>(
     []
   );
@@ -58,7 +63,8 @@ const AutoReplyTab = ({
           </Link>
         </IndexTable.Cell>
         <IndexTable.Cell className="py-3">
-          <div dangerouslySetInnerHTML={{ __html: value.content }}></div>
+          {/* <div dangerouslySetInnerHTML={{ __html: value.content }}></div> */}
+          {value.createAt ? dayjs(value.createAt).format("DD-MMM-YYYY") : ""}
         </IndexTable.Cell>
         <IndexTable.Cell className="py-3">
           <ButtonGroup>
@@ -102,13 +108,23 @@ const AutoReplyTab = ({
   };
   const handleRemoveAutoReply = useCallback(
     (indexDelete: number) => {
-      setValueListAutoReplys((init: AutoReply[]) => {
-        init.splice(indexDelete, 1);
-        onChange && onChange([...init]);
-        return init;
-      });
+      const findAutoReplyCode = dataHolidays.find(
+        (holiday) =>
+          holiday.autoReplyCode === valueListAutoReplys[indexDelete].code
+      );
+      if (!findAutoReplyCode) {
+        setValueListAutoReplys((init: AutoReply[]) => {
+          init.splice(indexDelete, 1);
+          onChange && onChange([...init]);
+          return init;
+        });
+      } else {
+        show(`Auto Reply is being used in a holiday. Please check again!`, {
+          isError: true,
+        });
+      }
     },
-    [deleteAutoReply, setValueListAutoReplys, valueListAutoReplys]
+    [deleteAutoReply, valueListAutoReplys, dataHolidays]
   );
   // modal
   const isDetail = useMemo(() => {
@@ -119,18 +135,38 @@ const AutoReplyTab = ({
     (value: any) => {
       if (isDetail && dataForm?.value.name) {
         setValueListAutoReplys((init: AutoReply[]) => {
-          init.splice(dataForm.index, 1, value);
-          onChange && onChange([...init]);
-          return init;
+          if (!init.find((data) => data.name === value.name)) {
+            init.splice(dataForm.index, 1, value);
+            onChange && onChange([...init]);
+            return init;
+          } else {
+            show(
+              `Auto Reply name ${value.name} already exists. Please try again!`,
+              {
+                isError: true,
+              }
+            );
+            return init;
+          }
         });
       } else {
         setValueListAutoReplys((init: AutoReply[]) => {
-          onChange && onChange([...init, { ...value }]);
-          return [...init, { ...value }];
+          if (!init.find((data) => data.name === value.name)) {
+            onChange && onChange([...init, { ...value }]);
+            return [...init, { ...value }];
+          } else {
+            show(
+              `Auto Reply name ${value.name} already exists. Please try again!`,
+              {
+                isError: true,
+              }
+            );
+            return init;
+          }
         });
       }
     },
-    [isDetail, dataForm]
+    [isDetail, dataForm, valueListAutoReplys, setValueListAutoReplys]
   );
   const [openModalAutoReply, setOpenModalAutoReply] = useState(false);
 
@@ -180,7 +216,7 @@ const AutoReplyTab = ({
             open={isOpen}
             onClose={() => setIsOpen(false)}
             content={
-              "This auto-reply will be removed permanently. This action cannot be undone. All tickets which are using this autoReply will get affected too."
+              "This auto-reply will be removed permanently. This action cannot be undone. All tickets and business hours which are using this autoReply will get affected too."
             }
             deleteAction={() => handleRemoveAutoReply(deleteAutoReply)}
           />

@@ -54,7 +54,7 @@ const ModalHoliday = ({
   const validateObject = object().shape({
     name: string().required("Required!"),
     autoReplyCode: string().required("Required!"),
-    // date: string().required("Required!"),
+    date: string().required("Required!"),
   });
   // handle Effect
   useEffect(() => {
@@ -93,11 +93,21 @@ const ModalHoliday = ({
           onAction: () => props.onClose(),
         },
       ]}
+      onClose={() => {
+        props.onClose();
+        setValueDate(undefined);
+      }}
     >
       <div style={{ height: "400px" }}>
         <Modal.Section>
           <Form
-            initialValues={dataForm?.value || {}}
+            initialValues={
+              dataForm?.value || {
+                name: "",
+                date: "",
+                autoReplyCode: "",
+              }
+            }
             ref={formRef}
             validationSchema={validateObject}
             enableReinitialize
@@ -111,11 +121,12 @@ const ModalHoliday = ({
                   label="Name:"
                 />
               </FormItem>
-              {/* <FormItem name="date"></FormItem> */}
-              <SelectDateHolidays
-                valueDate={valueDate}
-                onChangeValueDate={(value) => setValueDate(value)}
-              />
+              <FormItem name="date">
+                <SelectDateHolidays
+                  valueDate={valueDate}
+                  onChangeValueDate={(value) => setValueDate(value)}
+                />
+              </FormItem>
               <FormItem name="autoReplyCode">
                 <BoxSelectAutoReply
                   dataAutoReply={dataAutoReply}

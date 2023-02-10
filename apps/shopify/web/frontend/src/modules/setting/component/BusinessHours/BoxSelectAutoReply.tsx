@@ -87,14 +87,6 @@ const BoxSelectAutoReply = (props: BoxSelectAutoReplyProps) => {
         })
       : null;
 
-  // handleResetValueText
-
-  // const handleResetValueText = useCallback(() => {
-  //   const matchedOption = options.find((option) => {
-  //     return option.value === selectedOption;
-  //   });
-  //   setInputValue((matchedOption && matchedOption.label) || "");
-  // }, [options, selectedOption]);
   // handle Effect
 
   useEffect(() => {

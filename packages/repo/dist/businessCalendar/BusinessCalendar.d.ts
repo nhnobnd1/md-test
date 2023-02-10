@@ -29,6 +29,7 @@ export interface AutoReply {
     code: string;
     name: string;
     content: string;
+    createAt: Date;
 }
 export interface BusinessCalendar {
     _id: string;

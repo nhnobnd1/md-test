@@ -3,6 +3,7 @@ import {
   AutoReply,
   BusinessCalendar,
   BusinessHoursType,
+  Holidays,
 } from "@moose-desk/repo";
 import BusinessCalendarRepository from "@moose-desk/repo/businessCalendar/BusinessCalendarRepository";
 import { useToast } from "@shopify/app-bridge-react";
@@ -49,6 +50,7 @@ const BusinessHours = (props: BusinessHoursProps) => {
     useState<BusinessCalendar>();
   const { toggle: updateForm } = useToggle();
   const [dataAutoReply, setDataAutoReply] = useState<AutoReply[]>([]);
+  const [dataHolidays, setDataHolidays] = useState<Holidays[]>([]);
   const [selected, setSelected] = useState(0);
   const formRef = useRef<FormikProps<any>>(null);
   const [disabled, setDisabled] = useState(false);
@@ -75,6 +77,9 @@ const BusinessHours = (props: BusinessHoursProps) => {
     if (value.autoReply) {
       setDataAutoReply([...value.autoReply]);
     }
+    if (value.holidays) {
+      setDataHolidays([...value.holidays]);
+    }
   }, []);
   // fetch business calendar
   const { run: fetchListBusinessCalendar } = useJob(
@@ -88,6 +93,7 @@ const BusinessHours = (props: BusinessHoursProps) => {
           map(({ data }) => {
             setDataBusinessCalendar({ ...data.data[0] });
             setDataAutoReply([...data.data[0].autoReply]);
+            setDataHolidays([...data.data[0].holidays]);
           })
         );
     },
@@ -104,10 +110,10 @@ const BusinessHours = (props: BusinessHoursProps) => {
           if (data.statusCode === 200) {
             setBanner({
               isShow: true,
-              message: "Business hours has been updated succcesfully.",
+              message: "Your settings have been changed successfully.",
               type: "success",
             });
-            show("Business hours has been updated succcesfully.");
+            show("Your settings have been changed successfully.");
           } else {
             setBanner({
               isShow: true,
@@ -198,7 +204,7 @@ const BusinessHours = (props: BusinessHoursProps) => {
                             className={selected === 2 ? undefined : "hidden"}
                           >
                             <FormItem name="autoReply">
-                              <AutoReplyTab />
+                              <AutoReplyTab dataHolidays={dataHolidays} />
                             </FormItem>
                           </div>
                         </div>

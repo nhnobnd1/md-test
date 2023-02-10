@@ -50,7 +50,6 @@ export default function IndexProfileManager() {
       .pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
-            // fetDetailsProfile(token.sub ?? "");
             setBanner({
               isShow: true,
               type: "success",
@@ -123,6 +122,7 @@ export default function IndexProfileManager() {
       submit={submit}
     />
   );
+
   useMount(() => fetDetailsProfile(token.sub ?? ""));
 
   return (
