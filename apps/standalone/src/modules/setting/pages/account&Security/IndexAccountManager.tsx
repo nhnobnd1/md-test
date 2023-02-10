@@ -14,26 +14,16 @@ export default function IndexAccountManager({ props }: any) {
   const [valueInput, setValueInput] = useState("");
   const message = useMessage();
   const { subDomain } = useSubdomain();
-  const [subDomainName, setSubDomainName] = useState("");
   const getLinkSignUp = useCallback(
     (mode: string) => {
       if (subDomain) {
         switch (mode) {
           case "development":
-            setSubDomainName(
-              `https://${subDomain.toLocaleLowerCase()}-dev.moosedesk.net/signup`
-            );
-            break;
+            return `https://${subDomain.toLocaleLowerCase()}-dev.moosedesk.net/signup`;
           case "stagging":
-            setSubDomainName(
-              `https://${subDomain.toLocaleLowerCase()}.moosedesk.net/signup`
-            );
-            break;
+            return `https://${subDomain.toLocaleLowerCase()}.moosedesk.net/signup`;
           case "production":
-            setSubDomainName(
-              `https://${subDomain.toLocaleLowerCase()}.moosedesk.com/signup`
-            );
-            break;
+            return `https://${subDomain.toLocaleLowerCase()}.moosedesk.com/signup`;
           default:
             break;
         }
@@ -166,7 +156,6 @@ export default function IndexAccountManager({ props }: any) {
 
   useEffect(() => {
     fetchAccountManagerStatus();
-    getLinkSignUp(import.meta.env.MODE);
   }, []);
   return (
     <Form
@@ -189,7 +178,9 @@ export default function IndexAccountManager({ props }: any) {
               use the sign up link.
             </p>
             <div>
-              <a onClick={() => console.log(1)}>{subDomainName}</a>
+              <a onClick={() => console.log(1)}>
+                {getLinkSignUp(import.meta.env.MODE)}
+              </a>
             </div>
           </div>
         </div>

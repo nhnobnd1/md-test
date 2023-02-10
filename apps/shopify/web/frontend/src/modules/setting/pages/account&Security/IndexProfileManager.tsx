@@ -11,7 +11,7 @@ import {
 } from "@shopify/polaris";
 import { FormikProps } from "formik";
 import * as jose from "jose";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import ProfileForm from "src/modules/setting/component/ProfileForm";
 
@@ -30,6 +30,7 @@ export default function IndexProfileManager() {
     message: "",
   });
   const { show } = useToast();
+
   const { run: fetDetailsProfile, result } = useJob(
     (payload: string) => {
       return AgentRepository()
@@ -55,6 +56,7 @@ export default function IndexProfileManager() {
               message: "Profile has been updated succcesfully.",
             });
             show("Edit profile success");
+            setDisable(true);
           } else {
             if (data.statusCode === 409) {
               setBanner({
@@ -109,9 +111,9 @@ export default function IndexProfileManager() {
     formRef.current?.resetForm();
   }, [formRef.current]);
 
-  const handleChangeValueForm = (value: boolean) => {
+  const handleChangeValueForm = useCallback((value: boolean) => {
     setDisable(value);
-  };
+  }, []);
   const profileProfile = (
     <ProfileForm
       ref={formRef}
@@ -120,14 +122,12 @@ export default function IndexProfileManager() {
       submit={submit}
     />
   );
+
   useMount(() => fetDetailsProfile(token.sub ?? ""));
 
-  useEffect(() => {
-    console.log(formRef.current?.dirty);
-  }, [formRef.current?.dirty]);
   return (
     <>
-      {!formRef.current?.dirty ? null : (
+      {disable ? null : (
         <ContextualSaveBar
           fullWidth
           message="Unsaved changes"

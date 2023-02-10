@@ -10,6 +10,7 @@ import {
   Text,
 } from "@shopify/polaris";
 import { DeleteMajor, EditMajor } from "@shopify/polaris-icons";
+import dayjs from "dayjs";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ModalDelete } from "src/components/Modal/ModalDelete";
 import { Pagination } from "src/components/Pagination";
@@ -54,6 +55,7 @@ const HolidayTab = ({
     value: Holidays;
     index: number;
   }>();
+  const day = new Date();
   const rowMarkup = useMemo(() => {
     return valueTableHolidays.map((value, index) => (
       <IndexTable.Row id={value.name} key={value.name} position={index}>
@@ -65,7 +67,27 @@ const HolidayTab = ({
           </Link>
         </IndexTable.Cell>
         <IndexTable.Cell className="py-3">
-          {value.startDate} - {value.endDate}
+          {value.startDate === value.endDate
+            ? `${dayjs(
+                `${value.startDate.slice(3)}-${value.startDate.slice(
+                  0,
+                  2
+                )}-${day.getFullYear()}`,
+                "YYYY-DD-MM"
+              ).format("DD-MMM")}`
+            : `${dayjs(
+                `${value.startDate.slice(3)}-${value.startDate.slice(
+                  0,
+                  2
+                )}-${day.getFullYear()}`,
+                "YYYY-DD-MM"
+              ).format("DD-MMM")} to ${dayjs(
+                `${value.endDate.slice(3)}-${value.endDate.slice(
+                  0,
+                  2
+                )}-${day.getFullYear()}`,
+                "YYYY-DD-MM"
+              ).format("DD-MMM")}`}
         </IndexTable.Cell>
         <IndexTable.Cell className="py-3">
           {getAutoReplyName(value.autoReplyCode)}

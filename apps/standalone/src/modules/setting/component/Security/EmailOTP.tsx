@@ -1,6 +1,6 @@
 import { useJob, useMount } from "@moose-desk/core";
 import { MethodOTP, UserSettingRepository } from "@moose-desk/repo";
-import { Input, Space, Typography } from "antd";
+import { Input, Space, Spin, Typography } from "antd";
 import Link from "antd/es/typography/Link";
 import { memo, useCallback, useEffect, useState } from "react";
 import { catchError, map, of } from "rxjs";
@@ -15,17 +15,20 @@ const EmailOTP = ({ setDataSubmitEmailOTP, errorMessage }: EmailOTP) => {
     setValue(e.target.value);
   }, []);
   // resend Email
-
+  const [spin, setSpin] = useState(false);
   const handleResendEmail = useCallback(() => {
     if (onResendEmail) {
+      setSpin(true);
       resetEmail();
+      handleOnResendEmail(true);
     }
-  }, []);
+  }, [onResendEmail]);
   const { run: resetEmail } = useJob(() => {
     return UserSettingRepository()
       .setupOtp({ method: MethodOTP.Email })
       .pipe(
         map(({ data }) => {
+          setSpin(false);
           return data.data;
         }),
         catchError((error) => {
@@ -33,12 +36,22 @@ const EmailOTP = ({ setDataSubmitEmailOTP, errorMessage }: EmailOTP) => {
         })
       );
   });
-  const handleOnResendEmail = useCallback(() => {
-    setOnResendEmail(false);
-    setTimeout(() => {
-      setOnResendEmail(true);
-    }, 300000);
-  }, [onResendEmail]);
+  const handleOnResendEmail = useCallback(
+    (again?: boolean) => {
+      if (!again) {
+        setOnResendEmail(false);
+        setTimeout(() => {
+          setOnResendEmail(true);
+        }, 300000);
+      } else {
+        setOnResendEmail(false);
+        setTimeout(() => {
+          setOnResendEmail(true);
+        }, 30000);
+      }
+    },
+    [onResendEmail]
+  );
 
   useEffect(() => {
     setDataSubmitEmailOTP && setDataSubmitEmailOTP(value);
@@ -73,7 +86,7 @@ const EmailOTP = ({ setDataSubmitEmailOTP, errorMessage }: EmailOTP) => {
       </div>
       <div className="flex items-center">
         <Typography.Text>Did not receive the code yet?</Typography.Text>
-        <div className="ml-2">
+        <div className="flex ml-2">
           <Link
             disabled={!onResendEmail}
             type={onResendEmail ? "success" : "secondary"}
@@ -81,6 +94,7 @@ const EmailOTP = ({ setDataSubmitEmailOTP, errorMessage }: EmailOTP) => {
           >
             Re-send OTP Code
           </Link>
+          {spin ? <Spin size="small" /> : null}
         </div>
       </div>
     </Space>

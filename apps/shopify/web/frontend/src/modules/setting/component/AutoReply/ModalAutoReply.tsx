@@ -25,12 +25,14 @@ const ModalAutoReply = ({
 }: ModalAutoReplyProps) => {
   const formRef = useRef<FormikProps<any>>(null);
   const { toggle: updateForm } = useToggle();
+  const day = new Date();
   const handleSubmitValue = useCallback((values: FormikValues) => {
     onChange &&
       onChange({
         name: values.name,
         code: self.crypto.randomUUID(),
         content: values.content,
+        createAt: day,
       });
     props.onClose && props.onClose();
   }, []);
@@ -80,7 +82,58 @@ const ModalAutoReply = ({
               </FormItem>
               <FormItem name="code"></FormItem>
               <FormItem name="content">
-                <RichText />
+                <RichText
+                  labelProps={{
+                    as: "span",
+                    variant: "bodyMd",
+                    children: "Content",
+                  }}
+                  init={{
+                    toolbar:
+                      "undo redo blocks fontfamily fontsize bold italic underline strikethrough link image media table mergetags addcomment showcomments spellcheckdialog a11ycheck typography align lineheight | selectTypeAutoReply",
+                    setup: function (editor) {
+                      /* Helper functions */
+                      const toDateHtml = (date: string) => {
+                        return date;
+                      };
+                      editor.ui.registry.addMenuButton("selectTypeAutoReply", {
+                        text: "Holiday name",
+                        fetch: (callback: any) => {
+                          const items = [
+                            {
+                              type: "menuitem",
+                              text: "Holiday Date",
+                              onAction: () => {
+                                editor.insertContent(
+                                  toDateHtml("{{holiday.date}}")
+                                );
+                              },
+                            },
+                            {
+                              type: "menuitem",
+                              text: "Business Hours",
+                              onAction: () => {
+                                editor.insertContent(
+                                  toDateHtml("{{businesscalendar.hours}}")
+                                );
+                              },
+                            },
+                            {
+                              type: "menuitem",
+                              text: "Business Date",
+                              onAction: () => {
+                                editor.insertContent(
+                                  toDateHtml("{{businesscalendar.date}}")
+                                );
+                              },
+                            },
+                          ];
+                          callback(items);
+                        },
+                      });
+                    },
+                  }}
+                />
               </FormItem>
             </FormLayout>
           </Form>

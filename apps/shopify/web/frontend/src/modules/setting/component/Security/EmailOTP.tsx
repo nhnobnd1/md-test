@@ -6,6 +6,7 @@ import {
   InlineError,
   Layout,
   Link,
+  Spinner,
   Stack,
   Text,
   TextField,
@@ -74,16 +75,20 @@ const EmailOPT = ({
 
   // resend Email
 
+  const [spin, setSpin] = useState(false);
   const handleResendEmail = useCallback(() => {
     if (onResendEmail) {
+      setSpin(true);
       resetEmail();
+      handleOnResendEmail(true);
     }
-  }, []);
+  }, [onResendEmail]);
   const { run: resetEmail } = useJob(() => {
     return UserSettingRepository()
       .setupOtp({ method: MethodOTP.Email })
       .pipe(
         map(({ data }) => {
+          setSpin(false);
           return data.data;
         }),
         catchError((error) => {
@@ -91,12 +96,23 @@ const EmailOPT = ({
         })
       );
   });
-  const handleOnResendEmail = useCallback(() => {
-    setOnResendEmail(false);
-    setTimeout(() => {
-      setOnResendEmail(true);
-    }, 300000);
-  }, [onResendEmail]);
+
+  const handleOnResendEmail = useCallback(
+    (again?: boolean) => {
+      if (!again) {
+        setOnResendEmail(false);
+        setTimeout(() => {
+          setOnResendEmail(true);
+        }, 300000);
+      } else {
+        setOnResendEmail(false);
+        setTimeout(() => {
+          setOnResendEmail(true);
+        }, 30000);
+      }
+    },
+    [onResendEmail]
+  );
   useMount(() => {
     setError(false);
     handleOnResendEmail();
@@ -140,13 +156,19 @@ const EmailOPT = ({
                   <Text variant="bodyMd" as="span">
                     Did not receive the code yet?
                   </Text>
-                  <div className="ml-2">
+                  <div className="flex ml-2">
                     <Link
                       monochrome={!onResendEmail}
                       onClick={handleResendEmail}
                     >
                       Re-send OTP Code
                     </Link>
+                    {spin ? (
+                      <Spinner
+                        accessibilityLabel="Small spinner example"
+                        size="small"
+                      />
+                    ) : null}
                   </div>
                 </div>
               </Stack>

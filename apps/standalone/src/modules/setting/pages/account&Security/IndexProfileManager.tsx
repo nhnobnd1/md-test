@@ -37,7 +37,7 @@ export default function IndexProfileManager() {
         map(({ data }) => {
           message.loading.hide();
           if (data.statusCode === 200) {
-            notification.success("Profile updated successfully.");
+            notification.success("Your Profile has been updated successfully.");
             fetDetailsProfile(token.sub ?? "");
           } else {
             notification.error("Update profile failed.");
@@ -106,7 +106,7 @@ export default function IndexProfileManager() {
         </Form.Item>
 
         <Form.Item
-          label="Phone number"
+          label="Phone No."
           name="phoneNumber"
           rules={[
             {

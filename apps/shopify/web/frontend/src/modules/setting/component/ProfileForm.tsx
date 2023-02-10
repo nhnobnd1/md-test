@@ -1,3 +1,4 @@
+import { useToggle } from "@moose-desk/core";
 import { FormLayout, TextField } from "@shopify/polaris";
 import { FormikProps } from "formik";
 import { ForwardedRef, forwardRef, useCallback } from "react";
@@ -15,10 +16,12 @@ const ProfileForm = (
   { initialValues, submit, change }: any,
   ref: ForwardedRef<FormikProps<any>>
 ) => {
+  const { toggle } = useToggle();
   const handleSubmit = useCallback((data: any) => {
     submit(data);
   }, []);
   const handleChange = useCallback(() => {
+    toggle();
     change(false);
   }, []);
   const validateObject = object().shape({
