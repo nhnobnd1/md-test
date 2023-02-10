@@ -11,8 +11,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
-import AgentRoutePaths from "src/modules/agent/routes/paths";
 import { useStore } from "src/providers/StoreProviders";
+import RoutePaths from "src/routes/paths";
 import "./ResetPassword.scss";
 
 interface ResetPasswordProps {}
@@ -44,7 +44,7 @@ const ResetPassword = (props: ResetPasswordProps) => {
         token: decodeURIComponent(token),
       });
     } else {
-      navigate(generatePath(AgentRoutePaths.ResetPassword + "/error"));
+      navigate(generatePath(RoutePaths.ResetPassword + "/error"));
     }
   }, [searchParams]);
 
@@ -177,9 +177,7 @@ const ResetPassword = (props: ResetPasswordProps) => {
                 <div className="text-center">
                   <span
                     className="link"
-                    onClick={() =>
-                      navigate(generatePath(AgentRoutePaths.Login))
-                    }
+                    onClick={() => navigate(generatePath(RoutePaths.Login))}
                   >
                     Back to login page
                   </span>

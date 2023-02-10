@@ -21,6 +21,7 @@ import GroupRoutePaths from "src/modules/group/routes/paths";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
 import { useAppConfig } from "src/providers/AppConfigProviders";
+import RoutePaths from "src/routes/paths";
 import ClarityUsersSolid from "~icons/clarity/users-solid";
 import FeUsers from "~icons/fe/users";
 import JamDashboard from "~icons/jam/dashboard";
@@ -151,7 +152,7 @@ export const AppLayout = (props: AppLayoutProps) => {
         ],
       },
     ];
-  }, [AgentRoutePaths, DashboardRoutePaths]);
+  }, [AgentRoutePaths, DashboardRoutePaths, SettingRoutePaths, RoutePaths]);
 
   const getDefaultOpenKeys = useCallback(
     (
@@ -263,7 +264,7 @@ export const AppLayout = (props: AppLayoutProps) => {
         .pipe(
           map(() => {
             logout();
-            navigate(AgentRoutePaths.Login);
+            navigate(RoutePaths.Login);
           })
         );
     },

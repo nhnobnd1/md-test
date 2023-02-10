@@ -5,9 +5,41 @@ import RoutePaths from "src/routes/paths";
 const appRootRoutes: IRoute[] = [
   {
     path: RoutePaths.Index,
-    title: "Index page",
-    component: lazy(() => import("src/pages/RedirectPage")),
-    index: true,
+    component: lazy(() => import("src/layouts/MainLayout/MainLayout")),
+
+    routes: [
+      {
+        path: RoutePaths.Index,
+        component: lazy(() => import("src/pages/RedirectPage")),
+      },
+      {
+        path: RoutePaths.Login,
+        title: "Login",
+        component: lazy(
+          () => import("src/modules/agent/pages/auth/signIn/SignIn")
+        ),
+      },
+      {
+        path: RoutePaths.OnBoarding,
+        component: lazy(
+          () => import("src/modules/agent/pages/auth/onBoarding/OnBoarding")
+        ),
+      },
+      {
+        path: RoutePaths.ForgotPassword,
+        component: lazy(
+          () =>
+            import("src/modules/agent/pages/auth/forgotPassword/ForgotPassword")
+        ),
+      },
+      {
+        path: RoutePaths.ResetPassword,
+        component: lazy(
+          () =>
+            import("src/modules/agent/pages/auth/resetPassword/ResetPassword")
+        ),
+      },
+    ],
   },
 ];
 

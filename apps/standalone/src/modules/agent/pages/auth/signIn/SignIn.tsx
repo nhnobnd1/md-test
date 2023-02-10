@@ -17,9 +17,9 @@ import { catchError, map, of } from "rxjs";
 import useMessage from "src/hooks/useMessage";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { Factor2Auth } from "src/modules/agent/components/Factor2Auth";
-import AgentRoutePaths from "src/modules/agent/routes/paths";
 import DashboardRoutePaths from "src/modules/dashboard/routes/paths";
 import { useStore } from "src/providers/StoreProviders";
+import RoutePaths from "src/routes/paths";
 import "./SignIn.scss";
 
 interface SignInProps {}
@@ -214,7 +214,7 @@ export const SignIn = (props: SignInProps) => {
                       <span
                         className="link"
                         onClick={() =>
-                          navigate(generatePath(AgentRoutePaths.ForgotPassword))
+                          navigate(generatePath(RoutePaths.ForgotPassword))
                         }
                       >
                         Forgot Password?

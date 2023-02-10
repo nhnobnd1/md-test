@@ -159,7 +159,6 @@ const GroupFormMember = ({
 
   const removeMembersItem = useCallback(
     (id: string) => {
-      console.log(groupMembers);
       if (isDetail) {
         setGroupIds(groupIds.filter((item) => item !== id));
       }
@@ -200,7 +199,6 @@ const GroupFormMember = ({
   useEffect(() => {
     if (isDetail && groupId) {
       if (prevFilter?.query !== filterData.query && filterData.query) {
-        console.log(filterData.query);
         getListMemberGroupDebounce(groupId, filterData);
       } else {
         getListMemberGroupApi(groupId, filterData);
