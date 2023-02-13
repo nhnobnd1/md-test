@@ -78,7 +78,10 @@ const GroupChildPage: PageComponent<GroupChildPageProps> = () => {
   return (
     <div>
       <Header className="pb-6" title="New Group" back>
-        <div className="flex justify-end items-center flex-1">
+        <div className="flex justify-end items-center flex-1 gap-2">
+          <Button onClick={() => navigate(generatePath(GroupRoutePaths.Index))}>
+            Cancel
+          </Button>
           <Button
             type="primary"
             loading={loadingAddGroup}

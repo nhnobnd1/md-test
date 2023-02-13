@@ -164,6 +164,7 @@ const AgentsIndex = (props: AgentsIndexProps) => {
         open={popupAgent}
         data={dataPopup as Agent}
         onCancel={closePopupAgent}
+        destroyOnClose
         onChange={handleChangePopup}
       />
       <Header title="Account">
@@ -182,6 +183,7 @@ const AgentsIndex = (props: AgentsIndexProps) => {
         <Input.Search
           placeholder="Search"
           enterButton
+          allowClear
           onSearch={(searchText: string) => {
             setFilterData((value) => {
               return {
@@ -272,7 +274,7 @@ const AgentsIndex = (props: AgentsIndexProps) => {
               )}
             />
           </Table>
-          {meta && (
+          {meta && agents.length > 0 && (
             <Pagination
               className="mt-4 flex justify-end"
               currentPage={filterData.page ?? 1}
