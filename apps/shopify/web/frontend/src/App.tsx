@@ -80,7 +80,9 @@ export default function App() {
       <NavigationMenu navigationLinks={navigationLinks} />
       <AppRoutes />
       <div className="hidden">
-        <RichText />
+        <RichText
+          labelProps={{ children: "aaa", as: "h1", variant: "bodyLg" }}
+        />
       </div>
     </>
   );

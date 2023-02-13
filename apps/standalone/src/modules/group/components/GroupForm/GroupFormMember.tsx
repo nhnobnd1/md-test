@@ -33,7 +33,7 @@ const GroupFormMember = ({
 }: GroupFormMemberProps) => {
   const defaultFilter: () => GetMembersGroupRequest = () => ({
     page: 1,
-    limit: env.DEFAULT_PAGE_SIZE,
+    limit: 5,
     query: "",
   });
 
@@ -99,7 +99,10 @@ const GroupFormMember = ({
               {
                 _id: value,
                 email: option.obj?.email,
-                name: option.obj?.firstName,
+                name:
+                  option.obj?.lastName === "admin"
+                    ? option.obj?.firstName
+                    : option.obj?.firstName + " " + option.obj?.lastName,
               },
               ...values,
             ];
@@ -230,6 +233,8 @@ const GroupFormMember = ({
           placeholder="Search agents"
           // suffixIcon={<PhUserPlusFill></PhUserPlusFill>}
           onChange={handleSelectAgent}
+          value={null}
+          virtual
           disableValues={groupIds}
           loadMore={fetchAgents}
         />
@@ -237,12 +242,23 @@ const GroupFormMember = ({
       <div>
         <div>
           <Input.Search
+            allowClear
             value={filterData.query}
             placeholder="Search"
             onChange={(value) => handleFiltersQueryChange(value.target.value)}
           />
         </div>
-        <Table dataSource={groupMembersTable} loading={loadingGetList}>
+        <Table
+          dataSource={groupMembersTable}
+          loading={loadingGetList}
+          pagination={
+            !isDetail &&
+            groupMembersTable.length > 0 && {
+              defaultCurrent: 1,
+              defaultPageSize: 5,
+            }
+          }
+        >
           <Table.Column
             key="name"
             title="Name"

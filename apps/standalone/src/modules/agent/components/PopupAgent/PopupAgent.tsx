@@ -8,12 +8,14 @@ import {
   UpdateAgentRequest,
 } from "@moose-desk/repo";
 import { Button, Modal, ModalProps, Space, Tag } from "antd";
+import classNames from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import { Loading } from "src/components/Loading";
 import { ButtonModalDelete } from "src/components/UI/Button/ButtonModalDelete";
 import Form from "src/components/UI/Form/Form";
 import { Header } from "src/components/UI/Header";
+import { useCountDown } from "src/hooks/useCountDown";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import {
@@ -41,6 +43,14 @@ export const PopupAgent = ({
   const { storeId } = useStore();
   const message = useMessage();
   const notification = useNotification();
+  const {
+    state: countDown,
+    clearCountDown,
+    startCountDown,
+  } = useCountDown({
+    initValue: 300,
+    isGlobal: true,
+  });
   const [dataForm, setDataForm] = useState<Agent>();
 
   const agentStatus = useMemo<{
@@ -155,6 +165,8 @@ export const PopupAgent = ({
     }
   );
 
+  const [enableSending, setEnableSending] = useState(true);
+
   const { run: resendMailApi, processing: loadingSentMail } = useJob(
     (payload: ResendEmailInvitationRequest) => {
       return AgentRepository()
@@ -162,6 +174,7 @@ export const PopupAgent = ({
         .pipe(
           map(
             ({ data }) => {
+              setEnableSending(false);
               if (data.statusCode === 200) {
                 notification.success(`Resend invitation ${payload.email}`, {
                   description: "Resend invitation mail success",
@@ -182,6 +195,18 @@ export const PopupAgent = ({
         );
     }
   );
+
+  useEffect(() => {
+    if (!enableSending) {
+      startCountDown();
+    }
+  }, [enableSending]);
+
+  useEffect(() => {
+    if (countDown === 0) {
+      setEnableSending(true);
+    }
+  }, [countDown]);
 
   const { run: deleteAgentApi, processing: loadingDelete } = useJob(
     (id: string) => {
@@ -422,8 +447,19 @@ export const PopupAgent = ({
             onFinish={handleFinish}
           />
           {!dataForm?.emailConfirmed && dataForm?._id && (
-            <div className="link" onClick={resendMail}>
-              Re-send Invitation Email
+            <div className="flex items-center">
+              <div
+                className={classNames([
+                  { "text-gray-400 cursor-default": !enableSending },
+                  "link mr-2",
+                ])}
+                onClick={() => enableSending && resendMail()}
+              >
+                <span>Re-send Invitation Email</span>
+              </div>
+              {!enableSending && (
+                <span className="font-semibold">( {countDown} )</span>
+              )}
             </div>
           )}
         </Loading>

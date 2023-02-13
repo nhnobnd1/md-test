@@ -174,6 +174,7 @@ const GroupIndexPage: PageComponent<GroupIndexPageProps> = () => {
         <Input.Search
           placeholder="Search"
           enterButton
+          allowClear
           onSearch={(searchText: string) => {
             setFilterData((value) => {
               return {
