@@ -263,11 +263,17 @@ const GroupFormMember = ({
             key="name"
             title="Name"
             render={(_, record: GroupMembers) => <span>{record.name}</span>}
+            sorter={{
+              compare: (a: any, b: any) => a.name.localeCompare(b.name),
+            }}
           />
           <Table.Column
             key="email"
             title="Email"
             dataIndex="email"
+            sorter={{
+              compare: (a: any, b: any) => a.name.localeCompare(b.name),
+            }}
           ></Table.Column>
 
           <Table.Column
