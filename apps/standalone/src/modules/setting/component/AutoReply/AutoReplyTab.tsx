@@ -1,20 +1,10 @@
 import { AutoReply, Holidays } from "@moose-desk/repo";
-import { useToast } from "@shopify/app-bridge-react";
-import {
-  Button,
-  ButtonGroup,
-  Card,
-  EmptySearchResult,
-  Icon,
-  IndexTable,
-  Link,
-  Text,
-} from "@shopify/polaris";
-import { DeleteMajor, EditMajor } from "@shopify/polaris-icons";
+import Link from "antd/es/typography/Link";
 import dayjs from "dayjs";
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
-import { ModalDelete } from "src/components/Modal/ModalDelete";
-import { Pagination } from "src/components/Pagination";
+import { memo, useCallback, useEffect, useState } from "react";
+import Pagination from "src/components/UI/Pagination/Pagination";
+import { Table } from "src/components/UI/Table";
+import TableAction from "src/components/UI/Table/TableAction/TableAction";
 import ModalAutoReply from "src/modules/setting/component/AutoReply/ModalAutoReply";
 
 interface AutoReplyTabProps {
@@ -24,7 +14,6 @@ interface AutoReplyTabProps {
 }
 
 const AutoReplyTab = ({ value, onChange, dataHolidays }: AutoReplyTabProps) => {
-  const { show } = useToast();
   const [isDetail, setIsDetail] = useState<boolean>(false);
   const [valueListAutoReplys, setValueListAutoReplys] = useState<AutoReply[]>(
     []
@@ -37,50 +26,10 @@ const AutoReplyTab = ({ value, onChange, dataHolidays }: AutoReplyTabProps) => {
     limit: 5,
   });
   const [filterData, setFilterData] = useState(defaultFilter);
-  const resourceName = {
-    singular: "autoReply",
-    plural: "autoReplys",
-  };
-
   const [dataForm, setDataForm] = useState<{
     value: AutoReply;
     index: number;
   }>();
-  const rowMarkup = useMemo(() => {
-    return valueTableAutoReply.map((value, index) => (
-      <IndexTable.Row id={value.name} key={value.name} position={index}>
-        <IndexTable.Cell className="py-3">
-          <Link monochrome onClick={() => handleDetails(index)} removeUnderline>
-            <Text variant="bodyMd" fontWeight="bold" as="span">
-              {`${value.name}`}
-            </Text>
-          </Link>
-        </IndexTable.Cell>
-        <IndexTable.Cell className="py-3">
-          {/* <div dangerouslySetInnerHTML={{ __html: value.content }}></div> */}
-          {value.createAt ? dayjs(value.createAt).format("DD-MMM-YYYY") : ""}
-        </IndexTable.Cell>
-        <IndexTable.Cell className="py-3">
-          <ButtonGroup>
-            <Button
-              onClick={() => handleDetails(index)}
-              icon={() => <Icon source={() => <EditMajor />} color="base" />}
-            />
-            <Button
-              icon={() => (
-                <Icon
-                  accessibilityLabel="Delete"
-                  source={() => <DeleteMajor />}
-                />
-              )}
-              onClick={() => handleOpenModalDelete(index)}
-              destructive
-            />
-          </ButtonGroup>
-        </IndexTable.Cell>
-      </IndexTable.Row>
-    ));
-  }, [valueTableAutoReply]);
   // details
   const handleDetails = useCallback(
     (index: number) => {
@@ -114,9 +63,9 @@ const AutoReplyTab = ({ value, onChange, dataHolidays }: AutoReplyTabProps) => {
           return init;
         });
       } else {
-        show(`Auto Reply is being used in a holiday. Please check again!`, {
-          isError: true,
-        });
+        // show(`Auto Reply is being used in a holiday. Please check again!`, {
+        //   isError: true,
+        // });
       }
     },
     [deleteAutoReply, valueListAutoReplys, dataHolidays]
@@ -136,12 +85,12 @@ const AutoReplyTab = ({ value, onChange, dataHolidays }: AutoReplyTabProps) => {
             onChange && onChange([...init]);
             return init;
           } else {
-            show(
-              `Auto Reply name ${value.name} already exists. Please try again!`,
-              {
-                isError: true,
-              }
-            );
+            // show(
+            //   `Auto Reply name ${value.name} already exists. Please try again!`,
+            //   {
+            //     isError: true,
+            //   }
+            // );
             return init;
           }
         });
@@ -151,12 +100,12 @@ const AutoReplyTab = ({ value, onChange, dataHolidays }: AutoReplyTabProps) => {
             onChange && onChange([...init, { ...value }]);
             return [...init, { ...value }];
           } else {
-            show(
-              `Auto Reply name ${value.name} already exists. Please try again!`,
-              {
-                isError: true,
-              }
-            );
+            // show(
+            //   `Auto Reply name ${value.name} already exists. Please try again!`,
+            //   {
+            //     isError: true,
+            //   }
+            // );
             return init;
           }
         });
@@ -183,6 +132,19 @@ const AutoReplyTab = ({ value, onChange, dataHolidays }: AutoReplyTabProps) => {
       )
     );
   }, [filterData, valueListAutoReplys]);
+  //
+  const onPagination = useCallback(
+    ({ page, limit }: { page: number; limit: number }) => {
+      setFilterData((value) => {
+        return {
+          ...value,
+          page,
+          limit,
+        };
+      });
+    },
+    []
+  );
   // handle Effect
 
   useEffect(() => {
@@ -204,45 +166,41 @@ const AutoReplyTab = ({ value, onChange, dataHolidays }: AutoReplyTabProps) => {
       />
       {valueListAutoReplys.length ? (
         <div>
-          <ModalDelete
-            title="Are you sure that you want to remove this autoReply?"
-            open={isOpen}
-            onClose={() => setIsOpen(false)}
-            content={
-              "This auto-reply will be removed permanently. This action cannot be undone. All tickets and business hours which are using this autoReply will get affected too."
-            }
-            deleteAction={() => handleRemoveAutoReply(deleteAutoReply)}
-          />
-          <Card>
-            <IndexTable
-              resourceName={resourceName}
-              itemCount={valueListAutoReplys.length}
-              selectable={false}
-              headings={[{ title: "Name" }, { title: "Date Created" }]}
-              hasMoreItems
-              emptyState={
-                <EmptySearchResult
-                  title={"No auto-reply yet"}
-                  description={"Try changing the filters or search term"}
-                  withIllustration
-                />
-              }
-            >
-              {rowMarkup}
-            </IndexTable>
-          </Card>
-          <div className="flex items-center justify-center mt-4">
-            <Pagination
-              total={valueListAutoReplys ? valueListAutoReplys.length : 1}
-              pageSize={filterData.limit}
-              currentPage={filterData.page}
-              onChangePage={(page) =>
-                setFilterData((val: any) => ({ ...val, page }))
-              }
-              previousTooltip={"Previous"}
-              nextTooltip={"Next"}
+          <Table dataSource={valueTableAutoReply}>
+            <Table.Column
+              key="name"
+              title="Name"
+              render={(_, record: AutoReply) => <span>{`${record.name}`}</span>}
             />
-          </div>
+            <Table.Column
+              key="date"
+              title="Date Create"
+              render={(_, record: AutoReply) => (
+                <span>{dayjs(`${record.createAt}`).format("DD-MMM-YYYY")}</span>
+              )}
+            ></Table.Column>
+            <Table.Column
+              align="center"
+              title="Action"
+              render={(_, record: AutoReply, index) => (
+                <TableAction
+                  record={record}
+                  edit
+                  showDelete
+                  onlyIcon
+                  onEdit={() => handleDetails(index)}
+                  onDelete={() => handleRemoveAutoReply(index)}
+                />
+              )}
+            />
+          </Table>
+          <Pagination
+            className="mt-4 flex justify-end"
+            currentPage={filterData.page ?? 1}
+            total={valueListAutoReplys ? valueListAutoReplys.length : 1}
+            pageSize={filterData.limit}
+            onChange={onPagination}
+          />
         </div>
       ) : null}
       <>

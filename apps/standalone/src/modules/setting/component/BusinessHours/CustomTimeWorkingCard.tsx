@@ -1,9 +1,12 @@
 import { BusinessHours, Day } from "@moose-desk/repo";
-import { Checkbox, Stack } from "@shopify/polaris";
+import { Checkbox, Space } from "antd";
+import { CheckboxChangeEvent } from "antd/es/checkbox";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import BoxSelectTime from "src/modules/setting/component/BusinessHours/BoxSelectTime";
-import { initialValueCustomHours } from "src/modules/setting/constaint/constaint";
-// import { initialValueCustomHours } from "src/modules/setting/constaint/constaint";
+import {
+  initialValueCustomHours,
+  optionDay,
+} from "src/modules/setting/constaint/constaint";
 
 interface RowCheckboxProps {
   value?: BusinessHours[];
@@ -11,7 +14,12 @@ interface RowCheckboxProps {
   disabled?: boolean;
 }
 
-const RowCheckbox = ({ value, onChange, disabled }: RowCheckboxProps) => {
+const CustomTimeWorkingCard = ({
+  value,
+  onChange,
+  disabled,
+  ...props
+}: RowCheckboxProps) => {
   const initialData = initialValueCustomHours.map((item) => ({
     day: item.day,
     timeRanges: {
@@ -51,12 +59,12 @@ const RowCheckbox = ({ value, onChange, disabled }: RowCheckboxProps) => {
   >(initValue);
 
   const handleChangeChecked = useCallback(
-    (newChecked: boolean, id: string) => {
+    (e: CheckboxChangeEvent) => {
       const indexChecked = valueCustomHours.findIndex(
-        (option) => option.day === id
+        (option) => option.day === e.target.value
       );
       setValueCustomHours((initialValue) => {
-        initialValue[indexChecked].checked = newChecked;
+        initialValue[indexChecked].checked = e.target.checked;
         return [...initialValue];
       });
     },
@@ -92,34 +100,31 @@ const RowCheckbox = ({ value, onChange, disabled }: RowCheckboxProps) => {
   }, [valueCustomHours]);
   return (
     <>
-      {valueCustomHours.map((day, index) => {
-        return (
-          <Stack key={day.day}>
-            <Stack.Item>
-              <div className="ml-4 w-40">
-                <Checkbox
-                  label={day.day}
-                  checked={day.checked}
-                  onChange={handleChangeChecked}
-                  id={day.day}
-                  disabled={disabled}
-                />
-              </div>
-            </Stack.Item>
-            <Stack.Item>
-              <BoxSelectTime
-                value={day}
-                initialValue={valueCustomHours}
-                onChange={(value) => handleChangeValueSelectTime(value, index)}
-                index={index}
-                disabled={disabled}
-              />
-            </Stack.Item>
-          </Stack>
-        );
-      })}
+      {valueCustomHours.map((day, index) => (
+        <Space align="center" key={index} className="mt-4">
+          <div className="w-40">
+            <Checkbox
+              checked={day.checked}
+              onChange={handleChangeChecked}
+              value={day.day}
+              disabled={disabled}
+            >
+              {optionDay[index]}
+            </Checkbox>
+          </div>
+          <Space align="center" size={20}>
+            <BoxSelectTime
+              value={day}
+              initialValue={valueCustomHours}
+              onChange={(value) => handleChangeValueSelectTime(value, index)}
+              index={index}
+              disabled={disabled}
+            />
+          </Space>
+        </Space>
+      ))}
     </>
   );
 };
 
-export default RowCheckbox;
+export default CustomTimeWorkingCard;

@@ -41,6 +41,16 @@ const settingRoutes: IRoute = {
         () => import("src/modules/setting/pages/account&Security/IndexSecurity")
       ),
     },
+    // genaral setting
+    {
+      path: SettingRoutePaths.GenaralSetting.BusinessHours.Index,
+      component: lazy(
+        () =>
+          import(
+            "src/modules/setting/pages/genaralSetting/BusinessHours/BusinessHours"
+          )
+      ),
+    },
   ],
 };
 

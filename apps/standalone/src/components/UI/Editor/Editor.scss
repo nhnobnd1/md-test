@@ -1,0 +1,15 @@
+.custom-ckeditor {
+  .ck-editor__editable {
+    min-height: 200px;
+
+    ul,
+    ol {
+      list-style: initial;
+      padding: revert;
+    }
+
+    ol {
+      list-style: decimal;
+    }
+  }
+}
