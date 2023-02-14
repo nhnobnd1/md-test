@@ -47,10 +47,9 @@ export const PopupAgent = ({
   const {
     state: countDown,
     clearCountDown,
-    startCountDown,
-    stopCountDown,
+    initCountdown,
   } = useCountDown({
-    initValue: 300,
+    initValue: 20,
     key: dataForm?._id ?? "",
   });
 
@@ -181,13 +180,21 @@ export const PopupAgent = ({
           map(
             ({ data }) => {
               if (data.statusCode === 200) {
-                setListSending((value) => [
-                  ...value,
-                  {
-                    id: dataForm?._id ?? "",
-                    sending: true,
-                  },
-                ]);
+                initCountdown(dataForm?._id ?? "");
+                setListSending((value) => {
+                  if (value.find((item) => item.id === dataForm?._id)) {
+                    return value.map((item) =>
+                      item.id === dataForm?._id
+                        ? {
+                            id: item.id,
+                            sending: true,
+                          }
+                        : item
+                    );
+                  }
+
+                  return [...value, { id: dataForm?._id ?? "", sending: true }];
+                });
                 notification.success(`Resend invitation ${payload.email}`, {
                   description: "Resend invitation mail success",
                   style: {
@@ -211,18 +218,6 @@ export const PopupAgent = ({
   const isSendingMail = useMemo(() => {
     return !!listSending.find((item) => item.id === dataForm?._id)?.sending;
   }, [listSending, dataForm?._id]);
-
-  useEffect(() => {
-    if (props.open && !isSendingMail) {
-      stopCountDown();
-    }
-  }, [isSendingMail]);
-
-  useEffect(() => {
-    if (isSendingMail) {
-      startCountDown();
-    }
-  }, [listSending]);
 
   useEffect(() => {
     if (countDown === 0) {
@@ -488,7 +483,7 @@ export const PopupAgent = ({
               >
                 <span>Re-send Invitation Email</span>
               </div>
-              {isSendingMail && (
+              {isSendingMail && !loadingGetDetail && (
                 <span className="font-semibold">( {countDown} )</span>
               )}
             </div>

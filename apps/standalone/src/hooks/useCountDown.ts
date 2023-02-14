@@ -1,4 +1,4 @@
-import { useDidUpdate, useToggle } from "@moose-desk/core";
+import { useDidUpdate } from "@moose-desk/core";
 import { useCallback, useEffect, useState } from "react";
 
 interface CountDown {
@@ -12,11 +12,6 @@ export function useCountDown({ initValue, key }: CountDown) {
   const [timerObj, setTimerObj] = useState<{
     [props: string]: any;
   }>({});
-  const {
-    state: process,
-    on: startCountDown,
-    off: stopCountDown,
-  } = useToggle(false);
 
   useEffect(() => {
     if (key && !listCountDown[key]) {
@@ -25,11 +20,19 @@ export function useCountDown({ initValue, key }: CountDown) {
         [key]: initValue,
       }));
     }
-  }, [key, process]);
+  }, [key]);
 
-  useEffect(() => {
-    const obj: any = {};
-    if (process) {
+  useDidUpdate(() => {
+    Object.keys(listCountDown).forEach((key) => {
+      if (listCountDown[key] === 0) {
+        clearCountDown(key);
+      }
+    });
+  }, [listCountDown]);
+
+  const setUpTimer = useCallback(
+    (key) => {
+      const obj: any = {};
       if (!timerObj[key]) {
         obj[key] = setInterval(() => {
           setListCountDown((value) => ({
@@ -42,18 +45,9 @@ export function useCountDown({ initValue, key }: CountDown) {
           ...obj,
         }));
       }
-    } else {
-      clearCountDown(key);
-    }
-  }, [key, process, stopCountDown]);
-
-  useDidUpdate(() => {
-    Object.keys(listCountDown).forEach((key) => {
-      if (listCountDown[key] === 0) {
-        clearCountDown(key);
-      }
-    });
-  }, [listCountDown]);
+    },
+    [key, timerObj]
+  );
 
   const clearCountDown = useCallback(
     (key: string) => {
@@ -73,10 +67,20 @@ export function useCountDown({ initValue, key }: CountDown) {
     [timerObj]
   );
 
+  const initCountdown = useCallback(
+    (key: string) => {
+      setListCountDown((value) => ({
+        ...value,
+        [key]: initValue,
+      }));
+      setUpTimer(key);
+    },
+    [initValue]
+  );
+
   return {
     state: listCountDown[key],
     clearCountDown,
-    startCountDown,
-    stopCountDown,
+    initCountdown,
   };
 }
