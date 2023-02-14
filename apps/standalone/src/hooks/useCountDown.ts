@@ -1,43 +1,80 @@
-import { useToggle } from "@moose-desk/core";
+import { useDidUpdate, useToggle } from "@moose-desk/core";
 import { useCallback, useEffect, useState } from "react";
 
 interface CountDown {
   initValue: number;
-  isGlobal?: boolean;
+  key: string;
 }
-export function useCountDown({ initValue, isGlobal = false }: CountDown) {
-  const [countDownValue, setCountDownValue] = useState<number>(initValue);
+export function useCountDown({ initValue, key }: CountDown) {
+  const [listCountDown, setListCountDown] = useState<{
+    [props: string]: number;
+  }>({});
+  const [timerObj, setTimerObj] = useState<{
+    [props: string]: any;
+  }>({});
   const {
     state: process,
     on: startCountDown,
     off: stopCountDown,
   } = useToggle(false);
-  let intervalId: any;
 
   useEffect(() => {
-    // eslint-disable-next-line no-undef-init
-    if (process) {
-      intervalId = setInterval(() => {
-        setCountDownValue((value) => {
-          return value >= 1 ? value - 1 : value;
-        });
-        if (countDownValue === 0) {
-          setCountDownValue(initValue);
-          clearCountDown();
-        }
-      }, 1000);
-    } else {
-      clearCountDown();
+    if (key && !listCountDown[key]) {
+      setListCountDown((value) => ({
+        ...value,
+        [key]: initValue,
+      }));
     }
-    return () => clearInterval(intervalId);
-  }, [countDownValue, process]);
+  }, [key, process]);
 
-  const clearCountDown = useCallback(() => {
-    clearInterval(intervalId);
-  }, [intervalId]);
+  useEffect(() => {
+    const obj: any = {};
+    if (process) {
+      if (!timerObj[key]) {
+        obj[key] = setInterval(() => {
+          setListCountDown((value) => ({
+            ...value,
+            [key]: value[key] - 1,
+          }));
+        }, 1000);
+        setTimerObj((value) => ({
+          ...value,
+          ...obj,
+        }));
+      }
+    } else {
+      clearCountDown(key);
+    }
+  }, [key, process, stopCountDown]);
+
+  useDidUpdate(() => {
+    Object.keys(listCountDown).forEach((key) => {
+      if (listCountDown[key] === 0) {
+        clearCountDown(key);
+      }
+    });
+  }, [listCountDown]);
+
+  const clearCountDown = useCallback(
+    (key: string) => {
+      if (timerObj[key]) {
+        const idInterval = timerObj[key];
+        clearInterval(idInterval);
+        setTimerObj((value) => {
+          delete value[key];
+          return value;
+        });
+        setListCountDown((value) => {
+          delete value[key];
+          return value;
+        });
+      }
+    },
+    [timerObj]
+  );
 
   return {
-    state: countDownValue,
+    state: listCountDown[key],
     clearCountDown,
     startCountDown,
     stopCountDown,
