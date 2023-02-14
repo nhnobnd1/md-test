@@ -262,7 +262,9 @@ const GroupFormMember = ({
           <Table.Column
             key="name"
             title="Name"
-            render={(_, record: GroupMembers) => <span>{record.name}</span>}
+            render={(_, record: GroupMembers) => (
+              <span>{record.name.replace("admin", "")}</span>
+            )}
             sorter={{
               compare: (a: any, b: any) => a.name.localeCompare(b.name),
             }}

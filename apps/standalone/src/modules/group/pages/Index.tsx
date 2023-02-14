@@ -223,7 +223,7 @@ const GroupIndexPage: PageComponent<GroupIndexPageProps> = () => {
                   description:
                     "This group will be removed permanently. This action cannot be undone",
                 }}
-                onDelete={handleDelete}
+                onSpecialDelete={handleDelete}
                 onlyIcon
                 onEdit={() => {
                   navigate(

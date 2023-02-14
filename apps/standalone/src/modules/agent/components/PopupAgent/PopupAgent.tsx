@@ -43,15 +43,16 @@ export const PopupAgent = ({
   const { storeId } = useStore();
   const message = useMessage();
   const notification = useNotification();
+  const [dataForm, setDataForm] = useState<Agent>();
   const {
     state: countDown,
     clearCountDown,
     startCountDown,
+    stopCountDown,
   } = useCountDown({
     initValue: 300,
-    isGlobal: true,
+    key: dataForm?._id ?? "",
   });
-  const [dataForm, setDataForm] = useState<Agent>();
 
   const agentStatus = useMemo<{
     label: string;
@@ -165,7 +166,12 @@ export const PopupAgent = ({
     }
   );
 
-  const [enableSending, setEnableSending] = useState(true);
+  const [listSending, setListSending] = useState<
+    Array<{
+      id: string;
+      sending: boolean;
+    }>
+  >([]);
 
   const { run: resendMailApi, processing: loadingSentMail } = useJob(
     (payload: ResendEmailInvitationRequest) => {
@@ -174,8 +180,14 @@ export const PopupAgent = ({
         .pipe(
           map(
             ({ data }) => {
-              setEnableSending(false);
               if (data.statusCode === 200) {
+                setListSending((value) => [
+                  ...value,
+                  {
+                    id: dataForm?._id ?? "",
+                    sending: true,
+                  },
+                ]);
                 notification.success(`Resend invitation ${payload.email}`, {
                   description: "Resend invitation mail success",
                   style: {
@@ -196,15 +208,35 @@ export const PopupAgent = ({
     }
   );
 
+  const isSendingMail = useMemo(() => {
+    return !!listSending.find((item) => item.id === dataForm?._id)?.sending;
+  }, [listSending, dataForm?._id]);
+
   useEffect(() => {
-    if (!enableSending) {
+    if (props.open && !isSendingMail) {
+      stopCountDown();
+    }
+  }, [isSendingMail]);
+
+  useEffect(() => {
+    if (isSendingMail) {
       startCountDown();
     }
-  }, [enableSending]);
+  }, [listSending]);
 
   useEffect(() => {
     if (countDown === 0) {
-      setEnableSending(true);
+      setListSending(
+        listSending.map((item) => {
+          if (item.id === dataForm?._id) {
+            return {
+              id: item.id,
+              sending: false,
+            };
+          }
+          return item;
+        })
+      );
     }
   }, [countDown]);
 
@@ -349,7 +381,6 @@ export const PopupAgent = ({
   return (
     <Modal
       {...props}
-      destroyOnClose
       onCancel={onCancel}
       footer={
         <Space>
@@ -450,14 +481,14 @@ export const PopupAgent = ({
             <div className="flex items-center">
               <div
                 className={classNames([
-                  { "text-gray-400 cursor-default": !enableSending },
+                  { "text-gray-400 cursor-default": isSendingMail },
                   "link mr-2",
                 ])}
-                onClick={() => enableSending && resendMail()}
+                onClick={() => !isSendingMail && resendMail()}
               >
                 <span>Re-send Invitation Email</span>
               </div>
-              {!enableSending && (
+              {isSendingMail && (
                 <span className="font-semibold">( {countDown} )</span>
               )}
             </div>
