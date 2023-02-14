@@ -169,6 +169,7 @@ const ChannelEmail = (props: ChannelEmailProps) => {
         <Input.Search
           placeholder="Search"
           enterButton
+          allowClear
           onSearch={(searchText: string) => {
             setFilterData((value: any) => {
               return {

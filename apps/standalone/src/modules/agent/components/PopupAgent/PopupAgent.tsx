@@ -1,4 +1,4 @@
-import { useJob } from "@moose-desk/core";
+import { useCountDown, useJob } from "@moose-desk/core";
 import {
   Agent,
   AgentRepository,
@@ -8,6 +8,7 @@ import {
   UpdateAgentRequest,
 } from "@moose-desk/repo";
 import { Button, Modal, ModalProps, Space, Tag } from "antd";
+import classNames from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import { Loading } from "src/components/Loading";
@@ -42,6 +43,14 @@ export const PopupAgent = ({
   const message = useMessage();
   const notification = useNotification();
   const [dataForm, setDataForm] = useState<Agent>();
+  const {
+    state: countDown,
+    clearCountDown,
+    initCountdown,
+  } = useCountDown({
+    initValue: 300,
+    key: dataForm?._id ?? "",
+  });
 
   const agentStatus = useMemo<{
     label: string;
@@ -155,6 +164,13 @@ export const PopupAgent = ({
     }
   );
 
+  const [listSending, setListSending] = useState<
+    Array<{
+      id: string;
+      sending: boolean;
+    }>
+  >([]);
+
   const { run: resendMailApi, processing: loadingSentMail } = useJob(
     (payload: ResendEmailInvitationRequest) => {
       return AgentRepository()
@@ -163,6 +179,21 @@ export const PopupAgent = ({
           map(
             ({ data }) => {
               if (data.statusCode === 200) {
+                initCountdown(dataForm?._id ?? "");
+                setListSending((value) => {
+                  if (value.find((item) => item.id === dataForm?._id)) {
+                    return value.map((item) =>
+                      item.id === dataForm?._id
+                        ? {
+                            id: item.id,
+                            sending: true,
+                          }
+                        : item
+                    );
+                  }
+
+                  return [...value, { id: dataForm?._id ?? "", sending: true }];
+                });
                 notification.success(`Resend invitation ${payload.email}`, {
                   description: "Resend invitation mail success",
                   style: {
@@ -182,6 +213,26 @@ export const PopupAgent = ({
         );
     }
   );
+
+  const isSendingMail = useMemo(() => {
+    return !!listSending.find((item) => item.id === dataForm?._id)?.sending;
+  }, [listSending, dataForm?._id]);
+
+  useEffect(() => {
+    if (countDown === 0) {
+      setListSending(
+        listSending.map((item) => {
+          if (item.id === dataForm?._id) {
+            return {
+              id: item.id,
+              sending: false,
+            };
+          }
+          return item;
+        })
+      );
+    }
+  }, [countDown]);
 
   const { run: deleteAgentApi, processing: loadingDelete } = useJob(
     (id: string) => {
@@ -324,7 +375,6 @@ export const PopupAgent = ({
   return (
     <Modal
       {...props}
-      destroyOnClose
       onCancel={onCancel}
       footer={
         <Space>
@@ -422,8 +472,19 @@ export const PopupAgent = ({
             onFinish={handleFinish}
           />
           {!dataForm?.emailConfirmed && dataForm?._id && (
-            <div className="link" onClick={resendMail}>
-              Re-send Invitation Email
+            <div className="flex items-center">
+              <div
+                className={classNames([
+                  { "text-gray-400 cursor-default": isSendingMail },
+                  "link mr-2",
+                ])}
+                onClick={() => !isSendingMail && resendMail()}
+              >
+                <span>Re-send Invitation Email</span>
+              </div>
+              {isSendingMail && !loadingGetDetail && (
+                <span className="font-semibold">({countDown})</span>
+              )}
             </div>
           )}
         </Loading>

@@ -1,4 +1,4 @@
-import { Table as ATable, TableProps as ATableProps } from "antd";
+import { Empty, Table as ATable, TableProps as ATableProps } from "antd";
 import "./Table.scss";
 
 interface TableProps extends ATableProps<any> {}
@@ -8,6 +8,15 @@ export const Table = (props: TableProps) => {
     <ATable
       className="Table"
       pagination={false}
+      locale={{
+        emptyText: (
+          <Empty
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            description="Sorry!, There is no records matched with your search
+                  criteria."
+          />
+        ),
+      }}
       {...props}
       rowKey={props.rowKey ?? "_id"}
     />
