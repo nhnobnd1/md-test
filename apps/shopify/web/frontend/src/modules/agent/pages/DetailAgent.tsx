@@ -1,5 +1,6 @@
 import {
   generatePath,
+  useCountDown,
   useJob,
   useLocation,
   useMount,
@@ -27,6 +28,7 @@ import {
   Text,
 } from "@shopify/polaris";
 import { Status } from "@shopify/polaris/build/ts/latest/src/components/Badge";
+import classNames from "classnames";
 import { FormikProps } from "formik";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { catchError, map, of } from "rxjs";
@@ -50,6 +52,14 @@ const DetailAgent = (props: CreateAgentProps) => {
   const { toggle } = useToggle();
   const { state } = useLocation();
   const { id } = useParams();
+  const {
+    state: countDown,
+    clearCountDown,
+    initCountdown,
+  } = useCountDown({
+    initValue: 300,
+    key: id ?? "",
+  });
 
   const { run: getDetailAgentApi, processing: loadingGetDetail } = useJob(
     (id: string) => {
@@ -146,6 +156,8 @@ const DetailAgent = (props: CreateAgentProps) => {
           map(
             ({ data }) => {
               if (data.statusCode === 200) {
+                initCountdown(agentSaved?._id ?? id ?? "");
+                setIsSendingMail(true);
                 showBanner("success", {
                   title: `Resend invitation ${payload.email}`,
                   message: "Resend invitation mail success",
@@ -303,6 +315,14 @@ const DetailAgent = (props: CreateAgentProps) => {
     }
   }, [agentSaved]);
 
+  const [isSendingMail, setIsSendingMail] = useState(false);
+
+  useEffect(() => {
+    if (countDown === 0) {
+      setIsSendingMail(false);
+    }
+  }, [countDown]);
+
   const resendMail = useCallback(() => {
     if (agentSaved && agentSaved.storeId) {
       resendMailApi({
@@ -393,12 +413,33 @@ const DetailAgent = (props: CreateAgentProps) => {
                     onSubmit={handleSubmit}
                   />
                   {!agentSaved?.emailConfirmed && (
-                    <div className="pt-4">
-                      <Link dataPrimaryLink onClick={resendMail}>
+                    <div className="pt-4 flex gap-2 items-center">
+                      {!isSendingMail ? (
+                        <Link
+                          dataPrimaryLink
+                          onClick={() => !isSendingMail && resendMail()}
+                        >
+                          <Text variant="bodyLg" as="p">
+                            Re-send Invitation Email
+                          </Text>
+                        </Link>
+                      ) : (
                         <Text variant="bodyLg" as="p">
-                          Re-send Invitation Email
+                          <div
+                            className={classNames({
+                              "text-[#9CA3AF]": isSendingMail,
+                            })}
+                          >
+                            Re-send Invitation Email
+                          </div>
                         </Text>
-                      </Link>
+                      )}
+
+                      {isSendingMail && (
+                        <Text as="span" variant="bodyLg">
+                          ({countDown})
+                        </Text>
+                      )}
                     </div>
                   )}
 

@@ -316,17 +316,14 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
         ))}
       </IndexTable>
       <div className="flex items-center justify-center py-8">
-        {filterData.page &&
-          filterData.limit &&
-          meta?.totalCount &&
-          groupMembers.length > 0 && (
-            <Pagination
-              total={meta.totalCount}
-              pageSize={filterData.limit ?? 0}
-              currentPage={filterData.page}
-              onChangePage={handleChangePagination}
-            />
-          )}
+        {filterData.page && filterData.limit && (
+          <Pagination
+            total={isDetail && meta ? meta.totalCount : groupMembers.length}
+            pageSize={filterData.limit ?? 0}
+            currentPage={filterData.page}
+            onChangePage={handleChangePagination}
+          />
+        )}
       </div>
     </>
   );
