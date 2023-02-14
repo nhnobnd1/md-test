@@ -78,7 +78,7 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
               ...item,
               id: item._id,
             }));
-            setGroups(listGroup);
+            setGroups([]);
             setMeta(data.metadata);
           })
         );
@@ -186,7 +186,10 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
     >
       <ModalDelete
         open={modalDelete}
-        onClose={closeModalDelete}
+        onClose={() => {
+          setIdDelete(null);
+          closeModalDelete();
+        }}
         title="Are you sure that you want to permanently remove this group."
         content="This group will be removed permanently. This action cannot be undone."
         loading={loadingDelete}
@@ -224,7 +227,9 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
           emptyState={
             <EmptySearchResult
               title={"No group yet"}
-              description={"Try changing the filters or search term"}
+              description={
+                "Sorry! There is no records matched with your search criteria"
+              }
               withIllustration
             />
           }

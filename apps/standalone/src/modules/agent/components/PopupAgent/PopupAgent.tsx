@@ -1,4 +1,4 @@
-import { useJob } from "@moose-desk/core";
+import { useCountDown, useJob } from "@moose-desk/core";
 import {
   Agent,
   AgentRepository,
@@ -15,7 +15,6 @@ import { Loading } from "src/components/Loading";
 import { ButtonModalDelete } from "src/components/UI/Button/ButtonModalDelete";
 import Form from "src/components/UI/Form/Form";
 import { Header } from "src/components/UI/Header";
-import { useCountDown } from "src/hooks/useCountDown";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import {
@@ -49,7 +48,7 @@ export const PopupAgent = ({
     clearCountDown,
     initCountdown,
   } = useCountDown({
-    initValue: 20,
+    initValue: 300,
     key: dataForm?._id ?? "",
   });
 
@@ -484,7 +483,7 @@ export const PopupAgent = ({
                 <span>Re-send Invitation Email</span>
               </div>
               {isSendingMail && !loadingGetDetail && (
-                <span className="font-semibold">( {countDown} )</span>
+                <span className="font-semibold">({countDown})</span>
               )}
             </div>
           )}

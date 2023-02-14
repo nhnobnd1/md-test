@@ -10,6 +10,7 @@ import {
 import { Agent, AgentRepository, GetListAgentRequest } from "@moose-desk/repo";
 import {
   Badge,
+  ButtonGroup,
   Card,
   EmptySearchResult,
   Filters,
@@ -23,6 +24,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { map } from "rxjs";
 import { Banner } from "src/components/Banner";
 import { useBannerState } from "src/components/Banner/useBannerState";
+import { ButtonEdit } from "src/components/Button/ButtonEdit";
 import { ButtonSort } from "src/components/Button/ButtonSort";
 import Pagination from "src/components/Pagination/Pagination";
 import env from "src/core/env";
@@ -221,6 +223,7 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
             { title: "Roles" },
             { title: "Status" },
             { title: "2FA Availability" },
+            { title: "Action" },
           ]}
         >
           {agents.map((agentItem, index) => (
@@ -233,7 +236,6 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
               <IndexTable.Cell className="py-3">
                 <div className="unstyle-link">
                   <Link
-                    dataPrimaryLink
                     data-polaris-unstyled
                     url={generatePath(AgentRoutePaths.Detail, {
                       id: agentItem._id,
@@ -277,6 +279,19 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
                     ? agentItem.twoFactorMethod
                     : "Off"}
                 </Text>
+              </IndexTable.Cell>
+              <IndexTable.Cell className="py-3">
+                <ButtonGroup>
+                  <ButtonEdit
+                    onClick={() =>
+                      navigate(
+                        generatePath(AgentRoutePaths.Detail, {
+                          id: agentItem._id,
+                        })
+                      )
+                    }
+                  ></ButtonEdit>
+                </ButtonGroup>
               </IndexTable.Cell>
             </IndexTable.Row>
           ))}
