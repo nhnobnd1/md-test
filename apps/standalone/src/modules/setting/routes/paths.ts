@@ -30,6 +30,12 @@ const SettingRoutePaths = createRoutePath({
       Index: "security",
     },
   },
+  GenaralSetting: {
+    Index: "genaral-setting",
+    BusinessHours: {
+      Index: "business-hours",
+    },
+  },
 } as const);
 
 export default SettingRoutePaths;

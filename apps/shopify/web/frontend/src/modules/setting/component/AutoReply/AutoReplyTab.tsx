@@ -26,7 +26,6 @@ interface AutoReplyTabProps {
 const AutoReplyTab = ({ value, onChange, dataHolidays }: AutoReplyTabProps) => {
   const { show } = useToast();
   const [isDetail, setIsDetail] = useState<boolean>(false);
-  console.log("is detail", isDetail);
   const [valueListAutoReplys, setValueListAutoReplys] = useState<AutoReply[]>(
     []
   );

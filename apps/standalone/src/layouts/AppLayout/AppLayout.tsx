@@ -73,6 +73,17 @@ export const AppLayout = (props: AppLayoutProps) => {
                 onClick: () =>
                   navigate(generatePath(SettingChannelRoutePaths.Index)),
               },
+              {
+                key: `case-${SettingRoutePaths.GenaralSetting.BusinessHours.Index}`,
+                label: "Business Hours",
+                link: SettingRoutePaths.GenaralSetting.BusinessHours.Index,
+                onClick: () =>
+                  navigate(
+                    generatePath(
+                      SettingRoutePaths.GenaralSetting.BusinessHours.Index
+                    )
+                  ),
+              },
             ],
           },
           {
