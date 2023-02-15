@@ -21,9 +21,15 @@ interface AutoReplyTabProps {
   value?: AutoReply[];
   onChange?: (value: AutoReply[]) => void;
   dataHolidays: Holidays[];
+  dataBusinessHoursAutoReplyCode: string;
 }
 
-const AutoReplyTab = ({ value, onChange, dataHolidays }: AutoReplyTabProps) => {
+const AutoReplyTab = ({
+  value,
+  onChange,
+  dataHolidays,
+  dataBusinessHoursAutoReplyCode,
+}: AutoReplyTabProps) => {
   const { show } = useToast();
   const [isDetail, setIsDetail] = useState<boolean>(false);
   const [valueListAutoReplys, setValueListAutoReplys] = useState<AutoReply[]>(
@@ -107,7 +113,10 @@ const AutoReplyTab = ({ value, onChange, dataHolidays }: AutoReplyTabProps) => {
         (holiday) =>
           holiday.autoReplyCode === valueListAutoReplys[indexDelete].code
       );
-      if (!findAutoReplyCode) {
+      if (
+        !findAutoReplyCode &&
+        valueListAutoReplys[indexDelete].code !== dataBusinessHoursAutoReplyCode
+      ) {
         setValueListAutoReplys((init: AutoReply[]) => {
           init.splice(indexDelete, 1);
           onChange && onChange([...init]);
@@ -119,7 +128,12 @@ const AutoReplyTab = ({ value, onChange, dataHolidays }: AutoReplyTabProps) => {
         });
       }
     },
-    [deleteAutoReply, valueListAutoReplys, dataHolidays]
+    [
+      deleteAutoReply,
+      valueListAutoReplys,
+      dataHolidays,
+      dataBusinessHoursAutoReplyCode,
+    ]
   );
   // modal
 

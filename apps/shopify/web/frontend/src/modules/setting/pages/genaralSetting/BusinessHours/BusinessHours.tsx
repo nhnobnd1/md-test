@@ -51,6 +51,8 @@ const BusinessHours = (props: BusinessHoursProps) => {
   const { toggle: updateForm } = useToggle();
   const [dataAutoReply, setDataAutoReply] = useState<AutoReply[]>([]);
   const [dataHolidays, setDataHolidays] = useState<Holidays[]>([]);
+  const [dataBusinessHoursAutoReplyCode, setDataBusinessHoursAutoReplyCode] =
+    useState("");
   const [selected, setSelected] = useState(0);
   const formRef = useRef<FormikProps<any>>(null);
   const [disabled, setDisabled] = useState(false);
@@ -94,6 +96,9 @@ const BusinessHours = (props: BusinessHoursProps) => {
             setDataBusinessCalendar({ ...data.data[0] });
             setDataAutoReply([...data.data[0].autoReply]);
             setDataHolidays([...data.data[0].holidays]);
+            setDataBusinessHoursAutoReplyCode(
+              data.data[0].businessHoursAutoReplyCode
+            );
           })
         );
     },
@@ -204,7 +209,12 @@ const BusinessHours = (props: BusinessHoursProps) => {
                             className={selected === 2 ? undefined : "hidden"}
                           >
                             <FormItem name="autoReply">
-                              <AutoReplyTab dataHolidays={dataHolidays} />
+                              <AutoReplyTab
+                                dataHolidays={dataHolidays}
+                                dataBusinessHoursAutoReplyCode={
+                                  dataBusinessHoursAutoReplyCode
+                                }
+                              />
                             </FormItem>
                           </div>
                         </div>
