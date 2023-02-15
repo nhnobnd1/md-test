@@ -1,4 +1,4 @@
-import { useJob, useMount } from "@moose-desk/core";
+import { useCountDown, useJob, useMount } from "@moose-desk/core";
 import { MethodOTP, UserSettingRepository } from "@moose-desk/repo";
 import { Input, Space, Spin, Typography } from "antd";
 import Link from "antd/es/typography/Link";
@@ -9,6 +9,16 @@ interface EmailOTP {
   errorMessage?: string;
 }
 const EmailOTP = ({ setDataSubmitEmailOTP, errorMessage }: EmailOTP) => {
+  const timeOut = 30;
+  const {
+    clearCountDown,
+    initCountdown: startCountDown,
+    state,
+  } = useCountDown({
+    initValue: timeOut,
+    key: "countDownResendEmail",
+  });
+  const [secondResend, setSecondResend] = useState(false);
   const [onResendEmail, setOnResendEmail] = useState(false);
   const [value, setValue] = useState("");
   const handleChange = useCallback((e) => {
@@ -36,6 +46,7 @@ const EmailOTP = ({ setDataSubmitEmailOTP, errorMessage }: EmailOTP) => {
         })
       );
   });
+
   const handleOnResendEmail = useCallback(
     (again?: boolean) => {
       if (!again) {
@@ -44,9 +55,12 @@ const EmailOTP = ({ setDataSubmitEmailOTP, errorMessage }: EmailOTP) => {
           setOnResendEmail(true);
         }, 300000);
       } else {
+        setSecondResend(true);
         setOnResendEmail(false);
+        startCountDown("countDownResendEmail");
         setTimeout(() => {
           setOnResendEmail(true);
+          clearCountDown("countDownResendEmail");
         }, 30000);
       }
     },
@@ -95,6 +109,11 @@ const EmailOTP = ({ setDataSubmitEmailOTP, errorMessage }: EmailOTP) => {
             Re-send OTP Code
           </Link>
           {spin ? <Spin size="small" /> : null}
+          {state !== 0 && !onResendEmail && secondResend ? (
+            <Typography.Text className="ml-2">
+              ({state} seconds)
+            </Typography.Text>
+          ) : null}
         </div>
       </div>
     </Space>

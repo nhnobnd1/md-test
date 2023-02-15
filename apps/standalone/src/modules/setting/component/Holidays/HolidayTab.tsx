@@ -147,12 +147,12 @@ const HolidayTab = ({
         <div>
           <Table dataSource={valueListHolidays}>
             <Table.Column
-              key="name"
+              key="nameHoliday"
               title="Name"
               render={(_, record: Holidays) => <span>{`${record.name}`}</span>}
             />
             <Table.Column
-              key="date"
+              key="dateHoliday"
               title="Date"
               render={(_, record: Holidays) => (
                 <span>
@@ -181,7 +181,7 @@ const HolidayTab = ({
               )}
             ></Table.Column>
             <Table.Column
-              key="autoReply"
+              key="autoReplyHoliday"
               title="Auto-Reply"
               render={(_, record: Holidays) => (
                 <span>{getAutoReplyName(record.autoReplyCode)}</span>

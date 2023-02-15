@@ -52,7 +52,7 @@ export default function IndexAccountManager() {
   // fetch init data
   // const token = jose.decodeJwt(TokenManager.getToken("base_token"));
 
-  const { run: fetch2FAStatus, result } = useJob(
+  const { run: fetch2FAStatus } = useJob(
     () => {
       return AccountRepository()
         .userGet2FAStatus()
@@ -89,30 +89,35 @@ export default function IndexAccountManager() {
             );
             handleResetForm();
           } else {
-            notification.error("Password updated failed.");
+            notification.error(
+              "System error. Please try again in a few minutes!"
+            );
           }
         }),
         catchError((error) => {
+          console.log(error);
           message.loading.hide();
-          notification.error("Password updated failed.");
+          if (error.response.status === 400) {
+            if (error.response.data.error[0] === "PASSWORD_NOT_MATCH") {
+              notification.error(
+                "Current Password not match! Please try again."
+              );
+            } else {
+              notification.error(
+                "Confirm New Password not match with New Password! Please try again."
+              );
+            }
+          } else {
+            notification.error(
+              "System error. Please try again in a few minutes!"
+            );
+          }
           return of(error);
         })
       );
   });
   // name method
 
-  // const getNameMethod = useCallback((method: string) => {
-  //   switch (method) {
-  //     case "Email":
-  //       // code block
-  //       break;
-  //     case "":
-  //       // code block
-  //       break;
-  //     default:
-  //     // code block
-  //   }
-  // }, [])
   // reset form
   const handleResetForm = useCallback(() => {
     form.resetFields();

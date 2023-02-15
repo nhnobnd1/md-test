@@ -24,7 +24,6 @@ const BoxSelectAutoReply = (props: BoxSelectAutoReplyProps) => {
     }));
   }, [props.dataAutoReply]);
 
-  const [selectedOption, setSelectedOption] = useState();
   const [inputValue, setInputValue] = useState("");
   const [options, setOptions] = useState<
     {
@@ -56,7 +55,6 @@ const BoxSelectAutoReply = (props: BoxSelectAutoReplyProps) => {
       const matchedOption = options.find((option) => {
         return option.value === selected;
       });
-      setSelectedOption(selected);
       setInputValue((matchedOption && matchedOption.label) || "");
       if (selected !== props.value) {
         props.onChange && props.onChange(selected);
@@ -95,6 +93,7 @@ const BoxSelectAutoReply = (props: BoxSelectAutoReplyProps) => {
         onSearch={updateText}
         options={optionsMarkup || []}
         onChange={updateSelection}
+        placeholder="Select Auto-Reply"
       ></Select>
     </div>
   );

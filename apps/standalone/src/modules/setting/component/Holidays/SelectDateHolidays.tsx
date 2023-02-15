@@ -53,13 +53,16 @@ const SelectDateHolidays = ({
     }
   }, [valueDate]);
   return (
-    <RangePicker
-      disabledDate={disabledDate}
-      value={selectedDates}
-      format="DD/MM/YYYY"
-      onChange={(dates) => handleChangeDate(dates)}
-      status={error ? "error" : undefined}
-    />
+    <div>
+      <RangePicker
+        disabledDate={disabledDate}
+        value={selectedDates}
+        format="DD/MM/YYYY"
+        onChange={(dates) => handleChangeDate(dates)}
+        status={error ? "error" : undefined}
+      />
+      <div hidden>{value}</div>
+    </div>
   );
 };
 
