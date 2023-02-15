@@ -1,3 +1,4 @@
+import { useToggle } from "@moose-desk/core";
 import { AutoReply, Holidays } from "@moose-desk/repo";
 import { Input, Modal, ModalProps } from "antd";
 import dayjs from "dayjs";
@@ -28,12 +29,14 @@ const ModalHoliday = ({
 }: ModalHolidayProps) => {
   const [form] = Form.useForm();
   const dateNow = new Date();
+  const { toggle: update } = useToggle();
   const [valueDate, setValueDate] = useState<{
     startDate: Date;
     endDate: Date;
   }>();
   const handleSubmitValue = useCallback(
     (values: FormikValues) => {
+      console.log(1);
       onChange &&
         onChange({
           startDate: dayjs(valueDate ? valueDate.startDate : Date.now()).format(
@@ -50,12 +53,12 @@ const ModalHoliday = ({
     },
     [valueDate]
   );
-  // handle Validate regex
-  // const validateObject = object().shape({
-  //   name: string().required("Required!"),
-  //   autoReplyCode: string().required("Required!"),
-  //   date: string().required("Required!"),
-  // });
+  // handleChangeValue
+
+  const handleChangeValue = useCallback((value) => {
+    console.log("value form change");
+    console.log("value, ", form.getFieldsValue());
+  }, []);
   // handle Effect
   useEffect(() => {
     if (dataForm) {
@@ -88,6 +91,7 @@ const ModalHoliday = ({
     >
       <div className="mt-4">
         <Form
+          layout="vertical"
           initialValues={
             dataForm?.value || {
               name: "",
@@ -96,9 +100,10 @@ const ModalHoliday = ({
             }
           }
           form={form}
-          enableReinitialize
+          onValuesChange={handleChangeValue}
+          enableLoadForm
           onFinish={handleSubmitValue}
-          layout="vertical"
+          enableReinitialize
         >
           <Form.Item
             name="name"

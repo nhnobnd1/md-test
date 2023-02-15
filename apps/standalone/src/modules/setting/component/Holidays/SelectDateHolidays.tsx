@@ -2,7 +2,7 @@ import { DatePicker } from "antd";
 import { RangePickerProps } from "antd/es/date-picker";
 import dayjs, { Dayjs } from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import { memo, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 interface SelectDateHolidaysProps {
   valueDate?: {
@@ -15,7 +15,6 @@ interface SelectDateHolidaysProps {
   onChange?: (value: any) => void;
 }
 
-const { RangePicker } = DatePicker;
 const SelectDateHolidays = ({
   valueDate,
   onChangeValueDate,
@@ -40,7 +39,7 @@ const SelectDateHolidays = ({
           startDate: startDate.toDate(),
           endDate: endDate.toDate(),
         });
-      onChange && onChange(`${startDate.getDate()}`);
+      onChange && onChange(`${startDate}`);
     },
     [onChangeValueDate, onChange]
   );
@@ -48,7 +47,7 @@ const SelectDateHolidays = ({
   useEffect(() => {
     if (valueDate?.startDate) {
       setSelectedDates([dayjs(valueDate.startDate), dayjs(valueDate.endDate)]);
-      onChange && onChange(`${valueDate.startDate.getDate()}`);
+      onChange && onChange(`${valueDate.startDate}`);
     } else {
       setSelectedDates(undefined);
     }
@@ -64,4 +63,4 @@ const SelectDateHolidays = ({
   );
 };
 
-export default memo(SelectDateHolidays);
+export default SelectDateHolidays;

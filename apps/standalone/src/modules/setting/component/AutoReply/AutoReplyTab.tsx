@@ -5,15 +5,24 @@ import { memo, useCallback, useEffect, useState } from "react";
 import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
 import TableAction from "src/components/UI/Table/TableAction/TableAction";
+import useNotification from "src/hooks/useNotification";
 import ModalAutoReply from "src/modules/setting/component/AutoReply/ModalAutoReply";
 
 interface AutoReplyTabProps {
   value?: AutoReply[];
   onChange?: (value: AutoReply[]) => void;
   dataHolidays: Holidays[];
+  dataBusinessHoursAutoReplyCode: string;
 }
 
-const AutoReplyTab = ({ value, onChange, dataHolidays }: AutoReplyTabProps) => {
+const AutoReplyTab = ({
+  value,
+  onChange,
+  dataHolidays,
+  dataBusinessHoursAutoReplyCode,
+  ...props
+}: AutoReplyTabProps) => {
+  const notification = useNotification();
   const [isDetail, setIsDetail] = useState<boolean>(false);
   const [valueListAutoReplys, setValueListAutoReplys] = useState<AutoReply[]>(
     []
@@ -44,31 +53,35 @@ const AutoReplyTab = ({ value, onChange, dataHolidays }: AutoReplyTabProps) => {
     [valueListAutoReplys]
   );
   // delete
-  const [isOpen, setIsOpen] = useState(false);
-  const [deleteAutoReply, setDeleteAutoReply] = useState<number>(0);
-  const handleOpenModalDelete = (index: number) => {
-    setIsOpen(true);
-    setDeleteAutoReply(index);
-  };
   const handleRemoveAutoReply = useCallback(
     (indexDelete: number) => {
       const findAutoReplyCode = dataHolidays.find(
         (holiday) =>
           holiday.autoReplyCode === valueListAutoReplys[indexDelete].code
       );
-      if (!findAutoReplyCode) {
+
+      if (
+        !findAutoReplyCode &&
+        valueListAutoReplys[indexDelete].code !== dataBusinessHoursAutoReplyCode
+      ) {
         setValueListAutoReplys((init: AutoReply[]) => {
           init.splice(indexDelete, 1);
           onChange && onChange([...init]);
           return init;
         });
       } else {
-        // show(`Auto Reply is being used in a holiday. Please check again!`, {
-        //   isError: true,
-        // });
+        notification.error(
+          "Auto Reply is being used in a holiday or business hours. Please check again!",
+          {
+            description: "Update failed!",
+            style: {
+              width: 450,
+            },
+          }
+        );
       }
     },
-    [deleteAutoReply, valueListAutoReplys, dataHolidays]
+    [valueListAutoReplys, dataHolidays, dataBusinessHoursAutoReplyCode]
   );
   // modal
 
@@ -83,14 +96,18 @@ const AutoReplyTab = ({ value, onChange, dataHolidays }: AutoReplyTabProps) => {
           ) {
             init.splice(dataForm.index, 1, value);
             onChange && onChange([...init]);
+            notification.success("Edit Auto Reply success!");
             return init;
           } else {
-            // show(
-            //   `Auto Reply name ${value.name} already exists. Please try again!`,
-            //   {
-            //     isError: true,
-            //   }
-            // );
+            notification.error(
+              `Auto Reply name ${value.name} already exists. Please try again!`,
+              {
+                description: `Auto Reply name ${value.name} already exists. Please try again!`,
+                style: {
+                  width: 450,
+                },
+              }
+            );
             return init;
           }
         });
@@ -98,14 +115,18 @@ const AutoReplyTab = ({ value, onChange, dataHolidays }: AutoReplyTabProps) => {
         setValueListAutoReplys((init: AutoReply[]) => {
           if (!init.find((data) => data.name === value.name)) {
             onChange && onChange([...init, { ...value }]);
+            notification.success("New Auto Reply has been created!");
             return [...init, { ...value }];
           } else {
-            // show(
-            //   `Auto Reply name ${value.name} already exists. Please try again!`,
-            //   {
-            //     isError: true,
-            //   }
-            // );
+            notification.error(
+              `Auto Reply name ${value.name} already exists. Please try again!`,
+              {
+                description: `Auto Reply name ${value.name} already exists. Please try again!`,
+                style: {
+                  width: 450,
+                },
+              }
+            );
             return init;
           }
         });

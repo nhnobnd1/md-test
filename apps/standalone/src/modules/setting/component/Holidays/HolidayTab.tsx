@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
 import TableAction from "src/components/UI/Table/TableAction/TableAction";
+import useNotification from "src/hooks/useNotification";
 import ModalHoliday from "src/modules/setting/component/Holidays/ModalHoliday";
 
 interface HolidayTabProps {
@@ -19,6 +20,7 @@ const HolidayTab = ({
   dataAutoReply,
   ...props
 }: HolidayTabProps) => {
+  const notification = useNotification();
   const [valueListHolidays, setValueListHolidays] = useState<Holidays[]>([]);
   const [valueTableHolidays, setValueTableHolidays] = useState<Holidays[]>([]);
   const defaultFilter = () => ({
@@ -78,11 +80,13 @@ const HolidayTab = ({
         setValueListHolidays((init: Holidays[]) => {
           init.splice(dataForm.index, 1, value);
           onChange && onChange([...init]);
+          notification.success("Edit Holiday success!");
           return init;
         });
       } else {
         setValueListHolidays((init: Holidays[]) => {
           onChange && onChange([...init, { ...value }]);
+          notification.success("New Holiday has been created!");
           return [...init, { ...value }];
         });
       }

@@ -6,11 +6,13 @@ import {
   Holidays,
 } from "@moose-desk/repo";
 import BusinessCalendarRepository from "@moose-desk/repo/businessCalendar/BusinessCalendarRepository";
-import { Card, Tabs, TabsProps } from "antd";
+import { Button, Card, Space, Tabs } from "antd";
 import { useCallback, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
+import useMessage from "src/hooks/useMessage";
+import useNotification from "src/hooks/useNotification";
 import AutoReplyTab from "src/modules/setting/component/AutoReply/AutoReplyTab";
 import BusinessHoursTab from "src/modules/setting/component/BusinessHours/BusinessHoursTab";
 import HolidayTab from "src/modules/setting/component/Holidays/HolidayTab";
@@ -18,12 +20,16 @@ import SelectTimeZone from "src/modules/setting/component/SelectTimeZone/SelectT
 interface BusinessHoursProps {}
 
 const BusinessHours = (props: BusinessHoursProps) => {
+  const message = useMessage();
+  const notification = useNotification();
   // main code
   const [dataBusinessCalendar, setDataBusinessCalendar] =
     useState<BusinessCalendar>();
   const { toggle: updateForm } = useToggle();
   const [dataAutoReply, setDataAutoReply] = useState<AutoReply[]>([]);
   const [dataHolidays, setDataHolidays] = useState<Holidays[]>([]);
+  const [dataBusinessHoursAutoReplyCode, setDataBusinessHoursAutoReplyCode] =
+    useState("");
   const [selected, setSelected] = useState(0);
   const [form] = Form.useForm();
   const [disabled, setDisabled] = useState(false);
@@ -64,9 +70,35 @@ const BusinessHours = (props: BusinessHoursProps) => {
         })
         .pipe(
           map(({ data }) => {
-            setDataBusinessCalendar({ ...data.data[0] });
-            setDataAutoReply([...data.data[0].autoReply]);
-            setDataHolidays([...data.data[0].holidays]);
+            if (data.statusCode === 200) {
+              setDataBusinessCalendar({ ...data.data[0] });
+              setDataAutoReply([...data.data[0].autoReply]);
+              setDataHolidays([...data.data[0].holidays]);
+              if (data.data[0].businessHoursType === "24/7") {
+                setDisabled(true);
+              } else {
+                setDisabled(false);
+              }
+              setDataBusinessHoursAutoReplyCode(
+                data.data[0].businessHoursAutoReplyCode
+              );
+            } else {
+              message.error(
+                "Get data business calendar failed! Please try again."
+              );
+            }
+          }),
+          catchError((error) => {
+            notification.error(
+              "Get data business calendar failed! Please try again.",
+              {
+                description: "Get data failed!",
+                style: {
+                  width: 450,
+                },
+              }
+            );
+            return of(error);
           })
         );
     },
@@ -75,16 +107,33 @@ const BusinessHours = (props: BusinessHoursProps) => {
 
   // update business calendar
   const { run: updateBusinessCalendar } = useJob((dataSubmit: any) => {
+    message.loading.show("Updating business calendar...");
     const { _id } = dataSubmit;
     return BusinessCalendarRepository()
       .updateBusinessCalendar(_id, dataSubmit)
       .pipe(
         map(({ data }) => {
+          message.loading.hide();
           if (data.statusCode === 200) {
-            //
+            notification.success(
+              "Your settings have been changed successfully."
+            );
+          } else {
+            notification.error("Business hours has been updated failed.", {
+              description: "Update failed!",
+              style: {
+                width: 450,
+              },
+            });
           }
         }),
         catchError((error) => {
+          notification.error("Business hours has been updated failed.", {
+            description: "Update failed!",
+            style: {
+              width: 450,
+            },
+          });
           return of(error);
         })
       );
@@ -94,33 +143,6 @@ const BusinessHours = (props: BusinessHoursProps) => {
     updateBusinessCalendar(data);
   }, []);
   // UI Tabs
-  const items: TabsProps["items"] = [
-    {
-      key: "1",
-      label: `Business Hours`,
-      children: (
-        <BusinessHoursTab dataAutoReply={dataAutoReply} disabled={disabled} />
-      ),
-    },
-    {
-      key: "2",
-      label: `Holidays`,
-      children: (
-        <Form.Item name="holidays">
-          <HolidayTab dataAutoReply={dataAutoReply} />
-        </Form.Item>
-      ),
-    },
-    {
-      key: "3",
-      label: `Auto-reply`,
-      children: (
-        <Form.Item name="autoReply">
-          <AutoReplyTab dataHolidays={dataHolidays} />
-        </Form.Item>
-      ),
-    },
-  ];
   // handle Effect
   useMount(() => fetchListBusinessCalendar());
   return (
@@ -129,16 +151,64 @@ const BusinessHours = (props: BusinessHoursProps) => {
       <Form
         initialValues={dataBusinessCalendar || {}}
         form={form}
-        onValuesChange={handleChangeValues}
         enableReinitialize
+        onFinish={handleSubmit}
+        onValuesChange={handleChangeValues}
       >
         <Form.Item name="timezone" label="Time zone:">
           <SelectTimeZone />
         </Form.Item>
         <Card>
-          <Tabs defaultActiveKey="1" items={items} onChange={handleTabChange} />
+          <Tabs
+            defaultActiveKey="1"
+            items={[
+              {
+                key: "1",
+                label: `Business Hours`,
+                children: (
+                  <BusinessHoursTab
+                    dataAutoReply={dataAutoReply}
+                    disabled={disabled}
+                  />
+                ),
+              },
+              {
+                key: "2",
+                label: `Holidays`,
+                children: (
+                  <Form.Item name="holidays">
+                    <HolidayTab dataAutoReply={dataAutoReply} />
+                  </Form.Item>
+                ),
+              },
+              {
+                key: "3",
+                label: `Auto-reply`,
+                children: (
+                  <Form.Item name="autoReply">
+                    <AutoReplyTab
+                      dataHolidays={dataHolidays}
+                      dataBusinessHoursAutoReplyCode={
+                        dataBusinessHoursAutoReplyCode
+                      }
+                    />
+                  </Form.Item>
+                ),
+              },
+            ]}
+            onChange={handleTabChange}
+          />
         </Card>
+        <Form.Item name="_id" hidden />
       </Form>
+      <div className="flex-1 text-right mt-4">
+        <Space>
+          <Button onClick={() => form.resetFields()}>Cancel</Button>
+          <Button type="primary" onClick={() => form.submit()}>
+            Save
+          </Button>
+        </Space>
+      </div>
     </>
   );
 };

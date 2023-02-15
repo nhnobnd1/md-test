@@ -1,9 +1,8 @@
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { AutoReply } from "@moose-desk/repo";
 import { Input, Modal, ModalProps } from "antd";
 import { FormikValues } from "formik";
 import { memo, useCallback } from "react";
-import Editor from "src/components/UI/Editor/Editor";
+import TextEditor from "src/components/UI/Editor/TextEditor";
 import { Form } from "src/components/UI/Form";
 
 interface ModalAutoReplyProps extends ModalProps {
@@ -24,20 +23,6 @@ const ModalAutoReply = ({
   ...props
 }: ModalAutoReplyProps) => {
   const [form] = Form.useForm();
-  ClassicEditor.create(Editor, {
-    extraPlugins: [],
-    toolbar: [
-      "bold",
-      "italic",
-      "heading",
-      "bulletedList",
-      "numberedList",
-      "link",
-      "undo",
-      "redo",
-      "InsertDropDown",
-    ],
-  });
   const day = new Date();
   const handleSubmitValue = useCallback(
     (values: FormikValues) => {
@@ -92,7 +77,53 @@ const ModalAutoReply = ({
             <Form.Item name="code" hidden />
             <Form.Item name="createAt" hidden></Form.Item>
             <Form.Item name="content" label="Content">
-              <Editor />
+              <TextEditor
+                init={{
+                  toolbar:
+                    "undo redo blocks fontfamily fontsize bold italic underline strikethrough link image media table mergetags addcomment showcomments spellcheckdialog a11ycheck typography align lineheight | selectTypeAutoReply",
+                  setup: (editor) => {
+                    /* Helper functions */
+                    const handleText = (text: string) => {
+                      return text;
+                    };
+                    editor.ui.registry.addMenuButton("selectTypeAutoReply", {
+                      text: "Holiday name",
+                      fetch: (callback: any) => {
+                        const items = [
+                          {
+                            type: "menuitem",
+                            text: "Holiday Date",
+                            onAction: () => {
+                              editor.insertContent(
+                                handleText("{{holiday.date}}")
+                              );
+                            },
+                          },
+                          {
+                            type: "menuitem",
+                            text: "Business Hours",
+                            onAction: () => {
+                              editor.insertContent(
+                                handleText("{{businesscalendar.hours}}")
+                              );
+                            },
+                          },
+                          {
+                            type: "menuitem",
+                            text: "Business Date",
+                            onAction: () => {
+                              editor.insertContent(
+                                handleText("{{businesscalendar.date}}")
+                              );
+                            },
+                          },
+                        ];
+                        callback(items);
+                      },
+                    });
+                  },
+                }}
+              />
             </Form.Item>
           </Form>
         </div>
