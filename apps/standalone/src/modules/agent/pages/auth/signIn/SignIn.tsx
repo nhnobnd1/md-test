@@ -46,6 +46,7 @@ export const SignIn = (props: SignInProps) => {
     },
   });
   const [errorMessage, setErrorMessage] = useState("");
+  const [factorErrorMessage, setFactorErrorMessage] = useState("");
   const navigate = useNavigate();
   const initialValues = useMemo(() => {
     return {
@@ -94,8 +95,8 @@ export const SignIn = (props: SignInProps) => {
                 };
               });
             } else {
-              if (["INVALID_AUTHENTICATOR_CODE"].includes(errorCode)) {
-                setErrorMessage(`Wrong code. Try again.`);
+              if (error.includes("INVALID_AUTHENTICATOR_CODE")) {
+                setFactorErrorMessage(`Wrong code. Try again.`);
               } else if (["USER_NOT_FOUND"].includes(errorCode)) {
                 setErrorMessage("This account does not exist");
               } else {
@@ -257,6 +258,7 @@ export const SignIn = (props: SignInProps) => {
                   <Factor2Auth
                     type={factor.type}
                     state={factor.state}
+                    errorMessage={factorErrorMessage}
                     onFinish={signInApi}
                     onResend={signInApi}
                   />

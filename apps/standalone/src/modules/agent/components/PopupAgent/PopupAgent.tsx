@@ -1,4 +1,4 @@
-import { useCountDown, useJob } from "@moose-desk/core";
+import { useJob } from "@moose-desk/core";
 import {
   Agent,
   AgentRepository,
@@ -15,6 +15,7 @@ import { Loading } from "src/components/Loading";
 import { ButtonModalDelete } from "src/components/UI/Button/ButtonModalDelete";
 import Form from "src/components/UI/Form/Form";
 import { Header } from "src/components/UI/Header";
+import { useCountDown } from "src/hooks/useCountDown";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import {
