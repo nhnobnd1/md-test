@@ -1,4 +1,5 @@
-import { useDidUpdate } from "@moose-desk/core";
+import { StorageManager, useDidUpdate } from "@moose-desk/core";
+import dayjs from "dayjs";
 import { useCallback, useEffect, useState } from "react";
 
 export interface CountDown {
@@ -19,16 +20,35 @@ export function useCountDown({ initValue, key }: CountDown): UseCountDown {
     [props: string]: any;
   }>({});
 
-  useEffect(() => {
-    if (key && !listCountDown[key]) {
+  const initCountdown = useCallback(
+    (key: string) => {
       setListCountDown((value) => ({
         ...value,
         [key]: initValue,
       }));
+      setUpTimer(key);
+    },
+    [initValue]
+  );
+
+  useEffect(() => {
+    if (key && !listCountDown[key]) {
+      const countDownJson = StorageManager.getToken("countDown");
+      if (countDownJson) {
+        const countDownProcess = JSON.parse(countDownJson);
+        if (countDownProcess[key]) {
+          console.log("aaa", countDownProcess[key]);
+        }
+      }
     }
   }, [key]);
 
   useDidUpdate(() => {
+    console.log(listCountDown);
+    StorageManager.setToken(
+      "countDown",
+      JSON.stringify({ ...listCountDown, dateleaving: dayjs() })
+    );
     Object.keys(listCountDown).forEach((key) => {
       if (listCountDown[key] === 0) {
         clearCountDown(key);
@@ -71,17 +91,6 @@ export function useCountDown({ initValue, key }: CountDown): UseCountDown {
       }
     },
     [timerObj]
-  );
-
-  const initCountdown = useCallback(
-    (key: string) => {
-      setListCountDown((value) => ({
-        ...value,
-        [key]: initValue,
-      }));
-      setUpTimer(key);
-    },
-    [initValue]
   );
 
   return {

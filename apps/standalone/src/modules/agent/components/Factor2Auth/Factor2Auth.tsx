@@ -7,6 +7,7 @@ import "./Factor2Auth.scss";
 
 interface Factor2AuthProps {
   type: "email" | "authenticator";
+  errorMessage?: string;
   state: {
     email: string;
     password: string;
@@ -19,6 +20,7 @@ interface Factor2AuthProps {
 export const Factor2Auth = ({
   type,
   state,
+  errorMessage,
   onFinish,
   onResend,
 }: Factor2AuthProps) => {
@@ -97,6 +99,9 @@ export const Factor2Auth = ({
             Login
           </Button>
         </Form>
+        {errorMessage && (
+          <div className="error-message mt-2">{errorMessage}</div>
+        )}
         <div className="mt-4">
           <span
             className={classNames(["link text-base"], {
