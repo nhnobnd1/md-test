@@ -16,6 +16,7 @@ import { uniqBy } from "lodash-es";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { map } from "rxjs";
 import { ButtonDelete } from "src/components/Button/ButtonDelete";
+import { ButtonSort } from "src/components/Button/ButtonSort";
 import { ModalDelete } from "src/components/Modal/ModalDelete";
 import { Pagination } from "src/components/Pagination";
 import {
@@ -25,6 +26,8 @@ import {
   SelectOptions,
 } from "src/components/Select";
 import env from "src/core/env";
+import { SortOrderOptions } from "src/models/Form";
+import { optionsSortMembers } from "src/modules/groups/constant";
 
 interface GroupFormMembersProps {
   id?: string;
@@ -50,6 +53,12 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
     []
   );
   const [meta, setMeta] = useState<BaseMetaDataListResponse>();
+  const [sortValue, setSortValue] = useState<string[]>([]);
+  const {
+    state: btnSort,
+    toggle: toggleBtnSort,
+    off: closeBtnSort,
+  } = useToggle();
   const {
     state: modalRemoveMember,
     on: openModalRemoveMember,
@@ -238,6 +247,20 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
     value && setGroupIds(value);
   }, [value]);
 
+  const handleSort = useCallback(
+    (selected: string[]) => {
+      const arraySort = selected[0].split(":");
+      const sortBy = arraySort[0];
+      const sortOrder = arraySort[1] === SortOrderOptions.ACS ? 1 : -1;
+      setSortValue(selected);
+
+      setFilterData((value) => {
+        return { ...value, sortBy, sortOrder };
+      });
+    },
+    [filterData]
+  );
+
   return (
     <>
       <ModalDelete
@@ -272,7 +295,18 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
           queryPlaceholder="Search"
           filters={[]}
           onClearAll={resetFilterData}
-        ></Filters>
+        >
+          <div className="pl-2">
+            <ButtonSort
+              active={btnSort}
+              sortValue={sortValue}
+              onSort={handleSort}
+              onShow={toggleBtnSort}
+              onClose={closeBtnSort}
+              options={optionsSortMembers}
+            />
+          </div>
+        </Filters>
       </div>
       <IndexTable
         loading={loadingGetList}
@@ -283,7 +317,9 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
         emptyState={
           <EmptySearchResult
             title={"No member group yet"}
-            description={"Try changing the filters or search term"}
+            description={
+              "Sorry! There is no records matched with your search criteria"
+            }
             withIllustration
           />
         }

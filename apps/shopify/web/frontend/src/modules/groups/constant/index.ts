@@ -12,3 +12,10 @@ export const optionsSort: Choice[] = [
     value: `memberCount:${SortOrderOptions.DES}`,
   },
 ];
+
+export const optionsSortMembers: Choice[] = [
+  { label: "Name A-Z", value: `name:${SortOrderOptions.ACS}` },
+  { label: "Name Z-A", value: `name:${SortOrderOptions.DES}` },
+  { label: "Email A-Z", value: `email:${SortOrderOptions.ACS}` },
+  { label: "Email Z-A", value: `email:${SortOrderOptions.DES}` },
+];
