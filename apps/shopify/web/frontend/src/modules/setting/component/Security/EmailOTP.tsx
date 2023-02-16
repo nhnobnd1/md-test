@@ -1,4 +1,4 @@
-import { useJob, useMount } from "@moose-desk/core";
+import { useCountDown, useJob, useMount } from "@moose-desk/core";
 import { MethodOTP, UserSettingRepository } from "@moose-desk/repo";
 import {
   Button,
@@ -34,6 +34,16 @@ const EmailOPT = ({
   show,
   setBanner,
 }: EmailOPT) => {
+  const timeOut = 30;
+  const {
+    clearCountDown,
+    initCountdown: startCountDown,
+    state,
+  } = useCountDown({
+    initValue: timeOut,
+    key: "countDownResendEmail",
+  });
+  const [secondResend, setSecondResend] = useState(false);
   const [onResendEmail, setOnResendEmail] = useState(false);
   const [error, setError] = useState(false);
   const handleSubmit = useCallback(
@@ -105,9 +115,12 @@ const EmailOPT = ({
           setOnResendEmail(true);
         }, 300000);
       } else {
+        setSecondResend(true);
         setOnResendEmail(false);
+        startCountDown("countDownResendEmail");
         setTimeout(() => {
           setOnResendEmail(true);
+          clearCountDown("countDownResendEmail");
         }, 30000);
       }
     },
@@ -168,6 +181,13 @@ const EmailOPT = ({
                         accessibilityLabel="Small spinner example"
                         size="small"
                       />
+                    ) : null}
+                    {state !== 0 && !onResendEmail && secondResend ? (
+                      <div className="ml-2">
+                        <Text as="span" variant="bodyMd">
+                          ({state} seconds)
+                        </Text>
+                      </div>
                     ) : null}
                   </div>
                 </div>

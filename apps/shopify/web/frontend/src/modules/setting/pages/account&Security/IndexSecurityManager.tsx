@@ -117,10 +117,10 @@ export default function IndexAccountManager() {
             } else {
               setBanner({
                 isShowBanner: true,
-                message: "Password updated failed.",
+                message: "Current Password not match! Please try again.",
                 status: "critical",
               });
-              show(`Password updated failed`, {
+              show("Current Password not match! Please try again.", {
                 isError: true,
               });
             }
