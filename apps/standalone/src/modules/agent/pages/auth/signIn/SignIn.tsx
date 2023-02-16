@@ -97,8 +97,10 @@ export const SignIn = (props: SignInProps) => {
             } else {
               if (error.includes("INVALID_AUTHENTICATOR_CODE")) {
                 setFactorErrorMessage(`Wrong code. Try again.`);
-              } else if (["USER_NOT_FOUND"].includes(errorCode)) {
-                setErrorMessage("This account does not exist");
+              } else if (error.includes("USER_NOT_FOUND")) {
+                setErrorMessage(
+                  "We're sorry, the email address you entered does not exist in our system. Please double-check your email address"
+                );
               } else {
                 message.error("Login failed");
                 const numberLoginFailed = error[0].split("/")[0];
