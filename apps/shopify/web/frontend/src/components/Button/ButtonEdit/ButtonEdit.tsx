@@ -8,7 +8,6 @@ export const ButtonEdit = ({ children, ...props }: ButtonEditProps) => {
     <Button
       icon={() => <Icon source={() => <EditMinor />} color="base" />}
       size="slim"
-      primary
       {...props}
     ></Button>
   );

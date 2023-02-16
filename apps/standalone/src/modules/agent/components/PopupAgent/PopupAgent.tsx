@@ -350,7 +350,14 @@ export const PopupAgent = ({
       onCancel={onCancel}
       footer={
         <Space>
-          <Button onClick={() => form.resetFields()}>Cancel</Button>
+          <Button
+            onClick={() => {
+              form.resetFields();
+              onCancel && onCancel();
+            }}
+          >
+            Cancel
+          </Button>
           {dataForm?._id ? (
             <>
               {!dataForm.emailConfirmed && dataForm.isActive ? (

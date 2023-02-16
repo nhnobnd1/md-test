@@ -206,7 +206,10 @@ const AgentsIndex = (props: AgentsIndexProps) => {
               key="lastName"
               title="Agent"
               render={(_, record: Agent) => (
-                <span>
+                <span
+                  className="cursor-pointer hover:underline hover:text-blue-500"
+                  onClick={() => handleEdit(record)}
+                >
                   {record.lastName === "admin"
                     ? record.firstName
                     : record.firstName + " " + record.lastName}
