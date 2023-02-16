@@ -94,17 +94,17 @@ const ResetPassword = (props: ResetPasswordProps) => {
 
   return (
     <div className="resetPassword">
-      <div className="card">
-        <div className="w-[80%] h-full mx-auto">
+      <div className="card xxl:w-[40%] xl:w-[55%] md:w-[70%] w-[80%]">
+        <div className="h-full mx-auto">
           <div className="pt-[40px]">
             <div className="card-image">
-              <SyncOutlined style={{ fontSize: 120 }} />
+              <SyncOutlined style={{ fontSize: 80 }} />
             </div>
             {!finalPage ? (
               <div className="card-form">
                 <Form
-                  labelCol={{ span: 6 }}
-                  wrapperCol={{ span: 18 }}
+                  labelCol={{ span: 8, xl: 6 }}
+                  wrapperCol={{ span: 16, xl: 18 }}
                   initialValues={initialValues}
                   onFinish={handleSubmit}
                 >
