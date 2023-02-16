@@ -3,7 +3,7 @@ import { AutoReply, Holidays } from "@moose-desk/repo";
 import { Input, Modal, ModalProps } from "antd";
 import dayjs from "dayjs";
 import { FormikValues } from "formik";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Form } from "src/components/UI/Form";
 import BoxSelectAutoReply from "src/modules/setting/component/BoxSelectAutoReply/BoxSelectAutoReply";
 import SelectDateHolidays from "src/modules/setting/component/Holidays/SelectDateHolidays";
@@ -34,9 +34,19 @@ const ModalHoliday = ({
     startDate: Date;
     endDate: Date;
   }>();
+
+  const initialValues = useMemo(() => {
+    return (
+      dataForm?.value || {
+        name: "",
+        date: "",
+        autoReplyCode: "",
+      }
+    );
+  }, [dataForm?.value]);
+
   const handleSubmitValue = useCallback(
     (values: FormikValues) => {
-      console.log(1);
       onChange &&
         onChange({
           startDate: dayjs(valueDate ? valueDate.startDate : Date.now()).format(
@@ -53,12 +63,7 @@ const ModalHoliday = ({
     },
     [valueDate]
   );
-  // handleChangeValue
 
-  const handleChangeValue = useCallback((value) => {
-    console.log("value form change");
-    console.log("value, ", form.getFieldsValue());
-  }, []);
   // handle Effect
   useEffect(() => {
     if (dataForm) {
@@ -92,17 +97,10 @@ const ModalHoliday = ({
       <div className="mt-4">
         <Form
           layout="vertical"
-          initialValues={
-            dataForm?.value || {
-              name: "",
-              date: "",
-              autoReplyCode: "",
-            }
-          }
           form={form}
-          onValuesChange={handleChangeValue}
-          enableLoadForm
+          initialValues={initialValues}
           onFinish={handleSubmitValue}
+          enableLoadForm
           enableReinitialize
         >
           <Form.Item

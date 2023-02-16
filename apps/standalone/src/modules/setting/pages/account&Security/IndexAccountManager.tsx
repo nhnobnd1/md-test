@@ -178,9 +178,7 @@ export default function IndexAccountManager({ props }: any) {
               use the sign up link.
             </p>
             <div>
-              <a onClick={() => console.log(1)}>
-                {getLinkSignUp(import.meta.env.MODE)}
-              </a>
+              <a>{getLinkSignUp(import.meta.env.MODE)}</a>
             </div>
           </div>
         </div>

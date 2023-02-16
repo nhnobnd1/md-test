@@ -1,5 +1,5 @@
 import { Editor, IAllProps } from "@tinymce/tinymce-react";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useRef } from "react";
 interface TextEditorProps extends Omit<IAllProps, "onChange" | "value"> {
   value?: any;
   onChange?: (value: any) => void;
@@ -17,9 +17,6 @@ const TextEditor = ({ value, onChange, error, ...props }: TextEditorProps) => {
     onChange && onChange(editorRef.current.getContent());
   }, []);
 
-  useEffect(() => {
-    console.log("value", value);
-  }, [value]);
   return (
     <div>
       {/* <div className="mb-1">

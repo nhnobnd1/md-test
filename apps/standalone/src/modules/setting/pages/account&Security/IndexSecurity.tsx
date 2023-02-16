@@ -95,7 +95,6 @@ export default function IndexAccountManager() {
           }
         }),
         catchError((error) => {
-          console.log(error);
           message.loading.hide();
           if (error.response.status === 400) {
             if (error.response.data.error[0] === "PASSWORD_NOT_MATCH") {

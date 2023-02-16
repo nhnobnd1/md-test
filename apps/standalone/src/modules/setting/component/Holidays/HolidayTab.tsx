@@ -95,7 +95,7 @@ const HolidayTab = ({
   );
   const [openModalHoliday, setOpenModalHoliday] = useState(false);
 
-  const handleOnpen = useCallback(() => {
+  const handleOpen = useCallback(() => {
     setOpenModalHoliday(true);
   }, []);
   const handleCloseModal = useCallback(() => {
@@ -126,13 +126,14 @@ const HolidayTab = ({
   );
 
   // handle Effect
-
   useEffect(() => {
     handleUpdateTable();
   }, [filterData, valueListHolidays]);
+
   useEffect(() => {
     setValueListHolidays(value?.length ? [...value] : []);
   }, [value]);
+
   return (
     <div className="p-2 mt-2">
       <ModalHoliday
@@ -211,7 +212,7 @@ const HolidayTab = ({
           />
         </div>
       ) : null}
-      <Link onClick={handleOnpen}>Add a holiday...</Link>
+      <Link onClick={handleOpen}>Add a holiday...</Link>
     </div>
   );
 };

@@ -11,7 +11,6 @@ import useNotification from "src/hooks/useNotification";
 
 export default function IndexProfileManager() {
   const token = jose.decodeJwt(TokenManager.getToken("base_token") || "");
-  //   console.log(TokenManager.getToken("base_token"));
 
   const message = useMessage();
   const notification = useNotification();
