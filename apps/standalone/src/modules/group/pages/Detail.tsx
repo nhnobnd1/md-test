@@ -103,13 +103,23 @@ const DetailGroup = (props: DetailGroupProps) => {
     <div>
       <Header className="pb-6" title={group?.name ?? ""} back>
         <div className="flex justify-end items-center flex-1">
-          <Button
-            type="primary"
-            loading={loadingUpdateGroup}
-            onClick={() => form.submit()}
-          >
-            Save
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              onClick={() => {
+                form.resetFields();
+                navigate(generatePath(GroupRoutePaths.Index));
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="primary"
+              loading={loadingUpdateGroup}
+              onClick={() => form.submit()}
+            >
+              Save
+            </Button>
+          </div>
         </div>
       </Header>
       <GroupForm

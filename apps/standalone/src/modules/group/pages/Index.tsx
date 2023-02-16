@@ -195,7 +195,18 @@ const GroupIndexPage: PageComponent<GroupIndexPageProps> = () => {
           <Table.Column
             key="name"
             title="Group name"
-            render={(_, record: UserGroup) => <span>{record.name}</span>}
+            render={(_, record: UserGroup) => (
+              <span
+                className="cursor-pointer hover:underline hover:text-blue-500"
+                onClick={() =>
+                  navigate(
+                    generatePath(GroupRoutePaths.Detail, { id: record._id })
+                  )
+                }
+              >
+                {record.name}
+              </span>
+            )}
             sorter={{
               compare: (a: any, b: any) => a.name - b.name,
             }}
