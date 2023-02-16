@@ -56,10 +56,15 @@ const DetailAgent = (props: CreateAgentProps) => {
     state: countDown,
     clearCountDown,
     initCountdown,
+    checkTimerProcess,
   } = useCountDown({
     initValue: 300,
     key: id ?? "",
   });
+
+  const isSendingMail = useMemo(() => {
+    return checkTimerProcess;
+  }, [id, checkTimerProcess]);
 
   const { run: getDetailAgentApi, processing: loadingGetDetail } = useJob(
     (id: string) => {
@@ -157,7 +162,6 @@ const DetailAgent = (props: CreateAgentProps) => {
             ({ data }) => {
               if (data.statusCode === 200) {
                 initCountdown(agentSaved?._id ?? id ?? "");
-                setIsSendingMail(true);
                 showBanner("success", {
                   title: `Resend invitation ${payload.email}`,
                   message: "Resend invitation mail success",
@@ -314,14 +318,6 @@ const DetailAgent = (props: CreateAgentProps) => {
       });
     }
   }, [agentSaved]);
-
-  const [isSendingMail, setIsSendingMail] = useState(false);
-
-  useEffect(() => {
-    if (countDown === 0) {
-      setIsSendingMail(false);
-    }
-  }, [countDown]);
 
   const resendMail = useCallback(() => {
     if (agentSaved && agentSaved.storeId) {

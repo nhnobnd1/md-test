@@ -1,6 +1,8 @@
 import { useToggle } from "@moose-desk/core";
+import { GetMembersGroupRequest } from "@moose-desk/repo";
 import { Button, Card, Input } from "antd";
-import { useMemo } from "react";
+import classNames from "classnames";
+import { useMemo, useState } from "react";
 import { Form, FormProps } from "src/components/UI/Form";
 import GroupFormMember from "src/modules/group/components/GroupForm/GroupFormMember";
 import "./GroupForm.scss";
@@ -23,6 +25,16 @@ export const GroupForm = ({
   ...props
 }: GroupFormProps) => {
   const { state: viewAddMember, toggle: toggleViewAddMember } = useToggle(!!id);
+
+  const defaultFilter: () => GetMembersGroupRequest = () => ({
+    page: 1,
+    limit: 5,
+    query: "",
+  });
+
+  const [filterData, setFilterData] = useState<GetMembersGroupRequest>(
+    defaultFilter()
+  );
 
   const initialValues = useMemo(() => {
     return (
@@ -63,13 +75,11 @@ export const GroupForm = ({
             </Button>
           </div>
         </Card>
-        {viewAddMember && (
-          <Card>
-            <Form.Item name="groupMembers" label="Add members">
-              <GroupFormMember groupId={id} />
-            </Form.Item>
-          </Card>
-        )}
+        <Card className={classNames({ hidden: !viewAddMember })}>
+          <Form.Item name="groupMembers" label="Add members">
+            <GroupFormMember groupId={id} />
+          </Form.Item>
+        </Card>
       </div>
     </Form>
   );

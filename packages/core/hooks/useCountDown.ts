@@ -1,5 +1,7 @@
-import { useDidUpdate } from "@moose-desk/core";
-import { useCallback, useEffect, useState } from "react";
+import dayjs from "dayjs";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { StorageManager } from "../utilities";
+import { useDidUpdate } from "./useDidUpdate";
 
 export interface CountDown {
   initValue: number;
@@ -10,6 +12,7 @@ export interface UseCountDown {
   state: number;
   clearCountDown: (key: string) => void;
   initCountdown: (key: string) => void;
+  checkTimerProcess: boolean;
 }
 export function useCountDown({ initValue, key }: CountDown): UseCountDown {
   const [listCountDown, setListCountDown] = useState<{
@@ -18,18 +21,62 @@ export function useCountDown({ initValue, key }: CountDown): UseCountDown {
   const [timerObj, setTimerObj] = useState<{
     [props: string]: any;
   }>({});
+  const [isFirst, setIsFist] = useState(true);
+
+  const initCountdown = useCallback(
+    (key: string, time?: number) => {
+      setListCountDown((value) => ({
+        ...value,
+        [key]: time || initValue,
+      }));
+    },
+    [initValue]
+  );
 
   useEffect(() => {
     if (key && !listCountDown[key]) {
-      setListCountDown((value) => ({
-        ...value,
-        [key]: initValue,
-      }));
+      const countDownJson = StorageManager.getToken("countDown");
+      const leavingDateJson = StorageManager.getToken("leavingDate");
+      if (countDownJson && leavingDateJson) {
+        const countDownProcess = JSON.parse(countDownJson);
+        const leavingDate = JSON.parse(leavingDateJson);
+        if (countDownProcess[key]) {
+          const time = leavingDate;
+          const now = dayjs().unix();
+
+          const listProcess = {
+            ...countDownProcess,
+          };
+
+          const listCount: any = {};
+          Object.keys(listProcess).forEach((itemKey) => {
+            const allTimeProcess: number =
+              countDownProcess[itemKey] - (now - time);
+            if (allTimeProcess < initValue && allTimeProcess > 0) {
+              listCount[itemKey] = allTimeProcess;
+            } else {
+              clearCountDown(itemKey);
+            }
+          });
+
+          setListCountDown((value) => ({
+            ...value,
+            ...listCount,
+          }));
+        }
+      }
     }
   }, [key]);
 
   useDidUpdate(() => {
+    console.log(listCountDown, "list");
+    StorageManager.setToken("countDown", JSON.stringify({ ...listCountDown }));
+    StorageManager.setToken("leavingDate", JSON.stringify(dayjs().unix()));
+
     Object.keys(listCountDown).forEach((key) => {
+      if (!Object.keys(timerObj).includes(key)) {
+        setUpTimer(key);
+      }
       if (listCountDown[key] === 0) {
         clearCountDown(key);
       }
@@ -37,7 +84,7 @@ export function useCountDown({ initValue, key }: CountDown): UseCountDown {
   }, [listCountDown]);
 
   const setUpTimer = useCallback(
-    (key) => {
+    (key: string) => {
       const obj: any = {};
       if (!timerObj[key]) {
         obj[key] = setInterval(() => {
@@ -73,20 +120,14 @@ export function useCountDown({ initValue, key }: CountDown): UseCountDown {
     [timerObj]
   );
 
-  const initCountdown = useCallback(
-    (key: string) => {
-      setListCountDown((value) => ({
-        ...value,
-        [key]: initValue,
-      }));
-      setUpTimer(key);
-    },
-    [initValue]
-  );
+  const checkTimerProcess = useMemo(() => {
+    return Object.keys(timerObj).includes(key);
+  }, [timerObj, key]);
 
   return {
     state: listCountDown[key],
     clearCountDown,
     initCountdown,
+    checkTimerProcess,
   };
 }

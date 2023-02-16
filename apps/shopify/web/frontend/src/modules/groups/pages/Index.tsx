@@ -78,7 +78,7 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
               ...item,
               id: item._id,
             }));
-            setGroups([]);
+            setGroups(listGroup);
             setMeta(data.metadata);
           })
         );

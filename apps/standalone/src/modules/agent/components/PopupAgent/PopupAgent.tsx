@@ -48,6 +48,7 @@ export const PopupAgent = ({
     state: countDown,
     clearCountDown,
     initCountdown,
+    checkTimerProcess,
   } = useCountDown({
     initValue: 300,
     key: dataForm?._id ?? "",
@@ -181,20 +182,6 @@ export const PopupAgent = ({
             ({ data }) => {
               if (data.statusCode === 200) {
                 initCountdown(dataForm?._id ?? "");
-                setListSending((value) => {
-                  if (value.find((item) => item.id === dataForm?._id)) {
-                    return value.map((item) =>
-                      item.id === dataForm?._id
-                        ? {
-                            id: item.id,
-                            sending: true,
-                          }
-                        : item
-                    );
-                  }
-
-                  return [...value, { id: dataForm?._id ?? "", sending: true }];
-                });
                 notification.success(`Resend invitation ${payload.email}`, {
                   description: "Resend invitation mail success",
                   style: {
@@ -214,26 +201,6 @@ export const PopupAgent = ({
         );
     }
   );
-
-  const isSendingMail = useMemo(() => {
-    return !!listSending.find((item) => item.id === dataForm?._id)?.sending;
-  }, [listSending, dataForm?._id]);
-
-  useEffect(() => {
-    if (countDown === 0) {
-      setListSending(
-        listSending.map((item) => {
-          if (item.id === dataForm?._id) {
-            return {
-              id: item.id,
-              sending: false,
-            };
-          }
-          return item;
-        })
-      );
-    }
-  }, [countDown]);
 
   const { run: deleteAgentApi, processing: loadingDelete } = useJob(
     (id: string) => {
@@ -321,6 +288,10 @@ export const PopupAgent = ({
     }
   );
 
+  const isSendingMail = useMemo(() => {
+    return checkTimerProcess;
+  }, [dataForm, checkTimerProcess]);
+
   const resendMail = useCallback(() => {
     if (dataForm && dataForm.storeId) {
       resendMailApi({
@@ -379,7 +350,14 @@ export const PopupAgent = ({
       onCancel={onCancel}
       footer={
         <Space>
-          <Button onClick={() => form.resetFields()}>Cancel</Button>
+          <Button
+            onClick={() => {
+              form.resetFields();
+              onCancel && onCancel();
+            }}
+          >
+            Cancel
+          </Button>
           {dataForm?._id ? (
             <>
               {!dataForm.emailConfirmed && dataForm.isActive ? (
