@@ -13,6 +13,7 @@ import { map } from "rxjs";
 import Images from "src/assets/images";
 import { Loading } from "src/components/Loading";
 import Breadcrumb from "src/components/UI/Breadcrums/Breadcrumb";
+import TextEditor from "src/components/UI/Editor/TextEditor";
 import useAuth from "src/hooks/useAuth";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
 import CustomersRoutePaths from "src/modules/customer/routes/paths";
@@ -305,7 +306,7 @@ export const AppLayout = (props: AppLayoutProps) => {
       </Layout.Header>
       <Layout>
         <Layout.Sider
-          width={200}
+          width={260}
           collapsible
           collapsed={collapsed}
           onCollapse={(value) => setCollapsed(value)}
@@ -351,6 +352,14 @@ export const AppLayout = (props: AppLayoutProps) => {
           </Layout.Content>
         </div>
       </Layout>
+      <div className="hidden">
+        <TextEditor
+          init={{
+            toolbar:
+              "undo redo blocks fontfamily fontsize bold italic underline strikethrough link image media table mergetags addcomment showcomments spellcheckdialog a11ycheck typography align lineheight | selectTypeAutoReply",
+          }}
+        />
+      </div>
     </Layout>
   );
 };

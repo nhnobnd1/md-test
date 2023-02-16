@@ -305,14 +305,6 @@ const GroupFormMember = memo(
       </div>
     );
   }
-  // (prev, next) => {
-  //   console.log("prev", prev);
-  //   console.log("next", next);
-  //   if (prev.value === next.value) {
-  //     return true;
-  //   }
-  //   return false;
-  // }
 );
 
 export default GroupFormMember;

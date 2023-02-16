@@ -260,7 +260,9 @@ const AutoReplyTab = ({
         </div>
       ) : null}
       <>
-        <Link onClick={handleOpen}>Add an auto-reply...</Link>
+        <div>
+          <Link onClick={handleOpen}>Add an auto-reply...</Link>
+        </div>
       </>
     </div>
   );

@@ -113,26 +113,29 @@ const BusinessHours = (props: BusinessHoursProps) => {
       .updateBusinessCalendar(_id, dataSubmit)
       .pipe(
         map(({ data }) => {
-          message.loading.hide();
-          if (data.statusCode === 200) {
-            notification.success(
-              "Your settings have been changed successfully."
-            );
-          } else {
+          message.loading.hide().then(() => {
+            if (data.statusCode === 200) {
+              notification.success(
+                "Your settings have been changed successfully."
+              );
+            } else {
+              notification.error("Business hours has been updated failed.", {
+                description: "Update failed!",
+                style: {
+                  width: 450,
+                },
+              });
+            }
+          });
+        }),
+        catchError((error) => {
+          message.loading.hide().then(() => {
             notification.error("Business hours has been updated failed.", {
               description: "Update failed!",
               style: {
                 width: 450,
               },
             });
-          }
-        }),
-        catchError((error) => {
-          notification.error("Business hours has been updated failed.", {
-            description: "Update failed!",
-            style: {
-              width: 450,
-            },
           });
           return of(error);
         })
