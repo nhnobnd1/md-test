@@ -63,7 +63,7 @@ const Pagination = ({
   const ShowSize = ({ total, options }: ShowSizeProps) => {
     return (
       <div className="flex items-center">
-        <span className="mr-2">{total} Results</span>
+        <span className="mr-2 whitespace-nowrap">{total} Results</span>
         <Select
           className="mr-2"
           size={
@@ -77,7 +77,7 @@ const Pagination = ({
           options={options}
           onChange={handlePageSizeChange}
         ></Select>
-        <span>Records per page</span>
+        <span className="whitespace-nowrap">Records per page</span>
       </div>
     );
   };

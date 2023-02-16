@@ -305,7 +305,7 @@ export const AppLayout = (props: AppLayoutProps) => {
       </Layout.Header>
       <Layout>
         <Layout.Sider
-          width={200}
+          width={260}
           collapsible
           collapsed={collapsed}
           onCollapse={(value) => setCollapsed(value)}
