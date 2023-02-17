@@ -61,9 +61,9 @@ const ChannelEmailCreate = (props: ChannelEmailCreateProps) => {
     (values: ValuesForm) => {
       if (values.mailSettingType === MailSettingType.CUSTOM) {
         if (values.mailboxType === MailBoxType.GMAIL) {
-          createMailGoogle(values);
+          createMail(values);
         } else if (values.mailboxType === MailBoxType.OUTLOOK) {
-          createMailOutLook(values);
+          createMail(values);
         } else {
           createMailExternal(values);
         }
@@ -77,15 +77,10 @@ const ChannelEmailCreate = (props: ChannelEmailCreateProps) => {
   const { payloadEmailGoogle, payloadMailExternal, payloadMailMooseDesk } =
     useFormChannelEmail();
 
-  const createMailGoogle = useCallback(
+  const createMail = useCallback(
     (values: ValuesForm) => {
       createMailAPI(payloadEmailGoogle(values));
     },
-    [signCallback]
-  );
-
-  const createMailOutLook = useCallback(
-    (values: ValuesForm) => {},
     [signCallback]
   );
 

@@ -79,13 +79,14 @@ export const SetPassword = ({
           rules={[
             {
               required: true,
-              message: "Please input your password!",
+              message: "The password is required",
             },
             {
               pattern:
-                /^(?=.*[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*[@$!%*#?&])[a-zA-Z@$!%*#?&\d]{8,32}$/g,
+                // eslint-disable-next-line no-useless-escape
+                /^(?=.*[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*[@$!%*#=\/^?&])[a-zA-Z@$!%*#=\/^?&\d]{8,}$/g,
               message:
-                "Password must be have 8 characters long with uppercase, lowercase, number and wildcards",
+                "The password must be 8 characters long and must be a combination of uppercase letters, lowercase letters, numbers, and symbols",
             },
           ]}
           hasFeedback
@@ -100,7 +101,7 @@ export const SetPassword = ({
           rules={[
             {
               required: true,
-              message: "Please confirm your password!",
+              message: "The confirmation password is required",
             },
             ({ getFieldValue }) => ({
               validator(_, value) {
@@ -108,7 +109,7 @@ export const SetPassword = ({
                   return Promise.resolve();
                 }
                 return Promise.reject(
-                  new Error("The two passwords that you entered do not match!")
+                  new Error("The confirmation password is not match!")
                 );
               },
             }),

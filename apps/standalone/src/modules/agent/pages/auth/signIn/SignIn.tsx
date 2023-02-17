@@ -96,7 +96,7 @@ export const SignIn = (props: SignInProps) => {
               });
             } else {
               if (error.includes("INVALID_AUTHENTICATOR_CODE")) {
-                setFactorErrorMessage(`Wrong code. Try again.`);
+                setFactorErrorMessage(`The input OTP is incorrect`);
               } else if (error.includes("USER_NOT_FOUND")) {
                 setErrorMessage(
                   "We're sorry, the email address you entered does not exist in our system. Please double-check your email address"
@@ -177,8 +177,14 @@ export const SignIn = (props: SignInProps) => {
                       name="email"
                       label="Email"
                       rules={[
-                        { required: true, message: "Please input your email" },
-                        { type: "email", message: "Email is invalid" },
+                        {
+                          required: true,
+                          message: "Email address is required",
+                        },
+                        {
+                          type: "email",
+                          message: "The email address is not valid",
+                        },
                       ]}
                     >
                       <Input />
@@ -188,13 +194,13 @@ export const SignIn = (props: SignInProps) => {
                     name="password"
                     label="Password"
                     rules={[
-                      { required: true, message: "Please input your password" },
+                      { required: true, message: "The password is required" },
                       {
                         pattern:
                           // eslint-disable-next-line no-useless-escape
                           /^(?=.*[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*[@$!%*#=\/^?&])[a-zA-Z@$!%*#=\/^?&\d]{8,}$/g,
                         message:
-                          "Password must be have 8 characters long with uppercase, lowercase, number and wildcards",
+                          "The password must be 8 characters long and must be a combination of uppercase letters, lowercase letters, numbers, and symbols.",
                       },
                     ]}
                   >

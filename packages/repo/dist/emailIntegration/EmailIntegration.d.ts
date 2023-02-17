@@ -67,6 +67,10 @@ export interface GetEmailGoogleAuthRequest {
     subdomainForTest?: string;
     type?: "update" | "new";
 }
+export interface GetEmailMicrosoftAuthRequest {
+    subdomainForTest?: string;
+    type?: "update" | "new";
+}
 export declare type GetEmailGoogleAuthResponse = BaseResponse<string>;
 export interface GetListEmailRequest extends BaseListRequest {
 }

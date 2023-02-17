@@ -2,6 +2,7 @@ import { useJob } from "@moose-desk/core";
 import {
   AccessType,
   GetEmailGoogleAuthRequest,
+  GetEmailMicrosoftAuthRequest,
   MailBoxType,
 } from "@moose-desk/repo";
 import EmailIntegrationRepository from "@moose-desk/repo/emailIntegration/EmailIntegrationRepository";
@@ -66,9 +67,40 @@ export const CardSelectEmail = ({
     getEmailGoogleAuth(payload);
   }, [import.meta.env]);
 
+  const { run: getEmailMicrosoftAuth } = useJob(
+    (payload: GetEmailMicrosoftAuthRequest) => {
+      return EmailIntegrationRepository()
+        .getEmailMicrosoftAuth(payload)
+        .pipe(
+          map(({ data }) => {
+            if (data.statusCode === 200) {
+              window.location.href = data.data;
+            }
+          })
+        );
+    },
+    {
+      showLoading: true,
+    }
+  );
+
+  const handleSignInMicrosoft = useCallback(() => {
+    const payload: GetEmailGoogleAuthRequest = {
+      type: type,
+      ...(import.meta.env.MODE === "development" && {
+        subdomainForTest: "http://localhost:3580",
+      }),
+    };
+
+    getEmailMicrosoftAuth(payload);
+  }, [import.meta.env]);
+
   const onChangeEmail = useCallback(() => {
     if (form.getFieldValue("mailboxType") === MailBoxType.GMAIL) {
       handleSignInGoogle();
+    }
+    if (form.getFieldValue("mailboxType") === MailBoxType.OUTLOOK) {
+      handleSignInMicrosoft();
     }
   }, [form]);
 
@@ -77,7 +109,9 @@ export const CardSelectEmail = ({
       <>
         <div className="pb-6">
           The Email you just signed in is:{" "}
-          <span className="font-bold">{signCallback.supportEmail}</span>
+          <span className="font-bold">
+            {signCallback.supportEmail || form.getFieldValue("supportEmail")}
+          </span>
           <span className="ml-4 link" onClick={onChangeEmail}>
             Change email address
           </span>
@@ -158,6 +192,7 @@ export const CardSelectEmail = ({
                     <LogosMicrosoftWindows />
                   </span>
                 }
+                onClick={handleSignInMicrosoft}
               >
                 Sign In Microsoft Live Email
               </Button>

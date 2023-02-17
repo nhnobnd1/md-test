@@ -50,6 +50,17 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
             deleteFromServer: mailBoxConfig.incoming.deleteFromServer,
           };
 
+        case MailBoxType.OUTLOOK:
+          return {
+            name: email.name,
+            supportEmail: email.supportEmail || "",
+            mailSettingType: MailSettingType.CUSTOM,
+            mailboxType: email.mailboxType,
+            isPrimaryEmail: email.isPrimaryEmail,
+            accessType: mailBoxConfig?.accessType,
+            deleteFromServer: mailBoxConfig.incoming.deleteFromServer,
+          };
+
         case MailBoxType.MOOSEDESK:
           return {
             name: email.name,
@@ -120,6 +131,9 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
             }
           })
         );
+    },
+    {
+      showLoading: true,
     }
   );
 
@@ -135,7 +149,7 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
         if (values.mailboxType === MailBoxType.GMAIL) {
           updateMailGoogle(values);
         } else if (values.mailboxType === MailBoxType.OUTLOOK) {
-          updateMailOutLook(values);
+          updateMailGoogle(values);
         } else {
           updateMailExternal(values);
         }
@@ -153,11 +167,6 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
     (values: ValuesForm) => {
       updateEmailIntegration(payloadEmailGoogle(values));
     },
-    [signCallback]
-  );
-
-  const updateMailOutLook = useCallback(
-    (values: ValuesForm) => {},
     [signCallback]
   );
 
