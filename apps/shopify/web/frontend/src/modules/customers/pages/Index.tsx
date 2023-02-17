@@ -111,11 +111,19 @@ export default function CustomerIndexPage() {
       sortOrder: -1,
     },
     {
+      sortBy: "numberOfTicket",
+      sortOrder: 1,
+    },
+    {
+      sortBy: "numberOfTicket",
+      sortOrder: -1,
+    },
+    {
       sortBy: undefined,
       sortOrder: undefined,
     },
   ];
-  const [sortCustomer, setSortCustomer] = useState(4);
+  const [sortCustomer, setSortCustomer] = useState(6);
   const [valueSortCustomer, setValueSortCustomer] = useState(
     sortTemplate[Number(sortCustomer)]
   );
@@ -152,6 +160,8 @@ export default function CustomerIndexPage() {
     { label: "Sort by name Z-A", value: "1" },
     { label: "Sort by email A-Z", value: "2" },
     { label: "Sort by email Z-A", value: "3" },
+    { label: "Sort by number of Tickets A-Z", value: "4" },
+    { label: "Sort by number of Tickets Z-A", value: "5" },
   ];
   const handleSortChange = useCallback((value) => {
     setSortCustomer(parseInt(value[0]));
@@ -175,7 +185,7 @@ export default function CustomerIndexPage() {
       .pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
-            show("Delete customer success");
+            show("Customer and his tickets have been removed successfully");
             fetchListCustomer();
             setDeleteCustomer("");
           } else {

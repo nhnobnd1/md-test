@@ -26,10 +26,10 @@ export async function getInformationShop(reqQueryShop) {
       session: offlineSession,
     });
 
-    const dataCustomer = await shopify.api.rest.Customer.all({
-      session: offlineSession,
-    });
-    console.log("data.....", dataCustomer);
+    // const dataCustomer = await shopify.api.rest.Customer.all({
+    //   session: offlineSession,
+    // });
+    // console.log("data.....", dataCustomer);
 
     const data = await client.get({
       path: "shop",

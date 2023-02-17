@@ -73,7 +73,11 @@ const InputPhone = (props: InputPhoneProps) => {
   const handleChangeValueInput = useCallback(
     (value: string) => {
       setValueField(value);
-      props.onChange && props.onChange(`${flagValue}-${value}`);
+      if (value === "") {
+        props.onChange && props.onChange("");
+      } else {
+        props.onChange && props.onChange(`${flagValue}-${value}`);
+      }
     },
     [flagValue]
   );
@@ -89,6 +93,8 @@ const InputPhone = (props: InputPhoneProps) => {
               dataSelect.find((option) => option.code === value[0])?.phonePrefix
             }-${valueField}`
           );
+      } else {
+        props.onChange && props.onChange("");
       }
       togglePopoverSelect();
     },
