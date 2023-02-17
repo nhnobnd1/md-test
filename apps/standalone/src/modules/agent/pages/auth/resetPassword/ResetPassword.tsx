@@ -114,14 +114,14 @@ const ResetPassword = (props: ResetPasswordProps) => {
                     rules={[
                       {
                         required: true,
-                        message: "Please input your password!",
+                        message: "Password is required",
                       },
                       {
                         pattern:
                           // eslint-disable-next-line no-useless-escape
                           /^(?=.*[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*[@$!%*#=\/^?&])[a-zA-Z@$!%*#=\/^?&\d]{8,}$/g,
                         message:
-                          "Password must be have 8 characters long with uppercase, lowercase, number and wildcards",
+                          "The password must be 8 characters long and must be a combination of uppercase letters, lowercase letters, numbers, and symbols",
                       },
                     ]}
                     hasFeedback
@@ -136,7 +136,7 @@ const ResetPassword = (props: ResetPasswordProps) => {
                     rules={[
                       {
                         required: true,
-                        message: "Please confirm your password!",
+                        message: "The confirmation password is required",
                       },
                       ({ getFieldValue }) => ({
                         validator(_, value) {
@@ -144,9 +144,7 @@ const ResetPassword = (props: ResetPasswordProps) => {
                             return Promise.resolve();
                           }
                           return Promise.reject(
-                            new Error(
-                              "The two passwords that you entered do not match!"
-                            )
+                            new Error("The confirmation password is not match")
                           );
                         },
                       }),
