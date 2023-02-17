@@ -23,17 +23,23 @@ const CustomerForm = (
     change(false);
   }, []);
   const validateObject = object().shape({
-    firstName: string().required("Required!"),
-    lastName: string().required("Required!"),
-    email: string().email("Invalid email format ").required("Required!"),
+    firstName: string()
+      .matches(/[^\s]/, "First Name can't be all space")
+      .required("First name is required!"),
+    lastName: string()
+      .matches(/[^\s]/, "Last Name can't be all space")
+      .required("Last name is required!"),
+    email: string()
+      .email("The email address is not valid")
+      .required("Email address is required!"),
     phoneNumber: string().matches(
       regexPhoneValidate,
-      "Invalid number phone format."
+      "The input phone number is not valid"
     ),
   });
   return (
     <Form
-      ref={ref}
+      innerRef={ref}
       initialValues={initialValues}
       onSubmit={handleSubmit}
       validationSchema={validateObject}

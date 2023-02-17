@@ -227,6 +227,10 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
                 key="numberOfTicket"
                 title="Number of tickets"
                 dataIndex="storeId"
+                sorter={{
+                  compare: (a: any, b: any) =>
+                    a.numberOfTicket - b.numberOfTicket,
+                }}
               ></Table.Column>
               <Table.Column
                 key="lastUpdate"
@@ -238,6 +242,9 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
                       : dayjs(record.createdDatetime).format("DD-MM-YYYY")}
                   </span>
                 )}
+                sorter={{
+                  compare: (a: any, b: any) => a.lastUpdate - b.lastUpdate,
+                }}
               ></Table.Column>
               <Table.Column
                 align="center"
@@ -246,10 +253,16 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
                   <TableAction
                     record={record}
                     edit
-                    showDelete
-                    onlyIcon
                     onEdit={handleEdit}
-                    onDelete={handleDeleteTag}
+                    specialDelete={{
+                      title:
+                        "Are you sure that you want to premanently remove this Tag?",
+                      description:
+                        "This Tag will be removed permanently. This actions can not be undone. All tickets which are using this tag will get affected too.",
+                      textDelete: "Remove",
+                    }}
+                    onSpecialDelete={handleDeleteTag}
+                    onlyIcon
                   />
                 )}
               />

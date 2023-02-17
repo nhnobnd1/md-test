@@ -38,9 +38,7 @@ export const PopupTag = ({
             message.loading.hide();
             if (data.statusCode === 200) {
               onChange && onChange();
-              notification.success(
-                "Tag Profile has been created succcesfully."
-              );
+              notification.success("Tag has been create succcesfully.");
             } else {
               if (data.statusCode === 409) {
                 notification.error(
@@ -57,7 +55,7 @@ export const PopupTag = ({
                 `Tag name is ${dataSubmit.name} already exists.`
               );
             } else {
-              notification.error("Tag Profile has been created failed.");
+              notification.error("Tag has been created failed.");
             }
             return of(err);
           })
@@ -77,9 +75,7 @@ export const PopupTag = ({
               if (data.statusCode === 200) {
                 onChange && onChange();
                 message.loading.hide();
-                notification.success(
-                  "Tag Profile has been updated succcesfully."
-                );
+                notification.success("Tag has been update succcesfully");
               } else {
                 message.loading.hide();
                 if (data.statusCode === 409) {
@@ -97,7 +93,7 @@ export const PopupTag = ({
                   `Tag name is ${dataSubmit.email} already exists.`
                 );
               } else {
-                notification.error("Tag Profile has been updated failed.");
+                notification.error("Tag has been update failed.");
               }
               return of(err);
             })
@@ -131,7 +127,7 @@ export const PopupTag = ({
       onCancel={onCancel}
       footer={
         <Space>
-          <Button onClick={() => form.resetFields()}>Cancel</Button>
+          <Button onClick={() => onCancel && onCancel()}>Cancel</Button>
           <Button type="primary" onClick={() => form.submit()}>
             Save
           </Button>

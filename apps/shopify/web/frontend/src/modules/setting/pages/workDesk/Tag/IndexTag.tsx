@@ -103,11 +103,19 @@ export default function TagIndexPage() {
       sortOrder: -1,
     },
     {
-      sortBy: "email",
+      sortBy: "numberOfTickets",
       sortOrder: 1,
     },
     {
-      sortBy: "email",
+      sortBy: "numberOfTickets",
+      sortOrder: -1,
+    },
+    {
+      sortBy: "lastUpdated",
+      sortOrder: -1,
+    },
+    {
+      sortBy: "lastUpdated",
       sortOrder: -1,
     },
     {
@@ -115,7 +123,7 @@ export default function TagIndexPage() {
       sortOrder: undefined,
     },
   ];
-  const [sortTag, setSortTag] = useState(4);
+  const [sortTag, setSortTag] = useState(6);
   const [valueSortTag, setValueSortTag] = useState(
     sortTemplate[Number(sortTag)]
   );
@@ -149,8 +157,10 @@ export default function TagIndexPage() {
   const choices = [
     { label: "Sort by name A-Z", value: "0" },
     { label: "Sort by name Z-A", value: "1" },
-    { label: "Sort by email A-Z", value: "2" },
-    { label: "Sort by email Z-A", value: "3" },
+    { label: "Sort by # of Tickets A-Z", value: "2" },
+    { label: "Sort by # of Tickets Z-A", value: "3" },
+    { label: "Sort by Last Updated A-Z", value: "4" },
+    { label: "Sort by Last Updated Z-A", value: "5" },
   ];
   const handleSortChange = useCallback((value) => {
     setSortTag(parseInt(value[0]));
@@ -240,13 +250,14 @@ export default function TagIndexPage() {
         fullWidth
       >
         <ModalDelete
-          title="Are you sure that you want to remove this tag?"
+          title="Are you sure that you want to premanently remove this Tag?"
           open={isOpen}
           onClose={() => setIsOpen(false)}
           content={
-            "This tag will be removed permanently. This action cannot be undone. All tickets which are using this tag will get affected too."
+            "This Tag will be removed permanently. This actions can not be undone. All tickets which are using this tag will get affected too."
           }
           deleteAction={() => handleRemoveTag([deleteTag])}
+          textConfirm="Remove"
         />
         <Card>
           <div className="flex-1 px-4 pt-4 pb-2">
@@ -294,7 +305,9 @@ export default function TagIndexPage() {
             loading={loadTag}
             emptyState={
               <EmptySearchResult
-                title={"No tag yet"}
+                title={
+                  "Sorry! There is no records matched with your search creteria"
+                }
                 description={"Try changing the filters or search term"}
                 withIllustration
               />

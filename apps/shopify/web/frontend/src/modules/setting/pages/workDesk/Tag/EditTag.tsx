@@ -1,5 +1,11 @@
-import { useJob, useLocation, useMount, useParams } from "@moose-desk/core";
-import { TagRepository } from "@moose-desk/repo";
+import {
+  useJob,
+  useLocation,
+  useMount,
+  useParams,
+  useToggle,
+} from "@moose-desk/core";
+import { Tag, TagRepository } from "@moose-desk/repo";
 import { useNavigate, useToast } from "@shopify/app-bridge-react";
 import {
   Banner,
@@ -9,7 +15,7 @@ import {
   Page,
 } from "@shopify/polaris";
 import { FormikProps } from "formik";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import TagForm from "src/modules/setting/component/TagForm";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
@@ -19,9 +25,15 @@ export default function DetailsTag() {
   const navigate = useNavigate();
   const { state } = useLocation();
   const [title, setTitle] = useState("");
-
+  const { toggle: updateForm } = useToggle();
+  const initialValuesForm = useMemo<any>(() => {
+    return {
+      name: "",
+      description: "",
+    };
+  }, []);
+  const [dataTag, setDataTag] = useState<Tag>();
   const formRef = useRef<FormikProps<any>>(null);
-  const [disable, setDisable] = useState(true);
   const [banner, setBanner] = useState<{
     isShow: boolean;
     message: string;
@@ -32,23 +44,22 @@ export default function DetailsTag() {
     type: "success",
   });
   const { show } = useToast();
-  const { run: fetDetailsTag, result } = useJob(
+  const { run: fetDetailsTag } = useJob(
     () => {
       return TagRepository()
         .getOne(id)
         .pipe(
           map(({ data }) => {
             setTitle(`${data.data.name}`);
+            setDataTag(data.data);
             return data.data;
           })
         );
     },
     { showLoading: false }
   );
-  const handleChangeValueForm = (value: boolean) => {
-    setDisable(value);
-  };
-  const { run: submit } = useJob((dataSubmit: any) => {
+
+  const { run: submit, processing: loading } = useJob((dataSubmit: any) => {
     const { _id } = dataSubmit;
     return TagRepository()
       .update(_id, dataSubmit)
@@ -62,6 +73,7 @@ export default function DetailsTag() {
               type: "success",
             });
             show("Tag has been updated succcesfully.");
+            setDataTag(data.data);
           } else {
             if (data.statusCode === 409) {
               setBanner({
@@ -112,7 +124,7 @@ export default function DetailsTag() {
     formRef.current?.submitForm();
   }, [formRef.current]);
   const handleResetForm = useCallback(() => {
-    formRef.current?.submitForm();
+    formRef.current?.resetForm();
   }, [formRef.current]);
   useMount(() => {
     fetDetailsTag();
@@ -134,7 +146,8 @@ export default function DetailsTag() {
           message="Unsaved changes"
           saveAction={{
             onAction: handleSubmitForm,
-            disabled: disable,
+            disabled: !formRef.current?.dirty,
+            loading: loading,
           }}
           discardAction={{
             onAction: handleResetForm,
@@ -164,9 +177,9 @@ export default function DetailsTag() {
           <Layout.Section>
             <TagForm
               ref={formRef}
-              initialValues={result}
+              initialValues={dataTag || initialValuesForm}
               submit={submit}
-              change={handleChangeValueForm}
+              updateForm={updateForm}
             />
           </Layout.Section>
         </Layout>

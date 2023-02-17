@@ -1,5 +1,11 @@
-import { useJob, useLocation, useMount, useParams } from "@moose-desk/core";
-import { CustomerRepository } from "@moose-desk/repo";
+import {
+  useJob,
+  useLocation,
+  useMount,
+  useParams,
+  useToggle,
+} from "@moose-desk/core";
+import { Customer, CustomerRepository } from "@moose-desk/repo";
 import { useNavigate, useToast } from "@shopify/app-bridge-react";
 import {
   Banner,
@@ -11,7 +17,7 @@ import {
   Tabs,
 } from "@shopify/polaris";
 import { FormikProps } from "formik";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import CustomerForm from "src/modules/customers/component/CustomerForm";
 import CustomersRoutePaths from "src/modules/customers/routes/paths";
@@ -21,8 +27,17 @@ export default function DetailsCustomer() {
   const navigate = useNavigate();
   const { state } = useLocation();
   const [title, setTitle] = useState("");
+  const { toggle: updateForm } = useToggle();
+  const initialValuesForm = useMemo<any>(() => {
+    return {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phoneNumber: "",
+    };
+  }, []);
+  const [dataCustomer, setDataCustomer] = useState<Customer>();
   const formRef = useRef<FormikProps<any>>(null);
-  const [disable, setDisable] = useState(true);
   const [banner, setBanner] = useState<{
     isShow: boolean;
     type: BannerStatus;
@@ -33,13 +48,14 @@ export default function DetailsCustomer() {
     message: "",
   });
   const { show } = useToast();
-  const { run: fetDetailsCustomer, result } = useJob(
+  const { run: fetDetailsCustomer } = useJob(
     () => {
       return CustomerRepository()
         .getOne(id)
         .pipe(
           map(({ data }) => {
             setTitle(`${data.data.firstName} ${data.data.lastName}`);
+            setDataCustomer(data.data);
             return data.data;
           })
         );
@@ -51,10 +67,7 @@ export default function DetailsCustomer() {
     (selectedTabIndex) => setSelectedTabs(selectedTabIndex),
     []
   );
-  const handleChangeValueForm = (value: boolean) => {
-    setDisable(value);
-  };
-  const { run: submit } = useJob((dataSubmit: any) => {
+  const { run: submit, processing: loading } = useJob((dataSubmit: any) => {
     const { _id } = dataSubmit;
     return CustomerRepository()
       .update(_id, dataSubmit)
@@ -68,6 +81,7 @@ export default function DetailsCustomer() {
               message: "Customer Profile has been updated succcesfully.",
             });
             show("Edit customer success");
+            setDataCustomer(data.data);
           } else {
             if (data.statusCode === 409) {
               setBanner({
@@ -125,9 +139,9 @@ export default function DetailsCustomer() {
   const profileCustomer = (
     <CustomerForm
       ref={formRef}
-      initialValues={result}
+      initialValues={dataCustomer || initialValuesForm}
       submit={submit}
-      change={handleChangeValueForm}
+      change={updateForm}
     />
   );
   const tabs = [
@@ -165,6 +179,7 @@ export default function DetailsCustomer() {
           saveAction={{
             onAction: handleSubmitForm,
             disabled: !formRef.current?.dirty,
+            loading: loading,
           }}
           discardAction={{
             onAction: handleResetForm,

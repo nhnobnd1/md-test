@@ -10,28 +10,25 @@ export interface RefProperties {
 }
 
 const TagForm = (
-  { initialValues, submit, change }: any,
+  { initialValues, submit, updateForm }: any,
   ref: ForwardedRef<FormikProps<any>>
 ) => {
   const handleSubmit = useCallback((data: any) => {
     submit(data);
   }, []);
 
-  const handleChange = useCallback(() => {
-    change(false);
-  }, []);
   const validateObject = object().shape({
-    name: string().required("Required!"),
+    name: string().required("Tag mane is required!"),
     description: string(),
   });
   return (
     <Card sectioned>
       <Form
-        ref={ref}
+        innerRef={ref}
         initialValues={initialValues}
         onSubmit={handleSubmit}
         validationSchema={validateObject}
-        onValuesChange={handleChange}
+        onValuesChange={updateForm}
         enableReinitialize
       >
         <FormLayout>

@@ -241,6 +241,10 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
                 key="numberOfTicket"
                 title="Number of tickets"
                 dataIndex="storeId"
+                sorter={{
+                  compare: (a: any, b: any) =>
+                    a.numberOfTicket - b.numberOfTicket,
+                }}
               ></Table.Column>
               <Table.Column
                 align="center"
@@ -249,10 +253,16 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
                   <TableAction
                     record={record}
                     edit
-                    showDelete
                     onlyIcon
                     onEdit={handleEdit}
-                    onDelete={handleDeleteCustomer}
+                    specialDelete={{
+                      title:
+                        "Are you sure that you want to remove this customer?",
+                      description:
+                        "This customer will be removed permanently. All customer's tickets and his profile will no longer accessible.",
+                      textDelete: "Remove",
+                    }}
+                    onSpecialDelete={handleDeleteCustomer}
                   />
                 )}
               />
