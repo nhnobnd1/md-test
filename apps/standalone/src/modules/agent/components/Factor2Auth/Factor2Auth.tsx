@@ -1,7 +1,9 @@
+import { useMount } from "@moose-desk/core";
 import { SignInAccountAgentRequest } from "@moose-desk/repo";
 import { Button, Form, Input } from "antd";
 import classNames from "classnames";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useMemo } from "react";
+import { useCountDown } from "src/hooks/useCountDown";
 import { useStore } from "src/providers/StoreProviders";
 import "./Factor2Auth.scss";
 
@@ -24,9 +26,25 @@ export const Factor2Auth = ({
   onFinish,
   onResend,
 }: Factor2AuthProps) => {
-  const [intervalValue, setIntervalValue] = useState(30);
-  const [activeResend, setActiveResend] = useState(true);
+  const {
+    state: countDown,
+    initCountdown,
+    checkTimerProcess,
+  } = useCountDown({
+    initValue: 300,
+    key: "factor2auth",
+  });
   const { storeId } = useStore();
+
+  const activeResend = useMemo(() => {
+    return !checkTimerProcess;
+  }, [checkTimerProcess]);
+
+  useMount(() => {
+    if (activeResend) {
+      initCountdown("factor2auth");
+    }
+  });
 
   const handleFinish = useCallback(
     (values: { twoFactorCode: string }) => {
@@ -43,26 +61,8 @@ export const Factor2Auth = ({
     [state]
   );
 
-  useEffect(() => {
-    // eslint-disable-next-line no-undef-init
-    let intervalId: any = undefined;
-    if (!activeResend) {
-      intervalId = setInterval(() => {
-        setIntervalValue((value) => {
-          return value >= 1 ? value - 1 : value;
-        });
-        if (intervalValue === 0) {
-          setActiveResend(true);
-          setIntervalValue(30);
-          clearInterval(intervalId);
-        }
-      }, 1000);
-    }
-    return () => clearInterval(intervalId);
-  }, [activeResend, intervalValue]);
-
   const handleResend = useCallback(() => {
-    setActiveResend(false);
+    initCountdown("factor2auth");
     onResend(
       {
         email: state.email,
@@ -109,7 +109,7 @@ export const Factor2Auth = ({
             })}
             onClick={() => activeResend && handleResend()}
           >
-            Re-send OTP {!activeResend && `(${intervalValue})`}
+            Re-send OTP {!activeResend && `(${countDown})`}
           </span>
         </div>
       </div>
