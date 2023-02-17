@@ -50,6 +50,15 @@ const settingChannelRoutes: IRoute = {
           )
       ),
     },
+    {
+      path: SettingChannelRoutePaths.MicrosoftIntegration,
+      component: lazy(
+        () =>
+          import(
+            "src/modules/settingChannel/pages/ChannelEmail/ChannelOutlookIntegration"
+          )
+      ),
+    },
   ],
 };
 

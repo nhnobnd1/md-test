@@ -50,6 +50,7 @@ export interface BusinessCalendar {
     businessHours: BusinessHours[];
     holidays: Holidays[];
     autoReply: AutoReply[];
+    businessHoursAutoReplyCode: string;
     storeId: string;
 }
 export interface UpdateBusinessCalendar {

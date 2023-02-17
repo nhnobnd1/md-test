@@ -6,6 +6,7 @@ import {
   CreateEmailIntegrationResponse,
   GetEmailGoogleAuthRequest,
   GetEmailGoogleAuthResponse,
+  GetEmailMicrosoftAuthRequest,
   GetListEmailRequest,
   GetListEmailResponse,
   GetOneEmailResponse,
@@ -21,8 +22,8 @@ export const EmailIntegrationRepository = createRepository(
     getEmailGoogleAuth(api, payload: GetEmailGoogleAuthRequest) {
       return api.get<GetEmailGoogleAuthResponse>("/google-auth", payload);
     },
-    getEmailGoogleCallback(api) {
-      return api.get<BaseResponse<any>>("/google-callback");
+    getEmailMicrosoftAuth(api, payload: GetEmailMicrosoftAuthRequest) {
+      return api.get<BaseResponse<string>>("/microsoft-auth", payload);
     },
     getListEmail(api, params: GetListEmailRequest) {
       return api.get<GetListEmailResponse>("", params);
