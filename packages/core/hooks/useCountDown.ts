@@ -21,7 +21,6 @@ export function useCountDown({ initValue, key }: CountDown): UseCountDown {
   const [timerObj, setTimerObj] = useState<{
     [props: string]: any;
   }>({});
-  const [isFirst, setIsFist] = useState(true);
 
   const initCountdown = useCallback(
     (key: string, time?: number) => {
@@ -69,7 +68,6 @@ export function useCountDown({ initValue, key }: CountDown): UseCountDown {
   }, [key]);
 
   useDidUpdate(() => {
-    console.log(listCountDown, "list");
     StorageManager.setToken("countDown", JSON.stringify({ ...listCountDown }));
     StorageManager.setToken("leavingDate", JSON.stringify(dayjs().unix()));
 
@@ -109,7 +107,7 @@ export function useCountDown({ initValue, key }: CountDown): UseCountDown {
         clearInterval(idInterval);
         setTimerObj((value) => {
           delete value[key];
-          return value;
+          return { ...value };
         });
         setListCountDown((value) => {
           delete value[key];

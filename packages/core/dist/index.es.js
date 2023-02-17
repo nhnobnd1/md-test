@@ -2,7 +2,7 @@ var Ts = Object.defineProperty;
 var Ps = (e, t, r) => t in e ? Ts(e, t, { enumerable: !0, configurable: !0, writable: !0, value: r }) : e[t] = r;
 var ie = (e, t, r) => (Ps(e, typeof t != "symbol" ? t + "" : t, r), r);
 import * as b from "react";
-import vt, { useState as ee, useRef as Be, useEffect as ce, useCallback as K, useMemo as tt, createContext as Xo, useContext as en, memo as Zo, isValidElement as Cs, createElement as Vn } from "react";
+import vt, { useState as re, useRef as Be, useEffect as ce, useCallback as K, useMemo as tt, createContext as Xo, useContext as en, memo as Zo, isValidElement as Cs, createElement as Vn } from "react";
 /**
  * @remix-run/router v1.2.1
  *
@@ -4209,7 +4209,7 @@ function cp(e) {
     baseURL: e
   });
 }
-const re = class {
+const te = class {
   constructor(t, r) {
     ie(this, "axiosInstance");
     ie(this, "defaultConfig", {
@@ -4223,46 +4223,46 @@ const re = class {
     });
   }
   static setAuthorizationTokenType(t) {
-    re.tokenType = t;
+    te.tokenType = t;
   }
   static setGlobalParams(t) {
-    re.globalParams = {
-      ...re.globalParams,
+    te.globalParams = {
+      ...te.globalParams,
       ...t
     };
   }
   static setGlobalData(t) {
-    re.globalData = {
-      ...re.globalData,
+    te.globalData = {
+      ...te.globalData,
       ...t
     };
   }
   static setGlobalHeaders(t) {
-    re.globalHeaders = {
-      ...re.globalHeaders,
+    te.globalHeaders = {
+      ...te.globalHeaders,
       ...t
     };
   }
   static addInterceptor(t) {
-    return re.interceptors.add(t), () => {
-      re.removeInterceptor(t);
+    return te.interceptors.add(t), () => {
+      te.removeInterceptor(t);
     };
   }
   static removeInterceptor(t) {
-    re.interceptors.delete(t);
+    te.interceptors.delete(t);
   }
   setAuthorizationTokenType(t) {
     this.tokenType = t;
   }
   getTokenType(t) {
-    return t.tokenType !== void 0 ? t.tokenType : this.tokenType !== void 0 ? this.tokenType : re.tokenType;
+    return t.tokenType !== void 0 ? t.tokenType : this.tokenType !== void 0 ? this.tokenType : te.tokenType;
   }
   setupInterceptor() {
     this.axiosInstance.interceptors.request.use(
       async (t) => {
         if (t = await this.useRequestInterceptors(t), t = Pd({}, this.defaultConfig, t), t.headers = {
           ...t.headers,
-          ...re.globalHeaders,
+          ...te.globalHeaders,
           "Content-Type": t.contentType === "formData" ? !1 : t.contentType === "urlEncoded" ? Fr.UrlEncoded : Fr.Json
         }, !t.preparedData) {
           if ((typeof t.cache < "u" ? t.cache : this.defaultConfig.cache) === !1 && (t.headers["Cache-Control"] = "no-cache", t.params = {
@@ -4271,11 +4271,11 @@ const re = class {
           }), t.params = Ht(
             To({
               ...t.params,
-              ...re.globalParams
+              ...te.globalParams
             })
           ), t.data = {
             ...t.data,
-            ...re.globalData
+            ...te.globalData
           }, To(t.data), JSON.stringify(t.data) === "{}")
             t.data = void 0;
           else
@@ -4303,12 +4303,12 @@ const re = class {
     );
   }
   async useRequestInterceptors(t) {
-    for (const r of re.interceptors)
+    for (const r of te.interceptors)
       r.request && (t = await r.request(t));
     return t;
   }
   async useErrorResponseInterceptor(t) {
-    for (const r of re.interceptors)
+    for (const r of te.interceptors)
       if (r.response && r.response.error)
         try {
           t = await r.response.error(t, this.axiosInstance);
@@ -4318,7 +4318,7 @@ const re = class {
     return t;
   }
   async useSuccessResponseInterceptor(t) {
-    for (const r of re.interceptors)
+    for (const r of te.interceptors)
       r.response && r.response.success && (t = await r.response.success(t));
     return t;
   }
@@ -4347,7 +4347,7 @@ const re = class {
     });
   }
 };
-let ge = re;
+let ge = te;
 ie(ge, "tokenType", "base_token"), ie(ge, "globalParams", {}), ie(ge, "globalData", {}), ie(ge, "globalHeaders", {}), ie(ge, "interceptors", /* @__PURE__ */ new Set());
 var mt = {}, lp = {
   get exports() {
@@ -4543,9 +4543,9 @@ function dp() {
         return null;
       }
       var E = 0, $, O, L, D, W, G, Y;
-      function te() {
+      function ee() {
       }
-      te.__reactDisabledLog = !0;
+      ee.__reactDisabledLog = !0;
       function ve() {
         {
           if (E === 0) {
@@ -4553,7 +4553,7 @@ function dp() {
             var f = {
               configurable: !0,
               enumerable: !0,
-              value: te,
+              value: ee,
               writable: !0
             };
             Object.defineProperties(console, {
@@ -5016,7 +5016,7 @@ Check the top-level render call using <` + _ + ">.");
 })(lp);
 const Ye = mt.Fragment, Z = mt.jsx, Xr = mt.jsxs, hm = (e = () => {
 }) => {
-  const [t, r] = ee(!1);
+  const [t, r] = re(!1);
   t || (e(), r(!0));
 };
 var Zr = {}, hp = {
@@ -5128,15 +5128,15 @@ var Zr = {}, hp = {
           return L ? ue : ue.endOf(l);
         }, G = function(fe, ne) {
           return U.w(O.toDate()[fe].apply(O.toDate("s"), (L ? [0, 0, 0, 0] : [23, 59, 59, 999]).slice(ne)), O);
-        }, Y = this.$W, te = this.$M, ve = this.$D, le = "set" + (this.$u ? "UTC" : "");
+        }, Y = this.$W, ee = this.$M, ve = this.$D, le = "set" + (this.$u ? "UTC" : "");
         switch (D) {
           case m:
             return L ? W(1, 0) : W(31, 11);
           case d:
-            return L ? W(1, te) : W(0, te + 1);
+            return L ? W(1, ee) : W(0, ee + 1);
           case c:
             var we = this.$locale().weekStart || 0, Se = (Y < we ? Y + 7 : Y) - we;
-            return W(L ? ve - Se : ve + (6 - Se), te);
+            return W(L ? ve - Se : ve + (6 - Se), ee);
           case l:
           case v:
             return G(le + "Hours", 0);
@@ -5166,9 +5166,9 @@ var Zr = {}, hp = {
       }, w.add = function(E, $) {
         var O, L = this;
         E = Number(E);
-        var D = U.p($), W = function(te) {
+        var D = U.p($), W = function(ee) {
           var ve = M(L);
-          return U.w(ve.date(ve.date() + Math.round(te * E)), L);
+          return U.w(ve.date(ve.date() + Math.round(ee * E)), L);
         };
         if (D === d)
           return this.set(d, this.$M + E);
@@ -5186,22 +5186,22 @@ var Zr = {}, hp = {
         var $ = this, O = this.$locale();
         if (!this.isValid())
           return O.invalidDate || p;
-        var L = E || "YYYY-MM-DDTHH:mm:ssZ", D = U.z(this), W = this.$H, G = this.$m, Y = this.$M, te = O.weekdays, ve = O.months, le = function(ne, ue, it, Me) {
+        var L = E || "YYYY-MM-DDTHH:mm:ssZ", D = U.z(this), W = this.$H, G = this.$m, Y = this.$M, ee = O.weekdays, ve = O.months, le = function(ne, ue, it, Me) {
           return ne && (ne[ue] || ne($, L)) || it[ue].slice(0, Me);
         }, we = function(ne) {
           return U.s(W % 12 || 12, ne, "0");
         }, Se = O.meridiem || function(ne, ue, it) {
           var Me = ne < 12 ? "AM" : "PM";
           return it ? Me.toLowerCase() : Me;
-        }, fe = { YY: String(this.$y).slice(-2), YYYY: this.$y, M: Y + 1, MM: U.s(Y + 1, 2, "0"), MMM: le(O.monthsShort, Y, ve, 3), MMMM: le(ve, Y), D: this.$D, DD: U.s(this.$D, 2, "0"), d: String(this.$W), dd: le(O.weekdaysMin, this.$W, te, 2), ddd: le(O.weekdaysShort, this.$W, te, 3), dddd: te[this.$W], H: String(W), HH: U.s(W, 2, "0"), h: we(1), hh: we(2), a: Se(W, G, !0), A: Se(W, G, !1), m: String(G), mm: U.s(G, 2, "0"), s: String(this.$s), ss: U.s(this.$s, 2, "0"), SSS: U.s(this.$ms, 3, "0"), Z: D };
+        }, fe = { YY: String(this.$y).slice(-2), YYYY: this.$y, M: Y + 1, MM: U.s(Y + 1, 2, "0"), MMM: le(O.monthsShort, Y, ve, 3), MMMM: le(ve, Y), D: this.$D, DD: U.s(this.$D, 2, "0"), d: String(this.$W), dd: le(O.weekdaysMin, this.$W, ee, 2), ddd: le(O.weekdaysShort, this.$W, ee, 3), dddd: ee[this.$W], H: String(W), HH: U.s(W, 2, "0"), h: we(1), hh: we(2), a: Se(W, G, !0), A: Se(W, G, !1), m: String(G), mm: U.s(G, 2, "0"), s: String(this.$s), ss: U.s(this.$s, 2, "0"), SSS: U.s(this.$ms, 3, "0"), Z: D };
         return L.replace(S, function(ne, ue) {
           return ue || fe[ne] || D.replace(":", "");
         });
       }, w.utcOffset = function() {
         return 15 * -Math.round(this.$d.getTimezoneOffset() / 15);
       }, w.diff = function(E, $, O) {
-        var L, D = U.p($), W = M(E), G = (W.utcOffset() - this.utcOffset()) * n, Y = this - W, te = U.m(this, W);
-        return te = (L = {}, L[m] = te / 12, L[d] = te, L[h] = te / 3, L[c] = (Y - G) / 6048e5, L[l] = (Y - G) / 864e5, L[u] = Y / o, L[a] = Y / n, L[s] = Y / r, L)[D] || Y, O ? te : U.a(te);
+        var L, D = U.p($), W = M(E), G = (W.utcOffset() - this.utcOffset()) * n, Y = this - W, ee = U.m(this, W);
+        return ee = (L = {}, L[m] = ee / 12, L[d] = ee, L[h] = ee / 3, L[c] = (Y - G) / 6048e5, L[l] = (Y - G) / 864e5, L[u] = Y / o, L[a] = Y / n, L[s] = Y / r, L)[D] || Y, O ? ee : U.a(ee);
       }, w.daysInMonth = function() {
         return this.endOf(d).$D;
       }, w.$locale = function() {
@@ -5244,9 +5244,7 @@ function pp(e, t) {
   }, t);
 }
 function pm({ initValue: e, key: t }) {
-  const [r, n] = ee({}), [o, i] = ee({});
-  ee(!0);
-  const s = K(
+  const [r, n] = re({}), [o, i] = re({}), s = K(
     (c, d) => {
       n((h) => ({
         ...h,
@@ -5275,7 +5273,7 @@ function pm({ initValue: e, key: t }) {
       }
     }
   }, [t]), pp(() => {
-    console.log(r, "list"), xt.setToken("countDown", JSON.stringify({ ...r })), xt.setToken("leavingDate", JSON.stringify(zo().unix())), Object.keys(r).forEach((c) => {
+    xt.setToken("countDown", JSON.stringify({ ...r })), xt.setToken("leavingDate", JSON.stringify(zo().unix())), Object.keys(r).forEach((c) => {
       Object.keys(o).includes(c) || a(c), r[c] === 0 && u(c);
     });
   }, [r]);
@@ -5297,7 +5295,7 @@ function pm({ initValue: e, key: t }) {
     (c) => {
       if (o[c]) {
         const d = o[c];
-        clearInterval(d), i((h) => (delete h[c], h)), n((h) => (delete h[c], h));
+        clearInterval(d), i((h) => (delete h[c], { ...h })), n((h) => (delete h[c], h));
       }
     },
     [o]
@@ -5518,7 +5516,7 @@ function os() {
   ), addRoutes: e, removeRoute: t };
 }
 const mm = () => {
-  const { routes: e } = os(), [t, r] = ee(), n = Pe(), o = K(
+  const { routes: e } = os(), [t, r] = re(), n = Pe(), o = K(
     (i) => {
       const s = i.filter(
         (a) => Yo(n.pathname, a.path)
@@ -5565,7 +5563,7 @@ function Sp(e, t) {
   };
 }
 function vm(e, t) {
-  const [r, n] = ee(e), { run: o } = Sp((i) => {
+  const [r, n] = re(e), { run: o } = Sp((i) => {
     n(i);
   }, t);
   return [r, o];
@@ -5573,7 +5571,7 @@ function vm(e, t) {
 const gm = (e, t) => {
   const r = Be(e);
   r.current = e;
-  const n = ee()[1], o = K(() => {
+  const n = re()[1], o = K(() => {
     i(), n(
       setInterval(() => r.current(), t)
     );
@@ -5587,7 +5585,7 @@ const gm = (e, t) => {
     cancel: i
   };
 }, _p = (e = !1) => {
-  const [t, r] = ee(e), n = K(() => {
+  const [t, r] = re(e), n = K(() => {
     r((s) => !s);
   }, []), o = K(() => {
     r(!0);
@@ -5604,7 +5602,7 @@ function ym({
   isWrap: r = !1,
   component: n
 }) {
-  const { state: o, on: i, off: s } = _p(), a = ee(0)[1], u = K(() => {
+  const { state: o, on: i, off: s } = _p(), a = re(0)[1], u = K(() => {
     i(), a((c) => c + 1), a(1);
   }, []), l = K(() => {
     setTimeout(() => {
@@ -5629,7 +5627,7 @@ function Tn(e) {
   ce(() => e(), []);
 }
 function Op(e, t) {
-  const r = Be(new Kr()), [n, o] = ee(), { startLoading: i, stopLoading: s } = ss(), [a, u] = ee(Fe.Standing), [l, c] = ee(), [d, h] = ee(), m = tt(() => a === Fe.Processing, [a]), v = K(
+  const r = Be(new Kr()), [n, o] = re(), { startLoading: i, stopLoading: s } = ss(), [a, u] = re(Fe.Standing), [l, c] = re(), [d, h] = re(), m = tt(() => a === Fe.Processing, [a]), v = K(
     (...T) => {
       u(Fe.Processing), t != null && t.showLoading && i(), r.current.next(e(...T));
     },
@@ -5680,7 +5678,7 @@ function Em(e) {
 const wm = (e, t) => {
   const r = Be(e);
   r.current = e;
-  const n = ee()[1], o = K(() => {
+  const n = re()[1], o = K(() => {
     i(), n(
       setTimeout(() => r.current(), t)
     );
@@ -5704,7 +5702,7 @@ const as = Xo(void 0), _m = ({
   fetchUserOnLogin: r = () => new zt((o) => o.next(void 0)),
   fetchRefreshToken: n
 }) => {
-  const [o, i] = ee(), [s, a] = ee(t), [u, l] = ee(!1), { run: c, result: d } = Op(r), h = K(
+  const [o, i] = re(), [s, a] = re(t), [u, l] = re(!1), { run: c, result: d } = Op(r), h = K(
     (x, I) => {
       l(!0), a(x), I ? i(I) : c(x);
     },
@@ -5728,7 +5726,7 @@ const as = Xo(void 0), _m = ({
         Object.prototype.hasOwnProperty.call(s, x) && At.setToken(x, "");
     };
   }, [s]);
-  const [v, p] = ee(!1), [T, S] = ee([]), j = (x, I) => {
+  const [v, p] = re(!1), [T, S] = re([]), j = (x, I) => {
     T.forEach((P) => {
       x ? P.reject(x) : P.resolve(I);
     }), T.splice(0);
@@ -5844,7 +5842,7 @@ const Pp = ({
   var r;
   return /* @__PURE__ */ Z(Ye, { children: (r = t.routes) != null && r.length && !t.element && !e ? /* @__PURE__ */ Z(Oa, {}) : t.element || (e ? /* @__PURE__ */ Z(e, {}) : null) });
 }, Cp = Zo(Pp), Ko = ({ route: e }) => {
-  const t = Yt(), [r, n] = ee();
+  const t = Yt(), [r, n] = re();
   return ce(() => {
     (async () => n(
       await ct.canPassMiddleware(e, t)

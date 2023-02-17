@@ -20,7 +20,6 @@ export function useCountDown({ initValue, key }: CountDown): UseCountDown {
   const [timerObj, setTimerObj] = useState<{
     [props: string]: any;
   }>({});
-  const [isFirst, setIsFist] = useState(true);
 
   const initCountdown = useCallback(
     (key: string, time?: number) => {
@@ -107,7 +106,7 @@ export function useCountDown({ initValue, key }: CountDown): UseCountDown {
         clearInterval(idInterval);
         setTimerObj((value) => {
           delete value[key];
-          return value;
+          return { ...value };
         });
         setListCountDown((value) => {
           delete value[key];
