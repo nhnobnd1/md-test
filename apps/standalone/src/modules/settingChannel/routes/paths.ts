@@ -8,6 +8,7 @@ const SettingChannelRoutePaths = createRoutePath({
     Update: ":id",
   },
   EmailIntegration: "email-integration/gmail/callback",
+  MicrosoftIntegration: "email-integration/outlook/callback",
 } as const);
 
 export default SettingChannelRoutePaths;

@@ -5,6 +5,10 @@ export async function getOfflineSession(shopDomain) {
   const offlineSession = await shopify.config.sessionStorage.loadSession(
     offlineSessionId
   );
+  const customer = await shopify.api.rest.Customer.all({
+    session: offlineSession,
+  });
+  console.log("customer", customer);
 
   if (offlineSession) {
     return {

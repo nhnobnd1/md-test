@@ -59,6 +59,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
   }, []);
 
   useEffect(() => {
+    console.log(signInCallback, "signInCallBack");
     if (signInCallback.callbackName && signInCallback.oauthStatus) {
       setIsLoggedServer({
         callBackName: signInCallback.callbackName,
@@ -96,7 +97,11 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
       : {
           name: signInCallback.name || "",
           mailSettingType: MailSettingType.CUSTOM,
-          mailboxType: MailBoxType.GMAIL,
+          mailboxType:
+            signInCallback.callbackName &&
+            signInCallback.callbackName === "microsoft"
+              ? MailBoxType.OUTLOOK
+              : MailBoxType.GMAIL,
           accessType: signInCallback.accessType || "",
           refKey: signInCallback.refKey || undefined,
           supportEmail: signInCallback.supportEmail || "",
