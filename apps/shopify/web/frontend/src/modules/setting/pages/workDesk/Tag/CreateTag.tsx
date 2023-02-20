@@ -1,4 +1,4 @@
-import { generatePath, useJob, useNavigate } from "@moose-desk/core";
+import { generatePath, useJob, useNavigate, useToggle } from "@moose-desk/core";
 import { CreateTagRequest, TagRepository } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import { Banner, ContextualSaveBar, Layout, Page } from "@shopify/polaris";
@@ -14,8 +14,8 @@ export default function CreateTag() {
   const navigate = useNavigate();
   const auth = useAuth();
   const { show } = useToast();
-  const [disable, setDisable] = useState(true);
   const [messageError, setMessageError] = useState("");
+  const { toggle: updateForm } = useToggle();
   const [banner, setBanner] = useState(false);
   const initialValuesForm = useMemo(() => {
     return {
@@ -30,17 +30,34 @@ export default function CreateTag() {
       state: { status: statusCode },
     });
   }, []);
-  const { run: submit } = useJob((dataSubmit: CreateTagRequest) => {
-    return TagRepository()
-      .create(dataSubmit)
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            show("Tag has been created successfully.");
-            navigateShowDetails(data.data._id, data.statusCode);
-          } else {
+  const { run: submit, processing: loading } = useJob(
+    (dataSubmit: CreateTagRequest) => {
+      return TagRepository()
+        .create(dataSubmit)
+        .pipe(
+          map(({ data }) => {
+            if (data.statusCode === 200) {
+              show("Tag has been created successfully.");
+              navigateShowDetails(data.data._id, data.statusCode);
+            } else {
+              setBanner(true);
+              if (data.statusCode === 409) {
+                setMessageError(
+                  `Tag name is ${dataSubmit.name} already exists.`
+                );
+                show(`Tag name is ${dataSubmit.name} already exists.`, {
+                  isError: true,
+                });
+              } else {
+                show("Create tag failed", {
+                  isError: true,
+                });
+              }
+            }
+          }),
+          catchError((error) => {
             setBanner(true);
-            if (data.statusCode === 409) {
+            if (error.response.status === 409) {
               setMessageError(`Tag name is ${dataSubmit.name} already exists.`);
               show(`Tag name is ${dataSubmit.name} already exists.`, {
                 isError: true,
@@ -50,28 +67,11 @@ export default function CreateTag() {
                 isError: true,
               });
             }
-          }
-        }),
-        catchError((error) => {
-          setBanner(true);
-          if (error.response.status === 409) {
-            setMessageError(`Tag name is ${dataSubmit.name} already exists.`);
-            show(`Tag name is ${dataSubmit.name} already exists.`, {
-              isError: true,
-            });
-          } else {
-            show("Create tag failed", {
-              isError: true,
-            });
-          }
-          return of(error);
-        })
-      );
-  });
-
-  const handleChangeValueForm = (value: boolean) => {
-    setDisable(value);
-  };
+            return of(error);
+          })
+        );
+    }
+  );
 
   const handleSubmitForm = useCallback(() => {
     formRef.current?.submitForm();
@@ -89,7 +89,8 @@ export default function CreateTag() {
           message="Unsaved changes"
           saveAction={{
             onAction: handleSubmitForm,
-            disabled: disable,
+            disabled: !formRef.current?.dirty,
+            loading: loading,
           }}
           discardAction={{
             onAction: handleResetForm,
@@ -116,7 +117,7 @@ export default function CreateTag() {
             <TagForm
               ref={formRef}
               submit={submit}
-              change={handleChangeValueForm}
+              updateForm={updateForm}
               initialValues={initialValuesForm}
             />
           </Layout.Section>
