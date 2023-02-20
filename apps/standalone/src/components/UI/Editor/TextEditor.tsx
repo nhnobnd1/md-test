@@ -23,23 +23,24 @@ const TextEditor = ({ value, onChange, error, ...props }: TextEditorProps) => {
         <Typography.Text {...labelProps}></Typography.Text>
       </div> */}
       <Editor
-        {...props}
+        initialValue={value}
         apiKey="t4mxpsmop8giuev4szkrl7etgn43rtilju95m2tnst9m9uod"
+        {...props}
         onInit={initEditor}
         onChange={handleChange}
-        initialValue={value}
         init={{
           height: 330,
-          menubar: false,
           branding: false,
-          plugins: [
-            "advlist autolink lists link image charmap print preview anchor",
-            "searchreplace visualblocks code fullscreen",
-            "insertdatetime media table paste code help wordcount",
-          ],
           toolbar_mode: "sliding",
           content_style:
             "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+          plugins: [
+            "advlist autolink lists link image charmap print preview anchor",
+            "searchreplace visualblocks code fullscreen language",
+            "insertdatetime media table paste code help wordcount",
+          ],
+          toolbar:
+            "undo redo | bold italic underline align | blocks fontfamily fontsize | copy cut past blockquote backcolor forecolor indent newdocument lineheight selectall strikethrough ",
           ...props.init,
         }}
       ></Editor>

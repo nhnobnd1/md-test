@@ -14,6 +14,11 @@ const ticketRoutes: IRoute = {
       index: true,
       component: lazy(() => import("src/modules/ticket/pages/Index")),
     },
+    {
+      path: TicketRoutePaths.Create,
+      middleware: "user",
+      component: lazy(() => import("src/modules/ticket/pages/CreateTicket")),
+    },
   ],
 };
 
