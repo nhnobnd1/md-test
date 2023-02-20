@@ -1,6 +1,6 @@
 import { useJob } from "@moose-desk/core";
 import { Customer, CustomerRepository } from "@moose-desk/repo";
-import { Button, Modal, ModalProps, Space } from "antd";
+import { Button, Card, Modal, ModalProps, Space, Tabs } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import Form from "src/components/UI/Form/Form";
@@ -29,7 +29,11 @@ export const PopupCustomer = ({
   const message = useMessage();
   const notification = useNotification();
   const [isUpdate, setIsUpdate] = useState(false);
-
+  const [selected, setSelected] = useState(0);
+  const handleTabChange = useCallback(
+    (selectedTabIndex) => setSelected(selectedTabIndex),
+    []
+  );
   const { run: createCustomer } = useJob(
     (dataSubmit: any) => {
       message.loading.show("Creating Customer!");
@@ -141,6 +145,7 @@ export const PopupCustomer = ({
         </Space>
       }
       width={1000}
+      style={{ minHeight: 500 }}
     >
       <div>
         <Header
@@ -150,13 +155,42 @@ export const PopupCustomer = ({
               : "New customer profile"
           }
         ></Header>
-        <CustomerForm
-          initialValues={dataForm}
-          enableLoadForm
-          enableReinitialize
-          form={form}
-          onFinish={handleSubmitValue}
-        />
+        {dataForm?.id ? (
+          <Card>
+            <Tabs
+              defaultActiveKey="1"
+              items={[
+                {
+                  key: "1",
+                  label: `Customer profile`,
+                  children: (
+                    <CustomerForm
+                      initialValues={dataForm}
+                      enableLoadForm
+                      enableReinitialize
+                      form={form}
+                      onFinish={handleSubmitValue}
+                    />
+                  ),
+                },
+                {
+                  key: "2",
+                  label: `List ticket`,
+                  children: <div className="h-60">List ticket</div>,
+                },
+              ]}
+              onChange={handleTabChange}
+            />
+          </Card>
+        ) : (
+          <CustomerForm
+            initialValues={dataForm}
+            enableLoadForm
+            enableReinitialize
+            form={form}
+            onFinish={handleSubmitValue}
+          />
+        )}
       </div>
     </Modal>
   );

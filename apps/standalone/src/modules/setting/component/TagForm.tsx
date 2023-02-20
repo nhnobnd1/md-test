@@ -31,7 +31,7 @@ export const TagForm = ({ ...props }: TagFormProps) => {
         label="Tag name"
         name="name"
         rules={[
-          { required: true, message: "You must enter tag name!" },
+          { required: true, message: "Tag mane is required!" },
           {
             max: 255,
             message: "First name up to 255 characters",
