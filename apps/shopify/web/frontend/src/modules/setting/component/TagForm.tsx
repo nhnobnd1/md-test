@@ -18,7 +18,9 @@ const TagForm = (
   }, []);
 
   const validateObject = object().shape({
-    name: string().required("Tag mane is required!"),
+    name: string()
+      .matches(/[^\s]/, "Tag name can't be all space")
+      .required("The tag mane is required!"),
     description: string(),
   });
   return (
