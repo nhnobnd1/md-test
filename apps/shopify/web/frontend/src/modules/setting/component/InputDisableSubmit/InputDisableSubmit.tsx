@@ -18,8 +18,18 @@ const InputDisableSubmit = ({
   setValue,
   onChange,
 }: InputDisableSubmit) => {
+  const [valueInput, setValueInput] = useState("");
   const [messageError, setMessageError] = useState(error);
   const [domainSubmit, setDomainSubmit] = useState(value);
+
+  const handleChangeValueInput = useCallback((e) => {
+    setValueInput(e.target.value);
+    onChange && onChange(e.target.value);
+    setDomainSubmit(e.target.value);
+  }, []);
+  const handleChangeDisabled = useCallback(() => {
+    onChange && onChange(valueInput);
+  }, [valueInput]);
   const handleSubmitDomain = useCallback(
     (event: any) => {
       if (event.key === "Enter" && !messageError) {
@@ -36,18 +46,19 @@ const InputDisableSubmit = ({
     },
     [domainSubmit, setDomainSubmit, inititalValue, messageError]
   );
+
   useDidUpdate(() => {
     setDomainSubmit(value);
   }, [value]);
   useEffect(() => {
     if (inititalValue.length === 0 && disabled) {
-      setMessageError("Please, enter domain!");
+      setMessageError("The email domain is required!");
       if (disabled) {
         setMessageError("");
       }
     } else {
       if (inititalValue.length === 0 && !disabled) {
-        setMessageError("Please, enter domain!");
+        setMessageError("The email domain is required!");
       }
     }
   }, [inititalValue, setMessageError, disabled]);
@@ -63,6 +74,8 @@ const InputDisableSubmit = ({
       document
         .getElementById("div-input")
         ?.classList.remove("Polaris-TextField--disabled");
+
+      handleChangeDisabled();
     }
   }, [disabled]);
   return (
@@ -74,10 +87,7 @@ const InputDisableSubmit = ({
               type="text"
               onKeyDown={handleSubmitDomain}
               value={domainSubmit}
-              onChange={(e) => {
-                onChange && onChange(e.target.value);
-                setDomainSubmit(e.target.value);
-              }}
+              onChange={handleChangeValueInput}
               className="Polaris-TextField__Input"
               disabled={disabled}
             />

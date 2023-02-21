@@ -37,10 +37,14 @@ export const CustomerForm = ({
         label="First name"
         name="firstName"
         rules={[
-          { required: true, message: "You must enter your first name!" },
+          { required: true, message: "First name is required!" },
           {
             max: 255,
             message: "First name up to 255 characters",
+          },
+          {
+            pattern: /[^\s]/,
+            message: "First name is required!",
           },
         ]}
       >
@@ -50,10 +54,14 @@ export const CustomerForm = ({
         label="Last name"
         name="lastName"
         rules={[
-          { required: true, message: "You must enter your last name!" },
+          { required: true, message: "Last name is required!" },
           {
             max: 255,
             message: "Last name up to 255 characters",
+          },
+          {
+            pattern: /[^\s]/,
+            message: "Last name is required!",
           },
         ]}
       >
@@ -63,8 +71,8 @@ export const CustomerForm = ({
         label="Email"
         name="email"
         rules={[
-          { required: true, message: "You must enter your email!" },
-          { type: "email", message: "Email is invalid!" },
+          { required: true, message: "Email address is required!" },
+          { type: "email", message: "The input email domain is not valid" },
         ]}
       >
         <Input disabled={disabled} placeholder="Enter email" />
@@ -75,8 +83,8 @@ export const CustomerForm = ({
         name="phoneNumber"
         rules={[
           {
-            pattern: /^(?:[0-9]{1,4})+-(?:[0-9]{5,14})$/,
-            message: "Invalid number phone format.",
+            pattern: /^(?:[0-9]{1,4})+-(?:[0-9]{4,11})$/,
+            message: "The input phone number is not valid",
           },
         ]}
       >

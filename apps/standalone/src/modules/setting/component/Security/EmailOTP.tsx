@@ -4,6 +4,7 @@ import { Input, Space, Spin, Typography } from "antd";
 import Link from "antd/es/typography/Link";
 import { memo, useCallback, useEffect, useState } from "react";
 import { catchError, map, of } from "rxjs";
+import { Form } from "src/components/UI/Form";
 interface EmailOTP {
   setDataSubmitEmailOTP: (data: any) => void;
   errorMessage?: string;
@@ -74,49 +75,51 @@ const EmailOTP = ({ setDataSubmitEmailOTP, errorMessage }: EmailOTP) => {
     handleOnResendEmail();
   });
   return (
-    <Space direction="vertical" size="middle" className="mt-6">
-      <Typography.Text>
-        Please enter the 6 digits OTP code that we send to your email address in
-        order to enable 2FA with your email.
-      </Typography.Text>
-      <div className="flex items-center">
-        <Typography.Text>OTP code</Typography.Text>
-        <div className="w-20 ml-4">
-          <Input
-            value={value}
-            onChange={handleChange}
-            type="text"
-            autoComplete="off"
-            maxLength={6}
-          />
-        </div>
-        {errorMessage ? (
-          <div className="Polaris-Labelled__Error ml-2">
-            <Typography.Text type="danger">
-              Wrong code. Try again.
-            </Typography.Text>
+    <Form initialValues={{ code: "" }}>
+      <Space direction="vertical" size="middle" className="mt-6">
+        <Typography.Text>
+          Please enter the 6 digits OTP code that we send to your email address
+          in order to enable 2FA with your email.
+        </Typography.Text>
+        <div className="flex items-center">
+          <Typography.Text>OTP code</Typography.Text>
+          <div className="w-20 ml-4">
+            <Input
+              value={value}
+              onChange={handleChange}
+              type="text"
+              autoComplete="off"
+              maxLength={6}
+            />
           </div>
-        ) : null}
-      </div>
-      <div className="flex items-center">
-        <Typography.Text>Did not receive the code yet?</Typography.Text>
-        <div className="flex ml-2">
-          <Link
-            disabled={!onResendEmail}
-            type={onResendEmail ? "success" : "secondary"}
-            onClick={handleResendEmail}
-          >
-            Re-send OTP Code
-          </Link>
-          {spin ? <Spin size="small" /> : null}
-          {state !== 0 && !onResendEmail && secondResend ? (
-            <Typography.Text className="ml-2">
-              ({state} seconds)
-            </Typography.Text>
+          {errorMessage ? (
+            <div className="ml-2">
+              <Typography.Text type="danger">
+                Wrong code. Try again.
+              </Typography.Text>
+            </div>
           ) : null}
         </div>
-      </div>
-    </Space>
+        <div className="flex items-center">
+          <Typography.Text>Did not receive the code yet?</Typography.Text>
+          <div className="flex ml-2">
+            <Link
+              disabled={!onResendEmail}
+              type={onResendEmail ? "success" : "secondary"}
+              onClick={handleResendEmail}
+            >
+              Re-send OTP Code
+            </Link>
+            {spin ? <Spin size="small" /> : null}
+            {state !== 0 && !onResendEmail && secondResend ? (
+              <Typography.Text className="ml-2">
+                ({state} seconds)
+              </Typography.Text>
+            ) : null}
+          </div>
+        </div>
+      </Space>
+    </Form>
   );
 };
 export default memo(EmailOTP);

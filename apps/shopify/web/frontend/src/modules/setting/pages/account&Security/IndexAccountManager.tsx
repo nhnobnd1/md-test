@@ -85,15 +85,15 @@ export default function IndexAccountManager({ props }: any) {
           domain: string()
             .matches(
               /^(?=.{1,253}\.?$)(?:(?!-|[^.]+_)[A-Za-z0-9-_]{1,63}(?<!-)(?:\.|$)){2,}$/,
-              "Invalid domain name."
+              "The input email domain is not valid"
             )
-            .required("Please, enter domain!"),
+            .required("The email domain is required!"),
         });
       } else {
         return object().shape({
           domain: string().matches(
             /^(?=.{1,253}\.?$)(?:(?!-|[^.]+_)[A-Za-z0-9-_]{1,63}(?<!-)(?:\.|$)){2,}$/,
-            "Invalid domain name."
+            "The input email domain is not valid"
           ),
         });
       }

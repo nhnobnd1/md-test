@@ -2,6 +2,7 @@ import { createRepository } from "@moose-desk/core";
 import env from "../env";
 import { BaseResponse } from "../unty";
 import {
+  CheckPasswordResetToken,
   ForgotPasswordRequest,
   RefreshTokenRequest,
   RefreshTokenResponse,
@@ -52,6 +53,13 @@ export const AccountRepository = createRepository(
     },
     userGet2FAStatus(api) {
       return api.get<Status2FAResponse>("/2fa-status");
+    },
+    checkPasswordResetToken(api, payload: CheckPasswordResetToken) {
+      return api.post<
+        BaseResponse<{
+          isValid: boolean;
+        }>
+      >("/check-password-reset-token", payload);
     },
   }
 );

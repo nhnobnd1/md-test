@@ -8,6 +8,7 @@ import { Form } from "src/components/UI/Form";
 import InputPhone from "src/components/UI/InputPhone/InputPhone";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
+import { regexPhoneValidate } from "src/regex";
 
 export default function IndexProfileManager() {
   const token = jose.decodeJwt(TokenManager.getToken("base_token") || "");
@@ -71,10 +72,14 @@ export default function IndexProfileManager() {
           label="First name"
           name="firstName"
           rules={[
-            { required: true, message: "You must enter your first name!" },
+            { required: true, message: "First name is required!" },
             {
               max: 255,
               message: "First name up to 255 characters",
+            },
+            {
+              pattern: /[^\s]/,
+              message: "First name is required!",
             },
           ]}
         >
@@ -84,10 +89,14 @@ export default function IndexProfileManager() {
           label="Last name"
           name="lastName"
           rules={[
-            { required: true, message: "You must enter your last name!" },
+            { required: true, message: "Last name is required!" },
             {
               max: 255,
               message: "Last name up to 255 characters",
+            },
+            {
+              pattern: /[^\s]/,
+              message: "Last name is required!",
             },
           ]}
         >
@@ -109,8 +118,8 @@ export default function IndexProfileManager() {
           name="phoneNumber"
           rules={[
             {
-              pattern: /^(?:[0-9]{1,4})+-(?:[0-9]{5,14})$/,
-              message: "Invalid number phone format.",
+              pattern: regexPhoneValidate,
+              message: "The input phone number is not valid",
             },
           ]}
         >

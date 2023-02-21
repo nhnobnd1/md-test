@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import Form, { FormProps } from "src/components/Form";
 import FormItem from "src/components/Form/Item";
 import InputPhone from "src/components/InputPhone/InputPhone";
-import { regexPhoneValidate } from "src/constaint/country";
+import { regexPhoneValidate } from "src/constaint/regex";
 import * as Yup from "yup";
 import "./AgentForm.scss";
 

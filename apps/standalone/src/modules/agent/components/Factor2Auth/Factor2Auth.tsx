@@ -22,7 +22,6 @@ interface Factor2AuthProps {
 export const Factor2Auth = ({
   type,
   state,
-  errorMessage,
   onFinish,
   onResend,
 }: Factor2AuthProps) => {
@@ -76,7 +75,7 @@ export const Factor2Auth = ({
     );
   }, [state]);
   return (
-    <div className="h-full pt-[20%]">
+    <div className="Factor2Auth h-full pt-[20%]">
       <h2 className="mb-8 text-center">2-Factor Authentication</h2>
       <div className="form">
         {type === "email" ? (
@@ -88,7 +87,7 @@ export const Factor2Auth = ({
           </p>
         )}
 
-        <Form layout="inline" onFinish={handleFinish}>
+        <Form className="mb-2" layout="inline" onFinish={handleFinish}>
           <Form.Item
             name="twoFactorCode"
             rules={[{ required: true, message: "Please enter code OTP" }]}
@@ -99,10 +98,8 @@ export const Factor2Auth = ({
             Login
           </Button>
         </Form>
-        {errorMessage && (
-          <div className="error-message mt-2">{errorMessage}</div>
-        )}
-        <div className="mt-4">
+
+        <div>
           <span
             className={classNames(["link text-base"], {
               disabled: !activeResend,

@@ -3,18 +3,18 @@ import { MethodOTP, UserSettingRepository } from "@moose-desk/repo";
 import {
   Button,
   FormLayout,
-  InlineError,
   Layout,
   Link,
   Spinner,
   Stack,
   Text,
-  TextField,
 } from "@shopify/polaris";
 import { memo, useCallback, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
+import InputOTP from "src/modules/setting/component/Security/InputOTP/InputOTP";
+import { object, string } from "yup";
 interface EmailOPT {
   initialValues?: {
     twoFactorEnabled: boolean;
@@ -45,21 +45,25 @@ const EmailOPT = ({
   });
   const [secondResend, setSecondResend] = useState(false);
   const [onResendEmail, setOnResendEmail] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<string>();
   const handleSubmit = useCallback(
     (data: any) => {
       submit({ method: initialValues?.twoFactorMethod, ...data });
     },
     [initialValues]
   );
-
+  // validate
+  const validateObject = object().shape({
+    code: string().required("OTP is required"),
+  });
+  // form
   const { run: submit } = useJob((dataSubmit: any) => {
     return UserSettingRepository()
       .verifySetupOTP(dataSubmit)
       .pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
-            setError(false);
+            setError(undefined);
             handleCloseModal();
             fetch2FAStatus();
             back(1);
@@ -73,11 +77,11 @@ const EmailOPT = ({
               "Your Two-Factor Authentication has been enabled successfully."
             );
           } else {
-            setError(true);
+            setError("The input OTP is incorrect");
           }
         }),
         catchError((error) => {
-          setError(true);
+          setError("The input OTP is incorrect");
           return of(error);
         })
       );
@@ -127,11 +131,15 @@ const EmailOPT = ({
     [onResendEmail]
   );
   useMount(() => {
-    setError(false);
+    setError(undefined);
     handleOnResendEmail();
   });
   return (
-    <Form initialValues={{ code: "" }} onSubmit={handleSubmit}>
+    <Form
+      initialValues={{ code: "" }}
+      validationSchema={validateObject}
+      onSubmit={handleSubmit}
+    >
       <Layout sectioned>
         <Layout.Section>
           <div className="main-content">
@@ -141,30 +149,9 @@ const EmailOPT = ({
                   Please enter the 6 digits OTP code that we send to your email
                   address in order to enable 2FA with your email.
                 </Text>
-                <div className="flex items-center">
-                  <Text variant="bodyMd" as="span">
-                    OTP code
-                  </Text>
-                  <div className="w-20 ml-4">
-                    <FormItem name="code">
-                      <TextField
-                        type="text"
-                        label="OTP code"
-                        labelHidden
-                        autoComplete="off"
-                        maxLength={6}
-                      />
-                    </FormItem>
-                  </div>
-                  {error ? (
-                    <div className="Polaris-Labelled__Error ml-2">
-                      <InlineError
-                        message="Wrong code. Try again."
-                        fieldID="myFieldID"
-                      />
-                    </div>
-                  ) : null}
-                </div>
+                <FormItem name="code">
+                  <InputOTP errorMessage={error} setErrorMessage={setError} />
+                </FormItem>
                 <div className="flex items-center">
                   <Text variant="bodyMd" as="span">
                     Did not receive the code yet?

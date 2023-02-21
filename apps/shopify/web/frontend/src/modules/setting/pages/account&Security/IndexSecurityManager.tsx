@@ -18,9 +18,9 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
+import { validateSchemaObjectPassword } from "src/constaint/regex";
 import Enable2FAModal from "src/modules/setting/component/Security/Enable2FAModal";
 import { BannerPropsAccessManager } from "src/modules/setting/modal/account&Security/AccountManager";
-import { object, ref, string } from "yup";
 export default function IndexAccountManager() {
   const [status, setStatus] = useState(false);
   const [method, setMethod] = useState<{
@@ -30,26 +30,7 @@ export default function IndexAccountManager() {
     show: false,
     method: "Disabled",
   });
-  const validateObject = object().shape({
-    currentPassword: string().min(8, "Must be at least 8 characters."),
-    newPassword: string()
-      .min(8, "Must be at least 8 characters.")
-      .when("currentPassword", (currentPassword, field) =>
-        currentPassword ? field.required("New Password is required!") : field
-      ),
-    confirmNewPassword: string()
-      .min(8, "Must be at least 8 characters.")
-      .when("newPassword", (newPassword, field) =>
-        newPassword
-          ? field
-              .required("Confirm New Password is required!")
-              .oneOf(
-                [ref("newPassword")],
-                "Confirm New Password must match with New Password."
-              )
-          : field
-      ),
-  });
+  const validateObject = validateSchemaObjectPassword;
   const { show } = useToast();
   const [banner, setBanner] = useState<BannerPropsAccessManager>({
     status: "success",
@@ -67,7 +48,7 @@ export default function IndexAccountManager() {
   const formRef = useRef<FormikProps<any>>(null);
   // fetch init data
   // const token = jose.decodeJwt(TokenManager.getToken("base_token"));
-  const { run: fetch2FAStatus, result } = useJob(
+  const { run: fetch2FAStatus } = useJob(
     () => {
       return AccountRepository()
         .userGet2FAStatus()
@@ -137,14 +118,25 @@ export default function IndexAccountManager() {
               isError: true,
             });
           } else {
-            setBanner({
-              isShowBanner: true,
-              message: "Password updated failed.",
-              status: "critical",
-            });
-            show(`Password updated failed`, {
-              isError: true,
-            });
+            if (error.response.status === 500) {
+              setBanner({
+                isShowBanner: true,
+                message: "System error. Please try again later.",
+                status: "critical",
+              });
+              show(`System error. Please try again later.`, {
+                isError: true,
+              });
+            } else {
+              setBanner({
+                isShowBanner: true,
+                message: "Current Password not match! Please try again.",
+                status: "critical",
+              });
+              show("Current Password not match! Please try again.", {
+                isError: true,
+              });
+            }
           }
           return of(error);
         })
