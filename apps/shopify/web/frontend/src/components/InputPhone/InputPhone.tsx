@@ -150,6 +150,10 @@ const InputPhone = (props: InputPhoneProps) => {
         dataSelect.find((option) => option.phonePrefix === flag)?.code || "VN",
       ]);
       setValueField(props.value?.slice(props.value?.indexOf("-") + 1) || "");
+    } else {
+      setFlagValue("84");
+      setValueSelect(["VN"]);
+      setValueField("");
     }
   }, [props.value]);
 

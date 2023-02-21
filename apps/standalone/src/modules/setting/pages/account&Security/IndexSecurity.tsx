@@ -156,11 +156,20 @@ export default function IndexAccountManager() {
             name="confirmNewPassword"
             label="Confirm New Password"
             rules={[
-              ...rulesValidatePassword,
               {
                 required: true,
                 message: "The Confirm New Password is required",
               },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue("newPassword") === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(
+                    new Error("The confirmation password is not match!")
+                  );
+                },
+              }),
             ]}
           >
             <Input minLength={8} type="password" autoComplete="off" />
