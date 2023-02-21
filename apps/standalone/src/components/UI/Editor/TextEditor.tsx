@@ -36,7 +36,6 @@ const TextEditor = ({ value, onChange, error, ...props }: TextEditorProps) => {
             "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
           toolbar:
             "undo redo | bold italic underline align | blocks fontfamily fontsize | link image code copy cut past blockquote backcolor forecolor indent newdocument lineheight selectall strikethrough",
-          ...props.init,
           plugins: [
             "advlist lists autolink charmap print preview anchor",
             "searchreplace visualblocks code fullscreen",
@@ -55,7 +54,6 @@ const TextEditor = ({ value, onChange, error, ...props }: TextEditorProps) => {
               input.onchange = function () {
                 if (input.files?.length) {
                   const file = input.files[0];
-                  console.log(file, "file");
                   const reader = new FileReader();
                   reader.onload = function (e) {
                     const id = "blobid" + new Date().getTime();
@@ -76,6 +74,7 @@ const TextEditor = ({ value, onChange, error, ...props }: TextEditorProps) => {
             }
           },
           paste_data_images: true,
+          ...props.init,
         }}
       ></Editor>
       {/* {error ? (
