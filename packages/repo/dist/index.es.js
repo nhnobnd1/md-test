@@ -6017,7 +6017,7 @@ const nh = Ze(
     },
     checkTokenActiveNewAgent(e, t) {
       return e.post(
-        "/check-token-active-new-agent",
+        "/check-active-new-agent-token",
         t
       );
     }
