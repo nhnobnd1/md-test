@@ -1,5 +1,5 @@
 import { BaseResponse } from "../unty";
-import { ForgotPasswordRequest, RefreshTokenRequest, RefreshTokenResponse, SignInAccountAgentRequest, SignInAccountResponse, SignInAccountShopifyRequest, SignupAccountAgentRequest, SignupAccountResponse, SignupAccountShopifyRequest, Status2FAResponse, UpdatePasswordRequest } from "./Account";
+import { CheckPasswordResetToken, ForgotPasswordRequest, RefreshTokenRequest, RefreshTokenResponse, SignInAccountAgentRequest, SignInAccountResponse, SignInAccountShopifyRequest, SignupAccountAgentRequest, SignupAccountResponse, SignupAccountShopifyRequest, Status2FAResponse, UpdatePasswordRequest } from "./Account";
 export declare const AccountRepository: () => {
     agentSignUp: (data: SignupAccountAgentRequest) => import("rxjs").Observable<import("axios").AxiosResponse<SignupAccountResponse, any>>;
     shopifySignup: (data: SignupAccountShopifyRequest) => import("rxjs").Observable<import("axios").AxiosResponse<SignupAccountResponse, any>>;
@@ -17,6 +17,9 @@ export declare const AccountRepository: () => {
     signOut: () => import("rxjs").Observable<import("axios").AxiosResponse<BaseResponse<{}>, any>>;
     changePassword: (params: UpdatePasswordRequest) => import("rxjs").Observable<import("axios").AxiosResponse<BaseResponse<{}>, any>>;
     userGet2FAStatus: () => import("rxjs").Observable<import("axios").AxiosResponse<Status2FAResponse, any>>;
+    checkPasswordResetToken: (payload: CheckPasswordResetToken) => import("rxjs").Observable<import("axios").AxiosResponse<BaseResponse<{
+        isValid: boolean;
+    }>, any>>;
 };
 export default AccountRepository;
 //# sourceMappingURL=AccountRepository.d.ts.map

@@ -93,3 +93,9 @@ export type Status2FAResponse = BaseResponse<{
   twoFactorEnabled: boolean;
   twoFactorMethod: string;
 }>;
+
+export interface CheckPasswordResetToken {
+  userId: string;
+  resetToken: string;
+  storeId: string;
+}
