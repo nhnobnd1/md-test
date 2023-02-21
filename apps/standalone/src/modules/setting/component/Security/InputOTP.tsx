@@ -14,7 +14,7 @@ const InputOTP = ({
   errorMessage,
   setErrorMessage,
 }: InputOTPProps) => {
-  const [errorText, setErrorText] = useState();
+  const [errorText, setErrorText] = useState<string>();
   const handleChangeValueInput = useCallback(
     (e) => {
       if (errorMessage) {
@@ -26,7 +26,7 @@ const InputOTP = ({
   );
   useEffect(() => {
     if (errorMessage) {
-      setErrorText(errorMessage);
+      setErrorText("The input OTP is incorrect!");
     } else {
       setErrorText(undefined);
     }
