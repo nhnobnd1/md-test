@@ -44,7 +44,7 @@ export const CustomerForm = ({
           },
           {
             pattern: /[^\s]/,
-            message: "First Name can't be all space",
+            message: "First name is required!",
           },
         ]}
       >
@@ -61,7 +61,7 @@ export const CustomerForm = ({
           },
           {
             pattern: /[^\s]/,
-            message: "Last Name can't be all space",
+            message: "Last name is required!",
           },
         ]}
       >

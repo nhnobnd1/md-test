@@ -4,7 +4,7 @@ import { ForwardedRef, forwardRef, useCallback } from "react";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
 import InputPhone from "src/components/InputPhone/InputPhone";
-import { regexPhoneValidate } from "src/constaint/country";
+import { regexPhoneValidate } from "src/constaint/regex";
 import { object, string } from "yup";
 export interface RefProperties {
   save: () => Promise<void> | undefined;
@@ -24,10 +24,10 @@ const CustomerForm = (
   }, []);
   const validateObject = object().shape({
     firstName: string()
-      .matches(/[^\s]/, "First Name can't be all space")
+      .matches(/[^\s]/, "First name is required!")
       .required("First name is required!"),
     lastName: string()
-      .matches(/[^\s]/, "Last Name can't be all space")
+      .matches(/[^\s]/, "Last name is required!")
       .required("Last name is required!"),
     email: string()
       .email("The email address is not valid")
