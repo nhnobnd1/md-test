@@ -1,5 +1,5 @@
-import { TokenManager, useJob, useMount } from "@moose-desk/core";
-import { AgentRepository } from "@moose-desk/repo";
+import { TokenManager, useJob, useMount, useToggle } from "@moose-desk/core";
+import { Agent, AgentRepository } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Banner,
@@ -11,7 +11,7 @@ import {
 } from "@shopify/polaris";
 import { FormikProps } from "formik";
 import * as jose from "jose";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import ProfileForm from "src/modules/setting/component/ProfileForm";
 
@@ -19,7 +19,16 @@ export default function IndexProfileManager() {
   const token = jose.decodeJwt(TokenManager.getToken("base_token") ?? "");
 
   const formRef = useRef<FormikProps<any>>(null);
-  const [disable, setDisable] = useState(true);
+  const { toggle: updateForm } = useToggle();
+  const initialValuesForm = useMemo<any>(() => {
+    return {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phoneNumber: "",
+    };
+  }, []);
+  const [dataProfile, setDataProfile] = useState<Agent>();
   const [banner, setBanner] = useState<{
     isShow: boolean;
     type: BannerStatus;
@@ -31,19 +40,20 @@ export default function IndexProfileManager() {
   });
   const { show } = useToast();
 
-  const { run: fetDetailsProfile, result } = useJob(
+  const { run: fetDetailsProfile } = useJob(
     (payload: string) => {
       return AgentRepository()
         .getOne(payload)
         .pipe(
           map(({ data }) => {
+            setDataProfile(data.data);
             return data.data;
           })
         );
     },
     { showLoading: false }
   );
-  const { run: submit } = useJob((dataSubmit: any) => {
+  const { run: submit, processing: loading } = useJob((dataSubmit: any) => {
     const { _id } = dataSubmit;
     return AgentRepository()
       .update(_id, dataSubmit)
@@ -53,52 +63,30 @@ export default function IndexProfileManager() {
             setBanner({
               isShow: true,
               type: "success",
-              message: "Profile has been updated succcesfully.",
+              message: "Your Profile has been updated succcesfully.",
             });
-            show("Edit profile success");
-            setDisable(true);
+            show("Your Profile has been updated succcesfully.");
+            setDataProfile(data.data);
           } else {
-            if (data.statusCode === 409) {
-              setBanner({
-                isShow: true,
-                type: "critical",
-                message: `Email is ${dataSubmit.email} already exists.`,
-              });
-              show(`Email is ${dataSubmit.email} already exists.`, {
-                isError: true,
-              });
-            } else {
-              setBanner({
-                isShow: true,
-                type: "critical",
-                message: "Profile has been updated failed.",
-              });
-              show("Profile has been updated failed.", {
-                isError: true,
-              });
-            }
+            setBanner({
+              isShow: true,
+              type: "critical",
+              message: "Your Profile has been updated failed.",
+            });
+            show("Your Profile has been updated failed.", {
+              isError: true,
+            });
           }
         }),
         catchError((error) => {
-          if (error.response.status === 409) {
-            setBanner({
-              isShow: true,
-              type: "critical",
-              message: `Email is ${dataSubmit.email} already exists.`,
-            });
-            show(`Email is ${dataSubmit.email} already exists.`, {
-              isError: true,
-            });
-          } else {
-            setBanner({
-              isShow: true,
-              type: "critical",
-              message: "Profile has been updated failed.",
-            });
-            show("Profile has been updated failed.", {
-              isError: true,
-            });
-          }
+          setBanner({
+            isShow: true,
+            type: "critical",
+            message: "Your Profile has been updated failed.",
+          });
+          show("Your Profile has been updated failed.", {
+            isError: true,
+          });
           return of(error);
         })
       );
@@ -111,14 +99,11 @@ export default function IndexProfileManager() {
     formRef.current?.resetForm();
   }, [formRef.current]);
 
-  const handleChangeValueForm = useCallback((value: boolean) => {
-    setDisable(value);
-  }, []);
   const profileProfile = (
     <ProfileForm
       ref={formRef}
-      change={handleChangeValueForm}
-      initialValues={result}
+      updateForm={updateForm}
+      initialValues={dataProfile || initialValuesForm}
       submit={submit}
     />
   );
@@ -127,13 +112,14 @@ export default function IndexProfileManager() {
 
   return (
     <>
-      {disable ? null : (
+      {!formRef.current?.dirty ? null : (
         <ContextualSaveBar
           fullWidth
           message="Unsaved changes"
           saveAction={{
             onAction: handleSubmitForm,
-            disabled: disable,
+            disabled: !formRef.current?.dirty,
+            loading: loading,
           }}
           discardAction={{
             onAction: handleResetForm,

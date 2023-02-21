@@ -7,6 +7,7 @@ import { Form } from "src/components/UI/Form";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import Enable2FAModal from "src/modules/setting/component/Security/Enable2FAModal";
+import { rulesValidatePassword } from "src/regex";
 import { object, ref, string } from "yup";
 export default function IndexAccountManager() {
   const [status, setStatus] = useState(false);
@@ -146,13 +147,43 @@ export default function IndexAccountManager() {
           layout="vertical"
           enableReinitialize
         >
-          <Form.Item name="currentPassword" label="Current Password">
+          <Form.Item
+            name="currentPassword"
+            label="Current Password"
+            rules={[
+              ...rulesValidatePassword,
+              {
+                required: true,
+                message: "The Current Password is required",
+              },
+            ]}
+          >
             <Input autoComplete="off" type="password" />
           </Form.Item>
-          <Form.Item name="newPassword" label="New Password">
+          <Form.Item
+            name="newPassword"
+            label="New Password"
+            rules={[
+              ...rulesValidatePassword,
+              {
+                required: true,
+                message: "The New Password is required",
+              },
+            ]}
+          >
             <Input minLength={8} type="password" autoComplete="off" />
           </Form.Item>
-          <Form.Item name="confirmNewPassword" label="Confirm New Password">
+          <Form.Item
+            name="confirmNewPassword"
+            label="Confirm New Password"
+            rules={[
+              ...rulesValidatePassword,
+              {
+                required: true,
+                message: "The Confirm New Password is required",
+              },
+            ]}
+          >
             <Input minLength={8} type="password" autoComplete="off" />
           </Form.Item>
           <div className="flex-1 text-right mt-4">
