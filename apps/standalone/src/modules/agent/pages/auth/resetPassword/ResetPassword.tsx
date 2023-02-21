@@ -124,10 +124,10 @@ const ResetPassword = (props: ResetPasswordProps) => {
         password: values.password,
         resetToken: account.token,
         userId: account.userId,
-        storeId: "",
+        storeId: storeId,
       });
     },
-    [account]
+    [account, storeId]
   );
 
   return (
@@ -144,8 +144,7 @@ const ResetPassword = (props: ResetPasswordProps) => {
                   {!finalPage ? (
                     <div className="card-form">
                       <Form
-                        labelCol={{ span: 8, xl: 6 }}
-                        wrapperCol={{ span: 16, xl: 18 }}
+                        layout="vertical"
                         initialValues={initialValues}
                         onFinish={handleSubmit}
                       >
