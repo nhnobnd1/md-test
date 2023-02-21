@@ -59,7 +59,6 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
   }, []);
 
   useEffect(() => {
-    console.log(signInCallback, "signInCallBack");
     if (signInCallback.callbackName && signInCallback.oauthStatus) {
       setIsLoggedServer({
         callBackName: signInCallback.callbackName,

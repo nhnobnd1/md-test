@@ -21,10 +21,12 @@ import DashboardRoutePaths from "src/modules/dashboard/routes/paths";
 import GroupRoutePaths from "src/modules/group/routes/paths";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
+import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import { useAppConfig } from "src/providers/AppConfigProviders";
 import RoutePaths from "src/routes/paths";
 import ClarityUsersSolid from "~icons/clarity/users-solid";
 import FeUsers from "~icons/fe/users";
+import IonTicketSharp from "~icons/ion/ticket-sharp";
 import JamDashboard from "~icons/jam/dashboard";
 import MaterialSymbolsSettings from "~icons/material-symbols/settings";
 import MaterialSymbolsSettingsInputComponentOutline from "~icons/material-symbols/settings-input-component-outline";
@@ -49,6 +51,13 @@ export const AppLayout = (props: AppLayoutProps) => {
         link: DashboardRoutePaths.Index,
         icon: <JamDashboard />,
         onClick: () => navigate(generatePath(DashboardRoutePaths.Index)),
+      },
+      {
+        key: `case-${TicketRoutePaths.Index}`,
+        label: "Tickets",
+        link: TicketRoutePaths.Index,
+        icon: <IonTicketSharp />,
+        onClick: () => navigate(generatePath(TicketRoutePaths.Index)),
       },
       {
         key: `case-${CustomersRoutePaths.Index}`,
