@@ -92,7 +92,9 @@ const ResetPassword = (props: ResetPasswordProps) => {
           map(() => {
             setFinalPage(true);
             message.loading.hide().then(() => {
-              notification.success("Sending request success");
+              notification.success(
+                "Your password has been updated successfully."
+              );
             });
           }),
           catchError((err) => {
