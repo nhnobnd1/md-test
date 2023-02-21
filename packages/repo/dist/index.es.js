@@ -6016,7 +6016,7 @@ const nh = Ze(
       return e.put(`/reactive/${t}`, {});
     },
     checkTokenActiveNewAgent(e, t) {
-      return e.put(
+      return e.post(
         "/check-token-active-new-agent",
         t
       );
