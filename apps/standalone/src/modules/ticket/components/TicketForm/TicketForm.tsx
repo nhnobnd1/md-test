@@ -1,4 +1,4 @@
-import { AgentRepository } from "@moose-desk/repo";
+import { AgentRepository, TagRepository } from "@moose-desk/repo";
 import { Input } from "antd";
 import { useCallback, useMemo } from "react";
 import { map } from "rxjs";
@@ -83,11 +83,41 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
     },
     [AgentRepository]
   );
+
+  const fetchTags = useCallback(
+    (params: LoadMoreValue) => {
+      const limit = env.DEFAULT_PAGE_SIZE;
+      return TagRepository()
+        .getList({
+          page: params.page,
+          limit: limit,
+          query: params.searchText,
+        })
+        .pipe(
+          map(({ data }) => {
+            return {
+              options: data.data.map((item) => ({
+                label: item.name,
+                value: item._id,
+                obj: item,
+              })),
+              canLoadMore: params.page < data.metadata.totalPage,
+            };
+          })
+        );
+    },
+    [TagRepository]
+  );
+
+  const handleChangeForm = useCallback((changedValue) => {
+    console.log(changedValue, "changed value");
+  }, []);
   return (
     <Form
       layout={"vertical"}
       enableReinitialize
       initialValues={initialValues}
+      onValuesChange={handleChangeForm}
       {...props}
     >
       <div>
@@ -111,8 +141,6 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
           <Form.Item label="Assignee" name="assignee">
             <Select.Ajax
               placeholder="Search agents"
-              // suffixIcon={<PhUserPlusFill></PhUserPlusFill>}
-              value={null}
               virtual
               loadMore={fetchAgents}
             />
@@ -130,13 +158,25 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
               placeholder="Defined Email address"
             ></Select>
           </Form.Item>
+          <Form.Item name="tags" label="Tags">
+            <Select.Ajax
+              mode="multiple"
+              placeholder="Add tags"
+              loadMore={fetchTags}
+            ></Select.Ajax>
+          </Form.Item>
+          <div></div>
           <Form.Item name="macros" label="Macros">
             <Select></Select>
           </Form.Item>
         </div>
         <div className="mt-4">
           <Form.Item name="message" className="w-full">
-            <TextEditor />
+            <TextEditor
+              init={{
+                height: 500,
+              }}
+            />
           </Form.Item>
         </div>
       </div>
