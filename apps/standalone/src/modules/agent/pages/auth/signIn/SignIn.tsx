@@ -15,6 +15,7 @@ import { Button, Form, Input } from "antd";
 import { useCallback, useMemo, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import useMessage from "src/hooks/useMessage";
+import useNotification from "src/hooks/useNotification";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { Factor2Auth } from "src/modules/agent/components/Factor2Auth";
 import DashboardRoutePaths from "src/modules/dashboard/routes/paths";
@@ -46,7 +47,7 @@ export const SignIn = (props: SignInProps) => {
     },
   });
   const [errorMessage, setErrorMessage] = useState("");
-  const [factorErrorMessage, setFactorErrorMessage] = useState("");
+  const notification = useNotification();
   const navigate = useNavigate();
   const initialValues = useMemo(() => {
     return {
@@ -96,7 +97,7 @@ export const SignIn = (props: SignInProps) => {
               });
             } else {
               if (error.includes("INVALID_AUTHENTICATOR_CODE")) {
-                setFactorErrorMessage(`The input OTP is incorrect`);
+                notification.error("The input OTP is incorrect");
               } else if (error.includes("USER_NOT_FOUND")) {
                 setErrorMessage(
                   "We're sorry, the email address you entered does not exist in our system. Please double-check your email address"
@@ -266,7 +267,6 @@ export const SignIn = (props: SignInProps) => {
                   <Factor2Auth
                     type={factor.type}
                     state={factor.state}
-                    errorMessage={factorErrorMessage}
                     onFinish={signInApi}
                     onResend={signInApi}
                   />
