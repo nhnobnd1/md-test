@@ -69,7 +69,7 @@ export const OnBoarding = (props: OnBoardingProps) => {
                 break;
               case TypeCheckTokenNewAgent.USER_ACTIVE:
                 setIsPageErr({
-                  status: false,
+                  status: true,
                   message: "You have completed the onboarding process.",
                 });
                 break;

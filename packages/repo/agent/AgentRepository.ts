@@ -57,7 +57,7 @@ export const AgentRepository = createRepository(
     },
     checkTokenActiveNewAgent(api, payload: CheckTokenNewAgentRequest) {
       return api.post<CheckTokenNewAgentResponse>(
-        "/check-token-active-new-agent",
+        "/check-active-new-agent-token",
         payload
       );
     },
