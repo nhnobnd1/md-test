@@ -8,7 +8,6 @@ import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import Enable2FAModal from "src/modules/setting/component/Security/Enable2FAModal";
 import { rulesValidatePassword } from "src/regex";
-import { object, ref, string } from "yup";
 export default function IndexAccountManager() {
   const [status, setStatus] = useState(false);
 
@@ -21,26 +20,6 @@ export default function IndexAccountManager() {
   }>({
     show: false,
     method: "Disabled",
-  });
-  const validateObject = object().shape({
-    currentPassword: string().min(8, "Must be at least 8 characters."),
-    newPassword: string()
-      .min(8, "Must be at least 8 characters.")
-      .when("currentPassword", (currentPassword, field) =>
-        currentPassword ? field.required("New Password is required!") : field
-      ),
-    confirmNewPassword: string()
-      .min(8, "Must be at least 8 characters.")
-      .when("newPassword", (newPassword, field) =>
-        newPassword
-          ? field
-              .required("Confirm New Password is required!")
-              .oneOf(
-                [ref("newPassword")],
-                "Confirm New Password must match with New Password."
-              )
-          : field
-      ),
   });
   const initialValues = useMemo(
     () => ({
