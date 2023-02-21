@@ -33,7 +33,7 @@ export default function Enable2FAModal({
     key: "",
   });
   const [step, setStep] = useState(1);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState<string>();
   const message = useMessage();
   const notification = useNotification();
   const [status2FA, setStatus2FA] = useState<{
@@ -240,14 +240,16 @@ export default function Enable2FAModal({
           <EmailOTP
             setDataSubmitEmailOTP={setDataSubmitEmailOTP}
             errorMessage={errorMessage}
+            setErrorMessage={setErrorMessage}
           />
         ) : null}
         {step === 3 ? (
           <ExternalAuth
             initialValues={status2FA}
             props={props}
-            errorMessage={errorMessage}
             setDataSubmitExternalAuth={setDataSubmitExternalAuth}
+            errorMessage={errorMessage}
+            setErrorMessage={setErrorMessage}
           />
         ) : null}
       </div>

@@ -1,15 +1,21 @@
 import { useCountDown, useJob, useMount } from "@moose-desk/core";
 import { MethodOTP, UserSettingRepository } from "@moose-desk/repo";
-import { Input, Space, Spin, Typography } from "antd";
+import { Space, Spin, Typography } from "antd";
 import Link from "antd/es/typography/Link";
 import { memo, useCallback, useEffect, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import { Form } from "src/components/UI/Form";
+import InputOTP from "src/modules/setting/component/Security/InputOTP";
 interface EmailOTP {
   setDataSubmitEmailOTP: (data: any) => void;
   errorMessage?: string;
+  setErrorMessage: (value: string | undefined) => void;
 }
-const EmailOTP = ({ setDataSubmitEmailOTP, errorMessage }: EmailOTP) => {
+const EmailOTP = ({
+  setDataSubmitEmailOTP,
+  errorMessage,
+  setErrorMessage,
+}: EmailOTP) => {
   const timeOut = 30;
   const {
     clearCountDown,
@@ -22,8 +28,11 @@ const EmailOTP = ({ setDataSubmitEmailOTP, errorMessage }: EmailOTP) => {
   const [secondResend, setSecondResend] = useState(false);
   const [onResendEmail, setOnResendEmail] = useState(false);
   const [value, setValue] = useState("");
-  const handleChange = useCallback((e) => {
-    setValue(e.target.value);
+  const handleChange = useCallback((value: string) => {
+    setValue(value);
+  }, []);
+  const handleChangeValueForm = useCallback((value: { code: string }) => {
+    handleChange(value.code);
   }, []);
   // resend Email
   const [spin, setSpin] = useState(false);
@@ -75,31 +84,26 @@ const EmailOTP = ({ setDataSubmitEmailOTP, errorMessage }: EmailOTP) => {
     handleOnResendEmail();
   });
   return (
-    <Form initialValues={{ code: "" }}>
+    <Form initialValues={{ code: "" }} onValuesChange={handleChangeValueForm}>
       <Space direction="vertical" size="middle" className="mt-6">
         <Typography.Text>
           Please enter the 6 digits OTP code that we send to your email address
           in order to enable 2FA with your email.
         </Typography.Text>
-        <div className="flex items-center">
-          <Typography.Text>OTP code</Typography.Text>
-          <div className="w-20 ml-4">
-            <Input
-              value={value}
-              onChange={handleChange}
-              type="text"
-              autoComplete="off"
-              maxLength={6}
+        <div className="flex">
+          <Typography.Text className="mr-4">OTP code: </Typography.Text>
+          <Form.Item
+            name="code"
+            rules={[{ required: true, message: "OTP is required" }]}
+            className="mb-0"
+          >
+            <InputOTP
+              errorMessage={errorMessage}
+              setErrorMessage={setErrorMessage}
             />
-          </div>
-          {errorMessage ? (
-            <div className="ml-2">
-              <Typography.Text type="danger">
-                Wrong code. Try again.
-              </Typography.Text>
-            </div>
-          ) : null}
+          </Form.Item>
         </div>
+
         <div className="flex items-center">
           <Typography.Text>Did not receive the code yet?</Typography.Text>
           <div className="flex ml-2">

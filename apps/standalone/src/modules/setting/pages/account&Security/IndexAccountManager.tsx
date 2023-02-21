@@ -70,16 +70,16 @@ export default function IndexAccountManager({ props }: any) {
         {
           pattern:
             /^(?=.{1,253}\.?$)(?:(?!-|[^.]+_)[A-Za-z0-9-_]{1,63}(?<!-)(?:\.|$)){2,}$/,
-          message: "Invalid domain name.",
+          message: "The input email domain is not valid!",
         },
-        { required: true, message: "You must enter domain name!" },
+        { required: true, message: "The email domain is required!" },
       ];
     } else {
       return [
         {
           pattern:
             /^(?=.{1,253}\.?$)(?:(?!-|[^.]+_)[A-Za-z0-9-_]{1,63}(?<!-)(?:\.|$)){2,}$/,
-          message: "Invalid domain name.",
+          message: "The input email domain is not valid!",
         },
       ];
     }
