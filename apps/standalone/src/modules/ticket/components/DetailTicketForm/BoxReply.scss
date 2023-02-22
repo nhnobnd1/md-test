@@ -1,0 +1,22 @@
+.BoxReply {
+  .box-comment {
+    width: 100%;
+  }
+
+  .rc-virtual-list-scrollbar {
+    // display: unset !important;
+    width: 5px !important;
+  }
+
+  .card-reply {
+    .ant-card-body {
+      height: 100%;
+    }
+
+    .box-chat {
+      border: 2px solid #eee;
+      border-radius: 10px;
+      margin-bottom: 24px;
+    }
+  }
+}

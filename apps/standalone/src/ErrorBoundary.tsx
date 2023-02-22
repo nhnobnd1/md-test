@@ -16,7 +16,7 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, any> {
 
   render() {
     if (this.state.hasError) {
-      return <>Error page</>;
+      return <h4>Error page</h4>;
     }
 
     return <>{this.props.children}</>;

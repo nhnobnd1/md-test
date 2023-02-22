@@ -121,23 +121,29 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
       {...props}
     >
       <div>
-        <div className="grid grid-cols-2 gap-x-6">
-          <Form.Item
-            label="To"
-            name="to"
-            rules={[
-              {
-                required: true,
-                message: "Email address is required",
-              },
-              {
-                type: "email",
-                message: "The email address is not valid",
-              },
-            ]}
-          >
-            <Input placeholder="Type Customer email..."></Input>
-          </Form.Item>
+        <div className="grid grid-cols-2 gap-x-[7%]">
+          <div className="flex items-center gap-2">
+            <div className="flex-1">
+              <Form.Item
+                label="To"
+                name="to"
+                rules={[
+                  {
+                    required: true,
+                    message: "Email address is required",
+                  },
+                  {
+                    type: "email",
+                    message: "The email address is not valid",
+                  },
+                ]}
+              >
+                <Input placeholder="Type Customer email..."></Input>
+              </Form.Item>
+            </div>
+            <span className="link">CC/BCC</span>
+          </div>
+
           <Form.Item label="Assignee" name="assignee">
             <Select.Ajax
               placeholder="Search agents"
@@ -175,6 +181,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
             <TextEditor
               init={{
                 height: 500,
+                placeholder: "Please input your message here......",
               }}
             />
           </Form.Item>

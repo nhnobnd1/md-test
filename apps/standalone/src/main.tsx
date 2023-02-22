@@ -24,37 +24,37 @@ import("src/styles/tailwind.scss").then(() =>
 Env.setApiUrl(env.API_URL);
 
 ReactDOM.render(
-  <ErrorBoundary>
-    <BrowserRouter>
-      <Suspense
-        fallback={
-          <Loading fullPage>
-            <div className="w-[100vw] h-[100vh]"></div>
+  <BrowserRouter>
+    <Suspense
+      fallback={
+        <Loading fullPage>
+          <div className="w-[100vw] h-[100vh]"></div>
+        </Loading>
+      }
+    >
+      <LoadingProvider
+        isWrap
+        component={({ state, children }) => (
+          <Loading spinning={state} fullPage>
+            {children as any}
           </Loading>
-        }
+        )}
       >
-        <LoadingProvider
-          isWrap
-          component={({ state, children }) => (
-            <Loading spinning={state} fullPage>
-              {children as any}
-            </Loading>
-          )}
-        >
-          <ApiLoadingHandlerProvider>
-            <CookiesProvider>
-              <InitApp>
-                <AuthProvider
-                  defaultTokens={() => ({
-                    base_token: TokenManager.getToken("base_token"),
-                    refresh_token: TokenManager.getToken("refresh_token"),
-                  })}
-                  fetchRefreshToken={(refreshToken: string) =>
-                    AccountRepository().refreshToken({
-                      refreshToken,
-                    })
-                  }
-                >
+        <ApiLoadingHandlerProvider>
+          <CookiesProvider>
+            <InitApp>
+              <AuthProvider
+                defaultTokens={() => ({
+                  base_token: TokenManager.getToken("base_token"),
+                  refresh_token: TokenManager.getToken("refresh_token"),
+                })}
+                fetchRefreshToken={(refreshToken: string) =>
+                  AccountRepository().refreshToken({
+                    refreshToken,
+                  })
+                }
+              >
+                <ErrorBoundary>
                   <StoreProviders>
                     <AppConfigProviders>
                       <ModuleLoader>
@@ -64,13 +64,13 @@ ReactDOM.render(
                       </ModuleLoader>
                     </AppConfigProviders>
                   </StoreProviders>
-                </AuthProvider>
-              </InitApp>
-            </CookiesProvider>
-          </ApiLoadingHandlerProvider>
-        </LoadingProvider>
-      </Suspense>
-    </BrowserRouter>
-  </ErrorBoundary>,
+                </ErrorBoundary>
+              </AuthProvider>
+            </InitApp>
+          </CookiesProvider>
+        </ApiLoadingHandlerProvider>
+      </LoadingProvider>
+    </Suspense>
+  </BrowserRouter>,
   document.getElementById("root")
 );

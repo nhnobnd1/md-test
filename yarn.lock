@@ -1322,6 +1322,13 @@
   dependencies:
     "@iconify/types" "*"
 
+"@iconify-json/fa@^1.1.4":
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/@iconify-json/fa/-/fa-1.1.4.tgz#dc14bbfb7306cfb530c2a7fbf1212676bc2f363d"
+  integrity sha512-A7FAeKvR8BP8c2oFgryGLTBkH3FwiSwf3t9RpPkxA3eMyoO2sTpRQqj+BuxU+oxUzAP22Ylz7rEKB/U0QODrHA==
+  dependencies:
+    "@iconify/types" "*"
+
 "@iconify-json/fe@^1.1.5":
   version "1.1.5"
   resolved "https://registry.npmjs.org/@iconify-json/fe/-/fe-1.1.5.tgz"
