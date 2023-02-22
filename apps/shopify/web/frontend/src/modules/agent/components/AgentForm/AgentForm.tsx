@@ -67,7 +67,7 @@ const AgentForm = ({ disableForm = false, ...props }: AgentFormProps) => {
             label="Email"
             type="email"
             autoComplete="off"
-            disabled={disableForm}
+            disabled={true}
             placeholder="Enter email"
           />
         </FormItem>
