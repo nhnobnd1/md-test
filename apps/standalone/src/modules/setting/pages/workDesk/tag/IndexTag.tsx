@@ -12,7 +12,7 @@ import {
   Tag,
   TagRepository,
 } from "@moose-desk/repo";
-import { Input, TableProps } from "antd";
+import { Input, TableProps, Typography } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import dayjs from "dayjs";
 import { useCallback, useEffect, useState } from "react";
@@ -218,7 +218,11 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
               <Table.Column
                 key="name"
                 title="Name"
-                render={(_, record: Tag) => <span>{`${record.name}`}</span>}
+                render={(_, record: Tag) => (
+                  <Typography.Link strong onClick={() => handleEdit(record)}>
+                    {`${record.name}`}
+                  </Typography.Link>
+                )}
                 sorter={{
                   compare: (a: any, b: any) => a.name - b.name,
                 }}
@@ -267,15 +271,17 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
                 )}
               />
             </Table>
-            {meta && (
-              <Pagination
-                className="mt-4 flex justify-end"
-                currentPage={filterData.page ?? 1}
-                total={meta?.totalCount}
-                pageSize={filterData.limit ?? env.DEFAULT_PAGE_SIZE}
-                onChange={onPagination}
-              />
-            )}
+            {meta?.totalCount
+              ? meta && (
+                  <Pagination
+                    className="mt-4 flex justify-end"
+                    currentPage={filterData.page ?? 1}
+                    total={meta?.totalCount}
+                    pageSize={filterData.limit ?? env.DEFAULT_PAGE_SIZE}
+                    onChange={onPagination}
+                  />
+                )
+              : null}
           </>
         )}
       </div>
