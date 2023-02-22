@@ -263,6 +263,10 @@ const AgentsIndex = (props: AgentsIndexProps) => {
                   {record.twoFactorEnabled ? record.twoFactorMethod : "Off"}
                 </span>
               )}
+              sorter={{
+                compare: (a: any, b: any) =>
+                  a.twoFactorEnabled - b.twoFactorEnabled,
+              }}
             />
             <Table.Column
               align="center"
