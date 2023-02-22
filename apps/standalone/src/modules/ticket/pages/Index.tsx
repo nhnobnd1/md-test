@@ -1,19 +1,33 @@
-import { PageComponent, useNavigate, usePrevious } from "@moose-desk/core";
-import { Input, TableProps } from "antd";
+import {
+  PageComponent,
+  useNavigate,
+  usePrevious,
+  useToggle,
+} from "@moose-desk/core";
+import { Button, Input, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { env } from "process";
 import { useCallback, useState } from "react";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
 import { Header } from "src/components/UI/Header";
+import IconButton from "src/components/UI/IconButton";
 import { Table } from "src/components/UI/Table";
 import useMessage from "src/hooks/useMessage";
 import { CardStatistic } from "src/modules/ticket/components/CardStatistic";
+import ModalFilter from "src/modules/ticket/components/ModalFilter/ModalFilter";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
+import IcRoundFilterAlt from "~icons/ic/round-filter-alt";
+import UilImport from "~icons/uil/import";
 
 interface TicketIndexPageProps {}
 
 const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const [tickets, setTickets] = useState([]);
+  const {
+    state: filterModal,
+    on: openFilterModal,
+    off: closeFilterModal,
+  } = useToggle();
   const navigate = useNavigate();
   const message = useMessage();
   const defaultFilter: () => any = () => ({
@@ -47,6 +61,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
 
   return (
     <>
+      <ModalFilter open={filterModal} onCancel={closeFilterModal} />
       <Header title="Ticket">
         <div className="flex items-center justify-end flex-1 gap-4">
           <Input.Search
@@ -68,6 +83,34 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         </div>
       </Header>
       <div className="mt-6">
+        <div className="grid grid-cols-4 gap-6 mb-2">
+          <div className="col-span-3 col-start-2">
+            <div className="flex justify-between">
+              <div className="filters">
+                <Button
+                  onClick={openFilterModal}
+                  type="primary"
+                  icon={
+                    <IconButton>
+                      <IcRoundFilterAlt />
+                    </IconButton>
+                  }
+                >
+                  Filters
+                </Button>
+              </div>
+              <Button
+                icon={
+                  <IconButton>
+                    <UilImport />
+                  </IconButton>
+                }
+              >
+                Export
+              </Button>
+            </div>
+          </div>
+        </div>
         <div className="grid grid-cols-4 gap-6">
           <div className="col-span-1">
             <CardStatistic

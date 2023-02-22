@@ -1,9 +1,9 @@
+import { Priority } from "@moose-desk/repo";
 import { Button, Card } from "antd";
 import { useMemo } from "react";
 import { Form, FormProps } from "src/components/UI/Form";
 import Select, { OptionType } from "src/components/UI/Select/Select";
 import BoxReply from "src/modules/ticket/components/DetailTicketForm/BoxReply";
-import { Priority } from "src/modules/ticket/components/TicketForm";
 import FaMailReply from "~icons/fa/mail-reply";
 
 interface DetailTicketFormProps extends FormProps {}

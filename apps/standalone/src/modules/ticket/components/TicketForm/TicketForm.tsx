@@ -1,24 +1,19 @@
-import { AgentRepository, TagRepository } from "@moose-desk/repo";
+import {
+  AgentRepository,
+  Priority,
+  priorityOptions,
+  TagRepository,
+} from "@moose-desk/repo";
 import { Input } from "antd";
 import { useCallback, useMemo } from "react";
 import { map } from "rxjs";
 import TextEditor from "src/components/UI/Editor/TextEditor";
 import { Form, FormProps } from "src/components/UI/Form";
-import Select, {
-  LoadMoreValue,
-  OptionType,
-} from "src/components/UI/Select/Select";
+import Select, { LoadMoreValue } from "src/components/UI/Select/Select";
 import env from "src/core/env";
 
 interface TicketFormProps extends FormProps {}
 
-export enum Priority {
-  Highest = "Highest",
-  High = "High",
-  Medium = "Medium",
-  Low = "Low",
-  Lowest = "Lowest",
-}
 export const TicketForm = ({ ...props }: TicketFormProps) => {
   const initialValues = useMemo(() => {
     return (
@@ -31,31 +26,6 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
       }
     );
   }, [props.initialValues]);
-
-  const priorityOptions = useMemo<OptionType[]>(() => {
-    return [
-      {
-        label: "Highest",
-        value: Priority.Highest,
-      },
-      {
-        label: "High",
-        value: Priority.High,
-      },
-      {
-        label: "Medium",
-        value: Priority.Medium,
-      },
-      {
-        label: "Low",
-        value: Priority.Low,
-      },
-      {
-        label: "Lowest",
-        value: Priority.Lowest,
-      },
-    ];
-  }, [Priority]);
 
   const fetchAgents = useCallback(
     (params: LoadMoreValue) => {
