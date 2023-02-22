@@ -48,8 +48,8 @@ export const AgentForm = ({
         label="Email"
         name="email"
         rules={[
-          { required: true, message: "You must enter your email!" },
-          { type: "email", message: "Email is invalid!" },
+          { required: true, message: "Email address is required!" },
+          { type: "email", message: "The input email domain is not valid" },
         ]}
       >
         <Input disabled={disabled || disabledEmail} placeholder="Enter email" />
@@ -59,10 +59,14 @@ export const AgentForm = ({
         label="First name"
         name="firstName"
         rules={[
-          { required: true, message: "You must enter your first name!" },
+          { required: true, message: "First name is required!" },
           {
             max: 255,
             message: "First name up to 255 characters",
+          },
+          {
+            pattern: /[^\s]/,
+            message: "First name is required!",
           },
         ]}
       >
@@ -72,22 +76,35 @@ export const AgentForm = ({
         label="Last name"
         name="lastName"
         rules={[
-          { required: true, message: "You must enter your last name!" },
+          { required: true, message: "Last name is required!" },
           {
             max: 255,
             message: "Last name up to 255 characters",
+          },
+          {
+            pattern: /[^\s]/,
+            message: "Last name is required!",
           },
         ]}
       >
         <Input disabled={disabled} placeholder="Enter last name" />
       </Form.Item>
-      <Form.Item label="Phone number" name="phoneNumber">
+      <Form.Item
+        label="Phone number"
+        name="phoneNumber"
+        rules={[
+          {
+            pattern: /^(?:[0-9]{1,4})+-(?:[0-9]{3,15})$/,
+            message: "The input phone number is not valid",
+          },
+        ]}
+      >
         <InputPhone disabled={disabled} placeholder="Enter phone number" />
       </Form.Item>
       <Form.Item
         label="User role"
         name="role"
-        rules={[{ required: true, message: "You must enter your role!" }]}
+        rules={[{ required: true, message: "User role is required!" }]}
       >
         <Select options={options} disabled={disabled} />
       </Form.Item>
