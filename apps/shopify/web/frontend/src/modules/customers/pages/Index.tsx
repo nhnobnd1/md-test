@@ -185,7 +185,7 @@ export default function CustomerIndexPage() {
       .pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
-            show("Customer and his tickets have been removed successfully");
+            show("Customer and his tickets have been removed successfully!");
             fetchListCustomer();
             setDeleteCustomer("");
           } else {
@@ -305,7 +305,9 @@ export default function CustomerIndexPage() {
             loading={loadCustomer}
             emptyState={
               <EmptySearchResult
-                title={"No customer yet"}
+                title={
+                  "Sorry! There is no records matched with your search criteria"
+                }
                 description={"Try changing the filters or search term"}
                 withIllustration
               />
@@ -314,16 +316,20 @@ export default function CustomerIndexPage() {
             {rowMarkup}
           </IndexTable>
         </Card>
-        <div className="flex items-center justify-center mt-4">
-          <Pagination
-            total={result?.metadata ? result.metadata.totalCount : 1}
-            pageSize={filterData.limit ?? 0}
-            currentPage={filterData.page ?? 1}
-            onChangePage={(page) => setFilterData((val) => ({ ...val, page }))}
-            previousTooltip={"Previous"}
-            nextTooltip={"Next"}
-          />
-        </div>
+        {result && result.metadata.totalCount ? (
+          <div className="flex items-center justify-center mt-4">
+            <Pagination
+              total={result?.metadata ? result.metadata.totalCount : 1}
+              pageSize={filterData.limit ?? 0}
+              currentPage={filterData.page ?? 1}
+              onChangePage={(page) =>
+                setFilterData((val) => ({ ...val, page }))
+              }
+              previousTooltip={"Previous"}
+              nextTooltip={"Next"}
+            />
+          </div>
+        ) : null}
       </Page>
     </>
   );

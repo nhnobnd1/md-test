@@ -106,14 +106,14 @@ export default function Enable2FAModal({
             fetch2FAStatus();
           } else {
             //
-            setErrorMessage("Invalid OTP code! Please try again!");
-            notification.error("Invalid OTP code! Please try again!");
+            setErrorMessage("The input OTP is incorrect!");
+            notification.error("The input OTP is incorrect!");
           }
         }),
         catchError((error) => {
           message.loading.hide();
-          notification.error("Invalid OTP code! Please try again!");
-          setErrorMessage("Invalid OTP code! Please try again!");
+          notification.error("The input OTP is incorrect!");
+          setErrorMessage("The input OTP is incorrect!");
           return of(error);
         })
       );
@@ -139,14 +139,14 @@ export default function Enable2FAModal({
             fetch2FAStatus();
           } else {
             //
-            notification.error("Invalid OTP code! Please try again!");
-            setErrorMessage("Invalid OTP code! Please try again!");
+            notification.error("The input OTP is incorrect!");
+            setErrorMessage("The input OTP is incorrect!");
           }
         }),
         catchError((error) => {
           message.loading.hide();
-          setErrorMessage("Invalid OTP code! Please try again!");
-          notification.error("Invalid OTP code! Please try again!");
+          setErrorMessage("The input OTP is incorrect!");
+          notification.error("The input OTP is incorrect!");
           return of(error);
         })
       );
