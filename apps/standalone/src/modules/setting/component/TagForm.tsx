@@ -38,7 +38,7 @@ export const TagForm = ({ ...props }: TagFormProps) => {
           },
           {
             pattern: /[^\s]/,
-            message: "Tag name can't be all space",
+            message: "The tag name is required!",
           },
         ]}
       >

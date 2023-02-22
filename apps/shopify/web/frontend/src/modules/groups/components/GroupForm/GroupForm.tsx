@@ -35,8 +35,9 @@ export const GroupForm = ({
 
   const GroupFormSchema = Yup.object().shape({
     name: Yup.string()
-      .required("You must enter your group name")
-      .max(255, "Group name up to 255 characters"),
+      .required("Group name is required!")
+      .max(255, "Group name up to 255 characters")
+      .matches(/[^\s]/, "Group name is required!"),
     description: Yup.string().max(255, "Description up to 255 characters"),
   });
 

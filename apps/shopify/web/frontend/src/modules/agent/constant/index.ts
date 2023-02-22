@@ -35,4 +35,12 @@ export const optionsSort: Choice[] = [
   { label: "Status Z-A", value: `isActive:${SortOrderOptions.DES}` },
   { label: "Role A-Z", value: `role:${SortOrderOptions.ACS}` },
   { label: "Role Z-A", value: `role:${SortOrderOptions.DES}` },
+  {
+    label: "2FA Availability A-Z",
+    value: `twoFactorEnabled:${SortOrderOptions.ACS}`,
+  },
+  {
+    label: "2FA Availability Z-A",
+    value: `twoFactorEnabled:${SortOrderOptions.DES}`,
+  },
 ];
