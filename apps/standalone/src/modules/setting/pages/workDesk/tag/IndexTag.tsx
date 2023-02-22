@@ -12,7 +12,7 @@ import {
   Tag,
   TagRepository,
 } from "@moose-desk/repo";
-import { Input, TableProps, Typography } from "antd";
+import { Input, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import dayjs from "dayjs";
 import { useCallback, useEffect, useState } from "react";
@@ -219,9 +219,12 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
                 key="name"
                 title="Name"
                 render={(_, record: Tag) => (
-                  <Typography.Link strong onClick={() => handleEdit(record)}>
+                  <span
+                    className="cursor-pointer hover:underline hover:text-blue-500"
+                    onClick={() => handleEdit(record)}
+                  >
                     {`${record.name}`}
-                  </Typography.Link>
+                  </span>
                 )}
                 sorter={{
                   compare: (a: any, b: any) => a.name - b.name,

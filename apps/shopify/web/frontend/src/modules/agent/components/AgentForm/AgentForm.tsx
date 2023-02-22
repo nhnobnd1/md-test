@@ -40,19 +40,19 @@ const AgentForm = ({ disableForm = false, ...props }: AgentFormProps) => {
 
   const AgentFormSchema = Yup.object().shape({
     email: Yup.string()
-      .email("Email is invalid")
-      .required("You must enter your email"),
+      .email("The email address is not valid")
+      .required("Email address is required!"),
     firstName: Yup.string()
-      .required("You must enter your first name")
-      .max(255, "First name up to 255 characters"),
+      .matches(/[^\s]/, "First name is required!")
+      .required("First name is required!"),
     lastName: Yup.string()
-      .required("You must enter your last name")
-      .max(255, "Last name up to 255 characters"),
+      .matches(/[^\s]/, "Last name is required!")
+      .required("Last name is required!"),
     phoneNumber: Yup.string().matches(
       regexPhoneValidate,
-      "Invalid number phone format."
+      "The input phone number is not valid"
     ),
-    role: Yup.string().required("You must enter your role"),
+    role: Yup.string().required("User role is required!"),
   });
 
   return (

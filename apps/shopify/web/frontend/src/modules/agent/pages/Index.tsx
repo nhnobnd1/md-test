@@ -212,7 +212,9 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
           lastColumnSticky
           emptyState={
             <EmptySearchResult
-              title={"No agent yet"}
+              title={
+                "Sorry! There is no records matched with your search criteria"
+              }
               description={"Try changing the filters or search term"}
               withIllustration
             />
@@ -296,21 +298,22 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
             </IndexTable.Row>
           ))}
         </IndexTable>
-
-        <div className="flex items-center justify-center py-8">
-          {filterData.page && filterData.limit && meta?.totalCount && (
-            <Pagination
-              total={meta.totalCount}
-              pageSize={filterData.limit ?? 0}
-              currentPage={filterData.page}
-              onChangePage={(page) =>
-                setFilterData((val) => {
-                  return { ...val, page };
-                })
-              }
-            />
-          )}
-        </div>
+        {meta?.totalCount ? (
+          <div className="flex items-center justify-center py-8">
+            {filterData.page && filterData.limit && meta?.totalCount && (
+              <Pagination
+                total={meta.totalCount}
+                pageSize={filterData.limit ?? 0}
+                currentPage={filterData.page}
+                onChangePage={(page) =>
+                  setFilterData((val) => {
+                    return { ...val, page };
+                  })
+                }
+              />
+            )}
+          </div>
+        ) : null}
       </Card>
     </Page>
   );

@@ -12,7 +12,7 @@ import {
   CustomerRepository,
   GetListCustomerRequest,
 } from "@moose-desk/repo";
-import { Input, TableProps, Typography } from "antd";
+import { Input, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useCallback, useEffect, useState } from "react";
 import { catchError, map, of } from "rxjs";
@@ -223,9 +223,12 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
                 key="lastName"
                 title="Customer name"
                 render={(_, record: Customer) => (
-                  <Typography.Link strong onClick={() => handleEdit(record)}>
+                  <span
+                    className="cursor-pointer hover:underline hover:text-blue-500"
+                    onClick={() => handleEdit(record)}
+                  >
                     {`${record.firstName} ${record.lastName}`}
-                  </Typography.Link>
+                  </span>
                 )}
                 sorter={{
                   compare: (a: any, b: any) => a.lastName - b.lastName,
