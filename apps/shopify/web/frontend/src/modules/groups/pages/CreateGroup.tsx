@@ -76,18 +76,21 @@ const CreateGroup = (props: CreateGroupProps) => {
 
   return (
     <>
-      <ContextualSaveBar
-        fullWidth
-        message={formRef.current?.dirty ? "Unsaved changes" : ""}
-        saveAction={{
-          onAction: () => formRef.current?.submitForm(),
-          disabled: !formRef.current?.dirty,
-          loading: loadingAddGroup,
-        }}
-        discardAction={{
-          onAction: () => formRef.current?.resetForm(),
-        }}
-      />
+      {formRef.current?.dirty && (
+        <ContextualSaveBar
+          fullWidth
+          message={"Unsaved changes"}
+          saveAction={{
+            onAction: () => formRef.current?.submitForm(),
+            disabled: !formRef.current?.dirty,
+            loading: loadingAddGroup,
+          }}
+          discardAction={{
+            onAction: () => formRef.current?.resetForm(),
+          }}
+        />
+      )}
+
       <Page
         breadcrumbs={[
           { content: "Groups", url: generatePath(GroupsRoutePaths.Index) },

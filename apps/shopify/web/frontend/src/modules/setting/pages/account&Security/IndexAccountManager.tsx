@@ -201,7 +201,7 @@ export default function IndexAccountManager({ props }: any) {
   }, []);
   return (
     <>
-      {!formRef.current?.dirty ? null : (
+      {formRef.current?.dirty && (
         <ContextualSaveBar
           fullWidth
           message="Unsaved changes"

@@ -17,6 +17,7 @@ import CustomersRoutePaths from "src/modules/customers/routes/paths";
 import DashboardRoutePaths from "src/modules/dashboard/routes/paths";
 import GroupsRoutePaths from "src/modules/groups/routes/paths";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
+import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
 
 export interface SubNavigation extends SubNavigationItem {
   tabBarNavigation?: SubNavigation[];
@@ -66,9 +67,13 @@ const caseNavigation: NavigationItems[] = [
 
       {
         label: "Genaral Settings",
-        url: SettingRoutePaths.GenaralSetting.BusinessHours.Index,
+        url: SettingChannelRoutePaths.Index,
         icon: () => <SettingsMajor />,
         tabBarNavigation: [
+          {
+            label: "Channels",
+            url: SettingChannelRoutePaths.Index,
+          },
           {
             label: "Business Hours",
             url: SettingRoutePaths.GenaralSetting.BusinessHours.Index,
