@@ -1,6 +1,12 @@
 import { PageComponent, useNavigate } from "@moose-desk/core";
-import { Layout, LegacyCard, Page } from "@shopify/polaris";
-import { ReactNode, useMemo } from "react";
+import { Button, Card, Icon, Layout, Page } from "@shopify/polaris";
+import {
+  ChatMajor,
+  ChecklistAlternateMajor,
+  EmailNewsletterMajor,
+  SocialPostMajor,
+} from "@shopify/polaris-icons";
+import { FunctionComponent, SVGProps, useMemo } from "react";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
 
 interface SettingChannelIndexPageProps {}
@@ -14,7 +20,8 @@ const SettingChannelIndexPage: PageComponent<
       title: string;
       description?: string;
       link: string;
-      icon: ReactNode;
+      icon: FunctionComponent<SVGProps<SVGSVGElement>>;
+      onConfigure: () => void;
     }>
   >(
     () => [
@@ -23,35 +30,60 @@ const SettingChannelIndexPage: PageComponent<
         description:
           "Configure the web form widget that can be added to your website",
         link: SettingChannelRoutePaths.ChannelEmail.Index,
-        icon: <></>,
+        icon: () => <EmailNewsletterMajor />,
+        onConfigure: () => {
+          navigate(SettingChannelRoutePaths.ChannelEmail.Index);
+        },
       },
       {
         title: "Webform Configuration",
         description:
           "Configure the web form widget that can be added to your website",
         link: "",
-        icon: <></>,
+        icon: () => <ChecklistAlternateMajor />,
+        onConfigure: () => {},
       },
       {
         title: "Live Chat Configuration",
         link: "",
-        icon: <></>,
+        icon: () => <ChatMajor />,
+        onConfigure: () => {},
       },
       {
         title: "Facebook, Instagram and Messenger Configuration",
         link: "",
-        icon: <></>,
+        icon: () => <SocialPostMajor />,
+        onConfigure: () => {},
       },
     ],
     []
   );
   return (
-    <Page fullWidth>
+    <Page title="Channels" fullWidth>
       <Layout>
         <Layout.Section>
-          <LegacyCard title="Online store dashboard" sectioned>
-            <p>View a summary of your online store’s performance.</p>
-          </LegacyCard>
+          {listCategory.map((card, index) => (
+            <div className="mb-6" key={`category-${index}`}>
+              <Card
+                title={
+                  <div className="flex gap-2 items-center">
+                    <div>
+                      <Icon source={card.icon}></Icon>
+                    </div>
+                    <div>{card.title}</div>
+                  </div>
+                }
+                sectioned
+              >
+                <div className="flex justify-between items-center">
+                  <div>{card.description}</div>
+                  <Button size="slim" onClick={() => card.onConfigure()}>
+                    Configure
+                  </Button>
+                </div>
+              </Card>
+            </div>
+          ))}
         </Layout.Section>
       </Layout>
     </Page>

@@ -91,6 +91,8 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
         .delete(id)
         .pipe(
           map(({ data }) => {
+            setIdDelete(null);
+            closeModalDelete();
             if (data.statusCode === 200) {
               getListGroupApi(filterData);
               show("Delete group success");
@@ -190,9 +192,10 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
           setIdDelete(null);
           closeModalDelete();
         }}
+        closePopupAction={false}
         title="Are you sure that you want to permanently remove this group."
         content="This group will be removed permanently. This action cannot be undone."
-        loading={loadingDelete}
+        loadingConfirm={loadingDelete}
         deleteAction={() => idDelete && deleteGroup(idDelete)}
       />
       <Card>

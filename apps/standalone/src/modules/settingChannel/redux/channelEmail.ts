@@ -1,5 +1,5 @@
 import { SignInCallbackResponse } from "@moose-desk/repo";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 export interface SignInCallBack extends SignInCallbackResponse {
   callbackName: "gmail" | "microsoft" | undefined;
@@ -23,8 +23,8 @@ export const channelEmailSlice = createSlice({
   name: "channelEmail",
   initialState,
   reducers: {
-    setSignInCallback(state, action: PayloadAction<SignInCallBack>) {
-      state.signInCallback = action.payload;
+    setSignInCallback(state, { type, payload }) {
+      state.signInCallback = payload;
     },
   },
 });
