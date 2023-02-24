@@ -375,7 +375,6 @@ const DetailAgent = (props: CreateAgentProps) => {
           }}
         />
       )}
-
       {agentSaved && (
         <Page
           breadcrumbs={[

@@ -6,7 +6,6 @@ import { FormikProps } from "formik";
 import { useCallback, useRef } from "react";
 import { map } from "rxjs";
 import { Banner } from "src/components/Banner";
-import useAuth from "src/hooks/useAuth";
 import { useBanner } from "src/hooks/useBanner";
 import {
   GroupForm,
@@ -19,7 +18,6 @@ interface CreateGroupProps {}
 
 const CreateGroup = (props: CreateGroupProps) => {
   const { show } = useToast();
-  const { user } = useAuth();
   const { banner, show: showBanner, close: closeBanner } = useBanner();
   const { storeId } = useStore();
   const navigate = useNavigate();
