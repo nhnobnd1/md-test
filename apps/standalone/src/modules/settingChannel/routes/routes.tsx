@@ -59,6 +59,15 @@ const settingChannelRoutes: IRoute = {
           )
       ),
     },
+    {
+      path: SettingChannelRoutePaths.ChannelEmail.Redirect,
+      component: lazy(
+        () =>
+          import(
+            "src/modules/settingChannel/pages/ChannelEmail/ChannelEmailRedirect"
+          )
+      ),
+    },
   ],
 };
 

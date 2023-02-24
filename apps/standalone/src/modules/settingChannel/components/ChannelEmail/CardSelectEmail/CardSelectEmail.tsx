@@ -56,17 +56,6 @@ export const CardSelectEmail = ({
     }
   );
 
-  const handleSignInGoogle = useCallback(() => {
-    const payload: GetEmailGoogleAuthRequest = {
-      type: type,
-      ...(import.meta.env.MODE === "development" && {
-        subdomainForTest: "http://localhost:3580",
-      }),
-    };
-
-    getEmailGoogleAuth(payload);
-  }, [import.meta.env]);
-
   const { run: getEmailMicrosoftAuth } = useJob(
     (payload: GetEmailMicrosoftAuthRequest) => {
       return EmailIntegrationRepository()
@@ -84,23 +73,30 @@ export const CardSelectEmail = ({
     }
   );
 
-  const handleSignInMicrosoft = useCallback(() => {
-    const payload: GetEmailGoogleAuthRequest = {
-      type: type,
-      ...(import.meta.env.MODE === "development" && {
-        subdomainForTest: "http://localhost:3580",
-      }),
-    };
+  const handleSignInSocial = useCallback(
+    (social: "google" | "microsoft") => {
+      const payload: GetEmailGoogleAuthRequest = {
+        type: type,
+        ...(import.meta.env.MODE === "development" && {
+          subdomainForTest: "http://localhost:3580",
+        }),
+      };
 
-    getEmailMicrosoftAuth(payload);
-  }, [import.meta.env]);
+      if (social === "google") {
+        getEmailGoogleAuth(payload);
+      } else if (social === "microsoft") {
+        getEmailMicrosoftAuth(payload);
+      }
+    },
+    [import.meta.env]
+  );
 
   const onChangeEmail = useCallback(() => {
     if (form.getFieldValue("mailboxType") === MailBoxType.GMAIL) {
-      handleSignInGoogle();
+      handleSignInSocial("google");
     }
     if (form.getFieldValue("mailboxType") === MailBoxType.OUTLOOK) {
-      handleSignInMicrosoft();
+      handleSignInSocial("microsoft");
     }
   }, [form]);
 
@@ -169,7 +165,7 @@ export const CardSelectEmail = ({
                     <LogosGoogleIcon />
                   </span>
                 }
-                onClick={handleSignInGoogle}
+                onClick={() => handleSignInSocial("google")}
               >
                 Sign In Gmail
               </Button>
@@ -192,7 +188,7 @@ export const CardSelectEmail = ({
                     <LogosMicrosoftWindows />
                   </span>
                 }
-                onClick={handleSignInMicrosoft}
+                onClick={() => handleSignInSocial("microsoft")}
               >
                 Sign In Microsoft Live Email
               </Button>

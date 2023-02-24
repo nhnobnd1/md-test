@@ -361,10 +361,10 @@ const DetailAgent = (props: CreateAgentProps) => {
 
   return (
     <>
-      {!formRef.current?.dirty ? null : (
+      {formRef.current?.dirty && (
         <ContextualSaveBar
           fullWidth
-          message={formRef.current?.dirty ? "Unsaved changes" : ""}
+          message={"Unsaved changes"}
           saveAction={{
             onAction: () => formRef.current?.submitForm(),
             disabled: !formRef.current?.dirty,
