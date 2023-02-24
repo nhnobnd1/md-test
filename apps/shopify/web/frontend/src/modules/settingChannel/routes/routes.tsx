@@ -29,42 +29,6 @@ const settingChannelRoutes: IRoute = {
           import("src/modules/settingChannel/pages/channelEmail/ChannelEmail")
       ),
     },
-    {
-      path: SettingChannelRoutePaths.ChannelEmail.Create,
-      component: lazy(
-        () =>
-          import(
-            "src/modules/settingChannel/pages/channelEmail/ChannelEmailCreate"
-          )
-      ),
-    },
-    {
-      path: SettingChannelRoutePaths.ChannelEmail.Update,
-      component: lazy(
-        () =>
-          import(
-            "src/modules/settingChannel/pages/channelEmail/ChannelEmailUpdate"
-          )
-      ),
-    },
-    {
-      path: SettingChannelRoutePaths.EmailIntegration,
-      component: lazy(
-        () =>
-          import(
-            "src/modules/settingChannel/pages/channelEmail/ChannelEmailIntegration"
-          )
-      ),
-    },
-    {
-      path: SettingChannelRoutePaths.MicrosoftIntegration,
-      component: lazy(
-        () =>
-          import(
-            "src/modules/settingChannel/pages/channelEmail/ChannelOutlookIntegration"
-          )
-      ),
-    },
   ],
 };
 

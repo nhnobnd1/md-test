@@ -1,5 +1,6 @@
 import {
   generatePath,
+  TokenManager,
   useDebounceFn,
   useDidUpdate,
   useJob,
@@ -32,11 +33,11 @@ import { ButtonSort } from "src/components/Button/ButtonSort";
 import { ModalDelete } from "src/components/Modal/ModalDelete";
 import { Pagination } from "src/components/Pagination";
 import env from "src/core/env";
+import { useSubdomain } from "src/hooks/useSubdomain";
 import { SortOrderOptions } from "src/models/Form";
 
 import GroupsRoutePaths from "src/modules/groups/routes/paths";
 import { optionsSort } from "src/modules/settingChannel/constant/channelEmail";
-import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
 
 export interface ChannelEmailProps {}
 
@@ -45,6 +46,7 @@ export const ChannelEmail = (props: ChannelEmailProps) => {
   const [sortValue, setSortValue] = useState<string[]>([]);
   const [emails, setEmails] = useState<EmailIntegration[]>([]);
   const { show } = useToast();
+  const { getSubDomain, getDomainStandalone } = useSubdomain();
   const {
     state: btnSort,
     toggle: toggleBtnSort,
@@ -184,16 +186,41 @@ export const ChannelEmail = (props: ChannelEmailProps) => {
     }
   }, [filterData]);
 
+  const getDomain = useCallback(() => {
+    switch (import.meta.env.MODE) {
+      case "development":
+        return "localhost:3580";
+      default:
+        return `${getSubDomain()}${getDomainStandalone()}`;
+    }
+  }, [import.meta.env.MODE, getSubDomain, getDomainStandalone]);
+
+  const handleRedirectStandaloneCreate = useCallback(() => {
+    const baseToken = TokenManager.getToken("base_token");
+    const refreshToken = TokenManager.getToken("refresh_token");
+    window.open(
+      `http://${getDomain()}/setting-channel/channel-email/redirect?baseToken=${baseToken}&refreshToken=${refreshToken}&type=create`
+    );
+  }, [window.location.href, import.meta.env.MODE]);
+
+  const handleRedirectStandaloneEdit = useCallback(
+    (id: string) => {
+      const baseToken = TokenManager.getToken("base_token");
+      const refreshToken = TokenManager.getToken("refresh_token");
+      window.open(
+        `http://${getDomain()}/setting-channel/channel-email/redirect?baseToken=${baseToken}&refreshToken=${refreshToken}&type=update&id=${id}`
+      );
+    },
+    [window.location.href, getDomain]
+  );
+
   return (
     <>
       <Page
         title="Email Configuration"
         primaryAction={{
           content: "Add new Email Address",
-          onAction: () =>
-            navigate(
-              generatePath(SettingChannelRoutePaths.ChannelEmail.Create)
-            ),
+          onAction: () => handleRedirectStandaloneCreate(),
         }}
         fullWidth
       >
@@ -282,14 +309,7 @@ export const ChannelEmail = (props: ChannelEmailProps) => {
                   <ButtonGroup>
                     <ButtonEdit
                       onClick={() =>
-                        navigate(
-                          generatePath(
-                            SettingChannelRoutePaths.ChannelEmail.Update,
-                            {
-                              id: emailItem._id,
-                            }
-                          )
-                        )
+                        handleRedirectStandaloneEdit(emailItem._id)
                       }
                     ></ButtonEdit>
                     <ButtonDelete

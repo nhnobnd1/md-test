@@ -11,6 +11,7 @@ import { Loading } from "@shopify/polaris";
 import { lazy, Suspense } from "react";
 import { CookiesProvider } from "react-cookie";
 import ReactDOM from "react-dom";
+import { Provider as ReduxProvider } from "react-redux";
 import {
   AppBridgeProvider,
   PolarisProvider,
@@ -21,6 +22,7 @@ import ModuleLoader from "src/core/utilities/ModuleLoader";
 import ErrorBoundary from "src/ErrorBoundary";
 import InitApp from "src/providers/InitAppProviders";
 import { StoreProviders } from "src/providers/StoreProviders";
+import { store } from "src/redux";
 import("src/styles/index.scss").then(() => {
   import("@shopify/polaris/build/esm/styles.css");
 });
@@ -62,9 +64,11 @@ ReactDOM.render(
                       >
                         <StoreProviders>
                           <ModuleLoader>
-                            <LazyComponent
-                              component={lazy(() => import("src/App"))}
-                            />
+                            <ReduxProvider store={store}>
+                              <LazyComponent
+                                component={lazy(() => import("src/App"))}
+                              />
+                            </ReduxProvider>
                           </ModuleLoader>
                         </StoreProviders>
                       </AuthProvider>
