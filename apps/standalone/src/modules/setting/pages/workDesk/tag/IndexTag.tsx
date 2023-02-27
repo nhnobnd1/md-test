@@ -218,7 +218,14 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
               <Table.Column
                 key="name"
                 title="Name"
-                render={(_, record: Tag) => <span>{`${record.name}`}</span>}
+                render={(_, record: Tag) => (
+                  <span
+                    className="cursor-pointer hover:underline hover:text-blue-500"
+                    onClick={() => handleEdit(record)}
+                  >
+                    {`${record.name}`}
+                  </span>
+                )}
                 sorter={{
                   compare: (a: any, b: any) => a.name - b.name,
                 }}
@@ -267,15 +274,17 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
                 )}
               />
             </Table>
-            {meta && (
-              <Pagination
-                className="mt-4 flex justify-end"
-                currentPage={filterData.page ?? 1}
-                total={meta?.totalCount}
-                pageSize={filterData.limit ?? env.DEFAULT_PAGE_SIZE}
-                onChange={onPagination}
-              />
-            )}
+            {meta?.totalCount
+              ? meta && (
+                  <Pagination
+                    className="mt-4 flex justify-end"
+                    currentPage={filterData.page ?? 1}
+                    total={meta?.totalCount}
+                    pageSize={filterData.limit ?? env.DEFAULT_PAGE_SIZE}
+                    onChange={onPagination}
+                  />
+                )
+              : null}
           </>
         )}
       </div>

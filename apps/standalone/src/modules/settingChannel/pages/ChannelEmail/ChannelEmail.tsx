@@ -117,7 +117,7 @@ const ChannelEmail = (props: ChannelEmailProps) => {
     [setFilterData]
   ) as TableProps<EmailIntegration>["onChange"];
 
-  const { run: deleteGroupApi } = useJob(
+  const { run: deleteEmailApi } = useJob(
     (id: string) => {
       message.loading.show("Deleting the email");
       return EmailIntegrationRepository()
@@ -147,7 +147,7 @@ const ChannelEmail = (props: ChannelEmailProps) => {
   );
 
   const handleDeleteEmail = useCallback((id: string) => {
-    deleteGroupApi(id);
+    deleteEmailApi(id);
   }, []);
 
   return (
@@ -206,15 +206,6 @@ const ChannelEmail = (props: ChannelEmailProps) => {
                 compare: (a: any, b: any) => a.supportEmail - b.supportEmail,
               }}
             ></Table.Column>
-            <Table.Column
-              key="status"
-              title="Status"
-              align="center"
-              render={(_, record: EmailIntegration) => <span>Verify</span>}
-              sorter={{
-                compare: (a: any, b: any) => a.roles - b.roles,
-              }}
-            />
 
             <Table.Column
               align="center"

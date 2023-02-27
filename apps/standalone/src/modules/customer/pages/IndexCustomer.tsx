@@ -127,7 +127,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
           message.loading.hide();
           if (data.statusCode === 200) {
             notification.success(
-              "The selected customer has been removed from the system."
+              "Customer and his tickets have been removed successfully!"
             );
             getListCustomerApi({
               page: 1,
@@ -223,7 +223,12 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
                 key="lastName"
                 title="Customer name"
                 render={(_, record: Customer) => (
-                  <span>{`${record.firstName} ${record.lastName}`}</span>
+                  <span
+                    className="cursor-pointer hover:underline hover:text-blue-500"
+                    onClick={() => handleEdit(record)}
+                  >
+                    {`${record.firstName} ${record.lastName}`}
+                  </span>
                 )}
                 sorter={{
                   compare: (a: any, b: any) => a.lastName - b.lastName,
@@ -267,15 +272,17 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
                 )}
               />
             </Table>
-            {meta && (
-              <Pagination
-                className="mt-4 flex justify-end"
-                currentPage={filterData.page ?? 1}
-                total={meta?.totalCount}
-                pageSize={filterData.limit ?? env.DEFAULT_PAGE_SIZE}
-                onChange={onPagination}
-              />
-            )}
+            {meta?.totalCount
+              ? meta && (
+                  <Pagination
+                    className="mt-4 flex justify-end"
+                    currentPage={filterData.page ?? 1}
+                    total={meta?.totalCount}
+                    pageSize={filterData.limit ?? env.DEFAULT_PAGE_SIZE}
+                    onChange={onPagination}
+                  />
+                )
+              : null}
           </>
         )}
       </div>

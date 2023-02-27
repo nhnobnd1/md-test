@@ -316,16 +316,20 @@ export default function TagIndexPage() {
             {rowMarkup}
           </IndexTable>
         </Card>
-        <div className="flex items-center justify-center mt-4">
-          <Pagination
-            total={result ? result.metadata.totalCount : 1}
-            pageSize={filterData.limit ?? 0}
-            currentPage={filterData.page ?? 1}
-            onChangePage={(page) => setFilterData((val) => ({ ...val, page }))}
-            previousTooltip={"Previous"}
-            nextTooltip={"Next"}
-          />
-        </div>
+        {result && result.metadata.totalCount ? (
+          <div className="flex items-center justify-center mt-4">
+            <Pagination
+              total={result ? result.metadata.totalCount : 1}
+              pageSize={filterData.limit ?? 0}
+              currentPage={filterData.page ?? 1}
+              onChangePage={(page) =>
+                setFilterData((val) => ({ ...val, page }))
+              }
+              previousTooltip={"Previous"}
+              nextTooltip={"Next"}
+            />
+          </div>
+        ) : null}
       </Page>
     </>
   );

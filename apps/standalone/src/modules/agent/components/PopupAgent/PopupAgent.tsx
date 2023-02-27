@@ -369,9 +369,11 @@ export const PopupAgent = ({
                     modalProps={{
                       centered: true,
                     }}
-                  >
-                    Remove
-                  </ButtonModalDelete>
+                    buttonProps={{
+                      icon: undefined,
+                    }}
+                    textDelete="Remove"
+                  />
                 </>
               ) : (
                 <>
@@ -387,11 +389,10 @@ export const PopupAgent = ({
                           centered: true,
                           okText: "Deactivate",
                         }}
+                        textDelete="Deactivate"
                         loading={loadingDeactivate}
                         onConfirm={() => deActiveAgentApi(dataForm._id)}
-                      >
-                        Deactivate
-                      </ButtonModalDelete>
+                      />
                       <Button type="primary" onClick={() => form.submit()}>
                         Save
                       </Button>

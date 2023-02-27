@@ -17,7 +17,6 @@ import { FormikProps } from "formik";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import { Banner } from "src/components/Banner";
-import useAuth from "src/hooks/useAuth";
 import { useBanner } from "src/hooks/useBanner";
 import { GroupForm } from "src/modules/groups/components/GroupForm";
 import GroupsRoutePaths from "src/modules/groups/routes/paths";
@@ -26,7 +25,6 @@ interface DetailGroupProps {}
 
 const DetailGroup = (props: DetailGroupProps) => {
   const { show } = useToast();
-  const { user } = useAuth();
   const navigate = useNavigate();
   const formRef = useRef<FormikProps<any>>(null);
   const { banner, show: showBanner, close: closeBanner } = useBanner();
@@ -116,18 +114,20 @@ const DetailGroup = (props: DetailGroupProps) => {
 
   return (
     <>
-      <ContextualSaveBar
-        fullWidth
-        message={formRef.current?.dirty ? "Unsaved changes" : ""}
-        saveAction={{
-          onAction: () => formRef.current?.submitForm(),
-          disabled: !formRef.current?.dirty,
-          loading: loadingUpdateGroup,
-        }}
-        discardAction={{
-          onAction: () => formRef.current?.resetForm(),
-        }}
-      />
+      {formRef.current?.dirty && (
+        <ContextualSaveBar
+          fullWidth
+          message={"Unsaved changes"}
+          saveAction={{
+            onAction: () => formRef.current?.submitForm(),
+            disabled: !formRef.current?.dirty,
+            loading: loadingUpdateGroup,
+          }}
+          discardAction={{
+            onAction: () => formRef.current?.resetForm(),
+          }}
+        />
+      )}
       <Page
         breadcrumbs={[
           { content: "Groups", url: generatePath(GroupsRoutePaths.Index) },

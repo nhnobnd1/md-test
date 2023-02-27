@@ -55,7 +55,17 @@ export const GroupForm = ({
     >
       <div className="grid grid-cols-2 gap-6">
         <Card>
-          <Form.Item name="name" label="Name">
+          <Form.Item
+            name="name"
+            label="Name"
+            rules={[
+              { required: true, message: "Group name is required!" },
+              {
+                pattern: /[^\s]/,
+                message: "Group name is required!",
+              },
+            ]}
+          >
             <Input placeholder="Enter name" />
           </Form.Item>
           <Form.Item name="description" label="Description">

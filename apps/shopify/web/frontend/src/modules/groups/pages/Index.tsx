@@ -91,6 +91,8 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
         .delete(id)
         .pipe(
           map(({ data }) => {
+            setIdDelete(null);
+            closeModalDelete();
             if (data.statusCode === 200) {
               getListGroupApi(filterData);
               show("Delete group success");
@@ -190,9 +192,10 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
           setIdDelete(null);
           closeModalDelete();
         }}
+        closePopupAction={false}
         title="Are you sure that you want to permanently remove this group."
         content="This group will be removed permanently. This action cannot be undone."
-        loading={loadingDelete}
+        loadingConfirm={loadingDelete}
         deleteAction={() => idDelete && deleteGroup(idDelete)}
       />
       <Card>
@@ -226,10 +229,10 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
           loading={loadingList}
           emptyState={
             <EmptySearchResult
-              title={"No group yet"}
-              description={
+              title={
                 "Sorry! There is no records matched with your search criteria"
               }
+              description={"Try changing the filters or search term"}
               withIllustration
             />
           }
@@ -287,20 +290,22 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
             </IndexTable.Row>
           ))}
         </IndexTable>
-        <div className="flex items-center justify-center py-8">
-          {filterData.page && filterData.limit && meta?.totalCount && (
-            <Pagination
-              total={meta.totalCount}
-              pageSize={filterData.limit ?? 0}
-              currentPage={filterData.page}
-              onChangePage={(page) =>
-                setFilterData((val) => {
-                  return { ...val, page };
-                })
-              }
-            />
-          )}
-        </div>
+        {meta?.totalCount ? (
+          <div className="flex items-center justify-center py-8">
+            {filterData.page && filterData.limit && meta?.totalCount && (
+              <Pagination
+                total={meta.totalCount}
+                pageSize={filterData.limit ?? 0}
+                currentPage={filterData.page}
+                onChangePage={(page) =>
+                  setFilterData((val) => {
+                    return { ...val, page };
+                  })
+                }
+              />
+            )}
+          </div>
+        ) : null}
       </Card>
     </Page>
   );

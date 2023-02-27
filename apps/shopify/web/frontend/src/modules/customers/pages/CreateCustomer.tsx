@@ -89,7 +89,7 @@ export default function CreateCustomer() {
 
   return (
     <>
-      {!formRef.current?.dirty ? null : (
+      {formRef.current?.dirty && (
         <ContextualSaveBar
           fullWidth
           message="Unsaved changes"

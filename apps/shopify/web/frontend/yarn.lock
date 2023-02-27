@@ -1183,10 +1183,17 @@
     "@babel/helper-validator-option" "^7.18.6"
     "@babel/plugin-transform-typescript" "^7.18.6"
 
-"@babel/runtime@^7.12.5", "@babel/runtime@^7.14.5", "@babel/runtime@^7.15.4", "@babel/runtime@^7.17.2", "@babel/runtime@^7.5.5", "@babel/runtime@^7.6.2", "@babel/runtime@^7.7.2", "@babel/runtime@^7.7.6", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7":
+"@babel/runtime@^7.12.5", "@babel/runtime@^7.14.5", "@babel/runtime@^7.15.4", "@babel/runtime@^7.17.2", "@babel/runtime@^7.5.5", "@babel/runtime@^7.6.2", "@babel/runtime@^7.7.2", "@babel/runtime@^7.7.6", "@babel/runtime@^7.8.4":
   version "7.20.6"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.20.6.tgz#facf4879bfed9b5326326273a64220f099b0fce3"
   integrity sha512-Q+8MqP7TiHMWzSfwiJwXCjyf4GYA4Dgw3emg/7xmwsdLJOZUp+nMqcOwOzzYheuM1rhDu8FSj2l0aoMygEuXuA==
+  dependencies:
+    regenerator-runtime "^0.13.11"
+
+"@babel/runtime@^7.8.7", "@babel/runtime@^7.9.2":
+  version "7.21.0"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.21.0.tgz#5b55c9d394e5fcf304909a8b00c07dc217b56673"
+  integrity sha512-xwII0//EObnq89Ji5AKYQaRYiW/nZ3llSv29d49IuxPhKbtJoLP+9QUUZ4nVragQVtaVGeZrpB+ZtG/Pdy/POw==
   dependencies:
     regenerator-runtime "^0.13.11"
 
@@ -1503,6 +1510,16 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@reduxjs/toolkit@^1.9.3":
+  version "1.9.3"
+  resolved "https://registry.yarnpkg.com/@reduxjs/toolkit/-/toolkit-1.9.3.tgz#27e1a33072b5a312e4f7fa19247fec160bbb2df9"
+  integrity sha512-GU2TNBQVofL09VGmuSioNPQIu6Ml0YLf4EJhgj0AvBadRlCGzUWet8372LjvO4fqKZF2vH1xU0htAa7BrK9pZg==
+  dependencies:
+    immer "^9.0.16"
+    redux "^4.2.0"
+    redux-thunk "^2.4.2"
+    reselect "^4.1.7"
+
 "@rollup/pluginutils@^4.1.2", "@rollup/pluginutils@^4.2.1":
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/@rollup/pluginutils/-/pluginutils-4.2.1.tgz#e6c6c3aba0744edce3fb2074922d3776c0af2a6d"
@@ -1538,23 +1555,23 @@
   resolved "https://registry.yarnpkg.com/@shopify/polaris-icons/-/polaris-icons-6.6.0.tgz#389eec18ffda60b8e288fb472c27f7325cf8361e"
   integrity sha512-nlw4DJOCXpqbdnlE8J3PYF5jYdnW1R/xFiw63xrh0Xgb9AErC48VB58SufW2qxWybuw0UJ4g+ozyspd6a4i92g==
 
-"@shopify/polaris-icons@^6.7.0":
-  version "6.7.0"
-  resolved "https://registry.yarnpkg.com/@shopify/polaris-icons/-/polaris-icons-6.7.0.tgz#1feb60ecab1a94211f4290eebc6d607d778eeaf9"
-  integrity sha512-4tlMQvZlaTvp4uYWo5zZq7NSvD1IIxS13/anRWXwcCD/HPLj7wnyYfwveHQOwo1iyrVV4Z2+hTJYTFVe3CBR0g==
+"@shopify/polaris-icons@^6.11.2":
+  version "6.11.2"
+  resolved "https://registry.yarnpkg.com/@shopify/polaris-icons/-/polaris-icons-6.11.2.tgz#d48a93d8408b17ec2fcdc62e77d700fbee5ce190"
+  integrity sha512-9WPAPq6HmCPdRQDeEmSMUg2Z9cXvJmXJR1mAF58ybHPMPIDJwZ3A7aGsH5FYdujYaYcgeI1zPiWWU+14jB4Vtw==
 
-"@shopify/polaris-tokens@^6.3.0":
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/@shopify/polaris-tokens/-/polaris-tokens-6.3.0.tgz#6c127ba92231d7c46cc1b630c93cf10ea8a492b9"
-  integrity sha512-ZYcV/yzTDw/qizqb2zKYi0ryNTWg1fKs492sZajs5Rk6TdEYIJSuIHG4U1iP2RFadIFWyHu5ELC5UZWsUCxP9w==
+"@shopify/polaris-tokens@^6.6.0":
+  version "6.6.0"
+  resolved "https://registry.yarnpkg.com/@shopify/polaris-tokens/-/polaris-tokens-6.6.0.tgz#a76c1f5ddbe151a7c0cb5a3579bc1be347b8a157"
+  integrity sha512-IUmSH+T2SR8Hb72EQcFwjvDneqF7xtcnEIJU8BnYI8UGp9IPwnr1ymkLKPmAljqRj4ApMNEhBvVhphBMqTcEdQ==
 
-"@shopify/polaris@^10.15.0":
-  version "10.15.0"
-  resolved "https://registry.yarnpkg.com/@shopify/polaris/-/polaris-10.15.0.tgz#0546487be39743de3f65feb148822acd2cdd77b8"
-  integrity sha512-eZEwoeMP/uTP5LeRKB2wU7l+92g1oFjZFFSZQ4D3NgqrgL7naxZLbg6EYEb0M0D34t5xjg7Rgvqnm5cEqY2ljg==
+"@shopify/polaris@10.31.0":
+  version "10.31.0"
+  resolved "https://registry.yarnpkg.com/@shopify/polaris/-/polaris-10.31.0.tgz#1652ce0a0152ac985aa9cdae5a6dd733df0fed99"
+  integrity sha512-QLpOZhgofciKD3qGBGBETL7CgQ6KLhIq1MLcEtD/ch8TPAHO8x25WRY6Q6TdvKWY6+joA/ZUkCTiVMnKiT33ig==
   dependencies:
-    "@shopify/polaris-icons" "^6.7.0"
-    "@shopify/polaris-tokens" "^6.3.0"
+    "@shopify/polaris-icons" "^6.11.2"
+    "@shopify/polaris-tokens" "^6.6.0"
     "@types/react" "^18.0.15"
     "@types/react-dom" "^18.0.6"
     "@types/react-transition-group" "^4.4.2"
@@ -3417,6 +3434,11 @@ ignore@^5.1.1, ignore@^5.2.0:
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-5.2.1.tgz#c2b1f76cb999ede1502f3a226a9310fdfe88d46c"
   integrity sha512-d2qQLzTJ9WxQftPAuEQpSPmKqzxePjzVbpAVv62AQ64NTL+wR4JkrVqR/LqFsFEUsHDAiId52mJteHDFuDkElA==
 
+immer@^9.0.16:
+  version "9.0.19"
+  resolved "https://registry.yarnpkg.com/immer/-/immer-9.0.19.tgz#67fb97310555690b5f9cd8380d38fc0aabb6b38b"
+  integrity sha512-eY+Y0qcsB4TZKwgQzLaE/lqYMlKhv5J9dyd2RhhtGhNo2njPXDqU9XPfcNfa3MIDsdtZt5KlkIsirlo4dHsWdQ==
+
 immutable@^4.0.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/immutable/-/immutable-4.1.0.tgz#f795787f0db780183307b9eb2091fcac1f6fafef"
@@ -4407,6 +4429,18 @@ readdirp@~3.6.0:
   dependencies:
     picomatch "^2.2.1"
 
+redux-thunk@^2.4.2:
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/redux-thunk/-/redux-thunk-2.4.2.tgz#b9d05d11994b99f7a91ea223e8b04cf0afa5ef3b"
+  integrity sha512-+P3TjtnP0k/FEjcBL5FZpoovtvrTNT/UXd4/sluaSyrURlSlhLSzEdfsTBW7WsKB6yPvgd7q/iZPICFjW4o57Q==
+
+redux@^4.2.0:
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/redux/-/redux-4.2.1.tgz#c08f4306826c49b5e9dc901dee0452ea8fce6197"
+  integrity sha512-LAUYz4lc+Do8/g7aeRa8JkyDErK6ekstQaqWQrNRW//MY1TvCEpMtpTWvlQ+FPbWCx+Xixu/6SHt5N0HR+SB4w==
+  dependencies:
+    "@babel/runtime" "^7.9.2"
+
 regenerate-unicode-properties@^10.1.0:
   version "10.1.0"
   resolved "https://registry.yarnpkg.com/regenerate-unicode-properties/-/regenerate-unicode-properties-10.1.0.tgz#7c3192cab6dd24e21cb4461e5ddd7dd24fa8374c"
@@ -4483,6 +4517,11 @@ requires-port@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
   integrity sha512-KigOCHcocU3XODJxsu8i/j8T9tzT4adHiecwORRQ0ZZFcp7ahwXuRU1m+yuO90C5ZUyGeGfocHDI14M3L3yDAQ==
+
+reselect@^4.1.7:
+  version "4.1.7"
+  resolved "https://registry.yarnpkg.com/reselect/-/reselect-4.1.7.tgz#56480d9ff3d3188970ee2b76527bd94a95567a42"
+  integrity sha512-Zu1xbUt3/OPwsXL46hvOOoQrap2azE7ZQbokq61BQfiXvhewsKDwhMeZjTX9sX0nvw1t/U5Audyn1I9P/m9z0A==
 
 resolve-from@^4.0.0:
   version "4.0.0"

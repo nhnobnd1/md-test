@@ -19,11 +19,26 @@ export function useSubdomain() {
 
   useMount(() => {
     setSubDomain(getSubDomain());
+    getDomainStandalone();
   });
+
+  const getDomainStandalone = useCallback(() => {
+    switch (import.meta.env.MODE) {
+      case "development":
+        return "-dev.moosedesk.net";
+
+      case "staging":
+        return ".moosedesk.net";
+
+      default:
+        return ".moosedesk.com";
+    }
+  }, [import.meta.env.MODE]);
 
   return {
     subDomain,
     setSubDomain,
     getSubDomain,
+    getDomainStandalone,
   };
 }

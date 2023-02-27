@@ -4,12 +4,14 @@ export interface ModalDelete extends ModalProps {
   content?: string;
   textConfirm?: string;
   deleteAction: () => void;
+  closePopupAction?: boolean;
   loadingConfirm?: boolean;
 }
 export const ModalDelete = ({
   textConfirm = "Delete",
   content,
   deleteAction,
+  closePopupAction = true,
   loadingConfirm = false,
   ...props
 }: ModalDelete) => {
@@ -20,7 +22,7 @@ export const ModalDelete = ({
         content: textConfirm,
         onAction: () => {
           deleteAction();
-          props.onClose();
+          closePopupAction && props.onClose();
         },
         loading: loadingConfirm,
         destructive: true,
