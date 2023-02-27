@@ -1,0 +1,14 @@
+.CardStatistic {
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  .collapsible-header {
+    padding: 12px 16px;
+  }
+  .collapsible-body {
+    border-radius: 0 0 8px 8px;
+    color: rgba(0, 0, 0, 0.88);
+    background-color: #ffffff;
+    padding: 16px;
+    border-top: 1px solid #d9d9d9;
+  }
+}

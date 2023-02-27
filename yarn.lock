@@ -1329,6 +1329,13 @@
   dependencies:
     "@iconify/types" "*"
 
+"@iconify-json/fa@^1.1.4":
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/@iconify-json/fa/-/fa-1.1.4.tgz#dc14bbfb7306cfb530c2a7fbf1212676bc2f363d"
+  integrity sha512-A7FAeKvR8BP8c2oFgryGLTBkH3FwiSwf3t9RpPkxA3eMyoO2sTpRQqj+BuxU+oxUzAP22Ylz7rEKB/U0QODrHA==
+  dependencies:
+    "@iconify/types" "*"
+
 "@iconify-json/fe@^1.1.5":
   version "1.1.5"
   resolved "https://registry.npmjs.org/@iconify-json/fe/-/fe-1.1.5.tgz"
@@ -1403,6 +1410,13 @@
   version "1.1.57"
   resolved "https://registry.npmjs.org/@iconify-json/tabler/-/tabler-1.1.57.tgz"
   integrity sha512-g/OI1RgivTAXYCBjETrRBYkms9BhcPLWlfOuztiQNzws+aQyJpz6vG+jB7WzaSuOkJuhpULyDHOXm+WpZJDOLg==
+  dependencies:
+    "@iconify/types" "*"
+
+"@iconify-json/uil@^1.1.4":
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/@iconify-json/uil/-/uil-1.1.4.tgz#58737cba86b1f2f789e8f7f379fe1a6c5052fde7"
+  integrity sha512-ucuFHlUvkfQUnyq4l2Sskrdg8r5DB8IQwMxEpPQ2JG1QTRbUmliddTT9r8/b3h69w+/IySHUy+iJcbfiHoa9zA==
   dependencies:
     "@iconify/types" "*"
 

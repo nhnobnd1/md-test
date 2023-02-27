@@ -1,24 +1,19 @@
-import { AgentRepository, TagRepository } from "@moose-desk/repo";
+import {
+  AgentRepository,
+  Priority,
+  priorityOptions,
+  TagRepository,
+} from "@moose-desk/repo";
 import { Input } from "antd";
 import { useCallback, useMemo } from "react";
 import { map } from "rxjs";
 import TextEditor from "src/components/UI/Editor/TextEditor";
 import { Form, FormProps } from "src/components/UI/Form";
-import Select, {
-  LoadMoreValue,
-  OptionType,
-} from "src/components/UI/Select/Select";
+import Select, { LoadMoreValue } from "src/components/UI/Select/Select";
 import env from "src/core/env";
 
 interface TicketFormProps extends FormProps {}
 
-export enum Priority {
-  Highest = "Highest",
-  High = "High",
-  Medium = "Medium",
-  Low = "Low",
-  Lowest = "Lowest",
-}
 export const TicketForm = ({ ...props }: TicketFormProps) => {
   const initialValues = useMemo(() => {
     return (
@@ -31,31 +26,6 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
       }
     );
   }, [props.initialValues]);
-
-  const priorityOptions = useMemo<OptionType[]>(() => {
-    return [
-      {
-        label: "Highest",
-        value: Priority.Highest,
-      },
-      {
-        label: "High",
-        value: Priority.High,
-      },
-      {
-        label: "Medium",
-        value: Priority.Medium,
-      },
-      {
-        label: "Low",
-        value: Priority.Low,
-      },
-      {
-        label: "Lowest",
-        value: Priority.Lowest,
-      },
-    ];
-  }, [Priority]);
 
   const fetchAgents = useCallback(
     (params: LoadMoreValue) => {
@@ -121,23 +91,29 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
       {...props}
     >
       <div>
-        <div className="grid grid-cols-2 gap-x-6">
-          <Form.Item
-            label="To"
-            name="to"
-            rules={[
-              {
-                required: true,
-                message: "Email address is required",
-              },
-              {
-                type: "email",
-                message: "The email address is not valid",
-              },
-            ]}
-          >
-            <Input placeholder="Type Customer email..."></Input>
-          </Form.Item>
+        <div className="grid grid-cols-2 gap-x-[7%]">
+          <div className="flex items-center gap-2">
+            <div className="flex-1">
+              <Form.Item
+                label="To"
+                name="to"
+                rules={[
+                  {
+                    required: true,
+                    message: "Email address is required",
+                  },
+                  {
+                    type: "email",
+                    message: "The email address is not valid",
+                  },
+                ]}
+              >
+                <Input placeholder="Type Customer email..."></Input>
+              </Form.Item>
+            </div>
+            <span className="link">CC/BCC</span>
+          </div>
+
           <Form.Item label="Assignee" name="assignee">
             <Select.Ajax
               placeholder="Search agents"
@@ -174,7 +150,8 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
           <Form.Item name="message" className="w-full">
             <TextEditor
               init={{
-                height: 500,
+                height: 250,
+                placeholder: "Please input your message here......",
               }}
             />
           </Form.Item>

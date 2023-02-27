@@ -9,6 +9,7 @@ import {
   FraudProtectMinor,
   HomeMinor,
   ProfileMinor,
+  ReadTimeMinor,
   SettingsMajor,
   SettingsMinor,
 } from "@shopify/polaris-icons";
@@ -18,6 +19,7 @@ import DashboardRoutePaths from "src/modules/dashboard/routes/paths";
 import GroupsRoutePaths from "src/modules/groups/routes/paths";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
+import TicketRoutePaths from "src/modules/ticket/routes/paths";
 
 export interface SubNavigation extends SubNavigationItem {
   tabBarNavigation?: SubNavigation[];
@@ -37,11 +39,11 @@ const caseNavigation: NavigationItems[] = [
     url: DashboardRoutePaths.Index,
     icon: () => <HomeMinor />,
   },
-  // {
-  //   label: "Tickets",
-  //   url: "/tickets",
-  //   icon: () => <ReadTimeMinor />,
-  // },
+  {
+    label: "Tickets",
+    url: TicketRoutePaths.Index,
+    icon: () => <ReadTimeMinor />,
+  },
   {
     label: "Customers",
     url: CustomersRoutePaths.Index,

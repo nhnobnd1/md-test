@@ -123,6 +123,7 @@ Select.Ajax = ({
   const [options, setOptions] = useState<OptionType[]>([]);
   const [page, setPage] = useState(1);
   const [searchText, setSearchText] = useState("");
+  const [value, setValue] = useState<AjaxSelectProps["value"]>(props.value);
   const prevSearchText = usePrevious(searchText);
   const [canLoadMore, setCanLoadMore] = useState(true);
   const { state: loading, on: startLoading, off: stopLoading } = useToggle();
@@ -184,6 +185,17 @@ Select.Ajax = ({
     { wait: dependenciesWait }
   );
 
+  useEffect(() => {
+    if (props.value) {
+      if (!options.filter((option) => option.value === props.value).length) {
+        startLoading();
+        setValue("");
+      } else {
+        setValue(props.value);
+      }
+    }
+  }, [options, props.value]);
+
   const onFocus = useCallback(async () => {
     if (options.length || !canFetch) {
       return;
@@ -227,6 +239,7 @@ Select.Ajax = ({
   return (
     <Select
       {...props}
+      value={value}
       options={renderOption ? undefined : options}
       onFocus={onFocus}
       loading={loading}

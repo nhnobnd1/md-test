@@ -7,6 +7,7 @@ interface HeaderProps {
   back?: boolean;
   backAction?: () => void;
   title: string | React.ReactElement;
+  justify?: "start" | "end" | "center";
   children?: React.ReactNode;
   className?: string;
 }
@@ -15,13 +16,19 @@ export const Header = ({
   back = false,
   backAction,
   title,
+  justify,
   children,
   className = "",
 }: HeaderProps) => {
   const navigate = useNavigate();
   return (
     <div className={classNames([className, "mb-5"])}>
-      <div className="flex items-center mb-0 pb-0">
+      <div
+        className={classNames([
+          "flex items-center mb-0 pb-0",
+          { "justify-center": justify === "center" },
+        ])}
+      >
         {back && (
           <Button
             className="w-9 h-9 mr-4 flex justify-center items-center"
@@ -30,7 +37,7 @@ export const Header = ({
             <LeftOutlined />
           </Button>
         )}
-        <h2 className="translate-y-[4px]">{title}</h2>
+        <h2 className={classNames(["translate-y-[4px]"])}>{title}</h2>
         {children}
       </div>
     </div>
