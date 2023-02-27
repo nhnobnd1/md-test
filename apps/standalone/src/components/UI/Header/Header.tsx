@@ -26,7 +26,7 @@ export const Header = ({
       <div
         className={classNames([
           "flex items-center mb-0 pb-0",
-          justify && `justify-${justify}`,
+          { "justify-center": justify === "center" },
         ])}
       >
         {back && (
@@ -37,7 +37,7 @@ export const Header = ({
             <LeftOutlined />
           </Button>
         )}
-        <h2 className="translate-y-[4px]">{title}</h2>
+        <h2 className={classNames(["translate-y-[4px]"])}>{title}</h2>
         {children}
       </div>
     </div>

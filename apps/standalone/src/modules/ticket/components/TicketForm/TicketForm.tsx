@@ -150,7 +150,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
           <Form.Item name="message" className="w-full">
             <TextEditor
               init={{
-                height: 500,
+                height: 250,
                 placeholder: "Please input your message here......",
               }}
             />

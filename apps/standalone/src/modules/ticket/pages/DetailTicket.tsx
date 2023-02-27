@@ -6,7 +6,7 @@ interface DetailTicketProps {}
 const DetailTicket = (props: DetailTicketProps) => {
   return (
     <div>
-      <Header justify="center" title="Ticket#: Ticket Title"></Header>
+      <Header title="Ticket#: Ticket Title" back></Header>
 
       <DetailTicketForm />
     </div>
