@@ -9,6 +9,9 @@
     "dev": "vite dev",
     "build": "vite build"
   },
+  "dependencies": {
+    "react-redux": "^8.0.5"
+  },
   "devDependencies": {
     "@types/node": "^18.11.17",
     "@types/lodash-es": "^4.17.6",
