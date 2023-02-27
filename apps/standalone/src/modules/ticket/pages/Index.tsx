@@ -83,8 +83,8 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         </div>
       </Header>
       <div className="mt-6">
-        <div className="grid grid-cols-4 gap-6 mb-2">
-          <div className="col-span-3 col-start-2">
+        <div className="grid grid-cols-5 gap-6 mb-2">
+          <div className="col-span-4 col-start-2">
             <div className="flex justify-between">
               <div className="filters">
                 <Button
@@ -111,7 +111,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-4 gap-6">
+        <div className="grid grid-cols-5 gap-6">
           <div className="col-span-1">
             <CardStatistic
               className="mb-4"
@@ -152,7 +152,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
               ]}
             />
           </div>
-          <div className="col-span-3">
+          <div className="col-span-4">
             <Table
               rowSelection={{
                 type: "checkbox",
