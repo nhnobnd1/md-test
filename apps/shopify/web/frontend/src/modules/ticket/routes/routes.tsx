@@ -22,6 +22,14 @@ const ticketRoutes: IRoute = {
       index: true,
       component: lazy(() => import("src/modules/ticket/pages/Index")),
     },
+    {
+      path: TicketRoutePaths.Create,
+      component: lazy(() => import("src/modules/ticket/pages/CreateTicket")),
+    },
+    {
+      path: TicketRoutePaths.Detail,
+      component: lazy(() => import("src/modules/ticket/pages/DetailTicket")),
+    },
   ],
 };
 
