@@ -92,7 +92,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
           })
         );
     },
-    [AgentRepository]
+    [TagRepository]
   );
 
   return (

@@ -6,7 +6,7 @@ interface RichTextProps extends Omit<IAllProps, "onChange" | "value"> {
   value?: any;
   onChange?: (value: any) => void;
   error?: string;
-  labelProps: TextProps;
+  labelProps?: TextProps;
 }
 
 export const RichText = ({
@@ -28,9 +28,12 @@ export const RichText = ({
 
   return (
     <div>
-      <div className="mb-1">
-        <Text {...labelProps}></Text>
-      </div>
+      {labelProps && (
+        <div className="mb-1">
+          <Text {...labelProps}></Text>
+        </div>
+      )}
+
       <Editor
         apiKey="t4mxpsmop8giuev4szkrl7etgn43rtilju95m2tnst9m9uod"
         {...props}
@@ -38,11 +41,13 @@ export const RichText = ({
         onChange={handleChange}
         initialValue={value}
         init={{
-          height: 330,
+          height: 400,
           branding: false,
           toolbar_mode: "sliding",
+          fontsize_formats:
+            "8pt 9pt 10pt 11pt 12pt 14pt 18pt 24pt 30pt 36pt 48pt 60pt 72pt 96pt",
           content_style:
-            "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+            "body { font-family:Helvetica,Arial,sans-serif; font-size:12pt }",
           toolbar:
             "undo redo | bold italic underline align | blocks fontfamily fontsize | link image code copy cut past blockquote backcolor forecolor indent newdocument lineheight selectall strikethrough",
           plugins: [

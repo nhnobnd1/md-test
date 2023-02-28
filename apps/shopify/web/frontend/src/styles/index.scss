@@ -16,3 +16,11 @@
 .tox-notifications-container {
   display: none !important;
 }
+
+.Polaris-FormLayout--condensed {
+  .Polaris-FormLayout__Item {
+    &:first-child {
+      margin-left: 0 !important;
+    }
+  }
+}
