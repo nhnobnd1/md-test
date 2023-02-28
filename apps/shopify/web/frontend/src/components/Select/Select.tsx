@@ -7,13 +7,11 @@ import {
 import {
   Combobox,
   ComboboxProps,
-  Icon,
   Listbox,
   Stack,
   Tag,
   TextFieldProps,
 } from "@shopify/polaris";
-import { CustomerPlusMajor } from "@shopify/polaris-icons";
 import { uniqBy } from "lodash-es";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { map, Observable } from "rxjs";
@@ -75,7 +73,10 @@ export const Select = ({
 
       if (value === "") {
         setOptions(options);
+        onSearch && onSearch("");
         return;
+      } else {
+        onSearchDebounce(value);
       }
 
       const filterRegex = new RegExp(value, "i");
@@ -175,19 +176,11 @@ export const Select = ({
   }, [options]);
 
   const { run: onSearchDebounce } = useDebounceFn(
-    () => {
-      onSearch && onSearch(inputValue);
+    (text: string) => {
+      onSearch && onSearch(text);
     },
     { wait: 100 }
   );
-
-  useEffect(() => {
-    if (!inputValue) {
-      onSearch && onSearch("");
-    } else {
-      onSearchDebounce();
-    }
-  }, [inputValue]);
 
   return (
     <div>
@@ -195,12 +188,20 @@ export const Select = ({
         {...props}
         activator={
           <Combobox.TextField
-            prefix={<Icon source={() => <CustomerPlusMajor />} />}
+            // prefix={<Icon source={() => <CustomerPlusMajor />} />}
             onChange={updateText}
             autoComplete="Combobox"
             label={label}
             labelHidden={labelHidden}
             value={inputValue}
+            verticalContent={
+              props.allowMultiple &&
+              showTag && (
+                <>
+                  <Stack spacing="tight">{tagsMarkup}</Stack>
+                </>
+              )
+            }
             placeholder={placeholder || `Search ${label}`}
           />
         }
@@ -222,11 +223,6 @@ export const Select = ({
           </Listbox>
         ) : null}
       </Combobox>
-      {props.allowMultiple && showTag && (
-        <div className="pt-2">
-          <Stack spacing="tight">{tagsMarkup}</Stack>
-        </div>
-      )}
     </div>
   );
 };
@@ -292,7 +288,7 @@ Select.Ajax = ({
       setPage(1);
       setIsFirst(true);
     }
-  }, [searchText, page, isFirst]);
+  }, [searchText, page, isFirst, options]);
 
   const { run: fetchDataApi } = useJob((params: LoadMoreValue) => {
     startLoading();
@@ -305,9 +301,7 @@ Select.Ajax = ({
             : uniqBy([...value, ...data.options], "value");
         });
         setCanLoadMore(data.canLoadMore);
-        setPage((value) => {
-          return data.page ?? value;
-        });
+        data.page && setPage(data.page);
         setIsFirst(false);
       })
     );
@@ -319,11 +313,14 @@ Select.Ajax = ({
     }
   }, [searchText, page]);
 
-  const onSearch = useCallback(async (text: string) => {
-    setSearchText(text);
-    setPage(1);
-    setCanLoadMore(true);
-  }, []);
+  const onSearch = useCallback(
+    async (text: string) => {
+      setSearchText(text);
+      setPage(1);
+      setCanLoadMore(true);
+    },
+    [page, setPage]
+  );
 
   const { run: reloadData } = useDebounceFn(
     useCallback(() => {
