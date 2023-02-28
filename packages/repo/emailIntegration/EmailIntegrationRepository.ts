@@ -2,6 +2,7 @@ import { createRepository } from "@moose-desk/core";
 import env from "../env";
 import { BaseResponse } from "../unty";
 import {
+  CheckConnectionRequest,
   CreateEmailIntegrationRequest,
   CreateEmailIntegrationResponse,
   GetEmailGoogleAuthRequest,
@@ -39,6 +40,20 @@ export const EmailIntegrationRepository = createRepository(
     },
     deleteEmailIntegration(api, id) {
       return api.delete<BaseResponse<any>>(`/${id}`);
+    },
+    checkConnectionImap(api, payload: CheckConnectionRequest) {
+      return api.post<
+        BaseResponse<{
+          success: boolean;
+        }>
+      >("/imap-check-connection", payload);
+    },
+    checkConnectionSmtp(api, payload: CheckConnectionRequest) {
+      return api.post<
+        BaseResponse<{
+          success: boolean;
+        }>
+      >("/smtp-check-connection", payload);
     },
   }
 );

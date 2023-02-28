@@ -1,4 +1,10 @@
-import { generatePath, useJob, useNavigate, useParams } from "@moose-desk/core";
+import {
+  generatePath,
+  useJob,
+  useNavigate,
+  useParams,
+  useToggle,
+} from "@moose-desk/core";
 import {
   CreateEmailIntegrationRequest,
   EmailIntegration,
@@ -31,9 +37,33 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
   const message = useMessage();
   const notification = useNotification();
   const { id } = useParams();
+  const { toggle: updateForm } = useToggle();
   const signCallback = useAppSelector(
     (state) => state.channelEmail.signInCallback
   );
+
+  const externalEmailConnection = useAppSelector(
+    (state) => state.channelEmail.externalMailConnection
+  );
+
+  const mailboxType = useMemo(() => {
+    return form.getFieldValue("mailboxType");
+  }, [form.getFieldValue("mailboxType")]);
+
+  const mailSettingType = useMemo(() => {
+    return form.getFieldValue("mailSettingType");
+  }, [form.getFieldValue("mailSettingType")]);
+
+  const activeSave = useMemo(() => {
+    if (mailSettingType === MailSettingType.MOOSEDESK) {
+      return true;
+    }
+    if (mailboxType === MailBoxType.OTHER) {
+      return externalEmailConnection;
+    } else {
+      return true;
+    }
+  }, [externalEmailConnection, mailboxType, mailSettingType]);
 
   const initialForm = useMemo(() => {
     if (email && email.mailboxType) {
@@ -196,7 +226,11 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
         }
       >
         <div className="flex-1 flex justify-end">
-          <Button type="primary" onClick={() => form.submit()}>
+          <Button
+            type="primary"
+            disabled={!activeSave}
+            onClick={() => form.submit()}
+          >
             Save
           </Button>
         </div>
@@ -206,6 +240,7 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
           form={form}
           initialValues={initialForm}
           type="update"
+          onValuesChange={updateForm}
           onFinish={handleFinishForm}
         />
       )}

@@ -59,7 +59,7 @@ const BoxReply = (props: BoxReplyProps) => {
       e.currentTarget.scrollHeight - e.currentTarget.scrollTop ===
       heightBoxComment
     ) {
-      console.log("scroll");
+      // console.log("scroll");
     }
   };
 

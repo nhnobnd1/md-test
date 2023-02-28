@@ -1,7 +1,10 @@
 import { AuthenticationSMTP } from "@moose-desk/repo";
 import { Card, Checkbox, Input, InputNumber } from "antd";
+import { Loading } from "src/components/Loading";
 import { Form } from "src/components/UI/Form";
 import Select, { OptionType } from "src/components/UI/Select/Select";
+import MaterialSymbolsCheckCircleRounded from "~icons/material-symbols/check-circle-rounded";
+import MdiCloseCircle from "~icons/mdi/close-circle";
 
 export enum TypePort {
   IMAP = "IMAP",
@@ -16,6 +19,8 @@ interface CardSettingExternalMailProps {
   onChange?: (values: any) => void;
   testConnection: () => void;
   typePort: TypePort;
+  loadingTestConnection?: boolean;
+  connection?: boolean | undefined;
 }
 
 export const CardSettingExternalMail = ({
@@ -24,6 +29,8 @@ export const CardSettingExternalMail = ({
   nameForm,
   typePort,
   testConnection,
+  connection,
+  loadingTestConnection = false,
 }: CardSettingExternalMailProps) => {
   const options: OptionType[] = [
     {
@@ -42,84 +49,106 @@ export const CardSettingExternalMail = ({
 
   return (
     <>
-      <Card className={className} type="inner" title={title}>
-        <div className="grid grid-cols-3 gap-4">
-          <Form.Item
-            className="col-span-2"
-            label="Server"
-            name={[nameForm, "mailServer"]}
-            rules={[
-              { required: true, message: "Please enter mail server" },
-              {
-                type: "email",
-                message: "Server is invalid",
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item label={`${typePort} Port`} name={[nameForm, "port"]}>
-            <InputNumber className="w-full" />
-          </Form.Item>
-        </div>
-        <div className="grid grid-cols-3 gap-4">
-          {typePort === TypePort.IMAP && (
+      <Loading spinning={loadingTestConnection}>
+        <Card className={className} type="inner" title={title}>
+          <div className="grid grid-cols-3 gap-4">
             <Form.Item
-              name={[nameForm, "deleteFromServer"]}
               className="col-span-2"
-              valuePropName="checked"
+              label="Server"
+              name={[nameForm, "mailServer"]}
+              rules={[
+                { required: true, message: "Please enter mail server" },
+                {
+                  whitespace: true,
+                  message: "Please remove whitespace",
+                },
+              ]}
+              normalize={(value) => value.trim()}
             >
-              <Checkbox>Delete mails after fetching</Checkbox>
+              <Input />
             </Form.Item>
-          )}
-          <Form.Item name={[nameForm, "useSsl"]} valuePropName="checked">
-            <Checkbox>SSL</Checkbox>
-          </Form.Item>
-        </div>
-        <div className="grid grid-cols-3 gap-4">
-          <Form.Item
-            label="Authentication"
-            name={[nameForm, "authentication"]}
-            className="col-span-2"
-            rules={[{ required: true, message: "Please enter authentication" }]}
-          >
-            <Select options={options} />
-          </Form.Item>
-        </div>
-        <div className="grid grid-cols-3 gap-4">
-          <Form.Item
-            label="Email"
-            name={[nameForm, "email"]}
-            className="col-span-2"
-            rules={[
-              {
-                required: true,
-                message: "Please enter your email",
-              },
-              {
-                type: "email",
-                message: "Email is invalid",
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-        </div>
-        <div className="grid grid-cols-3 gap-4">
-          <Form.Item
-            label="Password"
-            name={[nameForm, "password"]}
-            className="col-span-2"
-          >
-            <Input.Password />
-          </Form.Item>
-        </div>
-        <div className="flex justify-end">
-          <span className="link" onClick={testConnection}>
-            Test Connection
-          </span>
-        </div>
-      </Card>
+            <Form.Item label={`${typePort} Port`} name={[nameForm, "port"]}>
+              <InputNumber className="w-full" />
+            </Form.Item>
+          </div>
+          <div className="grid grid-cols-3 gap-4">
+            {typePort === TypePort.IMAP && (
+              <Form.Item
+                name={[nameForm, "deleteFromServer"]}
+                className="col-span-2"
+                valuePropName="checked"
+              >
+                <Checkbox>Delete mails after fetching</Checkbox>
+              </Form.Item>
+            )}
+            <Form.Item name={[nameForm, "useSsl"]} valuePropName="checked">
+              <Checkbox>SSL</Checkbox>
+            </Form.Item>
+          </div>
+          <div className="grid grid-cols-3 gap-4">
+            <Form.Item
+              label="Authentication"
+              name={[nameForm, "authentication"]}
+              className="col-span-2"
+              rules={[
+                { required: true, message: "Please enter authentication" },
+              ]}
+            >
+              <Select options={options} />
+            </Form.Item>
+          </div>
+          <div className="grid grid-cols-3 gap-4">
+            <Form.Item
+              label="Email"
+              name={[nameForm, "email"]}
+              className="col-span-2"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter your email",
+                },
+                {
+                  type: "email",
+                  message: "Email is invalid",
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+          </div>
+          <div className="grid grid-cols-3 gap-4">
+            <Form.Item
+              label="Password"
+              name={[nameForm, "password"]}
+              className="col-span-2"
+            >
+              <Input.Password />
+            </Form.Item>
+          </div>
+          <div className="flex justify-end items-center gap-2">
+            <span className="link" onClick={testConnection}>
+              Test Connection
+            </span>
+
+            {connection !== undefined && (
+              <span>
+                {connection ? (
+                  <span className="flex items-center">
+                    <MaterialSymbolsCheckCircleRounded
+                      color="#52c41a"
+                      fontSize={24}
+                    />
+                  </span>
+                ) : (
+                  <span className="flex items-center">
+                    <MdiCloseCircle color="#f5222d" fontSize={24} />
+                  </span>
+                )}
+              </span>
+            )}
+          </div>
+        </Card>
+      </Loading>
     </>
   );
 };

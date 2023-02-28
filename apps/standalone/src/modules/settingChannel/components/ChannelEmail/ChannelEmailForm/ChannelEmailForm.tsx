@@ -6,10 +6,13 @@ import {
   MailSettingType,
 } from "@moose-desk/repo";
 import { Checkbox, Input, Radio } from "antd";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Form, FormProps } from "src/components/UI/Form";
 import { useSubdomain } from "src/hooks/useSubdomain";
-import { CardSelectEmail } from "src/modules/settingChannel/components/ChannelEmail/CardSelectEmail";
+import {
+  CardSelectEmail,
+  CardSelectMailRefProperties,
+} from "src/modules/settingChannel/components/ChannelEmail/CardSelectEmail";
 import {
   initialState,
   setSignInCallback,
@@ -41,6 +44,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
   const [form] = Form.useForm(props.form);
   const { toggle: updateForm } = useToggle();
   const { getSubDomain } = useSubdomain();
+  const cardSelectMail = useRef<CardSelectMailRefProperties>(null);
   const { state } = useLocation();
   const [isLoggedServer, setIsLoggedServer] = useState<IsLoggedServer | null>(
     null
@@ -130,7 +134,16 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
   }, [mailBoxType, mailSettingType, signInCallback]);
 
   const handleFormChange = useCallback(
-    (changedValue: any) => {
+    (changedValue: any, values: any) => {
+      props.onValuesChange && props.onValuesChange(changedValue, values);
+      if (changedValue.incoming) {
+        cardSelectMail.current?.resetConnectionImap();
+      }
+
+      if (changedValue.outgoing) {
+        cardSelectMail.current?.resetConnectionSmtp();
+      }
+
       if (changedValue.mailSettingType) {
         if (changedValue.mailSettingType === MailSettingType.MOOSEDESK) {
           form.setFieldValue("name", "");
@@ -211,12 +224,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
             },
           ]}
         >
-          <Input
-            disabled={
-              (isDisabledInput() && isLoggedServer?.success) ||
-              mailSettingType === MailSettingType.MOOSEDESK
-            }
-          />
+          <Input disabled={true} />
         </Form.Item>
         <Form.Item name="mailSettingType">
           <Radio.Group>
@@ -231,6 +239,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
         <div>
           {form.getFieldValue("mailSettingType") === MailSettingType.CUSTOM && (
             <CardSelectEmail
+              ref={cardSelectMail}
               loggedServer={isLoggedServer}
               className="mb-4"
               type={type}

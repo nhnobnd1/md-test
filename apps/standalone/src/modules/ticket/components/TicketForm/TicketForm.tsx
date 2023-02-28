@@ -80,7 +80,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
   );
 
   const handleChangeForm = useCallback((changedValue) => {
-    console.log(changedValue, "changed value");
+    // console.log(changedValue, "changed value");
   }, []);
   return (
     <Form
