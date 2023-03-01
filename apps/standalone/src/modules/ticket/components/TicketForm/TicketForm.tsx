@@ -129,10 +129,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
             <Select placeholder="Defined Email address"></Select>
           </Form.Item>
           <Form.Item label="Priority" name="priority">
-            <Select
-              options={priorityOptions}
-              placeholder="Defined Email address"
-            ></Select>
+            <Select options={priorityOptions}></Select>
           </Form.Item>
           <Form.Item name="tags" label="Tags">
             <Select.Ajax

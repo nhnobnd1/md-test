@@ -137,13 +137,15 @@ const BoxReply = (props: BoxReplyProps) => {
                 ></Select.Ajax>
               </Form.Item>
             </div>
-            <TextEditor
-              init={{
-                height: 250,
-                menubar: false,
-                placeholder: "Please input your message here......",
-              }}
-            />
+            <Form.Item name="message">
+              <TextEditor
+                init={{
+                  height: 250,
+                  menubar: false,
+                  placeholder: "Please input your message here......",
+                }}
+              />
+            </Form.Item>
           </div>
         </div>
       </Card>

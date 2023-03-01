@@ -188,8 +188,7 @@ Select.Ajax = ({
   useEffect(() => {
     if (props.value) {
       if (!options.filter((option) => option.value === props.value).length) {
-        startLoading();
-        setValue("");
+        setValue(props.placeholder ? undefined : "");
       } else {
         setValue(props.value);
       }
