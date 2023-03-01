@@ -71,3 +71,620 @@ Learn more about the power of Turborepo:
 - [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
 - [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
 - [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+
+## Front end
+
+# Reactjs Core
+
+## Available Scripts
+
+In the project directory, you can run:
+
+### `yarn start`
+
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+
+The page will reload if you make edits.\
+You will also see any lint errors in the console.
+
+### `yarn test` (Unavailable)
+
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+
+### `yarn build`
+
+Build production environment:
+
+- production: `yarn build`
+- staging: `yarn build:staging`
+- development: `yarn build:development`
+
+### `yarn gen-module`
+
+Sử dụng để generate module, module được sinh ra trong thư mục `src/modules/<module-name>`. Ví dụ:
+
+```sh
+yarn gen-module <module-name>
+```
+
+## I. Config VsCode Editor
+
+Cài đặt thêm các extension dưới để follow các convension cơ bản phía trên:
+
+- ESlint (dbaeumer.vscode-eslint)
+- EditorConfig for VS Code (editorconfig.editorconfig)
+- Prettier - Code formatter (esbenp.prettier-vscode)
+
+Các setting cần thiết cho VsCode đã được thêm vào project, không tùy chỉnh lại.
+
+## II. Convention
+
+### 1. Indent
+
+- Kiểu: space
+- Size: 2
+
+### 2. Đặt tên
+
+- Đặt tên **biến** theo định dạng **camelCase**
+- Đặt tên **hàm** theo định dạng **camelCase**
+- Đặt tên **class** theo định dạng **PascalCase**
+
+### 3. Khai báo component
+
+- Đặt tên **component** theo định dạng **PascalCase**
+- Nên dùng **FunctionComponent** nếu có thể
+- **Mỗi file một component**, tên file giống tên component
+- Nếu là một component bao gồm nhiều thành phần, cần khai báo thành một thư mục theo các yêu cầu dưới:
+  - Tên thư mục giống tên component
+  - Component gốc đặt trong file `index.tsx`
+
+### 4. Assets/resources
+
+- Các asset/resource cần được thêm vào thư mục `src/assets`
+- Các asset cùng loại cần được thêm vào cùng một thư mục con bên trong `src/assets`
+- Không require trực tiếp asset/resource
+- Các asset/resource được sử dụng trong project cần được khai báo constant trong file `src/assets/index.ts`
+
+### 5. JSX
+
+- Props
+
+  - Nếu một thẻ có nhiều props hoặc prop quá dài, cần phân prop xuống thành nhiều dòng. VD:
+
+  ```jsx
+  <Field
+    component={CheckboxGroupField}
+    options={[
+      {
+        value: "1",
+        label: "ABC",
+      },
+      {
+        value: "aabc",
+        label: "ABCD",
+      },
+      {
+        value: "abec",
+        label: "ABC 1",
+      },
+    ]}
+    name="abc"
+    type="group"
+    circle
+  />
+  ```
+
+- Children
+  - Nếu không có thẻ con bên trong cần sử dung selft closing tag. VD: `<Image />`
+  - Các thẻ con bên trong cần được thêm 1 indent so với thẻ cha. VD:
+  ```jsx
+  <View>
+    <Text>just a text</Text>
+  </View>
+  ```
+
+## III. Model
+
+- Cần khai báo model cho mỗi resource, bao gồm cả request và response.
+- Mỗi các model của một resource cần đặt trong `src/models`, với tên file trùng với tên resource.
+- VD:
+
+```ts
+// src/modesl/Empoyee.ts
+import { Moment } from "moment";
+import { ListResponse, SingleResponse } from "./BaseResponses";
+import { ListRequest } from "./ListRequest";
+export interface Employee {
+  id?: string;
+  code: string;
+  name: string;
+  birthday: number | Moment;
+  gender: string;
+  email: string;
+  phone: string;
+  started_at: string | Moment;
+  tenant_id: string;
+  salary: number;
+}
+
+export type EmployeeResponse = SingleResponse<Employee>;
+export type ListEmployeeResponse = ListResponse<Employee>;
+export type ListEmployeeRequest = ListRequest;
+```
+
+## IV. Repository
+
+- Việc call api sẽ được thực hiện trong repository
+- Mỗi repository chỉ phụ trách một resource. VD: Các api của resource post sẽ nằm trong PostRepository.
+- Các repository được khai báo trong thư mục `src/repositories`.
+- Tên file phải trùng với tên repository, tương tự như component.
+- Mỗi phương thức call api trong repository cần khai báo interface cho Request và Response.
+- VD:
+
+```ts
+// src/repositories/EmployeeRepository
+import env from "src/core/env";
+import { Repository, RepositoryPath } from "src/core/Repository";
+import {
+  ListEmployeeRequest,
+  ListEmployeeResponse,
+  Employee,
+  EmployeeResponse,
+} from "src/shared/models/Employee";
+
+class EmployeeRepository extends Repository<
+  Employee,
+  EmployeeResponse,
+  ListEmployeeRequest,
+  ListEmployeeResponse
+> {
+  protected paths: RepositoryPath = {
+    base: "",
+    create: "",
+    get: "",
+    update(id: string | number) {
+      return `${this.base}`;
+    },
+    delete(id: string | number) {
+      return `${this.base}`;
+    },
+    getOne(id: string | number) {
+      return `${this.base}`;
+    },
+  };
+}
+
+export default new EmployeeRepository();
+```
+
+- Các repository khai báo sẽ extend một class Repository, đã bao gồm các phương thức gọi api thêm, sửa, xóa, cập nhật resource theo chuẩn api quy định.
+- Có thể khai báo thêm các phương thức khác nếu cần.
+
+## V. Config Api
+
+### 1. TokenManager
+
+Các authentication token để call api đều được quản lý qua class **`TokenManager`**, gồm 2 phương thức:
+
+- `setToken(type: TokenTypes, token: string)`
+- getToken(type: TokenTypes)
+
+**`TokenTypes`** là các key của `interface ITokenTypes`. Mặc định `ITokenTypes` chỉ có một thuộc tính là base_token.
+
+```ts
+interface ITokenTypes {
+  base_token: string;
+}
+type TokenTypes = keyof ITokenTypes;
+```
+
+Để thêm một loại token mới, cần thêm thuộc tính vào ITokenTypes, trong `src/@types/token_types.d.ts`.
+
+### 2. Api
+
+Class **`Api`** sẽ dùng `TokenManager` để lấy token và thêm vào header. Loại token có thể được set global hoặc trong từng instance của `Api`. Mặc định, loại token là `"base_token"`
+
+```ts
+class Api {
+  static setAuthorizationTokenType(type: TokenTypes);
+  setAuthorizationTokenType(type: TokenTypes);
+}
+```
+
+Mỗi request gửi đi cũng có thể thay đổi loại token thông qua config của request, ví dụ:
+
+```ts
+// src/@types/token_types.d.ts
+interface ITokenTypes {
+  endpoint1_token: string;
+}
+
+// When call api
+const api = new Api();
+api.get(
+  "https://endpoint1.com/api/controller",
+  { page: 1 },
+  {
+    token_types: "endpoint1_token",
+  }
+);
+```
+
+### 3. Repository
+
+Mỗi repository cũng sẽ có một loại token riêng, mặc định là `"base_token"` . Có thể thay đổi qua `constructor` như sau:
+
+```ts
+class AccountRepository extends Repository {
+  constructor() {
+    super(
+      undefined, // Endpoint cho repository nếu cần
+      "endpoint1_token" // Loại token chung cho cả repository
+    );
+  }
+
+  getGithubProfile() {
+    return this.api.get("htttps://github.com/users/1", undefined, {
+      token_type: "github_profile",
+    });
+  }
+}
+```
+
+## VI. Call API với hook useJob (Recommended)
+
+- Import `useJob` từ `src/core/hooks`
+- Tham số đầu vào của `useJob` là một function trả về Observable
+- Trả về một object gồm các thuộc tính:
+  - **run**: Function để call api
+  - **cancel**: Function để huỷ call api
+  - **state**: Trạng thái call api
+  - **processing**: _true_ nếu api đang được call, _false_ nếu api không được call
+  - **result**: Kết quả trả về từ api
+  - **error**: Lỗi khi call api thất bại
+- Ví dụ:
+
+```ts
+import { Space } from "antd";
+import { map } from "rxjs";
+import { Button, Card } from "src/components";
+import { Api } from "src/core/api";
+import { useJob } from "src/core/hooks";
+import useAuth from "src/hooks/useAuth";
+
+const IndexPage = () => {
+  const { run, cancel, processing } = useJob(() => {
+    return new Api()
+      .get<string>("https://jsonplaceholder.typicode.com/todos")
+      .pipe(
+        map((response) => {
+          return response;
+        })
+      );
+  });
+
+  return (
+    <Card title="Authors Earnings">
+      <Space>
+        <Button onClick={run}>Test</Button>
+        <Button onClick={cancel}>Cancel</Button>
+        {processing ? "Processing" : "Processed"}
+      </Space>
+    </Card>
+  );
+};
+
+export default IndexPage;
+```
+
+## VII. Call API với Redux
+
+### 1. Middleware
+
+- Tìm hiểu về Rxjs nếu chưa từng sử dụng. Doc: https://www.learnrxjs.io/
+- Sử dụng Redux Observable. Doc: https://redux-observable.js.org
+
+### 2. Khai báo module
+
+- Khai báo các module trong cùng 1 thư mục nằm trong `src/redux/modules`, bao gồm cả **action**, **reducer** và **epic**.
+
+### 3. Khai báo module để call api
+
+- Khai báo module trong `src/redux/modules`.
+- Có thể sử dụng hàm `createReduxObservableModule` để tạo redux module nhanh sử dung redux-observable.
+  - Hàm `createReduxObservable` nhận **ba tham số**:
+    - Tham số thứ nhất là 1 object với key là tên epic, giá trị là hàm epic
+    - Tham số thứ hai là string, tên của module
+    - Tham số thứ ba là default state
+  - Trả về một object với các thuộc tính:
+    - **actionTypes**: List các action tương ứng với tên epic đã khai báo ở đầu vào, mỗi epic sẽ gồm các action: start, success, failed, cancelled, done.
+    - **actions**: List các action creator tương ứng với tên epic đã khai báo, tương tự actionTypes.
+    - **epics**: Một mảng các epic đã khai báo.
+    - **reducer**: Reducer cho module.
+    - **reducerStates**: List các trạng thái của các epic: standing, processing, success, failed.
+- VD:
+
+```ts
+// src/redux/modules/employee/index.ts
+import { ofType } from "redux-observable";
+import { of } from "rxjs";
+import { catchError, map, mergeMap, takeUntil } from "rxjs/operators";
+import { Action } from "src/core/models/redux";
+import {
+  createReduxObservableModule,
+  ReduxObservableModuleEpicProps,
+} from "src/core/redux/ReduxObservableModule";
+import { Employee, ListEmployeeRequest } from "src/shared/models/Employee";
+import { employeeRepository } from "src/shared/repositories/EmployeeRepository";
+
+const employeeModule = createReduxObservableModule(
+  {
+    fetchList: ({
+      action$,
+      actionTypes,
+      actions,
+    }: ReduxObservableModuleEpicProps<Action<ListEmployeeRequest>>) =>
+      action$.pipe(
+        ofType(actionTypes.start),
+        mergeMap((action) => {
+          if (action.payload) {
+            return employeeRepository.get(action.payload).pipe(
+              map((response) => actions.success(response.data)),
+              catchError((error) => of(actions.failed(error))),
+              takeUntil(action$.pipe(ofType(actionTypes.cancelled)))
+            );
+          }
+          return of(actions.failed());
+        })
+      ),
+  },
+  "employee"
+);
+export default employeeModule;
+```
+
+- Ở ví dụ trên, emplyeeModule sẽ là một object như sau:
+
+```ts
+{
+  actionTypes: {
+    fetchList: {
+      start: string,
+      success: string,
+      failed: string,
+      cancelled: string,
+      done: string
+    }
+  },
+  actions: {
+    fetchList: {
+      start: Function;
+      success: Function;
+      failed: Function;
+      cancelled:Function;
+      done: Function
+    }
+  },
+  epics: Array<Function>,
+  reducer: Function,
+  reducerStates: {
+    fetchList: {
+      standing: string;
+      processing: string;
+      success: string;
+      failed: string;
+    }
+  }
+}
+```
+
+### 4. Connect với component
+
+#### a. Connect sử dụng `useReduxObservableModuleAction` (Recommended)
+
+Có thể sử dụng hook `useReduxObservableModuleAction` để connect với module được tạo bởi `createReduxObservableModule`.
+
+#### b. Connect sử dụng HOC `connect` của redux
+
+- Connect với component như bình thường, sử dụng các thuộc tính trong module nhận được từ hàm `createReduxObservableModule`.
+- Ví dụ:
+
+```tsx
+// ...import
+interface EmployeeManagementProps {
+  employeeReducer: ReduxObservableModuleReducer;
+  fetchListEmployee: (payload: ListEmployeeRequest) => void;
+}
+
+const mapStateToProps = (state: RootReducer) => ({
+  employeeReducer: state.employee as ReduxObservableModuleReducer,
+});
+
+const mapDispatchToProps = {
+  fetchListEmployee: employeeModule.actions.fetchList.start,
+};
+
+const EmployeeManagement = ({
+  employeeReducer,
+  fetchListEmployee: startFetchListEmployee,
+}: EmployeeManagementProps) => {
+  const { t } = useTranslation();
+  const { query, setQueryParam } = useQuery();
+  const { startProgress, progressSuccess, progressFail } = useProgressMessage();
+  // States
+  const [listEmployee, setListEmployee] = useState<Employee[]>([]);
+  const [pagination, setPagination] = useState<TablePaginationConfig>({
+    pageSize: query.page_size || env.DEFAULT_PAGE_SIZE,
+    current: parseInt(
+      (Array.isArray(query.page) ? query.page[0] : query.page) || "1"
+    ),
+    showSizeChanger: true,
+    size: "default",
+    showTotal: (total, range) =>
+      t(Localizations.General.TotalRecord, {
+        start: range[0],
+        end: range[1],
+        total: total,
+      }),
+  });
+  // Search filter
+  const searchText = useMemo(() => {
+    return (Array.isArray(query.search) ? query.search[0] : query.search) || "";
+  }, [query]);
+  const searchDebounced = useDebounced((value: string) => {
+    setQueryParam("search", value);
+  }, 500);
+
+  const handleInputSearch = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      searchDebounced.clear();
+      const target = e.target as HTMLInputElement;
+      if (target.value !== query.search) {
+        searchDebounced.start(target.value);
+      }
+    },
+    [query.search]
+  );
+
+  // Query employees
+  const fetchListEmployee = useCallback(() => {
+    startFetchListEmployee({
+      search: searchText,
+      results_per_page: pagination.pageSize || env.DEFAULT_PAGE_SIZE,
+      tenant_id: "123456",
+      page: pagination.current || 1,
+    });
+  }, [searchText, pagination.current, pagination.pageSize]);
+
+  useEffect(() => {
+    fetchListEmployee();
+  }, [fetchListEmployee]);
+
+  // loading
+  const loading = useMemo(() => {
+    return (
+      employeeReducer.state ===
+      employeeModule.reducerStates.fetchList.processing
+    );
+  }, [employeeReducer.state]);
+
+  // Handle reducer state
+  useDidUpdate(() => {
+    let response: ListEmployeeResponse;
+    switch (employeeReducer.state) {
+      case employeeModule.reducerStates.fetchList.success:
+        response = employeeReducer.data as ListEmployeeResponse;
+        setListEmployee(response.data);
+        setPagination({
+          ...pagination,
+          total: response.num_results,
+        });
+        break;
+      case employeeModule.reducerStates.fetchList.failed:
+        progressFail("Fetch list employee failed");
+        break;
+    }
+  }, [employeeReducer.state]);
+
+  return <></>;
+};
+```
+
+## VIII. Unit test (Function - Renderer)
+
+`Khai báo module: `
+
+- Unit test được khai báo tại thư mục `__tests__` tại root project.
+- Tạo 3 thư mục (functions, renderers, utils) và 1 utils file đầu vào cho init config.
+- Qui ước tuân theo convention tại `I. Convention`
+
+```ts
+// utils/index.ts
+import { initConfig } from "app/config";
+import moment from "moment";
+
+export const users = {
+  username: "phatnv",
+  email: "phatnv@abcsoft.vn",
+  email_temp: `phatnv${random(10)}@abcsoft.vn`,
+  password: "phatnv@123456",
+  address1: `address ${moment().unix()}`,
+};
+
+test("Jest is working", async () => {
+  expect(true).toBe(true);
+});
+
+export const doInitConfig = async (done: any): Promise<void> => {
+  await initConfig();
+  done();
+};
+
+export const doBeforeAll = async (done: any): Promise<void> => {
+  await initConfig();
+  const repo = new CustomerRepository();
+  const response = await repo.createCustomerAccessToken(
+    users.email,
+    users.password
+  );
+
+  const customerToken = response.data;
+  await repo.setCustomerToken(customerToken!);
+  done();
+};
+```
+
+### 1. Function
+
+- Test function tương ứng với việc query các đầu api, chúng hoạt động không, response trả về có như mong đợi không, và điều kiện đầu vào khác nhau thì response có như mong đợi không?
+- Test function dựa trên các hàm đã được lập trình viên thực thi trên flow, dựa trên usecase và epics, với điều kiện đầu vào trích xuất từ dữ liệu thực hoặc dữ liệu đầu vào phù hợp truyền tải lên server để lấy được dữ liệu như mong đợi.
+- Test function cover hầu hết các file cụ thể các action, model, usecase được sử dụng trong chức năng được thực thi.
+- Ví dụ:
+
+```ts
+// functions/customer/index.test.ts
+describe("Testing authentication user", () => {
+  test("Update customer default address", (done) => {
+    const repo = new CustomerRepository();
+    repo
+      .getCustomerInfo()
+      .then((response) => {
+        const data = response.data!;
+        const address =
+          data.addresses![Utils.getRandomInt(0, data.addresses!.length - 1)]!;
+        const usecase = new MakeDefaultAddressUseCase(address.id);
+        usecase
+          .execute()
+          .then((data) => {
+            expect(data).toBeDefined();
+            done();
+          })
+          .catch(done);
+      })
+      .catch(done);
+  });
+});
+```
+
+### 2. Renderer
+
+- Kiểm tra renderer components
+- Kiểm tra renderer screens
+- Ví dụ:
+
+```ts
+// renderers/intro/index.test.ts
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
+import { Card } from "../../src/components";
+
+describe("Test vitest", async () => {
+  it("Check expect", () => {
+    render(<Card>Test card</Card>);
+    expect(screen.getByText("Test card")).toBeInTheDocument();
+  });
+});
+```

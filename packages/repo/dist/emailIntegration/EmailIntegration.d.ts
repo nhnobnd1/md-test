@@ -96,4 +96,11 @@ export interface UpdateEmailIntegrationRequest {
     };
 }
 export declare type UpdateEmailIntegrationResponse = BaseResponse<EmailIntegration>;
+export interface CheckConnectionRequest {
+    host: string;
+    port: number;
+    tls: boolean;
+    user: string;
+    password: string;
+}
 //# sourceMappingURL=EmailIntegration.d.ts.map

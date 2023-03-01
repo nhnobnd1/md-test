@@ -1,4 +1,9 @@
-import { useDebounceFn, useJob, usePrevious } from "@moose-desk/core";
+import {
+  useDebounceFn,
+  useJob,
+  usePrevious,
+  useToggle,
+} from "@moose-desk/core";
 import {
   AgentRepository,
   BaseMetaDataListResponse,
@@ -38,6 +43,7 @@ const GroupFormMember = memo(
     const [groupMembersTable, setGroupMembersTable] = useState<GroupMembers[]>(
       []
     );
+    const { toggle: updateTable } = useToggle();
     const [groupIds, setGroupIds] = useState<string[]>(value ?? []);
 
     const [filterData, setFilterData] = useState<GetMembersGroupRequest>(
@@ -230,6 +236,7 @@ const GroupFormMember = memo(
       <div>
         <div className="pb-6">
           <Select.Ajax
+            className="w-full"
             placeholder="Search agents"
             // suffixIcon={<PhUserPlusFill></PhUserPlusFill>}
             onChange={handleSelectAgent}
@@ -251,6 +258,7 @@ const GroupFormMember = memo(
           <Table
             dataSource={groupMembersTable}
             loading={loadingGetList}
+            onChange={updateTable}
             pagination={
               !isDetail &&
               groupMembersTable.length > 0 && {

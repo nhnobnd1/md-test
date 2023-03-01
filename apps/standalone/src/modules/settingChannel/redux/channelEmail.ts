@@ -7,6 +7,7 @@ export interface SignInCallBack extends SignInCallbackResponse {
 
 export const initialState: {
   signInCallback: SignInCallBack;
+  externalMailConnection: boolean;
 } = {
   signInCallback: {
     refKey: "",
@@ -17,6 +18,7 @@ export const initialState: {
     type: null,
     callbackName: undefined,
   },
+  externalMailConnection: false,
 };
 
 export const channelEmailSlice = createSlice({
@@ -26,9 +28,16 @@ export const channelEmailSlice = createSlice({
     setSignInCallback(state, { type, payload }) {
       state.signInCallback = payload;
     },
+    setExternalMailConnection(
+      state,
+      action: { type: string; payload: boolean }
+    ) {
+      state.externalMailConnection = action.payload;
+    },
   },
 });
 
-export const { setSignInCallback } = channelEmailSlice.actions;
+export const { setSignInCallback, setExternalMailConnection } =
+  channelEmailSlice.actions;
 
 export default channelEmailSlice.reducer;
