@@ -4,6 +4,7 @@ import {
   useMount,
   useNavigate,
   useParams,
+  useToggle,
 } from "@moose-desk/core";
 import {
   UpdateUserGroupRequest,
@@ -27,6 +28,7 @@ const DetailGroup = (props: DetailGroupProps) => {
   const { storeId } = useStore();
   const message = useMessage();
   const notification = useNotification();
+  const { toggle: updateForm } = useToggle();
   const navigate = useNavigate();
   const [group, setGroup] = useState<UserGroup>();
   const { id } = useParams();
@@ -126,6 +128,7 @@ const DetailGroup = (props: DetailGroupProps) => {
         id={id}
         form={form}
         initialValues={initialValues}
+        onValuesChange={updateForm}
         onFinish={handleSubmit}
       />
     </div>

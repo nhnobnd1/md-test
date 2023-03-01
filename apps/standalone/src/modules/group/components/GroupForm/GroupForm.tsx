@@ -1,8 +1,7 @@
 import { useToggle } from "@moose-desk/core";
-import { GetMembersGroupRequest } from "@moose-desk/repo";
 import { Button, Card, Input } from "antd";
 import classNames from "classnames";
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Form, FormProps } from "src/components/UI/Form";
 import GroupFormMember from "src/modules/group/components/GroupForm/GroupFormMember";
 import "./GroupForm.scss";
@@ -24,17 +23,12 @@ export const GroupForm = ({
   id,
   ...props
 }: GroupFormProps) => {
+  const [form] = Form.useForm(props.form);
+  const { toggle: updateForm } = useToggle();
   const { state: viewAddMember, toggle: toggleViewAddMember } = useToggle(!!id);
-
-  const defaultFilter: () => GetMembersGroupRequest = () => ({
-    page: 1,
-    limit: 5,
-    query: "",
-  });
-
-  const [filterData, setFilterData] = useState<GetMembersGroupRequest>(
-    defaultFilter()
-  );
+  const [valueGroupMembers, setValueGroupMembers] = useState<
+    string[] | undefined
+  >();
 
   const initialValues = useMemo(() => {
     return (
@@ -46,11 +40,32 @@ export const GroupForm = ({
     );
   }, [props.initialValues]);
 
+  const handleChangeGroupMember = useCallback(
+    (value) => {
+      setValueGroupMembers(value);
+      form.setFieldValue("groupMembers", value);
+    },
+    [form]
+  );
+
+  useEffect(() => {
+    if (props.initialValues) {
+      form.setFieldValue("groupMembers", props.initialValues.groupMembers);
+      setValueGroupMembers(props.initialValues.groupMembers);
+    }
+  }, [props.initialValues]);
+
+  const handleUpdateForm = useCallback((changedValue: any, value: any) => {
+    props.onValuesChange && props.onValuesChange(changedValue, value);
+    updateForm();
+  }, []);
+
   return (
     <Form
       {...props}
       enableReinitialize
       layout="vertical"
+      onValuesChange={handleUpdateForm}
       initialValues={initialValues}
     >
       <div className="grid grid-cols-2 gap-6">
@@ -86,9 +101,15 @@ export const GroupForm = ({
           </div>
         </Card>
         <Card className={classNames({ hidden: !viewAddMember })}>
-          <Form.Item name="groupMembers" label="Add members">
-            <GroupFormMember groupId={id} />
-          </Form.Item>
+          <Form.Item name="groupMembers" label="Add members" hidden></Form.Item>
+          <div>
+            <div className="label mb-4">Add members: </div>
+            <GroupFormMember
+              groupId={id}
+              value={valueGroupMembers}
+              onChange={handleChangeGroupMember}
+            />
+          </div>
         </Card>
       </div>
     </Form>
