@@ -1,11 +1,12 @@
 import { IRoute } from "@moose-desk/core";
 import { lazy } from "react";
+import { AppLayout } from "src/layouts/AppLayout";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
 
 const settingChannelRoutes: IRoute = {
   path: SettingChannelRoutePaths.Index,
   showInNavigationMenu: false,
-  component: lazy(() => import("src/layouts/AppLayout/AppLayout")),
+  element: <AppLayout />,
   routes: [
     {
       path: SettingChannelRoutePaths.Index,

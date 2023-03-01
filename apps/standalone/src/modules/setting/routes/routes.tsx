@@ -1,5 +1,6 @@
 import { IRoute } from "@moose-desk/core";
 import { lazy } from "react";
+import { AppLayout } from "src/layouts/AppLayout";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
 
 const settingRoutes: IRoute = {
@@ -7,7 +8,7 @@ const settingRoutes: IRoute = {
   title: "Setting",
   showInNavigationMenu: true,
   middleware: "user",
-  component: lazy(() => import("src/layouts/AppLayout/AppLayout")),
+  element: <AppLayout />,
   routes: [
     // tag
     {
