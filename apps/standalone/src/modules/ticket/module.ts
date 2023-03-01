@@ -1,3 +1,4 @@
+import { Module } from "@moose-desk/core";
 import ticketLocales from "src/modules/ticket/locales";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import ticketRoutes from "src/modules/ticket/routes/routes";

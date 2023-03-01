@@ -1,11 +1,12 @@
 import { IRoute } from "@moose-desk/core";
 import { lazy } from "react";
+import { AppLayout } from "src/layouts/AppLayout";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 
 const ticketRoutes: IRoute = {
   path: TicketRoutePaths.Index,
   showInNavigationMenu: false,
-  component: lazy(() => import("src/layouts/AppLayout/AppLayout")),
+  element: <AppLayout />,
   routes: [
     {
       path: TicketRoutePaths.Index,

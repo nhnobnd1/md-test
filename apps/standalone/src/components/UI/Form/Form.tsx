@@ -44,7 +44,7 @@ export const Form = ({
   }, [props.initialValues]);
 
   return (
-    <div className="Form min-h-[250px]">
+    <div className={`Form ${enableLoadForm ? "min-h-[250px]" : ""}`}>
       {loadForm && enableLoadForm ? (
         <Loading insteadView spinning={true} />
       ) : (

@@ -19,6 +19,7 @@ import AgentRoutePaths from "src/modules/agent/routes/paths";
 import CustomersRoutePaths from "src/modules/customer/routes/paths";
 import DashboardRoutePaths from "src/modules/dashboard/routes/paths";
 import GroupRoutePaths from "src/modules/group/routes/paths";
+import ReportRoutePaths from "src/modules/report/routes/paths";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
@@ -65,6 +66,13 @@ export const AppLayout = (props: AppLayoutProps) => {
         link: CustomersRoutePaths.Index,
         label: "Customers",
         onClick: () => navigate(generatePath(CustomersRoutePaths.Index)),
+      },
+      {
+        key: `case-${ReportRoutePaths.Index}`,
+        icon: <ClarityUsersSolid />,
+        link: ReportRoutePaths.Index,
+        label: "Reports",
+        onClick: () => navigate(generatePath(ReportRoutePaths.Index)),
       },
       {
         key: `case-3`,

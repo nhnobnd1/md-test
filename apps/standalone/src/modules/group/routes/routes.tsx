@@ -1,11 +1,12 @@
 import { IRoute } from "@moose-desk/core";
 import { lazy } from "react";
+import { AppLayout } from "src/layouts/AppLayout";
 import GroupRoutePaths from "src/modules/group/routes/paths";
 
 const groupRoutes: IRoute = {
   path: GroupRoutePaths.Index,
   showInNavigationMenu: false,
-  component: lazy(() => import("src/layouts/AppLayout/AppLayout")),
+  element: <AppLayout />,
   routes: [
     {
       path: GroupRoutePaths.Index,

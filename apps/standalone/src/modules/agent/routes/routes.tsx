@@ -1,15 +1,17 @@
 import { IRoute } from "@moose-desk/core";
 import { lazy } from "react";
+import { AppLayout } from "src/layouts/AppLayout";
+import BlankLayout from "src/layouts/BlankLayout";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
 
 const agentRoutes: IRoute = {
   path: AgentRoutePaths.Index,
   showInNavigationMenu: false,
-  component: lazy(() => import("src/layouts/BlankLayout")),
+  element: <BlankLayout />,
   routes: [
     {
       path: AgentRoutePaths.Agents.Index,
-      component: lazy(() => import("src/layouts/AppLayout/AppLayout")),
+      element: <AppLayout />,
       middleware: "user",
       routes: [
         {
