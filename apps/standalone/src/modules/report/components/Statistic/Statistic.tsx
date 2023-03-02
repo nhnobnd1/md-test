@@ -1,58 +1,34 @@
 import { Card, Statistic as AntStatistic } from "antd";
+import "./Statistic.scss";
 
 export interface StatisticProps {}
 
 export const Statistic = (props: StatisticProps) => {
   return (
-    <div className="grid grid-cols-5 gap-x-4">
+    <div className="Statistic grid grid-cols-5 gap-x-4">
       <div className="col-span-1">
-        <Card bordered={false}>
-          <AntStatistic
-            title="Tickets Created"
-            value={11.28}
-            precision={2}
-            suffix="%"
-          />
+        <Card className="card-statistic" bordered={true}>
+          <AntStatistic title="Tickets Created" value={45} />
         </Card>
       </div>
       <div className="col-span-1">
-        <Card bordered={false}>
-          <AntStatistic
-            title="Tickets Replied"
-            value={9.3}
-            precision={2}
-            suffix="%"
-          />
+        <Card className="card-statistic" bordered={true}>
+          <AntStatistic title="Tickets Replied" value={26} />
         </Card>
       </div>
       <div className="col-span-1">
-        <Card bordered={false}>
-          <AntStatistic
-            title="Tickets Closed"
-            value={9.3}
-            precision={2}
-            suffix="%"
-          />
+        <Card className="card-statistic" bordered={true}>
+          <AntStatistic title="Tickets Closed" value={20} />
         </Card>
       </div>
       <div className="col-span-1">
-        <Card bordered={false}>
-          <AntStatistic
-            title="First ResponseTime"
-            value={9.3}
-            precision={2}
-            suffix="%"
-          />
+        <Card className="card-statistic" bordered={true}>
+          <AntStatistic title="First ResponseTime" value={"36m"} />
         </Card>
       </div>
       <div className="col-span-1">
-        <Card bordered={false}>
-          <AntStatistic
-            title="Resolution Time"
-            value={9.3}
-            precision={2}
-            suffix="%"
-          />
+        <Card className="card-statistic" bordered={true}>
+          <AntStatistic title="Resolution Time" value={"1h15m"} />
         </Card>
       </div>
     </div>
