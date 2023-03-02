@@ -69,11 +69,23 @@ export const AppLayout = (props: AppLayoutProps) => {
         onClick: () => navigate(generatePath(CustomersRoutePaths.Index)),
       },
       {
-        key: `case-${ReportRoutePaths.Index}`,
+        key: `case-2`,
         icon: <IconoirReports />,
-        link: ReportRoutePaths.Index,
         label: "Reporting",
-        onClick: () => navigate(generatePath(ReportRoutePaths.Index)),
+        children: [
+          {
+            key: `case-${ReportRoutePaths.Overview}`,
+            label: "Overview",
+            link: ReportRoutePaths.Overview,
+            onClick: () => navigate(generatePath(ReportRoutePaths.Overview)),
+          },
+          {
+            key: `case-${ReportRoutePaths.ByAgent}`,
+            label: "By Agents",
+            link: ReportRoutePaths.ByAgent,
+            onClick: () => navigate(generatePath(ReportRoutePaths.ByAgent)),
+          },
+        ],
       },
       {
         key: `case-3`,

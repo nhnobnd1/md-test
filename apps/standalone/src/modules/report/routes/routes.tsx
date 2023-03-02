@@ -10,9 +10,13 @@ const reportRoutes: IRoute = {
   element: <AppLayout />,
   routes: [
     {
-      path: ReportRoutePaths.Index,
+      path: ReportRoutePaths.Overview,
       index: true,
       component: lazy(() => import("src/modules/report/pages/Index")),
+    },
+    {
+      path: ReportRoutePaths.ByAgent,
+      component: lazy(() => import("src/modules/report/pages/ByAgent")),
     },
   ],
 };
