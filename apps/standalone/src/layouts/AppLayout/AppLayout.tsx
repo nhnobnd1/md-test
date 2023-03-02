@@ -27,6 +27,7 @@ import { useAppConfig } from "src/providers/AppConfigProviders";
 import RoutePaths from "src/routes/paths";
 import ClarityUsersSolid from "~icons/clarity/users-solid";
 import FeUsers from "~icons/fe/users";
+import IconoirReports from "~icons/iconoir/reports";
 import IonTicketSharp from "~icons/ion/ticket-sharp";
 import JamDashboard from "~icons/jam/dashboard";
 import MaterialSymbolsSettings from "~icons/material-symbols/settings";
@@ -69,9 +70,9 @@ export const AppLayout = (props: AppLayoutProps) => {
       },
       {
         key: `case-${ReportRoutePaths.Index}`,
-        icon: <ClarityUsersSolid />,
+        icon: <IconoirReports />,
         link: ReportRoutePaths.Index,
-        label: "Reports",
+        label: "Reporting",
         onClick: () => navigate(generatePath(ReportRoutePaths.Index)),
       },
       {
