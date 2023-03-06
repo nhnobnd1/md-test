@@ -1,3 +1,4 @@
+import { Module } from "@moose-desk/core";
 import reportLocales from "src/modules/report/locales";
 import ReportRoutePaths from "src/modules/report/routes/paths";
 import reportRoutes from "src/modules/report/routes/routes";

@@ -1301,6 +1301,13 @@
   resolved "https://registry.npmjs.org/@iarna/toml/-/toml-2.2.5.tgz"
   integrity sha512-trnsAYxU3xnS1gPHPyU961coFyLkh4gAD/0zQ5mymY4yOZ+CYvsPqUbOFSw0aDM4y0tV7tiFxL/1XfXPNC6IPg==
 
+"@iconify-json/bi@^1.1.15":
+  version "1.1.15"
+  resolved "https://registry.yarnpkg.com/@iconify-json/bi/-/bi-1.1.15.tgz#1af5cea82ad1d317cf2191fb7f15a4a52eb31435"
+  integrity sha512-NsbDeTVIYwgPLyAT0UgzuaCl79V65Z+M319BjbdEwdnbDGuaYgmAMBJUIWrnBEVoEg7rtouAuvaZRb3nIYIRcA==
+  dependencies:
+    "@iconify/types" "*"
+
 "@iconify-json/carbon@^1.1.14":
   version "1.1.14"
   resolved "https://registry.npmjs.org/@iconify-json/carbon/-/carbon-1.1.14.tgz"
@@ -1443,6 +1450,11 @@
     debug "^4.3.4"
     kolorist "^1.6.0"
     local-pkg "^0.4.2"
+
+"@icons/material@^0.2.4":
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/@icons/material/-/material-0.2.4.tgz#e90c9f71768b3736e76d7dd6783fc6c2afa88bc8"
+  integrity sha512-QPcGmICAPbGLGb6F/yNf/KzKqvFx8z5qx3D1yFqVAjoFmXK35EgyW+cJ57Te3CNsmzblwtzakLGFqHPqrfb4Tw==
 
 "@jridgewell/gen-mapping@^0.1.0":
   version "0.1.1"
@@ -2253,6 +2265,14 @@
   resolved "https://registry.npmjs.org/@types/prop-types/-/prop-types-15.7.5.tgz"
   integrity sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==
 
+"@types/react-color@^3.0.6":
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/@types/react-color/-/react-color-3.0.6.tgz#602fed023802b2424e7cd6ff3594ccd3d5055f9a"
+  integrity sha512-OzPIO5AyRmLA7PlOyISlgabpYUa3En74LP8mTMa0veCA719SvYQov4WLMsHvCgXP+L+KI9yGhYnqZafVGG0P4w==
+  dependencies:
+    "@types/react" "*"
+    "@types/reactcss" "*"
+
 "@types/react-dom@^17.0.11":
   version "17.0.14"
   resolved "https://registry.npmjs.org/@types/react-dom/-/react-dom-17.0.14.tgz"
@@ -2306,6 +2326,13 @@
     "@types/prop-types" "*"
     "@types/scheduler" "*"
     csstype "^3.0.2"
+
+"@types/reactcss@*":
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/@types/reactcss/-/reactcss-1.2.6.tgz#133c1e7e896f2726370d1d5a26bf06a30a038bcc"
+  integrity sha512-qaIzpCuXNWomGR1Xq8SCFTtF4v8V27Y6f+b9+bzHiv087MylI/nTCqqdChNeWS7tslgROmYB7yeiruWX7WnqNg==
+  dependencies:
+    "@types/react" "*"
 
 "@types/recharts@^1.8.24":
   version "1.8.24"
@@ -6072,7 +6099,7 @@ locate-path@^7.0.0:
   dependencies:
     p-locate "^6.0.0"
 
-lodash-es@4.17.21, lodash-es@^4.17.21:
+lodash-es@4.17.21, lodash-es@^4.17.15, lodash-es@^4.17.21:
   version "4.17.21"
   resolved "https://registry.npmjs.org/lodash-es/-/lodash-es-4.17.21.tgz"
   integrity sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==
@@ -6132,7 +6159,7 @@ lodash.union@^4.6.0:
   resolved "https://registry.npmjs.org/lodash.union/-/lodash.union-4.6.0.tgz"
   integrity sha512-c4pB2CdGrGdjMKYLA+XiRDO7Y0PRQbm/Gzg8qMj+QH+pFVAoTp5sBpO0odL3FjoPCGjK96p6qsP+yQoiLoOBcw==
 
-lodash@^4.17.11, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.21, lodash@~4.17.15:
+lodash@^4.0.1, lodash@^4.17.11, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.21, lodash@~4.17.15:
   version "4.17.21"
   resolved "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
@@ -6230,6 +6257,11 @@ match-sorter@^6.0.2:
   dependencies:
     "@babel/runtime" "^7.12.5"
     remove-accents "0.4.2"
+
+material-colors@^1.2.1:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/material-colors/-/material-colors-1.2.6.tgz#6d1958871126992ceecc72f4bcc4d8f010865f46"
+  integrity sha512-6qE4B9deFBIa9YSpOc9O0Sgc43zTeVYbgDT5veRKSlB2+ZuHNoVVxA1L/ckMUayV9Ay9y7Z/SZCLcGteW9i7bg==
 
 md5-file@5.0.0:
   version "5.0.0"
@@ -7105,7 +7137,7 @@ progress@^2.0.0:
   resolved "https://registry.npmjs.org/progress/-/progress-2.0.3.tgz"
   integrity sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==
 
-prop-types@^15.5.0, prop-types@^15.6.0, prop-types@^15.6.2, prop-types@^15.7.2, prop-types@^15.8.1:
+prop-types@^15.5.0, prop-types@^15.5.10, prop-types@^15.6.0, prop-types@^15.6.2, prop-types@^15.7.2, prop-types@^15.8.1:
   version "15.8.1"
   resolved "https://registry.npmjs.org/prop-types/-/prop-types-15.8.1.tgz"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
@@ -7575,6 +7607,19 @@ react-async-script@^1.1.1:
     hoist-non-react-statics "^3.3.0"
     prop-types "^15.5.0"
 
+react-color@^2.19.3:
+  version "2.19.3"
+  resolved "https://registry.yarnpkg.com/react-color/-/react-color-2.19.3.tgz#ec6c6b4568312a3c6a18420ab0472e146aa5683d"
+  integrity sha512-LEeGE/ZzNLIsFWa1TMe8y5VYqr7bibneWmvJwm1pCn/eNmrabWDh659JSPn9BuaMpEfU83WTOJfnCcjDZwNQTA==
+  dependencies:
+    "@icons/material" "^0.2.4"
+    lodash "^4.17.15"
+    lodash-es "^4.17.15"
+    material-colors "^1.2.1"
+    prop-types "^15.5.10"
+    reactcss "^1.2.0"
+    tinycolor2 "^1.4.1"
+
 react-cookie@^4.1.1:
   version "4.1.1"
   resolved "https://registry.npmjs.org/react-cookie/-/react-cookie-4.1.1.tgz"
@@ -7742,6 +7787,13 @@ react@17.0.2, react@^17.0.2:
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
+
+reactcss@^1.2.0:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/reactcss/-/reactcss-1.2.3.tgz#c00013875e557b1cf0dfd9a368a1c3dab3b548dd"
+  integrity sha512-KiwVUcFu1RErkI97ywr8nvx8dNOpT03rbnma0SSalTYjkrPYaEajR4a/MRt6DZ46K6arDRbWMNHF+xH7G7n/8A==
+  dependencies:
+    lodash "^4.0.1"
 
 read-cache@^1.0.0:
   version "1.0.0"
@@ -8687,6 +8739,11 @@ tinycolor2@^1.0.0:
   resolved "https://registry.npmjs.org/tinycolor2/-/tinycolor2-1.5.1.tgz"
   integrity sha512-BHlrsGeYN2OpkRpfAgkEwCMu6w8Quq8JkK/mp4c55NZP7OwceJObR1CPZt62TqiA0Y3J5pwuDX+fXDqc35REtg==
 
+tinycolor2@^1.4.1:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/tinycolor2/-/tinycolor2-1.6.0.tgz#f98007460169b0263b97072c5ae92484ce02d09e"
+  integrity sha512-XPaBkWQJdsf3pLKJV9p4qN/S+fm2Oj8AIPo1BTUhg5oxkvm9+SVEGFdhyOz7tTdUTfvxMiAs4sp6/eZO2Ew+pw==
+
 tinygradient@^1.1.5:
   version "1.1.5"
   resolved "https://registry.npmjs.org/tinygradient/-/tinygradient-1.1.5.tgz"
@@ -9055,7 +9112,7 @@ url-parse@^1.5.3:
     querystringify "^2.1.1"
     requires-port "^1.0.0"
 
-use-sync-external-store@^1.0.0, use-sync-external-store@^1.2.0:
+use-sync-external-store@1.2.0, use-sync-external-store@^1.0.0, use-sync-external-store@^1.2.0:
   version "1.2.0"
   resolved "https://registry.npmjs.org/use-sync-external-store/-/use-sync-external-store-1.2.0.tgz"
   integrity sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==
@@ -9428,3 +9485,10 @@ zod@3.17.3:
   version "3.17.3"
   resolved "https://registry.npmjs.org/zod/-/zod-3.17.3.tgz"
   integrity sha512-4oKP5zvG6GGbMlqBkI5FESOAweldEhSOZ6LI6cG+JzUT7ofj1ZOC0PJudpQOpT1iqOFpYYtX5Pw0+o403y4bcg==
+
+zustand@^4.3.5:
+  version "4.3.5"
+  resolved "https://registry.yarnpkg.com/zustand/-/zustand-4.3.5.tgz#011d2997534f8a187ea7b1d75db56df31f58453d"
+  integrity sha512-2iPUzfwx+g3f0PagOMz2vDO9mZzEp2puFpNe7vrAymVPOEIEUjCPkC4/zy84eAscxIWmTU4j9g6upXYkJdzEFQ==
+  dependencies:
+    use-sync-external-store "1.2.0"
