@@ -41,7 +41,7 @@ export const UIWidget: FC<UIWidgetProps> = () => {
     }
   }, [data]);
   return (
-    <div style={{ position: "absolute", top: 0, right: 0 }}>
+    <div style={{ position: "absolute", top: 0, right: 0, zIndex: 2 }}>
       <div
         style={{
           padding: 20,
@@ -145,12 +145,12 @@ export const UIWidget: FC<UIWidgetProps> = () => {
         )}
       </div>
       <div className="flex justify-end">
-        <style>{css}</style>
+        <style scoped>{css}</style>
 
         <FloatButton
           shape="square"
           style={{
-            padding: 10,
+            // padding: 10,
             right: 0,
             marginTop: 10,
             marginBottom: 10,

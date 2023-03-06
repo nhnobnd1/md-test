@@ -18,6 +18,35 @@ const Widgets = (props: ChannelEmailProps) => {
     console.log(key);
   };
 
+  const FooterButton = () => {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-start",
+          marginTop: 20,
+          position: "sticky",
+          bottom: 0,
+          // left: 300,
+          background: "white",
+          width: "100%",
+          zIndex: 1,
+          paddingTop: 10,
+          paddingBottom: 10,
+          // height: 50,
+        }}
+      >
+        <Button size="large" style={{ marginRight: 10, marginLeft: 10 }}>
+          Cancel
+        </Button>
+
+        <Button size="large" type="primary">
+          Save
+        </Button>
+      </div>
+    );
+  };
+
   const items = useMemo(() => {
     return [
       {
@@ -26,24 +55,7 @@ const Widgets = (props: ChannelEmailProps) => {
         children: (
           <>
             <General />
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-start",
-                marginTop: 20,
-                // position: "fixed",
-                // bottom: 30,
-                // left: 300,
-                // background: "white",
-                // width: "100%",
-              }}
-            >
-              <Button style={{ marginRight: 10, marginLeft: 10 }}>
-                Cancel
-              </Button>
-
-              <Button type="primary">Save</Button>
-            </div>
+            <FooterButton />
           </>
         ),
       },
@@ -53,24 +65,7 @@ const Widgets = (props: ChannelEmailProps) => {
         children: (
           <>
             <Appearance />
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-start",
-                marginTop: 20,
-                // position: "fixed",
-                // bottom: 30,
-                // left: 300,
-                // background: "white",
-                // width: "100%",
-              }}
-            >
-              <Button style={{ marginRight: 10, marginLeft: 10 }}>
-                Cancel
-              </Button>
-
-              <Button type="primary">Save</Button>
-            </div>
+            <FooterButton />
           </>
         ),
       },
