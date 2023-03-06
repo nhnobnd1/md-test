@@ -8,7 +8,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "gen": "npx node generator/index.js",
-    "gen-module": "9 src/modules"
+    "gen-module": "yarn gen module src/modules"
   },
   "dependencies": {
     "@ant-design/icons": "^4.8.0",
