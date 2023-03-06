@@ -31,7 +31,7 @@ const ChannelIndexPage = (props: ChannelIndexPageProps) => {
         title: "Webform Configuration",
         description:
           "Configure the web form widget that can be added to your website",
-        link: "",
+        link: SettingChannelRoutePaths.Widgets.Index,
         icon: <TablerCheckupList />,
       },
       {

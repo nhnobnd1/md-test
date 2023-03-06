@@ -23,6 +23,13 @@ const settingChannelRoutes: IRoute = {
       ),
     },
     {
+      path: SettingChannelRoutePaths.Widgets.Index,
+      middleware: "user",
+      component: lazy(
+        () => import("src/modules/settingChannel/pages/Widgets/Widgets")
+      ),
+    },
+    {
       path: SettingChannelRoutePaths.ChannelEmail.Create,
       middleware: "user",
       component: lazy(
