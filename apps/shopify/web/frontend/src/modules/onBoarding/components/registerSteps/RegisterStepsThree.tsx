@@ -2,6 +2,7 @@ import { Card, Link, Page, Text, TextContainer } from "@shopify/polaris";
 import { useCallback } from "react";
 import StorageManager from "src/core/utilities/StorageManager";
 import useAuth from "src/hooks/useAuth";
+import { useSubdomain } from "src/hooks/useSubdomain";
 import "src/modules/onBoarding/assets/style/components/registerSteps/register-steps-three.scss";
 
 interface RegisterStepsThreeProps {
@@ -14,6 +15,7 @@ const RegisterStepsThree = ({
   redirectIndex,
 }: RegisterStepsThreeProps) => {
   const { user } = useAuth();
+  const { getSubDomain } = useSubdomain();
 
   const TitleCard = () => {
     return (
@@ -48,9 +50,7 @@ const RegisterStepsThree = ({
                 Your Support Portal address:
               </Text>
               <Text fontWeight="bold" variant="bodyMd" as="p">
-                <span className="ml-4">
-                  {user?.domain.split(".")[0]}.moosedesk.net
-                </span>
+                <span className="ml-4">{getSubDomain()}.moosedesk.net</span>
               </Text>
             </TextContainer>
           </div>
@@ -61,7 +61,7 @@ const RegisterStepsThree = ({
               </Text>
               <Text fontWeight="bold" variant="bodyMd" as="p">
                 <span className="ml-4">
-                  {user?.domain.split(".")[0]}@email.moosedesk.net
+                  {getSubDomain()}@email.moosedesk.net
                 </span>
               </Text>
             </TextContainer>
