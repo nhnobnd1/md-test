@@ -1,3 +1,11 @@
+# Hướng dẫn sử dụng app:
+
+- Package:
+  - Là nơi chứa code logic chung cho cả 2 app shopify và standalone
+  - Khi update code mới trong package xong thì bắt buộc phải yarn build. Đối với standalone muốn cập nhật thư viện trong package bắt buộc phải xóa node_module đi yarn lại
+  - core: logic core
+  - repo: các Repository Api
+
 # Turborepo starter
 
 This is an official Yarn v1 starter turborepo.

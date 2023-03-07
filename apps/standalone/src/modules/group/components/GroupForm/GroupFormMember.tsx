@@ -15,7 +15,6 @@ import { Input } from "antd";
 import { uniqBy } from "lodash-es";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { map } from "rxjs";
-import Pagination from "src/components/UI/Pagination/Pagination";
 import Select, {
   LoadMoreValue,
   OptionType,
@@ -128,7 +127,7 @@ const GroupFormMember = memo(
               option?.reset
                 ? setGroupMembers(data.data)
                 : setGroupMembers(
-                    uniqBy([...data.data, ...groupMembers], "_id")
+                    uniqBy([...groupMembers, ...data.data], "_id")
                   );
               setMeta(data.metadata);
             })
@@ -208,9 +207,7 @@ const GroupFormMember = memo(
         if (prevFilter?.query !== filterData.query && filterData.query) {
           getListMemberGroupDebounce(groupId, filterData);
         } else {
-          getListMemberGroupApi(groupId, filterData, {
-            reset: true,
-          });
+          getListMemberGroupApi(groupId, filterData);
         }
       } else {
         if (filterData.query) {
@@ -260,11 +257,19 @@ const GroupFormMember = memo(
             loading={loadingGetList}
             onChange={updateTable}
             pagination={
-              !isDetail &&
-              groupMembersTable.length > 0 && {
-                defaultCurrent: 1,
-                defaultPageSize: 5,
-              }
+              !isDetail
+                ? groupMembersTable.length > 0 && {
+                    defaultCurrent: 1,
+                    pageSize: 5,
+                    defaultPageSize: 5,
+                  }
+                : groupMembersTable.length > 0 && {
+                    current: filterData.page,
+                    pageSize: filterData.limit,
+                    total: groupMembersTable.length ?? 0,
+                    onChange: (page: number, pageSize: number) =>
+                      onPagination({ page: page, limit: pageSize }),
+                  }
             }
           >
             <Table.Column
@@ -299,7 +304,7 @@ const GroupFormMember = memo(
               )}
             />
           </Table>
-          {meta && isDetail && groupMembersTable.length > 0 && (
+          {/* {meta && isDetail && groupMembersTable.length > 0 && (
             <Pagination
               className="mt-4 flex justify-end"
               currentPage={filterData.page ?? 1}
@@ -308,7 +313,7 @@ const GroupFormMember = memo(
               pageSize={filterData.limit ?? env.DEFAULT_PAGE_SIZE}
               onChange={onPagination}
             />
-          )}
+          )} */}
         </div>
       </div>
     );

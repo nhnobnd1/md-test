@@ -49,7 +49,7 @@ const AgentsIndex = (props: AgentsIndexProps) => {
 
   const defaultFilter: () => GetListAgentRequest = () => ({
     page: 1,
-    limit: 20 || env.DEFAULT_PAGE_SIZE,
+    limit: env.DEFAULT_PAGE_SIZE,
   });
 
   const [filterData, setFilterData] =
