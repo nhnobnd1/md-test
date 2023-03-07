@@ -37,12 +37,12 @@ const GroupFormMember = memo(
       limit: 5,
       query: "",
     });
-
     const [groupMembers, setGroupMembers] = useState<GroupMembers[]>([]);
     const [groupMembersTable, setGroupMembersTable] = useState<GroupMembers[]>(
       []
     );
     const { toggle: updateTable } = useToggle();
+
     const [groupIds, setGroupIds] = useState<string[]>(value ?? []);
 
     const [filterData, setFilterData] = useState<GetMembersGroupRequest>(
@@ -124,11 +124,24 @@ const GroupFormMember = memo(
           .getListMembers(id, payload)
           .pipe(
             map(({ data }) => {
-              option?.reset
-                ? setGroupMembers(data.data)
-                : setGroupMembers(
-                    uniqBy([...groupMembers, ...data.data], "_id")
-                  );
+              if (option?.reset) {
+                setGroupMembers(data.data);
+              } else {
+                let dataMember: GroupMembers[] = [];
+                if (groupIds.length > 0) {
+                  data.data.forEach((item) => {
+                    if (groupIds.includes(item._id)) {
+                      dataMember.push(item);
+                    }
+                  });
+                } else {
+                  dataMember = [...data.data];
+                }
+                setGroupMembers(
+                  uniqBy([...groupMembers, ...dataMember], "_id")
+                );
+              }
+
               setMeta(data.metadata);
             })
           );
@@ -168,6 +181,7 @@ const GroupFormMember = memo(
         if (isDetail) {
           setGroupIds(groupIds.filter((item) => item !== id));
         }
+        setMemberRemove(null);
         setGroupMembers(groupMembers.filter((item) => item._id !== id));
       },
       [groupMembers]
@@ -266,7 +280,7 @@ const GroupFormMember = memo(
                 : groupMembersTable.length > 0 && {
                     current: filterData.page,
                     pageSize: filterData.limit,
-                    total: groupMembersTable.length ?? 0,
+                    total: groupIds.length,
                     onChange: (page: number, pageSize: number) =>
                       onPagination({ page: page, limit: pageSize }),
                   }
