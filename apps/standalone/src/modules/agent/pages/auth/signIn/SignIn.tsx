@@ -20,6 +20,7 @@ import { useSubdomain } from "src/hooks/useSubdomain";
 import { Factor2Auth } from "src/modules/agent/components/Factor2Auth";
 import DashboardRoutePaths from "src/modules/dashboard/routes/paths";
 import { useStore } from "src/providers/StoreProviders";
+import { rulesValidatePassword } from "src/regex";
 import RoutePaths from "src/routes/paths";
 import "./SignIn.scss";
 
@@ -196,13 +197,7 @@ export const SignIn = (props: SignInProps) => {
                     label="Password"
                     rules={[
                       { required: true, message: "The password is required" },
-                      {
-                        pattern:
-                          // eslint-disable-next-line no-useless-escape
-                          /^(?=.*[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*[@$!%*#=\/^?&])[a-zA-Z@$!%*#=\/^?&\d]{8,}$/g,
-                        message:
-                          "The password must be 8 characters long and must be a combination of uppercase letters, lowercase letters, numbers, and symbols.",
-                      },
+                      ...rulesValidatePassword,
                     ]}
                   >
                     <Input.Password />

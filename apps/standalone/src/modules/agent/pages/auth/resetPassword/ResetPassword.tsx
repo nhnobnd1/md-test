@@ -17,6 +17,7 @@ import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import ResetPasswordExpired from "src/modules/agent/components/ResetPassword/ResetPasswordExpired/ResetPasswordExpired";
 import { useStore } from "src/providers/StoreProviders";
+import { rulesValidatePassword } from "src/regex";
 import RoutePaths from "src/routes/paths";
 import "./ResetPassword.scss";
 
@@ -158,13 +159,7 @@ const ResetPassword = (props: ResetPasswordProps) => {
                               required: true,
                               message: "Password is required",
                             },
-                            {
-                              pattern:
-                                // eslint-disable-next-line no-useless-escape
-                                /^(?=.*[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*[@$!%*#=\/^?&])[a-zA-Z@$!%*#=\/^?&\d]{8,}$/g,
-                              message:
-                                "The password must be 8 characters long and must be a combination of uppercase letters, lowercase letters, numbers, and symbols",
-                            },
+                            ...rulesValidatePassword,
                           ]}
                           hasFeedback
                         >

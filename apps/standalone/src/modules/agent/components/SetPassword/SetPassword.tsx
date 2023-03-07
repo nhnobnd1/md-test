@@ -4,6 +4,7 @@ import { Button, Form, Input } from "antd";
 import { catchError, map, of } from "rxjs";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
+import { rulesValidatePassword } from "src/regex";
 import RoutePaths from "src/routes/paths";
 import "./SetPassword.scss";
 interface SetPasswordProps {
@@ -81,13 +82,7 @@ export const SetPassword = ({
               required: true,
               message: "The password is required",
             },
-            {
-              pattern:
-                // eslint-disable-next-line no-useless-escape
-                /^(?=.*[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*[@$!%*#=\/^?&])[a-zA-Z@$!%*#=\/^?&\d]{8,}$/g,
-              message:
-                "The password must be 8 characters long and must be a combination of uppercase letters, lowercase letters, numbers, and symbols",
-            },
+            ...rulesValidatePassword,
           ]}
           hasFeedback
         >

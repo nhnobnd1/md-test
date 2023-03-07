@@ -94,7 +94,7 @@ export const AgentForm = ({
         name="phoneNumber"
         rules={[
           {
-            pattern: /^(?:[0-9]{1,4})+-(?:[0-9]{3,15})$/,
+            pattern: /^(?:[0-9]{1,4})+-(?:[0-9]{3,15})$/g,
             message: "The input phone number is not valid",
           },
         ]}
