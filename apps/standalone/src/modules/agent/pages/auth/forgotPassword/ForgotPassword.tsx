@@ -31,7 +31,6 @@ export const ForgotPassword = (props: ForgotPasswordProps) => {
         .pipe(
           map(() => {
             message.loading.hide();
-            notification.success("Sending request success");
             setFinalPage({
               status: true,
               isSuccess: true,
@@ -61,7 +60,7 @@ export const ForgotPassword = (props: ForgotPasswordProps) => {
     <div className="forgotPassword">
       <div className="card-forgot-password">
         <div className="pt-[10%]">
-          <h2 className="text-center mb-[40px]">Forgot your password</h2>
+          <h2 className="text-center mb-[40px]">Reset your password</h2>
           {!finalPage.status ? (
             <>
               <div className="text-center mb-6">
