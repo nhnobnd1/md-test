@@ -15,7 +15,6 @@ import { Input } from "antd";
 import { uniqBy } from "lodash-es";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { map } from "rxjs";
-import Pagination from "src/components/UI/Pagination/Pagination";
 import Select, {
   LoadMoreValue,
   OptionType,
@@ -38,12 +37,12 @@ const GroupFormMember = memo(
       limit: 5,
       query: "",
     });
-
     const [groupMembers, setGroupMembers] = useState<GroupMembers[]>([]);
     const [groupMembersTable, setGroupMembersTable] = useState<GroupMembers[]>(
       []
     );
     const { toggle: updateTable } = useToggle();
+
     const [groupIds, setGroupIds] = useState<string[]>(value ?? []);
 
     const [filterData, setFilterData] = useState<GetMembersGroupRequest>(
@@ -125,11 +124,24 @@ const GroupFormMember = memo(
           .getListMembers(id, payload)
           .pipe(
             map(({ data }) => {
-              option?.reset
-                ? setGroupMembers(data.data)
-                : setGroupMembers(
-                    uniqBy([...data.data, ...groupMembers], "_id")
-                  );
+              if (option?.reset) {
+                setGroupMembers(data.data);
+              } else {
+                let dataMember: GroupMembers[] = [];
+                if (groupIds.length > 0) {
+                  data.data.forEach((item) => {
+                    if (groupIds.includes(item._id)) {
+                      dataMember.push(item);
+                    }
+                  });
+                } else {
+                  dataMember = [...data.data];
+                }
+                setGroupMembers(
+                  uniqBy([...groupMembers, ...dataMember], "_id")
+                );
+              }
+
               setMeta(data.metadata);
             })
           );
@@ -169,6 +181,7 @@ const GroupFormMember = memo(
         if (isDetail) {
           setGroupIds(groupIds.filter((item) => item !== id));
         }
+        setMemberRemove(null);
         setGroupMembers(groupMembers.filter((item) => item._id !== id));
       },
       [groupMembers]
@@ -208,9 +221,7 @@ const GroupFormMember = memo(
         if (prevFilter?.query !== filterData.query && filterData.query) {
           getListMemberGroupDebounce(groupId, filterData);
         } else {
-          getListMemberGroupApi(groupId, filterData, {
-            reset: true,
-          });
+          getListMemberGroupApi(groupId, filterData);
         }
       } else {
         if (filterData.query) {
@@ -260,11 +271,19 @@ const GroupFormMember = memo(
             loading={loadingGetList}
             onChange={updateTable}
             pagination={
-              !isDetail &&
-              groupMembersTable.length > 0 && {
-                defaultCurrent: 1,
-                defaultPageSize: 5,
-              }
+              !isDetail
+                ? groupMembersTable.length > 0 && {
+                    defaultCurrent: 1,
+                    pageSize: 5,
+                    defaultPageSize: 5,
+                  }
+                : groupMembersTable.length > 0 && {
+                    current: filterData.page,
+                    pageSize: filterData.limit,
+                    total: groupIds.length,
+                    onChange: (page: number, pageSize: number) =>
+                      onPagination({ page: page, limit: pageSize }),
+                  }
             }
           >
             <Table.Column
@@ -299,7 +318,7 @@ const GroupFormMember = memo(
               )}
             />
           </Table>
-          {meta && isDetail && groupMembersTable.length > 0 && (
+          {/* {meta && isDetail && groupMembersTable.length > 0 && (
             <Pagination
               className="mt-4 flex justify-end"
               currentPage={filterData.page ?? 1}
@@ -308,7 +327,7 @@ const GroupFormMember = memo(
               pageSize={filterData.limit ?? env.DEFAULT_PAGE_SIZE}
               onChange={onPagination}
             />
-          )}
+          )} */}
         </div>
       </div>
     );
