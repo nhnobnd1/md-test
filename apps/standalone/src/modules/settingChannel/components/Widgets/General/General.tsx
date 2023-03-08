@@ -1,5 +1,5 @@
 import { Card, Col, Divider, Form, Input, Row, Switch } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UIWidget } from "src/modules/settingChannel/components/Widgets/UIWidget";
 import useWidgetSetting from "src/modules/settingChannel/store/useSetting";
 
@@ -42,6 +42,11 @@ export default function General() {
       allowAttach: checked,
     });
   };
+
+  useEffect(() => {
+    form.resetFields();
+  }, [data.id]);
+
   return (
     <>
       <Form

@@ -10,4 +10,5 @@ export * from "./ticket";
 export * from "./unty";
 export * from "./userGroup";
 export * from "./userSetting";
+export * from "./helpwidget";
 //# sourceMappingURL=index.d.ts.map

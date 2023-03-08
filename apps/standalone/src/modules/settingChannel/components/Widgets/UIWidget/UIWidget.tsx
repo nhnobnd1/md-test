@@ -62,7 +62,12 @@ export const UIWidget: FC<UIWidgetProps> = () => {
           </h1>{" "}
         </div>
         {data.isFormContact ? (
-          <Card title={data?.formTitle} bordered={false} className="card">
+          <Card
+            style={{ maxWidth: 350 }}
+            title={data?.formTitle}
+            bordered={false}
+            className="card"
+          >
             <Form labelCol={{ span: 10 }}>
               <Form.Item label="Your Name" name="name" labelAlign="left">
                 <Input />

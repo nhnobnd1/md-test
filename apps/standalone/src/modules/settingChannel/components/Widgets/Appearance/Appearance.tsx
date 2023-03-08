@@ -8,7 +8,7 @@ import {
   Popover,
   Row,
 } from "antd";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ColorResult, SketchPicker } from "react-color";
 import { UIWidget } from "src/modules/settingChannel/components/Widgets/UIWidget";
 import useWidgetSetting from "src/modules/settingChannel/store/useSetting";
@@ -21,8 +21,6 @@ export default function Appearance() {
   const [buttonColor, setButtonColor] = useState<ColorResult>();
   const [buttonTextColor, setButtonTextColor] = useState<ColorResult>();
 
-  const [targetButton, setTargetButton] = useState<number>(1);
-
   const { rgb } = color || {};
   const { rgb: rgbText } = textColor || {};
   const { rgb: rgbButton } = buttonColor || {};
@@ -30,6 +28,9 @@ export default function Appearance() {
 
   const [form] = Form.useForm();
   const data = useWidgetSetting((state) => state.widgetSetting);
+  const [targetButton, setTargetButton] = useState<number>(
+    data?.widgetPosition === "right" ? 2 : 1
+  );
   const updateWidgetSetting = useWidgetSetting(
     (state) => state.updateWidgetSetting
   );
@@ -101,6 +102,10 @@ export default function Appearance() {
     );
   }, [buttonTextColor, data]);
 
+  useEffect(() => {
+    form.resetFields();
+  }, [data.id]);
+
   return (
     <>
       <Form
@@ -108,13 +113,13 @@ export default function Appearance() {
         wrapperCol={{ span: 16 }}
         style={{ marginTop: 20, position: "relative" }}
         initialValues={{
-          widgetBackgroundColor: "",
-          widgetTextColor: "",
-          widgetPosition: "",
-          offsetBot: 30,
-          offsetHorizontal: 30,
-          buttonBackgroundColor: "",
-          textColor: "",
+          widgetBackgroundColor: data?.headerBackgroundColor,
+          widgetTextColor: data?.headerTextColor,
+          widgetPosition: data?.widgetPosition,
+          offsetBot: data?.offsetBottom,
+          offsetHorizontal: data?.offsetHorizontal,
+          buttonBackgroundColor: data?.buttonAppearanceColor,
+          textColor: data?.textButtonAppearanceColor,
         }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
@@ -145,7 +150,9 @@ export default function Appearance() {
                 <Button
                   style={{
                     width: 20,
-                    backgroundColor: `${color?.hex}`,
+                    backgroundColor: `${
+                      color?.hex ? color?.hex : data?.headerBackgroundColor
+                    }`,
                     marginLeft: 20,
                   }}
                 ></Button>
@@ -168,7 +175,9 @@ export default function Appearance() {
                 <Button
                   style={{
                     width: 20,
-                    backgroundColor: `${textColor?.hex}`,
+                    backgroundColor: `${
+                      textColor?.hex ? textColor?.hex : data?.headerTextColor
+                    }`,
                     marginLeft: 20,
                   }}
                 ></Button>
@@ -289,7 +298,11 @@ export default function Appearance() {
                 <Button
                   style={{
                     width: 20,
-                    backgroundColor: `${buttonColor?.hex}`,
+                    backgroundColor: `${
+                      buttonColor?.hex
+                        ? buttonColor?.hex
+                        : data?.buttonAppearanceColor
+                    }`,
                     marginLeft: 20,
                   }}
                 ></Button>
@@ -312,7 +325,11 @@ export default function Appearance() {
                 <Button
                   style={{
                     width: 20,
-                    backgroundColor: `${buttonTextColor?.hex}`,
+                    backgroundColor: `${
+                      buttonTextColor?.hex
+                        ? buttonTextColor?.hex
+                        : data?.textButtonAppearanceColor
+                    }`,
                     marginLeft: 20,
                   }}
                 ></Button>
