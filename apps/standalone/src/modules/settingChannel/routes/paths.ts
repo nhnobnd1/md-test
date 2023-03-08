@@ -10,6 +10,7 @@ const SettingChannelRoutePaths = createRoutePath({
   },
   Widgets: {
     Index: "widgets",
+    Update: ":id",
   },
   EmailIntegration: "email-integration/gmail/callback",
   MicrosoftIntegration: "email-integration/outlook/callback",

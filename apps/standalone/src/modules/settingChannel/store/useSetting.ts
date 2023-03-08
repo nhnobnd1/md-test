@@ -22,25 +22,27 @@ interface SettingState {
   widgetSetting: WidgetSetting;
   updateWidgetSetting: (object: WidgetSetting) => void;
 }
+export const initialDefaultWidget: WidgetSetting = {
+  id: 1,
+  titleText: "Support Request",
+  widgetHeader: "Help",
+  formTitle: "Contact us",
+  buttonText: "Submit",
+  confirmMessage: "Thank you for your feedback.",
+  allowAttach: true,
+  allowCaptcha: true,
+  headerBackgroundColor: "green",
+  headerTextColor: "black",
+  widgetPosition: "left",
+  offsetBottom: 20,
+  offsetHorizontal: 30,
+  buttonAppearanceColor: "green",
+  textButtonAppearanceColor: "black",
+  isFormContact: true,
+};
+
 const useWidgetSetting = create<SettingState>()((set) => ({
-  widgetSetting: {
-    id: 1,
-    titleText: "Support Request",
-    widgetHeader: "Help",
-    formTitle: "Contact us",
-    buttonText: "Submit",
-    confirmMessage: "Thank you for your feedback.",
-    allowAttach: true,
-    allowCaptcha: true,
-    headerBackgroundColor: "green",
-    headerTextColor: "black",
-    widgetPosition: "left",
-    offsetBottom: 20,
-    offsetHorizontal: 30,
-    buttonAppearanceColor: "green",
-    textButtonAppearanceColor: "black",
-    isFormContact: true,
-  },
+  widgetSetting: initialDefaultWidget,
   updateWidgetSetting: (object) => set((state) => ({ widgetSetting: object })),
 }));
 export default useWidgetSetting;

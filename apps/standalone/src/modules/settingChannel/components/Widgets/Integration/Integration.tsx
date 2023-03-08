@@ -1,21 +1,35 @@
 import { Button, Card, Divider, Row } from "antd";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import useWidgetSetting from "src/modules/settingChannel/store/useSetting";
 import CodeIcon from "~icons/carbon/code";
 import CopyIcon from "~icons/material-symbols/content-copy-outline";
-
-export default function Integration() {
+interface IntegrationProps {
+  idWidget: string | undefined;
+}
+export default function Integration({ idWidget }: IntegrationProps) {
   const data = useWidgetSetting((state) => state.widgetSetting);
 
-  const [scriptCode, setScriptCode] = useState<string>(` 
+  const scriptCode = useMemo(() => {
+    if (!idWidget)
+      return ` 
     	<script>
 			window.mdSettings = {
-				widget_id: ${data?.id},
+				widget_id: "${data?.id}",
 			};
 		</script>
-		<script src="https://cdn.jsdelivr.net/gh/oppabgnamdz/node-getmagnet@master/test33.js"></script>
+		<script src="https://cdn.jsdelivr.net/gh/oppabgnamdz/node-getmagnet@master/moosedesk.js"></script>
 
-    `);
+    `;
+    return ` 
+    	<script>
+			window.mdSettings = {
+				widget_id: "${idWidget}",
+			};
+		</script>
+		<script src="https://cdn.jsdelivr.net/gh/oppabgnamdz/node-getmagnet@master/moosedesk.js"></script>
+
+    `;
+  }, [data?.id, idWidget]);
   const [copied, setCopied] = useState<boolean>(false);
   const handleClickCopy = () => {
     navigator.clipboard.writeText(scriptCode);
@@ -26,7 +40,7 @@ export default function Integration() {
     <>
       <Card
         style={{
-          width: 700,
+          maxWidth: 700,
           // marginTop: 16,
         }}
       >
@@ -52,7 +66,6 @@ export default function Integration() {
           </Button>
         </Row>
       </Card>
-      <div id="my-widget"></div>
     </>
   );
 }

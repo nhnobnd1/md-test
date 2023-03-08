@@ -1341,6 +1341,13 @@
   dependencies:
     "@iconify/types" "*"
 
+"@iconify-json/fa6-solid@^1.1.12":
+  version "1.1.12"
+  resolved "https://registry.yarnpkg.com/@iconify-json/fa6-solid/-/fa6-solid-1.1.12.tgz#1f05be86383b5238f04e23cf7ef3ba5bc835e8ef"
+  integrity sha512-5aiVsfDgFtNGoiA/iWhQ/SleJj7RUDzSjacWmB1fPOrh5o2yKmJxO7Tv9R/KutZoIhkNLmdyQJkt5WeJHbeVxA==
+  dependencies:
+    "@iconify/types" "*"
+
 "@iconify-json/fa@^1.1.4":
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/@iconify-json/fa/-/fa-1.1.4.tgz#dc14bbfb7306cfb530c2a7fbf1212676bc2f363d"
@@ -2435,7 +2442,7 @@
 
 "@types/react@*", "@types/react@17.0.30", "@types/react@^17.0.37", "@types/react@^18.0.15":
   version "17.0.30"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.30.tgz#2f8e6f5ab6415c091cc5e571942ee9064b17609e"
+  resolved "https://registry.npmjs.org/@types/react/-/react-17.0.30.tgz"
   integrity sha512-3Dt/A8gd3TCXi2aRe84y7cK1K8G+N9CZRDG8kDGguOKa0kf/ZkSwTmVIDPsm/KbQOVMaDJXwhBtuOXxqwdpWVg==
   dependencies:
     "@types/prop-types" "*"
