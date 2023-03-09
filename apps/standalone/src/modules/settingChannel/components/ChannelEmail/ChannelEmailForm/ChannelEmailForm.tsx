@@ -149,7 +149,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
           form.setFieldValue("name", "");
           form.setFieldValue(
             "supportEmail",
-            `${getSubDomain()}@email.moosedesk.net`
+            `support@${getSubDomain()}.moosedesk.com`
           );
         } else {
           form.setFieldValue("name", signInCallback.name);
