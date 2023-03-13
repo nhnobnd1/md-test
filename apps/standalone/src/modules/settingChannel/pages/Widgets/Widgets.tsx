@@ -201,7 +201,7 @@ const Widgets = () => {
       </p>
       <div className="flex justify-start">
         <Button type="primary" className="mt-2" onClick={showModal}>
-          Create a new ticket
+          Create a new widget
         </Button>
       </div>
       <List loading={loadingList} className="mt-10">

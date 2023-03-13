@@ -48,6 +48,7 @@ export const UIWidget: FC<UIWidgetProps> = () => {
           backgroundColor: "#EFF2F5",
           borderRadius: 20,
           minWidth: 300,
+          maxHeight: 800,
         }}
       >
         <div
@@ -109,7 +110,7 @@ export const UIWidget: FC<UIWidgetProps> = () => {
               </Form.Item>
             </Form>
             {data?.allowAttach ? (
-              <div>
+              <div className="mb-5">
                 <section className="p-2 bg-gray-100 border-2 border-dotted border-slate-50">
                   <div className="flex justify-center items-center flex-col">
                     <CloudUploadOutlined style={{ fontSize: 32 }} />
