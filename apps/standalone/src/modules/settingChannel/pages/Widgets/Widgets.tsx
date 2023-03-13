@@ -50,8 +50,12 @@ const Widgets = () => {
         .pipe(
           map(({ data }) => {
             if (data.statusCode === 200) {
-              console.log("dasd", data);
-              setHelpWidgets(data.data);
+              setHelpWidgets(
+                data.data.sort(
+                  (a: HelpWidget, b: HelpWidget) =>
+                    b.createdTimestamp - a.createdTimestamp
+                )
+              );
             } else {
               message.error("Get data customer failed");
             }
@@ -210,12 +214,14 @@ const Widgets = () => {
         >
           {(item: HelpWidget) => (
             <List.Item key={item._id} onClick={() => handleNavigate(item._id)}>
-              <div className="flex justify-between w-full p-4 hover:bg-slate-300 hover:cursor-pointer rounded-md">
-                <div className="flex items-center">
-                  <HeadPhoneIcon fontSize={20} />
-                  <div className="ml-5">{item.name}</div>
+              <div className="flex  justify-between items-center w-full p-4 flex-wrap hover:bg-slate-300 hover:cursor-pointer rounded-md group">
+                <div className="flex items-center max-w-full flex-1  grow-[7]">
+                  <HeadPhoneIcon fontSize={20} className="flex-shrink-0" />
+                  <div className="ml-5 whitespace-nowrap overflow-hidden truncate ">
+                    {item.name}
+                  </div>
                 </div>
-                <div>
+                <div className="flex invisible group-hover:visible w-full justify-end flex-1 grow-[3]">
                   <Button
                     size="middle"
                     className="w-20 mr-5"

@@ -52,10 +52,12 @@ export const UIWidget: FC<UIWidgetProps> = () => {
       >
         <div className="header-bg">
           <h1
+            className="whitespace-nowrap overflow-hidden truncate "
             style={{
               color: `${data?.headerTextColor}`,
               paddingTop: 10,
               paddingBottom: 10,
+              maxWidth: 300,
             }}
           >
             {data?.titleText}

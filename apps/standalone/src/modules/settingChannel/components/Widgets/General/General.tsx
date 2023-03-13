@@ -45,6 +45,9 @@ export default function General() {
 
   useEffect(() => {
     form.resetFields();
+    setAllowCaptcha(data.allowCaptcha);
+    setAllowAttach(data.allowAttach);
+    setLoading(data.isFormContact);
   }, [data.id]);
 
   return (

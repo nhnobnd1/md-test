@@ -30,9 +30,7 @@ const WidgetDetail = () => {
         .pipe(
           map(({ data }) => {
             if (data.statusCode === 200) {
-              console.log("before", data.data);
               setWidget(data.data);
-              console.log("after", data.data);
               updateWidgetSetting({
                 ...data?.data?.settings,
                 id: data.data._id,
@@ -153,7 +151,7 @@ const WidgetDetail = () => {
       {
         label: `Integration`,
         key: "3",
-        children: <Integration />,
+        children: <Integration idWidget={null} />,
       },
     ];
   }, [widget, widgetSetting]);

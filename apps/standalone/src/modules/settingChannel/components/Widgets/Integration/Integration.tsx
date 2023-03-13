@@ -1,35 +1,38 @@
 import { Button, Card, Divider, Row } from "antd";
 import { useMemo, useState } from "react";
 import useWidgetSetting from "src/modules/settingChannel/store/useSetting";
+import { useStore } from "src/providers/StoreProviders";
 import CodeIcon from "~icons/carbon/code";
 import CopyIcon from "~icons/material-symbols/content-copy-outline";
 interface IntegrationProps {
-  idWidget: string | undefined;
+  idWidget: string | null;
 }
 export default function Integration({ idWidget }: IntegrationProps) {
   const data = useWidgetSetting((state) => state.widgetSetting);
+  const { storeId } = useStore();
+  console.log({ storeId });
 
   const scriptCode = useMemo(() => {
     if (!idWidget)
       return ` 
     	<script>
 			window.mdSettings = {
-				widget_id: "${data?.id}",
+				widget_id: "https://md-help-widget.s3.amazonaws.com/${storeId}/${data?.id}.json",
 			};
 		</script>
-		<script src="https://cdn.jsdelivr.net/gh/oppabgnamdz/node-getmagnet@master/moosedesk.js"></script>
+		<script src="https://md-help-widget.s3.amazonaws.com/moosedesk.js"></script>
 
     `;
     return ` 
     	<script>
 			window.mdSettings = {
-				widget_id: "${idWidget}",
+				widget_id: "https://md-help-widget.s3.amazonaws.com/${storeId}/${idWidget}.json",
 			};
 		</script>
-		<script src="https://cdn.jsdelivr.net/gh/oppabgnamdz/node-getmagnet@master/moosedesk.js"></script>
+		<script src="https://md-help-widget.s3.amazonaws.com/moosedesk.js"></script>
 
     `;
-  }, [data?.id, idWidget]);
+  }, [data?.id, idWidget, storeId]);
   const [copied, setCopied] = useState<boolean>(false);
   const handleClickCopy = () => {
     navigator.clipboard.writeText(scriptCode);
@@ -50,7 +53,7 @@ export default function Integration({ idWidget }: IntegrationProps) {
         </div>
         <Divider />
         <Row>
-          <p>{scriptCode}</p>
+          <p style={{ width: "100%", wordWrap: "break-word" }}>{scriptCode}</p>
         </Row>
         <Row style={{ display: "flex", justifyContent: "flex-end" }}>
           <Button
