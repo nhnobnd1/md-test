@@ -31,13 +31,13 @@ export const initialDefaultWidget: WidgetSetting = {
   confirmMessage: "Thank you for your feedback.",
   allowAttach: true,
   allowCaptcha: true,
-  headerBackgroundColor: "green",
-  headerTextColor: "black",
+  headerBackgroundColor: "#04A786",
+  headerTextColor: "white",
   widgetPosition: "left",
   offsetBottom: 20,
   offsetHorizontal: 30,
-  buttonAppearanceColor: "green",
-  textButtonAppearanceColor: "black",
+  buttonAppearanceColor: "#10888f",
+  textButtonAppearanceColor: "white",
   isFormContact: true,
 };
 
