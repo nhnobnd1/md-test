@@ -152,11 +152,7 @@ const WidgetDetail = () => {
       {
         label: `Integration`,
         key: "3",
-<<<<<<< HEAD
-        children: <Integration idWidget={id} />,
-=======
         children: <Integration idWidget={null} />,
->>>>>>> f81d4473fc7d9a49cb552c14875c69739b16d3b2
       },
     ];
   }, [widget, widgetSetting]);
