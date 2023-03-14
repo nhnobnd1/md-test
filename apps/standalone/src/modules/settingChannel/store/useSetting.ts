@@ -33,7 +33,7 @@ export const initialDefaultWidget: WidgetSetting = {
   allowCaptcha: true,
   headerBackgroundColor: "#04A786",
   headerTextColor: "white",
-  widgetPosition: "left",
+  widgetPosition: "right",
   offsetBottom: 20,
   offsetHorizontal: 30,
   buttonAppearanceColor: "#10888f",

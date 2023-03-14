@@ -109,7 +109,7 @@ export default function Appearance() {
   return (
     <>
       <Form
-        labelCol={{ span: 8 }}
+        labelCol={{ span: 14 }}
         wrapperCol={{ span: 16 }}
         style={{ marginTop: 20, position: "relative" }}
         initialValues={{
@@ -126,217 +126,221 @@ export default function Appearance() {
         form={form}
         autoComplete="off"
       >
-        <Card
-          style={{
-            maxWidth: 500,
-            // marginTop: 16,
-          }}
-        >
-          <h2>Widget Appearance</h2>
-          <Divider />
-          <Row>
-            <Col
-              span={10}
-              style={{
-                display: "flex",
-                justifyContent: "flex-start",
-                alignItems: "center",
-              }}
-            >
-              Header Background Color
-            </Col>
-            <Col span={3}>
-              <Popover content={backgroundHeader}>
-                <Button
-                  style={{
-                    width: 20,
-                    backgroundColor: `${
-                      color?.hex ? color?.hex : data?.headerBackgroundColor
-                    }`,
-                    marginLeft: 20,
-                  }}
-                ></Button>
-              </Popover>
-            </Col>
-          </Row>
-          <Row style={{ marginTop: 20 }}>
-            <Col
-              span={10}
-              style={{
-                display: "flex",
-                justifyContent: "flex-start",
-                alignItems: "center",
-              }}
-            >
-              Text Color
-            </Col>
-            <Col span={3}>
-              <Popover content={bgText}>
-                <Button
-                  style={{
-                    width: 20,
-                    backgroundColor: `${
-                      textColor?.hex ? textColor?.hex : data?.headerTextColor
-                    }`,
-                    marginLeft: 20,
-                  }}
-                ></Button>
-              </Popover>
-            </Col>
-          </Row>
-        </Card>
+        <div style={{ marginLeft: 450 }}>
+          <Card
+            style={{
+              maxWidth: 500,
+              // marginTop: 16,
+            }}
+          >
+            <h2>Widget Appearance</h2>
+            <Divider />
+            <Row>
+              <Col
+                span={10}
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-start",
+                  alignItems: "center",
+                }}
+              >
+                Header Background Color
+              </Col>
+              <Col span={3}>
+                <Popover content={backgroundHeader}>
+                  <Button
+                    style={{
+                      width: 20,
+                      backgroundColor: `${
+                        color?.hex ? color?.hex : data?.headerBackgroundColor
+                      }`,
+                      marginLeft: 20,
+                    }}
+                  ></Button>
+                </Popover>
+              </Col>
+            </Row>
+            <Row style={{ marginTop: 20 }}>
+              <Col
+                span={10}
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-start",
+                  alignItems: "center",
+                }}
+              >
+                Text Color
+              </Col>
+              <Col span={3}>
+                <Popover content={bgText}>
+                  <Button
+                    style={{
+                      width: 20,
+                      backgroundColor: `${
+                        textColor?.hex ? textColor?.hex : data?.headerTextColor
+                      }`,
+                      marginLeft: 20,
+                    }}
+                  ></Button>
+                </Popover>
+              </Col>
+            </Row>
+          </Card>
 
-        <Row
-          style={{
-            display: "flex",
-            alignItems: "center",
-            marginTop: 20,
-            marginBottom: 10,
-          }}
-        >
-          <span>Widget Position</span>
-          <Button
-            onClick={() => {
-              handleChangeTargetButton(1);
-              updateWidgetSetting({
-                ...data,
-                widgetPosition: "left",
-              });
-            }}
-            type={targetButton === 1 ? "primary" : "default"}
-            style={{ marginLeft: 20, marginRight: 20 }}
-            size="large"
-            icon={
-              <ArrowDownLeft
-                fontSize={14}
-                style={{ marginRight: 8, paddingTop: 5 }}
-              />
-            }
-          >
-            Bottom Left
-          </Button>
-          <Button
-            onClick={() => {
-              handleChangeTargetButton(2);
-              updateWidgetSetting({
-                ...data,
-                widgetPosition: "right",
-              });
-            }}
-            type={targetButton === 2 ? "primary" : "default"}
-            style={{ marginLeft: 20, marginRight: 20 }}
-            size="large"
-            icon={
-              <ArrowDownRight
-                fontSize={14}
-                style={{ marginRight: 8, paddingTop: 5 }}
-              />
-            }
-          >
-            Bottom Right
-          </Button>
-        </Row>
-        <Row style={{ marginTop: 20 }}>
-          <Col span={20}>
-            <Form.Item
-              labelAlign="left"
-              label="Offset from bottom (pixels)"
-              name="offsetBot"
+          <div style={{ maxWidth: 500 }}>
+            <Row
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginTop: 20,
+                marginBottom: 10,
+              }}
             >
-              <InputNumber
-                onChange={(e: any) => {
+              <span>Widget Position</span>
+              <Button
+                onClick={() => {
+                  handleChangeTargetButton(1);
                   updateWidgetSetting({
                     ...data,
-                    offsetBottom: e,
+                    widgetPosition: "left",
                   });
                 }}
-              />
-            </Form.Item>
-          </Col>
-        </Row>
-
-        <Row>
-          <Col span={20}>
-            <Form.Item
-              labelAlign="left"
-              label="Offset from left/right (pixels)"
-              name="offsetHorizontal"
-            >
-              <InputNumber
-                onChange={(e: any) => {
+                type={targetButton === 1 ? "primary" : "default"}
+                style={{ marginLeft: 20, marginRight: 20 }}
+                size="large"
+                icon={
+                  <ArrowDownLeft
+                    fontSize={14}
+                    style={{ marginRight: 8, paddingTop: 5 }}
+                  />
+                }
+              >
+                Bottom Left
+              </Button>
+              <Button
+                onClick={() => {
+                  handleChangeTargetButton(2);
                   updateWidgetSetting({
                     ...data,
-                    offsetHorizontal: e,
+                    widgetPosition: "right",
                   });
                 }}
-              />
-            </Form.Item>
-          </Col>
-        </Row>
+                type={targetButton === 2 ? "primary" : "default"}
+                style={{ marginLeft: 20, marginRight: 20 }}
+                size="large"
+                icon={
+                  <ArrowDownRight
+                    fontSize={14}
+                    style={{ marginRight: 8, paddingTop: 5 }}
+                  />
+                }
+              >
+                Bottom Right
+              </Button>
+            </Row>
+            <Row style={{ marginTop: 20 }}>
+              <Col span={24}>
+                <Form.Item
+                  labelAlign="left"
+                  label="Offset from bottom (pixels)"
+                  name="offsetBot"
+                >
+                  <InputNumber
+                    onChange={(e: any) => {
+                      updateWidgetSetting({
+                        ...data,
+                        offsetBottom: e,
+                      });
+                    }}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
 
-        <Card
-          style={{
-            maxWidth: 500,
-            // marginTop: 16,
-          }}
-        >
-          <h2>Button Appearance</h2>
-          <Divider />
-          <Row>
-            <Col
-              span={7}
-              style={{
-                display: "flex",
-                justifyContent: "flex-start",
-                alignItems: "center",
-              }}
-            >
-              Background Color
-            </Col>
-            <Col span={3}>
-              <Popover content={bgButton}>
-                <Button
-                  style={{
-                    width: 20,
-                    backgroundColor: `${
-                      buttonColor?.hex
-                        ? buttonColor?.hex
-                        : data?.buttonAppearanceColor
-                    }`,
-                    marginLeft: 20,
-                  }}
-                ></Button>
-              </Popover>
-            </Col>
-          </Row>
-          <Row style={{ marginTop: 20 }}>
-            <Col
-              span={7}
-              style={{
-                display: "flex",
-                justifyContent: "flex-start",
-                alignItems: "center",
-              }}
-            >
-              Text Color
-            </Col>
-            <Col span={3}>
-              <Popover content={bgButtonText}>
-                <Button
-                  style={{
-                    width: 20,
-                    backgroundColor: `${
-                      buttonTextColor?.hex
-                        ? buttonTextColor?.hex
-                        : data?.textButtonAppearanceColor
-                    }`,
-                    marginLeft: 20,
-                  }}
-                ></Button>
-              </Popover>
-            </Col>
-          </Row>
-        </Card>
+            <Row>
+              <Col span={24}>
+                <Form.Item
+                  labelAlign="left"
+                  label="Offset from left/right (pixels)"
+                  name="offsetHorizontal"
+                >
+                  <InputNumber
+                    onChange={(e: any) => {
+                      updateWidgetSetting({
+                        ...data,
+                        offsetHorizontal: e,
+                      });
+                    }}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+          </div>
+
+          <Card
+            style={{
+              maxWidth: 500,
+              // marginTop: 16,
+            }}
+          >
+            <h2>Button Appearance</h2>
+            <Divider />
+            <Row>
+              <Col
+                span={7}
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-start",
+                  alignItems: "center",
+                }}
+              >
+                Background Color
+              </Col>
+              <Col span={3}>
+                <Popover content={bgButton}>
+                  <Button
+                    style={{
+                      width: 20,
+                      backgroundColor: `${
+                        buttonColor?.hex
+                          ? buttonColor?.hex
+                          : data?.buttonAppearanceColor
+                      }`,
+                      marginLeft: 20,
+                    }}
+                  ></Button>
+                </Popover>
+              </Col>
+            </Row>
+            <Row style={{ marginTop: 20 }}>
+              <Col
+                span={7}
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-start",
+                  alignItems: "center",
+                }}
+              >
+                Text Color
+              </Col>
+              <Col span={3}>
+                <Popover content={bgButtonText}>
+                  <Button
+                    style={{
+                      width: 20,
+                      backgroundColor: `${
+                        buttonTextColor?.hex
+                          ? buttonTextColor?.hex
+                          : data?.textButtonAppearanceColor
+                      }`,
+                      marginLeft: 20,
+                    }}
+                  ></Button>
+                </Popover>
+              </Col>
+            </Row>
+          </Card>
+        </div>
         <UIWidget />
       </Form>
     </>

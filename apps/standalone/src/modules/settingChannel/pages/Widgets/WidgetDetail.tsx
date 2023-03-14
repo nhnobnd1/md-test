@@ -102,7 +102,7 @@ const WidgetDetail = () => {
       <div
         style={{
           display: "flex",
-          justifyContent: "flex-start",
+          justifyContent: "flex-end",
           marginTop: 20,
           position: "sticky",
           bottom: 0,
@@ -112,6 +112,7 @@ const WidgetDetail = () => {
           zIndex: 1,
           paddingTop: 10,
           paddingBottom: 10,
+          // backgroundColor: "red",
           // height: 50,
         }}
       >

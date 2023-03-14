@@ -41,7 +41,7 @@ export const UIWidget: FC<UIWidgetProps> = () => {
     }
   }, [data]);
   return (
-    <div style={{ position: "absolute", top: 0, right: 0, zIndex: 2 }}>
+    <div style={{ position: "absolute", top: 0, left: 0, zIndex: 2 }}>
       <div
         style={{
           // padding: 20,

@@ -1,5 +1,5 @@
 import { Button, Card, Divider, Row } from "antd";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useWidgetSetting from "src/modules/settingChannel/store/useSetting";
 import { useStore } from "src/providers/StoreProviders";
 import CodeIcon from "~icons/carbon/code";
@@ -20,7 +20,11 @@ export default function Integration({ idWidget }: IntegrationProps) {
 				widget_id: "https://md-help-widget.s3.amazonaws.com/${storeId}/${data?.id}.json",
 			};
 		</script>
-		<script src="https://md-help-widget.s3.amazonaws.com/moosedesk.js"></script>
+		<script
+    async
+		defer
+		type="text/javascript"
+    src="https://md-help-widget.s3.amazonaws.com/moosedesk.js"></script>
 
     `;
     return ` 
@@ -29,7 +33,11 @@ export default function Integration({ idWidget }: IntegrationProps) {
 				widget_id: "https://md-help-widget.s3.amazonaws.com/${storeId}/${idWidget}.json",
 			};
 		</script>
-		<script src="https://md-help-widget.s3.amazonaws.com/moosedesk.js"></script>
+		<script
+    async
+		defer
+		type="text/javascript"
+    src="https://md-help-widget.s3.amazonaws.com/moosedesk.js"></script>
 
     `;
   }, [data?.id, idWidget, storeId]);
@@ -39,35 +47,52 @@ export default function Integration({ idWidget }: IntegrationProps) {
     setCopied(true);
   };
 
+  useEffect(() => {
+    setCopied(false);
+    return () => setCopied(false);
+  }, [data.id, idWidget]);
+
   return (
     <>
       <Card
         style={{
           maxWidth: 700,
           // marginTop: 16,
+          backgroundColor: "#27313A",
+          color: "white",
         }}
       >
         <div style={{ display: "flex" }}>
           <CodeIcon fontSize={28} />
           <h2 style={{ marginLeft: 10 }}>Embed HTML Code</h2>
         </div>
-        <Divider />
-        <Row>
-          <p style={{ width: "100%", wordWrap: "break-word" }}>{scriptCode}</p>
-        </Row>
-        <Row style={{ display: "flex", justifyContent: "flex-end" }}>
-          <Button
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            onClick={handleClickCopy}
-          >
-            <CopyIcon />
-            <span style={{ marginLeft: 5 }}>{copied ? `Copied` : `Copy`}</span>
-          </Button>
-        </Row>
+        <Divider style={{ backgroundColor: "white" }} />
+        <div>
+          <Row>
+            <h4
+              onClick={handleClickCopy}
+              style={{ width: "100%", wordWrap: "break-word" }}
+              className="hover:cursor-pointer"
+            >
+              {scriptCode}
+            </h4>
+          </Row>
+          <Row style={{ display: "flex", justifyContent: "flex-end" }}>
+            <Button
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              onClick={handleClickCopy}
+            >
+              <CopyIcon />
+              <span style={{ marginLeft: 5 }}>
+                {copied ? `Copied` : `Copy`}
+              </span>
+            </Button>
+          </Row>
+        </div>
       </Card>
     </>
   );
