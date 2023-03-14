@@ -41,21 +41,33 @@ export const UIWidget: FC<UIWidgetProps> = () => {
     }
   }, [data]);
   return (
-    <div style={{ position: "absolute", top: 0, right: 0, zIndex: 2 }}>
+    <div style={{ position: "absolute", top: 0, left: 0, zIndex: 2 }}>
       <div
         style={{
-          padding: 20,
-          backgroundColor: data?.headerBackgroundColor,
+          // padding: 20,
+          backgroundColor: "#EFF2F5",
           borderRadius: 20,
           minWidth: 300,
+          maxHeight: 800,
         }}
       >
-        <div className="header-bg">
+        <div
+          className="header-bg"
+          style={{
+            height: 200,
+            backgroundColor: data?.headerBackgroundColor,
+            borderRadius: 8,
+          }}
+        >
           <h1
+            className="whitespace-nowrap overflow-hidden truncate "
             style={{
               color: `${data?.headerTextColor}`,
-              paddingTop: 10,
+              paddingTop: 20,
               paddingBottom: 10,
+              maxWidth: 350,
+              paddingLeft: 20,
+              fontSize: "28px",
             }}
           >
             {data?.titleText}
@@ -63,7 +75,7 @@ export const UIWidget: FC<UIWidgetProps> = () => {
         </div>
         {data.isFormContact ? (
           <Card
-            style={{ maxWidth: 350 }}
+            style={{ maxWidth: 350, top: -110, margin: 20 }}
             title={data?.formTitle}
             bordered={false}
             className="card"
@@ -98,12 +110,12 @@ export const UIWidget: FC<UIWidgetProps> = () => {
               </Form.Item>
             </Form>
             {data?.allowAttach ? (
-              <div>
+              <div className="mb-5">
                 <section className="p-2 bg-gray-100 border-2 border-dotted border-slate-50">
                   <div className="flex justify-center items-center flex-col">
                     <CloudUploadOutlined style={{ fontSize: 32 }} />
 
-                    <p className="text">Upload files (max 5)</p>
+                    <p className="text">Upload files (max 3)</p>
                     <span>Click to add or drags & drop files</span>
                   </div>
                 </section>
@@ -138,6 +150,7 @@ export const UIWidget: FC<UIWidgetProps> = () => {
                 style={{
                   color: data?.textButtonAppearanceColor,
                   backgroundColor: data?.buttonAppearanceColor,
+                  borderRadius: 20,
                 }}
                 type="primary"
               >
@@ -163,6 +176,8 @@ export const UIWidget: FC<UIWidgetProps> = () => {
             position: "relative",
             backgroundColor: data?.buttonAppearanceColor,
             bottom: 0,
+            borderRadius: 20,
+
             // ...positionWidget,
           }}
           description={

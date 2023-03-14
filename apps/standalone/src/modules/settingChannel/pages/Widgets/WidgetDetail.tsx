@@ -30,9 +30,7 @@ const WidgetDetail = () => {
         .pipe(
           map(({ data }) => {
             if (data.statusCode === 200) {
-              console.log("before", data.data);
               setWidget(data.data);
-              console.log("after", data.data);
               updateWidgetSetting({
                 ...data?.data?.settings,
                 id: data.data._id,
@@ -51,7 +49,7 @@ const WidgetDetail = () => {
 
   const { run: updateHelpWidgetApi } = useJob(
     (id: string, object: any) => {
-      message.loading.show("Updating Customer");
+      message.loading.show("Updating Widget");
       return HelpWidgetRepository()
         .update(id, object)
         .pipe(
@@ -104,7 +102,7 @@ const WidgetDetail = () => {
       <div
         style={{
           display: "flex",
-          justifyContent: "flex-start",
+          justifyContent: "flex-end",
           marginTop: 20,
           position: "sticky",
           bottom: 0,
@@ -114,6 +112,7 @@ const WidgetDetail = () => {
           zIndex: 1,
           paddingTop: 10,
           paddingBottom: 10,
+          // backgroundColor: "red",
           // height: 50,
         }}
       >
@@ -153,7 +152,11 @@ const WidgetDetail = () => {
       {
         label: `Integration`,
         key: "3",
+<<<<<<< HEAD
         children: <Integration idWidget={id} />,
+=======
+        children: <Integration idWidget={null} />,
+>>>>>>> f81d4473fc7d9a49cb552c14875c69739b16d3b2
       },
     ];
   }, [widget, widgetSetting]);
