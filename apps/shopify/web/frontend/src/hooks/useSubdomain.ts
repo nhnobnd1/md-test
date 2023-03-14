@@ -23,6 +23,8 @@ export function useSubdomain() {
   });
 
   const getDomainStandalone = useCallback(() => {
+    console.log(import.meta.env.MODE, "import env");
+    console.log(import.meta.env, "app name");
     switch (import.meta.env.MODE) {
       case "development":
         return "-dev.moosedesk.net";
