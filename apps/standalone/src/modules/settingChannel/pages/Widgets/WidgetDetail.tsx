@@ -153,7 +153,7 @@ const WidgetDetail = () => {
       {
         label: `Integration`,
         key: "3",
-        children: <Integration />,
+        children: <Integration idWidget={id} />,
       },
     ];
   }, [widget, widgetSetting]);
