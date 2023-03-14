@@ -1,5 +1,6 @@
 import { Button, Card, Divider, Row } from "antd";
 import { useEffect, useMemo, useState } from "react";
+import useMessage from "src/hooks/useMessage";
 import useWidgetSetting from "src/modules/settingChannel/store/useSetting";
 import { useStore } from "src/providers/StoreProviders";
 import CodeIcon from "~icons/carbon/code";
@@ -10,6 +11,8 @@ interface IntegrationProps {
 export default function Integration({ idWidget }: IntegrationProps) {
   const data = useWidgetSetting((state) => state.widgetSetting);
   const { storeId } = useStore();
+  const message = useMessage();
+
   console.log({ storeId });
 
   const scriptCode = useMemo(() => {
@@ -45,6 +48,7 @@ export default function Integration({ idWidget }: IntegrationProps) {
   const handleClickCopy = () => {
     navigator.clipboard.writeText(scriptCode);
     setCopied(true);
+    message.success("Copied");
   };
 
   useEffect(() => {

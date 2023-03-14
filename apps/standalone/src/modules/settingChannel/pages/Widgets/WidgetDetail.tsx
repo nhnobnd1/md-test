@@ -49,7 +49,7 @@ const WidgetDetail = () => {
 
   const { run: updateHelpWidgetApi } = useJob(
     (id: string, object: any) => {
-      message.loading.show("Updating Customer");
+      message.loading.show("Updating Widget");
       return HelpWidgetRepository()
         .update(id, object)
         .pipe(

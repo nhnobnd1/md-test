@@ -71,8 +71,8 @@ export default function General() {
         <div style={{ marginLeft: 450 }}>
           <div style={{ maxWidth: 500 }}>
             <Row gutter={16} justify="space-between" align="bottom">
-              <Col span={24}>
-                <Form.Item label="Title Text: " name="title">
+              <Col span={20}>
+                <Form.Item label="Title Text: " name="title" labelAlign="left">
                   <Input
                     onChange={(e) => {
                       updateWidgetSetting({
@@ -85,8 +85,12 @@ export default function General() {
               </Col>
             </Row>
             <Row gutter={16} justify="space-between" align="bottom">
-              <Col span={24}>
-                <Form.Item label="Widget Header: " name="header">
+              <Col span={20}>
+                <Form.Item
+                  label="Widget Header: "
+                  name="header"
+                  labelAlign="left"
+                >
                   <Input
                     onChange={(e) => {
                       updateWidgetSetting({
@@ -108,13 +112,17 @@ export default function General() {
             >
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <h2>Contact Form</h2>
-                <Switch checked={loading} onChange={onChangeToggle} />
+                {/* <Switch checked={loading} onChange={onChangeToggle} /> */}
               </div>
               <Divider />
               <div style={{ display: loading ? "block" : "none" }}>
                 <Row gutter={20} justify="space-between" align="bottom">
-                  <Col span={24}>
-                    <Form.Item label="Form Title: " name="form_title">
+                  <Col span={20}>
+                    <Form.Item
+                      label="Form Title: "
+                      name="form_title"
+                      labelAlign="left"
+                    >
                       <Input
                         onChange={(e) => {
                           updateWidgetSetting({
@@ -127,8 +135,12 @@ export default function General() {
                   </Col>
                 </Row>
                 <Row gutter={20} justify="space-between" align="bottom">
-                  <Col span={24}>
-                    <Form.Item label="Button text: " name="button_text">
+                  <Col span={20}>
+                    <Form.Item
+                      label="Button text: "
+                      name="button_text"
+                      labelAlign="left"
+                    >
                       <Input
                         onChange={(e) => {
                           updateWidgetSetting({
@@ -141,8 +153,12 @@ export default function General() {
                   </Col>
                 </Row>
                 <Row gutter={20} justify="space-between" align="bottom">
-                  <Col span={24}>
-                    <Form.Item label="Confirm Message: " name="confirm_message">
+                  <Col span={20}>
+                    <Form.Item
+                      label="Confirm Message: "
+                      name="confirm_message"
+                      labelAlign="left"
+                    >
                       <Input
                         onChange={(e) => {
                           updateWidgetSetting({
@@ -156,7 +172,11 @@ export default function General() {
                 </Row>
                 <Row gutter={20} justify="space-between" align="bottom">
                   <Col span={24}>
-                    <Form.Item label="Allow Attachments " name="allow_attach">
+                    <Form.Item
+                      label="Allow Attachments "
+                      name="allow_attach"
+                      labelAlign="left"
+                    >
                       <Switch
                         checked={allowAttach}
                         onChange={onChangeToggleAttach}
@@ -169,6 +189,7 @@ export default function General() {
                     <Form.Item
                       label="Enable captcha verification "
                       name="allow_captcha"
+                      labelAlign="left"
                     >
                       <Switch
                         checked={allowCaptcha}
