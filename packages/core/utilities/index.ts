@@ -8,6 +8,7 @@ export {
   TokenManager,
 } from "./StorageManager";
 export * from "./VariableWatcher";
+export * from "./useRole";
 
 export function makeId(length: number) {
   let result = "";

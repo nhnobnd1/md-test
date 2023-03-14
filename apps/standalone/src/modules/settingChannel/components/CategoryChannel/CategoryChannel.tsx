@@ -1,6 +1,8 @@
-import { generatePath, useNavigate } from "@moose-desk/core";
+import { generatePath, useNavigate, useRole } from "@moose-desk/core";
 import { Button, Card } from "antd";
-import { ReactNode } from "react";
+import { ReactNode, useMemo } from "react";
+import { RolePermission } from "src/constaint/RolePermission";
+import { ChannelTitle } from "src/constaint/SettingChannel";
 import CarbonCloudSatelliteConfig from "~icons/carbon/cloud-satellite-config";
 import "./CategoryChannel.scss";
 interface CategoryChannelProps {
@@ -19,6 +21,15 @@ const CategoryChannel = ({
   icon,
 }: CategoryChannelProps) => {
   const navigate = useNavigate();
+  const role = useRole();
+  const disableButton = useMemo(() => {
+    if (
+      role === RolePermission.BasicAgent &&
+      title === ChannelTitle.WebFormConfiguration
+    )
+      return true;
+    return false;
+  }, [role]);
   return (
     <Card
       className={className}
@@ -34,6 +45,7 @@ const CategoryChannel = ({
         <div>{description}</div>
         <div>
           <Button
+            disabled={disableButton}
             type="default"
             icon={
               <span className="mr-2">

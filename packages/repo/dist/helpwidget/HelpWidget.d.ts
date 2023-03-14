@@ -2,7 +2,7 @@ import { BaseListRequest, BaseListResponse, BaseResponse } from '../unty';
 export declare type HelpWidget = {
     id: string;
     createdDatetime: string;
-    createdTimestamp: string;
+    createdTimestamp: number;
     createdBy: string;
     updatedDatetime?: string;
     updatedTimestamp?: string;

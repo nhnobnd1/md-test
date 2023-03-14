@@ -24,14 +24,14 @@ const settingChannelRoutes: IRoute = {
     },
     {
       path: SettingChannelRoutePaths.Widgets.Index,
-      middleware: "user",
+      middleware: "admin",
       component: lazy(
         () => import("src/modules/settingChannel/pages/Widgets/Widgets")
       ),
     },
     {
       path: SettingChannelRoutePaths.Widgets.Update,
-      middleware: "user",
+      middleware: "admin",
       component: lazy(
         () => import("src/modules/settingChannel/pages/Widgets/WidgetDetail")
       ),

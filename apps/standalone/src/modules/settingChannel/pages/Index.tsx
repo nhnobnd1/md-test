@@ -1,6 +1,7 @@
 import { Card } from "antd";
 import { ReactNode, useMemo } from "react";
 import { Header } from "src/components/UI/Header";
+import { ChannelTitle } from "src/constaint/SettingChannel";
 import CategoryChannel from "src/modules/settingChannel/components/CategoryChannel/CategoryChannel";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
 import EntypoSocialFacebook from "~icons/entypo-social/facebook";
@@ -21,26 +22,26 @@ const ChannelIndexPage = (props: ChannelIndexPageProps) => {
   >(
     () => [
       {
-        title: "Email Configuration",
+        title: ChannelTitle.EmailConfiguration,
         description:
           "Configure the web form widget that can be added to your website",
         link: SettingChannelRoutePaths.ChannelEmail.Index,
         icon: <MdiEmailOpenOutline />,
       },
       {
-        title: "Webform Configuration",
+        title: ChannelTitle.WebFormConfiguration,
         description:
           "Configure the web form widget that can be added to your website",
         link: SettingChannelRoutePaths.Widgets.Index,
         icon: <TablerCheckupList />,
       },
       {
-        title: "Live Chat Configuration",
+        title: ChannelTitle.LiveChatConfiguration,
         link: "",
         icon: <MaterialSymbolsChat />,
       },
       {
-        title: "Facebook, Instagram and Messenger Configuration",
+        title: ChannelTitle.SocialConfiguration,
         link: "",
         icon: <EntypoSocialFacebook />,
       },

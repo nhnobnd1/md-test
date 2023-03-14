@@ -1,1 +1,1 @@
-type RouteMiddleware = "guest" | "user";
+type RouteMiddleware = "guest" | "user" | "admin";
