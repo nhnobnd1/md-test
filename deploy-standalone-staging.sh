@@ -6,4 +6,4 @@ sedi () {
 
 sedi 's/"dev": "vite"/"dev": "vite --mode=staging"/g' ./apps/standalone/package.json
 
-echo '--- Change vite build to staging env. Done!'
+echo '--- Successfully changed the configuration for the staging environment (App Standalone).'
