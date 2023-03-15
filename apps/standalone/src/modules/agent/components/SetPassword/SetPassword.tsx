@@ -36,7 +36,7 @@ export const SetPassword = ({
                 notification.success("Account activation successful");
                 navigate(RoutePaths.Login);
               } else {
-                if (data.statusCode === 401) {
+                if (data.statusCode === 404) {
                   notification.error(
                     "Token has expired, please contact the admin."
                   );
