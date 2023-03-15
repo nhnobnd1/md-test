@@ -177,6 +177,10 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
           }
         }
       }
+
+      if (changedValue?.incoming && values.mailboxType === MailBoxType.OTHER) {
+        form.setFieldValue("supportEmail", changedValue?.incoming?.email ?? "");
+      }
       updateForm();
     },
 
