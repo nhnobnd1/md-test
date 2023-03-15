@@ -1,7 +1,7 @@
-import { useJob, useNavigate, useParams } from "@moose-desk/core";
+import { useJob, useNavigate } from "@moose-desk/core";
 import { HelpWidget, HelpWidgetRepository } from "@moose-desk/repo";
 import { Button, Tabs } from "antd";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import { Header } from "src/components/UI/Header";
 import useMessage from "src/hooks/useMessage";
@@ -11,47 +11,19 @@ import General from "src/modules/settingChannel/components/Widgets/General/Gener
 import Integration from "src/modules/settingChannel/components/Widgets/Integration/Integration";
 import useWidgetSetting from "src/modules/settingChannel/store/useSetting";
 
-const WidgetDetail = () => {
+const WidgetDetail = ({ widgetProps }: { widgetProps: HelpWidget }) => {
   const navigate = useNavigate();
   const message = useMessage();
   const notification = useNotification();
-  const [widget, setWidget] = useState<HelpWidget>();
+  const [widget, setWidget] = useState<HelpWidget>(widgetProps);
 
-  const { id } = useParams();
-  const updateWidgetSetting = useWidgetSetting(
-    (state) => state.updateWidgetSetting
-  );
   const widgetSetting = useWidgetSetting((state) => state.widgetSetting);
-
-  const { run: getWidgetApi } = useJob(
-    (id: string | undefined) => {
-      return HelpWidgetRepository()
-        .getOne(id)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              setWidget(data.data);
-              updateWidgetSetting({
-                ...data?.data?.settings,
-                id: data.data._id,
-              });
-              // setEmail(data.data);
-            } else {
-              message.error("Get email failed");
-            }
-          })
-        );
-    },
-    {
-      showLoading: true,
-    }
-  );
 
   const { run: updateHelpWidgetApi } = useJob(
     (id: string, object: any) => {
       message.loading.show("Updating Widget");
       return HelpWidgetRepository()
-        .update(id, object)
+        .update(widgetProps?._id, object)
         .pipe(
           map(
             ({ data }) => {
@@ -80,10 +52,6 @@ const WidgetDetail = () => {
     },
     { showLoading: false }
   );
-
-  useEffect(() => {
-    getWidgetApi(id);
-  }, []);
 
   const onChange = (key: string) => {
     console.log(key);
