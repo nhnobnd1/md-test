@@ -37,7 +37,7 @@ const ChannelEmail = (props: ChannelEmailProps) => {
     limit: env.DEFAULT_PAGE_SIZE,
   });
 
-  const [emails, setEmails] = useState<EmailIntegration[]>();
+  const [emails, setEmails] = useState<EmailIntegration[]>([]);
 
   const [filterData, setFilterData] =
     useState<GetListEmailRequest>(defaultFilter);
@@ -225,16 +225,16 @@ const ChannelEmail = (props: ChannelEmailProps) => {
                   }}
                   specialDelete={{
                     title:
-                      "Are you sure that you want to permanently remove this email.",
+                      "Are you sure that you want to permanently remove this email connection.",
                     description:
-                      "This email will be removed permanently. This action cannot be undone.",
+                      "This email will be removed permanently. You can no longer use this email for sending or receiving emails for MooseDesk's support tickets",
                   }}
                   onSpecialDelete={() => handleDeleteEmail(record._id)}
                 />
               )}
             />
           </Table>
-          {meta && (
+          {meta && emails?.length > 0 && (
             <Pagination
               className="mt-4 flex justify-end"
               currentPage={filterData.page ?? 1}
