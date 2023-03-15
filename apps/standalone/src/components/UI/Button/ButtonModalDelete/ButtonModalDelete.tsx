@@ -15,6 +15,7 @@ interface ButtonModalDeleteProps {
   buttonProps?: Omit<ButtonProps, "onClick">;
   modalProps?: Omit<ModalProps, "title" | "description" | "onCancel" | "onOk">;
   textDelete?: string;
+  okeText?: string;
 }
 
 export const ButtonModalDelete = ({
@@ -28,6 +29,7 @@ export const ButtonModalDelete = ({
   onConfirm,
   onClosePopup,
   textDelete,
+  okeText,
 }: ButtonModalDeleteProps) => {
   const [openModal, setOpenModal] = useState(false);
 
@@ -60,7 +62,7 @@ export const ButtonModalDelete = ({
           setOpenModal(false);
           onConfirm && onConfirm();
         }}
-        okText={textDelete}
+        okText={okeText ?? textDelete}
         {...modalProps}
       />
     </>

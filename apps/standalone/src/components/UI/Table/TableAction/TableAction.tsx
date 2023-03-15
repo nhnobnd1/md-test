@@ -16,6 +16,7 @@ interface TableActionProps {
     title: string;
     description: string;
     textDelete?: string;
+    okeText?: string;
   };
 
   onView?: (record: any) => void;
@@ -63,6 +64,7 @@ const TableAction = ({
           description={specialDelete.description}
           onConfirm={() => onSpecialDelete && onSpecialDelete(record)}
           textDelete={specialDelete.textDelete}
+          okeText={specialDelete.okeText}
         />
       )}
     </Space>
