@@ -228,6 +228,7 @@ const ChannelEmail = (props: ChannelEmailProps) => {
                       "Are you sure that you want to permanently remove this email connection.",
                     description:
                       "This email will be removed permanently. You can no longer use this email for sending or receiving emails for MooseDesk's support tickets",
+                    okeText: "Remove",
                   }}
                   onSpecialDelete={() => handleDeleteEmail(record._id)}
                 />
