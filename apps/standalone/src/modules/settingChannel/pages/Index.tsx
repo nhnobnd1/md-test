@@ -24,7 +24,7 @@ const ChannelIndexPage = (props: ChannelIndexPageProps) => {
       {
         title: ChannelTitle.EmailConfiguration,
         description:
-          "Configure the web form widget that can be added to your website",
+          "Configure the email addresses used for communication with your customers in MooseDesk",
         link: SettingChannelRoutePaths.ChannelEmail.Index,
         icon: <MdiEmailOpenOutline />,
       },

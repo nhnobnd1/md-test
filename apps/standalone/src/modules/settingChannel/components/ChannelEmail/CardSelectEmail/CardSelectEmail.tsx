@@ -188,31 +188,56 @@ export const CardSelectEmail = forwardRef(
       }
     );
 
+    const checkValidateServerMap = useCallback(
+      async (type: "imap" | "smtp") => {
+        const namePath = type === "imap" ? "incoming" : "outgoing";
+        let state = false;
+        await form
+          .validateFields([
+            [namePath, "mailServer"],
+            [namePath, "authentication"],
+            [namePath, "email"],
+          ])
+          .then(() => {
+            state = true;
+          })
+          .catch(() => {
+            state = false;
+          });
+        return state;
+      },
+      [form]
+    );
+
     const testConnection = useCallback(
-      (type: "imap" | "smtp") => {
+      async (type: "imap" | "smtp") => {
         const payload =
           type === "imap"
             ? form.getFieldValue("incoming")
             : form.getFieldValue("outgoing");
 
-        const request: CheckConnectionRequest = {
-          host: payload.mailServer,
-          port: payload.port,
-          password: payload.password ?? "",
-          tls: payload.useSsl ?? false,
-          user: payload.email,
-        };
+        const validateState = await checkValidateServerMap(type);
 
-        switch (type) {
-          case "imap":
-            checkConnectionImap(request);
-            break;
+        if (payload && validateState) {
+          const request: CheckConnectionRequest = {
+            host: payload.mailServer,
+            port: payload.port,
+            password: payload.password ?? "",
+            tls: payload.useSsl ?? false,
+            user: payload.email,
+          };
 
-          case "smtp":
-            checkConnectionSmtp(request);
-            break;
-          default:
-            break;
+          switch (type) {
+            case "imap":
+              checkConnectionImap(request);
+              break;
+
+            case "smtp":
+              checkConnectionSmtp(request);
+              break;
+            default:
+              break;
+          }
         }
       },
       [form]

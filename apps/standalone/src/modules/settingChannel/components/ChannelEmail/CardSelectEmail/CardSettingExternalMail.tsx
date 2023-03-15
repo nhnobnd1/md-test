@@ -57,10 +57,10 @@ export const CardSettingExternalMail = ({
               label="Server"
               name={[nameForm, "mailServer"]}
               rules={[
-                { required: true, message: "Please enter mail server" },
                 {
+                  required: true,
                   whitespace: true,
-                  message: "Please remove whitespace",
+                  message: "Server is required",
                 },
               ]}
               normalize={(value) => value.trim()}
@@ -91,7 +91,7 @@ export const CardSettingExternalMail = ({
               name={[nameForm, "authentication"]}
               className="col-span-2"
               rules={[
-                { required: true, message: "Please enter authentication" },
+                { required: true, message: "Authentication is required" },
               ]}
             >
               <Select options={options} />
@@ -105,11 +105,11 @@ export const CardSettingExternalMail = ({
               rules={[
                 {
                   required: true,
-                  message: "Please enter your email",
+                  message: "Email address is required",
                 },
                 {
                   type: "email",
-                  message: "Email is invalid",
+                  message: "The email address is not valid",
                 },
               ]}
             >

@@ -177,6 +177,10 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
           }
         }
       }
+
+      if (changedValue?.incoming && values.mailboxType === MailBoxType.OTHER) {
+        form.setFieldValue("supportEmail", changedValue?.incoming?.email ?? "");
+      }
       updateForm();
     },
 
@@ -199,12 +203,13 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
           rules={[
             {
               required: true,
-              message: "Please enter your name",
+              whitespace: true,
+              message: "Name is required",
             },
             {
               max: 255,
               type: "string",
-              message: "Your name up to 255 characters",
+              message: "Name up to 255 characters",
             },
           ]}
         >
@@ -216,11 +221,11 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
           rules={[
             {
               required: true,
-              message: "Please enter your email",
+              message: "Email address is required",
             },
             {
               type: "email",
-              message: "Email is invalid",
+              message: "The email address is not valid",
             },
           ]}
         >
