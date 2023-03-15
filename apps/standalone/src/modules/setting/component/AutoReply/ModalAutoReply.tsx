@@ -32,7 +32,7 @@ const ModalAutoReply = ({
             name: values.name,
             code: values.code || self.crypto.randomUUID(),
             content: values.content,
-            createAt: values.createAt || day,
+            createAt: values.createAt || new Date(),
           },
           dataForm?.value ? true : undefined
         );

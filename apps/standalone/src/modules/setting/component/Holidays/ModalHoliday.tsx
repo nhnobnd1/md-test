@@ -60,6 +60,7 @@ const ModalHoliday = ({
         });
       onClose && onClose();
       setValueDate(undefined);
+      form.resetFields();
     },
     [valueDate]
   );
@@ -87,7 +88,7 @@ const ModalHoliday = ({
       {...props}
       open={open}
       onCancel={() => {
-        setValueDate(undefined);
+        form.resetFields();
         onClose && onClose();
       }}
       onOk={() => form.submit()}
@@ -106,14 +107,16 @@ const ModalHoliday = ({
           <Form.Item
             name="name"
             label="Name:"
-            rules={[{ required: true, message: "Required!" }]}
+            rules={[
+              { required: true, message: "Name Required!", whitespace: true },
+            ]}
           >
             <Input placeholder="Enter name holiday" />
           </Form.Item>
           <Form.Item
             name="date"
             label="Date:"
-            rules={[{ required: true, message: "Required!" }]}
+            rules={[{ required: true, message: "Date Required!" }]}
           >
             <SelectDateHolidays
               valueDate={valueDate}
@@ -124,7 +127,7 @@ const ModalHoliday = ({
           <Form.Item
             name="autoReplyCode"
             label="Auto-Reply:"
-            rules={[{ required: true, message: "Required!" }]}
+            rules={[{ required: true, message: "Auto-Reply Required!" }]}
           >
             <BoxSelectAutoReply dataAutoReply={dataAutoReply} />
           </Form.Item>

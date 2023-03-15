@@ -28,6 +28,7 @@ const TextEditor = ({ value, onChange, error, ...props }: TextEditorProps) => {
         {...props}
         onInit={initEditor}
         onChange={handleChange}
+        value={value}
         init={{
           height: 400,
           branding: false,
