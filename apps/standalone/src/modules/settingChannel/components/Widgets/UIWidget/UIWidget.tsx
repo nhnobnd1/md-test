@@ -1,14 +1,18 @@
 import { CloudUploadOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { Button, Card, FloatButton, Form, Input } from "antd";
-import { FC, useMemo } from "react";
+import { FC, useEffect, useMemo } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import env from "src/core/env";
+import useUpdateSave from "src/modules/settingChannel/store/saveUpdateWidget";
 
 import useWidgetSetting from "src/modules/settingChannel/store/useSetting";
 interface UIWidgetProps {}
 
 export const UIWidget: FC<UIWidgetProps> = () => {
   const data = useWidgetSetting((state) => state.widgetSetting);
+  const [form] = Form.useForm();
+  const updateState = useUpdateSave((state) => state.update);
+
   const { TextArea } = Input;
   const css = `
  
@@ -40,6 +44,10 @@ export const UIWidget: FC<UIWidgetProps> = () => {
       return 250;
     }
   }, [data]);
+  useEffect(() => {
+    form.resetFields();
+  }, [updateState]);
+
   return (
     <div style={{ position: "absolute", top: 0, left: 0, zIndex: 2 }}>
       <div
@@ -80,13 +88,23 @@ export const UIWidget: FC<UIWidgetProps> = () => {
             bordered={false}
             className="card"
           >
-            <Form labelCol={{ span: 10 }}>
+            <Form form={form} labelCol={{ span: 10 }}>
               <Form.Item label="Your Name" name="name" labelAlign="left">
                 <Input />
               </Form.Item>
               <Form.Item
                 label="Email Address"
-                rules={[{ required: true, message: "Please input Email!" }]}
+                rules={[
+                  {
+                    required: true,
+                    message: "Email Address is required",
+                    whitespace: true,
+                  },
+                  {
+                    type: "email",
+                    message: "The email address is not valid",
+                  },
+                ]}
                 name="email"
                 labelAlign="left"
               >
@@ -95,7 +113,13 @@ export const UIWidget: FC<UIWidgetProps> = () => {
               <Form.Item
                 labelAlign="left"
                 label="Subject"
-                rules={[{ required: true }]}
+                rules={[
+                  {
+                    required: true,
+                    message: "Subject is required",
+                    whitespace: true,
+                  },
+                ]}
                 name="subject"
               >
                 <Input />
@@ -103,7 +127,13 @@ export const UIWidget: FC<UIWidgetProps> = () => {
               <Form.Item
                 labelAlign="left"
                 label="Description"
-                rules={[{ required: true }]}
+                rules={[
+                  {
+                    required: true,
+                    message: "Description is required",
+                    whitespace: true,
+                  },
+                ]}
                 name="description"
               >
                 <TextArea rows={4} />
@@ -116,7 +146,7 @@ export const UIWidget: FC<UIWidgetProps> = () => {
                     <CloudUploadOutlined style={{ fontSize: 32 }} />
 
                     <p className="text">Upload files (max 3)</p>
-                    <span>Click to add or drags & drop files</span>
+                    <span>Drag&drop or Click to add your files</span>
                   </div>
                 </section>
               </div>
@@ -134,7 +164,7 @@ export const UIWidget: FC<UIWidgetProps> = () => {
               >
                 <Form.Item
                   name="captcha"
-                  rules={[{ required: true, message: "Please enter captcha" }]}
+                  // rules={[{ required: true, message: "Please enter captcha" }]}
                 >
                   <ReCAPTCHA
                     className="capt-cha"

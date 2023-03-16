@@ -9,6 +9,7 @@ import useNotification from "src/hooks/useNotification";
 import Appearance from "src/modules/settingChannel/components/Widgets/Appearance/Appearance";
 import General from "src/modules/settingChannel/components/Widgets/General/General";
 import Integration from "src/modules/settingChannel/components/Widgets/Integration/Integration";
+import useUpdateSave from "src/modules/settingChannel/store/saveUpdateWidget";
 import useWidgetSetting from "src/modules/settingChannel/store/useSetting";
 
 const WidgetDetail = ({ widgetProps }: { widgetProps: HelpWidget }) => {
@@ -18,6 +19,7 @@ const WidgetDetail = ({ widgetProps }: { widgetProps: HelpWidget }) => {
   const [widget, setWidget] = useState<HelpWidget>(widgetProps);
 
   const widgetSetting = useWidgetSetting((state) => state.widgetSetting);
+  const updateSave = useUpdateSave((state) => state.changeUpdate);
 
   const { run: updateHelpWidgetApi } = useJob(
     (id: string, object: any) => {
@@ -29,7 +31,9 @@ const WidgetDetail = ({ widgetProps }: { widgetProps: HelpWidget }) => {
             ({ data }) => {
               if (data.statusCode === 200) {
                 message.loading.hide();
-                notification.success("Widget has been updated successfully.");
+                notification.success(
+                  "Your changes have been updated successfully."
+                );
               } else {
                 message.loading.hide();
                 if (data.statusCode === 409) {
@@ -58,11 +62,12 @@ const WidgetDetail = ({ widgetProps }: { widgetProps: HelpWidget }) => {
   };
 
   const handleSaveWidget = () => {
-    console.log("click update", widgetSetting);
     updateHelpWidgetApi(widget?._id as string, {
       name: widget?.name,
       settings: widgetSetting,
     });
+
+    updateSave(new Date());
   };
 
   const FooterButton = () => {
@@ -102,7 +107,7 @@ const WidgetDetail = ({ widgetProps }: { widgetProps: HelpWidget }) => {
         key: "1",
         children: (
           <>
-            <General />
+            <General data={widgetProps} />
             <FooterButton />
           </>
         ),
@@ -123,14 +128,19 @@ const WidgetDetail = ({ widgetProps }: { widgetProps: HelpWidget }) => {
         children: <Integration idWidget={null} />,
       },
     ];
-  }, [widget, widgetSetting]);
+  }, [widget, widgetSetting, widgetProps]);
 
   return (
     <>
       <Header title="Web Form ">
         <div className="flex-1 flex justify-end"></div>
       </Header>
-      <Tabs onChange={onChange} type="card" items={items} />
+      <Tabs
+        onChange={onChange}
+        type="card"
+        items={items}
+        defaultActiveKey={"1"}
+      />
     </>
   );
 };
