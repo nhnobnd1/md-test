@@ -30,10 +30,13 @@ const ModalHoliday = ({
   const [form] = Form.useForm();
   const dateNow = new Date();
   const { toggle: update } = useToggle();
-  const [valueDate, setValueDate] = useState<{
-    startDate: Date;
-    endDate: Date;
-  }>();
+  const [valueDate, setValueDate] = useState<
+    | {
+        startDate: Date;
+        endDate: Date;
+      }
+    | undefined
+  >();
 
   const initialValues = useMemo(() => {
     return (
@@ -89,6 +92,7 @@ const ModalHoliday = ({
       open={open}
       onCancel={() => {
         form.resetFields();
+        setValueDate(undefined);
         onClose && onClose();
       }}
       onOk={() => form.submit()}
@@ -108,7 +112,7 @@ const ModalHoliday = ({
             name="name"
             label="Name:"
             rules={[
-              { required: true, message: "Name Required!", whitespace: true },
+              { required: true, message: "Name is required", whitespace: true },
             ]}
           >
             <Input placeholder="Enter name holiday" />
@@ -116,7 +120,7 @@ const ModalHoliday = ({
           <Form.Item
             name="date"
             label="Date:"
-            rules={[{ required: true, message: "Date Required!" }]}
+            rules={[{ required: true, message: "Date is required" }]}
           >
             <SelectDateHolidays
               valueDate={valueDate}
@@ -127,7 +131,7 @@ const ModalHoliday = ({
           <Form.Item
             name="autoReplyCode"
             label="Auto-Reply:"
-            rules={[{ required: true, message: "Auto-Reply Required!" }]}
+            rules={[{ required: true, message: "Auto-Reply is required" }]}
           >
             <BoxSelectAutoReply dataAutoReply={dataAutoReply} />
           </Form.Item>
