@@ -20,19 +20,9 @@ export const UIWidget: FC<UIWidgetProps> = () => {
     background-color: ${data?.buttonAppearanceColor} !important;
 
   }
+ 
     `;
-  const positionWidget = useMemo(() => {
-    if (data?.widgetPosition === "right") {
-      return {
-        bottom: `${data?.offsetBottom}px`,
-        right: `${data?.offsetHorizontal}px`,
-      };
-    }
-    return {
-      bottom: `${data?.offsetBottom}px`,
-      left: `${data?.offsetHorizontal}px`,
-    };
-  }, [data]);
+
   const flexWithButton = useMemo(() => {
     if (data.widgetHeader.length < 5) {
       return 150;
@@ -50,12 +40,13 @@ export const UIWidget: FC<UIWidgetProps> = () => {
 
   return (
     <div style={{ position: "absolute", top: 0, left: 0, zIndex: 2 }}>
+      <style scoped>{css}</style>
       <div
         style={{
           // padding: 20,
           backgroundColor: "#EFF2F5",
           borderRadius: 20,
-          minWidth: 300,
+          width: 400,
           maxHeight: 800,
         }}
       >
@@ -88,7 +79,7 @@ export const UIWidget: FC<UIWidgetProps> = () => {
             bordered={false}
             className="card"
           >
-            <Form form={form} labelCol={{ span: 10 }}>
+            <Form form={form} layout="vertical">
               <Form.Item label="Your Name" name="name" labelAlign="left">
                 <Input />
               </Form.Item>
@@ -98,7 +89,6 @@ export const UIWidget: FC<UIWidgetProps> = () => {
                   {
                     required: true,
                     message: "Email Address is required",
-                    whitespace: true,
                   },
                   {
                     type: "email",
@@ -138,43 +128,47 @@ export const UIWidget: FC<UIWidgetProps> = () => {
               >
                 <TextArea rows={4} />
               </Form.Item>
-            </Form>
-            {data?.allowAttach ? (
-              <div className="mb-5">
-                <section className="p-2 bg-gray-100 border-2 border-dotted border-slate-50">
-                  <div className="flex justify-center items-center flex-col">
-                    <CloudUploadOutlined style={{ fontSize: 32 }} />
+              {data?.allowAttach ? (
+                <Form.Item labelAlign="left" label="Attachment">
+                  <div className="mb-5">
+                    <section className="p-2 bg-gray-100 border-2 border-dotted border-slate-50">
+                      <div className="flex justify-center items-center flex-col">
+                        <CloudUploadOutlined style={{ fontSize: 32 }} />
 
-                    <p className="text">Upload files (max 3)</p>
-                    <span>Drag&drop or Click to add your files</span>
+                        <p className="text">Upload files (max 3)</p>
+                        <span style={{ textAlign: "center" }}>
+                          Drag&drop or Click to add your files
+                        </span>
+                      </div>
+                    </section>
                   </div>
-                </section>
-              </div>
-            ) : (
-              <></>
-            )}
-
-            {data?.allowCaptcha ? (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  marginTop: 20,
-                }}
-              >
-                <Form.Item
-                  name="captcha"
-                  // rules={[{ required: true, message: "Please enter captcha" }]}
-                >
-                  <ReCAPTCHA
-                    className="capt-cha"
-                    sitekey={env.RECAPTCHA_KEYS}
-                  ></ReCAPTCHA>
                 </Form.Item>
-              </div>
-            ) : (
-              <></>
-            )}
+              ) : (
+                <></>
+              )}
+              {data?.allowCaptcha ? (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    marginTop: 20,
+                  }}
+                >
+                  <Form.Item
+                    name="captcha"
+                    // rules={[{ required: true, message: "Please enter captcha" }]}
+                  >
+                    <ReCAPTCHA
+                      className="capt-cha"
+                      sitekey={env.RECAPTCHA_KEYS}
+                    ></ReCAPTCHA>
+                  </Form.Item>
+                </div>
+              ) : (
+                <></>
+              )}
+            </Form>
+
             <div className="flex justify-end">
               <Button
                 style={{
@@ -191,52 +185,50 @@ export const UIWidget: FC<UIWidgetProps> = () => {
         ) : (
           <></>
         )}
-      </div>
-      <div className="flex justify-end">
-        <style scoped>{css}</style>
+        <div className="flex justify-end">
+          <FloatButton
+            shape="square"
+            style={{
+              // padding: 10,
+              // right: 0,
+              // marginTop: 10,
+              marginBottom: 10,
+              width: flexWithButton,
+              position: "relative",
+              backgroundColor: data?.buttonAppearanceColor,
+              // bottom: 0,
+              borderRadius: 20,
 
-        <FloatButton
-          shape="square"
-          style={{
-            // padding: 10,
-            right: 0,
-            marginTop: 10,
-            marginBottom: 10,
-            width: flexWithButton,
-            position: "relative",
-            backgroundColor: data?.buttonAppearanceColor,
-            bottom: 0,
-            borderRadius: 20,
-
-            // ...positionWidget,
-          }}
-          description={
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                padding: 2,
-                backgroundColor: data?.buttonAppearanceColor,
-              }}
-            >
-              <QuestionCircleOutlined
+              // ...positionWidget,
+            }}
+            description={
+              <div
                 style={{
-                  fontSize: 20,
-                  color: `${data?.textButtonAppearanceColor}`,
-                }}
-              />
-              <span
-                style={{
-                  fontSize: 20,
-                  marginLeft: 10,
-                  color: `${data?.textButtonAppearanceColor}`,
+                  display: "flex",
+                  alignItems: "center",
+                  padding: 2,
+                  backgroundColor: data?.buttonAppearanceColor,
                 }}
               >
-                {data?.widgetHeader}
-              </span>
-            </div>
-          }
-        />
+                <QuestionCircleOutlined
+                  style={{
+                    fontSize: 20,
+                    color: `${data?.textButtonAppearanceColor}`,
+                  }}
+                />
+                <span
+                  style={{
+                    fontSize: 20,
+                    marginLeft: 10,
+                    color: `${data?.textButtonAppearanceColor}`,
+                  }}
+                >
+                  {data?.widgetHeader}
+                </span>
+              </div>
+            }
+          />
+        </div>
       </div>
     </div>
   );

@@ -2,17 +2,19 @@ import { Card, Checkbox, Col, Divider, Form, Input, Row } from "antd";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import { useEffect, useState } from "react";
 import { UIWidget } from "src/modules/settingChannel/components/Widgets/UIWidget";
+import useUpdateSave from "src/modules/settingChannel/store/saveUpdateWidget";
 import useWidgetSetting from "src/modules/settingChannel/store/useSetting";
 
 export default function General({ data: dataProps }: any) {
   const [form] = Form.useForm();
-  const data = dataProps.settings;
+  const data = useWidgetSetting((state) => state.widgetSetting);
   const updateWidgetSetting = useWidgetSetting(
     (state) => state.updateWidgetSetting
   );
   const [allowCaptcha, setAllowCaptcha] = useState(data.allowCaptcha);
   const [allowAttach, setAllowAttach] = useState(data.allowAttach);
   const [loading, setLoading] = useState(data.isFormContact);
+  const cancelState = useUpdateSave((state) => state.cancel);
 
   const onFinish = (values: any) => {
     console.log("Success:", values);
@@ -22,13 +24,6 @@ export default function General({ data: dataProps }: any) {
     console.log("Failed:", errorInfo);
   };
 
-  const onChangeToggle = (checked: boolean) => {
-    setLoading(checked);
-    updateWidgetSetting({
-      ...data,
-      isFormContact: checked,
-    });
-  };
   const onChangeToggleCaptcha = (checked: CheckboxChangeEvent) => {
     setAllowCaptcha(checked.target.checked);
     updateWidgetSetting({
@@ -48,14 +43,14 @@ export default function General({ data: dataProps }: any) {
     form.resetFields();
     setAllowCaptcha(data.allowCaptcha);
     setAllowAttach(data.allowAttach);
-  }, []);
+  }, [data.id, cancelState]);
 
   return (
-    <>
+    <div style={{ position: "relative" }}>
       <Form
         labelCol={{ span: 10 }}
         wrapperCol={{ span: 16 }}
-        style={{ marginTop: 20, position: "relative" }}
+        style={{ marginTop: 20 }}
         initialValues={{
           title: data.titleText,
           header: data.widgetHeader,
@@ -199,8 +194,8 @@ export default function General({ data: dataProps }: any) {
             </Card>
           </div>
         </div>
-        <UIWidget />
       </Form>
-    </>
+      <UIWidget />
+    </div>
   );
 }
