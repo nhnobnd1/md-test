@@ -1,9 +1,11 @@
-import { Card, Col, Divider, Form, Input, Row, Switch } from "antd";
+import { Card, Checkbox, Col, Divider, Form, Input, Row } from "antd";
+import { CheckboxChangeEvent } from "antd/es/checkbox";
 import { useEffect, useState } from "react";
 import { UIWidget } from "src/modules/settingChannel/components/Widgets/UIWidget";
+import useUpdateSave from "src/modules/settingChannel/store/saveUpdateWidget";
 import useWidgetSetting from "src/modules/settingChannel/store/useSetting";
 
-export default function General() {
+export default function General({ data: dataProps }: any) {
   const [form] = Form.useForm();
   const data = useWidgetSetting((state) => state.widgetSetting);
   const updateWidgetSetting = useWidgetSetting(
@@ -12,6 +14,7 @@ export default function General() {
   const [allowCaptcha, setAllowCaptcha] = useState(data.allowCaptcha);
   const [allowAttach, setAllowAttach] = useState(data.allowAttach);
   const [loading, setLoading] = useState(data.isFormContact);
+  const cancelState = useUpdateSave((state) => state.cancel);
 
   const onFinish = (values: any) => {
     console.log("Success:", values);
@@ -21,25 +24,18 @@ export default function General() {
     console.log("Failed:", errorInfo);
   };
 
-  const onChangeToggle = (checked: boolean) => {
-    setLoading(checked);
+  const onChangeToggleCaptcha = (checked: CheckboxChangeEvent) => {
+    setAllowCaptcha(checked.target.checked);
     updateWidgetSetting({
       ...data,
-      isFormContact: checked,
+      allowCaptcha: checked.target.checked,
     });
   };
-  const onChangeToggleCaptcha = (checked: boolean) => {
-    setAllowCaptcha(checked);
+  const onChangeToggleAttach = (checked: CheckboxChangeEvent) => {
+    setAllowAttach(checked.target.checked);
     updateWidgetSetting({
       ...data,
-      allowCaptcha: checked,
-    });
-  };
-  const onChangeToggleAttach = (checked: boolean) => {
-    setAllowAttach(checked);
-    updateWidgetSetting({
-      ...data,
-      allowAttach: checked,
+      allowAttach: checked.target.checked,
     });
   };
 
@@ -47,15 +43,14 @@ export default function General() {
     form.resetFields();
     setAllowCaptcha(data.allowCaptcha);
     setAllowAttach(data.allowAttach);
-    setLoading(data.isFormContact);
-  }, [data.id]);
+  }, [data.id, cancelState]);
 
   return (
-    <>
+    <div style={{ position: "relative" }}>
       <Form
         labelCol={{ span: 10 }}
         wrapperCol={{ span: 16 }}
-        style={{ marginTop: 20, position: "relative" }}
+        style={{ marginTop: 20 }}
         initialValues={{
           title: data.titleText,
           header: data.widgetHeader,
@@ -71,7 +66,7 @@ export default function General() {
         <div style={{ marginLeft: 450 }}>
           <div style={{ maxWidth: 500 }}>
             <Row gutter={16} justify="space-between" align="bottom">
-              <Col span={20}>
+              <Col span={22}>
                 <Form.Item label="Title Text: " name="title" labelAlign="left">
                   <Input
                     onChange={(e) => {
@@ -85,7 +80,7 @@ export default function General() {
               </Col>
             </Row>
             <Row gutter={16} justify="space-between" align="bottom">
-              <Col span={20}>
+              <Col span={22}>
                 <Form.Item
                   label="Widget Header: "
                   name="header"
@@ -117,7 +112,7 @@ export default function General() {
               <Divider />
               <div style={{ display: loading ? "block" : "none" }}>
                 <Row gutter={20} justify="space-between" align="bottom">
-                  <Col span={20}>
+                  <Col span={22}>
                     <Form.Item
                       label="Form Title: "
                       name="form_title"
@@ -135,7 +130,7 @@ export default function General() {
                   </Col>
                 </Row>
                 <Row gutter={20} justify="space-between" align="bottom">
-                  <Col span={20}>
+                  <Col span={22}>
                     <Form.Item
                       label="Button text: "
                       name="button_text"
@@ -153,9 +148,9 @@ export default function General() {
                   </Col>
                 </Row>
                 <Row gutter={20} justify="space-between" align="bottom">
-                  <Col span={20}>
+                  <Col span={22}>
                     <Form.Item
-                      label="Confirm Message: "
+                      label="Confirmation Message: "
                       name="confirm_message"
                       labelAlign="left"
                     >
@@ -172,38 +167,35 @@ export default function General() {
                 </Row>
                 <Row gutter={20} justify="space-between" align="bottom">
                   <Col span={24}>
-                    <Form.Item
-                      label="Allow Attachments "
-                      name="allow_attach"
-                      labelAlign="left"
+                    <Checkbox
+                      checked={allowAttach}
+                      onChange={onChangeToggleAttach}
                     >
-                      <Switch
-                        checked={allowAttach}
-                        onChange={onChangeToggleAttach}
-                      />
-                    </Form.Item>
+                      Allow Attachments
+                    </Checkbox>
                   </Col>
                 </Row>
-                <Row gutter={20} justify="space-between" align="bottom">
-                  <Col span={24}>
-                    <Form.Item
-                      label="Enable captcha verification "
-                      name="allow_captcha"
-                      labelAlign="left"
+                <Row
+                  gutter={20}
+                  justify="space-between"
+                  align="bottom"
+                  className="mt-5"
+                >
+                  <Col span={30}>
+                    <Checkbox
+                      checked={allowCaptcha}
+                      onChange={onChangeToggleCaptcha}
                     >
-                      <Switch
-                        checked={allowCaptcha}
-                        onChange={onChangeToggleCaptcha}
-                      />
-                    </Form.Item>
+                      Enable captcha verification
+                    </Checkbox>
                   </Col>
                 </Row>
               </div>
             </Card>
           </div>
         </div>
-        <UIWidget />
       </Form>
-    </>
+      <UIWidget />
+    </div>
   );
 }

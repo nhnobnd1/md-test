@@ -26,16 +26,16 @@ const settingChannelRoutes: IRoute = {
       path: SettingChannelRoutePaths.Widgets.Index,
       middleware: "admin",
       component: lazy(
-        () => import("src/modules/settingChannel/pages/Widgets/Widgets")
-      ),
-    },
-    {
-      path: SettingChannelRoutePaths.Widgets.Update,
-      middleware: "admin",
-      component: lazy(
         () => import("src/modules/settingChannel/pages/Widgets/WidgetDetail")
       ),
     },
+    // {
+    //   path: SettingChannelRoutePaths.Widgets.Update,
+    //   middleware: "admin",
+    //   component: lazy(
+    //     () => import("src/modules/settingChannel/pages/Widgets/WidgetDetail")
+    //   ),
+    // },
     {
       path: SettingChannelRoutePaths.ChannelEmail.Create,
       middleware: "user",

@@ -1,13 +1,13 @@
 import { AutoReply, Holidays } from "@moose-desk/repo";
 import Link from "antd/es/typography/Link";
 import dayjs from "dayjs";
+import moment from "moment";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
 import TableAction from "src/components/UI/Table/TableAction/TableAction";
 import useNotification from "src/hooks/useNotification";
 import ModalHoliday from "src/modules/setting/component/Holidays/ModalHoliday";
-
 interface HolidayTabProps {
   value?: Holidays[];
   onChange?: (value: Holidays[]) => void;
@@ -25,7 +25,7 @@ const HolidayTab = ({
   const [valueTableHolidays, setValueTableHolidays] = useState<Holidays[]>([]);
   const defaultFilter = () => ({
     page: 1,
-    limit: 5,
+    limit: 10,
   });
   const [filterData, setFilterData] = useState(defaultFilter);
   const getAutoReplyName = useCallback(
@@ -133,7 +133,6 @@ const HolidayTab = ({
   useEffect(() => {
     setValueListHolidays(value?.length ? [...value] : []);
   }, [value]);
-
   return (
     <div className="p-2 mt-2">
       <ModalHoliday
@@ -151,10 +150,22 @@ const HolidayTab = ({
               key="nameHoliday"
               title="Name"
               render={(_, record: Holidays) => <span>{`${record.name}`}</span>}
+              sorter={{
+                compare: (a: Holidays, b: Holidays) => {
+                  return ("" + a.name).localeCompare(b.name);
+                },
+              }}
             />
             <Table.Column
               key="dateHoliday"
               title="Date"
+              sorter={{
+                compare: (a: Holidays, b: Holidays) => {
+                  const dateA: any = moment(a.startDate, "DD-MM");
+                  const dateB: any = moment(b.startDate, "DD-MM");
+                  return (dateA - dateB) as number;
+                },
+              }}
               render={(_, record: Holidays) => (
                 <span>
                   {record.startDate === record.endDate

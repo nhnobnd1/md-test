@@ -1,6 +1,7 @@
 import { AutoReply, Holidays } from "@moose-desk/repo";
 import Link from "antd/es/typography/Link";
 import dayjs from "dayjs";
+import moment from "moment";
 import { memo, useCallback, useEffect, useState } from "react";
 import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
@@ -32,7 +33,7 @@ const AutoReplyTab = ({
   );
   const defaultFilter = () => ({
     page: 1,
-    limit: 5,
+    limit: 10,
   });
   const [filterData, setFilterData] = useState(defaultFilter);
   const [dataForm, setDataForm] = useState<{
@@ -175,7 +176,6 @@ const AutoReplyTab = ({
   useEffect(() => {
     setValueListAutoReplys(value?.length ? [...value] : []);
   }, [value]);
-
   return (
     <div className="p-2 mt-2">
       <ModalAutoReply
@@ -192,6 +192,11 @@ const AutoReplyTab = ({
               key="name"
               title="Name"
               render={(_, record: AutoReply) => <span>{`${record.name}`}</span>}
+              sorter={{
+                compare: (a: AutoReply, b: AutoReply) => {
+                  return ("" + a.name).localeCompare(b.name);
+                },
+              }}
             />
             <Table.Column
               key="date"
@@ -199,6 +204,14 @@ const AutoReplyTab = ({
               render={(_, record: AutoReply) => (
                 <span>{dayjs(`${record.createAt}`).format("DD-MMM-YYYY")}</span>
               )}
+              sorter={{
+                compare: (a: AutoReply, b: AutoReply) => {
+                  const dateA: number = moment(a.createAt).valueOf();
+                  const dateB: number = moment(b.createAt).valueOf();
+
+                  return dateA - dateB;
+                },
+              }}
             ></Table.Column>
             <Table.Column
               align="center"

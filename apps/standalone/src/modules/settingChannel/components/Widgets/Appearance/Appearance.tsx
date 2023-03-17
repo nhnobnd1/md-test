@@ -11,15 +11,16 @@ import {
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ColorResult, SketchPicker } from "react-color";
 import { UIWidget } from "src/modules/settingChannel/components/Widgets/UIWidget";
+import useUpdateSave from "src/modules/settingChannel/store/saveUpdateWidget";
 import useWidgetSetting from "src/modules/settingChannel/store/useSetting";
 import ArrowDownLeft from "~icons/bi/box-arrow-down-left";
 import ArrowDownRight from "~icons/bi/box-arrow-down-right";
 
 export default function Appearance() {
-  const [color, setColor] = useState<ColorResult>();
-  const [textColor, setTextColor] = useState<ColorResult>();
-  const [buttonColor, setButtonColor] = useState<ColorResult>();
-  const [buttonTextColor, setButtonTextColor] = useState<ColorResult>();
+  const [color, setColor] = useState<ColorResult | null>();
+  const [textColor, setTextColor] = useState<ColorResult | null>();
+  const [buttonColor, setButtonColor] = useState<ColorResult | null>();
+  const [buttonTextColor, setButtonTextColor] = useState<ColorResult | null>();
 
   const { rgb } = color || {};
   const { rgb: rgbText } = textColor || {};
@@ -34,6 +35,7 @@ export default function Appearance() {
   const updateWidgetSetting = useWidgetSetting(
     (state) => state.updateWidgetSetting
   );
+  const cancelState = useUpdateSave((state) => state.cancel);
 
   const onFinish = (values: any) => {
     console.log("Success:", values);
@@ -104,7 +106,12 @@ export default function Appearance() {
 
   useEffect(() => {
     form.resetFields();
-  }, [data.id]);
+    setTargetButton(data?.widgetPosition === "right" ? 2 : 1);
+    setColor(null);
+    setButtonTextColor(null);
+    setButtonColor(null);
+    setTextColor(null);
+  }, [data.id, cancelState]);
 
   return (
     <>
@@ -341,8 +348,8 @@ export default function Appearance() {
             </Row>
           </Card>
         </div>
-        <UIWidget />
       </Form>
+      <UIWidget />
     </>
   );
 }

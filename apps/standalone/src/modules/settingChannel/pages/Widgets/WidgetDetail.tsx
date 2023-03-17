@@ -1,55 +1,69 @@
-import { useJob, useNavigate, useParams } from "@moose-desk/core";
-import { HelpWidget, HelpWidgetRepository } from "@moose-desk/repo";
+import { useJob } from "@moose-desk/core";
+import {
+  BaseListHelpWidgetRequest,
+  GetListHelpWidgetRequest,
+  HelpWidget,
+  HelpWidgetRepository,
+} from "@moose-desk/repo";
 import { Button, Tabs } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import { Header } from "src/components/UI/Header";
+import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import Appearance from "src/modules/settingChannel/components/Widgets/Appearance/Appearance";
 import General from "src/modules/settingChannel/components/Widgets/General/General";
 import Integration from "src/modules/settingChannel/components/Widgets/Integration/Integration";
-import useWidgetSetting from "src/modules/settingChannel/store/useSetting";
+import useUpdateSave from "src/modules/settingChannel/store/saveUpdateWidget";
+import useWidgetSetting, {
+  initialDefaultWidget,
+} from "src/modules/settingChannel/store/useSetting";
 
+const defaultFilter: () => GetListHelpWidgetRequest = () => ({
+  page: 1,
+  limit: env.DEFAULT_PAGE_SIZE,
+  query: "",
+  sortBy: undefined,
+  sortOrder: undefined,
+});
 const WidgetDetail = () => {
-  const navigate = useNavigate();
   const message = useMessage();
   const notification = useNotification();
   const [widget, setWidget] = useState<HelpWidget>();
 
-  const { id } = useParams();
+  const widgetSetting = useWidgetSetting((state) => state.widgetSetting);
+  const updateSave = useUpdateSave((state) => state.changeUpdate);
+  const updateCancel = useUpdateSave((state) => state.changeCancel);
   const updateWidgetSetting = useWidgetSetting(
     (state) => state.updateWidgetSetting
   );
-  const widgetSetting = useWidgetSetting((state) => state.widgetSetting);
-
-  const { run: getWidgetApi } = useJob(
-    (id: string | undefined) => {
+  const [filterData, setFilterData] =
+    useState<BaseListHelpWidgetRequest>(defaultFilter);
+  const { run: getListHelpWidgetApi, processing: loadingList } = useJob(
+    (payload: GetListHelpWidgetRequest) => {
       return HelpWidgetRepository()
-        .getOne(id)
+        .getList(payload)
         .pipe(
           map(({ data }) => {
             if (data.statusCode === 200) {
-              setWidget(data.data);
+              setWidget(data.data[0]);
+
               updateWidgetSetting({
-                ...data?.data?.settings,
-                id: data.data._id,
+                ...data?.data[0]?.settings,
+                id: data.data[0]._id,
               });
-              // setEmail(data.data);
             } else {
-              message.error("Get email failed");
+              message.error("Get data customer failed");
             }
           })
         );
-    },
-    {
-      showLoading: true,
     }
   );
-
   const { run: updateHelpWidgetApi } = useJob(
     (id: string, object: any) => {
       message.loading.show("Updating Widget");
+
       return HelpWidgetRepository()
         .update(id, object)
         .pipe(
@@ -57,7 +71,12 @@ const WidgetDetail = () => {
             ({ data }) => {
               if (data.statusCode === 200) {
                 message.loading.hide();
-                notification.success("Widget has been updated successfully.");
+                notification.success(
+                  "Your changes have been updated successfully."
+                );
+
+                updateWidgetSetting(data.data.settings);
+                setWidget(data.data);
               } else {
                 message.loading.hide();
                 if (data.statusCode === 409) {
@@ -81,21 +100,28 @@ const WidgetDetail = () => {
     { showLoading: false }
   );
 
-  useEffect(() => {
-    getWidgetApi(id);
-  }, []);
-
   const onChange = (key: string) => {
     console.log(key);
   };
+  const handleCancel = () => {
+    updateWidgetSetting(widget?.settings);
+    updateCancel(new Date());
+  };
 
   const handleSaveWidget = () => {
-    console.log("click update", widgetSetting);
     updateHelpWidgetApi(widget?._id as string, {
       name: widget?.name,
       settings: widgetSetting,
     });
+
+    updateSave(new Date());
   };
+  useEffect(() => {
+    getListHelpWidgetApi(filterData);
+    return () => {
+      updateWidgetSetting(initialDefaultWidget);
+    };
+  }, []);
 
   const FooterButton = () => {
     return (
@@ -116,7 +142,11 @@ const WidgetDetail = () => {
           // height: 50,
         }}
       >
-        <Button size="large" style={{ marginRight: 10, marginLeft: 10 }}>
+        <Button
+          size="large"
+          style={{ marginRight: 10, marginLeft: 10 }}
+          onClick={handleCancel}
+        >
           Cancel
         </Button>
 
@@ -162,7 +192,16 @@ const WidgetDetail = () => {
       <Header title="Web Form ">
         <div className="flex-1 flex justify-end"></div>
       </Header>
-      <Tabs onChange={onChange} type="card" items={items} />
+      {loadingList ? (
+        <></>
+      ) : (
+        <Tabs
+          onChange={onChange}
+          type="card"
+          items={items}
+          defaultActiveKey={"1"}
+        />
+      )}
     </>
   );
 };

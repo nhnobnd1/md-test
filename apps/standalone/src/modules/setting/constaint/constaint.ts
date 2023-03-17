@@ -122,5 +122,5 @@ export const optionDay = [
   "Wednesday",
   "Thursday",
   "Friday",
-  "Sunday",
+  "Saturday",
 ];
