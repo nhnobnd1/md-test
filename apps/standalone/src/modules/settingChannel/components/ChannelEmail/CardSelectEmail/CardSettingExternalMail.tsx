@@ -67,7 +67,13 @@ export const CardSettingExternalMail = ({
             >
               <Input />
             </Form.Item>
-            <Form.Item label={`${typePort} Port`} name={[nameForm, "port"]}>
+            <Form.Item
+              label={`${typePort} Port`}
+              name={[nameForm, "port"]}
+              rules={[
+                { required: true, message: `${typePort} Port is required` },
+              ]}
+            >
               <InputNumber className="w-full" />
             </Form.Item>
           </div>
@@ -99,17 +105,17 @@ export const CardSettingExternalMail = ({
           </div>
           <div className="grid grid-cols-3 gap-4">
             <Form.Item
-              label="Email"
+              label="Username"
               name={[nameForm, "email"]}
               className="col-span-2"
               rules={[
                 {
                   required: true,
-                  message: "Email address is required",
+                  message: "Username is required",
                 },
                 {
                   type: "email",
-                  message: "The email address is not valid",
+                  message: "The username is not valid",
                 },
               ]}
             >
@@ -121,6 +127,12 @@ export const CardSettingExternalMail = ({
               label="Password"
               name={[nameForm, "password"]}
               className="col-span-2"
+              rules={[
+                {
+                  required: true,
+                  message: "Password is required",
+                },
+              ]}
             >
               <Input.Password />
             </Form.Item>
