@@ -19,7 +19,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
     return (
       props.initialValues ?? {
         to: "",
-        assignee: "3a08cb83-d4ea-69c4-f1be-a4d5970f7ebb",
+        assignee: "3a08b18a-e690-f9ca-ff56-e7145104fb8d",
         priority: Priority.Medium,
         macros: "",
         message: "Please input your message here.....",
