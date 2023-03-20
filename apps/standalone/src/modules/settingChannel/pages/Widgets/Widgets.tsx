@@ -63,11 +63,7 @@ const Widgets = () => {
     getListHelpWidgetApi(filterData);
   }, []);
 
-  return (
-    <>
-      {helpwidgets[0] ? <WidgetDetail widgetProps={helpwidgets[0]} /> : <></>}
-    </>
-  );
+  return <>{helpwidgets[0] ? <WidgetDetail /> : <></>}</>;
 };
 
 export default Widgets;
