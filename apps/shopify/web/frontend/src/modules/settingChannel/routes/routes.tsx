@@ -29,6 +29,12 @@ const settingChannelRoutes: IRoute = {
           import("src/modules/settingChannel/pages/channelEmail/ChannelEmail")
       ),
     },
+    {
+      path: SettingChannelRoutePaths.Widgets.Index,
+      component: lazy(
+        () => import("src/modules/settingChannel/pages/widgets/Widgets")
+      ),
+    },
   ],
 };
 

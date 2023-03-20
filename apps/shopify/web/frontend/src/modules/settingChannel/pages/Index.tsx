@@ -41,7 +41,9 @@ const SettingChannelIndexPage: PageComponent<
           "Configure the web form widget that can be added to your website",
         link: "",
         icon: () => <ChecklistAlternateMajor />,
-        onConfigure: () => {},
+        onConfigure: () => {
+          navigate(SettingChannelRoutePaths.Widgets.Index);
+        },
       },
       {
         title: "Live Chat Configuration",
