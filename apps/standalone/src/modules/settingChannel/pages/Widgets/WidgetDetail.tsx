@@ -69,29 +69,30 @@ const WidgetDetail = () => {
         .pipe(
           map(
             ({ data }) => {
-              if (data.statusCode === 200) {
-                message.loading.hide();
-                notification.success(
-                  "Your changes have been updated successfully."
-                );
+              message.loading.hide().then(() => {
+                if (data.statusCode === 200) {
+                  notification.success(
+                    "Your changes have been updated successfully."
+                  );
 
-                updateWidgetSetting(data.data.settings);
-                setWidget(data.data);
-              } else {
-                message.loading.hide();
-                if (data.statusCode === 409) {
-                  notification.error(`Error`);
+                  updateWidgetSetting(data.data.settings);
+                  setWidget(data.data);
+                } else {
+                  if (data.statusCode === 409) {
+                    notification.error(`Error`);
+                  }
                 }
-              }
+              });
             },
             catchError((err) => {
-              message.loading.hide();
-              const errorCode = err.response.status;
-              if (errorCode === 409) {
-                notification.error(`Error`);
-              } else {
-                notification.error("Widget has been updated failed.");
-              }
+              message.loading.hide().then(() => {
+                const errorCode = err.response.status;
+                if (errorCode === 409) {
+                  notification.error(`Error`);
+                } else {
+                  notification.error("Widget has been updated failed.");
+                }
+              });
               return of(err);
             })
           )

@@ -1,0 +1,16 @@
+.Integration {
+  .black-box {
+    max-width: 700px;
+    background-color: rgb(39, 49, 58);
+    color: white;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    padding: 16px 24px;
+
+    .header {
+      padding-bottom: 12px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid #ffff;
+    }
+  }
+}

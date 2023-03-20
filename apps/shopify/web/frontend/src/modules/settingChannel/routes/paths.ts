@@ -5,6 +5,9 @@ const SettingChannelRoutePaths = createRoutePath({
   ChannelEmail: {
     Index: "channel-email",
   },
+  Widgets: {
+    Index: "widgets",
+  },
 } as const);
 
 export default SettingChannelRoutePaths;
