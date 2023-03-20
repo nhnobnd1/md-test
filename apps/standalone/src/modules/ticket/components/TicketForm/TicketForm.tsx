@@ -30,26 +30,48 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
   const fetchAgents = useCallback(
     (params: LoadMoreValue) => {
       const limit = env.DEFAULT_PAGE_SIZE;
-      return AgentRepository()
-        .getList({
-          page: params.page,
-          limit: limit,
-          query: params.searchText,
-        })
-        .pipe(
-          map(({ data }) => {
-            return {
-              options: data.data.map((item) => ({
-                label: item.lastName.includes("admin")
-                  ? `${item.firstName} - ${item.email}`
-                  : `${item.firstName} ${item.lastName} - ${item.email}`,
-                value: item._id,
-                obj: item,
-              })),
-              canLoadMore: params.page < data.metadata.totalPage,
-            };
+      if (params.value && params.isFirst) {
+        return AgentRepository()
+          .getOne(params.value)
+          .pipe(
+            map(({ data }) => {
+              const item = data.data;
+              return {
+                options: [
+                  {
+                    label: item.lastName.includes("admin")
+                      ? `${item.firstName} - ${item.email}`
+                      : `${item.firstName} ${item.lastName} - ${item.email}`,
+                    value: item._id,
+                    obj: item,
+                  },
+                ],
+                canLoadMore: true,
+              };
+            })
+          );
+      } else {
+        return AgentRepository()
+          .getList({
+            page: params.page,
+            limit: limit,
+            query: params.searchText,
           })
-        );
+          .pipe(
+            map(({ data }) => {
+              return {
+                options: data.data.map((item) => ({
+                  label: item.lastName.includes("admin")
+                    ? `${item.firstName} - ${item.email}`
+                    : `${item.firstName} ${item.lastName} - ${item.email}`,
+                  value: item._id,
+                  obj: item,
+                })),
+                canLoadMore: params.page < data.metadata.totalPage,
+              };
+            })
+          );
+      }
     },
     [AgentRepository]
   );

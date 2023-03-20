@@ -93,6 +93,7 @@ export interface LoadMoreValue {
   page: number;
   searchText: string;
   isFirst: boolean;
+  value: any;
 }
 
 interface AjaxSelectProps extends SelectProps {
@@ -139,6 +140,7 @@ Select.Ajax = ({
         searchText: searchText,
         page: page,
         isFirst: isFirst,
+        value: props.value ?? null,
       });
     } catch (error) {
       setCanLoadMore(false);
@@ -160,10 +162,9 @@ Select.Ajax = ({
       map((data) => {
         stopLoading();
         setOptions((value) => {
-          return (data.page ?? page) === 1
-            ? [...data.options]
-            : _.uniqBy([...value, ...data.options], "value");
+          return _.uniqBy([...value, ...data.options], "value");
         });
+
         setCanLoadMore(data.canLoadMore);
         setPage((value) => {
           return data.page ?? value;
@@ -203,11 +204,14 @@ Select.Ajax = ({
     fetchData();
   }, [options, fetchData, canFetch]);
 
-  const onSearch = useCallback(async (text: string) => {
-    setSearchText(text);
-    setPage(1);
-    setCanLoadMore(true);
-  }, []);
+  const onSearch = useCallback(
+    async (text: string) => {
+      setSearchText(text);
+      setPage(1);
+      setCanLoadMore(true);
+    },
+    [options]
+  );
 
   const onPopupScroll = useCallback(
     async (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
@@ -228,6 +232,14 @@ Select.Ajax = ({
       prevSearchText !== searchText ? fetchDataDebounce() : fetchData();
     }
   }, [page, searchText]);
+
+  useEffect(() => {
+    if (!isFirst) {
+      if (page === 1) {
+        fetchData();
+      }
+    }
+  }, [isFirst]);
 
   useEffect(() => {
     onDependenciesChanged && onDependenciesChanged();
