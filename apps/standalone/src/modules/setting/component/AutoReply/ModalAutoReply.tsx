@@ -45,7 +45,6 @@ const ModalAutoReply = ({
   //   name: string().required("Required!"),
   //   content: string().required("Required!"),
   // });
-  console.log({ dataForm });
   return (
     <div className="mt-4" style={{ width: "1000px" }}>
       <Modal
