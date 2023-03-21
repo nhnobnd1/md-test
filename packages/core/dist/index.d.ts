@@ -10,5 +10,5 @@ export * from "./models";
 export * from "./providers";
 export * from "./repository";
 export * from "./routes";
-export * from "./timezone";
+export { TIME_ZONES, TIME_ZONES_GMT } from "./timezone";
 export * from "./utilities";

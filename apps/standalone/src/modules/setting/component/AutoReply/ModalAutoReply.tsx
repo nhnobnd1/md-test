@@ -78,6 +78,7 @@ const ModalAutoReply = ({
             <Form.Item name="createAt" hidden></Form.Item>
             <Form.Item name="content" label="Content">
               <TextEditor
+                // value={dataForm?.value.content}
                 init={{
                   toolbar:
                     "undo redo blocks fontfamily fontsize bold italic underline strikethrough link image media table mergetags addcomment showcomments spellcheckdialog a11ycheck typography align lineheight | selectTypeAutoReply",
