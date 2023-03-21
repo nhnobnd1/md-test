@@ -10,4 +10,5 @@ export * from "./models";
 export * from "./providers";
 export * from "./repository";
 export * from "./routes";
+export * from "./timezone";
 export * from "./utilities";

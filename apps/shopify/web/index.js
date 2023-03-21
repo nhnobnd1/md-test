@@ -9,6 +9,7 @@ import { config } from "dotenv";
 import GDPRWebhookHandlers from "./gdpr.js";
 import { getInformationShop } from "./helpers/shop.js";
 import shopify from "./shopify.js";
+import { TIME_ZONES, TIME_ZONES_GMT } from "./timezone.js";
 
 config();
 
@@ -35,6 +36,23 @@ app.get(
     console.log("Offline session", offlineSession);
 
     if (shop && offlineSession) {
+      const timezone = shop.timezone
+        .replace("(", "")
+        .replace(")", "")
+        .split(" ");
+      const timeGTM = timezone.find((item) => item.includes("GMT+"));
+
+      let payloadTimeZone = null;
+
+      for (const [key, value] of Object.entries(TIME_ZONES_GMT)) {
+        if (value === timeGTM) {
+          payloadTimeZone = TIME_ZONES[key];
+          break;
+        }
+      }
+
+      console.log("payloadTimeZone", payloadTimeZone);
+
       const payload = {
         subdomain: shop.myshopify_domain.replace(".myshopify.com", ""),
         storeId: String(shop.id),
@@ -45,7 +63,7 @@ app.get(
         lastName: "admin",
         phoneNumber: shop.phone,
         companyName: null,
-        timezone: shop.timezone,
+        timezone: payloadTimeZone,
       };
 
       await registerUser(payload);
@@ -85,6 +103,8 @@ app.use(async (req, res, next) => {
 
   // signup insall app -> offlineSession null
   if (shop && offlineSession) {
+    console.log("shop: ", shop);
+
     res.cookie(
       process.env.HOST,
       {
