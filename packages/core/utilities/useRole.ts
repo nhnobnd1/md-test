@@ -9,3 +9,12 @@ export function useRole(): string {
   }
   return "";
 }
+
+export function useUser() {
+  const baseToken = TokenManager.getToken("base_token");
+  if (baseToken) {
+    const decoded = jwt_decode(baseToken);
+    return decoded;
+  }
+  return null;
+}
