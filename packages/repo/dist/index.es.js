@@ -910,24 +910,24 @@ function ku(t, e) {
   var r = this.__data__, n = Te(r, t);
   return n < 0 ? (++this.size, r.push([t, e])) : r[n][1] = e, this;
 }
-function gt(t) {
+function wt(t) {
   var e = -1, r = t == null ? 0 : t.length;
   for (this.clear(); ++e < r; ) {
     var n = t[e];
     this.set(n[0], n[1]);
   }
 }
-gt.prototype.clear = Tu;
-gt.prototype.delete = Du;
-gt.prototype.get = Pu;
-gt.prototype.has = Cu;
-gt.prototype.set = ku;
+wt.prototype.clear = Tu;
+wt.prototype.delete = Du;
+wt.prototype.get = Pu;
+wt.prototype.has = Cu;
+wt.prototype.set = ku;
 var $u = $t(ft, "Map");
 const Yt = $u;
 function Lu() {
   this.size = 0, this.__data__ = {
     hash: new Dt(),
-    map: new (Yt || gt)(),
+    map: new (Yt || wt)(),
     string: new Dt()
   };
 }
@@ -953,18 +953,18 @@ function Bu(t, e) {
   var r = Re(this, t), n = r.size;
   return r.set(t, e), this.size += r.size == n ? 0 : 1, this;
 }
-function bt(t) {
+function Ot(t) {
   var e = -1, r = t == null ? 0 : t.length;
   for (this.clear(); ++e < r; ) {
     var n = t[e];
     this.set(n[0], n[1]);
   }
 }
-bt.prototype.clear = Lu;
-bt.prototype.delete = Iu;
-bt.prototype.get = Mu;
-bt.prototype.has = Fu;
-bt.prototype.set = Bu;
+Ot.prototype.clear = Lu;
+Ot.prototype.delete = Iu;
+Ot.prototype.get = Mu;
+Ot.prototype.has = Fu;
+Ot.prototype.set = Bu;
 var zu = "Expected a function";
 function Cr(t, e) {
   if (typeof t != "function" || e != null && typeof e != "function")
@@ -976,9 +976,9 @@ function Cr(t, e) {
     var s = t.apply(this, n);
     return r.cache = i.set(o, s) || i, s;
   };
-  return r.cache = new (Cr.Cache || bt)(), r;
+  return r.cache = new (Cr.Cache || Ot)(), r;
 }
-Cr.Cache = bt;
+Cr.Cache = Ot;
 var Hu = 500;
 function Wu(t) {
   var e = Cr(t, function(n) {
@@ -1034,7 +1034,7 @@ function ic(t) {
   return typeof r == "function" && r instanceof r && No.call(r) == oc;
 }
 function sc() {
-  this.__data__ = new gt(), this.size = 0;
+  this.__data__ = new wt(), this.size = 0;
 }
 function ac(t) {
   var e = this.__data__, r = e.delete(t);
@@ -1049,16 +1049,16 @@ function cc(t) {
 var lc = 200;
 function fc(t, e) {
   var r = this.__data__;
-  if (r instanceof gt) {
+  if (r instanceof wt) {
     var n = r.__data__;
     if (!Yt || n.length < lc - 1)
       return n.push([t, e]), this.size = ++r.size, this;
-    r = this.__data__ = new bt(n);
+    r = this.__data__ = new Ot(n);
   }
   return r.set(t, e), this.size = r.size, this;
 }
 function lt(t) {
-  var e = this.__data__ = new gt(t);
+  var e = this.__data__ = new wt(t);
   this.size = e.size;
 }
 lt.prototype.clear = sc;
@@ -1143,7 +1143,7 @@ function Lc(t) {
 }
 function Gt(t) {
   var e = -1, r = t == null ? 0 : t.length;
-  for (this.__data__ = new bt(); ++e < r; )
+  for (this.__data__ = new Ot(); ++e < r; )
     this.add(t[e]);
 }
 Gt.prototype.add = Gt.prototype.push = $c;
@@ -1567,11 +1567,11 @@ function Mo(t, e) {
 const { toString: Fo } = Object.prototype, { getPrototypeOf: Lr } = Object, Ur = ((t) => (e) => {
   const r = Fo.call(e);
   return t[r] || (t[r] = r.slice(8, -1).toLowerCase());
-})(/* @__PURE__ */ Object.create(null)), wt = (t) => (t = t.toLowerCase(), (e) => Ur(e) === t), De = (t) => (e) => typeof e === t, { isArray: zt } = Array, Zt = De("undefined");
+})(/* @__PURE__ */ Object.create(null)), _t = (t) => (t = t.toLowerCase(), (e) => Ur(e) === t), De = (t) => (e) => typeof e === t, { isArray: zt } = Array, Zt = De("undefined");
 function zl(t) {
   return t !== null && !Zt(t) && t.constructor !== null && !Zt(t.constructor) && Pt(t.constructor.isBuffer) && t.constructor.isBuffer(t);
 }
-const Bo = wt("ArrayBuffer");
+const Bo = _t("ArrayBuffer");
 function Hl(t) {
   let e;
   return typeof ArrayBuffer < "u" && ArrayBuffer.isView ? e = ArrayBuffer.isView(t) : e = t && t.buffer && Bo(t.buffer), e;
@@ -1581,10 +1581,10 @@ const Wl = De("string"), Pt = De("function"), zo = De("number"), Ir = (t) => t !
     return !1;
   const e = Lr(t);
   return (e === null || e === Object.prototype || Object.getPrototypeOf(e) === null) && !(Symbol.toStringTag in t) && !(Symbol.iterator in t);
-}, ql = wt("Date"), Kl = wt("File"), Jl = wt("Blob"), Yl = wt("FileList"), Gl = (t) => Ir(t) && Pt(t.pipe), Zl = (t) => {
+}, ql = _t("Date"), Kl = _t("File"), Jl = _t("Blob"), Yl = _t("FileList"), Gl = (t) => Ir(t) && Pt(t.pipe), Zl = (t) => {
   const e = "[object FormData]";
   return t && (typeof FormData == "function" && t instanceof FormData || Fo.call(t) === e || Pt(t.toString) && t.toString() === e);
-}, Xl = wt("URLSearchParams"), Ql = (t) => t.trim ? t.trim() : t.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, "");
+}, Xl = _t("URLSearchParams"), Ql = (t) => t.trim ? t.trim() : t.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, "");
 function oe(t, e, { allOwnKeys: r = !1 } = {}) {
   if (t === null || typeof t > "u")
     return;
@@ -1664,12 +1664,12 @@ const tf = (t, e, r, { allOwnKeys: n } = {}) => (oe(e, (o, i) => {
   for (; (r = t.exec(e)) !== null; )
     n.push(r);
   return n;
-}, lf = wt("HTMLFormElement"), ff = (t) => t.toLowerCase().replace(
+}, lf = _t("HTMLFormElement"), ff = (t) => t.toLowerCase().replace(
   /[_-\s]([a-z\d])(\w*)/g,
   function(e, r, n) {
     return r.toUpperCase() + n;
   }
-), In = (({ hasOwnProperty: t }) => (e, r) => t.call(e, r))(Object.prototype), pf = wt("RegExp"), qo = (t, e) => {
+), In = (({ hasOwnProperty: t }) => (e, r) => t.call(e, r))(Object.prototype), pf = _t("RegExp"), qo = (t, e) => {
   const r = Object.getOwnPropertyDescriptors(t), n = {};
   oe(r, (o, i) => {
     e(o, i, t) !== !1 && (n[i] = o);
@@ -1743,7 +1743,7 @@ const tf = (t, e, r, { allOwnKeys: n } = {}) => (oe(e, (o, i) => {
   inherits: rf,
   toFlatObject: nf,
   kindOf: Ur,
-  kindOfTest: wt,
+  kindOfTest: _t,
   endsWith: of,
   toArray: sf,
   forEachEntry: uf,
@@ -2258,9 +2258,9 @@ let ke = class {
 ke.accessor(["Content-Type", "Content-Length", "Accept", "Accept-Encoding", "User-Agent"]);
 h.freezeMethods(ke.prototype);
 h.freezeMethods(ke);
-const yt = ke;
+const gt = ke;
 function Ke(t, e) {
-  const r = this || Fr, n = e || r, o = yt.from(n.headers);
+  const r = this || Fr, n = e || r, o = gt.from(n.headers);
   let i = n.data;
   return h.forEach(t, function(s) {
     i = s.call(r, i, o.normalize(), e ? e.status : void 0);
@@ -2386,7 +2386,7 @@ function Wn(t, e) {
 const Yf = typeof XMLHttpRequest < "u", Gf = Yf && function(t) {
   return new Promise(function(e, r) {
     let n = t.data;
-    const o = yt.from(t.headers).normalize(), i = t.responseType;
+    const o = gt.from(t.headers).normalize(), i = t.responseType;
     let s;
     function c() {
       t.cancelToken && t.cancelToken.unsubscribe(s), t.signal && t.signal.removeEventListener("abort", s);
@@ -2402,7 +2402,7 @@ const Yf = typeof XMLHttpRequest < "u", Gf = Yf && function(t) {
     function f() {
       if (!a)
         return;
-      const v = yt.from(
+      const v = gt.from(
         "getAllResponseHeaders" in a && a.getAllResponseHeaders()
       ), d = {
         data: !i || i === "text" || i === "json" ? a.responseText : a.response,
@@ -2487,7 +2487,7 @@ function Je(t) {
     throw new ie(null, t);
 }
 function Vn(t) {
-  return Je(t), t.headers = yt.from(t.headers), t.data = Ke.call(
+  return Je(t), t.headers = gt.from(t.headers), t.data = Ke.call(
     t,
     t.transformRequest
   ), ["post", "put", "patch"].indexOf(t.method) !== -1 && t.headers.setContentType("application/x-www-form-urlencoded", !1), Zf.getAdapter(t.adapter || Fr.adapter)(t).then(function(e) {
@@ -2495,16 +2495,16 @@ function Vn(t) {
       t,
       t.transformResponse,
       e
-    ), e.headers = yt.from(e.headers), e;
+    ), e.headers = gt.from(e.headers), e;
   }, function(e) {
     return ti(e) || (Je(t), e && e.response && (e.response.data = Ke.call(
       t,
       t.transformResponse,
       e.response
-    ), e.response.headers = yt.from(e.response.headers))), Promise.reject(e);
+    ), e.response.headers = gt.from(e.response.headers))), Promise.reject(e);
   });
 }
-const qn = (t) => t instanceof yt ? t.toJSON() : t;
+const qn = (t) => t instanceof gt ? t.toJSON() : t;
 function Bt(t, e) {
   e = e || {};
   const r = {};
@@ -2643,7 +2643,7 @@ let Ee = class {
       (d) => {
         delete o[d];
       }
-    ), e.headers = yt.concat(i, o);
+    ), e.headers = gt.concat(i, o);
     const s = [];
     let c = !0;
     this.interceptors.request.forEach(function(d) {
@@ -2796,7 +2796,7 @@ Q.all = function(t) {
 Q.spread = tp;
 Q.isAxiosError = ep;
 Q.mergeConfig = Bt;
-Q.AxiosHeaders = yt;
+Q.AxiosHeaders = gt;
 Q.formToJSON = (t) => Qo(h.isHTMLForm(t) ? new FormData(t) : t);
 Q.default = Q;
 const rp = Q;
@@ -2855,7 +2855,7 @@ function yr(t, e, r) {
       (i || !(n in e)) && (i || (i = Array.prototype.slice.call(e, 0, n)), i[n] = e[n]);
   return t.concat(i || Array.prototype.slice.call(e));
 }
-function mt(t) {
+function bt(t) {
   return typeof t == "function";
 }
 function zr(t) {
@@ -2908,7 +2908,7 @@ var Le = function() {
         else
           s.remove(this);
       var f = this.initialTeardown;
-      if (mt(f))
+      if (bt(f))
         try {
           f();
         } catch (_) {
@@ -2971,10 +2971,10 @@ var Le = function() {
   }(), t;
 }(), ii = Le.EMPTY;
 function si(t) {
-  return t instanceof Le || t && "closed" in t && mt(t.remove) && mt(t.add) && mt(t.unsubscribe);
+  return t instanceof Le || t && "closed" in t && bt(t.remove) && bt(t.add) && bt(t.unsubscribe);
 }
 function Jn(t) {
-  mt(t) ? t() : t.unsubscribe();
+  bt(t) ? t() : t.unsubscribe();
 }
 var ai = {
   onUnhandledError: null,
@@ -3073,7 +3073,7 @@ var sp = function() {
   $e(e, t);
   function e(r, n, o) {
     var i = t.call(this) || this, s;
-    if (mt(r) || !r)
+    if (bt(r) || !r)
       s = {
         next: r ?? void 0,
         error: n ?? void 0,
@@ -3182,7 +3182,7 @@ function Gn(t) {
   return (e = t ?? ai.Promise) !== null && e !== void 0 ? e : Promise;
 }
 function pp(t) {
-  return t && mt(t.next) && mt(t.error) && mt(t.complete);
+  return t && bt(t.next) && bt(t.error) && bt(t.complete);
 }
 function hp(t) {
   return t && t instanceof ui || pp(t) && si(t);
@@ -3764,18 +3764,18 @@ function bp() {
           m < 0 && H("disabledDepth fell below zero. This is a bug in React. Please file an issue.");
         }
       }
-      var pt = tt.ReactCurrentDispatcher, ht;
+      var dt = tt.ReactCurrentDispatcher, vt;
       function st(u, y, w) {
         {
-          if (ht === void 0)
+          if (vt === void 0)
             try {
               throw Error();
             } catch (I) {
               var S = I.stack.trim().match(/\n( *(at )?)/);
-              ht = S && S[1] || "";
+              vt = S && S[1] || "";
             }
           return `
-` + ht + u;
+` + vt + u;
         }
       }
       var Z = !1, ot;
@@ -3796,7 +3796,7 @@ function bp() {
         var I = Error.prepareStackTrace;
         Error.prepareStackTrace = void 0;
         var M;
-        M = pt.current, pt.current = null, ut();
+        M = dt.current, dt.current = null, ut();
         try {
           if (y) {
             var U = function() {
@@ -3809,29 +3809,29 @@ function bp() {
             }), typeof Reflect == "object" && Reflect.construct) {
               try {
                 Reflect.construct(U, []);
-              } catch (vt) {
-                S = vt;
+              } catch (mt) {
+                S = mt;
               }
               Reflect.construct(u, [], U);
             } else {
               try {
                 U.call();
-              } catch (vt) {
-                S = vt;
+              } catch (mt) {
+                S = mt;
               }
               u.call(U.prototype);
             }
           } else {
             try {
               throw Error();
-            } catch (vt) {
-              S = vt;
+            } catch (mt) {
+              S = mt;
             }
             u();
           }
-        } catch (vt) {
-          if (vt && S && typeof vt.stack == "string") {
-            for (var P = vt.stack.split(`
+        } catch (mt) {
+          if (mt && S && typeof mt.stack == "string") {
+            for (var P = mt.stack.split(`
 `), et = S.stack.split(`
 `), J = P.length - 1, Y = et.length - 1; J >= 1 && Y >= 0 && P[J] !== et[Y]; )
               Y--;
@@ -3840,16 +3840,16 @@ function bp() {
                 if (J !== 1 || Y !== 1)
                   do
                     if (J--, Y--, Y < 0 || P[J] !== et[Y]) {
-                      var dt = `
+                      var yt = `
 ` + P[J].replace(" at new ", " at ");
-                      return typeof u == "function" && ot.set(u, dt), dt;
+                      return typeof u == "function" && ot.set(u, yt), yt;
                     }
                   while (J >= 1 && Y >= 0);
                 break;
               }
           }
         } finally {
-          Z = !1, pt.current = M, it(), Error.prepareStackTrace = I;
+          Z = !1, dt.current = M, it(), Error.prepareStackTrace = I;
         }
         var Ut = u ? u.displayName || u.name : "", en = Ut ? st(Ut) : "";
         return typeof u == "function" && ot.set(u, en), en;
@@ -4145,17 +4145,17 @@ Check the top-level render call using <` + w + ">.");
           if (Y == null)
             return Y;
           if (U) {
-            var dt = y.children;
-            if (dt !== void 0)
+            var yt = y.children;
+            if (yt !== void 0)
               if (S)
-                if (Array.isArray(dt)) {
-                  for (var Ut = 0; Ut < dt.length; Ut++)
-                    Qr(dt[Ut], u);
-                  Object.freeze && Object.freeze(dt);
+                if (Array.isArray(yt)) {
+                  for (var Ut = 0; Ut < yt.length; Ut++)
+                    Qr(yt[Ut], u);
+                  Object.freeze && Object.freeze(yt);
                 } else
                   H("React.jsx: Static children should always be an array. You are likely explicitly calling React.jsxs or React.jsxDEV. Use the Babel transform instead.");
               else
-                Qr(dt, u);
+                Qr(yt, u);
           }
           return u === t.Fragment ? Si(Y) : Ei(Y), Y;
         }
@@ -4292,8 +4292,8 @@ var ro = {}, wp = {
           case p:
             return T ? L(1, G) : L(0, G + 1);
           case f:
-            var pt = this.$locale().weekStart || 0, ht = (W < pt ? W + 7 : W) - pt;
-            return L(T ? ut - ht : ut + (6 - ht), G);
+            var dt = this.$locale().weekStart || 0, vt = (W < dt ? W + 7 : W) - dt;
+            return L(T ? ut - vt : ut + (6 - vt), G);
           case l:
           case b:
             return q(it + "Hours", 0);
@@ -4345,12 +4345,12 @@ var ro = {}, wp = {
           return O.invalidDate || _;
         var T = m || "YYYY-MM-DDTHH:mm:ssZ", x = C.z(this), L = this.$H, q = this.$m, W = this.$M, G = O.weekdays, ut = O.months, it = function(Z, ot, Ht, Tt) {
           return Z && (Z[ot] || Z(A, T)) || Ht[ot].slice(0, Tt);
-        }, pt = function(Z) {
+        }, dt = function(Z) {
           return C.s(L % 12 || 12, Z, "0");
-        }, ht = O.meridiem || function(Z, ot, Ht) {
+        }, vt = O.meridiem || function(Z, ot, Ht) {
           var Tt = Z < 12 ? "AM" : "PM";
           return Ht ? Tt.toLowerCase() : Tt;
-        }, st = { YY: String(this.$y).slice(-2), YYYY: this.$y, M: W + 1, MM: C.s(W + 1, 2, "0"), MMM: it(O.monthsShort, W, ut, 3), MMMM: it(ut, W), D: this.$D, DD: C.s(this.$D, 2, "0"), d: String(this.$W), dd: it(O.weekdaysMin, this.$W, G, 2), ddd: it(O.weekdaysShort, this.$W, G, 3), dddd: G[this.$W], H: String(L), HH: C.s(L, 2, "0"), h: pt(1), hh: pt(2), a: ht(L, q, !0), A: ht(L, q, !1), m: String(q), mm: C.s(q, 2, "0"), s: String(this.$s), ss: C.s(this.$s, 2, "0"), SSS: C.s(this.$ms, 3, "0"), Z: x };
+        }, st = { YY: String(this.$y).slice(-2), YYYY: this.$y, M: W + 1, MM: C.s(W + 1, 2, "0"), MMM: it(O.monthsShort, W, ut, 3), MMMM: it(ut, W), D: this.$D, DD: C.s(this.$D, 2, "0"), d: String(this.$W), dd: it(O.weekdaysMin, this.$W, G, 2), ddd: it(O.weekdaysShort, this.$W, G, 3), dddd: G[this.$W], H: String(L), HH: C.s(L, 2, "0"), h: dt(1), hh: dt(2), a: vt(L, q, !0), A: vt(L, q, !1), m: String(q), mm: C.s(q, 2, "0"), s: String(this.$s), ss: C.s(this.$s, 2, "0"), SSS: C.s(this.$ms, 3, "0"), Z: x };
         return T.replace(F, function(Z, ot) {
           return ot || st[Z] || x.replace(":", "");
         });
@@ -4578,7 +4578,7 @@ uo(
     return typeof e == "function" ? e(n) : /* @__PURE__ */ me(li, { children: n ? e : r });
   }
 );
-function Ot(t, e) {
+function pt(t, e) {
   return () => {
     const r = new Mt(t().baseURL, t());
     return Rl(e, (n) => (...o) => n(r, ...o));
@@ -4602,9 +4602,9 @@ class Rp {
     this.apiUrl = e;
   }
 }
-const _t = new Rp(), Hp = Ot(
+const ht = new Rp(), Hp = pt(
   () => ({
-    baseURL: `${_t.getApiUrl()}/api/v1/account`
+    baseURL: `${ht.getApiUrl()}/api/v1/account`
   }),
   {
     agentSignUp(t, e) {
@@ -4646,9 +4646,9 @@ const _t = new Rp(), Hp = Ot(
   }
 );
 var Np = /* @__PURE__ */ ((t) => (t.INVITATION_EXISTS = "INVITATION_EXISTS", t.USER_IS_EXISTS = "USER_IS_EXISTS", t))(Np || {}), Dp = /* @__PURE__ */ ((t) => (t.TOKEN_VALID = "TOKEN_VALID", t.TOKEN_INVALID = "TOKEN_INVALID", t.INVITATION_NOT_EXISTS = "INVITATION_NOT_EXISTS", t.USER_ACTIVE = "USER_ACTIVE", t))(Dp || {});
-const Wp = Ot(
+const Wp = pt(
   () => ({
-    baseURL: `${_t.getApiUrl()}/api/v1/account/agent`
+    baseURL: `${ht.getApiUrl()}/api/v1/account/agent`
   }),
   {
     getList(t, e) {
@@ -4687,9 +4687,9 @@ const Wp = Ot(
   }
 );
 var Pp = /* @__PURE__ */ ((t) => (t.Full = "24/7", t.Custom = "CUSTOM", t))(Pp || {}), Cp = /* @__PURE__ */ ((t) => (t.Monday = "MONDAY", t.Tuesday = "TUESDAY", t.Wednesday = "WEDNESDAY", t.Thursday = "THURSDAY", t.Friday = "FRIDAY", t.Saturday = "SATURDAY", t.Sunday = "SUNDAY", t))(Cp || {});
-const Vp = Ot(
+const Vp = pt(
   () => ({
-    baseURL: `${_t.getApiUrl()}/api/v1/customer`
+    baseURL: `${ht.getApiUrl()}/api/v1/customer`
   }),
   {
     getList(t, e) {
@@ -4710,9 +4710,9 @@ const Vp = Ot(
   }
 );
 var kp = /* @__PURE__ */ ((t) => (t.Plain = "Plain", t.Login = "Login", t.MD5 = "CRAM - MD5", t))(kp || {}), $p = /* @__PURE__ */ ((t) => (t.Both = "both", t.Incoming = "incoming", t.Outgoing = "outgoing", t))($p || {}), Lp = /* @__PURE__ */ ((t) => (t.CUSTOM = "CUSTOM", t.MOOSEDESK = "MOOSEDESK", t))(Lp || {}), Up = /* @__PURE__ */ ((t) => (t.GMAIL = "GMAIL", t.OUTLOOK = "OUTLOOK", t.OTHER = "OTHER", t.MOOSEDESK = "MOOSEDESK", t))(Up || {});
-const qp = Ot(
+const qp = pt(
   () => ({
-    baseURL: `${_t.getApiUrl()}/api/v1/email-integration`
+    baseURL: `${ht.getApiUrl()}/api/v1/email-integration`
   }),
   {
     getEmailGoogleAuth(t, e) {
@@ -4720,6 +4720,9 @@ const qp = Ot(
     },
     getEmailMicrosoftAuth(t, e) {
       return t.get("/microsoft-auth", e);
+    },
+    getPrimaryEmail(t) {
+      return t.get("/primary-email");
     },
     getListEmail(t, e) {
       return t.get("", e);
@@ -4743,18 +4746,18 @@ const qp = Ot(
       return t.post("/smtp-check-connection", e);
     }
   }
-), Kp = Ot(
+), Kp = pt(
   () => ({
-    baseURL: `${_t.getApiUrl()}/api/v1/store`
+    baseURL: `${ht.getApiUrl()}/api/v1/store`
   }),
   {
     getStore(t, e) {
       return t.get("/store-id", e);
     }
   }
-), Jp = Ot(
+), Jp = pt(
   () => ({
-    baseURL: `${_t.getApiUrl()}/api/v1/tag`
+    baseURL: `${ht.getApiUrl()}/api/v1/tag`
   }),
   {
     getList(t, e) {
@@ -4796,11 +4799,29 @@ const Yp = [
     label: "Lowest",
     value: "Lowest"
   }
-];
-var Mp = /* @__PURE__ */ ((t) => (t.READ_PRODUCTS = "read_products", t))(Mp || {}), Fp = /* @__PURE__ */ ((t) => (t.Admin = "Admin", t.BasicAgent = "BasicAgent", t.AgentLeader = "AgentLeader", t))(Fp || {});
-const Gp = Ot(
+], Gp = pt(
   () => ({
-    baseURL: `${_t.getApiUrl()}/api/v1/account/group`
+    baseURL: `${ht.getApiUrl()}/api/v1/ticket`
+  }),
+  {
+    getList(t, e) {
+      return t.get("", e);
+    },
+    getOne(t, e) {
+      return t.get(`/${e}`);
+    },
+    create(t, e) {
+      return t.post("", e);
+    },
+    update(t, e, r) {
+      return t.put(`/${e}`, r);
+    }
+  }
+);
+var Mp = /* @__PURE__ */ ((t) => (t.READ_PRODUCTS = "read_products", t))(Mp || {}), Fp = /* @__PURE__ */ ((t) => (t.Admin = "Admin", t.BasicAgent = "BasicAgent", t.AgentLeader = "AgentLeader", t))(Fp || {});
+const Zp = pt(
+  () => ({
+    baseURL: `${ht.getApiUrl()}/api/v1/account/group`
   }),
   {
     getList(t, e) {
@@ -4824,9 +4845,9 @@ const Gp = Ot(
   }
 );
 var Bp = /* @__PURE__ */ ((t) => (t.Disabled = "Disabled", t.Email = "Email", t.Authenticator = "Authenticator", t))(Bp || {});
-const Zp = Ot(
+const Xp = pt(
   () => ({
-    baseURL: `${_t.getApiUrl()}/api/v1/account/setting`
+    baseURL: `${ht.getApiUrl()}/api/v1/account/setting`
   }),
   {
     getAccessManagerSetting(t) {
@@ -4842,9 +4863,9 @@ const Zp = Ot(
       return t.post("/verify-setup-otp", e);
     }
   }
-), Xp = Ot(
+), Qp = pt(
   () => ({
-    baseURL: `${_t.getApiUrl()}/api/v1/help-widget`
+    baseURL: `${ht.getApiUrl()}/api/v1/help-widget`
   }),
   {
     getList(t, e) {
@@ -4873,9 +4894,9 @@ export {
   Vp as CustomerRepository,
   Cp as Day,
   qp as EmailIntegrationRepository,
-  _t as Env,
+  ht as Env,
   Np as ErrorCodeCreate,
-  Xp as HelpWidgetRepository,
+  Qp as HelpWidgetRepository,
   Up as MailBoxType,
   Lp as MailSettingType,
   Bp as MethodOTP,
@@ -4884,8 +4905,9 @@ export {
   Fp as Role,
   Kp as StoreRepository,
   Jp as TagRepository,
+  Gp as TicketRepository,
   Dp as TypeCheckTokenNewAgent,
-  Gp as UserGroupRepository,
-  Zp as UserSettingRepository,
+  Zp as UserGroupRepository,
+  Xp as UserSettingRepository,
   Yp as priorityOptions
 };

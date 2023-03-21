@@ -1,5 +1,5 @@
 import { Editor, IAllProps } from "@tinymce/tinymce-react";
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 interface TextEditorProps extends Omit<IAllProps, "onChange" | "value"> {
   value?: any;
   onChange?: (value: any) => void;
@@ -16,6 +16,10 @@ const TextEditor = ({ value, onChange, error, ...props }: TextEditorProps) => {
   const handleChange = useCallback(() => {
     onChange && onChange(editorRef.current?.getContent());
   }, []);
+  const [content, setContent] = useState("");
+  const handleEditorChange = (content: string, editor: any) => {
+    setContent(content);
+  };
 
   return (
     <div>
@@ -23,12 +27,13 @@ const TextEditor = ({ value, onChange, error, ...props }: TextEditorProps) => {
         <Typography.Text {...labelProps}></Typography.Text>
       </div> */}
       <Editor
-        // initialValue={value}
+        initialValue={value}
         apiKey="t4mxpsmop8giuev4szkrl7etgn43rtilju95m2tnst9m9uod"
         {...props}
         onInit={initEditor}
         onChange={handleChange}
-        value={value}
+        onEditorChange={handleEditorChange}
+        // value={value}
         init={{
           height: 400,
           branding: false,

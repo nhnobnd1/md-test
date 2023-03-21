@@ -7,3 +7,6 @@ export function validateAsciiChars(input: string) {
   // eslint-disable-next-line no-control-regex
   return !/[^\x00-\x7F]/.test(input);
 }
+
+export const objectIdRegex = /^[0-9a-fA-F]{24}$/;
+export const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
