@@ -7,7 +7,7 @@ import {
 } from "@moose-desk/repo";
 import BusinessCalendarRepository from "@moose-desk/repo/businessCalendar/BusinessCalendarRepository";
 import { Button, Card, Space, Tabs } from "antd";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
@@ -32,7 +32,7 @@ const BusinessHours = (props: BusinessHoursProps) => {
     useState("");
   const [selected, setSelected] = useState(0);
   const [form] = Form.useForm();
-  const [disabled, setDisabled] = useState(false);
+  // const [disabled, setDisabled] = useState(false);
   const handleTabChange = useCallback(
     (selectedTabIndex) => setSelected(selectedTabIndex),
     []
@@ -41,18 +41,6 @@ const BusinessHours = (props: BusinessHoursProps) => {
   // handle Data in tabs
   const handleChangeValues = useCallback((value) => {
     updateForm();
-    if (value.businessHoursType) {
-      switch (value.businessHoursType) {
-        case BusinessHoursType.Full:
-          setDisabled(true);
-          break;
-        case BusinessHoursType.Custom:
-          setDisabled(false);
-          break;
-        default:
-          break;
-      }
-    }
     if (value.autoReply) {
       setDataAutoReply([...value.autoReply]);
     }
@@ -60,6 +48,11 @@ const BusinessHours = (props: BusinessHoursProps) => {
       setDataHolidays([...value.holidays]);
     }
   }, []);
+
+  const disabled = useMemo(() => {
+    return form.getFieldValue("businessHoursType") === BusinessHoursType.Full;
+  }, [form.getFieldValue("businessHoursType")]);
+
   // fetch business calendar
   const { run: fetchListBusinessCalendar } = useJob(
     () => {
@@ -74,11 +67,6 @@ const BusinessHours = (props: BusinessHoursProps) => {
               setDataBusinessCalendar({ ...data.data[0] });
               setDataAutoReply([...data.data[0].autoReply]);
               setDataHolidays([...data.data[0].holidays]);
-              if (data.data[0].businessHoursType === "24/7") {
-                setDisabled(true);
-              } else {
-                setDisabled(false);
-              }
               setDataBusinessHoursAutoReplyCode(
                 data.data[0].businessHoursAutoReplyCode
               );
