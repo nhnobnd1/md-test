@@ -54,14 +54,15 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
   const initialValues = props.initialValues;
   const [fromEmail, setFromEmail] = useState(props.primaryEmail);
   const [toEmail, setToEmail] = useState({ value: "", id: "" });
+  const [form] = Form.useForm();
   const fetchAgents = useCallback(
     (params: LoadMoreValue) => {
-      const limit = env.DEFAULT_PAGE_SIZE;
+      const limit = 50;
 
       return AgentRepository()
         .getList({
           page: params.page,
-          limit: 100,
+          limit: limit,
           query: params.searchText,
         })
         .pipe(
@@ -239,7 +240,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
     const tags: string[] = values.tags;
     const result = [];
 
-    if (tags.length) {
+    if (tags?.length) {
       for (let i = 0; i < tags.length; i++) {
         const tag = tags[i];
         if (objectIdRegex.test(tag)) {
@@ -253,17 +254,17 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
 
     CreateTicket({
       fromEmail: {
-        address: fromEmail?.supportEmail,
+        email: fromEmail?.supportEmail,
         name: fromEmail?.name,
       },
       senderConfigId: values.from,
       agentObjectId: values.assignee,
-      toEmails: [values.to],
+      toEmails: [{ email: values.to, name: values.to.split("@")[0] }],
       customerObjectId: toEmail.id,
       ccEmails: values?.CC,
       bccEmails: values?.BCC,
       subject: values.subject,
-      description: values.message,
+      description: values.content,
       status: "OPEN",
       priority: values.priority,
       tags: result,
@@ -290,10 +291,13 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
     });
     // setFromEmail(options.obj);
   };
-  const onChangeAssignee = (value: string, options: any) => {};
+  const onChangeAssignee = (value: string, options: any) => {
+    console.log({ value, options });
+  };
 
   return (
     <Form
+      form={form}
       layout={"vertical"}
       enableReinitialize
       initialValues={initialValues}
@@ -437,10 +441,11 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
           </Form.Item> */}
         </div>
         <div className="mt-4">
-          <Form.Item name="message" className="w-full">
+          <Form.Item name="content" className="w-full">
             <TextEditor
+              form={form}
               init={{
-                height: 250,
+                height: 500,
                 placeholder: "Please input your message here......",
               }}
             />

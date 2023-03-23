@@ -6,10 +6,29 @@ export declare enum Priority {
     Low = "Low",
     Lowest = "Lowest"
 }
+export declare enum StatusTicket {
+    PENDING = "PENDING",
+    OPEN = "OPEN",
+    RESOLVED = "RESOLVED"
+}
+export declare const statusOptions: {
+    label: string;
+    value: StatusTicket;
+}[];
 export declare const priorityOptions: {
     label: string;
     value: Priority;
 }[];
+export declare type AttachFile = {
+    attachmentUrl: string;
+    contentType: string;
+    createdTimestamp: number;
+    deleted: boolean;
+    name: string;
+    size: string;
+    thumbUrl?: string;
+    _id: string;
+};
 export declare type Ticket = {
     id: string;
     createdDatetime: string;
@@ -29,19 +48,77 @@ export declare type Ticket = {
     status: string;
     priority: string;
     fromEmail: {
-        address: string;
+        email: string;
         name: string;
     };
     senderConfigId: string;
     agentObjectId: string;
     customerObjectId: string;
-    toEmails: string[];
+    toEmails: [{
+        email: string;
+        name: string;
+    }];
     ccEmails: string[];
     bccEmails: string[];
+    tags: string[];
     sendEmailFailureCount: number;
     createdViaWidget: boolean;
     mailMessageId: string;
+    incoming: boolean;
+    attachments: AttachFile[];
     _id: string;
+};
+export declare type Conversation = {
+    id: string;
+    createdDatetime: string;
+    createdTimestamp: number;
+    createdBy?: string;
+    deleted: boolean;
+    incoming: boolean;
+    sendEmailFailureCount: number;
+    storeId: string;
+    body: string;
+    bodyText: string;
+    description: string;
+    fromEmail?: {
+        email: string;
+        name: string;
+    };
+    toEmails: [{
+        email: string;
+        name: string;
+    }];
+    ccEmails: string[];
+    bccEmails: string[];
+    attachmentIds: string[];
+    ticketId: number;
+    ticketObjectId: string;
+    referenceMailMessageId: string;
+    mailMessageId: string;
+    attachments: AttachFile[];
+    _id: string;
+};
+export declare type ReplyTicket = {
+    id: string;
+    attachmentIds?: string[];
+    bccEmails?: string[];
+    description: string;
+    senderConfigId: string;
+    ccEmails?: string[];
+    fromEmail: {
+        email: string;
+        name: string;
+    };
+    toEmails: [{
+        name: string;
+        email: string;
+    }];
+};
+export declare type UpdateTicket = {
+    priority?: string;
+    status?: string;
+    tags?: string[];
+    agentObjectId?: string;
 };
 export interface BaseListTicketRequest extends BaseListRequest {
     sortBy?: string;
@@ -49,9 +126,13 @@ export interface BaseListTicketRequest extends BaseListRequest {
 }
 export declare type GetListTicketRequest = BaseListTicketRequest;
 export declare type GetListTicketResponse = BaseListResponse<Ticket>;
+export declare type GetListTicketConversationResponse = BaseListResponse<Conversation>;
 export declare type GetOneTicketResponse = BaseResponse<Ticket>;
 export declare type CreateTicketRequest = Omit<Ticket, 'id'>;
+export declare type CreateReplyTicketRequest = ReplyTicket;
+export declare type CreateReplyTicketResponse = BaseResponse<Conversation>;
 export declare type CreateTicketResponse = BaseResponse<Ticket>;
-export declare type UpdateTicketRequest = Ticket;
+export declare type UpdateTicketRequest = UpdateTicket;
 export declare type UpdateTicketResponse = BaseResponse<Ticket>;
+export declare type DeleteTicketResponse = BaseListResponse<Ticket>;
 //# sourceMappingURL=Ticket.d.ts.map

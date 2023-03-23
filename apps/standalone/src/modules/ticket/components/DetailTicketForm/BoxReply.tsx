@@ -1,92 +1,142 @@
-import { TagRepository } from "@moose-desk/repo";
-import { Avatar, Card, Form, List } from "antd";
+import { emailRegex, objectIdRegex, useJob } from "@moose-desk/core";
+import { Conversation, Tag, TagRepository, Ticket } from "@moose-desk/repo";
+import { Select as AntSelect, Card, List } from "antd";
+import { FormInstance } from "antd/lib/form/Form";
+import moment from "moment";
 import VirtualList from "rc-virtual-list";
-import { useCallback, useMemo } from "react";
-import { map } from "rxjs";
+import { memo, useEffect, useMemo, useState } from "react";
+import { catchError, map, of } from "rxjs";
 import TextEditor from "src/components/UI/Editor/TextEditor";
-import Select, { LoadMoreValue } from "src/components/UI/Select/Select";
-import env from "src/core/env";
+import { Form } from "src/components/UI/Form";
+import Select from "src/components/UI/Select/Select";
+import { RowMessage } from "src/modules/ticket/components/DetailTicketForm/RowMessage";
+import { useStore } from "src/providers/StoreProviders";
 import "./BoxReply.scss";
 
-interface BoxReplyProps {}
+interface BoxReplyProps {
+  id: string | undefined;
+  ticket: Ticket;
+  form: FormInstance<any>;
+  conversationList: Conversation[];
+  tags: Tag[];
+  setTags: any;
+}
 
-interface ChatItem {
+export interface ChatItem {
   id: string;
   name: string;
-  avatar: string;
   chat: string;
   time: string;
+  email: string;
 }
 
 const heightBoxComment = 400;
 
-const BoxReply = (props: BoxReplyProps) => {
-  const listChat = useMemo<ChatItem[]>(() => {
-    return [
-      {
-        id: "1",
-        name: "Customer",
-        avatar: "https://joesch.moe/api/v1/random",
-        time: "19:02:18",
-        chat: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-      },
-      {
-        id: "2",
-        name: "Agent",
-        avatar: "https://joesch.moe/api/v1/random",
-        time: "19:02:18",
-        chat: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-      },
-      {
-        id: "3",
-        name: "Agent 2",
-        avatar: "https://joesch.moe/api/v1/random",
-        time: "19:02:18",
-        chat: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-      },
-      {
-        id: "4",
-        name: "Agent 4",
-        avatar: "https://joesch.moe/api/v1/random",
-        time: "19:02:18",
-        chat: "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-      },
-    ];
-  }, []);
-
-  const onScroll = (e: React.UIEvent<HTMLElement, UIEvent>) => {
-    if (
-      e.currentTarget.scrollHeight - e.currentTarget.scrollTop ===
-      heightBoxComment
-    ) {
-      // console.log("scroll");
+const validateCCEmail = (value: string[]): boolean => {
+  if (!value) return true;
+  let checked = true;
+  for (const item of value) {
+    if (!emailRegex.test(item)) {
+      checked = false;
+      break;
     }
-  };
+  }
+  return checked;
+};
 
-  const fetchTags = useCallback(
-    (params: LoadMoreValue) => {
-      const limit = env.DEFAULT_PAGE_SIZE;
+const BoxReply = ({
+  id,
+  ticket,
+  form,
+  conversationList,
+  tags,
+  setTags,
+}: BoxReplyProps) => {
+  const [enableCC, setEnableCC] = useState(false);
+  const [tagsCreated, setTagsCreated] = useState<Tag[] | []>([]);
+  const { storeId } = useStore();
+
+  const listChat = useMemo<ChatItem[]>(() => {
+    const conversationMapping: any = conversationList?.map(
+      (item: Conversation) => {
+        return {
+          id: item._id,
+          name: item.fromEmail?.name,
+          time: moment
+            .unix(item.createdTimestamp)
+            .local()
+            .format("HH:mm DD/MM/YYYY Z"),
+          chat: item.description,
+          email: item.fromEmail?.email,
+        };
+      }
+    );
+    conversationMapping?.unshift({
+      id: ticket._id,
+      name: ticket?.fromEmail.name,
+      time: moment
+        .unix(ticket.createdTimestamp)
+        .local()
+        .format("HH:mm DD/MM/YYYY Z"),
+      chat: ticket.description,
+      email: ticket.fromEmail.email,
+    });
+    return conversationMapping;
+  }, [ticket, conversationList]);
+
+  const { run: createTag } = useJob(
+    (dataSubmit: any) => {
       return TagRepository()
-        .getList({
-          page: params.page,
-          limit: limit,
-          query: params.searchText,
-        })
+        .create(dataSubmit)
         .pipe(
           map(({ data }) => {
-            return {
-              options: data.data.map((item) => ({
-                label: item.name,
-                value: item._id,
-                obj: item,
-              })),
-              canLoadMore: params.page < data.metadata.totalPage,
-            };
+            if (data.statusCode === 200) {
+              setTagsCreated([...tagsCreated, data.data]);
+              setTags([...tags, data.data]);
+            }
+          }),
+          catchError((err) => {
+            return of(err);
           })
         );
     },
-    [TagRepository]
+    { showLoading: false }
   );
+  useEffect(() => {
+    const tags: string[] = form.getFieldValue("tags");
+    const result = [];
+    if (tags?.length) {
+      for (let i = 0; i < tags.length; i++) {
+        const tag = tags[i];
+        if (objectIdRegex.test(tag)) {
+          result.push(tag);
+        } else {
+          const findItem = tagsCreated.find((item: Tag) => item.name === tag);
+          result.push(findItem?._id);
+        }
+      }
+    }
+    form.setFieldValue("tags", result);
+  }, [tagsCreated.length]);
+
+  const onChangeTag = (value: string) => {
+    const idsTagCreated = tagsCreated.map((item) => item.name);
+    for (const item of value) {
+      if (!objectIdRegex.test(item) && !idsTagCreated.includes(item)) {
+        createTag({ name: item, storeId });
+      }
+    }
+  };
+
+  const initialValues = useMemo(() => {
+    return {
+      to: ticket.toEmails[0].email,
+      tags: ticket.tags,
+    };
+  }, [id, ticket]);
+  const onFinish = (values: any) => {
+    console.log({ values });
+  };
 
   return (
     <div className="BoxReply w-full">
@@ -99,21 +149,13 @@ const BoxReply = (props: BoxReplyProps) => {
                 height={heightBoxComment}
                 itemHeight={50}
                 itemKey="id"
-                onScroll={onScroll}
               >
                 {(item: ChatItem) => (
                   <List.Item key={item.id}>
                     <List.Item.Meta
-                      avatar={<Avatar size={"large"} src={item.avatar} />}
-                      title={<span>{item.name}</span>}
-                      description={
-                        <div>
-                          <div className="text-black mb-2">{item.chat}</div>
-                          <div className="text-black flex justify-end font-bold">
-                            {item.time}
-                          </div>
-                        </div>
-                      }
+                      // avatar={<Avatar size={"large"} />}
+                      // title={<span>{item.name}</span>}
+                      description={<RowMessage item={item} />}
                     />
                   </List.Item>
                 )}
@@ -121,31 +163,114 @@ const BoxReply = (props: BoxReplyProps) => {
             </List>
           </div>
           <div className="box-comment">
-            <div className="w-full flex items-center gap-4">
-              <Form.Item label="To" name="to">
-                <Select className="w-[150px]" placeholder="Customer Email" />
+            <Form
+              form={form}
+              enableReinitialize
+              initialValues={initialValues}
+              onFinish={onFinish}
+            >
+              <div className="w-full flex items-start gap-4 flex-wrap">
+                <div className="flex flex-1">
+                  <div className="w-full">
+                    <Form.Item label="To" name="to" labelCol={{ span: 4 }}>
+                      <Select
+                        className="w-[150px]"
+                        placeholder="Customer Email"
+                      />
+                    </Form.Item>
+                    {enableCC ? (
+                      <Form.Item
+                        label="CC"
+                        name="CC"
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ offset: 0, span: 18 }}
+                        rules={[
+                          ({ getFieldValue }) => ({
+                            validator(_, value) {
+                              if (validateCCEmail(value)) {
+                                return Promise.resolve();
+                              } else {
+                                return Promise.reject(
+                                  new Error("The email address is not valid")
+                                );
+                              }
+                            },
+                          }),
+                        ]}
+                      >
+                        <Select
+                          options={[]}
+                          mode="tags"
+                          placeholder="Type CC email..."
+                        ></Select>
+                      </Form.Item>
+                    ) : (
+                      <></>
+                    )}
+                    {enableCC ? (
+                      <Form.Item
+                        label="BCC"
+                        name="BCC"
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ offset: 0, span: 18 }}
+                        rules={[
+                          ({ getFieldValue }) => ({
+                            validator(_, value) {
+                              if (validateCCEmail(value)) {
+                                return Promise.resolve();
+                              } else {
+                                return Promise.reject(
+                                  new Error("The email address is not valid")
+                                );
+                              }
+                            },
+                          }),
+                        ]}
+                      >
+                        <Select
+                          options={[]}
+                          mode="tags"
+                          placeholder="Type BCC email..."
+                        ></Select>
+                      </Form.Item>
+                    ) : (
+                      <></>
+                    )}
+                  </div>
+                  <div>
+                    <span
+                      className="link"
+                      onClick={() => {
+                        setEnableCC(!enableCC);
+                      }}
+                    >
+                      CC/BCC
+                    </span>
+                  </div>
+                </div>
+
+                <Form.Item name="tags" label="Tags" className="flex-1">
+                  <AntSelect
+                    placeholder="Add tags"
+                    mode="tags"
+                    options={tags.map((item: Tag) => ({
+                      value: item._id,
+                      label: item.name,
+                    }))}
+                    onChange={onChangeTag}
+                  />
+                </Form.Item>
+              </div>
+              <Form.Item name="message">
+                <TextEditor
+                  init={{
+                    height: 250,
+                    menubar: false,
+                    placeholder: "Please input your message here......",
+                  }}
+                />
               </Form.Item>
-              <Form.Item label="Macros" name="macros">
-                <Select className="w-[150px]" />
-              </Form.Item>
-              <Form.Item name="tags" label="Tags">
-                <Select.Ajax
-                  mode="tags"
-                  className="w-[250px]"
-                  placeholder="Add tags"
-                  loadMore={fetchTags}
-                ></Select.Ajax>
-              </Form.Item>
-            </div>
-            <Form.Item name="message">
-              <TextEditor
-                init={{
-                  height: 250,
-                  menubar: false,
-                  placeholder: "Please input your message here......",
-                }}
-              />
-            </Form.Item>
+            </Form>
           </div>
         </div>
       </Card>
@@ -153,4 +278,4 @@ const BoxReply = (props: BoxReplyProps) => {
   );
 };
 
-export default BoxReply;
+export default memo(BoxReply);

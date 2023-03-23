@@ -6,13 +6,13 @@ import {
   RequestHeaderContentType,
 } from "../models/api";
 import {
+  TokenManager,
   clearUndefinedProperties,
   formData,
-  TokenManager,
   urlEncoded,
 } from "../utilities";
-import createAxiosInstance from "./axios";
 import { AxiosObservable } from "./AxiosObservable";
+import createAxiosInstance from "./axios";
 
 export class Api<GlobalResponse = any> {
   private axiosInstance: AxiosObservable;

@@ -279,8 +279,8 @@ Select.Assignee = ({
   dependencies = [],
   dependenciesWait = 500,
   extra,
-  onFetched,
   onChange,
+  onFetched,
   onDependenciesChanged,
   ...props
 }: AjaxSelectProps) => {
@@ -293,10 +293,10 @@ Select.Assignee = ({
   const { state: loading, on: startLoading, off: stopLoading } = useToggle();
   const [isFirst, setIsFirst] = useState(true);
   const user: any = useUser();
+  const [dataAgent, setDataAgent] = useState<any>([]);
   const canFetch = useMemo(() => {
     return !loading && canLoadMore;
   }, [loading, canLoadMore]);
-
   const fetchData = useCallback(() => {
     try {
       fetchDataApi({
@@ -324,9 +324,24 @@ Select.Assignee = ({
     return loadMore(params).pipe(
       map((data) => {
         stopLoading();
-        const findItemLoad = data.options.find(
-          (item) => item.obj?.email === user?.unique_name
-        );
+        let arrayData: any = [];
+        setDataAgent((prev: any) => {
+          arrayData = [...prev, ...data.options];
+          return [...prev, ...data.options];
+        });
+        if (data.canLoadMore) {
+          fetchDataApi({
+            page: params.page + 1,
+            searchText: params.searchText,
+            isFirst: params.isFirst,
+            value: params.value,
+          });
+          return;
+        }
+        data.options = arrayData;
+        const findItemLoad = value
+          ? data.options.find((item) => item.obj?._id === value)
+          : data.options.find((item) => item.obj?.email === user?.unique_name);
         if (findItemLoad) {
           onChange && onChange(findItemLoad?.value as string, findItemLoad);
         }
@@ -386,6 +401,7 @@ Select.Assignee = ({
     reloadData();
     setCanLoadMore(true);
   }, [...(dependencies || [])]);
+
   return (
     <Select
       {...props}
@@ -393,6 +409,7 @@ Select.Assignee = ({
       options={renderOption ? undefined : options}
       onFocus={onFocus}
       loading={loading}
+      onChange={onChange}
       // onPopupScroll={onPopupScroll}
       // onSearch={onSearch}
       showSearch={props.showSearch ?? true}

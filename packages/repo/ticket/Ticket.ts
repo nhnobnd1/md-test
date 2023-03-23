@@ -8,6 +8,27 @@ export enum Priority {
 	Lowest = 'Lowest',
 }
 
+export enum StatusTicket {
+	PENDING = 'PENDING',
+	OPEN = 'OPEN',
+	RESOLVED = 'RESOLVED',
+}
+
+export const statusOptions = [
+	{
+		label: 'PENDING',
+		value: StatusTicket.PENDING,
+	},
+	{
+		label: 'OPEN',
+		value: StatusTicket.OPEN,
+	},
+	{
+		label: 'RESOLVED',
+		value: StatusTicket.RESOLVED,
+	},
+];
+
 export const priorityOptions = [
 	{
 		label: 'Highest',
@@ -31,6 +52,17 @@ export const priorityOptions = [
 	},
 ];
 
+export type AttachFile = {
+	attachmentUrl: string;
+	contentType: string;
+	createdTimestamp: number;
+	deleted: boolean;
+	name: string;
+	size: string;
+	thumbUrl?: string;
+	_id: string;
+};
+
 export type Ticket = {
 	id: string;
 	createdDatetime: string;
@@ -50,28 +82,85 @@ export type Ticket = {
 	status: string;
 	priority: string;
 	fromEmail: {
-		address: string;
+		email: string;
 		name: string;
 	};
 	senderConfigId: string;
 	agentObjectId: string;
 	customerObjectId: string;
-	toEmails: string[];
+	toEmails: [{ email: string; name: string }];
 	ccEmails: string[];
 	bccEmails: string[];
+	tags: string[];
 	sendEmailFailureCount: number;
 	createdViaWidget: boolean;
 	mailMessageId: string;
+	incoming: boolean;
+	attachments: AttachFile[];
 	_id: string;
 };
+
+export type Conversation = {
+	id: string;
+	createdDatetime: string;
+	createdTimestamp: number;
+	createdBy?: string;
+	deleted: boolean;
+	incoming: boolean;
+	sendEmailFailureCount: number;
+	storeId: string;
+	body: string;
+	bodyText: string;
+	description: string;
+	fromEmail?: {
+		email: string;
+		name: string;
+	};
+	toEmails: [{ email: string; name: string }];
+	ccEmails: string[];
+	bccEmails: string[];
+	attachmentIds: string[];
+	ticketId: number;
+	ticketObjectId: string;
+	referenceMailMessageId: string;
+	mailMessageId: string;
+	attachments: AttachFile[];
+	_id: string;
+};
+
+export type ReplyTicket = {
+	id: string;
+	attachmentIds?: string[];
+	bccEmails?: string[];
+	description: string;
+	senderConfigId: string;
+	ccEmails?: string[];
+	fromEmail: {
+		email: string;
+		name: string;
+	};
+	toEmails: [{ name: string; email: string }];
+};
+
+export type UpdateTicket = {
+	priority?: string;
+	status?: string;
+	tags?: string[];
+	agentObjectId?: string;
+};
+
 export interface BaseListTicketRequest extends BaseListRequest {
 	sortBy?: string;
 	sortOrder?: number;
 }
 export type GetListTicketRequest = BaseListTicketRequest;
 export type GetListTicketResponse = BaseListResponse<Ticket>;
+export type GetListTicketConversationResponse = BaseListResponse<Conversation>;
 export type GetOneTicketResponse = BaseResponse<Ticket>;
 export type CreateTicketRequest = Omit<Ticket, 'id'>;
+export type CreateReplyTicketRequest = ReplyTicket;
+export type CreateReplyTicketResponse = BaseResponse<Conversation>;
 export type CreateTicketResponse = BaseResponse<Ticket>;
-export type UpdateTicketRequest = Ticket;
+export type UpdateTicketRequest = UpdateTicket;
 export type UpdateTicketResponse = BaseResponse<Ticket>;
+export type DeleteTicketResponse = BaseListResponse<Ticket>;
