@@ -18,7 +18,7 @@ const CreateTicket = (props: CreateTicketProps) => {
     return {
       priority: Priority.Medium,
       from: primaryEmail?._id,
-      message: "Please input your message here.....",
+      content: "<p>Please input your message here.....</p>",
       to: "",
       // assignee: "3a08b18a-e690-f9ca-ff56-e7145104fb8d",
     };

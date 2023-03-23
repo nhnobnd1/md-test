@@ -1,12 +1,22 @@
 import { Editor, IAllProps } from "@tinymce/tinymce-react";
+import { FormInstance } from "antd";
 import { useCallback, useRef, useState } from "react";
 interface TextEditorProps extends Omit<IAllProps, "onChange" | "value"> {
   value?: any;
   onChange?: (value: any) => void;
   error?: string;
+  form?: FormInstance<any>;
+  setIsChanged?: any;
 }
 
-const TextEditor = ({ value, onChange, error, ...props }: TextEditorProps) => {
+const TextEditor = ({
+  value,
+  onChange,
+  error,
+  form,
+  setIsChanged,
+  ...props
+}: TextEditorProps) => {
   const editorRef = useRef<Editor["editor"] | null>(null);
 
   const initEditor = useCallback((evt, editor: Editor["editor"]) => {
@@ -16,9 +26,17 @@ const TextEditor = ({ value, onChange, error, ...props }: TextEditorProps) => {
   const handleChange = useCallback(() => {
     onChange && onChange(editorRef.current?.getContent());
   }, []);
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState(
+    "<p>&nbsp;</p><p>&nbsp;</p><blockquote>asdasd</blockquote>"
+  );
   const handleEditorChange = (content: string, editor: any) => {
-    setContent(content);
+    // onChange && onChange(content);
+    form?.setFieldValue("content", content);
+
+    // setContent(content);
+    if (setIsChanged) {
+      setIsChanged(content);
+    }
   };
 
   return (
@@ -27,13 +45,13 @@ const TextEditor = ({ value, onChange, error, ...props }: TextEditorProps) => {
         <Typography.Text {...labelProps}></Typography.Text>
       </div> */}
       <Editor
-        initialValue={value}
+        // initialValue={value || content}
         apiKey="t4mxpsmop8giuev4szkrl7etgn43rtilju95m2tnst9m9uod"
         {...props}
         onInit={initEditor}
-        onChange={handleChange}
+        // onChange={handleChange}
         onEditorChange={handleEditorChange}
-        // value={value}
+        value={value}
         init={{
           height: 400,
           branding: false,
@@ -53,6 +71,7 @@ const TextEditor = ({ value, onChange, error, ...props }: TextEditorProps) => {
             "code",
           ],
           file_picker_types: "image",
+
           file_picker_callback: function (cb, value, meta) {
             if (meta.filetype === "image") {
               const input = document.createElement("input");

@@ -51,6 +51,7 @@ const ModalAutoReply = ({
         {...props}
         open={open}
         onOk={() => {
+          console.log("hola", form.getFieldValue("content"));
           form.submit();
         }}
         onCancel={() => onClose && onClose()}
@@ -78,6 +79,7 @@ const ModalAutoReply = ({
             <Form.Item name="createAt" hidden></Form.Item>
             <Form.Item name="content" label="Content">
               <TextEditor
+                form={form}
                 // value={dataForm?.value.content}
                 init={{
                   toolbar:
