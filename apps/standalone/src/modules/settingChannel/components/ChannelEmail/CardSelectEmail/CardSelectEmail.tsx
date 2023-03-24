@@ -94,7 +94,7 @@ export const CardSelectEmail = forwardRef(
         const payload: GetEmailGoogleAuthRequest = {
           type: type,
           ...(import.meta.env.MODE === "development" && {
-            subdomainForTest: "http://localhost:3580",
+            subdomainForTest: "localhost:3580",
           }),
         };
 

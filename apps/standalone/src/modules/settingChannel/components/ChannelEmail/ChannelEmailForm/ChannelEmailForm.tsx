@@ -213,7 +213,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
             },
           ]}
         >
-          <Input disabled={isDisabledInput() && isLoggedServer?.success} />
+          <Input />
         </Form.Item>
         <Form.Item
           name="supportEmail"
