@@ -15,7 +15,7 @@ import {
 } from "@moose-desk/repo";
 import { Button } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { map } from "rxjs";
+import { catchError, map } from "rxjs";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
 import useMessage from "src/hooks/useMessage";
@@ -159,6 +159,14 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
                 });
               });
             }
+          }),
+          catchError((err) => {
+            if (err.response.data.statusCode === 409) {
+              message.loading.hide().then(() => {
+                notification.error(`${payload.supportEmail} is exist`);
+              });
+            }
+            return err;
           })
         );
     },
