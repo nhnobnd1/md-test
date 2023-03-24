@@ -25,6 +25,11 @@ const ticketRoutes: IRoute = {
       middleware: "user",
       component: lazy(() => import("src/modules/ticket/pages/DetailTicket")),
     },
+    {
+      path: TicketRoutePaths.Trash,
+      middleware: "user",
+      component: lazy(() => import("src/modules/ticket/pages/TrashTicket")),
+    },
   ],
 };
 

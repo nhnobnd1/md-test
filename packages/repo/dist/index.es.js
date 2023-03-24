@@ -4826,6 +4826,9 @@ const Gp = [
     getOne(t, e) {
       return t.get(`/${e}`);
     },
+    getStatistic(t) {
+      return t.get("/status-statistics");
+    },
     getConversations(t, e) {
       return t.get(`/${e}/conversations`);
     },
@@ -4840,6 +4843,9 @@ const Gp = [
     },
     delete(t, e) {
       return t.delete("", {}, { data: e });
+    },
+    restore(t, e) {
+      return t.put("/restore", e);
     },
     deletePermanently(t, e) {
       return t.delete("/permanently", {}, { data: e });

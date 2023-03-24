@@ -18,6 +18,7 @@ import {
   TagRepository,
   Ticket,
   TicketRepository,
+  TicketStatistic,
   UpdateTicket,
   statusOptions,
 } from "@moose-desk/repo";
@@ -39,11 +40,11 @@ import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { CardStatistic } from "src/modules/ticket/components/CardStatistic";
+import { DeleteSelectedModal } from "src/modules/ticket/components/DeleteSelectedModal";
 import { ExportTicketPdf } from "src/modules/ticket/components/ExportTicketPdf/ExportTicketPdf";
 import ModalFilter from "src/modules/ticket/components/ModalFilter/ModalFilter";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import IcRoundFilterAlt from "~icons/ic/round-filter-alt";
-import RemoveIcon from "~icons/material-symbols/delete-outline";
 import UilImport from "~icons/uil/import";
 interface TicketIndexPageProps {}
 
@@ -52,6 +53,15 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [agents, setAgents] = useState<Agent[]>([]);
+  const [statistic, setStatistic] = useState<TicketStatistic>({
+    statusCode: 200,
+    data: {
+      OPEN: 0,
+      PENDING: 0,
+      RESOLVED: 0,
+      TRASH: 0,
+    },
+  });
   const agentsOptions = useMemo(() => {
     const mapping = agents.map((item: Agent) => {
       return {
@@ -103,6 +113,19 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         );
     }
   );
+  const { run: getStatisticTicket } = useJob(() => {
+    return TicketRepository()
+      .getStatistic()
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            setStatistic(data);
+          } else {
+            message.error("Get data ticket failed");
+          }
+        })
+      );
+  });
 
   const { run: getListAgentApi } = useJob((payload: GetListAgentRequest) => {
     return AgentRepository()
@@ -204,6 +227,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
               page: 1,
               limit: env.DEFAULT_PAGE_SIZE,
             });
+            getStatisticTicket();
           } else {
             notification.error("There is an error with remove Ticket.", {
               description: "Remove Ticket failed",
@@ -232,6 +256,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
           map(({ data }) => {
             // console.log("update ticket success", data);
             if (data.statusCode === 200) {
+              getStatisticTicket();
               message.success("Updated tickets successfully");
             }
           }),
@@ -266,6 +291,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       page: 1,
       limit: 50,
     });
+    getStatisticTicket();
   }, []);
   useEffect(() => {
     getListTicketApi(filterData);
@@ -286,8 +312,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   };
   const handleChangeForm = useCallback(
     (changedValue) => {
-      console.log("asdasd", changedValue);
-      console.log({ selectedRowKeys });
       updateTicketApi({
         ids: selectedRowKeys as string[],
         ...changedValue,
@@ -295,6 +319,10 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     },
     [selectedRowKeys]
   );
+  const handleDeleteSelected = useCallback(() => {
+    setSelectedRowKeys([]);
+    deleteTicketApi(selectedRowKeys as string[]);
+  }, [selectedRowKeys]);
   return (
     <>
       <ModalFilter open={filterModal} onCancel={closeFilterModal} />
@@ -402,10 +430,10 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
               }}
               options={[
                 { label: "New", value: "0" },
-                { label: "Open", value: "0" },
-                { label: "Pending", value: "0" },
-                { label: "Resolved", value: "0" },
-                { label: "Trash", value: "0" },
+                { label: "Open", value: `${statistic?.data.OPEN}` },
+                { label: "Pending", value: `${statistic?.data.PENDING}` },
+                { label: "Resolved", value: `${statistic?.data.RESOLVED}` },
+                { label: "Trash", value: `${statistic?.data.TRASH}` },
               ]}
             />
             {/* <CardStatistic
@@ -552,7 +580,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                   <Table.Column
                     align="center"
                     title="Action"
-                    render={(_, record: Tag) => (
+                    render={(_, record: Ticket) => (
                       <TableAction
                         record={record}
                         edit
@@ -573,16 +601,13 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                 {meta?.totalCount
                   ? meta && (
                       <div className="flex justify-between items-end">
-                        <Button
-                          onClick={() => {
-                            setSelectedRowKeys([]);
-                          }}
-                          type="text"
-                          className="flex items-center"
-                        >
-                          <RemoveIcon fontSize={20} />
-                          <span>Remove Selected</span>
-                        </Button>
+                        {selectedRowKeys.length > 0 ? (
+                          <DeleteSelectedModal
+                            handleDeleteSelected={handleDeleteSelected}
+                          />
+                        ) : (
+                          <div></div>
+                        )}
                         <Pagination
                           className="mt-4 flex justify-end"
                           currentPage={filterData.page ?? 1}

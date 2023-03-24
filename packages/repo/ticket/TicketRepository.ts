@@ -11,7 +11,8 @@ import {
 	GetListTicketRequest,
 	GetListTicketResponse,
 	GetOneTicketResponse,
-	UpdateTicket,
+	RestoreTicketResponse,
+	StatisticTicketResponse,
 	UpdateTicketRequest,
 	UpdateTicketResponse,
 } from './Ticket';
@@ -29,6 +30,9 @@ export const TicketRepository = createRepository(
 		getOne(api, id: string | undefined) {
 			return api.get<GetOneTicketResponse>(`/${id}`);
 		},
+		getStatistic(api) {
+			return api.get<StatisticTicketResponse>(`/status-statistics`);
+		},
 		getConversations(api, id: string | undefined) {
 			return api.get<GetListTicketConversationResponse>(`/${id}/conversations`);
 		},
@@ -38,11 +42,14 @@ export const TicketRepository = createRepository(
 		postReply(api, data: CreateReplyTicketRequest) {
 			return api.post<CreateReplyTicketResponse>(`/${data.id}/reply`, data);
 		},
-		update(api,  data: UpdateTicketRequest) {
+		update(api, data: UpdateTicketRequest) {
 			return api.put<UpdateTicketResponse>(``, data);
 		},
 		delete(api, data: BaseDeleteList) {
 			return api.delete<DeleteTicketResponse>('', {}, { data });
+		},
+		restore(api, data: BaseDeleteList) {
+			return api.put<RestoreTicketResponse>('/restore', data);
 		},
 		deletePermanently(api, data: BaseDeleteList) {
 			return api.delete<DeleteTicketResponse>('/permanently', {}, { data });

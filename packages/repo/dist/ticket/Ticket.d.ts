@@ -114,6 +114,18 @@ export declare type ReplyTicket = {
         email: string;
     }];
 };
+export declare type TicketStatistic = {
+    statusCode: number;
+    data: {
+        OPEN: number;
+        PENDING: number;
+        RESOLVED: number;
+        TRASH: number;
+    };
+};
+export declare type RestoreTicketResponse = {
+    statusCode: number;
+};
 export declare type UpdateTicket = {
     priority?: string;
     status?: string;
@@ -136,4 +148,5 @@ export declare type CreateTicketResponse = BaseResponse<Ticket>;
 export declare type UpdateTicketRequest = UpdateTicket;
 export declare type UpdateTicketResponse = BaseResponse<Ticket>;
 export declare type DeleteTicketResponse = BaseListResponse<Ticket>;
+export declare type StatisticTicketResponse = TicketStatistic;
 //# sourceMappingURL=Ticket.d.ts.map

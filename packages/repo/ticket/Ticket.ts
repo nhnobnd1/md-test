@@ -142,6 +142,20 @@ export type ReplyTicket = {
 	toEmails: [{ name: string; email: string }];
 };
 
+export type TicketStatistic = {
+	statusCode: number;
+	data: {
+		OPEN: number;
+		PENDING: number;
+		RESOLVED: number;
+		TRASH: number;
+	};
+};
+
+export type RestoreTicketResponse = {
+	statusCode: number;
+};
+
 export type UpdateTicket = {
 	priority?: string;
 	status?: string;
@@ -165,3 +179,4 @@ export type CreateTicketResponse = BaseResponse<Ticket>;
 export type UpdateTicketRequest = UpdateTicket;
 export type UpdateTicketResponse = BaseResponse<Ticket>;
 export type DeleteTicketResponse = BaseListResponse<Ticket>;
+export type StatisticTicketResponse = TicketStatistic;
