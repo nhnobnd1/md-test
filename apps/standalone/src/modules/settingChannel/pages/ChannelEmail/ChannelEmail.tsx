@@ -1,3 +1,4 @@
+import { DeleteOutlined } from "@ant-design/icons";
 import {
   generatePath,
   useDebounceFn,
@@ -11,7 +12,7 @@ import {
   EmailIntegrationRepository,
   GetListEmailRequest,
 } from "@moose-desk/repo";
-import { Input, TableProps } from "antd";
+import { Button, Input, Space, TableProps, Tooltip } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useCallback, useEffect, useState } from "react";
 import { catchError, map, of } from "rxjs";
@@ -211,27 +212,51 @@ const ChannelEmail = (props: ChannelEmailProps) => {
               align="center"
               title="Action"
               render={(_, record: EmailIntegration) => (
-                <TableAction
-                  record={record}
-                  edit
-                  onlyIcon
-                  onEdit={() => {
-                    navigate(
-                      generatePath(
-                        SettingChannelRoutePaths.ChannelEmail.Update,
-                        { id: record._id }
-                      )
-                    );
-                  }}
-                  specialDelete={{
-                    title:
-                      "Are you sure that you want to permanently remove this email connection.",
-                    description:
-                      "This email will be removed permanently. You can no longer use this email for sending or receiving emails for MooseDesk's support tickets",
-                    okeText: "Remove",
-                  }}
-                  onSpecialDelete={() => handleDeleteEmail(record._id)}
-                />
+                <Space>
+                  <TableAction
+                    record={record}
+                    edit
+                    onlyIcon
+                    onEdit={() => {
+                      navigate(
+                        generatePath(
+                          SettingChannelRoutePaths.ChannelEmail.Update,
+                          { id: record._id }
+                        )
+                      );
+                    }}
+                    specialDelete={
+                      !record.isPrimaryEmail
+                        ? {
+                            title:
+                              "Are you sure that you want to permanently remove this email connection.",
+                            description:
+                              "This email will be removed permanently. You can no longer use this email for sending or receiving emails for MooseDesk's support tickets",
+                            okeText: "Remove",
+                          }
+                        : undefined
+                    }
+                    onSpecialDelete={() => handleDeleteEmail(record._id)}
+                  />
+                  {record.isPrimaryEmail && (
+                    <Tooltip
+                      placement="top"
+                      title={
+                        <p className="text-center">
+                          This is your primary email and cannot be deleted.
+                        </p>
+                      }
+                      arrowContent
+                    >
+                      <Button
+                        danger
+                        type="primary"
+                        disabled
+                        icon={<DeleteOutlined />}
+                      ></Button>
+                    </Tooltip>
+                  )}
+                </Space>
               )}
             />
           </Table>

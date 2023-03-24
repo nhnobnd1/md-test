@@ -142,7 +142,7 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
     (payload: CreateEmailIntegrationRequest) => {
       message.loading.show("Updating new email");
       return EmailIntegrationRepository()
-        .createEmailIntegration(payload)
+        .updateEmailIntegration(id, payload)
         .pipe(
           map(({ data }) => {
             if (data.statusCode === 200) {
