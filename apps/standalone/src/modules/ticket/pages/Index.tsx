@@ -7,40 +7,62 @@ import {
   useToggle,
 } from "@moose-desk/core";
 import {
+  Agent,
+  AgentRepository,
   BaseListTicketRequest,
   BaseMetaDataListResponse,
+  GetListAgentRequest,
   GetListTagRequest,
   GetListTicketRequest,
   Tag,
   TagRepository,
   Ticket,
   TicketRepository,
+  UpdateTicket,
+  statusOptions,
 } from "@moose-desk/repo";
+import { PDFDownloadLink } from "@react-pdf/renderer";
 import { Button, Input, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import moment from "moment";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
+import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
 import IconButton from "src/components/UI/IconButton";
 import Pagination from "src/components/UI/Pagination/Pagination";
+import Select from "src/components/UI/Select/Select";
 import { Table } from "src/components/UI/Table";
 import TableAction from "src/components/UI/Table/TableAction/TableAction";
 import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { CardStatistic } from "src/modules/ticket/components/CardStatistic";
+import { ExportTicketPdf } from "src/modules/ticket/components/ExportTicketPdf/ExportTicketPdf";
 import ModalFilter from "src/modules/ticket/components/ModalFilter/ModalFilter";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import IcRoundFilterAlt from "~icons/ic/round-filter-alt";
+import RemoveIcon from "~icons/material-symbols/delete-outline";
 import UilImport from "~icons/uil/import";
-
 interface TicketIndexPageProps {}
 
 const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
+  const [agents, setAgents] = useState<Agent[]>([]);
+  const agentsOptions = useMemo(() => {
+    const mapping = agents.map((item: Agent) => {
+      return {
+        value: item._id,
+        label: item.lastName.includes("admin")
+          ? `${item.firstName} - ${item.email}`
+          : `${item.firstName} ${item.lastName} - ${item.email}`,
+      };
+    });
+    return mapping;
+  }, [agents]);
   const {
     state: filterModal,
     on: openFilterModal,
@@ -81,6 +103,37 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         );
     }
   );
+
+  const { run: getListAgentApi } = useJob((payload: GetListAgentRequest) => {
+    return AgentRepository()
+      .getList(payload)
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            // let current: any = [];
+            const tags = data.data.map((item) => ({
+              ...item,
+              id: item._id,
+            }));
+            setAgents((prevTags) => {
+              // current = [...prevTags, ...tags];
+              return [...prevTags, ...tags];
+            });
+
+            if (data.metadata.totalPage > (payload.page as number)) {
+              getListAgentApi({
+                page: (payload.page as number) + 1,
+                limit: payload.limit,
+              });
+              // return;
+            }
+            // console.log("asdasd", current);
+          } else {
+            message.error("Get data ticket failed");
+          }
+        })
+      );
+  });
 
   const { run: getListTagApi, processing: loadingTags } = useJob(
     (payload: GetListTagRequest) => {
@@ -171,10 +224,29 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         })
       );
   });
+  const { run: updateTicketApi } = useJob(
+    (data: UpdateTicket) => {
+      return TicketRepository()
+        .update(data)
+        .pipe(
+          map(({ data }) => {
+            // console.log("update ticket success", data);
+            if (data.statusCode === 200) {
+              message.success("Updated tickets successfully");
+            }
+          }),
+          catchError((err) => {
+            message.error("Updated tickets fail");
+
+            return of(err);
+          })
+        );
+    },
+    { showLoading: false }
+  );
 
   const onPagination = useCallback(
     ({ page, limit }: { page: number; limit: number }) => {
-      console.log({ page, limit });
       setFilterData((value) => {
         return {
           ...value,
@@ -190,17 +262,39 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       page: 1,
       limit: 50,
     });
+    getListAgentApi({
+      page: 1,
+      limit: 50,
+    });
   }, []);
   useEffect(() => {
     getListTicketApi(filterData);
   }, [filterData]);
-  console.log({ tickets, tags });
   const handleEdit = (record: Ticket) => {
     navigate(generatePath(TicketRoutePaths.Detail, { id: record._id }));
   };
   const handleDelete = useCallback((ticket: Tag) => {
     deleteTicketApi([ticket._id]);
   }, []);
+
+  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+  const handleChangeForm = useCallback(
+    (changedValue) => {
+      console.log("asdasd", changedValue);
+      console.log({ selectedRowKeys });
+      updateTicketApi({
+        ids: selectedRowKeys as string[],
+        ...changedValue,
+      });
+    },
+    [selectedRowKeys]
+  );
   return (
     <>
       <ModalFilter open={filterModal} onCancel={closeFilterModal} />
@@ -227,8 +321,8 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       <div className="mt-6">
         <div className="grid grid-cols-5 gap-6 mb-2">
           <div className="col-span-4 col-start-2">
-            <div className="flex justify-between">
-              <div className="filters">
+            <div className="flex ">
+              <div className="filters flex gap-3">
                 <Button
                   onClick={openFilterModal}
                   type="primary"
@@ -240,16 +334,61 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                 >
                   Filters
                 </Button>
+                <div
+                  className={`flex gap-3 ${
+                    selectedRowKeys.length
+                      ? "opacity-100"
+                      : "opacity-0 pointer-events-none"
+                  }`}
+                >
+                  <Form
+                    onValuesChange={handleChangeForm}
+                    className="flex gap-2"
+                  >
+                    <Form.Item label="" name="status">
+                      <Select className="w-[150px]" options={statusOptions} />
+                    </Form.Item>
+                    <Form.Item label="" name="agentObjectId">
+                      <Select
+                        placeholder="Search agents"
+                        options={agentsOptions}
+                        className="w-[300px]"
+                        // onChange={onChangeAssignee}
+                      />
+                    </Form.Item>
+                  </Form>
+
+                  <PDFDownloadLink
+                    document={
+                      <ExportTicketPdf
+                        tickets={tickets}
+                        selectedRowKeys={selectedRowKeys}
+                        tags={tags}
+                      />
+                    }
+                    fileName="Tickets.pdf"
+                    style={{ textDecoration: "none" }}
+                  >
+                    {({ blob, url, loading, error }) =>
+                      loading ? (
+                        "Loading document..."
+                      ) : (
+                        <div className="flex justify-center items-center">
+                          <Button
+                            icon={
+                              <IconButton>
+                                <UilImport />
+                              </IconButton>
+                            }
+                          >
+                            Export
+                          </Button>
+                        </div>
+                      )
+                    }
+                  </PDFDownloadLink>
+                </div>
               </div>
-              <Button
-                icon={
-                  <IconButton>
-                    <UilImport />
-                  </IconButton>
-                }
-              >
-                Export
-              </Button>
             </div>
           </div>
         </div>
@@ -262,23 +401,23 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                 header: "Public Views",
               }}
               options={[
-                { label: "New", value: "1" },
-                { label: "Open", value: "15" },
-                { label: "Pending", value: "3" },
-                { label: "Resolved", value: "15" },
-                { label: "Trash", value: "3" },
+                { label: "New", value: "0" },
+                { label: "Open", value: "0" },
+                { label: "Pending", value: "0" },
+                { label: "Resolved", value: "0" },
+                { label: "Trash", value: "0" },
               ]}
             />
-            <CardStatistic
+            {/* <CardStatistic
               className="mb-4"
               keyPanel="privateViews"
               panelProps={{
                 header: "Private Views",
               }}
               options={[
-                { label: "Custom A", value: "3" },
+                { label: "Custom A", value: "0" },
                 { label: "Custom B", value: "0" },
-                { label: "Custom C", value: "2" },
+                { label: "Custom C", value: "0" },
               ]}
             />
             <CardStatistic
@@ -288,19 +427,17 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                 header: "Shared with me",
               }}
               options={[
-                { label: "Custom A", value: "3" },
+                { label: "Custom A", value: "0" },
                 { label: "Custom B", value: "0" },
-                { label: "Custom C", value: "2" },
+                { label: "Custom C", value: "0" },
               ]}
-            />
+            /> */}
           </div>
           <div className="col-span-4">
             {tickets && (
               <>
                 <Table
-                  rowSelection={{
-                    type: "checkbox",
-                  }}
+                  rowSelection={rowSelection}
                   dataSource={tickets}
                   loading={loadingList}
                   onChange={onChangeTable}
@@ -348,10 +485,19 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                       }
                       return <span>{`${record?.toEmails[0]?.email}`}</span>;
                     }}
-                    // sorter={{
-                    //   compare: (a: any, b: any) =>
-                    //     a.toEmail[0]?.email - b.toEmail[0]?.email,
-                    // }}
+                    sorter={{
+                      compare: (a: any, b: any) => {
+                        const condition1 = a.createdViaWidget || a.incoming;
+                        const express1 = condition1
+                          ? a.fromEmail?.email
+                          : a.toEmails[0]?.email;
+                        const condition2 = b.createdViaWidget || b.incoming;
+                        const express2 = condition2
+                          ? b.fromEmail?.email
+                          : b.toEmails[0]?.email;
+                        return express1 - express2;
+                      },
+                    }}
                   ></Table.Column>
                   <Table.Column
                     key="tags"
@@ -426,13 +572,25 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                 </Table>
                 {meta?.totalCount
                   ? meta && (
-                      <Pagination
-                        className="mt-4 flex justify-end"
-                        currentPage={filterData.page ?? 1}
-                        total={meta?.totalCount}
-                        pageSize={filterData.limit ?? env.DEFAULT_PAGE_SIZE}
-                        onChange={onPagination}
-                      />
+                      <div className="flex justify-between items-end">
+                        <Button
+                          onClick={() => {
+                            setSelectedRowKeys([]);
+                          }}
+                          type="text"
+                          className="flex items-center"
+                        >
+                          <RemoveIcon fontSize={20} />
+                          <span>Remove Selected</span>
+                        </Button>
+                        <Pagination
+                          className="mt-4 flex justify-end"
+                          currentPage={filterData.page ?? 1}
+                          total={meta?.totalCount}
+                          pageSize={filterData.limit ?? env.DEFAULT_PAGE_SIZE}
+                          onChange={onPagination}
+                        />
+                      </div>
                     )
                   : null}
               </>

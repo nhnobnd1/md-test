@@ -119,6 +119,7 @@ export declare type UpdateTicket = {
     status?: string;
     tags?: string[];
     agentObjectId?: string;
+    ids: string[];
 };
 export interface BaseListTicketRequest extends BaseListRequest {
     sortBy?: string;

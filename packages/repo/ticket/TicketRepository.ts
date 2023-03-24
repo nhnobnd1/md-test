@@ -38,8 +38,8 @@ export const TicketRepository = createRepository(
 		postReply(api, data: CreateReplyTicketRequest) {
 			return api.post<CreateReplyTicketResponse>(`/${data.id}/reply`, data);
 		},
-		update(api, id: string, data: UpdateTicket) {
-			return api.put<UpdateTicketResponse>(`/${id}`, data);
+		update(api,  data: UpdateTicketRequest) {
+			return api.put<UpdateTicketResponse>(``, data);
 		},
 		delete(api, data: BaseDeleteList) {
 			return api.delete<DeleteTicketResponse>('', {}, { data });

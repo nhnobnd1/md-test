@@ -4835,8 +4835,8 @@ const Gp = [
     postReply(t, e) {
       return t.post(`/${e.id}/reply`, e);
     },
-    update(t, e, r) {
-      return t.put(`/${e}`, r);
+    update(t, e) {
+      return t.put("", e);
     },
     delete(t, e) {
       return t.delete("", {}, { data: e });

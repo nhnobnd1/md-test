@@ -232,7 +232,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
         map(({ data }) => {
           if (data.statusCode === 200) {
             // console.log("response create reply", data);
-            message.success("send mail successfully");
+            message.success("Send mail successfully");
             // getTicketApi(payload.id);
             setConversationList([...conversationList, data.data]);
           }
@@ -277,9 +277,9 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
     { showLoading: false }
   );
   const { run: updateTicketApi } = useJob(
-    (id: string, data: UpdateTicket) => {
+    (data: UpdateTicket) => {
       return TicketRepository()
-        .update(id, data)
+        .update(data)
         .pipe(
           map(({ data }) => {
             // console.log("update ticket success", data);
@@ -352,11 +352,12 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
       ],
     };
     postReplyApi(dataPost);
-    updateTicketApi(ticket?._id as string, {
+    updateTicketApi({
       priority: values.priority,
       status: values.status,
       tags: values.tags,
       agentObjectId: values.assignee,
+      ids: [ticket?._id as string],
     });
   };
   const handleCloseTicket = () => {
@@ -366,9 +367,10 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
   const handleReopenTicket = () => {
     const values = form.getFieldsValue();
     form.setFieldValue("status", "OPEN");
-    updateTicketApi(ticket?._id as string, {
+    updateTicketApi({
       status: "OPEN",
       priority: values.priority,
+      ids: [ticket?._id as string],
     });
   };
 

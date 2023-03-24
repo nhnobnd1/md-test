@@ -39,6 +39,7 @@
         "react/display-name": [0],
         "no-template-curly-in-string": "off",
         "react/react-in-jsx-scope": "off",
+        "turbo/no-undeclared-env-vars": "off",
         "react/jsx-key": [2]
       }
     }
