@@ -152,8 +152,16 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
             `support@${getSubDomain()}.moosedesk.com`
           );
         } else {
-          form.setFieldValue("name", signInCallback.name);
-          form.setFieldValue("supportEmail", signInCallback.supportEmail);
+          if (type === "new") {
+            form.setFieldValue("name", signInCallback.name);
+            form.setFieldValue("supportEmail", signInCallback.supportEmail);
+          } else if (type === "update") {
+            form.setFieldValue("name", props.initialValues?.name ?? "");
+            form.setFieldValue(
+              "supportEmail",
+              props.initialValues?.supportEmail ?? ""
+            );
+          }
         }
       }
 
