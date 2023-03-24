@@ -11,7 +11,7 @@ import Form, { FormProps } from "src/components/Form";
 import FormItem from "src/components/Form/Item";
 import BoxReply from "src/modules/ticket/components/DetailTicketForm/BoxReply";
 import * as Yup from "yup";
-import FaMailReply from "~icons/fa/mail-reply";
+import FaMailReply from "~icons/gg/mail-reply";
 
 interface DetailTicketFormProps extends Partial<FormProps> {}
 
