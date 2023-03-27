@@ -230,9 +230,10 @@ export const ChannelEmail = (props: ChannelEmailProps) => {
             setIdDelete(null);
             closeModalDelete();
           }}
+          textConfirm={"Remove"}
           closePopupAction={false}
-          title="Are you sure that you want to permanently remove this email."
-          content="This email will be removed permanently. This action cannot be undone."
+          title="Are you sure that you want to permanently remove this email connection."
+          content="This email will be removed permanently. You can no longer use this email for sending or receiving emails for MooseDesk's support tickets."
           loadingConfirm={loadingDelete}
           deleteAction={() => idDelete && deleteEmail(idDelete)}
         />

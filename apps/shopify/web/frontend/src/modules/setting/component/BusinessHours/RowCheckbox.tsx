@@ -1,6 +1,7 @@
 import { BusinessHours, Day } from "@moose-desk/repo";
 import { Checkbox, Stack } from "@shopify/polaris";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { isNumber } from "lodash-es";
+import { useCallback, useEffect, useState } from "react";
 import BoxSelectTime from "src/modules/setting/component/BusinessHours/BoxSelectTime";
 import { initialValueCustomHours } from "src/modules/setting/constaint/constaint";
 // import { initialValueCustomHours } from "src/modules/setting/constaint/constaint";
@@ -20,25 +21,7 @@ const RowCheckbox = ({ value, onChange, disabled }: RowCheckboxProps) => {
     },
     checked: item.checked,
   }));
-  const initValue = useMemo(() => {
-    const initialValue = initialData?.map((data: any) => {
-      if (value?.length) {
-        const valueMatch = value.find((initData) => initData.day === data.day);
-        if (valueMatch) {
-          return {
-            day: valueMatch.day,
-            timeRanges: {
-              startTime: valueMatch.timeRanges.startTime,
-              endTime: valueMatch.timeRanges.endTime,
-            },
-            checked: true,
-          };
-        }
-      }
-      return data;
-    });
-    return initialValue;
-  }, [value, initialData]);
+
   const [valueCustomHours, setValueCustomHours] = useState<
     {
       day: Day;
@@ -48,33 +31,51 @@ const RowCheckbox = ({ value, onChange, disabled }: RowCheckboxProps) => {
       };
       checked: boolean;
     }[]
-  >(initValue);
+  >([]);
+
+  useEffect(() => {
+    if (value) {
+      setValueCustomHours((data) => {
+        return data.map((item) => {
+          const valueData = value.find((it) => it.day === item.day);
+          if (valueData) {
+            return { ...item, timeRanges: valueData.timeRanges, checked: true };
+          } else {
+            return { ...item, checked: false };
+          }
+        });
+      });
+    } else {
+      setValueCustomHours(initialData);
+    }
+  }, [value]);
 
   const handleChangeChecked = useCallback(
     (newChecked: boolean, id: string) => {
       const indexChecked = valueCustomHours.findIndex(
         (option) => option.day === id
       );
-      setValueCustomHours((initialValue) => {
-        initialValue[indexChecked].checked = newChecked;
-        return [...initialValue];
-      });
+      const payload = [...valueCustomHours];
+      if (isNumber(indexChecked)) {
+        payload[indexChecked].checked = newChecked;
+        updateValueChange(payload);
+      }
     },
     [valueCustomHours]
   );
 
   const handleChangeValueSelectTime = useCallback(
     (value, index) => {
-      setValueCustomHours((init) => {
-        init[index].timeRanges = { ...value };
-        return [...init];
-      });
+      const payload = [...valueCustomHours];
+      payload[index].timeRanges = { ...value };
+      updateValueChange(payload);
     },
-    [valueCustomHours]
+    [valueCustomHours, setValueCustomHours]
   );
-  useEffect(() => {
+
+  const updateValueChange = useCallback((valueCustom) => {
     let valueUpdate: BusinessHours[] = [];
-    valueCustomHours.forEach((data) => {
+    valueCustom.forEach((data: any) => {
       if (data.checked) {
         valueUpdate = [
           ...valueUpdate,
@@ -89,7 +90,8 @@ const RowCheckbox = ({ value, onChange, disabled }: RowCheckboxProps) => {
       }
     });
     onChange && onChange(valueUpdate);
-  }, [valueCustomHours]);
+  }, []);
+
   return (
     <>
       {valueCustomHours.map((day, index) => {
@@ -109,7 +111,7 @@ const RowCheckbox = ({ value, onChange, disabled }: RowCheckboxProps) => {
             <Stack.Item>
               <BoxSelectTime
                 value={day}
-                initialValue={valueCustomHours}
+                initialValue={[...valueCustomHours]}
                 onChange={(value) => handleChangeValueSelectTime(value, index)}
                 index={index}
                 disabled={disabled}

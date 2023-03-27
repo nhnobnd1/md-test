@@ -1,6 +1,6 @@
 import { Combobox, Icon, Listbox, Stack, Text } from "@shopify/polaris";
 import { ChevronDownMinor } from "@shopify/polaris-icons";
-import { useCallback, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { optionSelectTime } from "src/modules/setting/constaint/constaint";
 
 interface BoxSelectTimeProps {
@@ -53,7 +53,7 @@ const BoxSelectTime = ({
         });
       setInputValueStart((matchedOption && matchedOption.label) || "");
     },
-    [optionsStart, selectedOptionEnd]
+    [optionsStart, selectedOptionEnd, initialValue]
   );
   const optionsMarkupStart = optionsStart.map((option) => {
     const { label, value } = option;
@@ -88,7 +88,7 @@ const BoxSelectTime = ({
       setSelectedOptionEnd(selected);
       setInputValueEnd((matchedOption && matchedOption.label) || "");
     },
-    [optionsEnd, selectedOptionStart]
+    [optionsEnd, selectedOptionStart, initialValue]
   );
   const optionsMarkupEnd = optionsEnd.map((option) => {
     const { label, value } = option;
@@ -146,7 +146,7 @@ const BoxSelectTime = ({
         (matchedOptionStart && matchedOptionStart.label) || ""
       );
       setInputValueEnd((matchedOptionEnd && matchedOptionEnd.label) || "");
-      onChange && onChange(value);
+      // onChange && onChange(value);
     },
     []
   );
@@ -241,4 +241,4 @@ const BoxSelectTime = ({
   );
 };
 
-export default BoxSelectTime;
+export default memo(BoxSelectTime);

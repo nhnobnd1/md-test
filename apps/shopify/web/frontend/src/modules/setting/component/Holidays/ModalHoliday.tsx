@@ -52,9 +52,11 @@ const ModalHoliday = ({
   );
   // handle Validate regex
   const validateObject = object().shape({
-    name: string().required("Required!"),
-    autoReplyCode: string().required("Required!"),
-    date: string().required("Required!"),
+    name: string()
+      .required("Name is required!")
+      .matches(/[^\s]/, "Name is required!"),
+    autoReplyCode: string().required("ReplyCode is required!"),
+    date: string().required("Date is required!"),
   });
   // handle Effect
   useEffect(() => {
@@ -90,7 +92,11 @@ const ModalHoliday = ({
       secondaryActions={[
         {
           content: "Cancel",
-          onAction: () => props.onClose(),
+
+          onAction: () => {
+            setValueDate(undefined);
+            props.onClose();
+          },
         },
       ]}
       onClose={() => {
@@ -118,7 +124,11 @@ const ModalHoliday = ({
                 <TextField
                   autoComplete="off"
                   placeholder="Enter name holiday"
-                  label="Name:"
+                  label={
+                    <div>
+                      <span className="text-red">*</span> Name:
+                    </div>
+                  }
                 />
               </FormItem>
               <FormItem name="date">
