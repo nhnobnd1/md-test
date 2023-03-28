@@ -98,6 +98,7 @@ export type Ticket = {
 	incoming: boolean;
 	attachments: AttachFile[];
 	_id: string;
+	text: string;
 };
 
 export type Conversation = {
@@ -126,6 +127,7 @@ export type Conversation = {
 	mailMessageId: string;
 	attachments: AttachFile[];
 	_id: string;
+	text: string;
 };
 
 export type ReplyTicket = {

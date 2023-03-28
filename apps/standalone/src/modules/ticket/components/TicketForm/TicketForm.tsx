@@ -17,7 +17,7 @@ import {
 import { Button, Input } from "antd";
 import { useCallback, useState } from "react";
 import { catchError, map, of } from "rxjs";
-import TextEditor from "src/components/UI/Editor/TextEditor";
+import TextEditorTicket from "src/components/UI/Editor/TextEditorTicket";
 import { Form } from "src/components/UI/Form";
 import Select, { LoadMoreValue } from "src/components/UI/Select/Select";
 import env from "src/core/env";
@@ -55,6 +55,8 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
   const [fromEmail, setFromEmail] = useState(props.primaryEmail);
   const [toEmail, setToEmail] = useState({ value: "", id: "" });
   const [form] = Form.useForm();
+  const [files, setFiles] = useState<any>([]);
+
   const fetchAgents = useCallback(
     (params: LoadMoreValue) => {
       const limit = 50;
@@ -232,6 +234,28 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
     },
     { showLoading: false }
   );
+  const { run: postAttachmentApi } = useJob(
+    (dataSubmit: any, dataPost: any) => {
+      console.log({ dataSubmit });
+      return TicketRepository()
+        .postAttachment(dataSubmit)
+        .pipe(
+          map(({ data }) => {
+            if (data.statusCode === 200) {
+              console.log("upload successfully");
+              CreateTicket({
+                ...dataPost,
+                attachmentIds: data.data.ids,
+              });
+            }
+          }),
+          catchError((err) => {
+            return of(err);
+          })
+        );
+    },
+    { showLoading: true }
+  );
 
   const handleChangeForm = useCallback((changedValue) => {
     // console.log('asdasd',changedValue.);
@@ -251,8 +275,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
         }
       }
     }
-
-    CreateTicket({
+    const dataCreate: any = {
       fromEmail: {
         email: fromEmail?.supportEmail,
         name: fromEmail?.name,
@@ -269,7 +292,12 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
       status: "OPEN",
       priority: values.priority,
       tags: result,
-    });
+    };
+    if (files.length > 0) {
+      postAttachmentApi(files, dataCreate);
+    } else {
+      CreateTicket(dataCreate);
+    }
   };
 
   const onChangeTag = (value: string) => {
@@ -447,10 +475,13 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
             className="w-full"
             rules={[{ required: true, message: "Please input your message!" }]}
           >
-            <TextEditor
+            <TextEditorTicket
               form={form}
+              setFiles={setFiles}
+              // setIsChanged={setIsChanged}
               init={{
-                height: 500,
+                height: 400,
+                menubar: false,
                 placeholder: "Please input your message here......",
               }}
             />

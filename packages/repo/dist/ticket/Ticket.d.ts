@@ -67,6 +67,7 @@ export declare type Ticket = {
     incoming: boolean;
     attachments: AttachFile[];
     _id: string;
+    text: string;
 };
 export declare type Conversation = {
     id: string;
@@ -97,6 +98,7 @@ export declare type Conversation = {
     mailMessageId: string;
     attachments: AttachFile[];
     _id: string;
+    text: string;
 };
 export declare type ReplyTicket = {
     id: string;

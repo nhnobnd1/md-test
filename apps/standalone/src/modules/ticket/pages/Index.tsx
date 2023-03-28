@@ -12,6 +12,7 @@ import {
   BaseListTicketFilterRequest,
   BaseListTicketRequest,
   BaseMetaDataListResponse,
+  Conversation,
   Customer,
   CustomerRepository,
   GetListAgentRequest,
@@ -31,7 +32,7 @@ import { Button, Input, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import moment from "moment";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { catchError, map, of } from "rxjs";
+import { catchError, forkJoin, map, of } from "rxjs";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
@@ -57,6 +58,10 @@ interface FilterObject {
   status: string;
   priority: string;
 }
+interface ItemConversation {
+  id: string;
+  conversations: Conversation[];
+}
 
 const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -64,6 +69,8 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const [tags, setTags] = useState<Tag[]>([]);
   const [agents, setAgents] = useState<Agent[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
+  const [conversations, setConversations] = useState<ItemConversation[]>([]);
+
   const [statistic, setStatistic] = useState<TicketStatistic>({
     statusCode: 200,
     data: {
@@ -160,6 +167,25 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       );
   });
 
+  const { run: fetchConversation } = useJob(
+    (id: string) => {
+      return TicketRepository()
+        .getConversations(id)
+        .pipe(
+          map(({ data }) => {
+            setConversations((previous) => [
+              ...previous,
+              { id, conversations: data.data },
+            ]);
+          }),
+          catchError((err) => {
+            return of(err);
+          })
+        );
+    },
+    { showLoading: false }
+  );
+
   const { run: getListAgentApi } = useJob((payload: GetListAgentRequest) => {
     return AgentRepository()
       .getList(payload)
@@ -251,6 +277,22 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         );
     }
   );
+  useEffect(() => {
+    const needRequest = selectedRowKeys.filter(
+      (item) => !conversations.some((obj) => obj.id === item)
+    );
+    if (needRequest.length === 0) {
+      const filterConversations = conversations.filter((item) =>
+        selectedRowKeys.includes(item.id)
+      );
+      setConversations(filterConversations);
+      return;
+    }
+    const listRequest = needRequest.map((item) =>
+      fetchConversation(item as string)
+    );
+    forkJoin(listRequest).pipe(map(() => {}));
+  }, [selectedRowKeys]);
 
   const onChangeTable = useCallback(
     (pagination: any, filters: any, sorter: SorterResult<any>) => {
@@ -492,6 +534,8 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                   <PDFDownloadLink
                     document={
                       <ExportTicketPdf
+                        conversations={conversations}
+                        agents={agents}
                         tickets={tickets}
                         selectedRowKeys={selectedRowKeys}
                         tags={tags}

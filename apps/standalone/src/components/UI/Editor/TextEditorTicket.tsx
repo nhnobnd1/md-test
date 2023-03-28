@@ -173,7 +173,7 @@ const TextEditorTicket = ({
           {...props}
           onInit={initEditor}
           onEditorChange={handleEditorChange}
-          value={`${value}`}
+          value={value}
           init={{
             height: 400,
             branding: false,
