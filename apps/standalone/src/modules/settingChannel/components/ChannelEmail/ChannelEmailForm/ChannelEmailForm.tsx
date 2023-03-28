@@ -149,9 +149,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
           form.setFieldValue("name", "");
           form.setFieldValue(
             "supportEmail",
-            import.meta.env.MODE === "production"
-              ? `${getSubDomain()}@email.moosedesk.com`
-              : `${getSubDomain()}@email.moosedesk.net`
+            `support@${getSubDomain()}.moosedesk.com`
           );
         } else {
           if (type === "new") {
