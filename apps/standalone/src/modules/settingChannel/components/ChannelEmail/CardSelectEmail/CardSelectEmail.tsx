@@ -4,7 +4,7 @@ import {
   CheckConnectionRequest,
   GetEmailGoogleAuthRequest,
   GetEmailMicrosoftAuthRequest,
-  MailBoxType,
+  MailBoxType
 } from "@moose-desk/repo";
 import EmailIntegrationRepository from "@moose-desk/repo/emailIntegration/EmailIntegrationRepository";
 import { Button, Card, Checkbox, FormInstance, Radio } from "antd";
@@ -14,14 +14,14 @@ import {
   useCallback,
   useEffect,
   useImperativeHandle,
-  useState,
+  useState
 } from "react";
 import { catchError, map, of } from "rxjs";
 import { Form } from "src/components/UI/Form";
 import useMessage from "src/hooks/useMessage";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import CardSettingExternalMail, {
-  TypePort,
+  TypePort
 } from "src/modules/settingChannel/components/ChannelEmail/CardSelectEmail/CardSettingExternalMail";
 import { IsLoggedServer } from "src/modules/settingChannel/components/ChannelEmail/ChannelEmailForm";
 import { setExternalMailConnection } from "src/modules/settingChannel/redux/channelEmail";
@@ -93,9 +93,9 @@ export const CardSelectEmail = forwardRef(
       (social: "google" | "microsoft") => {
         const payload: GetEmailGoogleAuthRequest = {
           type: type,
-          ...(import.meta.env.MODE === "development" && {
-            subdomainForTest: "localhost:3580",
-          }),
+          // ...(import.meta.env.MODE === "development" && {
+          //   subdomainForTest: "localhost:3580",
+          // }),
         };
 
         if (social === "google") {
