@@ -1,11 +1,11 @@
 import { BaseListRequest, BaseListResponse, BaseResponse } from '../unty';
 
 export enum Priority {
-	Highest = 'Highest',
-	High = 'High',
-	Medium = 'Medium',
-	Low = 'Low',
-	Lowest = 'Lowest',
+	HIGHEST = 'HIGHEST',
+	HIGH = 'HIGH',
+	MEDIUM = 'MEDIUM',
+	LOW = 'LOW',
+	LOWEST = 'LOWEST',
 }
 
 export enum StatusTicket {
@@ -31,24 +31,24 @@ export const statusOptions = [
 
 export const priorityOptions = [
 	{
-		label: 'Highest',
-		value: Priority.Highest,
+		label: 'HIGHEST',
+		value: Priority.HIGHEST,
 	},
 	{
-		label: 'High',
-		value: Priority.High,
+		label: 'HIGH',
+		value: Priority.HIGH,
 	},
 	{
-		label: 'Medium',
-		value: Priority.Medium,
+		label: 'MEDIUM',
+		value: Priority.MEDIUM,
 	},
 	{
-		label: 'Low',
-		value: Priority.Low,
+		label: 'LOW',
+		value: Priority.LOW,
 	},
 	{
-		label: 'Lowest',
-		value: Priority.Lowest,
+		label: 'LOWEST',
+		value: Priority.LOWEST,
 	},
 ];
 
@@ -162,11 +162,20 @@ export type UpdateTicket = {
 	tags?: string[];
 	agentObjectId?: string;
 	ids: string[];
+	agentEmail?: string;
 };
 
 export interface BaseListTicketRequest extends BaseListRequest {
 	sortBy?: string;
 	sortOrder?: number;
+}
+export interface BaseListTicketFilterRequest extends BaseListRequest {
+	sortBy?: string;
+	sortOrder?: number;
+	customer?: string;
+	tags?: string;
+	status?: string;
+	priority?: string;
 }
 export type GetListTicketRequest = BaseListTicketRequest;
 export type GetListTicketResponse = BaseListResponse<Ticket>;
@@ -180,3 +189,11 @@ export type UpdateTicketRequest = UpdateTicket;
 export type UpdateTicketResponse = BaseResponse<Ticket>;
 export type DeleteTicketResponse = BaseListResponse<Ticket>;
 export type StatisticTicketResponse = TicketStatistic;
+export type UploadFileResponse = {
+	data: {
+		ids: string[];
+		urls: string[];
+	};
+	statusCode: number;
+	datetime: string;
+};

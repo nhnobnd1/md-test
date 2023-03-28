@@ -1,10 +1,10 @@
 import { BaseListRequest, BaseListResponse, BaseResponse } from '../unty';
 export declare enum Priority {
-    Highest = "Highest",
-    High = "High",
-    Medium = "Medium",
-    Low = "Low",
-    Lowest = "Lowest"
+    HIGHEST = "HIGHEST",
+    HIGH = "HIGH",
+    MEDIUM = "MEDIUM",
+    LOW = "LOW",
+    LOWEST = "LOWEST"
 }
 export declare enum StatusTicket {
     PENDING = "PENDING",
@@ -132,10 +132,19 @@ export declare type UpdateTicket = {
     tags?: string[];
     agentObjectId?: string;
     ids: string[];
+    agentEmail?: string;
 };
 export interface BaseListTicketRequest extends BaseListRequest {
     sortBy?: string;
     sortOrder?: number;
+}
+export interface BaseListTicketFilterRequest extends BaseListRequest {
+    sortBy?: string;
+    sortOrder?: number;
+    customer?: string;
+    tags?: string;
+    status?: string;
+    priority?: string;
 }
 export declare type GetListTicketRequest = BaseListTicketRequest;
 export declare type GetListTicketResponse = BaseListResponse<Ticket>;
@@ -149,4 +158,12 @@ export declare type UpdateTicketRequest = UpdateTicket;
 export declare type UpdateTicketResponse = BaseResponse<Ticket>;
 export declare type DeleteTicketResponse = BaseListResponse<Ticket>;
 export declare type StatisticTicketResponse = TicketStatistic;
+export declare type UploadFileResponse = {
+    data: {
+        ids: string[];
+        urls: string[];
+    };
+    statusCode: number;
+    datetime: string;
+};
 //# sourceMappingURL=Ticket.d.ts.map

@@ -22,7 +22,7 @@ import moment from "moment";
 import VirtualList from "rc-virtual-list";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { catchError, map, of } from "rxjs";
-import TextEditor from "src/components/UI/Editor/TextEditor";
+import TextEditorTicket from "src/components/UI/Editor/TextEditorTicket";
 import { Form, FormProps } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
 import Select, { LoadMoreValue } from "src/components/UI/Select/Select";
@@ -79,6 +79,8 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
   const { storeId } = useStore();
   const [isChanged, setIsChanged] = useState(false);
   const [primaryEmail, setPrimaryEmail] = useState<EmailIntegration>();
+  const [files, setFiles] = useState<any>([]);
+
   const listChat = useMemo<ChatItem[]>(() => {
     const conversationMapping: any = conversationList?.map(
       (item: Conversation) => {
@@ -127,6 +129,28 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
         );
     },
     { showLoading: false }
+  );
+  const { run: postAttachmentApi } = useJob(
+    (dataSubmit: any, dataPost: any) => {
+      console.log({ dataSubmit });
+      return TicketRepository()
+        .postAttachment(dataSubmit)
+        .pipe(
+          map(({ data }) => {
+            if (data.statusCode === 200) {
+              console.log("upload successfully");
+              postReplyApi({
+                ...dataPost,
+                attachmentIds: data.data.ids,
+              });
+            }
+          }),
+          catchError((err) => {
+            return of(err);
+          })
+        );
+    },
+    { showLoading: true }
   );
   useEffect(() => {
     const tags: string[] = form.getFieldValue("tags");
@@ -291,7 +315,6 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
     },
     { showLoading: false }
   );
-
   const { run: getListTagApi, processing: loadingTags } = useJob(
     (payload: GetListTagRequest) => {
       return TagRepository()
@@ -328,7 +351,6 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
   }, [id]);
 
   const onFinish = (values: ValueForm) => {
-    // console.log({ values });
     const dataPost: any = {
       id: ticket?._id,
       attachmentIds: [],
@@ -351,12 +373,18 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
         },
       ],
     };
-    postReplyApi(dataPost);
+    if (files.length > 0) {
+      postAttachmentApi(files, dataPost);
+    } else {
+      postReplyApi(dataPost);
+    }
+
     updateTicketApi({
       priority: values.priority,
       status: values.status,
       tags: values.tags,
-      agentObjectId: values.assignee,
+      agentObjectId: values.assignee.split(",")[0],
+      agentEmail: values.assignee.split(",")[1],
       ids: [ticket?._id as string],
     });
   };
@@ -579,8 +607,9 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                           </Form.Item>
                         </div>
                         <Form.Item name="content">
-                          <TextEditor
+                          <TextEditorTicket
                             form={form}
+                            setFiles={setFiles}
                             setIsChanged={setIsChanged}
                             init={{
                               height: 400,

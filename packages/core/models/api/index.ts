@@ -15,6 +15,7 @@ export interface ApiRequestConfig<D = any>
   showLoading?: boolean;
   preparedData?: boolean;
   contentType?: "formData" | "urlEncoded" | "json";
+  header?: {};
 }
 
 export interface Interceptor {

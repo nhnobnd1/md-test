@@ -72,7 +72,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
                 label: item.lastName.includes("admin")
                   ? `${item.firstName} - ${item.email}`
                   : `${item.firstName} ${item.lastName} - ${item.email}`,
-                value: item._id,
+                value: `${item._id},${item.email}`,
                 obj: item,
               })),
               canLoadMore: params.page < data.metadata.totalPage,
@@ -258,7 +258,8 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
         name: fromEmail?.name,
       },
       senderConfigId: values.from,
-      agentObjectId: values.assignee,
+      agentObjectId: values.assignee.split(",")[0],
+      agentEmail: values.assignee.split(",")[1],
       toEmails: [{ email: values.to, name: values.to.split("@")[0] }],
       customerObjectId: toEmail.id,
       ccEmails: values?.CC,
@@ -441,7 +442,11 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
           </Form.Item> */}
         </div>
         <div className="mt-4">
-          <Form.Item name="content" className="w-full">
+          <Form.Item
+            name="content"
+            className="w-full"
+            rules={[{ required: true, message: "Please input your message!" }]}
+          >
             <TextEditor
               form={form}
               init={{

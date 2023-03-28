@@ -34,23 +34,23 @@ export const DetailTicketForm = (props: DetailTicketFormProps) => {
     return [
       {
         label: "Highest",
-        value: Priority.Highest,
+        value: Priority.HIGHEST,
       },
       {
         label: "High",
-        value: Priority.High,
+        value: Priority.HIGH,
       },
       {
         label: "Medium",
-        value: Priority.Medium,
+        value: Priority.MEDIUM,
       },
       {
         label: "Low",
-        value: Priority.Low,
+        value: Priority.LOW,
       },
       {
         label: "Lowest",
-        value: Priority.Lowest,
+        value: Priority.LOWEST,
       },
     ];
   }, [Priority]);

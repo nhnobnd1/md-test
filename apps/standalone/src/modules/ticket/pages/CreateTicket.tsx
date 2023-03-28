@@ -16,9 +16,9 @@ const CreateTicket = (props: CreateTicketProps) => {
 
   const initialValues = useMemo(() => {
     return {
-      priority: Priority.Medium,
+      priority: Priority.MEDIUM,
       from: primaryEmail?._id,
-      content: "<p>Please input your message here.....</p>",
+      content: "",
       to: "",
       // assignee: "3a08b18a-e690-f9ca-ff56-e7145104fb8d",
     };

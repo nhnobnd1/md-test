@@ -9,9 +9,13 @@ import {
 import {
   Agent,
   AgentRepository,
+  BaseListTicketFilterRequest,
   BaseListTicketRequest,
   BaseMetaDataListResponse,
+  Customer,
+  CustomerRepository,
   GetListAgentRequest,
+  GetListCustomerRequest,
   GetListTagRequest,
   GetListTicketRequest,
   Tag,
@@ -47,12 +51,19 @@ import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import IcRoundFilterAlt from "~icons/ic/round-filter-alt";
 import UilImport from "~icons/uil/import";
 interface TicketIndexPageProps {}
+interface FilterObject {
+  customer: string;
+  tags: string;
+  status: string;
+  priority: string;
+}
 
 const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [agents, setAgents] = useState<Agent[]>([]);
+  const [customers, setCustomers] = useState<Customer[]>([]);
   const [statistic, setStatistic] = useState<TicketStatistic>({
     statusCode: 200,
     data: {
@@ -62,6 +73,8 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       TRASH: 0,
     },
   });
+  const [filterObject, setFilterObject] = useState<FilterObject | null>(null);
+
   const agentsOptions = useMemo(() => {
     const mapping = agents.map((item: Agent) => {
       return {
@@ -97,6 +110,26 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     (payload: GetListTicketRequest) => {
       return TicketRepository()
         .getList(payload)
+        .pipe(
+          map(({ data }) => {
+            if (data.statusCode === 200) {
+              const tickets = data.data.map((item) => ({
+                ...item,
+                id: item._id,
+              }));
+              setTickets(tickets);
+              setMeta(data.metadata);
+            } else {
+              message.error("Get data ticket failed");
+            }
+          })
+        );
+    }
+  );
+  const { run: getListTicketFilter } = useJob(
+    (payload: BaseListTicketFilterRequest) => {
+      return TicketRepository()
+        .getListFilter(payload)
         .pipe(
           map(({ data }) => {
             if (data.statusCode === 200) {
@@ -183,6 +216,34 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                 // return;
               }
               // console.log("asdasd", current);
+            } else {
+              message.error("Get data ticket failed");
+            }
+          })
+        );
+    }
+  );
+  const { run: getListCustomerApi } = useJob(
+    (payload: GetListCustomerRequest) => {
+      return CustomerRepository()
+        .getList(payload)
+        .pipe(
+          map(({ data }) => {
+            if (data.statusCode === 200) {
+              const tags = data.data.map((item) => ({
+                ...item,
+                id: item._id,
+              }));
+              setCustomers((prevTags) => {
+                return [...prevTags, ...tags];
+              });
+
+              if (data.metadata.totalPage > (payload.page as number)) {
+                getListCustomerApi({
+                  page: (payload.page as number) + 1,
+                  limit: payload.limit,
+                });
+              }
             } else {
               message.error("Get data ticket failed");
             }
@@ -287,6 +348,10 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       page: 1,
       limit: 50,
     });
+    getListCustomerApi({
+      page: 1,
+      limit: 50,
+    });
     getListAgentApi({
       page: 1,
       limit: 50,
@@ -294,6 +359,10 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     getStatisticTicket();
   }, []);
   useEffect(() => {
+    if (filterObject) {
+      getListTicketFilter({ ...filterData, ...filterObject });
+      return;
+    }
     getListTicketApi(filterData);
   }, [filterData]);
   const handleEdit = (record: Ticket) => {
@@ -323,12 +392,46 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     setSelectedRowKeys([]);
     deleteTicketApi(selectedRowKeys as string[]);
   }, [selectedRowKeys]);
+  const handleResetModal = useCallback(() => {
+    getListTicketApi(filterData);
+    closeFilterModal();
+    setFilterObject(null);
+  }, [filterData]);
+  const handleApply = (values: any) => {
+    getListTicketFilter({
+      page: 1,
+      limit: 10,
+      priority: values.priority,
+      status: values.status,
+      customer: values.customer,
+      tags: values.tags?.toString(),
+    });
+    setFilterObject({
+      priority: values.priority,
+      status: values.status,
+      customer: values.customer,
+      tags: values.tags?.toString(),
+    });
+    closeFilterModal();
+  };
+
   return (
     <>
-      <ModalFilter open={filterModal} onCancel={closeFilterModal} />
+      <ModalFilter
+        customers={customers}
+        tags={tags}
+        open={filterModal}
+        handleResetModal={handleResetModal}
+        cancelText="Reset"
+        okText="Apply"
+        setTickets={setTickets}
+        closeFilterModal={closeFilterModal}
+        handleApply={handleApply}
+      />
       <Header title="Ticket">
         <div className="flex items-center justify-end flex-1 gap-4">
           <Input.Search
+            allowClear
             className="max-w-[400px]"
             placeholder="Search ticket"
             onSearch={(searchText: string) => {
@@ -428,6 +531,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
               panelProps={{
                 header: "Public Views",
               }}
+              handleApply={handleApply}
               options={[
                 { label: "New", value: "0" },
                 { label: "Open", value: `${statistic?.data.OPEN}` },
@@ -436,30 +540,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                 { label: "Trash", value: `${statistic?.data.TRASH}` },
               ]}
             />
-            {/* <CardStatistic
-              className="mb-4"
-              keyPanel="privateViews"
-              panelProps={{
-                header: "Private Views",
-              }}
-              options={[
-                { label: "Custom A", value: "0" },
-                { label: "Custom B", value: "0" },
-                { label: "Custom C", value: "0" },
-              ]}
-            />
-            <CardStatistic
-              className="mb-4"
-              keyPanel="sharedWithMe"
-              panelProps={{
-                header: "Shared with me",
-              }}
-              options={[
-                { label: "Custom A", value: "0" },
-                { label: "Custom B", value: "0" },
-                { label: "Custom C", value: "0" },
-              ]}
-            /> */}
           </div>
           <div className="col-span-4">
             {tickets && (
