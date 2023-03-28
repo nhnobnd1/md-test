@@ -106,43 +106,54 @@ const BusinessHours = (props: BusinessHoursProps) => {
   );
 
   // update business calendar
-  const { run: updateBusinessCalendar } = useJob((dataSubmit: any) => {
-    const { _id } = dataSubmit;
-    return BusinessCalendarRepository()
-      .updateBusinessCalendar(_id, dataSubmit)
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            setBanner({
-              isShow: true,
-              message: "Your settings have been changed successfully.",
-              type: "success",
-            });
-            show("Your settings have been changed successfully.");
-          } else {
+  const { run: updateBusinessCalendar } = useJob(
+    (dataSubmit: any) => {
+      const { _id } = dataSubmit;
+      return BusinessCalendarRepository()
+        .updateBusinessCalendar(_id, dataSubmit)
+        .pipe(
+          map(({ data }) => {
+            if (data.statusCode === 200) {
+              setDataBusinessCalendar({ ...data.data });
+              setDataAutoReply([...data.data.autoReply]);
+              setDataHolidays([...data.data.holidays]);
+              setDataBusinessHoursAutoReplyCode(
+                data.data.businessHoursAutoReplyCode
+              );
+              setBanner({
+                isShow: true,
+                message: "Your settings have been changed successfully.",
+                type: "success",
+              });
+              show("Your settings have been changed successfully.");
+            } else {
+              setBanner({
+                isShow: true,
+                type: "critical",
+                message: "Business hours has been updated failed.",
+              });
+              show("Business hours has been updated failed.", {
+                isError: true,
+              });
+            }
+          }),
+          catchError((error) => {
             setBanner({
               isShow: true,
               type: "critical",
-              message: "Business hours has been updated failed.",
+              message: `Business hours has been updated failed.`,
             });
-            show("Business hours has been updated failed.", {
+            show(`Business hours has been updated failed.`, {
               isError: true,
             });
-          }
-        }),
-        catchError((error) => {
-          setBanner({
-            isShow: true,
-            type: "critical",
-            message: `Business hours has been updated failed.`,
-          });
-          show(`Business hours has been updated failed.`, {
-            isError: true,
-          });
-          return of(error);
-        })
-      );
-  });
+            return of(error);
+          })
+        );
+    },
+    {
+      showLoading: true,
+    }
+  );
 
   const handleSubmit = useCallback((data: any) => {
     updateBusinessCalendar(data);

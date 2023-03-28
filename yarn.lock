@@ -1770,10 +1770,10 @@
     "@react-pdf/png-js" "^2.2.0"
     cross-fetch "^3.1.5"
 
-"@react-pdf/layout@^3.6.0":
-  version "3.6.0"
-  resolved "https://registry.yarnpkg.com/@react-pdf/layout/-/layout-3.6.0.tgz#799101f95cb12a76f289cf0c4297a9e61285662a"
-  integrity sha512-xrcVWxtXpobW0iqTd8OmMCVMmeGUM46PYq7B1MGR1fI1QG/EKe4HzFdhSdd0werZYj+t1TRC8+tVSX5POs5SYA==
+"@react-pdf/layout@^3.5.1":
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/@react-pdf/layout/-/layout-3.5.1.tgz#247b46b8006b8229f79f1e5c7a11db25a1888492"
+  integrity sha512-htBnbSNrftYo/iAIi1WjdrCiYVOwT0NVmiQDmGKwugE0qFPpbYm1gdjkb7CKXJdOEVncPipG5LDuTrQLvUkHFw==
   dependencies:
     "@babel/runtime" "^7.20.13"
     "@react-pdf/fns" "2.0.1"
@@ -1785,7 +1785,7 @@
     "@react-pdf/types" "^2.3.1"
     "@react-pdf/yoga" "^4.1.2"
     cross-fetch "^3.1.5"
-    emoji-regex "^10.2.1"
+    emoji-regex "^8.0.0"
     queue "^6.0.1"
 
 "@react-pdf/pdfkit@^3.0.2":
@@ -1829,13 +1829,13 @@
     svg-arc-to-cubic-bezier "^3.2.0"
 
 "@react-pdf/renderer@^3.1.8":
-  version "3.1.9"
-  resolved "https://registry.yarnpkg.com/@react-pdf/renderer/-/renderer-3.1.9.tgz#886bfb0b6263d96303adcf8ea63ee776ff0ef4ad"
-  integrity sha512-kfEH7O+Jy7aihbUqrT9Ej1gx8/twRWvFMfHlACr29QsN+s+w0XzWpHCvbjkinVFABYcvsenluiirik6mf4qwRQ==
+  version "3.1.8"
+  resolved "https://registry.yarnpkg.com/@react-pdf/renderer/-/renderer-3.1.8.tgz#748d20648516b5f09e6b4040bfebee2ba4106ea5"
+  integrity sha512-/oxjZLd/rcqkhXzWLwOUrjG/Ol2ZVmDCneuKG1Qmruyko3g++QIlp/141BGHN4JXGvcK9JbO8cBYRhAdwKLIWw==
   dependencies:
     "@babel/runtime" "^7.20.13"
     "@react-pdf/font" "^2.3.4"
-    "@react-pdf/layout" "^3.6.0"
+    "@react-pdf/layout" "^3.5.1"
     "@react-pdf/pdfkit" "^3.0.2"
     "@react-pdf/primitives" "^3.0.0"
     "@react-pdf/render" "^3.2.4"
@@ -2560,6 +2560,13 @@
   dependencies:
     "@types/react" "*"
     "@types/reactcss" "*"
+
+"@types/react-dom@*":
+  version "18.0.11"
+  resolved "https://registry.npmjs.org/@types/react-dom/-/react-dom-18.0.11.tgz"
+  integrity sha512-O38bPbI2CWtgw/OoQoY+BRelw7uysmXbWvw3nLWO21H1HSh+GOlqPuXshJfjmpNlKiiSDG9cc1JZAaMmVdcTlw==
+  dependencies:
+    "@types/react" "*"
 
 "@types/react-dom@^17.0.11":
   version "17.0.14"

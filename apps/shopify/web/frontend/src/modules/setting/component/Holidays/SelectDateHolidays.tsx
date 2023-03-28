@@ -76,7 +76,11 @@ const SelectDateHolidays = ({
         <div className="w-28">
           <TextField
             autoComplete="off"
-            label="Date:"
+            label={
+              <div>
+                <span className="text-red">*</span> Date:
+              </div>
+            }
             value={
               selectedDates
                 ? dayjs(selectedDates.start).format("DD-MM-YYYY")

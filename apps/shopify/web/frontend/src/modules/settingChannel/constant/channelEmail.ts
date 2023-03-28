@@ -9,6 +9,6 @@ export const optionsSort: Choice[] = [
   },
   {
     label: "Email address Z-A",
-    value: `supportEmail:${SortOrderOptions.ACS}`,
+    value: `supportEmail:${SortOrderOptions.DES}`,
   },
 ];

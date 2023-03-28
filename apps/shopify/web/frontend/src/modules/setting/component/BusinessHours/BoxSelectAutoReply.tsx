@@ -104,7 +104,11 @@ const BoxSelectAutoReply = (props: BoxSelectAutoReplyProps) => {
       activator={
         <Combobox.TextField
           onChange={updateText}
-          label={props.label}
+          label={
+            <div>
+              <span className="text-red">*</span> {props.label}
+            </div>
+          }
           labelHidden={!props.label}
           value={inputValue}
           placeholder="Search"
