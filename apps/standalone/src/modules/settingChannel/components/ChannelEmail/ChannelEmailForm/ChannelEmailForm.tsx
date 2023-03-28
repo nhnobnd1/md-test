@@ -146,11 +146,12 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
 
       if (changedValue.mailSettingType) {
         if (changedValue.mailSettingType === MailSettingType.MOOSEDESK) {
+          const supportEmailDefault =
+            import.meta.env.MODE === "production"
+              ? `${getSubDomain()}@email.moosedesk.com`
+              : `${getSubDomain()}@email.moosedesk.net`;
           form.setFieldValue("name", "");
-          form.setFieldValue(
-            "supportEmail",
-            `support@${getSubDomain()}.moosedesk.com`
-          );
+          form.setFieldValue("supportEmail", supportEmailDefault);
         } else {
           if (type === "new") {
             form.setFieldValue("name", signInCallback.name);

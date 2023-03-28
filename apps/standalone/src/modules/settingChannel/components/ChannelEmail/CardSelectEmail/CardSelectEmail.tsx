@@ -93,9 +93,9 @@ export const CardSelectEmail = forwardRef(
       (social: "google" | "microsoft") => {
         const payload: GetEmailGoogleAuthRequest = {
           type: type,
-          ...(import.meta.env.MODE === "development" && {
-            subdomainForTest: "localhost:3580",
-          }),
+          // ...(import.meta.env.MODE === "development" && {
+          //   subdomainForTest: "localhost:3580",
+          // }),
         };
 
         if (social === "google") {
