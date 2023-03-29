@@ -4,7 +4,6 @@ import {
   AttachFile,
   Conversation,
   CreateReplyTicketRequest,
-  CustomerRepository,
   EmailIntegration,
   EmailIntegrationRepository,
   GetListTagRequest,
@@ -83,10 +82,6 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
   const [isChanged, setIsChanged] = useState(false);
   const [primaryEmail, setPrimaryEmail] = useState<EmailIntegration>();
   const [files, setFiles] = useState<any>([]);
-  const [toEmail, setToEmail] = useState({
-    value: { firstName: "", lastName: "", email: "" },
-    id: "",
-  });
 
   const listChat = useMemo<ChatItem[]>(() => {
     const conversationMapping: any = conversationList?.map(
@@ -203,35 +198,28 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
       }
     }
   };
-  const onChangeEmail = (value: string, options: any) => {
-    setToEmail({
-      value: options?.obj,
-      id: options?.obj ? options?.obj?._id : "",
-    });
-  };
 
   const initialValues = useMemo(() => {
-    if (primaryEmail) {
-      return {
-        status: ticket?.status,
-        assignee: ticket?.agentObjectId,
-        priority: ticket?.priority,
-        to: primaryEmail.supportEmail,
-        tags: ticket?.tags,
-        content: "",
-      };
-    }
-    return (
-      props.initialValues ?? {
-        status: ticket?.status,
-        assignee: ticket?.agentObjectId,
-        priority: ticket?.priority,
-        to: ticket?.toEmails ? ticket?.toEmails[0].email : "",
-        tags: ticket?.tags,
-        content: "",
-      }
-    );
-  }, [props.initialValues, ticket, primaryEmail]);
+    // if (primaryEmail) {
+    //   return {
+    //     status: ticket?.status,
+    //     assignee: ticket?.agentObjectId,
+    //     priority: ticket?.priority,
+    //     to: primaryEmail.supportEmail,
+    //     tags: ticket?.tags,
+    //     content: "",
+    //   };
+    // }
+    const condition = ticket?.incoming || ticket?.createdViaWidget;
+    return {
+      status: ticket?.status,
+      assignee: ticket?.agentObjectId,
+      priority: ticket?.priority,
+      to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
+      tags: ticket?.tags,
+      content: "",
+    };
+  }, [ticket]);
 
   const fetchAgents = useCallback(
     (params: LoadMoreValue) => {
@@ -285,38 +273,15 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
     }
   );
 
-  const fetchCustomer = useCallback(
-    (params: LoadMoreValue) => {
-      const limit = 500;
-      return CustomerRepository()
-        .getList({
-          page: params.page,
-          limit: limit,
-          query: params.searchText,
-        })
-        .pipe(
-          map(({ data }) => {
-            return {
-              options: data.data.map((item) => ({
-                label: `${item.firstName} ${item.lastName} - ${item.email}`,
-                value: item.email,
-                obj: item,
-              })),
-              canLoadMore: params.page < data.metadata.totalPage,
-            };
-          })
-        );
-    },
-    [EmailIntegrationRepository]
-  );
-
   const { run: postReplyApi } = useJob((payload: CreateReplyTicketRequest) => {
     return TicketRepository()
       .postReply(payload)
       .pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
+            // console.log("response create reply", data);
             message.success("Send mail successfully");
+            // getTicketApi(payload.id);
             setConversationList([...conversationList, data.data]);
           }
         })
@@ -366,6 +331,9 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
         .pipe(
           map(({ data }) => {
             // console.log("update ticket success", data);
+            if (data.statusCode === 200) {
+              message.success("Update ticket successfully");
+            }
           }),
           catchError((err) => {
             return of(err);
@@ -423,22 +391,16 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
       senderConfigId: primaryEmail ? primaryEmail._id : ticket?.senderConfigId,
 
       toEmails: [
-        toEmail.value
-          ? {
-              name: `${toEmail.value?.firstName} ${toEmail.value?.lastName}`,
-              email: toEmail.value?.email,
-            }
-          : {
-              name: primaryEmail
-                ? ticket?.fromEmail.name
-                : ticket?.toEmails[0].name,
-              email: primaryEmail
-                ? ticket?.fromEmail.email
-                : ticket?.toEmails[0].email,
-            },
+        {
+          name: primaryEmail
+            ? ticket?.fromEmail.name
+            : ticket?.toEmails[0].name,
+          email: primaryEmail
+            ? ticket?.fromEmail.email
+            : ticket?.toEmails[0].email,
+        },
       ],
     };
-    console.log({ dataPost, toEmail });
     if (files.length > 0) {
       postAttachmentApi(files, dataPost);
     } else {
@@ -464,6 +426,18 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
     updateTicketApi({
       status: "OPEN",
       priority: values.priority,
+      ids: [ticket?._id as string],
+    });
+  };
+
+  const handleSaveTicket = () => {
+    const values = form.getFieldsValue();
+    updateTicketApi({
+      priority: values.priority,
+      status: values.status,
+      tags: values.tags,
+      agentObjectId: values.assignee.split(",")[0],
+      agentEmail: values.assignee.split(",")[1],
       ids: [ticket?._id as string],
     });
   };
@@ -509,6 +483,11 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                     options={priorityOptions}
                   />
                 </Form.Item>
+                <div className="flex items-center">
+                  <Button type="primary" onClick={handleSaveTicket}>
+                    Save
+                  </Button>
+                </div>
               </div>
               {ticket ? (
                 <div className="BoxReply w-full">
@@ -517,7 +496,6 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                       <List>
                         <VirtualList
                           data={listChat}
-                          // height={heightBoxComment}
                           itemHeight={50}
                           itemKey="id"
                         >
@@ -540,12 +518,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                               name="to"
                               labelAlign="left"
                             >
-                              <Select.Auto
-                                placeholder="Customer Email"
-                                virtual
-                                loadMore={fetchCustomer}
-                                onChange={onChangeEmail}
-                              />
+                              <Select disabled placeholder="Customer Email" />
                             </Form.Item>
                             {enableCC ? (
                               <Form.Item
