@@ -52,6 +52,7 @@ import ModalFilter from "src/modules/ticket/components/ModalFilter/ModalFilter";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import IcRoundFilterAlt from "~icons/ic/round-filter-alt";
 import UilImport from "~icons/uil/import";
+import "./ListTicket.scss";
 interface TicketIndexPageProps {}
 interface FilterObject {
   customer: string;
@@ -620,13 +621,8 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                     title="Ticket Title"
                     render={(_, record: Ticket) => (
                       <span
-                        className="cursor-pointer hover:underline hover:text-blue-500"
+                        className="cursor-pointer hover:underline hover:text-blue-500 subject"
                         onClick={() => handleEdit(record)}
-                        style={{
-                          wordBreak: "break-all",
-                          minWidth: 300,
-                          display: "block",
-                        }}
                       >{`${record.subject}`}</span>
                     )}
                     sorter={{
@@ -641,19 +637,11 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                     render={(_, record: Ticket) => {
                       if (record.createdViaWidget || record.incoming) {
                         return (
-                          <span
-                            style={{
-                              wordBreak: "break-all",
-                              display: "block",
-                              minWidth: 200,
-                            }}
-                          >{`${record?.fromEmail.email}`}</span>
+                          <span className="subject">{`${record?.fromEmail.email}`}</span>
                         );
                       }
                       return (
-                        <span
-                          style={{ wordBreak: "break-all" }}
-                        >{`${record?.toEmails[0]?.email}`}</span>
+                        <span className="subject">{`${record?.toEmails[0]?.email}`}</span>
                       );
                     }}
                     sorter={{
