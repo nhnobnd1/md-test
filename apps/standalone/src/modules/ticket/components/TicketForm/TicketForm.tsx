@@ -70,13 +70,15 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
         .pipe(
           map(({ data }) => {
             return {
-              options: data.data.map((item) => ({
-                label: item.lastName.includes("admin")
-                  ? `${item.firstName} - ${item.email}`
-                  : `${item.firstName} ${item.lastName} - ${item.email}`,
-                value: `${item._id},${item.email}`,
-                obj: item,
-              })),
+              options: data.data
+                .filter((item) => item.isActive && item.emailConfirmed)
+                .map((item) => ({
+                  label: item.lastName.includes("admin")
+                    ? `${item.firstName} - ${item.email}`
+                    : `${item.firstName} ${item.lastName} - ${item.email}`,
+                  value: `${item._id},${item.email}`,
+                  obj: item,
+                })),
               canLoadMore: params.page < data.metadata.totalPage,
             };
           })
@@ -87,7 +89,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
 
   const fetchTags = useCallback(
     (params: LoadMoreValue) => {
-      const limit = env.DEFAULT_PAGE_SIZE;
+      const limit = 100;
       return TagRepository()
         .getList({
           page: params.page,
@@ -122,7 +124,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
               return {
                 options: [
                   {
-                    label: item.name,
+                    label: `${item.name} - ${item.supportEmail}`,
                     value: item._id,
                     obj: item,
                   },
@@ -142,7 +144,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
             map(({ data }) => {
               return {
                 options: data.data.map((item) => ({
-                  label: item.name,
+                  label: `${item.name} - ${item.supportEmail}`,
                   value: item._id,
                   obj: item,
                 })),
@@ -168,7 +170,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
           map(({ data }) => {
             return {
               options: data.data.map((item) => ({
-                label: item.email,
+                label: `${item.firstName} ${item.lastName} - ${item.email}`,
                 value: item.email,
                 obj: item,
               })),
@@ -450,12 +452,12 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
             <Select options={priorityOptions}></Select>
           </Form.Item>
           <Form.Item name="tags" label="Tags">
-            <Select.Ajax
+            <Select.Tags
               mode="tags"
               placeholder="Add tags"
               loadMore={fetchTags}
               onChange={onChangeTag}
-            ></Select.Ajax>
+            ></Select.Tags>
           </Form.Item>
           <Form.Item
             name="subject"

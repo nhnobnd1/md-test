@@ -123,6 +123,7 @@ export declare type TicketStatistic = {
         PENDING: number;
         RESOLVED: number;
         TRASH: number;
+        NEW: number;
     };
 };
 export declare type RestoreTicketResponse = {

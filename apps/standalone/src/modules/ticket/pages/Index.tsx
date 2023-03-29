@@ -1,6 +1,7 @@
 import {
   PageComponent,
   generatePath,
+  upperCaseFirst,
   useJob,
   useNavigate,
   usePrevious,
@@ -28,7 +29,7 @@ import {
   statusOptions,
 } from "@moose-desk/repo";
 import { PDFDownloadLink } from "@react-pdf/renderer";
-import { Button, Input, TableProps } from "antd";
+import { Button, Input, TableProps, Tag as TagItem } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import moment from "moment";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -78,6 +79,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       PENDING: 0,
       RESOLVED: 0,
       TRASH: 0,
+      NEW: 0,
     },
   });
   const [filterObject, setFilterObject] = useState<FilterObject | null>(null);
@@ -567,7 +569,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-5 gap-6">
+        <div className="grid grid-cols-7 gap-6">
           <div className="col-span-1">
             <CardStatistic
               className="mb-4"
@@ -576,8 +578,9 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                 header: "Public Views",
               }}
               handleApply={handleApply}
+              // style={{ width: 150 }}
               options={[
-                { label: "New", value: "0" },
+                { label: "New", value: `${statistic?.data.NEW}` },
                 { label: "Open", value: `${statistic?.data.OPEN}` },
                 { label: "Pending", value: `${statistic?.data.PENDING}` },
                 { label: "Resolved", value: `${statistic?.data.RESOLVED}` },
@@ -585,7 +588,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
               ]}
             />
           </div>
-          <div className="col-span-4">
+          <div className="col-span-6">
             {tickets && (
               <>
                 <Table
@@ -596,7 +599,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                 >
                   <Table.Column
                     key="ticketId"
-                    title="Ticket Number"
+                    title="#"
                     render={(_, record: Ticket) => (
                       <span
                         className="cursor-pointer hover:underline hover:text-blue-500"
@@ -611,31 +614,44 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                     }}
                   ></Table.Column>
                   <Table.Column
+                    // ellipsis={true}
                     key="subject"
                     title="Ticket Title"
                     render={(_, record: Ticket) => (
                       <span
-
-                      // onClick={() => handleEdit(record)}
-                      >
-                        {`${record.subject}`}
-                      </span>
+                        style={{
+                          wordBreak: "break-all",
+                          minWidth: 300,
+                          display: "block",
+                        }}
+                      >{`${record.subject}`}</span>
                     )}
                     sorter={{
                       compare: (a: any, b: any) => a.subject - b.subject,
                     }}
                   ></Table.Column>
+                  s
                   <Table.Column
+                    // ellipsis={true}
                     key="customer"
                     title="Customer"
                     render={(_, record: Ticket) => {
-                      // console.log(
-                      //   `${record.ticketId} is ${record.fromEmail.name}`
-                      // );
                       if (record.createdViaWidget || record.incoming) {
-                        return <span>{`${record?.fromEmail.email}`}</span>;
+                        return (
+                          <span
+                            style={{
+                              wordBreak: "break-all",
+                              display: "block",
+                              minWidth: 200,
+                            }}
+                          >{`${record?.fromEmail.email}`}</span>
+                        );
                       }
-                      return <span>{`${record?.toEmails[0]?.email}`}</span>;
+                      return (
+                        <span
+                          style={{ wordBreak: "break-all" }}
+                        >{`${record?.toEmails[0]?.email}`}</span>
+                      );
                     }}
                     sorter={{
                       compare: (a: any, b: any) => {
@@ -663,7 +679,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                       return (
                         <div className="flex flex-col wrap gap-2">
                           {filterItemTag.map((item) => (
-                            <span key={item._id}>#{item.name}</span>
+                            <TagItem key={item._id}>#{item.name}</TagItem>
                           ))}
                         </div>
                       );
@@ -676,7 +692,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                     key="priority"
                     title="Priority"
                     render={(_, record: Ticket) => (
-                      <span>{`${record.priority}`}</span>
+                      <span>{`${upperCaseFirst(record.priority)}`}</span>
                     )}
                     sorter={{
                       compare: (a: any, b: any) => a.priority - b.priority,

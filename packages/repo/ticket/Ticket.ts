@@ -31,23 +31,23 @@ export const statusOptions = [
 
 export const priorityOptions = [
 	{
-		label: 'HIGHEST',
+		label: 'Highest',
 		value: Priority.HIGHEST,
 	},
 	{
-		label: 'HIGH',
+		label: 'High',
 		value: Priority.HIGH,
 	},
 	{
-		label: 'MEDIUM',
+		label: 'Medium',
 		value: Priority.MEDIUM,
 	},
 	{
-		label: 'LOW',
+		label: 'Low',
 		value: Priority.LOW,
 	},
 	{
-		label: 'LOWEST',
+		label: 'Lowest',
 		value: Priority.LOWEST,
 	},
 ];
@@ -151,6 +151,7 @@ export type TicketStatistic = {
 		PENDING: number;
 		RESOLVED: number;
 		TRASH: number;
+		NEW: number;
 	};
 };
 

@@ -92,10 +92,10 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
           time: `${moment
             .unix(item.createdTimestamp)
             .local()
-            .fromNow()} ( ${moment
+            .fromNow()} (${moment
             .unix(item.createdTimestamp)
             .local()
-            .format("HH:mm DD/MM/YYYY")} )`,
+            .format("HH:mm DD/MM/YYYY")})`,
           chat: item.description,
           email: item.fromEmail?.email,
           attachments: item.attachments,
@@ -119,10 +119,10 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
         time: `${moment
           .unix(ticket.createdTimestamp)
           .local()
-          .fromNow()} ( ${moment
+          .fromNow()} (${moment
           .unix(ticket.createdTimestamp)
           .local()
-          .format("HH:mm DD/MM/YYYY")} )`,
+          .format("HH:mm DD/MM/YYYY")})`,
         chat: ticket.description,
         email: ticket.fromEmail.email,
         attachments: ticket.attachments,
@@ -242,13 +242,15 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
         .pipe(
           map(({ data }) => {
             return {
-              options: data.data.map((item) => ({
-                label: item.lastName.includes("admin")
-                  ? `${item.firstName} - ${item.email}`
-                  : `${item.firstName} ${item.lastName} - ${item.email}`,
-                value: item._id,
-                obj: item,
-              })),
+              options: data.data
+                .filter((item) => item.isActive && item.emailConfirmed)
+                .map((item) => ({
+                  label: item.lastName.includes("admin")
+                    ? `${item.firstName} - ${item.email}`
+                    : `${item.firstName} ${item.lastName} - ${item.email}`,
+                  value: item._id,
+                  obj: item,
+                })),
               canLoadMore: params.page < data.metadata.totalPage,
             };
           })
@@ -473,39 +475,6 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                     options={priorityOptions}
                   />
                 </Form.Item>
-                {form.getFieldValue("status") === StatusTicket.RESOLVED ? (
-                  <>
-                    <Button
-                      icon={
-                        <span className="mr-2 translate-y-[3px]">
-                          <BackIcon fontSize={14} />
-                        </span>
-                      }
-                      onClick={handleReopenTicket}
-                      disabled={false}
-                    >
-                      Reopen
-                    </Button>
-                  </>
-                ) : (
-                  <div className="flex items-center gap-2">
-                    <Button
-                      type="primary"
-                      icon={
-                        <span className="mr-2 translate-y-[3px]">
-                          <FaMailReply fontSize={14} />
-                        </span>
-                      }
-                      htmlType="submit"
-                      disabled={!isChanged}
-                    >
-                      Reply
-                    </Button>
-                    <Button disabled={!isChanged} onClick={handleCloseTicket}>
-                      Reply & Close Ticket
-                    </Button>
-                  </div>
-                )}
               </div>
               {ticket ? (
                 <div className="BoxReply w-full">
@@ -519,10 +488,8 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                           itemKey="id"
                         >
                           {(item: ChatItem) => (
-                            <List.Item key={item.id}>
+                            <List.Item key={item.id} style={{ paddingLeft: 0 }}>
                               <List.Item.Meta
-                                // avatar={<Avatar size={"large"} />}
-                                // title={<span>{item.name}</span>}
                                 description={<RowMessage item={item} />}
                               />
                             </List.Item>
@@ -537,10 +504,12 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                             <Form.Item
                               label="To"
                               name="to"
-                              labelCol={{ span: 4 }}
+                              labelCol={{ span: 3 }}
+                              wrapperCol={{ offset: 0, span: 18 }}
+                              labelAlign="left"
                             >
                               <Select
-                                className="w-[150px]"
+                                // className="w-[150px]"
                                 placeholder="Customer Email"
                               />
                             </Form.Item>
@@ -548,8 +517,9 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                               <Form.Item
                                 label="CC"
                                 name="CC"
-                                labelCol={{ span: 4 }}
+                                labelCol={{ span: 3 }}
                                 wrapperCol={{ offset: 0, span: 18 }}
+                                labelAlign="left"
                                 rules={[
                                   ({ getFieldValue }) => ({
                                     validator(_, value) {
@@ -579,7 +549,8 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                               <Form.Item
                                 label="BCC"
                                 name="BCC"
-                                labelCol={{ span: 4 }}
+                                labelCol={{ span: 3 }}
+                                labelAlign="left"
                                 wrapperCol={{ offset: 0, span: 18 }}
                                 rules={[
                                   ({ getFieldValue }) => ({

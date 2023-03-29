@@ -4793,23 +4793,23 @@ const Gp = [
   }
 ], Xp = [
   {
-    label: "HIGHEST",
+    label: "Highest",
     value: "HIGHEST"
   },
   {
-    label: "HIGH",
+    label: "High",
     value: "HIGH"
   },
   {
-    label: "MEDIUM",
+    label: "Medium",
     value: "MEDIUM"
   },
   {
-    label: "LOW",
+    label: "Low",
     value: "LOW"
   },
   {
-    label: "LOWEST",
+    label: "Lowest",
     value: "LOWEST"
   }
 ], Zp = pt(

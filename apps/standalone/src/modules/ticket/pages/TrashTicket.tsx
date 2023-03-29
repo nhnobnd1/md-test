@@ -49,6 +49,7 @@ const TrashTicket = (props: TrashTicketProps) => {
       PENDING: 0,
       RESOLVED: 0,
       TRASH: 0,
+      NEW: 0,
     },
   });
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
@@ -276,7 +277,7 @@ const TrashTicket = (props: TrashTicketProps) => {
                 header: "Public Views",
               }}
               options={[
-                { label: "New", value: "0" },
+                { label: "New", value: `${statistic.data.NEW}` },
                 { label: "Open", value: `${statistic?.data.OPEN}` },
                 { label: "Pending", value: `${statistic?.data.PENDING}` },
                 { label: "Resolved", value: `${statistic?.data.RESOLVED}` },

@@ -1,6 +1,13 @@
-import { useUser } from "@moose-desk/core";
+import { upperCaseFirst, useUser } from "@moose-desk/core";
 import { Agent, Conversation, Tag, Ticket } from "@moose-desk/repo";
-import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
+import {
+  Document,
+  Font,
+  Page,
+  StyleSheet,
+  Text,
+  View,
+} from "@react-pdf/renderer";
 import moment from "moment";
 import { FC, useMemo } from "react";
 interface ItemConversation {
@@ -14,12 +21,17 @@ interface ExportTicketPdfProps {
   agents: Agent[];
   conversations: ItemConversation[];
 }
+Font.register({
+  family: "Roboto",
+  src: "/font/RobotoRegular.ttf",
+});
 const styles = StyleSheet.create({
   page: {
     flexDirection: "row",
-    backgroundColor: "white",
+
     paddingLeft: 20,
     paddingRight: 20,
+    width: "100%",
   },
   section: {
     margin: 10,
@@ -63,11 +75,6 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
     return `${filterItem.length} Records`;
   }, [filterItem]);
 
-  const tableStyle: any = {
-    display: "table",
-    width: "auto",
-  };
-
   const tableRowStyle: any = {
     flexDirection: "row",
     backgroundColor: "white",
@@ -96,7 +103,7 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
   const tableCellHeaderStyle: any = {
     textAlign: "center",
 
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: "bold",
     whiteSpace: "nowrap",
   };
@@ -104,17 +111,16 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
   const tableCellStyle: any = {
     textAlign: "center",
     margin: 2,
-    fontSize: 12,
+    fontSize: 10,
   };
 
   const createTableHeader = () => {
     return (
       <View style={tableRowStyle} fixed>
-        <View style={{ ...firstTableColHeaderStyle, flexBasis: 70 }}>
-          <Text style={tableCellHeaderStyle}>Ticket</Text>
-          <Text style={tableCellHeaderStyle}>Number</Text>
+        <View style={{ ...firstTableColHeaderStyle, flexBasis: 40 }}>
+          <Text style={tableCellHeaderStyle}>#</Text>
         </View>
-        <View style={firstTableColHeaderStyle}>
+        <View style={{ ...firstTableColHeaderStyle, flexGrow: 1 }}>
           <Text style={tableCellHeaderStyle}>Ticket Title</Text>
         </View>
         <View style={firstTableColHeaderStyle}>
@@ -123,10 +129,10 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
         <View style={firstTableColHeaderStyle}>
           <Text style={tableCellHeaderStyle}>Tags</Text>
         </View>
-        <View style={firstTableColHeaderStyle}>
+        <View style={{ ...firstTableColHeaderStyle, flexBasis: 60 }}>
           <Text style={tableCellHeaderStyle}>Priority</Text>
         </View>
-        <View style={firstTableColHeaderStyle}>
+        <View style={{ ...firstTableColHeaderStyle, flexBasis: 80 }}>
           <Text style={tableCellHeaderStyle}>Last Update</Text>
         </View>
       </View>
@@ -194,11 +200,13 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
             flexDirection: "row",
           }}
         >
-          <Text style={{ fontSize: 13 }}>Status: {item.status}</Text>
-          <Text style={{ fontSize: 13 }}>
+          <Text style={{ fontSize: 11 }}>Status: {item.status}</Text>
+          <Text style={{ fontSize: 11 }}>
             Assignee: {findItemAgentName?.email}
           </Text>
-          <Text style={{ fontSize: 13 }}>Priority {item.priority}</Text>
+          <Text style={{ fontSize: 11 }}>
+            Priority {upperCaseFirst(item.priority)}
+          </Text>
         </View>
         <View style={{ marginTop: 20 }}></View>
         <MyHr />
@@ -217,13 +225,15 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
     return (
       <View key={one.id}>
         <View>
-          <Text style={{ fontSize: 16 }}>{one?.name}</Text>
+          <Text style={{ fontSize: 14 }}>{one?.name}</Text>
         </View>
         <View>
-          <Text style={{ fontSize: 12, color: "gray" }}>{one?.email}</Text>
+          <Text style={{ fontSize: 8, color: "gray" }}>{one?.email}</Text>
         </View>
         <View style={{ marginTop: 20 }}>
-          <Text>{plainText}</Text>
+          <Text style={{ fontFamily: "Roboto", fontSize: 12 }}>
+            {plainText}
+          </Text>
         </View>
         <View
           style={{
@@ -234,7 +244,7 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
           }}
         >
           <Text style={{ flex: 1 }}></Text>
-          <Text style={{ fontSize: 12 }}>{one?.time}</Text>
+          <Text style={{ fontSize: 8 }}>{one?.time}</Text>
         </View>
         <MyHr />
       </View>
@@ -252,10 +262,10 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
 
     return (
       <View key={item._id} style={tableRowStyle}>
-        <View style={{ ...firstTableColStyle, flexBasis: 70 }}>
+        <View style={{ ...firstTableColStyle, flexBasis: 40 }}>
           <Text style={tableCellStyle}>{item.ticketId}</Text>
         </View>
-        <View style={firstTableColStyle}>
+        <View style={{ ...firstTableColStyle, flexGrow: 1 }}>
           <Text style={tableCellStyle}>{item.subject}</Text>
         </View>
         <View style={firstTableColStyle}>
@@ -270,10 +280,10 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
             </Text>
           ))}
         </View>
-        <View style={firstTableColStyle}>
-          <Text style={tableCellStyle}>{item.priority}</Text>
+        <View style={{ ...firstTableColStyle, flexBasis: 60 }}>
+          <Text style={tableCellStyle}>{upperCaseFirst(item.priority)}</Text>
         </View>
-        <View style={firstTableColStyle}>
+        <View style={{ ...firstTableColStyle, flexBasis: 80 }}>
           <Text style={tableCellStyle}>
             {item.updatedDatetime
               ? moment(item.updatedDatetime).format("DD/MM/YYYY")
@@ -285,14 +295,14 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
   };
   return (
     <Document>
-      <Page size="A4" style={styles.page} orientation="portrait">
-        <View style={tableStyle}>
-          <Text style={{ fontSize: 14, marginTop: 30, fontWeight: "bold" }}>
+      <Page size="A4" style={styles.page}>
+        <View style={{ flex: 1 }}>
+          <Text style={{ fontSize: 12, marginTop: 30, fontWeight: "bold" }}>
             Date: {moment().format("DD-MM-YYYY HH:mm:ss")}
           </Text>
           <Text
             style={{
-              fontSize: 14,
+              fontSize: 12,
               marginTop: 10,
               marginBottom: 30,
               fontWeight: "bold",
@@ -306,7 +316,7 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
             style={{ display: "flex", flexDirection: "row", marginBottom: 70 }}
           >
             <Text style={{ flex: 1 }}></Text>
-            <Text style={{ fontSize: 14, marginRight: 10, marginTop: 10 }}>
+            <Text style={{ fontSize: 12, marginRight: 10, marginTop: 10 }}>
               {recordText}
             </Text>
           </View>
