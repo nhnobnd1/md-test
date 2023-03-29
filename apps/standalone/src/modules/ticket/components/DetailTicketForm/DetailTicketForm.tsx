@@ -127,8 +127,8 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
         email: ticket.fromEmail.email,
         attachments: ticket.attachments,
         typeChat,
-        toEmail: ticket.toEmails[0].email,
-        incoming: ticket?.incoming,
+        toEmail: ticket.toEmails ? ticket.toEmails[0].email : "",
+        incoming: ticket?.incoming || ticket?.createdViaWidget,
       });
     }
     return conversationMapping;
@@ -514,7 +514,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                       <List>
                         <VirtualList
                           data={listChat}
-                          height={heightBoxComment}
+                          // height={heightBoxComment}
                           itemHeight={50}
                           itemKey="id"
                         >

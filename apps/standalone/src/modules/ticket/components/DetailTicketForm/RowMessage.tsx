@@ -30,7 +30,10 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
     return "";
   }, [item.chat]);
   const disableQuote = useMemo(() => {
-    if (item.attachments?.length === 0 && quote === "") {
+    if (
+      (item.attachments?.length === 0 || item.attachments === undefined) &&
+      quote === ""
+    ) {
       return true;
     }
     return false;
