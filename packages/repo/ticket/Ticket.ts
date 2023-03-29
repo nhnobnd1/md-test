@@ -12,6 +12,7 @@ export enum StatusTicket {
 	PENDING = 'PENDING',
 	OPEN = 'OPEN',
 	RESOLVED = 'RESOLVED',
+	NEW = 'NEW',
 }
 
 export const statusOptions = [

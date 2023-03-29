@@ -390,15 +390,15 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   useEffect(() => {
     getListTagApi({
       page: 1,
-      limit: 50,
+      limit: 500,
     });
     getListCustomerApi({
       page: 1,
-      limit: 50,
+      limit: 500,
     });
     getListAgentApi({
       page: 1,
-      limit: 50,
+      limit: 500,
     });
     getStatisticTicket();
   }, []);
@@ -572,6 +572,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         <div className="grid grid-cols-7 gap-6">
           <div className="col-span-1">
             <CardStatistic
+              status={filterObject?.status}
               className="mb-4"
               keyPanel="publicViews"
               panelProps={{
@@ -619,6 +620,8 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                     title="Ticket Title"
                     render={(_, record: Ticket) => (
                       <span
+                        className="cursor-pointer hover:underline hover:text-blue-500"
+                        onClick={() => handleEdit(record)}
                         style={{
                           wordBreak: "break-all",
                           minWidth: 300,

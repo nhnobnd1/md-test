@@ -198,7 +198,7 @@ const TrashTicket = (props: TrashTicketProps) => {
   useEffect(() => {
     getListTagApi({
       page: 1,
-      limit: 50,
+      limit: 500,
     });
     getStatisticTicket();
   }, []);

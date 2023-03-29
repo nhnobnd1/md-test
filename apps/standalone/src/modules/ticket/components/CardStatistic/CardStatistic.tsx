@@ -10,6 +10,7 @@ interface CardStatisticProps extends CollapseProps {
   panelProps: Omit<CollapsePanelProps, "key">;
   keyPanel: string;
   handleApply?: (object: { status: string }) => void;
+  status?: string;
 }
 
 export const CardStatistic = ({
@@ -17,6 +18,7 @@ export const CardStatistic = ({
   keyPanel,
   panelProps,
   handleApply,
+  status,
   ...props
 }: CardStatisticProps) => {
   const navigate = useNavigate();
@@ -36,7 +38,9 @@ export const CardStatistic = ({
             key={`${panelProps.header}-${item.label}`}
           >
             <div
-              className={`label  cursor-pointer hover:underline hover:text-blue-500`}
+              className={`label  cursor-pointer hover:underline hover:text-blue-500 ${
+                item.label.toUpperCase() === status ? "font-bold" : ""
+              }`}
               onClick={() => {
                 if (item.label === "Trash") {
                   navigate(generatePath(TicketRoutePaths.Trash));
@@ -45,6 +49,12 @@ export const CardStatistic = ({
                   handleApply &&
                     handleApply({
                       status: StatusTicket.PENDING,
+                    });
+                }
+                if (item.label === "New") {
+                  handleApply &&
+                    handleApply({
+                      status: StatusTicket.NEW,
                     });
                 }
                 if (item.label === "Open") {
@@ -63,7 +73,13 @@ export const CardStatistic = ({
             >
               {item.label}
             </div>
-            <div className="value">{item.value}</div>
+            <div
+              className={`value ${
+                item.label.toUpperCase() === status ? "font-bold" : ""
+              }`}
+            >
+              {item.value}
+            </div>
           </div>
         ))}
       </Collapse.Panel>

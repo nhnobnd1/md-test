@@ -9,7 +9,8 @@ export declare enum Priority {
 export declare enum StatusTicket {
     PENDING = "PENDING",
     OPEN = "OPEN",
-    RESOLVED = "RESOLVED"
+    RESOLVED = "RESOLVED",
+    NEW = "NEW"
 }
 export declare const statusOptions: {
     label: string;

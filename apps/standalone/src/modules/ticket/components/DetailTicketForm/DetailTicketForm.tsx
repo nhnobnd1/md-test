@@ -231,7 +231,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
 
   const fetchAgents = useCallback(
     (params: LoadMoreValue) => {
-      const limit = 50;
+      const limit = 500;
 
       return AgentRepository()
         .getList({
@@ -321,7 +321,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
           map(({ data }) => {
             getListTagApi({
               page: 1,
-              limit: 50,
+              limit: 500,
             });
             setConversationList(data.data);
           }),
@@ -384,6 +384,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
 
   const onFinish = (values: ValueForm) => {
     const dataPost: any = {
+      closedTicket: true,
       id: ticket?._id,
       attachmentIds: [],
       bccEmails: values.BCC,
