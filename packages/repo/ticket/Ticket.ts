@@ -17,15 +17,15 @@ export enum StatusTicket {
 
 export const statusOptions = [
 	{
-		label: 'PENDING',
+		label: 'Pending',
 		value: StatusTicket.PENDING,
 	},
 	{
-		label: 'OPEN',
+		label: 'Open',
 		value: StatusTicket.OPEN,
 	},
 	{
-		label: 'RESOLVED',
+		label: 'Resolved',
 		value: StatusTicket.RESOLVED,
 	},
 ];

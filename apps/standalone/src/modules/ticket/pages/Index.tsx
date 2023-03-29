@@ -423,7 +423,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange,
-    type: "checkbox",
+    // type: "checkbox",
     preserveSelectedRowKeys: true,
   };
   const handleChangeForm = useCallback(
@@ -582,7 +582,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                 header: "Public Views",
               }}
               handleApply={handleApply}
-              // style={{ width: 150 }}
               options={[
                 { label: "New", value: `${statistic?.data.NEW}` },
                 { label: "Open", value: `${statistic?.data.OPEN}` },
@@ -633,7 +632,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                   ></Table.Column>
                   s
                   <Table.Column
-                    // ellipsis={true}
                     key="customer"
                     title="Customer"
                     render={(_, record: Ticket) => {

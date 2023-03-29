@@ -4780,15 +4780,15 @@ const Jp = pt(
 var Up = /* @__PURE__ */ ((t) => (t.HIGHEST = "HIGHEST", t.HIGH = "HIGH", t.MEDIUM = "MEDIUM", t.LOW = "LOW", t.LOWEST = "LOWEST", t))(Up || {}), Mp = /* @__PURE__ */ ((t) => (t.PENDING = "PENDING", t.OPEN = "OPEN", t.RESOLVED = "RESOLVED", t.NEW = "NEW", t))(Mp || {});
 const Gp = [
   {
-    label: "PENDING",
+    label: "Pending",
     value: "PENDING"
   },
   {
-    label: "OPEN",
+    label: "Open",
     value: "OPEN"
   },
   {
-    label: "RESOLVED",
+    label: "Resolved",
     value: "RESOLVED"
   }
 ], Xp = [
