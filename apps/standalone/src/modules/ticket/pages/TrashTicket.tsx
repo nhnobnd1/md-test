@@ -356,7 +356,9 @@ const TrashTicket = (props: TrashTicketProps) => {
                       return (
                         <div className="flex flex-col wrap gap-2">
                           {filterItemTag.map((item) => (
-                            <span key={item._id}>#{item.name}</span>
+                            <span className="tag-item" key={item._id}>
+                              #{item.name}
+                            </span>
                           ))}
                         </div>
                       );

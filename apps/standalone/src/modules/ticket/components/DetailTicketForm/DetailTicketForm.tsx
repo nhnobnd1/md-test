@@ -4,6 +4,7 @@ import {
   AttachFile,
   Conversation,
   CreateReplyTicketRequest,
+  CustomerRepository,
   EmailIntegration,
   EmailIntegrationRepository,
   GetListTagRequest,
@@ -82,6 +83,10 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
   const [isChanged, setIsChanged] = useState(false);
   const [primaryEmail, setPrimaryEmail] = useState<EmailIntegration>();
   const [files, setFiles] = useState<any>([]);
+  const [toEmail, setToEmail] = useState({
+    value: { firstName: "", lastName: "", email: "" },
+    id: "",
+  });
 
   const listChat = useMemo<ChatItem[]>(() => {
     const conversationMapping: any = conversationList?.map(
@@ -133,14 +138,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
     }
     return conversationMapping;
   }, [ticket, conversationList]);
-  const heightBoxComment = useMemo(() => {
-    if (listChat.length === 1) {
-      return 400;
-    } else if (listChat.length === 2) {
-      return 600;
-    }
-    return 900;
-  }, [listChat.length]);
+
   const { run: createTag } = useJob(
     (dataSubmit: any) => {
       return TagRepository()
@@ -204,6 +202,12 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
         createTag({ name: item, storeId });
       }
     }
+  };
+  const onChangeEmail = (value: string, options: any) => {
+    setToEmail({
+      value: options?.obj,
+      id: options?.obj ? options?.obj?._id : "",
+    });
   };
 
   const initialValues = useMemo(() => {
@@ -281,15 +285,38 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
     }
   );
 
+  const fetchCustomer = useCallback(
+    (params: LoadMoreValue) => {
+      const limit = 500;
+      return CustomerRepository()
+        .getList({
+          page: params.page,
+          limit: limit,
+          query: params.searchText,
+        })
+        .pipe(
+          map(({ data }) => {
+            return {
+              options: data.data.map((item) => ({
+                label: `${item.firstName} ${item.lastName} - ${item.email}`,
+                value: item.email,
+                obj: item,
+              })),
+              canLoadMore: params.page < data.metadata.totalPage,
+            };
+          })
+        );
+    },
+    [EmailIntegrationRepository]
+  );
+
   const { run: postReplyApi } = useJob((payload: CreateReplyTicketRequest) => {
     return TicketRepository()
       .postReply(payload)
       .pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
-            // console.log("response create reply", data);
             message.success("Send mail successfully");
-            // getTicketApi(payload.id);
             setConversationList([...conversationList, data.data]);
           }
         })
@@ -382,9 +409,9 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
     }
   }, [id]);
 
-  const onFinish = (values: ValueForm) => {
+  const onFinish = (values: ValueForm, closeTicket = false) => {
     const dataPost: any = {
-      closedTicket: true,
+      closedTicket: closeTicket,
       id: ticket?._id,
       attachmentIds: [],
       bccEmails: values.BCC,
@@ -396,16 +423,22 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
       senderConfigId: primaryEmail ? primaryEmail._id : ticket?.senderConfigId,
 
       toEmails: [
-        {
-          name: primaryEmail
-            ? ticket?.fromEmail.name
-            : ticket?.toEmails[0].name,
-          email: primaryEmail
-            ? ticket?.fromEmail.email
-            : ticket?.toEmails[0].email,
-        },
+        toEmail.value
+          ? {
+              name: `${toEmail.value?.firstName} ${toEmail.value?.lastName}`,
+              email: toEmail.value?.email,
+            }
+          : {
+              name: primaryEmail
+                ? ticket?.fromEmail.name
+                : ticket?.toEmails[0].name,
+              email: primaryEmail
+                ? ticket?.fromEmail.email
+                : ticket?.toEmails[0].email,
+            },
       ],
     };
+    console.log({ dataPost, toEmail });
     if (files.length > 0) {
       postAttachmentApi(files, dataPost);
     } else {
@@ -423,7 +456,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
   };
   const handleCloseTicket = () => {
     form.setFieldValue("status", "RESOLVED");
-    onFinish(form.getFieldsValue());
+    onFinish(form.getFieldsValue(), true);
   };
   const handleReopenTicket = () => {
     const values = form.getFieldsValue();
@@ -501,25 +534,23 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                     <div className="box-comment">
                       <div className="w-full flex items-start gap-4 flex-wrap">
                         <div className="flex flex-1">
-                          <div className="w-full">
+                          <div className="w-[400px]">
                             <Form.Item
-                              label="To"
+                              label={<div style={{ width: 30 }}> To</div>}
                               name="to"
-                              labelCol={{ span: 3 }}
-                              wrapperCol={{ offset: 0, span: 18 }}
                               labelAlign="left"
                             >
-                              <Select
-                                // className="w-[150px]"
+                              <Select.Auto
                                 placeholder="Customer Email"
+                                virtual
+                                loadMore={fetchCustomer}
+                                onChange={onChangeEmail}
                               />
                             </Form.Item>
                             {enableCC ? (
                               <Form.Item
-                                label="CC"
+                                label={<div style={{ width: 30 }}> CC</div>}
                                 name="CC"
-                                labelCol={{ span: 3 }}
-                                wrapperCol={{ offset: 0, span: 18 }}
                                 labelAlign="left"
                                 rules={[
                                   ({ getFieldValue }) => ({
@@ -548,11 +579,9 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                             )}
                             {enableCC ? (
                               <Form.Item
-                                label="BCC"
+                                label={<div style={{ width: 30 }}> BCC</div>}
                                 name="BCC"
-                                labelCol={{ span: 3 }}
                                 labelAlign="left"
-                                wrapperCol={{ offset: 0, span: 18 }}
                                 rules={[
                                   ({ getFieldValue }) => ({
                                     validator(_, value) {
@@ -603,7 +632,15 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                           />
                         </Form.Item>
                       </div>
-                      <Form.Item name="content">
+                      <Form.Item
+                        name="content"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your message!",
+                          },
+                        ]}
+                      >
                         <TextEditorTicket
                           form={form}
                           setFiles={setFiles}

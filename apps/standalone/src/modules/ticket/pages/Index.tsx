@@ -29,7 +29,7 @@ import {
   statusOptions,
 } from "@moose-desk/repo";
 import { PDFDownloadLink } from "@react-pdf/renderer";
-import { Button, Input, TableProps, Tag as TagItem } from "antd";
+import { Button, Input, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import moment from "moment";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -497,7 +497,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         </div>
       </Header>
       <div className="mt-6">
-        <div className="grid grid-cols-5 gap-6 mb-2">
+        <div className="grid grid-cols-7 gap-6 mb-2">
           <div className="col-span-4 col-start-2">
             <div className="flex ">
               <div className="filters flex gap-3">
@@ -662,7 +662,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                     key="tags"
                     title="Tags"
                     render={(_, record: Ticket) => {
-                      // if (!record) return <></>;
                       const filterItemTag = tags.filter((item) =>
                         record.tags?.slice(-2).includes(item.id)
                       );
@@ -670,7 +669,9 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                       return (
                         <div className="flex flex-col wrap gap-2">
                           {filterItemTag.map((item) => (
-                            <TagItem key={item._id}>#{item.name}</TagItem>
+                            <span className="tag-item" key={item._id}>
+                              #{item.name}
+                            </span>
                           ))}
                         </div>
                       );
