@@ -58,6 +58,8 @@ const TrashTicket = (props: TrashTicketProps) => {
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange,
+    type: "checkbox",
+    preserveSelectedRowKeys: true,
   };
   const onChangeTable = useCallback(
     (pagination: any, filters: any, sorter: SorterResult<any>) => {

@@ -423,6 +423,8 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange,
+    type: "checkbox",
+    preserveSelectedRowKeys: true,
   };
   const handleChangeForm = useCallback(
     (changedValue) => {
@@ -571,7 +573,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
           </div>
         </div>
         <div className="grid grid-cols-7 gap-6">
-          <div className="col-span-1">
+          <div className="col-span-1 min-w-[150px]">
             <CardStatistic
               status={filterObject?.status}
               className="mb-4"
