@@ -18,14 +18,25 @@ const ImageZoom: React.FC<Props> = ({ src, alt }) => {
 
   return (
     <div>
-      <img height={200} src={src} alt={alt} onClick={handleImageClick} />
+      <img
+        className="hover:cursor-pointer rounded-lg"
+        height={200}
+        src={src}
+        alt={alt}
+        onClick={handleImageClick}
+      />
       {showImage && (
-        <div className="modal">
+        <div className="modal" onClick={handleCloseClick}>
           <div className="modal-content">
-            <span className="close" onClick={handleCloseClick}>
-              ×
-            </span>
-            <img style={{ height: "80vh" }} src={src} alt={alt} />
+            <span className="close">×</span>
+            <img
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+              style={{ height: "80vh" }}
+              src={src}
+              alt={alt}
+            />
           </div>
         </div>
       )}
