@@ -1,4 +1,4 @@
-import { useJob } from "@moose-desk/core";
+import { upperCaseFirst, useJob } from "@moose-desk/core";
 import {
   BaseDeleteList,
   BaseListTicketRequest,
@@ -25,7 +25,7 @@ import { ButtonTicket } from "src/modules/ticket/components/ButtonTicket";
 import { CardStatistic } from "src/modules/ticket/components/CardStatistic";
 import CancelIcon from "~icons/mdi/cancel";
 import RestoreIcon from "~icons/mdi/restore";
-
+import "./ListTicket.scss";
 interface TrashTicketProps {}
 
 const TrashTicket = (props: TrashTicketProps) => {
@@ -49,6 +49,7 @@ const TrashTicket = (props: TrashTicketProps) => {
       PENDING: 0,
       RESOLVED: 0,
       TRASH: 0,
+      NEW: 0,
     },
   });
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
@@ -57,6 +58,8 @@ const TrashTicket = (props: TrashTicketProps) => {
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange,
+    // type: "checkbox",
+    preserveSelectedRowKeys: true,
   };
   const onChangeTable = useCallback(
     (pagination: any, filters: any, sorter: SorterResult<any>) => {
@@ -197,7 +200,7 @@ const TrashTicket = (props: TrashTicketProps) => {
   useEffect(() => {
     getListTagApi({
       page: 1,
-      limit: 50,
+      limit: 500,
     });
     getStatisticTicket();
   }, []);
@@ -207,7 +210,7 @@ const TrashTicket = (props: TrashTicketProps) => {
 
   return (
     <>
-      <Header title="">
+      <Header title="" back>
         <div className="flex items-center justify-end flex-1 gap-4">
           <Input.Search
             className="max-w-[400px]"
@@ -267,8 +270,8 @@ const TrashTicket = (props: TrashTicketProps) => {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-5 gap-6">
-          <div className="col-span-1">
+        <div className="grid grid-cols-7 gap-6">
+          <div className="col-span-1 min-w-[150px]">
             <CardStatistic
               className="mb-4"
               keyPanel="publicViews"
@@ -276,7 +279,7 @@ const TrashTicket = (props: TrashTicketProps) => {
                 header: "Public Views",
               }}
               options={[
-                { label: "New", value: "0" },
+                { label: "New", value: `${statistic.data.NEW}` },
                 { label: "Open", value: `${statistic?.data.OPEN}` },
                 { label: "Pending", value: `${statistic?.data.PENDING}` },
                 { label: "Resolved", value: `${statistic?.data.RESOLVED}` },
@@ -284,7 +287,7 @@ const TrashTicket = (props: TrashTicketProps) => {
               ]}
             />
           </div>
-          <div className="col-span-4">
+          <div className="col-span-6">
             {tickets && (
               <>
                 <Table
@@ -295,14 +298,9 @@ const TrashTicket = (props: TrashTicketProps) => {
                 >
                   <Table.Column
                     key="ticketId"
-                    title="Ticket Number"
+                    title="#"
                     render={(_, record: Ticket) => (
-                      <span
-                        className="cursor-pointer hover:underline hover:text-blue-500"
-                        // onClick={() => handleEdit(record)}
-                      >
-                        {`${record.ticketId}`}
-                      </span>
+                      <span className="">{`${record.ticketId}`}</span>
                     )}
                     sorter={{
                       compare: (a: Ticket, b: Ticket) =>
@@ -313,12 +311,7 @@ const TrashTicket = (props: TrashTicketProps) => {
                     key="subject"
                     title="Ticket Title"
                     render={(_, record: Ticket) => (
-                      <span
-
-                      // onClick={() => handleEdit(record)}
-                      >
-                        {`${record.subject}`}
-                      </span>
+                      <span className="subject">{`${record.subject}`}</span>
                     )}
                     sorter={{
                       compare: (a: any, b: any) => a.subject - b.subject,
@@ -328,13 +321,14 @@ const TrashTicket = (props: TrashTicketProps) => {
                     key="customer"
                     title="Customer"
                     render={(_, record: Ticket) => {
-                      // console.log(
-                      //   `${record.ticketId} is ${record.fromEmail.name}`
-                      // );
                       if (record.createdViaWidget || record.incoming) {
-                        return <span>{`${record?.fromEmail.email}`}</span>;
+                        return (
+                          <span className="subject">{`${record?.fromEmail.email}`}</span>
+                        );
                       }
-                      return <span>{`${record?.toEmails[0]?.email}`}</span>;
+                      return (
+                        <span className="subject">{`${record?.toEmails[0]?.email}`}</span>
+                      );
                     }}
                     sorter={{
                       compare: (a: any, b: any) => {
@@ -362,7 +356,9 @@ const TrashTicket = (props: TrashTicketProps) => {
                       return (
                         <div className="flex flex-col wrap gap-2">
                           {filterItemTag.map((item) => (
-                            <span key={item._id}>#{item.name}</span>
+                            <span className="tag-item" key={item._id}>
+                              #{item.name}
+                            </span>
                           ))}
                         </div>
                       );
@@ -375,7 +371,7 @@ const TrashTicket = (props: TrashTicketProps) => {
                     key="priority"
                     title="Priority"
                     render={(_, record: Ticket) => (
-                      <span>{`${record.priority}`}</span>
+                      <span>{`${upperCaseFirst(record.priority)}`}</span>
                     )}
                     sorter={{
                       compare: (a: any, b: any) => a.priority - b.priority,

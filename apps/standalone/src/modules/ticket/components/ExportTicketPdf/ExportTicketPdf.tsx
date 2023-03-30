@@ -1,39 +1,79 @@
-import { Tag, Ticket } from "@moose-desk/repo";
-import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
+import { upperCaseFirst, useUser } from "@moose-desk/core";
+import { Agent, Conversation, Tag, Ticket } from "@moose-desk/repo";
+import {
+  Document,
+  Font,
+  Page,
+  StyleSheet,
+  Text,
+  View,
+} from "@react-pdf/renderer";
 import moment from "moment";
-import { FC } from "react";
+import { FC, useMemo } from "react";
+interface ItemConversation {
+  id: string;
+  conversations: Conversation[];
+}
 interface ExportTicketPdfProps {
   tickets: Ticket[];
   selectedRowKeys: React.Key[];
   tags: Tag[];
+  agents: Agent[];
+  conversations: ItemConversation[];
 }
+Font.register({
+  family: "Roboto",
+  src: "/font/RobotoRegular.ttf",
+});
 const styles = StyleSheet.create({
   page: {
     flexDirection: "row",
-    backgroundColor: "#E4E4E4",
+
+    paddingLeft: 20,
+    paddingRight: 20,
+    width: "100%",
   },
   section: {
     margin: 10,
     padding: 10,
     flexGrow: 1,
   },
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    margin: 5,
+    borderBottom: "1pt solid black",
+  },
+  label: {
+    width: "30%",
+    textAlign: "right",
+    marginRight: 10,
+    paddingRight: 10,
+    borderRight: "1pt solid black",
+  },
+  value: {
+    width: "70%",
+    paddingLeft: 10,
+  },
 });
-
+const regexQuote = /<div dir="ltr".*?<\/div><br>/s;
 export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
   tickets,
   selectedRowKeys,
   tags,
+  agents,
+  conversations,
 }) => {
-  const pageStyle: any = {
-    paddingTop: 16,
-    paddingHorizontal: 40,
-    paddingBottom: 56,
-  };
+  const user: any = useUser();
 
-  const tableStyle: any = {
-    display: "table",
-    width: "auto",
-  };
+  const filterItem = useMemo(() => {
+    return tickets.filter((item) => selectedRowKeys.includes(item._id));
+  }, [selectedRowKeys, tickets]);
+  const recordText = useMemo(() => {
+    if (!filterItem.length) return "";
+    if (filterItem.length === 1) return "1 Record";
+    return `${filterItem.length} Records`;
+  }, [filterItem]);
 
   const tableRowStyle: any = {
     flexDirection: "row",
@@ -52,16 +92,6 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
     alignItems: "center",
   };
 
-  const tableColHeaderStyle: any = {
-    width: "20%",
-    borderStyle: "solid",
-    borderColor: "#000",
-    borderBottomColor: "#000",
-    borderWidth: 1,
-    borderLeftWidth: 0,
-    backgroundColor: "#bdbdbd",
-  };
-
   const firstTableColStyle: any = {
     width: "20%",
     borderStyle: "solid",
@@ -70,19 +100,10 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
     borderTopWidth: 0,
   };
 
-  const tableColStyle = {
-    width: "20%",
-    borderStyle: "solid",
-    borderColor: "#000",
-    borderWidth: 1,
-    borderLeftWidth: 0,
-    borderTopWidth: 0,
-  };
-
   const tableCellHeaderStyle: any = {
     textAlign: "center",
 
-    fontSize: 8,
+    fontSize: 10,
     fontWeight: "bold",
     whiteSpace: "nowrap",
   };
@@ -90,16 +111,16 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
   const tableCellStyle: any = {
     textAlign: "center",
     margin: 2,
-    fontSize: 8,
-    whiteSpace: "nowrap",
+    fontSize: 10,
   };
+
   const createTableHeader = () => {
     return (
       <View style={tableRowStyle} fixed>
-        <View style={{ ...firstTableColHeaderStyle, flexBasis: 70 }}>
-          <Text style={tableCellHeaderStyle}>Ticket Number</Text>
+        <View style={{ ...firstTableColHeaderStyle, flexBasis: 40 }}>
+          <Text style={tableCellHeaderStyle}>#</Text>
         </View>
-        <View style={firstTableColHeaderStyle}>
+        <View style={{ ...firstTableColHeaderStyle, flexGrow: 1 }}>
           <Text style={tableCellHeaderStyle}>Ticket Title</Text>
         </View>
         <View style={firstTableColHeaderStyle}>
@@ -108,15 +129,128 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
         <View style={firstTableColHeaderStyle}>
           <Text style={tableCellHeaderStyle}>Tags</Text>
         </View>
-        <View style={firstTableColHeaderStyle}>
+        <View style={{ ...firstTableColHeaderStyle, flexBasis: 60 }}>
           <Text style={tableCellHeaderStyle}>Priority</Text>
         </View>
-        <View style={firstTableColHeaderStyle}>
+        <View style={{ ...firstTableColHeaderStyle, flexBasis: 80 }}>
           <Text style={tableCellHeaderStyle}>Last Update</Text>
         </View>
       </View>
     );
   };
+  const MyHr = () => (
+    <View style={styles.container}>
+      <View style={styles.label} />
+      <View style={styles.value} />
+    </View>
+  );
+  const createPage = (item: Ticket) => {
+    const findItemAgentName = agents.find((agent: Agent) => {
+      return agent._id === item.agentObjectId;
+    });
+    const conversation = conversations.find(
+      (conversation) => conversation.id === item._id
+    );
+    const conversationMapping: any = conversation?.conversations.map(
+      (one: Conversation) => {
+        return {
+          id: one._id,
+          name: one.fromEmail?.name,
+          email: one.fromEmail?.email,
+          time: moment
+            .unix(one.createdTimestamp)
+            .local()
+            .format("HH:mm DD/MM/YYYY Z"),
+          chat: one.description,
+        };
+      }
+    );
+    conversationMapping?.unshift({
+      id: item._id,
+      name: item.fromEmail.name,
+      email: item.fromEmail.email,
+      time: moment
+        .unix(item.createdTimestamp)
+        .local()
+        .format("HH:mm DD/MM/YYYY Z"),
+      chat: item.description,
+    });
+    return (
+      <Page
+        key={item._id}
+        size="A4"
+        style={{ paddingRight: 20, paddingLeft: 20 }}
+      >
+        <View
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: 10,
+          }}
+        >
+          <Text>{`Ticket ${item.ticketId}: ${item.subject}`}</Text>
+        </View>
+        <View
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginTop: 20,
+            flexDirection: "row",
+          }}
+        >
+          <Text style={{ fontSize: 11 }}>Status: {item.status}</Text>
+          <Text style={{ fontSize: 11 }}>
+            Assignee: {findItemAgentName?.email}
+          </Text>
+          <Text style={{ fontSize: 11 }}>
+            Priority {upperCaseFirst(item.priority)}
+          </Text>
+        </View>
+        <View style={{ marginTop: 20 }}></View>
+        <MyHr />
+        {conversationMapping?.map((one: any) => itemConversation(one))}
+      </Page>
+    );
+  };
+
+  const itemConversation = (one: any) => {
+    const removeQuote = one.chat.match(regexQuote)
+      ? one.chat.match(regexQuote)[0]
+      : one.chat;
+    const parser = new DOMParser();
+    const parsedHtml = parser.parseFromString(removeQuote, "text/html");
+    const plainText = parsedHtml.body.textContent;
+    return (
+      <View key={one.id}>
+        <View>
+          <Text style={{ fontSize: 14 }}>{one?.name}</Text>
+        </View>
+        <View>
+          <Text style={{ fontSize: 8, color: "gray" }}>{one?.email}</Text>
+        </View>
+        <View style={{ marginTop: 20 }}>
+          <Text style={{ fontFamily: "Roboto", fontSize: 12 }}>
+            {plainText}
+          </Text>
+        </View>
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            marginBottom: 30,
+            marginTop: 30,
+          }}
+        >
+          <Text style={{ flex: 1 }}></Text>
+          <Text style={{ fontSize: 8 }}>{one?.time}</Text>
+        </View>
+        <MyHr />
+      </View>
+    );
+  };
+
   const createTableRow = (item: Ticket) => {
     const condition = item.createdViaWidget || item.incoming;
     const customerName = condition
@@ -127,15 +261,17 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
     );
 
     return (
-      <View style={tableRowStyle}>
-        <View style={{ ...firstTableColStyle, flexBasis: 70 }}>
+      <View key={item._id} style={tableRowStyle}>
+        <View style={{ ...firstTableColStyle, flexBasis: 40 }}>
           <Text style={tableCellStyle}>{item.ticketId}</Text>
         </View>
-        <View style={firstTableColStyle}>
+        <View style={{ ...firstTableColStyle, flexGrow: 1 }}>
           <Text style={tableCellStyle}>{item.subject}</Text>
         </View>
         <View style={firstTableColStyle}>
-          <Text style={tableCellStyle}>{customerName}</Text>
+          <Text wrap={false} style={tableCellStyle}>
+            {customerName}
+          </Text>
         </View>
         <View style={firstTableColStyle}>
           {filterItemTag.map((itemTag) => (
@@ -144,13 +280,13 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
             </Text>
           ))}
         </View>
-        <View style={firstTableColStyle}>
-          <Text style={tableCellStyle}>{item.priority}</Text>
+        <View style={{ ...firstTableColStyle, flexBasis: 60 }}>
+          <Text style={tableCellStyle}>{upperCaseFirst(item.priority)}</Text>
         </View>
-        <View style={firstTableColStyle}>
+        <View style={{ ...firstTableColStyle, flexBasis: 80 }}>
           <Text style={tableCellStyle}>
             {item.updatedDatetime
-              ? moment(item.updatedDatetime).format("HH:mm DD/MM/YYYY")
+              ? moment(item.updatedDatetime).format("DD/MM/YYYY")
               : ""}
           </Text>
         </View>
@@ -159,14 +295,34 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
   };
   return (
     <Document>
-      <Page size="A4" style={styles.page} orientation="portrait">
-        <View style={tableStyle}>
+      <Page size="A4" style={styles.page}>
+        <View style={{ flex: 1 }}>
+          <Text style={{ fontSize: 12, marginTop: 30, fontWeight: "bold" }}>
+            Date: {moment().format("DD-MM-YYYY HH:mm:ss")}
+          </Text>
+          <Text
+            style={{
+              fontSize: 12,
+              marginTop: 10,
+              marginBottom: 30,
+              fontWeight: "bold",
+            }}
+          >
+            Exported by: {user?.family_name} {user?.given_name}
+          </Text>
           {createTableHeader()}
-          {tickets
-            .filter((item) => selectedRowKeys.includes(item._id))
-            .map((item) => createTableRow(item))}
+          {filterItem?.map((item) => createTableRow(item))}
+          <View
+            style={{ display: "flex", flexDirection: "row", marginBottom: 70 }}
+          >
+            <Text style={{ flex: 1 }}></Text>
+            <Text style={{ fontSize: 12, marginRight: 10, marginTop: 10 }}>
+              {recordText}
+            </Text>
+          </View>
         </View>
       </Page>
+      {filterItem?.map((item) => createPage(item))}
     </Document>
   );
 };

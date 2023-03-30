@@ -3,6 +3,11 @@
 - Package:
   - Là nơi chứa code logic chung cho cả 2 app shopify và standalone
   - Khi update code mới trong package xong thì bắt buộc phải yarn build. Đối với standalone muốn cập nhật thư viện trong package bắt buộc phải xóa node_module đi yarn lại
+    - Chạy file script "run-me-after-update-package.sh" để làm việc trên. Gõ các lệnh dưới, và chờ chạy xong.
+    ```
+    $ chmod +x run-me-after-update-package.sh
+    $ ./run-me-after-update-package.sh
+    ```
   - core: logic core
   - repo: các Repository Api
 

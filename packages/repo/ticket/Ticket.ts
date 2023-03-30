@@ -1,30 +1,31 @@
 import { BaseListRequest, BaseListResponse, BaseResponse } from '../unty';
 
 export enum Priority {
-	Highest = 'Highest',
-	High = 'High',
-	Medium = 'Medium',
-	Low = 'Low',
-	Lowest = 'Lowest',
+	HIGHEST = 'HIGHEST',
+	HIGH = 'HIGH',
+	MEDIUM = 'MEDIUM',
+	LOW = 'LOW',
+	LOWEST = 'LOWEST',
 }
 
 export enum StatusTicket {
 	PENDING = 'PENDING',
 	OPEN = 'OPEN',
 	RESOLVED = 'RESOLVED',
+	NEW = 'NEW',
 }
 
 export const statusOptions = [
 	{
-		label: 'PENDING',
+		label: 'Pending',
 		value: StatusTicket.PENDING,
 	},
 	{
-		label: 'OPEN',
+		label: 'Open',
 		value: StatusTicket.OPEN,
 	},
 	{
-		label: 'RESOLVED',
+		label: 'Resolved',
 		value: StatusTicket.RESOLVED,
 	},
 ];
@@ -32,23 +33,23 @@ export const statusOptions = [
 export const priorityOptions = [
 	{
 		label: 'Highest',
-		value: Priority.Highest,
+		value: Priority.HIGHEST,
 	},
 	{
 		label: 'High',
-		value: Priority.High,
+		value: Priority.HIGH,
 	},
 	{
 		label: 'Medium',
-		value: Priority.Medium,
+		value: Priority.MEDIUM,
 	},
 	{
 		label: 'Low',
-		value: Priority.Low,
+		value: Priority.LOW,
 	},
 	{
 		label: 'Lowest',
-		value: Priority.Lowest,
+		value: Priority.LOWEST,
 	},
 ];
 
@@ -98,6 +99,7 @@ export type Ticket = {
 	incoming: boolean;
 	attachments: AttachFile[];
 	_id: string;
+	text: string;
 };
 
 export type Conversation = {
@@ -126,6 +128,7 @@ export type Conversation = {
 	mailMessageId: string;
 	attachments: AttachFile[];
 	_id: string;
+	text: string;
 };
 
 export type ReplyTicket = {
@@ -149,6 +152,7 @@ export type TicketStatistic = {
 		PENDING: number;
 		RESOLVED: number;
 		TRASH: number;
+		NEW: number;
 	};
 };
 
@@ -162,11 +166,20 @@ export type UpdateTicket = {
 	tags?: string[];
 	agentObjectId?: string;
 	ids: string[];
+	agentEmail?: string;
 };
 
 export interface BaseListTicketRequest extends BaseListRequest {
 	sortBy?: string;
 	sortOrder?: number;
+}
+export interface BaseListTicketFilterRequest extends BaseListRequest {
+	sortBy?: string;
+	sortOrder?: number;
+	customer?: string;
+	tags?: string;
+	status?: string;
+	priority?: string;
 }
 export type GetListTicketRequest = BaseListTicketRequest;
 export type GetListTicketResponse = BaseListResponse<Ticket>;
@@ -180,3 +193,11 @@ export type UpdateTicketRequest = UpdateTicket;
 export type UpdateTicketResponse = BaseResponse<Ticket>;
 export type DeleteTicketResponse = BaseListResponse<Ticket>;
 export type StatisticTicketResponse = TicketStatistic;
+export type UploadFileResponse = {
+	data: {
+		ids: string[];
+		urls: string[];
+	};
+	statusCode: number;
+	datetime: string;
+};

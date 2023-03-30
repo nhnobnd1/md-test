@@ -1,6 +1,7 @@
 import {
   PageComponent,
   generatePath,
+  upperCaseFirst,
   useJob,
   useNavigate,
   usePrevious,
@@ -9,9 +10,14 @@ import {
 import {
   Agent,
   AgentRepository,
+  BaseListTicketFilterRequest,
   BaseListTicketRequest,
   BaseMetaDataListResponse,
+  Conversation,
+  Customer,
+  CustomerRepository,
   GetListAgentRequest,
+  GetListCustomerRequest,
   GetListTagRequest,
   GetListTicketRequest,
   Tag,
@@ -27,7 +33,7 @@ import { Button, Input, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import moment from "moment";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { catchError, map, of } from "rxjs";
+import { catchError, forkJoin, map, of } from "rxjs";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
@@ -46,13 +52,27 @@ import ModalFilter from "src/modules/ticket/components/ModalFilter/ModalFilter";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import IcRoundFilterAlt from "~icons/ic/round-filter-alt";
 import UilImport from "~icons/uil/import";
+import "./ListTicket.scss";
 interface TicketIndexPageProps {}
+interface FilterObject {
+  customer: string;
+  tags: string;
+  status: string;
+  priority: string;
+}
+interface ItemConversation {
+  id: string;
+  conversations: Conversation[];
+}
 
 const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [agents, setAgents] = useState<Agent[]>([]);
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [conversations, setConversations] = useState<ItemConversation[]>([]);
+
   const [statistic, setStatistic] = useState<TicketStatistic>({
     statusCode: 200,
     data: {
@@ -60,8 +80,11 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       PENDING: 0,
       RESOLVED: 0,
       TRASH: 0,
+      NEW: 0,
     },
   });
+  const [filterObject, setFilterObject] = useState<FilterObject | null>(null);
+
   const agentsOptions = useMemo(() => {
     const mapping = agents.map((item: Agent) => {
       return {
@@ -113,6 +136,26 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         );
     }
   );
+  const { run: getListTicketFilter } = useJob(
+    (payload: BaseListTicketFilterRequest) => {
+      return TicketRepository()
+        .getListFilter(payload)
+        .pipe(
+          map(({ data }) => {
+            if (data.statusCode === 200) {
+              const tickets = data.data.map((item) => ({
+                ...item,
+                id: item._id,
+              }));
+              setTickets(tickets);
+              setMeta(data.metadata);
+            } else {
+              message.error("Get data ticket failed");
+            }
+          })
+        );
+    }
+  );
   const { run: getStatisticTicket } = useJob(() => {
     return TicketRepository()
       .getStatistic()
@@ -126,6 +169,25 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         })
       );
   });
+
+  const { run: fetchConversation } = useJob(
+    (id: string) => {
+      return TicketRepository()
+        .getConversations(id)
+        .pipe(
+          map(({ data }) => {
+            setConversations((previous) => [
+              ...previous,
+              { id, conversations: data.data },
+            ]);
+          }),
+          catchError((err) => {
+            return of(err);
+          })
+        );
+    },
+    { showLoading: false }
+  );
 
   const { run: getListAgentApi } = useJob((payload: GetListAgentRequest) => {
     return AgentRepository()
@@ -190,6 +252,50 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         );
     }
   );
+  const { run: getListCustomerApi } = useJob(
+    (payload: GetListCustomerRequest) => {
+      return CustomerRepository()
+        .getList(payload)
+        .pipe(
+          map(({ data }) => {
+            if (data.statusCode === 200) {
+              const tags = data.data.map((item) => ({
+                ...item,
+                id: item._id,
+              }));
+              setCustomers((prevTags) => {
+                return [...prevTags, ...tags];
+              });
+
+              if (data.metadata.totalPage > (payload.page as number)) {
+                getListCustomerApi({
+                  page: (payload.page as number) + 1,
+                  limit: payload.limit,
+                });
+              }
+            } else {
+              message.error("Get data ticket failed");
+            }
+          })
+        );
+    }
+  );
+  useEffect(() => {
+    const needRequest = selectedRowKeys.filter(
+      (item) => !conversations.some((obj) => obj.id === item)
+    );
+    if (needRequest.length === 0) {
+      const filterConversations = conversations.filter((item) =>
+        selectedRowKeys.includes(item.id)
+      );
+      setConversations(filterConversations);
+      return;
+    }
+    const listRequest = needRequest.map((item) =>
+      fetchConversation(item as string)
+    );
+    forkJoin(listRequest).pipe(map(() => {}));
+  }, [selectedRowKeys]);
 
   const onChangeTable = useCallback(
     (pagination: any, filters: any, sorter: SorterResult<any>) => {
@@ -285,15 +391,23 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   useEffect(() => {
     getListTagApi({
       page: 1,
-      limit: 50,
+      limit: 500,
+    });
+    getListCustomerApi({
+      page: 1,
+      limit: 500,
     });
     getListAgentApi({
       page: 1,
-      limit: 50,
+      limit: 500,
     });
     getStatisticTicket();
   }, []);
   useEffect(() => {
+    if (filterObject) {
+      getListTicketFilter({ ...filterData, ...filterObject });
+      return;
+    }
     getListTicketApi(filterData);
   }, [filterData]);
   const handleEdit = (record: Ticket) => {
@@ -309,6 +423,8 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange,
+    // type: "checkbox",
+    preserveSelectedRowKeys: true,
   };
   const handleChangeForm = useCallback(
     (changedValue) => {
@@ -323,12 +439,46 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     setSelectedRowKeys([]);
     deleteTicketApi(selectedRowKeys as string[]);
   }, [selectedRowKeys]);
+  const handleResetModal = useCallback(() => {
+    getListTicketApi(filterData);
+    closeFilterModal();
+    setFilterObject(null);
+  }, [filterData]);
+  const handleApply = (values: any) => {
+    getListTicketFilter({
+      page: 1,
+      limit: 10,
+      priority: values.priority,
+      status: values.status,
+      customer: values.customer,
+      tags: values.tags?.toString(),
+    });
+    setFilterObject({
+      priority: values.priority,
+      status: values.status,
+      customer: values.customer,
+      tags: values.tags?.toString(),
+    });
+    closeFilterModal();
+  };
+
   return (
     <>
-      <ModalFilter open={filterModal} onCancel={closeFilterModal} />
+      <ModalFilter
+        customers={customers}
+        tags={tags}
+        open={filterModal}
+        handleResetModal={handleResetModal}
+        cancelText="Reset"
+        okText="Apply"
+        setTickets={setTickets}
+        closeFilterModal={closeFilterModal}
+        handleApply={handleApply}
+      />
       <Header title="Ticket">
         <div className="flex items-center justify-end flex-1 gap-4">
           <Input.Search
+            allowClear
             className="max-w-[400px]"
             placeholder="Search ticket"
             onSearch={(searchText: string) => {
@@ -347,7 +497,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         </div>
       </Header>
       <div className="mt-6">
-        <div className="grid grid-cols-5 gap-6 mb-2">
+        <div className="grid grid-cols-7 gap-6 mb-2">
           <div className="col-span-4 col-start-2">
             <div className="flex ">
               <div className="filters flex gap-3">
@@ -389,6 +539,8 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                   <PDFDownloadLink
                     document={
                       <ExportTicketPdf
+                        conversations={conversations}
+                        agents={agents}
                         tickets={tickets}
                         selectedRowKeys={selectedRowKeys}
                         tags={tags}
@@ -420,48 +572,26 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-5 gap-6">
-          <div className="col-span-1">
+        <div className="grid grid-cols-7 gap-6">
+          <div className="col-span-1 min-w-[150px]">
             <CardStatistic
+              status={filterObject?.status}
               className="mb-4"
               keyPanel="publicViews"
               panelProps={{
                 header: "Public Views",
               }}
+              handleApply={handleApply}
               options={[
-                { label: "New", value: "0" },
+                { label: "New", value: `${statistic?.data.NEW}` },
                 { label: "Open", value: `${statistic?.data.OPEN}` },
                 { label: "Pending", value: `${statistic?.data.PENDING}` },
                 { label: "Resolved", value: `${statistic?.data.RESOLVED}` },
                 { label: "Trash", value: `${statistic?.data.TRASH}` },
               ]}
             />
-            {/* <CardStatistic
-              className="mb-4"
-              keyPanel="privateViews"
-              panelProps={{
-                header: "Private Views",
-              }}
-              options={[
-                { label: "Custom A", value: "0" },
-                { label: "Custom B", value: "0" },
-                { label: "Custom C", value: "0" },
-              ]}
-            />
-            <CardStatistic
-              className="mb-4"
-              keyPanel="sharedWithMe"
-              panelProps={{
-                header: "Shared with me",
-              }}
-              options={[
-                { label: "Custom A", value: "0" },
-                { label: "Custom B", value: "0" },
-                { label: "Custom C", value: "0" },
-              ]}
-            /> */}
           </div>
-          <div className="col-span-4">
+          <div className="col-span-6">
             {tickets && (
               <>
                 <Table
@@ -472,7 +602,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                 >
                   <Table.Column
                     key="ticketId"
-                    title="Ticket Number"
+                    title="#"
                     render={(_, record: Ticket) => (
                       <span
                         className="cursor-pointer hover:underline hover:text-blue-500"
@@ -487,31 +617,32 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                     }}
                   ></Table.Column>
                   <Table.Column
+                    // ellipsis={true}
                     key="subject"
                     title="Ticket Title"
                     render={(_, record: Ticket) => (
                       <span
-
-                      // onClick={() => handleEdit(record)}
-                      >
-                        {`${record.subject}`}
-                      </span>
+                        className="cursor-pointer hover:underline hover:text-blue-500 subject"
+                        onClick={() => handleEdit(record)}
+                      >{`${record.subject}`}</span>
                     )}
                     sorter={{
                       compare: (a: any, b: any) => a.subject - b.subject,
                     }}
                   ></Table.Column>
+                  s
                   <Table.Column
                     key="customer"
                     title="Customer"
                     render={(_, record: Ticket) => {
-                      // console.log(
-                      //   `${record.ticketId} is ${record.fromEmail.name}`
-                      // );
                       if (record.createdViaWidget || record.incoming) {
-                        return <span>{`${record?.fromEmail.email}`}</span>;
+                        return (
+                          <span className="subject">{`${record?.fromEmail.email}`}</span>
+                        );
                       }
-                      return <span>{`${record?.toEmails[0]?.email}`}</span>;
+                      return (
+                        <span className="subject">{`${record?.toEmails[0]?.email}`}</span>
+                      );
                     }}
                     sorter={{
                       compare: (a: any, b: any) => {
@@ -531,7 +662,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                     key="tags"
                     title="Tags"
                     render={(_, record: Ticket) => {
-                      // if (!record) return <></>;
                       const filterItemTag = tags.filter((item) =>
                         record.tags?.slice(-2).includes(item.id)
                       );
@@ -539,7 +669,9 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                       return (
                         <div className="flex flex-col wrap gap-2">
                           {filterItemTag.map((item) => (
-                            <span key={item._id}>#{item.name}</span>
+                            <span className="tag-item" key={item._id}>
+                              #{item.name}
+                            </span>
                           ))}
                         </div>
                       );
@@ -552,7 +684,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                     key="priority"
                     title="Priority"
                     render={(_, record: Ticket) => (
-                      <span>{`${record.priority}`}</span>
+                      <span>{`${upperCaseFirst(record.priority)}`}</span>
                     )}
                     sorter={{
                       compare: (a: any, b: any) => a.priority - b.priority,

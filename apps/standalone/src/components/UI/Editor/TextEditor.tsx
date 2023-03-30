@@ -100,10 +100,12 @@ const TextEditor = ({
               input.click();
             }
           },
+          statusbar: false,
           paste_data_images: true,
           ...props.init,
         }}
       ></Editor>
+
       {/* {error ? (
         <div className="mt-1">
           <InlineError message={error} fieldID="myFieldID" />

@@ -10,9 +10,9 @@
   }
 
   .card-reply {
-    .ant-card-body {
-      height: 100%;
-    }
+    // .ant-card-body {
+    //   height: 100%;
+    // }
 
     .box-chat {
       // border: 2px solid #eee;
@@ -22,7 +22,7 @@
   }
 }
 .text-scroll {
-  max-height: 400px !important;
+  // max-height: 400px !important;
 
   overflow: scroll !important;
 }

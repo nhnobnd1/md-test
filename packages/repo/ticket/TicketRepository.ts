@@ -2,6 +2,7 @@ import { createRepository } from '@moose-desk/core';
 import env from '../env';
 import { BaseDeleteList } from '../unty';
 import {
+	BaseListTicketFilterRequest,
 	CreateReplyTicketRequest,
 	CreateReplyTicketResponse,
 	CreateTicketRequest,
@@ -15,6 +16,7 @@ import {
 	StatisticTicketResponse,
 	UpdateTicketRequest,
 	UpdateTicketResponse,
+	UploadFileResponse,
 } from './Ticket';
 export const TicketRepository = createRepository(
 	() => ({
@@ -23,6 +25,9 @@ export const TicketRepository = createRepository(
 	{
 		getList(api, params: GetListTicketRequest) {
 			return api.get<GetListTicketResponse>('', params);
+		},
+		getListFilter(api, params: BaseListTicketFilterRequest) {
+			return api.get<GetListTicketResponse>('/filters', params);
 		},
 		getListTrash(api, params: GetListTicketRequest) {
 			return api.get<GetListTicketResponse>('/trash', params);
@@ -41,6 +46,16 @@ export const TicketRepository = createRepository(
 		},
 		postReply(api, data: CreateReplyTicketRequest) {
 			return api.post<CreateReplyTicketResponse>(`/${data.id}/reply`, data);
+		},
+		postAttachment(api, data: any) {
+			return api.post<UploadFileResponse>(
+				`/attachments`,
+				{ file: data },
+				{
+					contentType: 'formData',
+					data: { file: data },
+				}
+			);
 		},
 		update(api, data: UpdateTicketRequest) {
 			return api.put<UpdateTicketResponse>(``, data);

@@ -1,5 +1,6 @@
 import {
   emailRegex,
+  generatePath,
   objectIdRegex,
   useJob,
   useNavigate,
@@ -17,7 +18,7 @@ import {
 import { Button, Input } from "antd";
 import { useCallback, useState } from "react";
 import { catchError, map, of } from "rxjs";
-import TextEditor from "src/components/UI/Editor/TextEditor";
+import TextEditorTicket from "src/components/UI/Editor/TextEditorTicket";
 import { Form } from "src/components/UI/Form";
 import Select, { LoadMoreValue } from "src/components/UI/Select/Select";
 import env from "src/core/env";
@@ -55,9 +56,11 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
   const [fromEmail, setFromEmail] = useState(props.primaryEmail);
   const [toEmail, setToEmail] = useState({ value: "", id: "" });
   const [form] = Form.useForm();
+  const [files, setFiles] = useState<any>([]);
+
   const fetchAgents = useCallback(
     (params: LoadMoreValue) => {
-      const limit = 50;
+      const limit = 500;
 
       return AgentRepository()
         .getList({
@@ -68,13 +71,15 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
         .pipe(
           map(({ data }) => {
             return {
-              options: data.data.map((item) => ({
-                label: item.lastName.includes("admin")
-                  ? `${item.firstName} - ${item.email}`
-                  : `${item.firstName} ${item.lastName} - ${item.email}`,
-                value: item._id,
-                obj: item,
-              })),
+              options: data.data
+                .filter((item) => item.isActive && item.emailConfirmed)
+                .map((item) => ({
+                  label: item.lastName.includes("admin")
+                    ? `${item.firstName} - ${item.email}`
+                    : `${item.firstName} ${item.lastName} - ${item.email}`,
+                  value: `${item._id},${item.email}`,
+                  obj: item,
+                })),
               canLoadMore: params.page < data.metadata.totalPage,
             };
           })
@@ -85,7 +90,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
 
   const fetchTags = useCallback(
     (params: LoadMoreValue) => {
-      const limit = env.DEFAULT_PAGE_SIZE;
+      const limit = 500;
       return TagRepository()
         .getList({
           page: params.page,
@@ -120,7 +125,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
               return {
                 options: [
                   {
-                    label: item.name,
+                    label: `${item.name} - ${item.supportEmail}`,
                     value: item._id,
                     obj: item,
                   },
@@ -140,7 +145,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
             map(({ data }) => {
               return {
                 options: data.data.map((item) => ({
-                  label: item.name,
+                  label: `${item.name} - ${item.supportEmail}`,
                   value: item._id,
                   obj: item,
                 })),
@@ -166,7 +171,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
           map(({ data }) => {
             return {
               options: data.data.map((item) => ({
-                label: item.email,
+                label: `${item.firstName} ${item.lastName} - ${item.email}`,
                 value: item.email,
                 obj: item,
               })),
@@ -198,20 +203,22 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
 
   const { run: CreateTicket } = useJob(
     (dataSubmit: any) => {
-      message.loading.show("Creating Customer!");
+      message.loading.show("Creating Ticket!");
       return TicketRepository()
         .create(dataSubmit)
         .pipe(
           map(({ data }) => {
             message.loading.hide();
             if (data.statusCode === 200) {
-              notification.success(
-                "Customer Profile has been created succcesfully."
+              notification.success("Ticket has been created successfully.");
+              // navigate()
+              navigate(
+                generatePath(TicketRoutePaths.Detail, { id: data.data._id })
               );
             } else {
               if (data.statusCode === 409) {
                 notification.error(
-                  `Email is ${dataSubmit.email} already exists.`
+                  `Ticket is ${dataSubmit.email} already exists.`
                 );
               }
             }
@@ -232,6 +239,28 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
     },
     { showLoading: false }
   );
+  const { run: postAttachmentApi } = useJob(
+    (dataSubmit: any, dataPost: any) => {
+      console.log({ dataSubmit });
+      return TicketRepository()
+        .postAttachment(dataSubmit)
+        .pipe(
+          map(({ data }) => {
+            if (data.statusCode === 200) {
+              console.log("upload successfully");
+              CreateTicket({
+                ...dataPost,
+                attachmentIds: data.data.ids,
+              });
+            }
+          }),
+          catchError((err) => {
+            return of(err);
+          })
+        );
+    },
+    { showLoading: true }
+  );
 
   const handleChangeForm = useCallback((changedValue) => {
     // console.log('asdasd',changedValue.);
@@ -251,14 +280,14 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
         }
       }
     }
-
-    CreateTicket({
+    const dataCreate: any = {
       fromEmail: {
         email: fromEmail?.supportEmail,
         name: fromEmail?.name,
       },
       senderConfigId: values.from,
-      agentObjectId: values.assignee,
+      agentObjectId: values.assignee.split(",")[0],
+      agentEmail: values.assignee.split(",")[1],
       toEmails: [{ email: values.to, name: values.to.split("@")[0] }],
       customerObjectId: toEmail.id,
       ccEmails: values?.CC,
@@ -268,7 +297,12 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
       status: "OPEN",
       priority: values.priority,
       tags: result,
-    });
+    };
+    if (files.length > 0) {
+      postAttachmentApi(files, dataCreate);
+    } else {
+      CreateTicket(dataCreate);
+    }
   };
 
   const onChangeTag = (value: string) => {
@@ -421,12 +455,12 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
             <Select options={priorityOptions}></Select>
           </Form.Item>
           <Form.Item name="tags" label="Tags">
-            <Select.Ajax
+            <Select.Tags
               mode="tags"
               placeholder="Add tags"
               loadMore={fetchTags}
               onChange={onChangeTag}
-            ></Select.Ajax>
+            ></Select.Tags>
           </Form.Item>
           <Form.Item
             name="subject"
@@ -441,11 +475,18 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
           </Form.Item> */}
         </div>
         <div className="mt-4">
-          <Form.Item name="content" className="w-full">
-            <TextEditor
+          <Form.Item
+            name="content"
+            className="w-full"
+            rules={[{ required: true, message: "Please input your message!" }]}
+          >
+            <TextEditorTicket
               form={form}
+              setFiles={setFiles}
+              // setIsChanged={setIsChanged}
               init={{
-                height: 500,
+                height: 400,
+                menubar: false,
                 placeholder: "Please input your message here......",
               }}
             />

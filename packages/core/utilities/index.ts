@@ -1,13 +1,13 @@
 export { default as EventListenersManager } from "./EventListenersManager";
-export * from "./object";
-export * from "./regexes";
-export * from "./request";
 export {
   default as StorageManager,
   StorageManager as StorageManagerClass,
   TokenManager,
 } from "./StorageManager";
 export * from "./VariableWatcher";
+export * from "./object";
+export * from "./regexes";
+export * from "./request";
 export * from "./useRole";
 
 export function makeId(length: number) {
@@ -19,4 +19,7 @@ export function makeId(length: number) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
+}
+export function upperCaseFirst(str: string) {
+  return str.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
 }

@@ -22,7 +22,7 @@ import moment from "moment";
 import VirtualList from "rc-virtual-list";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { catchError, map, of } from "rxjs";
-import TextEditor from "src/components/UI/Editor/TextEditor";
+import TextEditorTicket from "src/components/UI/Editor/TextEditorTicket";
 import { Form, FormProps } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
 import Select, { LoadMoreValue } from "src/components/UI/Select/Select";
@@ -52,6 +52,9 @@ export interface ChatItem {
   time: string;
   email: string;
   attachments?: AttachFile[];
+  typeChat?: "reported via widget" | "reported via email" | "agent created";
+  toEmail?: string;
+  incoming?: boolean;
 }
 const validateCCEmail = (value: string[]): boolean => {
   if (!value) return true;
@@ -64,7 +67,6 @@ const validateCCEmail = (value: string[]): boolean => {
   }
   return checked;
 };
-const heightBoxComment = 400;
 
 const DetailTicketForm = (props: DetailTicketFormProps) => {
   const message = useMessage();
@@ -79,37 +81,59 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
   const { storeId } = useStore();
   const [isChanged, setIsChanged] = useState(false);
   const [primaryEmail, setPrimaryEmail] = useState<EmailIntegration>();
+  const [files, setFiles] = useState<any>([]);
+
   const listChat = useMemo<ChatItem[]>(() => {
     const conversationMapping: any = conversationList?.map(
       (item: Conversation) => {
         return {
           id: item._id,
           name: item.fromEmail?.name,
-          time: moment
+          time: `${moment
             .unix(item.createdTimestamp)
             .local()
-            .format("HH:mm DD/MM/YYYY Z"),
+            .fromNow()} (${moment
+            .unix(item.createdTimestamp)
+            .local()
+            .format("HH:mm DD/MM/YYYY")})`,
           chat: item.description,
           email: item.fromEmail?.email,
           attachments: item.attachments,
+          toEmail: item.toEmails[0].email,
+          incoming: item?.incoming,
         };
       }
     );
     if (ticket) {
+      let typeChat;
+      if (ticket.incoming) {
+        typeChat = "reported via email";
+      } else if (ticket.createdViaWidget) {
+        typeChat = "reported via widget";
+      } else {
+        typeChat = "agent created";
+      }
       conversationMapping?.unshift({
         id: ticket._id,
         name: ticket?.fromEmail.name,
-        time: moment
+        time: `${moment
           .unix(ticket.createdTimestamp)
           .local()
-          .format("HH:mm DD/MM/YYYY Z"),
+          .fromNow()} (${moment
+          .unix(ticket.createdTimestamp)
+          .local()
+          .format("HH:mm DD/MM/YYYY")})`,
         chat: ticket.description,
         email: ticket.fromEmail.email,
         attachments: ticket.attachments,
+        typeChat,
+        toEmail: ticket.toEmails ? ticket.toEmails[0].email : "",
+        incoming: ticket?.incoming || ticket?.createdViaWidget,
       });
     }
     return conversationMapping;
   }, [ticket, conversationList]);
+
   const { run: createTag } = useJob(
     (dataSubmit: any) => {
       return TagRepository()
@@ -127,6 +151,28 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
         );
     },
     { showLoading: false }
+  );
+  const { run: postAttachmentApi } = useJob(
+    (dataSubmit: any, dataPost: any) => {
+      console.log({ dataSubmit });
+      return TicketRepository()
+        .postAttachment(dataSubmit)
+        .pipe(
+          map(({ data }) => {
+            if (data.statusCode === 200) {
+              console.log("upload successfully");
+              postReplyApi({
+                ...dataPost,
+                attachmentIds: data.data.ids,
+              });
+            }
+          }),
+          catchError((err) => {
+            return of(err);
+          })
+        );
+    },
+    { showLoading: true }
   );
   useEffect(() => {
     const tags: string[] = form.getFieldValue("tags");
@@ -154,30 +200,30 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
   };
 
   const initialValues = useMemo(() => {
-    if (primaryEmail) {
-      return {
-        status: ticket?.status,
-        assignee: ticket?.agentObjectId,
-        priority: ticket?.priority,
-        to: primaryEmail.supportEmail,
-        tags: ticket?.tags,
-      };
-    }
-    return (
-      props.initialValues ?? {
-        status: ticket?.status,
-        assignee: ticket?.agentObjectId,
-        priority: ticket?.priority,
-        to: ticket?.toEmails ? ticket?.toEmails[0].email : "",
-        tags: ticket?.tags,
-        content: "",
-      }
-    );
-  }, [props.initialValues, ticket, primaryEmail]);
+    // if (primaryEmail) {
+    //   return {
+    //     status: ticket?.status,
+    //     assignee: ticket?.agentObjectId,
+    //     priority: ticket?.priority,
+    //     to: primaryEmail.supportEmail,
+    //     tags: ticket?.tags,
+    //     content: "",
+    //   };
+    // }
+    const condition = ticket?.incoming || ticket?.createdViaWidget;
+    return {
+      status: ticket?.status,
+      assignee: ticket?.agentObjectId,
+      priority: ticket?.priority,
+      to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
+      tags: ticket?.tags,
+      content: "",
+    };
+  }, [ticket]);
 
   const fetchAgents = useCallback(
     (params: LoadMoreValue) => {
-      const limit = 50;
+      const limit = 500;
 
       return AgentRepository()
         .getList({
@@ -188,13 +234,15 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
         .pipe(
           map(({ data }) => {
             return {
-              options: data.data.map((item) => ({
-                label: item.lastName.includes("admin")
-                  ? `${item.firstName} - ${item.email}`
-                  : `${item.firstName} ${item.lastName} - ${item.email}`,
-                value: item._id,
-                obj: item,
-              })),
+              options: data.data
+                .filter((item) => item.isActive && item.emailConfirmed)
+                .map((item) => ({
+                  label: item.lastName.includes("admin")
+                    ? `${item.firstName} - ${item.email}`
+                    : `${item.firstName} ${item.lastName} - ${item.email}`,
+                  value: item._id,
+                  obj: item,
+                })),
               canLoadMore: params.page < data.metadata.totalPage,
             };
           })
@@ -265,7 +313,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
           map(({ data }) => {
             getListTagApi({
               page: 1,
-              limit: 50,
+              limit: 500,
             });
             setConversationList(data.data);
           }),
@@ -283,6 +331,9 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
         .pipe(
           map(({ data }) => {
             // console.log("update ticket success", data);
+            if (data.statusCode === 200) {
+              message.success("Update ticket successfully");
+            }
           }),
           catchError((err) => {
             return of(err);
@@ -291,7 +342,6 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
     },
     { showLoading: false }
   );
-
   const { run: getListTagApi, processing: loadingTags } = useJob(
     (payload: GetListTagRequest) => {
       return TagRepository()
@@ -327,9 +377,9 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
     }
   }, [id]);
 
-  const onFinish = (values: ValueForm) => {
-    // console.log({ values });
+  const onFinish = (values: ValueForm, closeTicket = false) => {
     const dataPost: any = {
+      closedTicket: closeTicket,
       id: ticket?._id,
       attachmentIds: [],
       bccEmails: values.BCC,
@@ -351,18 +401,24 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
         },
       ],
     };
-    postReplyApi(dataPost);
+    if (files.length > 0) {
+      postAttachmentApi(files, dataPost);
+    } else {
+      postReplyApi(dataPost);
+    }
+
     updateTicketApi({
       priority: values.priority,
       status: values.status,
       tags: values.tags,
-      agentObjectId: values.assignee,
+      agentObjectId: values.assignee.split(",")[0],
+      agentEmail: values.assignee.split(",")[1],
       ids: [ticket?._id as string],
     });
   };
   const handleCloseTicket = () => {
     form.setFieldValue("status", "RESOLVED");
-    onFinish(form.getFieldsValue());
+    onFinish(form.getFieldsValue(), true);
   };
   const handleReopenTicket = () => {
     const values = form.getFieldsValue();
@@ -370,6 +426,18 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
     updateTicketApi({
       status: "OPEN",
       priority: values.priority,
+      ids: [ticket?._id as string],
+    });
+  };
+
+  const handleSaveTicket = () => {
+    const values = form.getFieldsValue();
+    updateTicketApi({
+      priority: values.priority,
+      status: values.status,
+      tags: values.tags,
+      agentObjectId: values.assignee.split(",")[0],
+      agentEmail: values.assignee.split(",")[1],
       ids: [ticket?._id as string],
     });
   };
@@ -395,7 +463,11 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
           >
             <Card className="w-full">
               <div className="w-full flex items-center gap-4">
-                <Form.Item label="Status" name="status">
+                <Form.Item
+                  labelAlign="left"
+                  label={<span style={{ width: 50 }}>Status</span>}
+                  name="status"
+                >
                   <Select className="w-[150px]" options={statusOptions} />
                 </Form.Item>
                 <Form.Item label="Assignee" name="assignee">
@@ -408,191 +480,200 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                 </Form.Item>
               </div>
               <div className="flex justify-between items-center w-full mb-6">
-                <Form.Item label="Priority" name="priority">
+                <Form.Item
+                  labelAlign="left"
+                  label={<span style={{ width: 50 }}>Priority</span>}
+                  name="priority"
+                >
                   <Select
                     prefixCls=""
                     className="w-[150px]"
                     options={priorityOptions}
                   />
                 </Form.Item>
-                {form.getFieldValue("status") === StatusTicket.RESOLVED ? (
-                  <>
-                    <Button
-                      icon={
-                        <span className="mr-2 translate-y-[3px]">
-                          <BackIcon fontSize={14} />
-                        </span>
-                      }
-                      onClick={handleReopenTicket}
-                      disabled={false}
-                    >
-                      Reopen
-                    </Button>
-                  </>
-                ) : (
-                  <div className="flex items-center gap-2">
-                    <Button
-                      type="primary"
-                      icon={
-                        <span className="mr-2 translate-y-[3px]">
-                          <FaMailReply fontSize={14} />
-                        </span>
-                      }
-                      htmlType="submit"
-                      disabled={!isChanged}
-                    >
-                      Reply
-                    </Button>
-                    <Button disabled={!isChanged} onClick={handleCloseTicket}>
-                      Reply & Close Ticket
-                    </Button>
-                  </div>
-                )}
+                <div className="flex items-center">
+                  <Button type="primary" onClick={handleSaveTicket}>
+                    Save
+                  </Button>
+                </div>
               </div>
               {ticket ? (
                 <div className="BoxReply w-full">
-                  <Card className="card-reply">
-                    <div className="w-full h-full">
-                      <div className="box-chat">
-                        <List>
-                          <VirtualList
-                            data={listChat}
-                            height={heightBoxComment}
-                            itemHeight={50}
-                            itemKey="id"
-                          >
-                            {(item: ChatItem) => (
-                              <List.Item key={item.id}>
-                                <List.Item.Meta
-                                  // avatar={<Avatar size={"large"} />}
-                                  // title={<span>{item.name}</span>}
-                                  description={<RowMessage item={item} />}
-                                />
-                              </List.Item>
-                            )}
-                          </VirtualList>
-                        </List>
-                      </div>
-                      <div className="box-comment">
-                        <div className="w-full flex items-start gap-4 flex-wrap">
-                          <div className="flex flex-1">
-                            <div className="w-full">
+                  <div className="w-full h-full">
+                    <div className="box-chat">
+                      <List>
+                        <VirtualList
+                          data={listChat}
+                          itemHeight={50}
+                          itemKey="id"
+                        >
+                          {(item: ChatItem) => (
+                            <List.Item key={item.id} style={{ paddingLeft: 0 }}>
+                              <List.Item.Meta
+                                description={<RowMessage item={item} />}
+                              />
+                            </List.Item>
+                          )}
+                        </VirtualList>
+                      </List>
+                    </div>
+                    <div className="box-comment">
+                      <div className="w-full flex items-start gap-4 flex-wrap">
+                        <div className="flex flex-1">
+                          <div className="w-[400px]">
+                            <Form.Item
+                              label={<div style={{ width: 30 }}> To</div>}
+                              name="to"
+                              labelAlign="left"
+                            >
+                              <Select disabled placeholder="Customer Email" />
+                            </Form.Item>
+                            {enableCC ? (
                               <Form.Item
-                                label="To"
-                                name="to"
-                                labelCol={{ span: 4 }}
+                                label={<div style={{ width: 30 }}> CC</div>}
+                                name="CC"
+                                labelAlign="left"
+                                rules={[
+                                  ({ getFieldValue }) => ({
+                                    validator(_, value) {
+                                      if (validateCCEmail(value)) {
+                                        return Promise.resolve();
+                                      } else {
+                                        return Promise.reject(
+                                          new Error(
+                                            "The email address is not valid"
+                                          )
+                                        );
+                                      }
+                                    },
+                                  }),
+                                ]}
                               >
                                 <Select
-                                  className="w-[150px]"
-                                  placeholder="Customer Email"
-                                />
+                                  options={[]}
+                                  mode="tags"
+                                  placeholder="Type CC email..."
+                                ></Select>
                               </Form.Item>
-                              {enableCC ? (
-                                <Form.Item
-                                  label="CC"
-                                  name="CC"
-                                  labelCol={{ span: 4 }}
-                                  wrapperCol={{ offset: 0, span: 18 }}
-                                  rules={[
-                                    ({ getFieldValue }) => ({
-                                      validator(_, value) {
-                                        if (validateCCEmail(value)) {
-                                          return Promise.resolve();
-                                        } else {
-                                          return Promise.reject(
-                                            new Error(
-                                              "The email address is not valid"
-                                            )
-                                          );
-                                        }
-                                      },
-                                    }),
-                                  ]}
-                                >
-                                  <Select
-                                    options={[]}
-                                    mode="tags"
-                                    placeholder="Type CC email..."
-                                  ></Select>
-                                </Form.Item>
-                              ) : (
-                                <></>
-                              )}
-                              {enableCC ? (
-                                <Form.Item
-                                  label="BCC"
-                                  name="BCC"
-                                  labelCol={{ span: 4 }}
-                                  wrapperCol={{ offset: 0, span: 18 }}
-                                  rules={[
-                                    ({ getFieldValue }) => ({
-                                      validator(_, value) {
-                                        if (validateCCEmail(value)) {
-                                          return Promise.resolve();
-                                        } else {
-                                          return Promise.reject(
-                                            new Error(
-                                              "The email address is not valid"
-                                            )
-                                          );
-                                        }
-                                      },
-                                    }),
-                                  ]}
-                                >
-                                  <Select
-                                    options={[]}
-                                    mode="tags"
-                                    placeholder="Type BCC email..."
-                                  ></Select>
-                                </Form.Item>
-                              ) : (
-                                <></>
-                              )}
-                            </div>
-                            <div>
-                              <span
-                                className="link"
-                                onClick={() => {
-                                  setEnableCC(!enableCC);
-                                }}
+                            ) : (
+                              <></>
+                            )}
+                            {enableCC ? (
+                              <Form.Item
+                                label={<div style={{ width: 30 }}> BCC</div>}
+                                name="BCC"
+                                labelAlign="left"
+                                rules={[
+                                  ({ getFieldValue }) => ({
+                                    validator(_, value) {
+                                      if (validateCCEmail(value)) {
+                                        return Promise.resolve();
+                                      } else {
+                                        return Promise.reject(
+                                          new Error(
+                                            "The email address is not valid"
+                                          )
+                                        );
+                                      }
+                                    },
+                                  }),
+                                ]}
                               >
-                                CC/BCC
-                              </span>
-                            </div>
+                                <Select
+                                  options={[]}
+                                  mode="tags"
+                                  placeholder="Type BCC email..."
+                                ></Select>
+                              </Form.Item>
+                            ) : (
+                              <></>
+                            )}
                           </div>
-
-                          <Form.Item
-                            name="tags"
-                            label="Tags"
-                            className="flex-1"
-                          >
-                            <AntSelect
-                              placeholder="Add tags"
-                              mode="tags"
-                              options={tags.map((item: Tag) => ({
-                                value: item._id,
-                                label: item.name,
-                              }))}
-                              onChange={onChangeTag}
-                            />
-                          </Form.Item>
+                          <div>
+                            <span
+                              className="link"
+                              onClick={() => {
+                                setEnableCC(!enableCC);
+                              }}
+                            >
+                              CC/BCC
+                            </span>
+                          </div>
                         </div>
-                        <Form.Item name="content">
-                          <TextEditor
-                            form={form}
-                            setIsChanged={setIsChanged}
-                            init={{
-                              height: 400,
-                              menubar: false,
-                              placeholder:
-                                "Please input your message here......",
-                            }}
+
+                        <Form.Item name="tags" label="Tags" className="flex-1">
+                          <AntSelect
+                            placeholder="Add tags"
+                            mode="tags"
+                            options={tags.map((item: Tag) => ({
+                              value: item._id,
+                              label: item.name,
+                            }))}
+                            onChange={onChangeTag}
                           />
                         </Form.Item>
                       </div>
+                      <Form.Item
+                        name="content"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your message!",
+                          },
+                        ]}
+                      >
+                        <TextEditorTicket
+                          form={form}
+                          setFiles={setFiles}
+                          setIsChanged={setIsChanged}
+                          init={{
+                            height: 400,
+                            menubar: false,
+                            placeholder: "Please input your message here......",
+                          }}
+                        />
+                      </Form.Item>
+                      <div className="flex justify-end">
+                        {form.getFieldValue("status") ===
+                        StatusTicket.RESOLVED ? (
+                          <>
+                            <Button
+                              icon={
+                                <span className="mr-2 translate-y-[3px]">
+                                  <BackIcon fontSize={14} />
+                                </span>
+                              }
+                              onClick={handleReopenTicket}
+                              disabled={false}
+                            >
+                              Reopen
+                            </Button>
+                          </>
+                        ) : (
+                          <div className="flex items-center gap-2">
+                            <Button
+                              type="primary"
+                              icon={
+                                <span className="mr-2 translate-y-[3px]">
+                                  <FaMailReply fontSize={14} />
+                                </span>
+                              }
+                              htmlType="submit"
+                              disabled={!isChanged}
+                            >
+                              Reply
+                            </Button>
+                            <Button
+                              disabled={!isChanged}
+                              onClick={handleCloseTicket}
+                            >
+                              Reply & Close Ticket
+                            </Button>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </Card>
+                  </div>
                 </div>
               ) : (
                 <></>

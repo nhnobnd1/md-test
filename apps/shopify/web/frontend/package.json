@@ -48,6 +48,7 @@
     "@babel/preset-env": "^7.18.2",
     "@babel/preset-react": "^7.17.12",
     "@babel/preset-typescript": "^7.17.12",
+    "@iconify-json/gg": "^1.1.4",
     "@iconify-json/logos": "^1.1.19",
     "@iconify-json/mdi": "^1.1.36",
     "@types/lodash-es": "^4.17.6",

@@ -27,6 +27,7 @@
     "dayjs": "^1.11.5",
     "filesize": "^10.0.6",
     "formik": "^2.2.9",
+    "html-react-parser": "^3.0.15",
     "i18next": "^21.10.0",
     "jose": "^4.11.2",
     "js-file-download": "^0.4.12",

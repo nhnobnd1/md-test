@@ -425,6 +425,151 @@ Select.Assignee = ({
   );
 };
 
+Select.Tags = ({
+  loadMore,
+  renderOption,
+  dependencies = [],
+  dependenciesWait = 500,
+  extra,
+  onChange,
+  onFetched,
+  onDependenciesChanged,
+  ...props
+}: AjaxSelectProps) => {
+  const [options, setOptions] = useState<OptionType[]>([]);
+  const [page, setPage] = useState(1);
+  const [searchText, setSearchText] = useState("");
+  const [value, setValue] = useState<AjaxSelectProps["value"]>(props.value);
+  const prevSearchText = usePrevious(searchText);
+  const [canLoadMore, setCanLoadMore] = useState(true);
+  const { state: loading, on: startLoading, off: stopLoading } = useToggle();
+  const [isFirst, setIsFirst] = useState(true);
+
+  const [tag, setTags] = useState<any>([]);
+  const canFetch = useMemo(() => {
+    return !loading && canLoadMore;
+  }, [loading, canLoadMore]);
+  const fetchData = useCallback(() => {
+    try {
+      fetchDataApi({
+        searchText: searchText,
+        page: page,
+        isFirst: isFirst,
+        value: props.value ?? null,
+      });
+    } catch (error) {
+      setCanLoadMore(false);
+      setPage(1);
+      setIsFirst(true);
+    }
+  }, [searchText, page, isFirst]);
+
+  const { run: fetchDataDebounce } = useDebounceFn(
+    () => {
+      fetchData();
+    },
+    { wait: 300 }
+  );
+
+  const { run: fetchDataApi } = useJob((params: LoadMoreValue) => {
+    startLoading();
+    return loadMore(params).pipe(
+      map((data) => {
+        stopLoading();
+        let arrayData: any = [];
+        setTags((prev: any) => {
+          arrayData = [...prev, ...data.options];
+          return [...prev, ...data.options];
+        });
+        if (data.canLoadMore) {
+          fetchDataApi({
+            page: params.page + 1,
+            searchText: params.searchText,
+            isFirst: params.isFirst,
+            value: params.value,
+          });
+          return;
+        }
+        data.options = arrayData;
+
+        setOptions((value) => {
+          return _.uniqBy([...value, ...data.options], "value");
+        });
+
+        setCanLoadMore(data.canLoadMore);
+        setPage((value) => {
+          return data.page ?? value;
+        });
+        setIsFirst(false);
+      })
+    );
+  });
+
+  const { run: reloadData } = useDebounceFn(
+    useCallback(() => {
+      if (searchText !== "" || page !== 1) {
+        setPage(1);
+        setSearchText("");
+      } else {
+        fetchData();
+      }
+    }, [fetchData]),
+    { wait: dependenciesWait }
+  );
+
+  useEffect(() => {
+    if (props.value) {
+      if (!options.filter((option) => option.value === props.value).length) {
+        setValue(props.placeholder ? undefined : "");
+      } else {
+        setValue(props.value);
+      }
+    }
+  }, [options, props.value]);
+
+  const onFocus = useCallback(async () => {
+    if (options.length || !canFetch) {
+      return;
+    }
+    setPage(1);
+    fetchData();
+  }, [options, fetchData, canFetch]);
+
+  useDidUpdate(() => {
+    if (canFetch) {
+      prevSearchText !== searchText ? fetchDataDebounce() : fetchData();
+    }
+  }, [page, searchText]);
+
+  useEffect(() => {
+    onDependenciesChanged && onDependenciesChanged();
+    reloadData();
+    setCanLoadMore(true);
+  }, [...(dependencies || [])]);
+
+  return (
+    <Select
+      {...props}
+      value={value}
+      options={renderOption ? undefined : options}
+      onFocus={onFocus}
+      loading={loading}
+      onChange={onChange}
+      // onPopupScroll={onPopupScroll}
+      // onSearch={onSearch}
+      showSearch={props.showSearch ?? true}
+    >
+      {renderOption
+        ? _.uniqBy(options, "value").map((option, index) => (
+            <Select.Option key={index} value={option.value}>
+              {renderOption(option, index) as any}
+            </Select.Option>
+          ))
+        : null}
+    </Select>
+  );
+};
+
 Select.Auto = ({
   loadMore,
   renderOption,

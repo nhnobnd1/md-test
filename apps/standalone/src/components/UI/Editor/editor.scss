@@ -1,0 +1,58 @@
+.childDiv {
+  width: 75px;
+  height: 75px;
+  border: 1px solid gray;
+  border-radius: 5px;
+  margin-right: 5px;
+}
+.dropzone {
+  border: 2px dotted #e8eaea;
+}
+.item-file {
+  border: 2px dotted #e8eaea;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  margin: 20px 0px;
+  max-width: 300px;
+}
+.item-file-row {
+  border: 2px dotted #e8eaea;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin: 20px 0px;
+  max-width: 250px;
+}
+.item-file-img {
+  border: 2px dotted #e8eaea;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  margin: 20px 0px;
+  max-width: 300px;
+}
+
+.image-remove {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+.image-file:hover {
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+.item-file-img:hover .image-remove {
+  opacity: 1;
+}
+.image-remove:hover {
+  cursor: pointer;
+}

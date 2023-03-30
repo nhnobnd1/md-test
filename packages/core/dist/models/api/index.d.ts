@@ -11,6 +11,7 @@ export interface ApiRequestConfig<D = any> extends AxiosObservableRequestConfig<
     showLoading?: boolean;
     preparedData?: boolean;
     contentType?: "formData" | "urlEncoded" | "json";
+    header?: {};
 }
 export interface Interceptor {
     request?: (config: ApiRequestConfig) => ApiRequestConfig | Promise<AxiosRequestConfig>;

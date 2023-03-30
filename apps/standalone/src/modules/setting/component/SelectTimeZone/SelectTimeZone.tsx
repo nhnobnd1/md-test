@@ -20,7 +20,7 @@ const SelectTimeZone = ({ value, onChange, ...props }: SelectTimeZoneProps) => {
   const deselectedOptions = useMemo(() => {
     return optionSelectTimeZone.map((item) => ({
       label: item.description,
-      value: item.description,
+      value: item.olsonName,
     }));
   }, []);
 
@@ -75,7 +75,7 @@ const SelectTimeZone = ({ value, onChange, ...props }: SelectTimeZoneProps) => {
       className="flex ml-2"
     >
       {options.map((item) => (
-        <Select.Option value={item.label} label={item.value} key={item.value}>
+        <Select.Option value={item.value} label={item.label} key={item.value}>
           <div>{item.label}</div>
         </Select.Option>
       ))}
