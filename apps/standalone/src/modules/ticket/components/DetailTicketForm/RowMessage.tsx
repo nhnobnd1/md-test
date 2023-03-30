@@ -13,11 +13,20 @@ import "./BoxReply.scss";
 interface RowMessageProps {
   item: ChatItem;
 }
+// regex gmail
 const regexLtr = /<div dir="ltr".*?<\/div><br>/s;
 const regexQuote = /<div class="gmail_quote">[\s\S]*?<\/blockquote>/;
+// regex apple mail
+const regexLtr2 =
+  /line-break: after-white-space;">(.*?)<blockquote type="cite">/;
+const regexQuote2 = /<div><br><blockquote[^>]*>(.*?)<\/blockquote><\/div>/s;
+
 export const RowMessage: FC<RowMessageProps> = ({ item }) => {
   const [toggleQuote, setToggleQuote] = useState(true);
   const sortChat = useMemo(() => {
+    if (item.chat.match(regexLtr2)) {
+      return item.chat.match(regexLtr2)?.[1] as string;
+    }
     if (item.chat.match(regexLtr)) {
       return item.chat.match(regexLtr)?.[0] as string;
     }
@@ -26,6 +35,9 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
   const quote = useMemo(() => {
     if (item.chat.match(regexQuote)) {
       return item.chat.match(regexQuote)?.[0] as string;
+    }
+    if (item.chat.match(regexQuote2)) {
+      return item.chat.match(regexQuote2)?.[0] as string;
     }
     return "";
   }, [item.chat]);
@@ -72,6 +84,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
       ) : (
         <Popover content={<>Quote</>}>
           <Button
+            type="text"
             onClick={() => {
               setToggleQuote(!toggleQuote);
             }}
@@ -106,7 +119,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
               >
                 <div className="download-button flex flex-col justify-center items-center">
                   <DownLoadIcon fontSize={40} />
-                  <span>
+                  <span className="text-center">
                     {filesize(item.size, { base: 2, standard: "jedec" })}
                   </span>
                 </div>

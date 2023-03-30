@@ -63,6 +63,22 @@ const TextEditorTicket = ({
     onDrop,
     maxFiles: 3,
     maxSize: 30 * 1024 * 1024,
+
+    accept: {
+      "application/pdf": [],
+      "application/vnd.ms-excel": [],
+      "application/msword": [],
+      "text/plain": [],
+      "text/csv": [],
+      "video/mp4": [],
+      "video/avi": [],
+      "video/mpeg": [],
+      "image/png": [],
+      "image/jpeg": [],
+      "image/gif": [],
+      "application/zip": [],
+      "application/x-tar": [],
+    },
   });
   const removeFile = (file: any) => () => {
     const newFiles = [...myFiles];
@@ -71,42 +87,112 @@ const TextEditorTicket = ({
   };
 
   const ListFile = useMemo(() => {
+    const arrayImage = myFiles.filter((item: any) =>
+      item.type.startsWith("image/")
+    );
+    const arrayFile = myFiles.filter(
+      (item: any) => !item.type.startsWith("image/")
+    );
     return (
       <div className="flex justify-center flex-col items-center">
-        {myFiles.map((item: any) => (
-          <div className="item-file" key={item.path}>
-            <div style={{ flexGrow: 1, width: 225 }}>
-              <p style={{ wordBreak: "break-all" }}>{item.path}</p>
-              <span>{filesize(item.size, { base: 2, standard: "jedec" })}</span>
+        {arrayFile.map((item: any) => {
+          return (
+            <div className="item-file" key={item.path}>
+              <div style={{ flexGrow: 1, width: 115 }}>
+                <p style={{ wordBreak: "break-all" }} className="truncate">
+                  {item.path}
+                </p>
+                <span>
+                  {filesize(item.size, { base: 2, standard: "jedec" })}
+                </span>
+              </div>
+              <div style={{ marginLeft: 10 }}>
+                <Button style={{ width: 75 }} onClick={removeFile(item)}>
+                  <DeleteOutlined />
+                </Button>
+              </div>
             </div>
-            <div style={{ marginLeft: 10 }}>
-              <Button style={{ width: 75 }} onClick={removeFile(item)}>
-                <DeleteOutlined />
-              </Button>
-            </div>
-          </div>
-        ))}
+          );
+        })}
+        <div className="flex gap-2">
+          {arrayImage.map((item: any) => {
+            return (
+              <div
+                className="item-file-img relative"
+                key={item.path}
+                onClick={removeFile(item)}
+              >
+                <Button
+                  className="flex justify-center items-center absolute   image-remove"
+                  style={{ width: 50 }}
+                >
+                  <DeleteOutlined />
+                </Button>
+                <img
+                  style={{ height: 75, borderRadius: 10 }}
+                  src={URL.createObjectURL(item)}
+                  alt={item.name}
+                  className="image-file"
+                />
+              </div>
+            );
+          })}
+        </div>
       </div>
     );
   }, [myFiles]);
   const ListFileRow = useMemo(() => {
+    const arrayImage = myFiles.filter((item: any) =>
+      item.type.startsWith("image/")
+    );
+    const arrayFile = myFiles.filter(
+      (item: any) => !item.type.startsWith("image/")
+    );
     return (
-      <div className="flex justify-start  items-center gap-4">
-        {myFiles.map((item: any) => (
-          <div className="item-file-row" key={item.path}>
-            <div style={{ flexGrow: 1, width: 115 }}>
-              <p style={{ wordBreak: "break-all" }} className="truncate">
-                {item.path}
-              </p>
-              <span>{filesize(item.size, { base: 2, standard: "jedec" })}</span>
+      <div className="flex justify-center flex-row items-center gap-2">
+        {arrayFile.map((item: any) => {
+          return (
+            <div className="item-file" key={item.path}>
+              <div style={{ flexGrow: 1, width: 115 }}>
+                <p style={{ wordBreak: "break-all" }} className="truncate">
+                  {item.path}
+                </p>
+                <span>
+                  {filesize(item.size, { base: 2, standard: "jedec" })}
+                </span>
+              </div>
+              <div style={{ marginLeft: 10 }}>
+                <Button style={{ width: 75 }} onClick={removeFile(item)}>
+                  <DeleteOutlined />
+                </Button>
+              </div>
             </div>
-            <div style={{ marginLeft: 10 }}>
-              <Button style={{ width: 75 }} onClick={removeFile(item)}>
-                <DeleteOutlined />
-              </Button>
-            </div>
-          </div>
-        ))}
+          );
+        })}
+        <div className="flex gap-2">
+          {arrayImage.map((item: any) => {
+            return (
+              <div
+                className="item-file-img relative"
+                key={item.path}
+                onClick={removeFile(item)}
+              >
+                <Button
+                  className="flex justify-center items-center absolute   image-remove"
+                  style={{ width: 50 }}
+                >
+                  <DeleteOutlined />
+                </Button>
+                <img
+                  style={{ height: 75, borderRadius: 10 }}
+                  src={URL.createObjectURL(item)}
+                  alt={item.name}
+                  className="image-file"
+                />
+              </div>
+            );
+          })}
+        </div>
       </div>
     );
   }, [myFiles]);
