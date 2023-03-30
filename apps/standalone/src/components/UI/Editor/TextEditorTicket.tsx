@@ -149,7 +149,7 @@ const TextEditorTicket = ({
       (item: any) => !item.type.startsWith("image/")
     );
     return (
-      <div className="flex justify-center flex-row items-center gap-2">
+      <div className="flex justify-start flex-row items-center gap-2">
         {arrayFile.map((item: any) => {
           return (
             <div className="item-file" key={item.path}>
