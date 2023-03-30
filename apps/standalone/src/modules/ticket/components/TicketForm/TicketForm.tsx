@@ -1,5 +1,6 @@
 import {
   emailRegex,
+  generatePath,
   objectIdRegex,
   useJob,
   useNavigate,
@@ -210,6 +211,10 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
             message.loading.hide();
             if (data.statusCode === 200) {
               notification.success("Ticket has been created successfully.");
+              // navigate()
+              navigate(
+                generatePath(TicketRoutePaths.Detail, { id: data.data._id })
+              );
             } else {
               if (data.statusCode === 409) {
                 notification.error(

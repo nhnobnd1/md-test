@@ -463,7 +463,11 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
           >
             <Card className="w-full">
               <div className="w-full flex items-center gap-4">
-                <Form.Item label="Status" name="status">
+                <Form.Item
+                  labelAlign="left"
+                  label={<span style={{ width: 50 }}>Status</span>}
+                  name="status"
+                >
                   <Select className="w-[150px]" options={statusOptions} />
                 </Form.Item>
                 <Form.Item label="Assignee" name="assignee">
@@ -476,7 +480,11 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                 </Form.Item>
               </div>
               <div className="flex justify-between items-center w-full mb-6">
-                <Form.Item label="Priority" name="priority">
+                <Form.Item
+                  labelAlign="left"
+                  label={<span style={{ width: 50 }}>Priority</span>}
+                  name="priority"
+                >
                   <Select
                     prefixCls=""
                     className="w-[150px]"

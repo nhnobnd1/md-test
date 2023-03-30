@@ -42,18 +42,15 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
     return "";
   }, [item.chat]);
   const disableQuote = useMemo(() => {
-    if (
-      (item.attachments?.length === 0 || item.attachments === undefined) &&
-      quote === ""
-    ) {
+    if (quote === "") {
       return true;
     }
     return false;
-  }, [item.attachments?.length, quote]);
+  }, [quote]);
   return (
     <div className="">
       <div className=" items-center gap-3">
-        <div className="flex items-end gap-3 mb-1">
+        <div className="flex items-end gap-3 ">
           <h2 style={{ color: "black", margin: 0 }}>{item.name}</h2>
           {item?.incoming ? (
             <UserIcon fontSize={24} />
@@ -64,7 +61,12 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
             {item.typeChat ? item.typeChat : "replied"}
           </span>
         </div>
-        <div className="flex gap-3 justify-between">
+        <div className="flex gap-3 justify-between mt-2">
+          <span style={{ color: "black", fontSize: 12 }}>
+            From: {item.email}
+          </span>
+        </div>
+        <div className="flex gap-3 justify-between mt-2">
           <span className="text-xs">{item.time}</span>
         </div>
         <div className="flex gap-3 justify-between mt-2">
@@ -105,54 +107,54 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
             }}
             className="text-black mb-2 text-scroll mt-3"
           ></div>
-          <div className="flex gap-5 overflow-scroll box-file">
-            {item.attachments?.map((item) => (
-              <div
-                onClick={async () => {
-                  const response = await axios.get(item.attachmentUrl, {
-                    responseType: "blob",
-                  });
-                  fileDownload(response.data, item.name);
-                }}
-                key={item._id}
-                className="flex items-center justify-center mt-1 box-img"
-              >
-                <div className="download-button flex flex-col justify-center items-center">
-                  <DownLoadIcon fontSize={40} />
-                  <span className="text-center">
-                    {filesize(item.size, { base: 2, standard: "jedec" })}
-                  </span>
-                </div>
-                {item.thumbUrl ? (
-                  <img
-                    style={{
-                      // width: "100%",
-                      borderRadius: 20,
-                      objectFit: "contain",
-                      height: 100,
-                      width: 100,
-                    }}
-                    src={item.thumbUrl}
-                    alt={`file-${item.name}`}
-                    className="img-file"
-                  />
-                ) : (
-                  <Avatar
-                    className="img-file"
-                    style={{
-                      // width: "100%",
-                      borderRadius: 20,
-                      objectFit: "contain",
-                      height: 100,
-                      width: 100,
-                    }}
-                  ></Avatar>
-                )}
-              </div>
-            ))}
-          </div>
         </div>
       )}
+      <div className="flex gap-5 overflow-scroll box-file mt-2">
+        {item.attachments?.map((item) => (
+          <div
+            onClick={async () => {
+              const response = await axios.get(item.attachmentUrl, {
+                responseType: "blob",
+              });
+              fileDownload(response.data, item.name);
+            }}
+            key={item._id}
+            className="flex items-center justify-center mt-1 box-img"
+          >
+            <div className="download-button flex flex-col justify-center items-center">
+              <DownLoadIcon fontSize={40} />
+              <span className="text-center">
+                {filesize(item.size, { base: 2, standard: "jedec" })}
+              </span>
+            </div>
+            {item.thumbUrl ? (
+              <img
+                style={{
+                  // width: "100%",
+                  borderRadius: 20,
+                  objectFit: "contain",
+                  height: 100,
+                  width: 100,
+                }}
+                src={item.thumbUrl}
+                alt={`file-${item.name}`}
+                className="img-file"
+              />
+            ) : (
+              <Avatar
+                className="img-file"
+                style={{
+                  // width: "100%",
+                  borderRadius: 20,
+                  objectFit: "contain",
+                  height: 100,
+                  width: 100,
+                }}
+              ></Avatar>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
