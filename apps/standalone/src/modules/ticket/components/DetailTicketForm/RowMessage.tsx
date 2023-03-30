@@ -1,14 +1,15 @@
 import { Avatar, Button, Popover } from "antd";
 import axios from "axios";
 import { filesize } from "filesize";
+import parse, { Element } from "html-react-parser";
 import fileDownload from "js-file-download";
 import { FC, useMemo, useState } from "react";
 import { ChatItem } from "src/modules/ticket/components/DetailTicketForm/DetailTicketForm";
+import ImageZoom from "src/modules/ticket/components/DetailTicketForm/ImageZoom";
 import DownLoadIcon from "~icons/ic/round-file-download";
 import UserIcon from "~icons/material-symbols/person";
 import AgentIcon from "~icons/material-symbols/support-agent-sharp";
 import QuoteIcon from "~icons/octicon/ellipsis-16";
-
 import "./BoxReply.scss";
 interface RowMessageProps {
   item: ChatItem;
@@ -21,23 +22,41 @@ const regexLtr2 =
   /line-break: after-white-space;">(.*?)<blockquote type="cite">/;
 const regexQuote2 = /<div><br><blockquote[^>]*>(.*?)<\/blockquote><\/div>/s;
 
+const parseHtml = (html: string): React.ReactNode => {
+  const options: any = {
+    replace: (domNode: Element): React.ReactNode => {
+      if (domNode.name === "img") {
+        return (
+          <ImageZoom
+            key={domNode.attribs.src}
+            src={domNode.attribs.src}
+            alt={domNode.attribs.alt}
+          />
+        );
+      }
+      return undefined; // Return undefined if we don't want to replace the node
+    },
+  };
+  return parse(html, options);
+};
+
 export const RowMessage: FC<RowMessageProps> = ({ item }) => {
   const [toggleQuote, setToggleQuote] = useState(true);
   const sortChat = useMemo(() => {
     if (item.chat.match(regexLtr2)) {
-      return item.chat.match(regexLtr2)?.[1] as string;
+      return parseHtml(item.chat.match(regexLtr2)?.[1] as string);
     }
     if (item.chat.match(regexLtr)) {
-      return item.chat.match(regexLtr)?.[0] as string;
+      return parseHtml(item.chat.match(regexLtr)?.[0] as string);
     }
-    return item.chat;
+    return parseHtml(item.chat);
   }, [item.chat]);
   const quote = useMemo(() => {
     if (item.chat.match(regexQuote)) {
-      return item.chat.match(regexQuote)?.[0] as string;
+      return parseHtml(item.chat.match(regexQuote)?.[0] as string);
     }
     if (item.chat.match(regexQuote2)) {
-      return item.chat.match(regexQuote2)?.[0] as string;
+      return parseHtml(item.chat.match(regexQuote2)?.[0] as string);
     }
     return "";
   }, [item.chat]);
@@ -75,12 +94,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
           </span>
         </div>
       </div>
-      <div
-        dangerouslySetInnerHTML={{
-          __html: sortChat,
-        }}
-        className="text-black mb-2 text-scroll mt-5"
-      ></div>
+      <div className="text-black mb-2 text-scroll mt-5">{sortChat}</div>
       {disableQuote ? (
         <></>
       ) : (
@@ -101,12 +115,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
         <></>
       ) : (
         <div>
-          <div
-            dangerouslySetInnerHTML={{
-              __html: quote,
-            }}
-            className="text-black mb-2 text-scroll mt-3"
-          ></div>
+          <div className="text-black mb-2 text-scroll mt-3">{quote}</div>
         </div>
       )}
       <div className="flex gap-5 overflow-scroll box-file mt-2">
@@ -130,7 +139,6 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
             {item.thumbUrl ? (
               <img
                 style={{
-                  // width: "100%",
                   borderRadius: 20,
                   objectFit: "contain",
                   height: 100,
@@ -144,7 +152,6 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
               <Avatar
                 className="img-file"
                 style={{
-                  // width: "100%",
                   borderRadius: 20,
                   objectFit: "contain",
                   height: 100,
