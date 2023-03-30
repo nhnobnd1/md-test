@@ -202,20 +202,18 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
 
   const { run: CreateTicket } = useJob(
     (dataSubmit: any) => {
-      message.loading.show("Creating Customer!");
+      message.loading.show("Creating Ticket!");
       return TicketRepository()
         .create(dataSubmit)
         .pipe(
           map(({ data }) => {
             message.loading.hide();
             if (data.statusCode === 200) {
-              notification.success(
-                "Customer Profile has been created succcesfully."
-              );
+              notification.success("Ticket has been created successfully.");
             } else {
               if (data.statusCode === 409) {
                 notification.error(
-                  `Email is ${dataSubmit.email} already exists.`
+                  `Ticket is ${dataSubmit.email} already exists.`
                 );
               }
             }
