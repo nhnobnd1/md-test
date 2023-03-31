@@ -130,7 +130,7 @@ const TextEditorTicket = ({
           return (
             <div className="item-file" key={item.path}>
               <Popover title={item.path}>
-                <div style={{ flexGrow: 1, width: 115 }}>
+                <div style={{ flexGrow: 1, width: 0 }}>
                   <p style={{ wordBreak: "break-all" }} className="truncate">
                     {item.path}
                   </p>
