@@ -1,7 +1,7 @@
 import { CloudUploadOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useToggle } from "@moose-desk/core";
 import { Editor, IAllProps } from "@tinymce/tinymce-react";
-import { Button, FormInstance, Modal } from "antd";
+import { Button, FormInstance, Modal, Popover } from "antd";
 import { filesize } from "filesize";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
@@ -55,6 +55,8 @@ const TextEditorTicket = ({
       }
       setErrorText("");
       setMyFiles(totalArray);
+      closeModal();
+      setIsShowFile(true);
     },
     [myFiles]
   );
@@ -87,25 +89,29 @@ const TextEditorTicket = ({
   };
 
   const ListFile = useMemo(() => {
-    const arrayImage = myFiles.filter((item: any) =>
-      item.type.startsWith("image/")
-    );
-    const arrayFile = myFiles.filter(
-      (item: any) => !item.type.startsWith("image/")
-    );
     return (
       <div className="flex justify-center flex-col items-center">
-        {arrayFile.map((item: any) => {
+        {myFiles.map((item: any) => {
           return (
             <div className="item-file" key={item.path}>
-              <div style={{ flexGrow: 1, width: 115 }}>
-                <p style={{ wordBreak: "break-all" }} className="truncate">
-                  {item.path}
-                </p>
-                <span>
-                  {filesize(item.size, { base: 2, standard: "jedec" })}
-                </span>
-              </div>
+              <Popover title={item.path}>
+                <div>
+                  <p className="item-path">{item.path}</p>
+                  <span>
+                    {filesize(item.size, { base: 2, standard: "jedec" })}
+                  </span>
+                </div>
+              </Popover>
+              {item.type.startsWith("image/") ? (
+                <img
+                  style={{ height: 75, borderRadius: 10, flexGrow: 1 }}
+                  src={URL.createObjectURL(item)}
+                  alt={item.name}
+                  className="image-file"
+                />
+              ) : (
+                <></>
+              )}
               <div style={{ marginLeft: 10 }}>
                 <Button style={{ width: 75 }} onClick={removeFile(item)}>
                   <DeleteOutlined />
@@ -114,53 +120,35 @@ const TextEditorTicket = ({
             </div>
           );
         })}
-        <div className="flex gap-2">
-          {arrayImage.map((item: any) => {
-            return (
-              <div
-                className="item-file-img relative"
-                key={item.path}
-                onClick={removeFile(item)}
-              >
-                <Button
-                  className="flex justify-center items-center absolute   image-remove"
-                  style={{ width: 50 }}
-                >
-                  <DeleteOutlined />
-                </Button>
-                <img
-                  style={{ height: 75, borderRadius: 10 }}
-                  src={URL.createObjectURL(item)}
-                  alt={item.name}
-                  className="image-file"
-                />
-              </div>
-            );
-          })}
-        </div>
       </div>
     );
   }, [myFiles]);
   const ListFileRow = useMemo(() => {
-    const arrayImage = myFiles.filter((item: any) =>
-      item.type.startsWith("image/")
-    );
-    const arrayFile = myFiles.filter(
-      (item: any) => !item.type.startsWith("image/")
-    );
     return (
       <div className="flex justify-start flex-row items-center gap-2">
-        {arrayFile.map((item: any) => {
+        {myFiles.map((item: any) => {
           return (
             <div className="item-file" key={item.path}>
-              <div style={{ flexGrow: 1, width: 115 }}>
-                <p style={{ wordBreak: "break-all" }} className="truncate">
-                  {item.path}
-                </p>
-                <span>
-                  {filesize(item.size, { base: 2, standard: "jedec" })}
-                </span>
-              </div>
+              <Popover title={item.path}>
+                <div style={{ flexGrow: 1, width: 0 }}>
+                  <p style={{ wordBreak: "break-all" }} className="truncate">
+                    {item.path}
+                  </p>
+                  <span>
+                    {filesize(item.size, { base: 2, standard: "jedec" })}
+                  </span>
+                </div>
+              </Popover>
+              {item.type.startsWith("image/") ? (
+                <img
+                  style={{ height: 75, borderRadius: 10 }}
+                  src={URL.createObjectURL(item)}
+                  alt={item.name}
+                  className="image-file"
+                />
+              ) : (
+                <></>
+              )}
               <div style={{ marginLeft: 10 }}>
                 <Button style={{ width: 75 }} onClick={removeFile(item)}>
                   <DeleteOutlined />
@@ -169,42 +157,17 @@ const TextEditorTicket = ({
             </div>
           );
         })}
-        <div className="flex gap-2">
-          {arrayImage.map((item: any) => {
-            return (
-              <div
-                className="item-file-img relative"
-                key={item.path}
-                onClick={removeFile(item)}
-              >
-                <Button
-                  className="flex justify-center items-center absolute   image-remove"
-                  style={{ width: 50 }}
-                >
-                  <DeleteOutlined />
-                </Button>
-                <img
-                  style={{ height: 75, borderRadius: 10 }}
-                  src={URL.createObjectURL(item)}
-                  alt={item.name}
-                  className="image-file"
-                />
-              </div>
-            );
-          })}
-        </div>
       </div>
     );
   }, [myFiles]);
   const handleCancel = () => {
-    setIsShowFile(false);
     closeModal();
-    setMyFiles([]);
+    setErrorText("");
   };
-  const handleOk = () => {
-    setIsShowFile(true);
-    closeModal();
-  };
+  // const handleOk = () => {
+  //   setIsShowFile(true);
+  //   closeModal();
+  // };
   useEffect(() => {
     setFiles(myFiles);
   }, [myFiles.length]);
@@ -214,10 +177,11 @@ const TextEditorTicket = ({
       <Modal
         open={modal}
         onCancel={handleCancel}
-        onOk={handleOk}
+        // onOk={handleOk}
         centered
         cancelText="Cancel"
         okText="Upload"
+        footer={[]}
       >
         <div>
           <section className="flex justify-center ">
@@ -244,7 +208,7 @@ const TextEditorTicket = ({
               {errorText}
             </span>
           </div>
-          {ListFile}
+
           <div className="mt-10  flex justify-center items-center">
             <p className="w-[350px] ">
               We only accept Images, Videos files which size is smaller than
