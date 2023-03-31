@@ -3,7 +3,7 @@ export const usernameRegex = /^[a-z0-9\-\d@._]+$/;
 
 export const passwordRegex =
   // eslint-disable-next-line no-useless-escape
-  /^(?=.*[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*[@$!%*#=\/_^?&])[a-zA-Z@$!%*#=\/_^?&\d]{8,}$/g;
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/;
 
 export function validateAsciiChars(input: string) {
   // eslint-disable-next-line no-control-regex

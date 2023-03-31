@@ -1,4 +1,4 @@
-import { Avatar, Button, Popover } from "antd";
+import { Button, Popover } from "antd";
 import axios from "axios";
 import { filesize } from "filesize";
 import parse, { Element } from "html-react-parser";
@@ -15,12 +15,12 @@ interface RowMessageProps {
   item: ChatItem;
 }
 // regex gmail
-const regexLtr = /<div dir="ltr".*?<\/div><br>/s;
-const regexQuote = /<div class="gmail_quote">[\s\S]*?<\/blockquote>/;
+// const regexLtr = /<div dir="ltr".*?<\/div><br>/s;
+const regexQuote = /<div class="md_quote">[\s\S]*?<\/blockquote>/;
 // regex apple mail
-const regexLtr2 =
-  /line-break: after-white-space;">(.*?)<blockquote type="cite">/;
-const regexQuote2 = /<div><br><blockquote[^>]*>(.*?)<\/blockquote><\/div>/s;
+// const regexLtr2 =
+//   /line-break: after-white-space;">(.*?)<blockquote type="cite">/;
+const regexContent = /^.*(?=<div class="md_quote">)/s;
 
 const parseHtml = (html: string): React.ReactNode => {
   const options: any = {
@@ -43,11 +43,11 @@ const parseHtml = (html: string): React.ReactNode => {
 export const RowMessage: FC<RowMessageProps> = ({ item }) => {
   const [toggleQuote, setToggleQuote] = useState(true);
   const sortChat = useMemo(() => {
-    if (item.chat.match(regexLtr2)) {
-      return parseHtml(item.chat.match(regexLtr2)?.[1] as string);
-    }
-    if (item.chat.match(regexLtr)) {
-      return parseHtml(item.chat.match(regexLtr)?.[0] as string);
+    // if (item.chat.match(regexLtr2)) {
+    //   return parseHtml(item.chat.match(regexLtr2)?.[1] as string);
+    // }
+    if (item.chat.match(regexContent)) {
+      return parseHtml(item.chat.match(regexContent)?.[0] as string);
     }
     return parseHtml(item.chat);
   }, [item.chat]);
@@ -55,9 +55,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
     if (item.chat.match(regexQuote)) {
       return parseHtml(item.chat.match(regexQuote)?.[0] as string);
     }
-    if (item.chat.match(regexQuote2)) {
-      return parseHtml(item.chat.match(regexQuote2)?.[0] as string);
-    }
+
     return "";
   }, [item.chat]);
   const disableQuote = useMemo(() => {
@@ -95,6 +93,33 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
         </div>
       </div>
       <div className="text-black mb-2 text-scroll mt-5">{sortChat}</div>
+      <div className="flex gap-5 overflow-scroll box-file mt-2">
+        {item.attachments?.map((item) => (
+          <div
+            onClick={async () => {
+              const response = await axios.get(item.attachmentUrl, {
+                responseType: "blob",
+              });
+              fileDownload(response.data, item.name);
+            }}
+            key={item._id}
+            className="flex items-center justify-center mt-1 mb-2 box-img"
+          >
+            <div className="flex justify-center items-start ">
+              <Popover title={item.name}>
+                <div className="flex flex-col">
+                  <span className="file-name">{item.name}</span>
+
+                  <span className=" text-xs text-left inline-block">
+                    {filesize(item.size, { base: 2, standard: "jedec" })}
+                  </span>
+                </div>
+              </Popover>
+              <DownLoadIcon fontSize={32} />
+            </div>
+          </div>
+        ))}
+      </div>
       {disableQuote ? (
         <></>
       ) : (
@@ -111,6 +136,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
           </Button>
         </Popover>
       )}
+
       {toggleQuote ? (
         <></>
       ) : (
@@ -118,50 +144,6 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
           <div className="text-black mb-2 text-scroll mt-3">{quote}</div>
         </div>
       )}
-      <div className="flex gap-5 overflow-scroll box-file mt-2">
-        {item.attachments?.map((item) => (
-          <div
-            onClick={async () => {
-              const response = await axios.get(item.attachmentUrl, {
-                responseType: "blob",
-              });
-              fileDownload(response.data, item.name);
-            }}
-            key={item._id}
-            className="flex items-center justify-center mt-1 box-img"
-          >
-            <div className="download-button flex flex-col justify-center items-center">
-              <DownLoadIcon fontSize={40} />
-              <span className="text-center">
-                {filesize(item.size, { base: 2, standard: "jedec" })}
-              </span>
-            </div>
-            {item.thumbUrl ? (
-              <img
-                style={{
-                  borderRadius: 20,
-                  objectFit: "contain",
-                  height: 100,
-                  width: 100,
-                }}
-                src={item.thumbUrl}
-                alt={`file-${item.name}`}
-                className="img-file"
-              />
-            ) : (
-              <Avatar
-                className="img-file"
-                style={{
-                  borderRadius: 20,
-                  objectFit: "contain",
-                  height: 100,
-                  width: 100,
-                }}
-              ></Avatar>
-            )}
-          </div>
-        ))}
-      </div>
     </div>
   );
 };
