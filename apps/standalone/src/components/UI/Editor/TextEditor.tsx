@@ -1,6 +1,6 @@
 import { Editor, IAllProps } from "@tinymce/tinymce-react";
 import { FormInstance } from "antd";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef } from "react";
 interface TextEditorProps extends Omit<IAllProps, "onChange" | "value"> {
   value?: any;
   onChange?: (value: any) => void;
@@ -26,9 +26,7 @@ const TextEditor = ({
   const handleChange = useCallback(() => {
     onChange && onChange(editorRef.current?.getContent());
   }, []);
-  const [content, setContent] = useState(
-    "<p>&nbsp;</p><p>&nbsp;</p><blockquote>asdasd</blockquote>"
-  );
+
   const handleEditorChange = (content: string, editor: any) => {
     // onChange && onChange(content);
     form?.setFieldValue("content", content);
@@ -41,9 +39,6 @@ const TextEditor = ({
 
   return (
     <div>
-      {/* <div className="mb-1">
-        <Typography.Text {...labelProps}></Typography.Text>
-      </div> */}
       <Editor
         // initialValue={value || content}
         apiKey="t4mxpsmop8giuev4szkrl7etgn43rtilju95m2tnst9m9uod"
@@ -105,12 +100,6 @@ const TextEditor = ({
           ...props.init,
         }}
       ></Editor>
-
-      {/* {error ? (
-        <div className="mt-1">
-          <InlineError message={error} fieldID="myFieldID" />
-        </div>
-      ) : null} */}
     </div>
   );
 };

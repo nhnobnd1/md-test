@@ -42,8 +42,12 @@ const ModalAutoReply = ({
   );
   // handle Validate regex
   const validateObject = object().shape({
-    name: string().required("Required!"),
-    content: string().required("Required!"),
+    name: string()
+      .required("Name is Required!")
+      .test("not-only-spaces", "Name is Required!", (value: any) => {
+        return value && !/^\s*$/.test(value);
+      }),
+    content: string().required("Content is Required!"),
   });
   return (
     <Modal
@@ -88,6 +92,7 @@ const ModalAutoReply = ({
               <FormItem name="createAt"></FormItem>
               <FormItem name="content">
                 <RichText
+                  formRef={formRef}
                   labelProps={{
                     as: "span",
                     variant: "bodyMd",

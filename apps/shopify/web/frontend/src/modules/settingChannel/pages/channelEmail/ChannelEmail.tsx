@@ -314,6 +314,7 @@ export const ChannelEmail = (props: ChannelEmailProps) => {
                       }
                     ></ButtonEdit>
                     <ButtonDelete
+                      disabled={emailItem?.isPrimaryEmail}
                       onClick={() => handleOpenModalDelete(emailItem._id)}
                       destructive
                     >
