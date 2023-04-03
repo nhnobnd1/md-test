@@ -47,11 +47,7 @@
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
 }
-.image-file:hover {
-  opacity: 1;
-  transition: opacity 0.3s ease-in-out;
-  cursor: pointer;
-}
+
 
 .item-file-img:hover .image-remove {
   opacity: 1;

@@ -1,11 +1,16 @@
 import { CloudUploadOutlined, DeleteOutlined } from "@ant-design/icons";
-import { useToggle } from "@moose-desk/core";
+import { useJob, useToggle } from "@moose-desk/core";
 import { Editor, IAllProps } from "@tinymce/tinymce-react";
 import { Button, FormInstance, Modal, Popover } from "antd";
 import { filesize } from "filesize";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import { catchError, map, of } from "rxjs";
+import ImageZoom from "src/modules/ticket/components/DetailTicketForm/ImageZoom";
 import "./editor.scss";
+
+import { TicketRepository } from "@moose-desk/repo";
+import useMessage from "src/hooks/useMessage";
 interface TextEditorProps extends Omit<IAllProps, "onChange" | "value"> {
   value?: any;
   onChange?: (value: any) => void;
@@ -13,6 +18,8 @@ interface TextEditorProps extends Omit<IAllProps, "onChange" | "value"> {
   form?: FormInstance<any>;
   setIsChanged?: any;
   setFiles?: any;
+  setLoadingButton?: any;
+  files?: any;
 }
 
 const TextEditorTicket = ({
@@ -20,17 +27,22 @@ const TextEditorTicket = ({
   onChange,
   error,
   form,
+  files,
   setIsChanged,
   setFiles,
+  setLoadingButton,
   ...props
 }: TextEditorProps) => {
   const editorRef = useRef<Editor["editor"] | null>(null);
   const [isShowFile, setIsShowFile] = useState(false);
+  const [idAttachments, setIdAttachments] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const initEditor = useCallback((evt, editor: Editor["editor"]) => {
     editorRef.current = editor;
   }, []);
   const { state: modal, on: openModal, off: closeModal } = useToggle();
+  const message = useMessage();
 
   const handleEditorChange = (content: string, editor: any) => {
     form?.setFieldValue("content", content);
@@ -55,6 +67,7 @@ const TextEditorTicket = ({
       }
       setErrorText("");
       setMyFiles(totalArray);
+      postAttachmentApi(acceptedFiles);
       closeModal();
       setIsShowFile(true);
     },
@@ -82,51 +95,42 @@ const TextEditorTicket = ({
       "application/x-tar": [],
     },
   });
-  const removeFile = (file: any) => () => {
+  const { run: postAttachmentApi } = useJob((dataSubmit: any) => {
+    setLoadingButton(true);
+    setLoading(true);
+    return TicketRepository()
+      .postAttachment(dataSubmit)
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            setLoadingButton(false);
+            setLoading(false);
+
+            setIdAttachments((previousAttachs) => {
+              return [...previousAttachs, ...data.data.ids];
+            });
+            message.success("Upload file successfully");
+          }
+        }),
+        catchError((err) => {
+          return of(err);
+        })
+      );
+  });
+  const removeFile = (file: any, index: number) => () => {
     const newFiles = [...myFiles];
+    const newIdAttachments = [...idAttachments];
     newFiles.splice(newFiles.indexOf(file), 1);
+
+    newIdAttachments.splice(index, 1);
     setMyFiles(newFiles);
+    setIdAttachments(newIdAttachments);
   };
 
-  const ListFile = useMemo(() => {
-    return (
-      <div className="flex justify-center flex-col items-center">
-        {myFiles.map((item: any) => {
-          return (
-            <div className="item-file" key={item.path}>
-              <Popover title={item.path}>
-                <div>
-                  <p className="item-path">{item.path}</p>
-                  <span>
-                    {filesize(item.size, { base: 2, standard: "jedec" })}
-                  </span>
-                </div>
-              </Popover>
-              {item.type.startsWith("image/") ? (
-                <img
-                  style={{ height: 75, borderRadius: 10, flexGrow: 1 }}
-                  src={URL.createObjectURL(item)}
-                  alt={item.name}
-                  className="image-file"
-                />
-              ) : (
-                <></>
-              )}
-              <div style={{ marginLeft: 10 }}>
-                <Button style={{ width: 75 }} onClick={removeFile(item)}>
-                  <DeleteOutlined />
-                </Button>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    );
-  }, [myFiles]);
   const ListFileRow = useMemo(() => {
     return (
       <div className="flex justify-start flex-row items-center gap-2">
-        {myFiles.map((item: any) => {
+        {myFiles.map((item: any, index: number) => {
           return (
             <div className="item-file" key={item.path}>
               <Popover title={item.path}>
@@ -140,17 +144,20 @@ const TextEditorTicket = ({
                 </div>
               </Popover>
               {item.type.startsWith("image/") ? (
-                <img
+                <ImageZoom
                   style={{ height: 75, borderRadius: 10 }}
                   src={URL.createObjectURL(item)}
                   alt={item.name}
-                  className="image-file"
                 />
               ) : (
                 <></>
               )}
               <div style={{ marginLeft: 10 }}>
-                <Button style={{ width: 75 }} onClick={removeFile(item)}>
+                <Button
+                  disabled={loading}
+                  style={{ width: 75 }}
+                  onClick={removeFile(item, index)}
+                >
                   <DeleteOutlined />
                 </Button>
               </div>
@@ -159,25 +166,26 @@ const TextEditorTicket = ({
         })}
       </div>
     );
-  }, [myFiles]);
+  }, [myFiles, idAttachments, loading]);
   const handleCancel = () => {
     closeModal();
     setErrorText("");
   };
-  // const handleOk = () => {
-  //   setIsShowFile(true);
-  //   closeModal();
-  // };
+
   useEffect(() => {
-    setFiles(myFiles);
-  }, [myFiles.length]);
+    setFiles(idAttachments);
+  }, [idAttachments.length]);
+  useEffect(() => {
+    if (!files?.length) {
+      setMyFiles([]);
+    }
+  }, [files]);
 
   return (
     <div>
       <Modal
         open={modal}
         onCancel={handleCancel}
-        // onOk={handleOk}
         centered
         cancelText="Cancel"
         okText="Upload"

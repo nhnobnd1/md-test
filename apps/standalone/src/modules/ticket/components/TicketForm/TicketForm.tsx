@@ -57,6 +57,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
   const [toEmail, setToEmail] = useState({ value: "", id: "" });
   const [form] = Form.useForm();
   const [files, setFiles] = useState<any>([]);
+  const [loadingButton, setLoadingButton] = useState(false);
 
   const fetchAgents = useCallback(
     (params: LoadMoreValue) => {
@@ -239,28 +240,6 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
     },
     { showLoading: false }
   );
-  const { run: postAttachmentApi } = useJob(
-    (dataSubmit: any, dataPost: any) => {
-      console.log({ dataSubmit });
-      return TicketRepository()
-        .postAttachment(dataSubmit)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              console.log("upload successfully");
-              CreateTicket({
-                ...dataPost,
-                attachmentIds: data.data.ids,
-              });
-            }
-          }),
-          catchError((err) => {
-            return of(err);
-          })
-        );
-    },
-    { showLoading: true }
-  );
 
   const handleChangeForm = useCallback((changedValue) => {
     // console.log('asdasd',changedValue.);
@@ -297,12 +276,9 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
       status: "OPEN",
       priority: values.priority,
       tags: result,
+      attachmentIds: files,
     };
-    if (files.length > 0) {
-      postAttachmentApi(files, dataCreate);
-    } else {
-      CreateTicket(dataCreate);
-    }
+    CreateTicket(dataCreate);
   };
 
   const onChangeTag = (value: string) => {
@@ -421,14 +397,16 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
                 )}
               </>
             </div>
-            <span
-              className="link"
-              onClick={() => {
-                setEnableCC(!enableCC);
-              }}
-            >
-              CC/BCC
-            </span>
+            <div className="mt-8">
+              <span
+                className="link"
+                onClick={() => {
+                  setEnableCC(!enableCC);
+                }}
+              >
+                CC/BCC
+              </span>
+            </div>
           </div>
 
           <Form.Item label="Assignee" name="assignee">
@@ -482,7 +460,9 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
           >
             <TextEditorTicket
               form={form}
+              files={files}
               setFiles={setFiles}
+              setLoadingButton={setLoadingButton}
               // setIsChanged={setIsChanged}
               init={{
                 height: 400,
@@ -501,7 +481,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
         >
           Cancel
         </Button>
-        <Button type="primary" htmlType="submit">
+        <Button loading={loadingButton} type="primary" htmlType="submit">
           Save
         </Button>
       </div>

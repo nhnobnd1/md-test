@@ -1,25 +1,23 @@
-import { Button, Popover } from "antd";
-import axios from "axios";
+import { CloudDownloadOutlined } from "@ant-design/icons";
+import { Button, Collapse, Popover } from "antd";
 import { filesize } from "filesize";
 import parse, { Element } from "html-react-parser";
-import fileDownload from "js-file-download";
 import { FC, useMemo, useState } from "react";
 import { ChatItem } from "src/modules/ticket/components/DetailTicketForm/DetailTicketForm";
 import ImageZoom from "src/modules/ticket/components/DetailTicketForm/ImageZoom";
-import DownLoadIcon from "~icons/ic/round-file-download";
 import UserIcon from "~icons/material-symbols/person";
 import AgentIcon from "~icons/material-symbols/support-agent-sharp";
 import QuoteIcon from "~icons/octicon/ellipsis-16";
+
+import axios from "axios";
+import fileDownload from "js-file-download";
 import "./BoxReply.scss";
 interface RowMessageProps {
   item: ChatItem;
 }
-// regex gmail
-// const regexLtr = /<div dir="ltr".*?<\/div><br>/s;
+
 const regexQuote = /<div class="md_quote">[\s\S]*?<\/blockquote>/;
-// regex apple mail
-// const regexLtr2 =
-//   /line-break: after-white-space;">(.*?)<blockquote type="cite">/;
+
 const regexContent = /^.*(?=<div class="md_quote">)/s;
 
 const parseHtml = (html: string): React.ReactNode => {
@@ -43,9 +41,6 @@ const parseHtml = (html: string): React.ReactNode => {
 export const RowMessage: FC<RowMessageProps> = ({ item }) => {
   const [toggleQuote, setToggleQuote] = useState(true);
   const sortChat = useMemo(() => {
-    // if (item.chat.match(regexLtr2)) {
-    //   return parseHtml(item.chat.match(regexLtr2)?.[1] as string);
-    // }
     if (item.chat.match(regexContent)) {
       return parseHtml(item.chat.match(regexContent)?.[0] as string);
     }
@@ -92,38 +87,11 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
           </span>
         </div>
       </div>
-      <div className="text-black mb-2 text-scroll mt-5">{sortChat}</div>
-      <div className="flex gap-5 overflow-scroll box-file mt-2">
-        {item.attachments?.map((item) => (
-          <div
-            onClick={async () => {
-              const response = await axios.get(item.attachmentUrl, {
-                responseType: "blob",
-              });
-              fileDownload(response.data, item.name);
-            }}
-            key={item._id}
-            className="flex items-center justify-center mt-1 mb-2 box-img"
-          >
-            <div className="flex justify-center items-start ">
-              <Popover title={item.name}>
-                <div className="flex flex-col">
-                  <span className="file-name">{item.name}</span>
-
-                  <span className=" text-xs text-left inline-block">
-                    {filesize(item.size, { base: 2, standard: "jedec" })}
-                  </span>
-                </div>
-              </Popover>
-              <DownLoadIcon fontSize={32} />
-            </div>
-          </div>
-        ))}
-      </div>
+      <div className="text-black text-scroll mt-5">{sortChat}</div>
       {disableQuote ? (
         <></>
       ) : (
-        <Popover content={<>Quote</>}>
+        <Popover content={<>Quote</>} className="mt-2 mb-5">
           <Button
             type="text"
             onClick={() => {
@@ -143,6 +111,61 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
         <div>
           <div className="text-black mb-2 text-scroll mt-3">{quote}</div>
         </div>
+      )}
+
+      {item.attachments?.length ? (
+        <Collapse>
+          <Collapse.Panel
+            header={`${item.attachments?.length} files attached`}
+            key={1}
+          >
+            <div className="flex gap-5 overflow-scroll box-file mt-2 ">
+              {item.attachments?.map((item) => (
+                <div
+                  key={item._id}
+                  className="flex items-center justify-center mt-1 mb-2 box-img rounded-lg overflow-hidden"
+                  style={{
+                    backgroundImage: `url(${item.thumbUrl})`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    height: 150,
+                    width: 150,
+                    backgroundSize: "cover",
+                  }}
+                >
+                  <div className="flex justify-center items-start gap-2 ">
+                    <Popover title={item.name}>
+                      <div className="flex flex-col h-[150px] file-item relative">
+                        <div className="fake absolute h-[150px] w-[150px]"></div>
+                        <span className="file-name">{item.name}</span>
+
+                        <span className=" text-xs text-left inline-block file-size">
+                          {filesize(item.size, { base: 2, standard: "jedec" })}
+                        </span>
+                        <div className="justify-center items-center file-download">
+                          <Button
+                            onClick={async () => {
+                              const response = await axios.get(
+                                item.attachmentUrl,
+                                {
+                                  responseType: "blob",
+                                }
+                              );
+                              fileDownload(response.data, item.name);
+                            }}
+                            icon={<CloudDownloadOutlined />}
+                          ></Button>
+                        </div>
+                      </div>
+                    </Popover>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Collapse.Panel>
+        </Collapse>
+      ) : (
+        <></>
       )}
     </div>
   );

@@ -17,7 +17,7 @@ import {
   priorityOptions,
   statusOptions,
 } from "@moose-desk/repo";
-import { Select as AntSelect, Button, Card, List } from "antd";
+import { Select as AntSelect, Button, Card, Divider, List } from "antd";
 import moment from "moment";
 import VirtualList from "rc-virtual-list";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -32,6 +32,7 @@ import { RowMessage } from "src/modules/ticket/components/DetailTicketForm/RowMe
 import { useStore } from "src/providers/StoreProviders";
 import FaMailReply from "~icons/fa/mail-reply";
 import BackIcon from "~icons/mingcute/back-2-fill";
+
 import "./BoxReply.scss";
 
 interface DetailTicketFormProps extends FormProps {}
@@ -43,6 +44,7 @@ interface ValueForm {
   CC?: string[];
   content: string;
   tags?: string[];
+  from?: string;
 }
 
 export interface ChatItem {
@@ -82,6 +84,11 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
   const [isChanged, setIsChanged] = useState(false);
   const [primaryEmail, setPrimaryEmail] = useState<EmailIntegration>();
   const [files, setFiles] = useState<any>([]);
+  const [loadingButton, setLoadingButton] = useState(false);
+
+  const [emailIntegrationOptions, setEmailIntegrationOptions] = useState<any>(
+    []
+  );
 
   const listChat = useMemo<ChatItem[]>(() => {
     const conversationMapping: any = conversationList?.map(
@@ -152,28 +159,31 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
     },
     { showLoading: false }
   );
-  const { run: postAttachmentApi } = useJob(
-    (dataSubmit: any, dataPost: any) => {
-      console.log({ dataSubmit });
-      return TicketRepository()
-        .postAttachment(dataSubmit)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              console.log("upload successfully");
-              postReplyApi({
-                ...dataPost,
-                attachmentIds: data.data.ids,
-              });
-            }
-          }),
-          catchError((err) => {
-            return of(err);
-          })
-        );
-    },
-    { showLoading: true }
-  );
+  const { run: fetchEmailIntegrationApi } = useJob(() => {
+    return EmailIntegrationRepository()
+      .getListEmail({
+        page: 1,
+        limit: 500,
+      })
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            console.log("data", data.data);
+            setEmailIntegrationOptions(
+              data.data.map((item: EmailIntegration) => ({
+                label: `${item.name} - ${item.supportEmail}`,
+                value: item._id,
+                obj: item,
+              }))
+            );
+          }
+        }),
+        catchError((err) => {
+          return of(err);
+        })
+      );
+  });
+
   useEffect(() => {
     const tags: string[] = form.getFieldValue("tags");
     const result = [];
@@ -200,16 +210,6 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
   };
 
   const initialValues = useMemo(() => {
-    // if (primaryEmail) {
-    //   return {
-    //     status: ticket?.status,
-    //     assignee: ticket?.agentObjectId,
-    //     priority: ticket?.priority,
-    //     to: primaryEmail.supportEmail,
-    //     tags: ticket?.tags,
-    //     content: "",
-    //   };
-    // }
     const condition = ticket?.incoming || ticket?.createdViaWidget;
     return {
       status: ticket?.status,
@@ -218,8 +218,9 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
       to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
       tags: ticket?.tags,
       content: "",
+      from: ticket?.senderConfigId ? ticket.senderConfigId : primaryEmail?._id,
     };
-  }, [ticket]);
+  }, [ticket, primaryEmail]);
 
   const fetchAgents = useCallback(
     (params: LoadMoreValue) => {
@@ -374,21 +375,28 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
     if (id) {
       getTicketApi(id);
       fetchConversation(id);
+      fetchEmailIntegrationApi();
     }
   }, [id]);
 
   const onFinish = (values: ValueForm, closeTicket = false) => {
+    console.log("fromfromfrom", values.from);
+    const findItemConfigEmail = emailIntegrationOptions.find(
+      (item: any) => item.value === values.from
+    );
+    console.log({ findItemConfigEmail });
     const dataPost: any = {
       closedTicket: closeTicket,
       id: ticket?._id,
-      attachmentIds: [],
+      attachmentIds: files,
       bccEmails: values.BCC,
       description: values.content,
       ccEmails: values.CC,
-      fromEmail: primaryEmail
-        ? { name: primaryEmail.name, email: primaryEmail.supportEmail }
-        : ticket?.fromEmail,
-      senderConfigId: primaryEmail ? primaryEmail._id : ticket?.senderConfigId,
+      fromEmail: {
+        name: findItemConfigEmail.obj.name,
+        email: findItemConfigEmail.obj.supportEmail,
+      },
+      senderConfigId: values.from,
 
       toEmails: [
         {
@@ -401,11 +409,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
         },
       ],
     };
-    if (files.length > 0) {
-      postAttachmentApi(files, dataPost);
-    } else {
-      postReplyApi(dataPost);
-    }
+    postReplyApi(dataPost);
 
     updateTicketApi({
       priority: values.priority,
@@ -415,6 +419,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
       agentEmail: values.assignee.split(",")[1],
       ids: [ticket?._id as string],
     });
+    setFiles([]);
   };
   const handleCloseTicket = () => {
     form.setFieldValue("status", "RESOLVED");
@@ -453,7 +458,10 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
             back
           ></Header>
           <Form
-            disabled={form.getFieldValue("status") === StatusTicket.RESOLVED}
+            disabled={
+              form.getFieldValue("status") === StatusTicket.RESOLVED ||
+              loadingButton
+            }
             form={form}
             layout="inline"
             initialValues={initialValues}
@@ -517,12 +525,27 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                         </VirtualList>
                       </List>
                     </div>
+                    <Divider />
                     <div className="box-comment">
+                      <div className="w-[400px]">
+                        <Form.Item
+                          label={<div style={{ width: 35 }}>From</div>}
+                          name="from"
+                          labelAlign="left"
+                        >
+                          <Select
+                            placeholder="Search email integration"
+                            virtual
+                            style={{ maxWidth: 334.99 }}
+                            options={emailIntegrationOptions}
+                          />
+                        </Form.Item>
+                      </div>
                       <div className="w-full flex items-start gap-4 flex-wrap">
                         <div className="flex flex-1">
                           <div className="w-[400px]">
                             <Form.Item
-                              label={<div style={{ width: 30 }}> To</div>}
+                              label={<div style={{ width: 35 }}> To</div>}
                               name="to"
                               labelAlign="left"
                             >
@@ -530,7 +553,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                             </Form.Item>
                             {enableCC ? (
                               <Form.Item
-                                label={<div style={{ width: 30 }}> CC</div>}
+                                label={<div style={{ width: 35 }}> CC</div>}
                                 name="CC"
                                 labelAlign="left"
                                 rules={[
@@ -560,7 +583,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                             )}
                             {enableCC ? (
                               <Form.Item
-                                label={<div style={{ width: 30 }}> BCC</div>}
+                                label={<div style={{ width: 35 }}> BCC</div>}
                                 name="BCC"
                                 labelAlign="left"
                                 rules={[
@@ -613,6 +636,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                           />
                         </Form.Item>
                       </div>
+
                       <Form.Item
                         name="content"
                         rules={[
@@ -624,8 +648,10 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                       >
                         <TextEditorTicket
                           form={form}
+                          files={files}
                           setFiles={setFiles}
                           setIsChanged={setIsChanged}
+                          setLoadingButton={setLoadingButton}
                           init={{
                             height: 400,
                             menubar: false,
@@ -659,12 +685,12 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                                 </span>
                               }
                               htmlType="submit"
-                              disabled={!isChanged}
+                              disabled={!isChanged || loadingButton}
                             >
                               Reply
                             </Button>
                             <Button
-                              disabled={!isChanged}
+                              disabled={!isChanged || loadingButton}
                               onClick={handleCloseTicket}
                             >
                               Reply & Close Ticket
