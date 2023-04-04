@@ -1,6 +1,6 @@
 import {
-  PageComponent,
   generatePath,
+  PageComponent,
   upperCaseFirst,
   useJob,
   useNavigate,
@@ -20,19 +20,20 @@ import {
   GetListCustomerRequest,
   GetListTagRequest,
   GetListTicketRequest,
+  statusOptions,
   Tag,
   TagRepository,
   Ticket,
   TicketRepository,
   TicketStatistic,
   UpdateTicket,
-  statusOptions,
 } from "@moose-desk/repo";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { Button, Input, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import moment from "moment";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useQuery } from "react-query";
 import { catchError, forkJoin, map, of } from "rxjs";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
 import { Form } from "src/components/UI/Form";
@@ -112,6 +113,11 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
 
   const [filterData, setFilterData] =
     useState<BaseListTicketRequest>(defaultFilter);
+  const { data } = useQuery(
+    ["listTicketApi", { ...filterData, ...filterObject }],
+    () => getListTicketFilter({ ...filterData, ...filterObject })
+  );
+
   const [meta, setMeta] = useState<BaseMetaDataListResponse>();
 
   const prevFilter = usePrevious<GetListTicketRequest>(filterData);

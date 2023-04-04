@@ -2,7 +2,7 @@ import {
   Pagination as APagination,
   PaginationProps as APaginationProps,
 } from "antd";
-import { useCallback, useMemo } from "react";
+import { memo, useCallback, useMemo } from "react";
 import Select, { OptionType } from "src/components/UI/Select/Select";
 
 interface PaginationProps extends Omit<APaginationProps, "onChange"> {
@@ -101,4 +101,4 @@ const Pagination = ({
   );
 };
 
-export default Pagination;
+export default memo(Pagination);

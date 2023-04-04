@@ -21,5 +21,9 @@
     // Path
     "baseUrl": "./"
   },
-  "include": ["src", "__test__"]
+  "include": [
+    "src",
+    "__test__",
+    "../../../standalone/src/modules/customer/component/ListTicketCustomer.tsx"
+  ]
 }
