@@ -17,6 +17,13 @@ const settingRoutes: IRoute = {
         () => import("src/modules/setting/pages/workDesk/tag/IndexTag")
       ),
     },
+    {
+      path: SettingRoutePaths.Workdesk.Tag.DetailViewTicket,
+      component: lazy(
+        () =>
+          import("src/modules/setting/pages/workDesk/tag/ViewTicket/ViewTicket")
+      ),
+    },
     // account & security
     {
       path: SettingRoutePaths.AccountSecurity.Profile.Index,

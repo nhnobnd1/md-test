@@ -1,4 +1,4 @@
-import { emailRegex, objectIdRegex, useJob, useParams } from "@moose-desk/core";
+import { emailRegex, useJob, useParams } from "@moose-desk/core";
 import {
   AgentRepository,
   AttachFile,
@@ -141,24 +141,6 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
     return conversationMapping;
   }, [ticket, conversationList]);
 
-  const { run: createTag } = useJob(
-    (dataSubmit: any) => {
-      return TagRepository()
-        .create(dataSubmit)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              setTagsCreated([...tagsCreated, data.data]);
-              setTags([...tags, data.data]);
-            }
-          }),
-          catchError((err) => {
-            return of(err);
-          })
-        );
-    },
-    { showLoading: false }
-  );
   const { run: fetchEmailIntegrationApi } = useJob(() => {
     return EmailIntegrationRepository()
       .getListEmail({
@@ -168,7 +150,6 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
       .pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
-            console.log("data", data.data);
             setEmailIntegrationOptions(
               data.data.map((item: EmailIntegration) => ({
                 label: `${item.name} - ${item.supportEmail}`,
@@ -186,28 +167,20 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
 
   useEffect(() => {
     const tags: string[] = form.getFieldValue("tags");
-    const result = [];
-    if (tags?.length) {
-      for (let i = 0; i < tags.length; i++) {
-        const tag = tags[i];
-        if (objectIdRegex.test(tag)) {
-          result.push(tag);
-        } else {
-          const findItem = tagsCreated.find((item: Tag) => item.name === tag);
-          result.push(findItem?._id);
-        }
-      }
-    }
-    form.setFieldValue("tags", result);
+    // const result = [];
+    // if (tags?.length) {
+    //   for (let i = 0; i < tags.length; i++) {
+    //     const tag = tags[i];
+    //     if (objectIdRegex.test(tag)) {
+    //       result.push(tag);
+    //     } else {
+    //       const findItem = tagsCreated.find((item: Tag) => item.name === tag);
+    //       result.push(findItem?._id);
+    //     }
+    //   }
+    // }
+    form.setFieldValue("tags", tags);
   }, [tagsCreated.length]);
-  const onChangeTag = (value: string) => {
-    const idsTagCreated = tagsCreated.map((item) => item.name);
-    for (const item of value) {
-      if (!objectIdRegex.test(item) && !idsTagCreated.includes(item)) {
-        createTag({ name: item, storeId });
-      }
-    }
-  };
 
   const initialValues = useMemo(() => {
     const condition = ticket?.incoming || ticket?.createdViaWidget;
@@ -241,7 +214,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                   label: item.lastName.includes("admin")
                     ? `${item.firstName} - ${item.email}`
                     : `${item.firstName} ${item.lastName} - ${item.email}`,
-                  value: item._id,
+                  value: `${item._id},${item.email}`,
                   obj: item,
                 })),
               canLoadMore: params.page < data.metadata.totalPage,
@@ -343,34 +316,32 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
     },
     { showLoading: false }
   );
-  const { run: getListTagApi, processing: loadingTags } = useJob(
-    (payload: GetListTagRequest) => {
-      return TagRepository()
-        .getList(payload)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              const tags = data.data.map((item) => ({
-                ...item,
-                id: item._id,
-              }));
-              setTags((prevTags) => {
-                return [...prevTags, ...tags];
-              });
+  const { run: getListTagApi } = useJob((payload: GetListTagRequest) => {
+    return TagRepository()
+      .getList(payload)
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            const tags = data.data.map((item) => ({
+              ...item,
+              id: item._id,
+            }));
+            setTags((prevTags) => {
+              return [...prevTags, ...tags];
+            });
 
-              if (data.metadata.totalPage > (payload.page as number)) {
-                getListTagApi({
-                  page: (payload.page as number) + 1,
-                  limit: payload.limit,
-                });
-              }
-            } else {
-              message.error("Get data ticket failed");
+            if (data.metadata.totalPage > (payload.page as number)) {
+              getListTagApi({
+                page: (payload.page as number) + 1,
+                limit: payload.limit,
+              });
             }
-          })
-        );
-    }
-  );
+          } else {
+            message.error("Get data ticket failed");
+          }
+        })
+      );
+  });
   useEffect(() => {
     if (id) {
       getTicketApi(id);
@@ -380,11 +351,9 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
   }, [id]);
 
   const onFinish = (values: ValueForm, closeTicket = false) => {
-    console.log("fromfromfrom", values.from);
     const findItemConfigEmail = emailIntegrationOptions.find(
       (item: any) => item.value === values.from
     );
-    console.log({ findItemConfigEmail });
     const dataPost: any = {
       closedTicket: closeTicket,
       id: ticket?._id,
@@ -629,10 +598,9 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                             placeholder="Add tags"
                             mode="tags"
                             options={tags.map((item: Tag) => ({
-                              value: item._id,
+                              value: item.name,
                               label: item.name,
                             }))}
-                            onChange={onChangeTag}
                           />
                         </Form.Item>
                       </div>

@@ -103,7 +103,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
             return {
               options: data.data.map((item) => ({
                 label: item.name,
-                value: item._id,
+                value: item.name,
                 obj: item,
               })),
               canLoadMore: params.page < data.metadata.totalPage,
@@ -246,19 +246,19 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
   }, []);
   const onFinish = (values: any) => {
     const tags: string[] = values.tags;
-    const result = [];
+    // const result = [];
 
-    if (tags?.length) {
-      for (let i = 0; i < tags.length; i++) {
-        const tag = tags[i];
-        if (objectIdRegex.test(tag)) {
-          result.push(tag);
-        } else {
-          const findItem = tagsCreated.find((item: Tag) => item.name === tag);
-          result.push(findItem?._id);
-        }
-      }
-    }
+    // if (tags?.length) {
+    //   for (let i = 0; i < tags.length; i++) {
+    //     const tag = tags[i];
+    //     if (objectIdRegex.test(tag)) {
+    //       result.push(tag);
+    //     } else {
+    //       const findItem = tagsCreated.find((item: Tag) => item.name === tag);
+    //       result.push(findItem?._id);
+    //     }
+    //   }
+    // }
     const dataCreate: any = {
       fromEmail: {
         email: fromEmail?.supportEmail,
@@ -275,20 +275,20 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
       description: values.content,
       status: "OPEN",
       priority: values.priority,
-      tags: result,
+      tags: tags,
       attachmentIds: files,
     };
     CreateTicket(dataCreate);
   };
 
-  const onChangeTag = (value: string) => {
-    const idsTagCreated = tagsCreated.map((item) => item.name);
-    for (const item of value) {
-      if (!objectIdRegex.test(item) && !idsTagCreated.includes(item)) {
-        createTag({ name: item, storeId });
-      }
-    }
-  };
+  // const onChangeTag = (value: string) => {
+  //   const idsTagCreated = tagsCreated.map((item) => item.name);
+  //   for (const item of value) {
+  //     if (!objectIdRegex.test(item) && !idsTagCreated.includes(item)) {
+  //       createTag({ name: item, storeId });
+  //     }
+  //   }
+  // };
 
   const onChangeEmailItegration = (value: string, options: any) => {
     setFromEmail(options.obj);
@@ -437,13 +437,19 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
               mode="tags"
               placeholder="Add tags"
               loadMore={fetchTags}
-              onChange={onChangeTag}
+              // onChange={onChangeTag}
             ></Select.Tags>
           </Form.Item>
           <Form.Item
             name="subject"
             label="Subject"
-            rules={[{ required: true, message: "Subject is required" }]}
+            rules={[
+              {
+                required: true,
+                message: "Subject is required",
+                whitespace: true,
+              },
+            ]}
           >
             <Input placeholder="Subject" />
           </Form.Item>

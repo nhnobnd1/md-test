@@ -30,6 +30,11 @@ const ticketRoutes: IRoute = {
       path: TicketRoutePaths.Detail,
       component: lazy(() => import("src/modules/ticket/pages/DetailTicket")),
     },
+    {
+      path: TicketRoutePaths.Trash,
+
+      component: lazy(() => import("src/modules/ticket/pages/TrashTicket")),
+    },
   ],
 };
 

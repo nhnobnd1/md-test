@@ -1,7 +1,9 @@
 import {
   PageComponent,
+  generatePath,
   useDebounceFn,
   useJob,
+  useNavigate,
   usePrevious,
   useToggle,
 } from "@moose-desk/core";
@@ -27,6 +29,8 @@ import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import PopupTag from "src/modules/setting/component/PopupTag";
 import { TagFormValues } from "src/modules/setting/component/TagForm";
+import SettingRoutePaths from "src/modules/setting/routes/paths";
+import "./TagStyle.scss";
 
 interface TagIndexPageProps {}
 
@@ -35,6 +39,8 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
   const message = useMessage();
   const notification = useNotification();
   const { state: popupTag, on: openPopupTag, off: closePopupTag } = useToggle();
+  const navigate = useNavigate();
+
   const [dataPopup, setDataPopup] = useState<TagFormValues | undefined>({
     name: "",
     description: "",
@@ -115,7 +121,7 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
     message.loading.show("Removing tag...");
     return TagRepository()
       .delete({
-        ids: id,
+        names: id,
       })
       .pipe(
         map(({ data }) => {
@@ -150,7 +156,7 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
   });
 
   const handleDeleteTag = useCallback((tag: Tag) => {
-    deleteTagApi([tag._id]);
+    deleteTagApi([tag.name]);
   }, []);
   useEffect(() => {
     if (prevFilter?.query !== filterData.query && filterData.query) {
@@ -220,8 +226,18 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
                 title="Name"
                 render={(_, record: Tag) => (
                   <span
-                    className="cursor-pointer hover:underline hover:text-blue-500"
-                    onClick={() => handleEdit(record)}
+                    className="cursor-pointer hover:underline hover:text-blue-500 name-tag"
+                    // onClick={() => handleEdit(record)}
+                    onClick={() => {
+                      navigate(
+                        generatePath(
+                          SettingRoutePaths.Workdesk.Tag.DetailViewTicket,
+                          {
+                            id: record.name,
+                          }
+                        )
+                      );
+                    }}
                   >
                     {`${record.name}`}
                   </span>
@@ -232,8 +248,11 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
               />
               <Table.Column
                 key="numberOfTicket"
-                title="Number of tickets"
-                dataIndex="storeId"
+                title="# of tickets"
+                // dataIndex="storeId"
+                render={(_, record: any) => (
+                  <span>{`${record.ticketsCount}`}</span>
+                )}
                 sorter={{
                   compare: (a: any, b: any) =>
                     a.numberOfTicket - b.numberOfTicket,

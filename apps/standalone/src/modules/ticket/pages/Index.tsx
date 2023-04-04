@@ -523,16 +523,15 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                     onValuesChange={handleChangeForm}
                     className="flex gap-2"
                   >
-                    <Form.Item label="" name="status">
-                      <Select className="w-[150px]" options={statusOptions} />
-                    </Form.Item>
                     <Form.Item label="" name="agentObjectId">
                       <Select
-                        placeholder="Search agents"
+                        placeholder="Assign to"
                         options={agentsOptions}
                         className="w-[300px]"
-                        // onChange={onChangeAssignee}
                       />
+                    </Form.Item>
+                    <Form.Item label="" name="status">
+                      <Select className="w-[150px]" options={statusOptions} />
                     </Form.Item>
                   </Form>
 

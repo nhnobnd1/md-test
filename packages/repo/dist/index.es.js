@@ -4763,6 +4763,9 @@ const Jp = pt(
     getList(t, e) {
       return t.get("", e);
     },
+    getListTicket(t, e, r) {
+      return t.get(`/view-tickets/${e}`, r);
+    },
     getOne(t, e) {
       return t.get(`/${e}`);
     },
@@ -4774,6 +4777,9 @@ const Jp = pt(
     },
     delete(t, e) {
       return t.delete("", {}, { data: e });
+    },
+    deleteForce(t, e) {
+      return t.delete(`/remove-from-all-tickets/${e}`);
     }
   }
 );

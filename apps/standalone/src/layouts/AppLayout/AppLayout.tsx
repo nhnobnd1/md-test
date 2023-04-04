@@ -323,7 +323,12 @@ export const AppLayout = (props: AppLayoutProps) => {
     <Layout className="app-layout min-h-screen">
       <Layout.Header className="header">
         <div className="flex justify-between items-center">
-          <div className="logo">
+          <div
+            className="logo hover:cursor-pointer"
+            onClick={() => {
+              window.location.reload();
+            }}
+          >
             <img src={Images.Logo.LogoMooseDesk} width="150"></img>
           </div>
           <div className="user-action">
