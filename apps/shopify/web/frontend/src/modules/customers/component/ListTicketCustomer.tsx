@@ -9,6 +9,10 @@ import { MDTextField } from "src/components/Input/TextFieldPassword/MDTextField"
 import Pagination from "src/components/Pagination/Pagination";
 import { useDebounce } from "src/hooks/useDebounce";
 import { formatTime } from "src/modules/customers/helper/format";
+import {
+  ListTicketCustomerFilter,
+  TicketCustomerResponse,
+} from "src/modules/customers/helper/interface";
 import styles from "./styles.module.scss";
 const limit = 10;
 const resourceName = {
@@ -17,13 +21,6 @@ const resourceName = {
 };
 interface IProps {
   customerId: string;
-}
-interface ListTicketCustomerFilter {
-  limit: number;
-  page: number;
-  query: string;
-  sortBy: undefined | string;
-  sortOrder: undefined | number;
 }
 export const ListTicketCustomer = ({ customerId }: IProps) => {
   const navigate = useNavigate();
@@ -121,7 +118,7 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
         status,
         priority,
         agentEmail,
-      }: any,
+      }: TicketCustomerResponse,
       index: number
     ) => (
       <IndexTable.Row id={_id} key={_id} position={index}>

@@ -57,6 +57,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
   const [toEmail, setToEmail] = useState({ value: "", id: "" });
   const [form] = Form.useForm();
   const [files, setFiles] = useState<any>([]);
+  const [loadingButton, setLoadingButton] = useState(false);
 
   const fetchAgents = useCallback(
     (params: LoadMoreValue) => {
@@ -102,7 +103,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
             return {
               options: data.data.map((item) => ({
                 label: item.name,
-                value: item._id,
+                value: item.name,
                 obj: item,
               })),
               canLoadMore: params.page < data.metadata.totalPage,
@@ -239,47 +240,25 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
     },
     { showLoading: false }
   );
-  const { run: postAttachmentApi } = useJob(
-    (dataSubmit: any, dataPost: any) => {
-      console.log({ dataSubmit });
-      return TicketRepository()
-        .postAttachment(dataSubmit)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              console.log("upload successfully");
-              CreateTicket({
-                ...dataPost,
-                attachmentIds: data.data.ids,
-              });
-            }
-          }),
-          catchError((err) => {
-            return of(err);
-          })
-        );
-    },
-    { showLoading: true }
-  );
 
   const handleChangeForm = useCallback((changedValue) => {
     // console.log('asdasd',changedValue.);
   }, []);
   const onFinish = (values: any) => {
     const tags: string[] = values.tags;
-    const result = [];
+    // const result = [];
 
-    if (tags?.length) {
-      for (let i = 0; i < tags.length; i++) {
-        const tag = tags[i];
-        if (objectIdRegex.test(tag)) {
-          result.push(tag);
-        } else {
-          const findItem = tagsCreated.find((item: Tag) => item.name === tag);
-          result.push(findItem?._id);
-        }
-      }
-    }
+    // if (tags?.length) {
+    //   for (let i = 0; i < tags.length; i++) {
+    //     const tag = tags[i];
+    //     if (objectIdRegex.test(tag)) {
+    //       result.push(tag);
+    //     } else {
+    //       const findItem = tagsCreated.find((item: Tag) => item.name === tag);
+    //       result.push(findItem?._id);
+    //     }
+    //   }
+    // }
     const dataCreate: any = {
       fromEmail: {
         email: fromEmail?.supportEmail,
@@ -296,23 +275,20 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
       description: values.content,
       status: "OPEN",
       priority: values.priority,
-      tags: result,
+      tags: tags,
+      attachmentIds: files,
     };
-    if (files.length > 0) {
-      postAttachmentApi(files, dataCreate);
-    } else {
-      CreateTicket(dataCreate);
-    }
+    CreateTicket(dataCreate);
   };
 
-  const onChangeTag = (value: string) => {
-    const idsTagCreated = tagsCreated.map((item) => item.name);
-    for (const item of value) {
-      if (!objectIdRegex.test(item) && !idsTagCreated.includes(item)) {
-        createTag({ name: item, storeId });
-      }
-    }
-  };
+  // const onChangeTag = (value: string) => {
+  //   const idsTagCreated = tagsCreated.map((item) => item.name);
+  //   for (const item of value) {
+  //     if (!objectIdRegex.test(item) && !idsTagCreated.includes(item)) {
+  //       createTag({ name: item, storeId });
+  //     }
+  //   }
+  // };
 
   const onChangeEmailItegration = (value: string, options: any) => {
     setFromEmail(options.obj);
@@ -421,14 +397,16 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
                 )}
               </>
             </div>
-            <span
-              className="link"
-              onClick={() => {
-                setEnableCC(!enableCC);
-              }}
-            >
-              CC/BCC
-            </span>
+            <div className="mt-8">
+              <span
+                className="link"
+                onClick={() => {
+                  setEnableCC(!enableCC);
+                }}
+              >
+                CC/BCC
+              </span>
+            </div>
           </div>
 
           <Form.Item label="Assignee" name="assignee">
@@ -459,13 +437,19 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
               mode="tags"
               placeholder="Add tags"
               loadMore={fetchTags}
-              onChange={onChangeTag}
+              // onChange={onChangeTag}
             ></Select.Tags>
           </Form.Item>
           <Form.Item
             name="subject"
             label="Subject"
-            rules={[{ required: true, message: "Subject is required" }]}
+            rules={[
+              {
+                required: true,
+                message: "Subject is required",
+                whitespace: true,
+              },
+            ]}
           >
             <Input placeholder="Subject" />
           </Form.Item>
@@ -482,7 +466,9 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
           >
             <TextEditorTicket
               form={form}
+              files={files}
               setFiles={setFiles}
+              setLoadingButton={setLoadingButton}
               // setIsChanged={setIsChanged}
               init={{
                 height: 400,
@@ -501,7 +487,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
         >
           Cancel
         </Button>
-        <Button type="primary" htmlType="submit">
+        <Button loading={loadingButton} type="primary" htmlType="submit">
           Save
         </Button>
       </div>

@@ -94,11 +94,41 @@
   border: 2px solid white; /* should match background, can't be transparent */
   background-color: rgba(0, 0, 0, 0.5);
 }
-.file-name {
-  white-space: nowrap;
+.file-name,
+.file-size {
+  // white-space: nowrap;
   width: 150px;
   overflow: hidden;
-  text-overflow: ellipsis;
+  // text-overflow: ellipsis;
   display: inline-block;
   font-size: 16px;
+  color: white;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  z-index: 2;
+  padding: 10px;
+}
+.file-download {
+  display: none;
+}
+
+.file-item:hover .file-name {
+  opacity: 1;
+}
+
+.file-item:hover .file-size {
+  opacity: 1;
+}
+.file-item:hover .file-download {
+  opacity: 1;
+  display: flex;
+}
+.fake {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+.file-item:hover .fake {
+  background-color: black;
+  z-index: 0;
+  opacity: 0.5;
 }

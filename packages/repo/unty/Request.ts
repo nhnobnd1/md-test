@@ -30,3 +30,6 @@ export interface BaseMetaDataListResponse {
 export interface BaseDeleteList {
   ids: string[];
 }
+export interface DeleteTagsRequest {
+	names: string[];
+}

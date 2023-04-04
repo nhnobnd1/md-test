@@ -1,13 +1,17 @@
 import { CloudDownloadOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import React, { useEffect, useState } from "react";
+
+import axios from "axios";
+import fileDownload from "js-file-download";
 import "./ImageZoom.scss";
 interface Props {
   src: string;
   alt: string;
+  style?: any;
 }
 
-const ImageZoom: React.FC<Props> = ({ src, alt }) => {
+const ImageZoom: React.FC<Props> = ({ src, alt, style }) => {
   const [showImage, setShowImage] = useState(false);
 
   const handleImageClick = () => {
@@ -17,17 +21,13 @@ const ImageZoom: React.FC<Props> = ({ src, alt }) => {
   const handleCloseClick = () => {
     setShowImage(false);
   };
-  const handleDownloadClick = (event: any) => {
+  const handleDownloadClick = async (event: any) => {
     event.stopPropagation();
     event.preventDefault();
-
-    // Tải xuống ảnh ở đây
-    const link = document.createElement("a");
-    link.href = src;
-    link.download = alt;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const response = await axios.get(src, {
+      responseType: "blob",
+    });
+    fileDownload(response.data, alt);
   };
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
@@ -48,6 +48,7 @@ const ImageZoom: React.FC<Props> = ({ src, alt }) => {
   return (
     <div>
       <img
+        style={style}
         className="hover:cursor-pointer rounded-lg object-contain"
         height={200}
         src={src}

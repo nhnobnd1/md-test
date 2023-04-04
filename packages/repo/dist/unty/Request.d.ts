@@ -29,4 +29,7 @@ export interface BaseMetaDataListResponse {
 export interface BaseDeleteList {
     ids: string[];
 }
+export interface DeleteTagsRequest {
+    names: string[];
+}
 //# sourceMappingURL=Request.d.ts.map

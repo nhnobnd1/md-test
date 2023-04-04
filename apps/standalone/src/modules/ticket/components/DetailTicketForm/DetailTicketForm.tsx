@@ -1,4 +1,4 @@
-import { emailRegex, objectIdRegex, useJob, useParams } from "@moose-desk/core";
+import { emailRegex, useJob, useLocation, useParams } from "@moose-desk/core";
 import {
   AgentRepository,
   AttachFile,
@@ -17,19 +17,18 @@ import {
   priorityOptions,
   statusOptions,
 } from "@moose-desk/repo";
-import { Select as AntSelect, Button, Card, List } from "antd";
+import { Select as AntSelect, Button, Card, Divider, List } from "antd";
 import moment from "moment";
 import VirtualList from "rc-virtual-list";
 import { useCallback, useEffect, useMemo, useState } from "react";
+
 import { catchError, map, of } from "rxjs";
 import TextEditorTicket from "src/components/UI/Editor/TextEditorTicket";
 import { Form, FormProps } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
 import Select, { LoadMoreValue } from "src/components/UI/Select/Select";
 import useMessage from "src/hooks/useMessage";
-import useNotification from "src/hooks/useNotification";
 import { RowMessage } from "src/modules/ticket/components/DetailTicketForm/RowMessage";
-import { useStore } from "src/providers/StoreProviders";
 import FaMailReply from "~icons/fa/mail-reply";
 import BackIcon from "~icons/mingcute/back-2-fill";
 import "./BoxReply.scss";
@@ -43,6 +42,7 @@ interface ValueForm {
   CC?: string[];
   content: string;
   tags?: string[];
+  from?: string;
 }
 
 export interface ChatItem {
@@ -70,18 +70,21 @@ const validateCCEmail = (value: string[]): boolean => {
 
 const DetailTicketForm = (props: DetailTicketFormProps) => {
   const message = useMessage();
-  const notification = useNotification();
   const { id } = useParams();
   const [ticket, setTicket] = useState<Ticket>();
   const [form] = Form.useForm();
   const [conversationList, setConversationList] = useState<Conversation[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [enableCC, setEnableCC] = useState(false);
-  const [tagsCreated, setTagsCreated] = useState<Tag[] | []>([]);
-  const { storeId } = useStore();
   const [isChanged, setIsChanged] = useState(false);
   const [primaryEmail, setPrimaryEmail] = useState<EmailIntegration>();
   const [files, setFiles] = useState<any>([]);
+  const [loadingButton, setLoadingButton] = useState(false);
+  const location = useLocation();
+
+  const [emailIntegrationOptions, setEmailIntegrationOptions] = useState<any>(
+    []
+  );
 
   const listChat = useMemo<ChatItem[]>(() => {
     const conversationMapping: any = conversationList?.map(
@@ -134,82 +137,31 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
     return conversationMapping;
   }, [ticket, conversationList]);
 
-  const { run: createTag } = useJob(
-    (dataSubmit: any) => {
-      return TagRepository()
-        .create(dataSubmit)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              setTagsCreated([...tagsCreated, data.data]);
-              setTags([...tags, data.data]);
-            }
-          }),
-          catchError((err) => {
-            return of(err);
-          })
-        );
-    },
-    { showLoading: false }
-  );
-  const { run: postAttachmentApi } = useJob(
-    (dataSubmit: any, dataPost: any) => {
-      console.log({ dataSubmit });
-      return TicketRepository()
-        .postAttachment(dataSubmit)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              console.log("upload successfully");
-              postReplyApi({
-                ...dataPost,
-                attachmentIds: data.data.ids,
-              });
-            }
-          }),
-          catchError((err) => {
-            return of(err);
-          })
-        );
-    },
-    { showLoading: true }
-  );
-  useEffect(() => {
-    const tags: string[] = form.getFieldValue("tags");
-    const result = [];
-    if (tags?.length) {
-      for (let i = 0; i < tags.length; i++) {
-        const tag = tags[i];
-        if (objectIdRegex.test(tag)) {
-          result.push(tag);
-        } else {
-          const findItem = tagsCreated.find((item: Tag) => item.name === tag);
-          result.push(findItem?._id);
-        }
-      }
-    }
-    form.setFieldValue("tags", result);
-  }, [tagsCreated.length]);
-  const onChangeTag = (value: string) => {
-    const idsTagCreated = tagsCreated.map((item) => item.name);
-    for (const item of value) {
-      if (!objectIdRegex.test(item) && !idsTagCreated.includes(item)) {
-        createTag({ name: item, storeId });
-      }
-    }
-  };
+  const { run: fetchEmailIntegrationApi } = useJob(() => {
+    return EmailIntegrationRepository()
+      .getListEmail({
+        page: 1,
+        limit: 500,
+      })
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            setEmailIntegrationOptions(
+              data.data.map((item: EmailIntegration) => ({
+                label: `${item.name} - ${item.supportEmail}`,
+                value: item._id,
+                obj: item,
+              }))
+            );
+          }
+        }),
+        catchError((err) => {
+          return of(err);
+        })
+      );
+  });
 
   const initialValues = useMemo(() => {
-    // if (primaryEmail) {
-    //   return {
-    //     status: ticket?.status,
-    //     assignee: ticket?.agentObjectId,
-    //     priority: ticket?.priority,
-    //     to: primaryEmail.supportEmail,
-    //     tags: ticket?.tags,
-    //     content: "",
-    //   };
-    // }
     const condition = ticket?.incoming || ticket?.createdViaWidget;
     return {
       status: ticket?.status,
@@ -218,8 +170,9 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
       to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
       tags: ticket?.tags,
       content: "",
+      from: ticket?.senderConfigId ? ticket.senderConfigId : primaryEmail?._id,
     };
-  }, [ticket]);
+  }, [ticket, primaryEmail]);
 
   const fetchAgents = useCallback(
     (params: LoadMoreValue) => {
@@ -240,7 +193,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                   label: item.lastName.includes("admin")
                     ? `${item.firstName} - ${item.email}`
                     : `${item.firstName} ${item.lastName} - ${item.email}`,
-                  value: item._id,
+                  value: `${item._id},${item.email}`,
                   obj: item,
                 })),
               canLoadMore: params.page < data.metadata.totalPage,
@@ -342,53 +295,56 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
     },
     { showLoading: false }
   );
-  const { run: getListTagApi, processing: loadingTags } = useJob(
-    (payload: GetListTagRequest) => {
-      return TagRepository()
-        .getList(payload)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              const tags = data.data.map((item) => ({
-                ...item,
-                id: item._id,
-              }));
-              setTags((prevTags) => {
-                return [...prevTags, ...tags];
-              });
+  const { run: getListTagApi } = useJob((payload: GetListTagRequest) => {
+    return TagRepository()
+      .getList(payload)
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            const tags = data.data.map((item) => ({
+              ...item,
+              id: item._id,
+            }));
+            setTags((prevTags) => {
+              return [...prevTags, ...tags];
+            });
 
-              if (data.metadata.totalPage > (payload.page as number)) {
-                getListTagApi({
-                  page: (payload.page as number) + 1,
-                  limit: payload.limit,
-                });
-              }
-            } else {
-              message.error("Get data ticket failed");
+            if (data.metadata.totalPage > (payload.page as number)) {
+              getListTagApi({
+                page: (payload.page as number) + 1,
+                limit: payload.limit,
+              });
             }
-          })
-        );
-    }
-  );
+          } else {
+            message.error("Get data ticket failed");
+          }
+        })
+      );
+  });
   useEffect(() => {
     if (id) {
       getTicketApi(id);
       fetchConversation(id);
+      fetchEmailIntegrationApi();
     }
   }, [id]);
 
   const onFinish = (values: ValueForm, closeTicket = false) => {
+    const findItemConfigEmail = emailIntegrationOptions.find(
+      (item: any) => item.value === values.from
+    );
     const dataPost: any = {
       closedTicket: closeTicket,
       id: ticket?._id,
-      attachmentIds: [],
+      attachmentIds: files,
       bccEmails: values.BCC,
       description: values.content,
       ccEmails: values.CC,
-      fromEmail: primaryEmail
-        ? { name: primaryEmail.name, email: primaryEmail.supportEmail }
-        : ticket?.fromEmail,
-      senderConfigId: primaryEmail ? primaryEmail._id : ticket?.senderConfigId,
+      fromEmail: {
+        name: findItemConfigEmail.obj.name,
+        email: findItemConfigEmail.obj.supportEmail,
+      },
+      senderConfigId: values.from,
 
       toEmails: [
         {
@@ -401,11 +357,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
         },
       ],
     };
-    if (files.length > 0) {
-      postAttachmentApi(files, dataPost);
-    } else {
-      postReplyApi(dataPost);
-    }
+    postReplyApi(dataPost);
 
     updateTicketApi({
       priority: values.priority,
@@ -415,6 +367,8 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
       agentEmail: values.assignee.split(",")[1],
       ids: [ticket?._id as string],
     });
+    setFiles([]);
+    form.setFieldValue("content", "");
   };
   const handleCloseTicket = () => {
     form.setFieldValue("status", "RESOLVED");
@@ -442,6 +396,19 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
     });
   };
 
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (form.getFieldValue("content")) {
+        event.preventDefault();
+        event.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [location, form]);
+
   return (
     <>
       {processing ? (
@@ -453,7 +420,10 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
             back
           ></Header>
           <Form
-            disabled={form.getFieldValue("status") === StatusTicket.RESOLVED}
+            disabled={
+              form.getFieldValue("status") === StatusTicket.RESOLVED ||
+              loadingButton
+            }
             form={form}
             layout="inline"
             initialValues={initialValues}
@@ -497,6 +467,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                   </Button>
                 </div>
               </div>
+              <Divider />
               {ticket ? (
                 <div className="BoxReply w-full">
                   <div className="w-full h-full">
@@ -517,12 +488,27 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                         </VirtualList>
                       </List>
                     </div>
+                    <Divider />
                     <div className="box-comment">
+                      <div className="w-[400px]">
+                        <Form.Item
+                          label={<div style={{ width: 35 }}>From</div>}
+                          name="from"
+                          labelAlign="left"
+                        >
+                          <Select
+                            placeholder="Search email integration"
+                            virtual
+                            style={{ maxWidth: 334.99 }}
+                            options={emailIntegrationOptions}
+                          />
+                        </Form.Item>
+                      </div>
                       <div className="w-full flex items-start gap-4 flex-wrap">
                         <div className="flex flex-1">
                           <div className="w-[400px]">
                             <Form.Item
-                              label={<div style={{ width: 30 }}> To</div>}
+                              label={<div style={{ width: 35 }}> To</div>}
                               name="to"
                               labelAlign="left"
                             >
@@ -530,7 +516,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                             </Form.Item>
                             {enableCC ? (
                               <Form.Item
-                                label={<div style={{ width: 30 }}> CC</div>}
+                                label={<div style={{ width: 35 }}> CC</div>}
                                 name="CC"
                                 labelAlign="left"
                                 rules={[
@@ -560,7 +546,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                             )}
                             {enableCC ? (
                               <Form.Item
-                                label={<div style={{ width: 30 }}> BCC</div>}
+                                label={<div style={{ width: 35 }}> BCC</div>}
                                 name="BCC"
                                 labelAlign="left"
                                 rules={[
@@ -606,13 +592,13 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                             placeholder="Add tags"
                             mode="tags"
                             options={tags.map((item: Tag) => ({
-                              value: item._id,
+                              value: item.name,
                               label: item.name,
                             }))}
-                            onChange={onChangeTag}
                           />
                         </Form.Item>
                       </div>
+
                       <Form.Item
                         name="content"
                         rules={[
@@ -624,8 +610,10 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                       >
                         <TextEditorTicket
                           form={form}
+                          files={files}
                           setFiles={setFiles}
                           setIsChanged={setIsChanged}
+                          setLoadingButton={setLoadingButton}
                           init={{
                             height: 400,
                             menubar: false,
@@ -659,12 +647,12 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                                 </span>
                               }
                               htmlType="submit"
-                              disabled={!isChanged}
+                              disabled={!isChanged || loadingButton}
                             >
                               Reply
                             </Button>
                             <Button
-                              disabled={!isChanged}
+                              disabled={!isChanged || loadingButton}
                               onClick={handleCloseTicket}
                             >
                               Reply & Close Ticket

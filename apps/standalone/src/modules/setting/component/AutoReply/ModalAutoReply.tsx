@@ -72,12 +72,32 @@ const ModalAutoReply = ({
             enableReinitialize
             onFinish={handleSubmitValue}
           >
-            <Form.Item name="name" label="Name">
+            <Form.Item
+              name="name"
+              label="Name"
+              rules={[
+                {
+                  required: true,
+                  message: "Name is required",
+                  whitespace: true,
+                },
+              ]}
+            >
               <Input placeholder="Enter name auto-reply" />
             </Form.Item>
             <Form.Item name="code" hidden />
             <Form.Item name="createAt" hidden></Form.Item>
-            <Form.Item name="content" label="Content">
+            <Form.Item
+              name="content"
+              label="Content"
+              rules={[
+                {
+                  required: true,
+                  message: "Content is required",
+                  whitespace: true,
+                },
+              ]}
+            >
               <TextEditor
                 form={form}
                 // value={dataForm?.value.content}

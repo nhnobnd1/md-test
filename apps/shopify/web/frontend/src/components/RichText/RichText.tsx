@@ -7,6 +7,7 @@ interface RichTextProps extends Omit<IAllProps, "onChange" | "value"> {
   onChange?: (value: any) => void;
   error?: string;
   labelProps?: TextProps;
+  formRef?: any;
 }
 
 export const RichText = ({
@@ -14,6 +15,7 @@ export const RichText = ({
   onChange,
   error,
   labelProps,
+  formRef,
   ...props
 }: RichTextProps) => {
   const editorRef = useRef<any>(null);
@@ -22,9 +24,9 @@ export const RichText = ({
     editorRef.current = editor;
   }, []);
 
-  const handleChange = useCallback(() => {
-    onChange && onChange(editorRef.current.getContent());
-  }, []);
+  const handleChange = (content: string) => {
+    formRef.current.setFieldValue("content", content);
+  };
 
   return (
     <div>
@@ -38,8 +40,8 @@ export const RichText = ({
         apiKey="t4mxpsmop8giuev4szkrl7etgn43rtilju95m2tnst9m9uod"
         {...props}
         onInit={initEditor}
-        onChange={handleChange}
-        initialValue={value}
+        onEditorChange={handleChange}
+        value={value}
         init={{
           height: 400,
           branding: false,
@@ -87,6 +89,8 @@ export const RichText = ({
               input.click();
             }
           },
+          statusbar: false,
+
           paste_data_images: true,
           ...props.init,
         }}

@@ -11,6 +11,7 @@ import { useCallback, useMemo, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
+import timeZoneList from "src/constaint/timeZone";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import AutoReplyTab from "src/modules/setting/component/AutoReply/AutoReplyTab";
@@ -131,6 +132,10 @@ const BusinessHours = (props: BusinessHoursProps) => {
   });
 
   const handleSubmit = useCallback((data: any) => {
+    const revertTimeZome = timeZoneList.timeZone.find(
+      (item) => item.description === data.timezone
+    );
+    data.timezone = revertTimeZome?.olsonName;
     updateBusinessCalendar(data);
   }, []);
   // UI Tabs

@@ -16,6 +16,7 @@ const SettingRoutePaths = createRoutePath({
     },
     Tag: {
       Index: "tag",
+      DetailViewTicket: "view-tickets/:id",
     },
   },
   AccountSecurity: {

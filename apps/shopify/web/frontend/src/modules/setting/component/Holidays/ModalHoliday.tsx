@@ -55,7 +55,7 @@ const ModalHoliday = ({
     name: string()
       .required("Name is required!")
       .matches(/[^\s]/, "Name is required!"),
-    autoReplyCode: string().required("ReplyCode is required!"),
+    autoReplyCode: string().required("Auto-Reply is required!"),
     date: string().required("Date is required!"),
   });
   // handle Effect

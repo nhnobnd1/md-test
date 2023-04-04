@@ -10,7 +10,10 @@ import Pagination from "src/components/UI/Pagination/Pagination";
 import env from "src/core/env";
 import { formatTime } from "src/helper/format";
 import { useDebounce } from "src/hooks/useDebounce";
-import { ListTicketCustomerFilter } from "src/modules/customer/helper/interface";
+import {
+  ListTicketCustomerFilter,
+  TicketCustomerResponse,
+} from "src/modules/customer/helper/interface";
 import styles from "./styles.module.scss";
 const limit = 10;
 
@@ -80,7 +83,7 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
       sorter: {
         compare: (a: any, b: any) => a?.updatedDatetime - b?.updatedDatetime,
       },
-      render: (data: string, record: any) => (
+      render: (data: string, record: TicketCustomerResponse) => (
         <div>
           {data ? formatTime(data) : formatTime(record?.createdDatetime)}
         </div>
@@ -140,7 +143,7 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
     },
     [setFilter]
   );
-  const handleClickRow = (record: any) => {
+  const handleClickRow = (record: TicketCustomerResponse) => {
     navigate(`/ticket/${record?._id}`);
   };
   return (
