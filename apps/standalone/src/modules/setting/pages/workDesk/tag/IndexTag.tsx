@@ -247,7 +247,7 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
                 }}
               />
               <Table.Column
-                key="numberOfTicket"
+                key="ticketsCount"
                 title="# of tickets"
                 // dataIndex="storeId"
                 render={(_, record: any) => (

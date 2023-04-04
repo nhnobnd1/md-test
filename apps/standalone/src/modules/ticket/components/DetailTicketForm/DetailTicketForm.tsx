@@ -389,6 +389,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
       ids: [ticket?._id as string],
     });
     setFiles([]);
+    form.setFieldValue("content", "");
   };
   const handleCloseTicket = () => {
     form.setFieldValue("status", "RESOLVED");
