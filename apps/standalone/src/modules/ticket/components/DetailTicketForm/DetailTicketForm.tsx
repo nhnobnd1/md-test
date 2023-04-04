@@ -1,4 +1,4 @@
-import { emailRegex, useJob, useParams } from "@moose-desk/core";
+import { emailRegex, useJob, useLocation, useParams } from "@moose-desk/core";
 import {
   AgentRepository,
   AttachFile,
@@ -21,18 +21,16 @@ import { Select as AntSelect, Button, Card, Divider, List } from "antd";
 import moment from "moment";
 import VirtualList from "rc-virtual-list";
 import { useCallback, useEffect, useMemo, useState } from "react";
+
 import { catchError, map, of } from "rxjs";
 import TextEditorTicket from "src/components/UI/Editor/TextEditorTicket";
 import { Form, FormProps } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
 import Select, { LoadMoreValue } from "src/components/UI/Select/Select";
 import useMessage from "src/hooks/useMessage";
-import useNotification from "src/hooks/useNotification";
 import { RowMessage } from "src/modules/ticket/components/DetailTicketForm/RowMessage";
-import { useStore } from "src/providers/StoreProviders";
 import FaMailReply from "~icons/fa/mail-reply";
 import BackIcon from "~icons/mingcute/back-2-fill";
-
 import "./BoxReply.scss";
 
 interface DetailTicketFormProps extends FormProps {}
@@ -72,19 +70,17 @@ const validateCCEmail = (value: string[]): boolean => {
 
 const DetailTicketForm = (props: DetailTicketFormProps) => {
   const message = useMessage();
-  const notification = useNotification();
   const { id } = useParams();
   const [ticket, setTicket] = useState<Ticket>();
   const [form] = Form.useForm();
   const [conversationList, setConversationList] = useState<Conversation[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [enableCC, setEnableCC] = useState(false);
-  const [tagsCreated, setTagsCreated] = useState<Tag[] | []>([]);
-  const { storeId } = useStore();
   const [isChanged, setIsChanged] = useState(false);
   const [primaryEmail, setPrimaryEmail] = useState<EmailIntegration>();
   const [files, setFiles] = useState<any>([]);
   const [loadingButton, setLoadingButton] = useState(false);
+  const location = useLocation();
 
   const [emailIntegrationOptions, setEmailIntegrationOptions] = useState<any>(
     []
@@ -164,23 +160,6 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
         })
       );
   });
-
-  useEffect(() => {
-    const tags: string[] = form.getFieldValue("tags");
-    // const result = [];
-    // if (tags?.length) {
-    //   for (let i = 0; i < tags.length; i++) {
-    //     const tag = tags[i];
-    //     if (objectIdRegex.test(tag)) {
-    //       result.push(tag);
-    //     } else {
-    //       const findItem = tagsCreated.find((item: Tag) => item.name === tag);
-    //       result.push(findItem?._id);
-    //     }
-    //   }
-    // }
-    form.setFieldValue("tags", tags);
-  }, [tagsCreated.length]);
 
   const initialValues = useMemo(() => {
     const condition = ticket?.incoming || ticket?.createdViaWidget;
@@ -417,6 +396,19 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
     });
   };
 
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (form.getFieldValue("content")) {
+        event.preventDefault();
+        event.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [location, form]);
+
   return (
     <>
       {processing ? (
@@ -475,6 +467,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                   </Button>
                 </div>
               </div>
+              <Divider />
               {ticket ? (
                 <div className="BoxReply w-full">
                   <div className="w-full h-full">

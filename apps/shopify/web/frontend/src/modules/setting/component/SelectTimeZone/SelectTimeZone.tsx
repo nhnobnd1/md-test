@@ -16,11 +16,7 @@ const SelectTimeZone = (props: SelectTimeZoneProps) => {
 
   // init data
 
-  const optionSelectTimeZone = timeZoneList.timeZone.map(
-    (item: { olsonName: string; description: string }) => {
-      return item;
-    }
-  );
+  const optionSelectTimeZone = timeZoneList.timeZone;
 
   const deselectedOptions = useMemo(() => {
     return optionSelectTimeZone.map((item) => ({
@@ -84,6 +80,15 @@ const SelectTimeZone = (props: SelectTimeZoneProps) => {
   useEffect(() => {
     updateSelection(props.value);
   }, [props.value]);
+  useEffect(() => {
+    const findItemload = optionSelectTimeZone.find(
+      (item) => item.olsonName === props.value
+    );
+    if (findItemload) {
+      setInputValue(findItemload?.description);
+    }
+  }, [props.value]);
+  console.log({ inputValue });
   return (
     <Combobox
       activator={

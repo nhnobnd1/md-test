@@ -199,9 +199,9 @@ const TextEditorTicket = ({
                   "flex flex-col items-center justify-center h-[200px] w-[400px] dropzone hover:cursor-pointer",
               })}
             >
-              <CloudUploadOutlined style={{ fontSize: 32 }} />
+              <CloudUploadOutlined style={{ fontSize: 50 }} />
               <input {...getInputProps()} />
-              <p className="text">Upload files (max 3)</p>
+              {/* <p className="text">Upload files (max 3)</p> */}
               <span>Drag&drop or Click to add your files</span>
             </div>
           </section>
