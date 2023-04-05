@@ -2,13 +2,14 @@ import { useJob, useNavigate } from "@moose-desk/core";
 import { formatTimeDDMMYY } from "@moose-desk/core/helper/format";
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import { Customer, CustomerRepository } from "@moose-desk/repo";
-import { message, Table } from "antd";
+import { message } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import classNames from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { map } from "rxjs";
 import { MDSearchInput } from "src/components/UI/MDSearchInput";
 import Pagination from "src/components/UI/Pagination/Pagination";
+import { Table } from "src/components/UI/Table";
 import env from "src/core/env";
 import {
   ListTicketCustomerFilter,
