@@ -18,6 +18,6 @@
     "baseUrl": "./",
     "types": ["unplugin-icons/types/react", "node", "lodash"]
   },
-  "include": ["src"],
+  "include": ["src", "../../packages/core/hooks/useDebounce.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

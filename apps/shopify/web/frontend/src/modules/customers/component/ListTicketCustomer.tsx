@@ -1,4 +1,6 @@
 import { useJob, useNavigate } from "@moose-desk/core";
+import { formatTimeDDMMYY } from "@moose-desk/core/helper/format";
+import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import { CustomerRepository } from "@moose-desk/repo";
 import { IndexTable } from "@shopify/polaris";
 import { message } from "antd";
@@ -7,8 +9,7 @@ import { useEffect, useMemo, useState } from "react";
 import { map } from "rxjs";
 import { MDTextField } from "src/components/Input/TextFieldPassword/MDTextField";
 import Pagination from "src/components/Pagination/Pagination";
-import { useDebounce } from "src/hooks/useDebounce";
-import { formatTime } from "src/modules/customers/helper/format";
+
 import {
   ListTicketCustomerFilter,
   TicketCustomerResponse,
@@ -34,6 +35,7 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
     sortOrder: undefined,
   });
   const [dataSource, setDataSource]: any = useState();
+
   const {
     run: fetListTicketCustomer,
     processing,
@@ -127,12 +129,12 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
         </IndexTable.Cell>
         <IndexTable.Cell>
           <div onClick={() => handleClickRow(_id)}>
-            {formatTime(createdDatetime)}
+            {formatTimeDDMMYY(createdDatetime)}
           </div>
         </IndexTable.Cell>
         <IndexTable.Cell>
           <div onClick={() => handleClickRow(_id)}>
-            {formatTime(updatedDatetime || createdDatetime)}
+            {formatTimeDDMMYY(updatedDatetime || createdDatetime)}
           </div>
         </IndexTable.Cell>
         <IndexTable.Cell>
