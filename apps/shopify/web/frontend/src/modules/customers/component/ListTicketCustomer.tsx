@@ -2,7 +2,7 @@ import { useJob, useNavigate } from "@moose-desk/core";
 import { formatTimeDDMMYY } from "@moose-desk/core/helper/format";
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import { CustomerRepository } from "@moose-desk/repo";
-import { IndexTable } from "@shopify/polaris";
+import { EmptySearchResult, IndexTable } from "@shopify/polaris";
 import { message } from "antd";
 import classNames from "classnames";
 import { useEffect, useMemo, useState } from "react";
@@ -174,6 +174,15 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
           sortable={[true, true, true, true, true, true]}
           onSort={handleSortTable}
           loading={processing}
+          emptyState={
+            <EmptySearchResult
+              title={
+                "Sorry! There is no records matched with your search criteria"
+              }
+              description={"Try changing the filters or search term"}
+              withIllustration
+            />
+          }
         >
           {rowMarkup}
         </IndexTable>
