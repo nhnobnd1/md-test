@@ -55,6 +55,19 @@ const settingRoutes: IRoute = {
         () => import("src/modules/setting/pages/workDesk/Tag/EditTag")
       ),
     },
+    {
+      path: SettingRoutePaths.Workdesk.Tag.Edit,
+      component: lazy(
+        () => import("src/modules/setting/pages/workDesk/Tag/EditTag")
+      ),
+    },
+    {
+      path: SettingRoutePaths.Workdesk.Tag.ViewTicket,
+      component: lazy(
+        () => import("src/modules/setting/pages/workDesk/Tag/ViewTicket")
+      ),
+    },
+
     // account & security
     {
       path: SettingRoutePaths.AccountSecurity.Profile.Index,

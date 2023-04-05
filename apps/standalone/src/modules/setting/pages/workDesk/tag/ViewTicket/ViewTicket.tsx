@@ -98,7 +98,7 @@ const ViewTicket: FC<ViewTicketProps> = () => {
         map(({ data }) => {
           if (data.statusCode === 200) {
             message.success("Deleted Successfully !");
-            navigate(SettingRoutePaths.Workdesk.Tag.Index);
+            // navigate(SettingRoutePaths.Workdesk.Tag.Index);
           } else {
             message.error("Get ticket failed");
           }
@@ -116,15 +116,14 @@ const ViewTicket: FC<ViewTicketProps> = () => {
     }
   }, [filterData, id]);
 
+  console.log({ tickets });
+
   return (
     <>
       <Header back title={`Tickets tagged with "${id}"`}>
         <div className="flex-1 flex justify-end"></div>
       </Header>
       <div className="flex justify-end">
-        {/* <span className="underline text-blue-500 hover:cursor-pointer">
-          Remove Tags from all Tickets
-        </span> */}
         <ButtonRemoveTag
           title="Are you sure that you want to permanently remove all?"
           content="All tickets will remove this tag permanently. This action cannot be undone."

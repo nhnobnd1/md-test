@@ -227,7 +227,6 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
                 render={(_, record: Tag) => (
                   <span
                     className="cursor-pointer hover:underline hover:text-blue-500 name-tag"
-                    // onClick={() => handleEdit(record)}
                     onClick={() => {
                       navigate(
                         generatePath(
@@ -251,7 +250,19 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
                 title="# of tickets"
                 // dataIndex="storeId"
                 render={(_, record: any) => (
-                  <span>{`${record.ticketsCount}`}</span>
+                  <span
+                    className="cursor-pointer hover:underline hover:text-blue-500 name-tag"
+                    onClick={() => {
+                      navigate(
+                        generatePath(
+                          SettingRoutePaths.Workdesk.Tag.DetailViewTicket,
+                          {
+                            id: record.name,
+                          }
+                        )
+                      );
+                    }}
+                  >{`${record.ticketsCount}`}</span>
                 )}
                 sorter={{
                   compare: (a: any, b: any) =>
