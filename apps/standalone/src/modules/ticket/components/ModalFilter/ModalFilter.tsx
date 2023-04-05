@@ -1,3 +1,4 @@
+import { useNavigate } from "@moose-desk/core";
 import {
   Customer,
   Tag,
@@ -29,6 +30,7 @@ const ModalFilter = ({
   ...props
 }: ModalFilterProps) => {
   const [form] = Form.useForm();
+  const navigate = useNavigate();
   const tagsOptions = useMemo(() => {
     const optionsTag = tags.map((item: Tag) => {
       return { label: item.name, value: item.name };
@@ -54,6 +56,8 @@ const ModalFilter = ({
       onOk={handleApplySubmit}
       onCancel={() => {
         handleResetModal();
+        navigate(location.pathname, {});
+
         form.resetFields();
       }}
     >

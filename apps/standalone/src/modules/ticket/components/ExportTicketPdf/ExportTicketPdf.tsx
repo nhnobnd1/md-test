@@ -108,12 +108,14 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
     fontSize: 10,
     fontWeight: "bold",
     whiteSpace: "nowrap",
+    fontFamily: "Roboto",
   };
 
   const tableCellStyle: any = {
     textAlign: "center",
     margin: 2,
     fontSize: 10,
+    fontFamily: "Roboto",
   };
 
   const createTableHeader = () => {
@@ -162,7 +164,7 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
           time: moment
             .unix(one.createdTimestamp)
             .local()
-            .format("HH:mm DD/MM/YYYY Z"),
+            .format("HH:mm DD/MM/YYYY"),
           chat: one.description,
         };
       }
@@ -174,7 +176,7 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
       time: moment
         .unix(item.createdTimestamp)
         .local()
-        .format("HH:mm DD/MM/YYYY Z"),
+        .format("HH:mm DD/MM/YYYY"),
       chat: item.description,
     });
     return (
@@ -191,7 +193,9 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
             marginTop: 10,
           }}
         >
-          <Text>{`Ticket ${item.ticketId}: ${item.subject}`}</Text>
+          <Text
+            style={{ fontFamily: "Roboto" }}
+          >{`Ticket ${item.ticketId}: ${item.subject}`}</Text>
         </View>
         <View
           style={{
@@ -202,11 +206,13 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
             flexDirection: "row",
           }}
         >
-          <Text style={{ fontSize: 11 }}>Status: {item.status}</Text>
-          <Text style={{ fontSize: 11 }}>
+          <Text style={{ fontSize: 11, fontFamily: "Roboto" }}>
+            Status: {item.status}
+          </Text>
+          <Text style={{ fontSize: 11, fontFamily: "Roboto" }}>
             Assignee: {findItemAgentName?.email}
           </Text>
-          <Text style={{ fontSize: 11 }}>
+          <Text style={{ fontSize: 11, fontFamily: "Roboto" }}>
             Priority {upperCaseFirst(item.priority)}
           </Text>
         </View>
@@ -227,10 +233,14 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
     return (
       <View key={one.id}>
         <View>
-          <Text style={{ fontSize: 14 }}>{one?.name}</Text>
+          <Text style={{ fontSize: 14, fontFamily: "Roboto" }}>
+            {one?.name}
+          </Text>
         </View>
         <View>
-          <Text style={{ fontSize: 8, color: "gray" }}>{one?.email}</Text>
+          <Text style={{ fontSize: 8, color: "gray", fontFamily: "Roboto" }}>
+            {one?.email}
+          </Text>
         </View>
         <View style={{ marginTop: 20 }}>
           <Text style={{ fontFamily: "Roboto", fontSize: 12 }}>
@@ -246,7 +256,7 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
           }}
         >
           <Text style={{ flex: 1 }}></Text>
-          <Text style={{ fontSize: 8 }}>{one?.time}</Text>
+          <Text style={{ fontSize: 8, fontFamily: "Roboto" }}>{one?.time}</Text>
         </View>
         <MyHr />
       </View>
@@ -294,7 +304,14 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: 12, marginTop: 30, fontWeight: "bold" }}>
+          <Text
+            style={{
+              fontSize: 12,
+              marginTop: 30,
+              fontWeight: "bold",
+              fontFamily: "Roboto",
+            }}
+          >
             Date: {moment().format("DD-MM-YYYY HH:mm:ss")}
           </Text>
           <Text
@@ -303,6 +320,7 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
               marginTop: 10,
               marginBottom: 30,
               fontWeight: "bold",
+              fontFamily: "Roboto",
             }}
           >
             Exported by: {user?.family_name} {user?.given_name}
@@ -313,7 +331,14 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
             style={{ display: "flex", flexDirection: "row", marginBottom: 70 }}
           >
             <Text style={{ flex: 1 }}></Text>
-            <Text style={{ fontSize: 12, marginRight: 10, marginTop: 10 }}>
+            <Text
+              style={{
+                fontSize: 12,
+                marginRight: 10,
+                marginTop: 10,
+                fontFamily: "Roboto",
+              }}
+            >
               {recordText}
             </Text>
           </View>
