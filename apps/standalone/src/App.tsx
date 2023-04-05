@@ -24,6 +24,7 @@ function App() {
         refetchOnWindowFocus: false,
         cacheTime: 24 * 3600 * 1000, // cache for 1 day
         retry: false,
+        enabled: import.meta.env.VITE_USER_NODE_ENV === "development",
       },
     },
   });

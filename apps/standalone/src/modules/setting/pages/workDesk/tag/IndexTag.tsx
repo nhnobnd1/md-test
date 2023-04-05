@@ -1,5 +1,6 @@
 import {
   PageComponent,
+  createdDatetimeFormat,
   generatePath,
   useDebounceFn,
   useJob,
@@ -16,7 +17,6 @@ import {
 } from "@moose-desk/repo";
 import { Input, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
-import dayjs from "dayjs";
 import { useCallback, useEffect, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
@@ -227,7 +227,6 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
                 render={(_, record: Tag) => (
                   <span
                     className="cursor-pointer hover:underline hover:text-blue-500 name-tag"
-                    // onClick={() => handleEdit(record)}
                     onClick={() => {
                       navigate(
                         generatePath(
@@ -251,7 +250,19 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
                 title="# of tickets"
                 // dataIndex="storeId"
                 render={(_, record: any) => (
-                  <span>{`${record.ticketsCount}`}</span>
+                  <span
+                    className="cursor-pointer hover:underline hover:text-blue-500 name-tag"
+                    onClick={() => {
+                      navigate(
+                        generatePath(
+                          SettingRoutePaths.Workdesk.Tag.DetailViewTicket,
+                          {
+                            id: record.name,
+                          }
+                        )
+                      );
+                    }}
+                  >{`${record.ticketsCount}`}</span>
                 )}
                 sorter={{
                   compare: (a: any, b: any) =>
@@ -259,14 +270,10 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
                 }}
               ></Table.Column>
               <Table.Column
-                key="lastUpdate"
+                key="updatedTimestamp"
                 title="Last updated"
                 render={(_, record: Tag) => (
-                  <span>
-                    {record.updatedDatetime
-                      ? dayjs(record.updatedDatetime).format("DD-MM-YYYY")
-                      : dayjs(record.createdDatetime).format("DD-MM-YYYY")}
-                  </span>
+                  <span>{createdDatetimeFormat(record.updatedDatetime)}</span>
                 )}
                 sorter={{
                   compare: (a: any, b: any) => a.lastUpdate - b.lastUpdate,

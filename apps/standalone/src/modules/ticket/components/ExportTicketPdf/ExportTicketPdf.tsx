@@ -1,5 +1,9 @@
-import { upperCaseFirst, useUser } from "@moose-desk/core";
-import { Agent, Conversation, Tag, Ticket } from "@moose-desk/repo";
+import {
+  createdDatetimeFormat,
+  upperCaseFirst,
+  useUser,
+} from "@moose-desk/core";
+import { Agent, Conversation, Ticket } from "@moose-desk/repo";
 import {
   Document,
   Font,
@@ -17,7 +21,6 @@ interface ItemConversation {
 interface ExportTicketPdfProps {
   tickets: Ticket[];
   selectedRowKeys: React.Key[];
-  tags: Tag[];
   agents: Agent[];
   conversations: ItemConversation[];
 }
@@ -60,7 +63,6 @@ const regexQuote = /<div dir="ltr".*?<\/div><br>/s;
 export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
   tickets,
   selectedRowKeys,
-  tags,
   agents,
   conversations,
 }) => {
@@ -256,9 +258,6 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
     const customerName = condition
       ? item.fromEmail.email
       : item.toEmails[0].email;
-    const filterItemTag = tags.filter((tag: Tag) =>
-      item.tags?.slice(-2).includes(tag._id)
-    );
 
     return (
       <View key={item._id} style={tableRowStyle}>
@@ -274,9 +273,9 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
           </Text>
         </View>
         <View style={firstTableColStyle}>
-          {filterItemTag.map((itemTag) => (
-            <Text style={tableCellStyle} key={itemTag._id}>
-              #{itemTag.name}
+          {item.tags?.slice(-2).map((itemTag) => (
+            <Text style={tableCellStyle} key={itemTag}>
+              #{itemTag}
             </Text>
           ))}
         </View>
@@ -285,9 +284,7 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
         </View>
         <View style={{ ...firstTableColStyle, flexBasis: 80 }}>
           <Text style={tableCellStyle}>
-            {item.updatedDatetime
-              ? moment(item.updatedDatetime).format("DD/MM/YYYY")
-              : ""}
+            {createdDatetimeFormat(item.updatedDatetime)}
           </Text>
         </View>
       </View>

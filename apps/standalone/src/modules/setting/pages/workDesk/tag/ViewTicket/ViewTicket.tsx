@@ -1,4 +1,5 @@
 import {
+  createdDatetimeFormat,
   upperCaseFirst,
   useJob,
   useNavigate,
@@ -12,7 +13,6 @@ import {
 } from "@moose-desk/repo";
 import { TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
-import moment from "moment";
 import { FC, useCallback, useEffect, useState } from "react";
 import { map } from "rxjs";
 import { Header } from "src/components/UI/Header";
@@ -21,7 +21,6 @@ import { Table } from "src/components/UI/Table";
 import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
 import { ButtonRemoveTag } from "src/modules/setting/component/ButtonRemoveTag";
-import SettingRoutePaths from "src/modules/setting/routes/paths";
 import "./ViewTicket.scss";
 interface ViewTicketProps {}
 const defaultFilter = () => ({
@@ -97,8 +96,9 @@ const ViewTicket: FC<ViewTicketProps> = () => {
       .pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
+            getTicketByTagApi(id, filterData);
             message.success("Deleted Successfully !");
-            navigate(SettingRoutePaths.Workdesk.Tag.Index);
+            // navigate(SettingRoutePaths.Workdesk.Tag.Index);
           } else {
             message.error("Get ticket failed");
           }
@@ -116,15 +116,14 @@ const ViewTicket: FC<ViewTicketProps> = () => {
     }
   }, [filterData, id]);
 
+  console.log({ tickets });
+
   return (
     <>
       <Header back title={`Tickets tagged with "${id}"`}>
         <div className="flex-1 flex justify-end"></div>
       </Header>
       <div className="flex justify-end">
-        {/* <span className="underline text-blue-500 hover:cursor-pointer">
-          Remove Tags from all Tickets
-        </span> */}
         <ButtonRemoveTag
           title="Are you sure that you want to permanently remove all?"
           content="All tickets will remove this tag permanently. This action cannot be undone."
@@ -149,11 +148,7 @@ const ViewTicket: FC<ViewTicketProps> = () => {
           key="createdTimestamp"
           title="Date Requested"
           render={(_, record: Ticket) => (
-            <span>{`${
-              record.createdDatetime
-                ? moment(record.createdDatetime).format("DD-MM-YYYY")
-                : ""
-            }`}</span>
+            <span>{`${createdDatetimeFormat(record.createdDatetime)}`}</span>
           )}
           sorter={{
             compare: (a: any, b: any) => a.createdDatetime - b.createdDatetime,
@@ -163,11 +158,7 @@ const ViewTicket: FC<ViewTicketProps> = () => {
           key="updatedTimestamp"
           title="Last Updated"
           render={(_, record: Ticket) => (
-            <span>{`${
-              record.updatedDatetime
-                ? moment(record.updatedDatetime).format("DD-MM-YYYY")
-                : ""
-            }`}</span>
+            <span>{`${createdDatetimeFormat(record.updatedDatetime)}`}</span>
           )}
           sorter={{
             compare: (a: any, b: any) =>

@@ -5,5 +5,6 @@ export * from "./object";
 export * from "./regexes";
 export * from "./request";
 export * from "./useRole";
+export * from "./convertTime";
 export declare function makeId(length: number): string;
 export declare function upperCaseFirst(str: string): string;

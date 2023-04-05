@@ -15,6 +15,7 @@ export declare type Tag = {
     name: string;
     description: string;
     storeId: string;
+    ticketsCount: number;
     _id: string;
 };
 export interface BaseListTagRequest extends BaseListRequest {

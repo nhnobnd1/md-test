@@ -123,7 +123,7 @@ export default function SettingIndexPage() {
   };
   const { run: handleRemoveTag } = useJob((dataDelete: string[]) => {
     return TagRepository()
-      .delete({ ids: dataDelete })
+      .delete({ names: dataDelete })
       .pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {

@@ -1,4 +1,5 @@
 import {
+  createdDatetimeFormat,
   generatePath,
   PageComponent,
   upperCaseFirst,
@@ -31,7 +32,6 @@ import {
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { Button, Input, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
-import moment from "moment";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { catchError, forkJoin, map, of } from "rxjs";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
@@ -543,7 +543,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                         agents={agents}
                         tickets={tickets}
                         selectedRowKeys={selectedRowKeys}
-                        tags={tags}
                       />
                     }
                     fileName="Tickets.pdf"
@@ -662,15 +661,11 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                     key="tags"
                     title="Tags"
                     render={(_, record: Ticket) => {
-                      const filterItemTag = tags.filter((item) =>
-                        record.tags?.slice(-2).includes(item.id)
-                      );
-
                       return (
                         <div className="flex flex-col wrap gap-2">
-                          {filterItemTag.map((item) => (
-                            <span className="tag-item" key={item._id}>
-                              #{item.name}
+                          {record.tags?.slice(-2).map((item) => (
+                            <span className="tag-item" key={item}>
+                              #{item}
                             </span>
                           ))}
                         </div>
@@ -695,13 +690,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                     title="Last Update"
                     render={(_, record: Ticket) => (
                       <span>
-                        {`${
-                          record.updatedDatetime
-                            ? moment(record.updatedDatetime).format(
-                                "HH:mm DD/MM/YYYY"
-                              )
-                            : ""
-                        }`}
+                        {createdDatetimeFormat(record.updatedDatetime)}
                       </span>
                     )}
                     sorter={{

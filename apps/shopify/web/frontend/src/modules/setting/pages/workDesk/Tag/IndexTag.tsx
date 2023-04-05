@@ -46,12 +46,12 @@ export default function TagIndexPage() {
     plural: "tags",
   };
   const rowMarkup = tags.map(
-    ({ id, name, updatedDatetime, createdDatetime }, index) => (
+    ({ id, name, updatedDatetime, ticketsCount, createdDatetime }, index) => (
       <IndexTable.Row id={id} key={id} position={index}>
         <IndexTable.Cell className="py-3">
           <Link
             monochrome
-            onClick={() => navigateShowDetails(id)}
+            onClick={() => navigateToViewTicket(name)}
             removeUnderline
           >
             <Text variant="bodyMd" fontWeight="bold" as="span">
@@ -59,7 +59,7 @@ export default function TagIndexPage() {
             </Text>
           </Link>
         </IndexTable.Cell>
-        <IndexTable.Cell className="py-3">{`###`}</IndexTable.Cell>
+        <IndexTable.Cell className="py-3">{ticketsCount}</IndexTable.Cell>
         <IndexTable.Cell className="py-3">
           {updatedDatetime
             ? dayjs(updatedDatetime).format("DD-MM-YYYY")
@@ -78,7 +78,7 @@ export default function TagIndexPage() {
                   source={() => <DeleteMajor />}
                 />
               )}
-              onClick={() => handleOpenModalDelete(id)}
+              onClick={() => handleOpenModalDelete(name)}
               destructive
             />
           </ButtonGroup>
@@ -89,6 +89,11 @@ export default function TagIndexPage() {
 
   const navigateCreate = () => {
     return navigate(SettingRoutePaths.Workdesk.Tag.Create);
+  };
+  const navigateToViewTicket = (id: string) => {
+    return navigate(
+      generatePath(SettingRoutePaths.Workdesk.Tag.ViewTicket, { id })
+    );
   };
   const navigateShowDetails = useCallback((id: string) => {
     navigate(generatePath(SettingRoutePaths.Workdesk.Tag.Edit, { id }));
@@ -103,19 +108,19 @@ export default function TagIndexPage() {
       sortOrder: -1,
     },
     {
-      sortBy: "numberOfTickets",
+      sortBy: "ticketsCount",
       sortOrder: 1,
     },
     {
-      sortBy: "numberOfTickets",
+      sortBy: "ticketsCount",
       sortOrder: -1,
     },
     {
-      sortBy: "lastUpdated",
+      sortBy: "updatedDatetime",
       sortOrder: -1,
     },
     {
-      sortBy: "lastUpdated",
+      sortBy: "updatedDatetime",
       sortOrder: -1,
     },
     {
@@ -180,7 +185,7 @@ export default function TagIndexPage() {
   };
   const { run: handleRemoveTag } = useJob((dataDelete: string[]) => {
     return TagRepository()
-      .delete({ ids: dataDelete })
+      .delete({ names: dataDelete })
       .pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
