@@ -1,0 +1,10 @@
+.totalResult {
+    margin-right: 20px;
+}
+.wrapTable {
+    :global {
+        .Polaris-IndexTable__TableRow {
+            cursor: pointer !important;
+        }
+    }
+}

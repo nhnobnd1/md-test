@@ -4706,6 +4706,9 @@ const qp = pt(
     },
     delete(t, e) {
       return t.delete("", {}, { data: e });
+    },
+    getListTicket(t, e, r) {
+      return t.get(`/all-tickets/${e}`, r);
     }
   }
 );
@@ -4748,6 +4751,27 @@ const Jp = pt(
   }
 ), Yp = pt(
   () => ({
+    baseURL: `${ht.getApiUrl()}/api/v1/help-widget`
+  }),
+  {
+    getList(t, e) {
+      return t.get("", e);
+    },
+    getOne(t, e) {
+      return t.get(`/${e}`);
+    },
+    create(t, e) {
+      return t.post("", e);
+    },
+    update(t, e, r) {
+      return t.put(`/${e}`, r);
+    },
+    delete(t, e) {
+      return t.delete(`/${e}`);
+    }
+  }
+), Kp = pt(
+  () => ({
     baseURL: `${ht.getApiUrl()}/api/v1/store`
   }),
   {
@@ -4755,7 +4779,7 @@ const Jp = pt(
       return t.get("/store-id", e);
     }
   }
-), Kp = pt(
+), Gp = pt(
   () => ({
     baseURL: `${ht.getApiUrl()}/api/v1/tag`
   }),
@@ -4784,7 +4808,7 @@ const Jp = pt(
   }
 );
 var Up = /* @__PURE__ */ ((t) => (t.HIGHEST = "HIGHEST", t.HIGH = "HIGH", t.MEDIUM = "MEDIUM", t.LOW = "LOW", t.LOWEST = "LOWEST", t))(Up || {}), Mp = /* @__PURE__ */ ((t) => (t.PENDING = "PENDING", t.OPEN = "OPEN", t.RESOLVED = "RESOLVED", t.NEW = "NEW", t))(Mp || {});
-const Gp = [
+const Xp = [
   {
     label: "Pending",
     value: "PENDING"
@@ -4797,7 +4821,7 @@ const Gp = [
     label: "Resolved",
     value: "RESOLVED"
   }
-], Xp = [
+], Zp = [
   {
     label: "Highest",
     value: "HIGHEST"
@@ -4818,7 +4842,7 @@ const Gp = [
     label: "Lowest",
     value: "LOWEST"
   }
-], Zp = pt(
+], Qp = pt(
   () => ({
     baseURL: `${ht.getApiUrl()}/api/v1/ticket`
   }),
@@ -4872,7 +4896,7 @@ const Gp = [
   }
 );
 var Fp = /* @__PURE__ */ ((t) => (t.READ_PRODUCTS = "read_products", t))(Fp || {}), Bp = /* @__PURE__ */ ((t) => (t.Admin = "Admin", t.BasicAgent = "BasicAgent", t.AgentLeader = "AgentLeader", t))(Bp || {});
-const Qp = pt(
+const th = pt(
   () => ({
     baseURL: `${ht.getApiUrl()}/api/v1/account/group`
   }),
@@ -4898,7 +4922,7 @@ const Qp = pt(
   }
 );
 var zp = /* @__PURE__ */ ((t) => (t.Disabled = "Disabled", t.Email = "Email", t.Authenticator = "Authenticator", t))(zp || {});
-const th = pt(
+const eh = pt(
   () => ({
     baseURL: `${ht.getApiUrl()}/api/v1/account/setting`
   }),
@@ -4916,27 +4940,6 @@ const th = pt(
       return t.post("/verify-setup-otp", e);
     }
   }
-), eh = pt(
-  () => ({
-    baseURL: `${ht.getApiUrl()}/api/v1/help-widget`
-  }),
-  {
-    getList(t, e) {
-      return t.get("", e);
-    },
-    getOne(t, e) {
-      return t.get(`/${e}`);
-    },
-    create(t, e) {
-      return t.post("", e);
-    },
-    update(t, e, r) {
-      return t.put(`/${e}`, r);
-    },
-    delete(t, e) {
-      return t.delete(`/${e}`);
-    }
-  }
 );
 export {
   $p as AccessType,
@@ -4949,7 +4952,7 @@ export {
   Jp as EmailIntegrationRepository,
   ht as Env,
   Tp as ErrorCodeCreate,
-  eh as HelpWidgetRepository,
+  Yp as HelpWidgetRepository,
   Ip as MailBoxType,
   kp as MailSettingType,
   zp as MethodOTP,
@@ -4957,12 +4960,12 @@ export {
   Up as Priority,
   Bp as Role,
   Mp as StatusTicket,
-  Yp as StoreRepository,
-  Kp as TagRepository,
-  Zp as TicketRepository,
+  Kp as StoreRepository,
+  Gp as TagRepository,
+  Qp as TicketRepository,
   Np as TypeCheckTokenNewAgent,
-  Qp as UserGroupRepository,
-  th as UserSettingRepository,
-  Xp as priorityOptions,
-  Gp as statusOptions
+  th as UserGroupRepository,
+  eh as UserSettingRepository,
+  Zp as priorityOptions,
+  Xp as statusOptions
 };
