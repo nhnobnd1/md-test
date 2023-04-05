@@ -20,6 +20,7 @@ import { FormikProps } from "formik";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import CustomerForm from "src/modules/customers/component/CustomerForm";
+import { ListTicketCustomer } from "src/modules/customers/component/ListTicketCustomer";
 import CustomersRoutePaths from "src/modules/customers/routes/paths";
 
 export default function DetailsCustomer() {
@@ -154,7 +155,7 @@ export default function DetailsCustomer() {
     {
       id: "list-ticket-of-customer",
       content: "List ticket",
-      value: "List ticket",
+      value: <ListTicketCustomer customerId={dataCustomer?._id || ""} />,
       panelID: "list-ticket-of-customer",
     },
   ];

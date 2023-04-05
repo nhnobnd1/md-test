@@ -1,6 +1,6 @@
 import {
-  PageComponent,
   generatePath,
+  PageComponent,
   upperCaseFirst,
   useJob,
   useNavigate,
@@ -20,13 +20,13 @@ import {
   GetListCustomerRequest,
   GetListTagRequest,
   GetListTicketRequest,
+  statusOptions,
   Tag,
   TagRepository,
   Ticket,
   TicketRepository,
   TicketStatistic,
   UpdateTicket,
-  statusOptions,
 } from "@moose-desk/repo";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { Button, Input, TableProps } from "antd";
@@ -112,6 +112,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
 
   const [filterData, setFilterData] =
     useState<BaseListTicketRequest>(defaultFilter);
+
   const [meta, setMeta] = useState<BaseMetaDataListResponse>();
 
   const prevFilter = usePrevious<GetListTicketRequest>(filterData);

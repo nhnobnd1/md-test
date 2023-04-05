@@ -10,6 +10,7 @@ import useNotification from "src/hooks/useNotification";
 import CustomerForm, {
   CustomerFormValues,
 } from "src/modules/customer/component/CustomerForm";
+import { ListTicketCustomer } from "src/modules/customer/component/ListTicketCustomer";
 import { useStore } from "src/providers/StoreProviders";
 
 interface PopupCustomerProps extends Omit<ModalProps, "onCancel"> {
@@ -176,7 +177,9 @@ export const PopupCustomer = ({
                 {
                   key: "2",
                   label: `List ticket`,
-                  children: <div className="h-60">List ticket</div>,
+                  children: (
+                    <ListTicketCustomer customerId={dataForm?._id || ""} />
+                  ),
                 },
               ]}
               onChange={handleTabChange}
