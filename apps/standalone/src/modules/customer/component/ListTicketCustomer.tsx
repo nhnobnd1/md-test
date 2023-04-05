@@ -1,15 +1,16 @@
 import { useJob, useNavigate } from "@moose-desk/core";
+import { formatTimeDDMMYY } from "@moose-desk/core/helper/format";
+import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import { Customer, CustomerRepository } from "@moose-desk/repo";
-import { message, Table } from "antd";
+import { message } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import classNames from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { map } from "rxjs";
 import { MDSearchInput } from "src/components/UI/MDSearchInput";
 import Pagination from "src/components/UI/Pagination/Pagination";
+import { Table } from "src/components/UI/Table";
 import env from "src/core/env";
-import { formatTime } from "src/helper/format";
-import { useDebounce } from "src/hooks/useDebounce";
 import {
   ListTicketCustomerFilter,
   TicketCustomerResponse,
@@ -74,7 +75,7 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
           return a.createdDatetime - b.createdDatetime;
         },
       },
-      render: (data: string) => <div>{formatTime(data)}</div>,
+      render: (data: string) => <div>{formatTimeDDMMYY(data)}</div>,
       width: "11%",
     },
     {
@@ -85,7 +86,9 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
       },
       render: (data: string, record: TicketCustomerResponse) => (
         <div>
-          {data ? formatTime(data) : formatTime(record?.createdDatetime)}
+          {data
+            ? formatTimeDDMMYY(data)
+            : formatTimeDDMMYY(record?.createdDatetime)}
         </div>
       ),
       width: "11%",
