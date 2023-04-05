@@ -661,15 +661,11 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                     key="tags"
                     title="Tags"
                     render={(_, record: Ticket) => {
-                      const filterItemTag = tags.filter((item) =>
-                        record.tags?.slice(-2).includes(item.id)
-                      );
-
                       return (
                         <div className="flex flex-col wrap gap-2">
-                          {filterItemTag.map((item) => (
-                            <span className="tag-item" key={item._id}>
-                              #{item.name}
+                          {record.tags?.slice(-2).map((item) => (
+                            <span className="tag-item" key={item}>
+                              #{item}
                             </span>
                           ))}
                         </div>

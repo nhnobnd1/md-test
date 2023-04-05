@@ -31,7 +31,7 @@ const ModalFilter = ({
   const [form] = Form.useForm();
   const tagsOptions = useMemo(() => {
     const optionsTag = tags.map((item: Tag) => {
-      return { label: item.name, value: item._id };
+      return { label: item.name, value: item.name };
     });
     return optionsTag;
   }, [tags]);

@@ -10,6 +10,7 @@ import {
   TagRepository,
   Ticket,
 } from "@moose-desk/repo";
+import { useToast } from "@shopify/app-bridge-react";
 import {
   Button,
   Card,
@@ -26,35 +27,82 @@ import { SortMinor } from "@shopify/polaris-icons";
 import dayjs from "dayjs";
 
 import { FC, useCallback, useEffect, useState } from "react";
-import { map } from "rxjs";
+import { catchError, map, of } from "rxjs";
 import { ModalDelete } from "src/components/Modal/ModalDelete";
 import { Pagination } from "src/components/Pagination";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
 
 interface ViewTicketProps {}
-const defaultFilter = () => ({
-  page: 1,
-  limit: 10,
-  query: "",
-  sortBy: undefined,
-  sortOrder: undefined,
-});
+
+const sortTemplate = [
+  {
+    sortBy: "subject",
+    sortOrder: 1,
+  },
+  {
+    sortBy: "subject",
+    sortOrder: -1,
+  },
+  {
+    sortBy: "createdDatetime",
+    sortOrder: 1,
+  },
+  {
+    sortBy: "createdDatetime",
+    sortOrder: -1,
+  },
+  {
+    sortBy: "updatedDatetime",
+    sortOrder: 1,
+  },
+  {
+    sortBy: "updatedDatetime",
+    sortOrder: -1,
+  },
+  {
+    sortBy: "status",
+    sortOrder: 1,
+  },
+  {
+    sortBy: "status",
+    sortOrder: -1,
+  },
+  {
+    sortBy: "priority",
+    sortOrder: 1,
+  },
+  {
+    sortBy: "priority",
+    sortOrder: -1,
+  },
+];
 const ViewTicket: FC<ViewTicketProps> = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { show } = useToast();
+
   const [isOpen, setIsOpen] = useState(false);
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [meta, setMeta] = useState<BaseMetaDataListResponse>();
-  const [filterData, setFilterData] =
-    useState<BaseListTagRequest>(defaultFilter);
-  const [popoverSort, setPopoverSort] = useState(false);
 
   const togglePopoverSort = useCallback(
     () => setPopoverSort((popoverSort) => !popoverSort),
     []
   );
   const [sortTag, setSortTag] = useState(2);
+  const [valueSortTag, setValueSortTag] = useState(
+    sortTemplate[Number(sortTag)]
+  );
+  const defaultFilter = () => ({
+    page: 1,
+    limit: 10,
+    query: "",
 
+    ...valueSortTag,
+  });
+  const [filterData, setFilterData] =
+    useState<BaseListTagRequest>(defaultFilter);
+  const [popoverSort, setPopoverSort] = useState(false);
   const handleSortChange = useCallback((value) => {
     setSortTag(parseInt(value[0]));
   }, []);
@@ -96,23 +144,43 @@ const ViewTicket: FC<ViewTicketProps> = () => {
       .pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
-            // message.success("Deleted Successfully !");
-            // navigate(SettingRoutePaths.Workdesk.Tag.Index);
+            show("Delete success");
+            getTicketByTagApi(id, filterData);
           } else {
-            // message.error("Get ticket failed");
+            show("Delete failed", {
+              isError: true,
+            });
           }
+          catchError((error) => {
+            show("Delete failed", {
+              isError: true,
+            });
+            return of(error);
+          });
         })
       );
   });
 
-  const handleDelete = () => {};
+  const handleDelete = useCallback(() => {
+    if (id) {
+      deleteForceApi(id);
+    }
+  }, [id]);
   useEffect(() => {
     if (id) {
       getTicketByTagApi(id, filterData);
     }
   }, [filterData, id]);
+  useEffect(() => {
+    setValueSortTag(sortTemplate[sortTag]);
+  }, [sortTag]);
 
-  console.log({ tickets });
+  useEffect(() => {
+    setFilterData({
+      ...filterData,
+      ...valueSortTag,
+    });
+  }, [valueSortTag]);
 
   return (
     <>
@@ -150,7 +218,12 @@ const ViewTicket: FC<ViewTicketProps> = () => {
               />
             </Popover>
           </div>
-          <Link onClick={() => {}} removeUnderline>
+          <Link
+            onClick={() => {
+              setIsOpen(true);
+            }}
+            removeUnderline
+          >
             <Text alignment="end" variant="bodyMd" fontWeight="bold" as="span">
               Remove Tags from all Tickets
             </Text>
@@ -226,13 +299,13 @@ const ViewTicket: FC<ViewTicketProps> = () => {
           : null}
       </Page>
       <ModalDelete
-        title="Are you sure that you want to premanently remove this Tag?"
+        title="Are you sure that you want to permanently remove all?"
         open={isOpen}
         onClose={() => setIsOpen(false)}
         content={
-          "This Tag will be removed permanently. This actions can not be undone. All tickets which are using this tag will get affected too."
+          "All tickets will remove this tag permanently. This action cannot be undone."
         }
-        deleteAction={() => handleDelete()}
+        deleteAction={handleDelete}
         textConfirm="Remove"
       />
     </>

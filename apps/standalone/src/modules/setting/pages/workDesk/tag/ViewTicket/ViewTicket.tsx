@@ -21,7 +21,6 @@ import { Table } from "src/components/UI/Table";
 import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
 import { ButtonRemoveTag } from "src/modules/setting/component/ButtonRemoveTag";
-import SettingRoutePaths from "src/modules/setting/routes/paths";
 import "./ViewTicket.scss";
 interface ViewTicketProps {}
 const defaultFilter = () => ({
@@ -97,6 +96,7 @@ const ViewTicket: FC<ViewTicketProps> = () => {
       .pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
+            getTicketByTagApi(id, filterData);
             message.success("Deleted Successfully !");
             // navigate(SettingRoutePaths.Workdesk.Tag.Index);
           } else {
