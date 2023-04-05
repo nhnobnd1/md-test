@@ -542,7 +542,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                         agents={agents}
                         tickets={tickets}
                         selectedRowKeys={selectedRowKeys}
-                        tags={tags}
                       />
                     }
                     fileName="Tickets.pdf"
