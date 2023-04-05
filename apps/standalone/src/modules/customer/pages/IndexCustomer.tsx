@@ -245,7 +245,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
               <Table.Column
                 key="numberOfTicket"
                 title="Number of tickets"
-                dataIndex="storeId"
+                dataIndex="ticketsCount"
                 sorter={{
                   compare: (a: any, b: any) =>
                     a.numberOfTicket - b.numberOfTicket,

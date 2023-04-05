@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
 
-export const formatTime = (timeString: string) => {
+export const formatTimeDDMMYY = (timeString: string) => {
   return dayjs(timeString).format("DD-MM-YYYY");
 };
