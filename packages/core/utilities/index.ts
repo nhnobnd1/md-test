@@ -9,6 +9,7 @@ export * from "./object";
 export * from "./regexes";
 export * from "./request";
 export * from "./useRole";
+export * from "./convertTime";
 
 export function makeId(length: number) {
   let result = "";

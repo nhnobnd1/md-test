@@ -1,4 +1,5 @@
 import {
+  createdDatetimeFormat,
   generatePath,
   PageComponent,
   upperCaseFirst,
@@ -31,7 +32,6 @@ import {
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { Button, Input, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
-import moment from "moment";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { catchError, forkJoin, map, of } from "rxjs";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
@@ -690,13 +690,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                     title="Last Update"
                     render={(_, record: Ticket) => (
                       <span>
-                        {`${
-                          record.updatedDatetime
-                            ? moment(record.updatedDatetime).format(
-                                "HH:mm DD/MM/YYYY"
-                              )
-                            : ""
-                        }`}
+                        {createdDatetimeFormat(record.updatedDatetime)}
                       </span>
                     )}
                     sorter={{

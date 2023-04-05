@@ -1,4 +1,5 @@
 import {
+  createdDatetimeFormat,
   upperCaseFirst,
   useJob,
   useNavigate,
@@ -12,7 +13,6 @@ import {
 } from "@moose-desk/repo";
 import { TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
-import moment from "moment";
 import { FC, useCallback, useEffect, useState } from "react";
 import { map } from "rxjs";
 import { Header } from "src/components/UI/Header";
@@ -148,11 +148,7 @@ const ViewTicket: FC<ViewTicketProps> = () => {
           key="createdTimestamp"
           title="Date Requested"
           render={(_, record: Ticket) => (
-            <span>{`${
-              record.createdDatetime
-                ? moment(record.createdDatetime).format("DD-MM-YYYY")
-                : ""
-            }`}</span>
+            <span>{`${createdDatetimeFormat(record.createdDatetime)}`}</span>
           )}
           sorter={{
             compare: (a: any, b: any) => a.createdDatetime - b.createdDatetime,
@@ -162,11 +158,7 @@ const ViewTicket: FC<ViewTicketProps> = () => {
           key="updatedTimestamp"
           title="Last Updated"
           render={(_, record: Ticket) => (
-            <span>{`${
-              record.updatedDatetime
-                ? moment(record.updatedDatetime).format("DD-MM-YYYY")
-                : ""
-            }`}</span>
+            <span>{`${createdDatetimeFormat(record.updatedDatetime)}`}</span>
           )}
           sorter={{
             compare: (a: any, b: any) =>

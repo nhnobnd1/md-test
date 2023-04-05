@@ -1,4 +1,8 @@
-import { upperCaseFirst, useJob } from "@moose-desk/core";
+import {
+  createdDatetimeFormat,
+  upperCaseFirst,
+  useJob,
+} from "@moose-desk/core";
 import {
   BaseDeleteList,
   BaseListTicketRequest,
@@ -13,7 +17,6 @@ import {
 } from "@moose-desk/repo";
 import { Input, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
-import moment from "moment";
 import { useCallback, useEffect, useState } from "react";
 import { map } from "rxjs";
 import { Header } from "src/components/UI/Header";
@@ -382,13 +385,7 @@ const TrashTicket = (props: TrashTicketProps) => {
                     title="Last Update"
                     render={(_, record: Ticket) => (
                       <span>
-                        {`${
-                          record.updatedDatetime
-                            ? moment(record.updatedDatetime).format(
-                                "HH:mm DD/MM/YYYY"
-                              )
-                            : ""
-                        }`}
+                        {createdDatetimeFormat(record.updatedDatetime)}
                       </span>
                     )}
                     sorter={{

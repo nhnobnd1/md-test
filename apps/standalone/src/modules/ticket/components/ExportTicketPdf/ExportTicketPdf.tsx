@@ -1,4 +1,8 @@
-import { upperCaseFirst, useUser } from "@moose-desk/core";
+import {
+  createdDatetimeFormat,
+  upperCaseFirst,
+  useUser,
+} from "@moose-desk/core";
 import { Agent, Conversation, Ticket } from "@moose-desk/repo";
 import {
   Document,
@@ -269,7 +273,7 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
           </Text>
         </View>
         <View style={firstTableColStyle}>
-          {item.tags.slice(-2).map((itemTag) => (
+          {item.tags?.slice(-2).map((itemTag) => (
             <Text style={tableCellStyle} key={itemTag}>
               #{itemTag}
             </Text>
@@ -280,9 +284,7 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
         </View>
         <View style={{ ...firstTableColStyle, flexBasis: 80 }}>
           <Text style={tableCellStyle}>
-            {item.updatedDatetime
-              ? moment(item.updatedDatetime).format("DD/MM/YYYY")
-              : ""}
+            {createdDatetimeFormat(item.updatedDatetime)}
           </Text>
         </View>
       </View>

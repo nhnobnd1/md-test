@@ -1,5 +1,6 @@
 import {
   PageComponent,
+  createdDatetimeFormat,
   generatePath,
   useDebounceFn,
   useJob,
@@ -16,7 +17,6 @@ import {
 } from "@moose-desk/repo";
 import { Input, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
-import dayjs from "dayjs";
 import { useCallback, useEffect, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
@@ -270,14 +270,10 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
                 }}
               ></Table.Column>
               <Table.Column
-                key="lastUpdate"
+                key="updatedTimestamp"
                 title="Last updated"
                 render={(_, record: Tag) => (
-                  <span>
-                    {record.updatedDatetime
-                      ? dayjs(record.updatedDatetime).format("DD-MM-YYYY")
-                      : dayjs(record.createdDatetime).format("DD-MM-YYYY")}
-                  </span>
+                  <span>{createdDatetimeFormat(record.updatedDatetime)}</span>
                 )}
                 sorter={{
                   compare: (a: any, b: any) => a.lastUpdate - b.lastUpdate,
