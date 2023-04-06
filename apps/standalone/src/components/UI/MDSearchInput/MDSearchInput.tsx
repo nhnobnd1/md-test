@@ -4,7 +4,7 @@ import { Input, InputProps } from "antd";
 interface IMDSearchInput extends InputProps {
   placeholder?: string;
   // onChange: () => void;
-  value: string;
+  // value: string;
 }
 export const MDSearchInput = ({
   placeholder = "search",
