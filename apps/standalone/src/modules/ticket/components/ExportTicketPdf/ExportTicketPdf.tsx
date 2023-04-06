@@ -213,7 +213,7 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
             Assignee: {findItemAgentName?.email}
           </Text>
           <Text style={{ fontSize: 11, fontFamily: "Roboto" }}>
-            Priority {upperCaseFirst(item.priority)}
+            Priority: {upperCaseFirst(item.priority)}
           </Text>
         </View>
         <View style={{ marginTop: 20 }}></View>
