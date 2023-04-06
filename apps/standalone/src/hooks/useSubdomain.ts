@@ -7,22 +7,22 @@ export function useSubdomain() {
   const getSubDomain = useCallback(() => {
     const domain = window.location.hostname;
     if (import.meta.env.MODE === "development") {
-      if (domain.includes("-dev.moosedesk.net")) {
-        return domain.replace("-dev.moosedesk.net", "");
+      if (domain.includes(".moosedesk.net")) {
+        return domain.replace(".moosedesk.net", "");
       }
       return import.meta.env.VITE_SUB_DOMAIN;
     } else {
-      return domain.replace(".moosedesk.net", "");
+      return domain.replace(".moosedesk.com", "");
     }
   }, [window.location]);
 
   const getDomain = useCallback(() => {
     switch (import.meta.env.MODE) {
       case "development":
-        return "-dev.moosedesk.net";
+        return ".moosedesk.net";
 
       case "staging":
-        return ".moosedesk.net";
+        return ".moosedesk.com";
 
       default:
         return ".moosedesk.com";

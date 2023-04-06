@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 
 import {
   CloudUploadOutlined,
@@ -6,7 +6,6 @@ import {
   QuestionCircleOutlined,
 } from "@ant-design/icons";
 import { Button, Card, FloatButton, Form, Input, Modal } from "antd";
-import axios from "axios";
 import { filesize } from "filesize";
 import { useDropzone } from "react-dropzone";
 import ReCAPTCHA from "react-google-recaptcha";
@@ -119,29 +118,6 @@ function App() {
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
-
-  useEffect(() => {
-    const getData = async () => {
-      // setTimeout(() => {
-      //   setData(
-      //     dataExample[
-      //       window?.mdSettings?.widget_id ? window?.mdSettings?.widget_id : 0
-      //     ]
-      //   );
-      // }, 1000);
-      const response = axios.get(
-        `https://api-dev.moosedesk.net/api/v1/help-widget/${window?.mdSettings?.widget_id}?axios_timestamp=1678200583710`,
-        {
-          headers: {
-            Authorization: `Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IkU0RUJERDkwNjkzQTQxRUE4OEM5MkU5NTlGNDE0RjUzRTEwQTlCQzIiLCJ4NXQiOiI1T3Zka0drNlFlcUl5UzZWbjBGUFUtRUttOEkiLCJ0eXAiOiJhdCtqd3QifQ.eyJzdWIiOiIzYTA4Y2I4My1kNGVhLTY5YzQtZjFiZS1hNGQ1OTcwZjdlYmIiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiIwMTdsYWliYXZpLnd0c0BnbWFpbC5jb20iLCJlbWFpbCI6IjAxN2xhaWJhdmkud3RzQGdtYWlsLmNvbSIsInJvbGUiOiJBZG1pbiIsInRlbmFudGlkIjoiM2EwOGE2ZGMtY2RjYi0xYzgwLTYyZWMtM2NjOWExM2M2ZGJiIiwiZ2l2ZW5fbmFtZSI6IlZpIiwiZmFtaWx5X25hbWUiOiJMYWkgQmEiLCJwaG9uZV9udW1iZXIiOiI4NC0zMzc1MjAwMTEiLCJwaG9uZV9udW1iZXJfdmVyaWZpZWQiOiJGYWxzZSIsImVtYWlsX3ZlcmlmaWVkIjoiVHJ1ZSIsInVuaXF1ZV9uYW1lIjoiMDE3bGFpYmF2aS53dHNAZ21haWwuY29tIiwic3RvcmVJZCI6IjY4NjQ1ODgwMTI0Iiwic3ViZG9tYWluIjoibW9vc2UtZGVzayIsIm9pX3Byc3QiOiJNb29zZWRlc2tfUG9zdG1hbiIsIm9pX2F1X2lkIjoiM2EwOWIzMmYtNGQxMC1hNWIxLTBjNDYtYmIyZmI2ZmQ0NDBiIiwiY2xpZW50X2lkIjoiTW9vc2VkZXNrX1Bvc3RtYW4iLCJvaV90a25faWQiOiIzYTA5YjMyZi00ZDFjLTNiZDgtZGU1YS00NGI4NDU0NGI4OTYiLCJzY29wZSI6Im9mZmxpbmVfYWNjZXNzIiwiZXhwIjoxNjc3OTk3NzM4LCJpc3MiOiJodHRwczovL2F1dGgubW9vc2VkZXNrLm5ldC8iLCJpYXQiOjE2Nzc3Mzg1Mzh9.IQuq1QKkqqtFx2h3QfZMVpO5PdEFGb-LFvViGlyRknxlejYd0ofdHFKmH5LW1I6XfB82aSRPqpcrobhJ3Q_1UqkN6zZZSOvprLoshqVl9G4ofo5ZyVqv-VuwOuIOhD0IRdMz2DLhIJBPwwH6unIt3q7gL50SwPq547thSK4rnQ9VmF2Pw1U6DX_XFxn6243rMnlw1s9eBFUB4xpnernZrxxfhG632spEgSwRpETigabLZ9Y0EzeBFPHno7HjQ11aVuzYMExY4gwT57OThbpXu63qWnlLNXXPHwxa6nzjgXNDh32do8gMZ308qGdmrJm_7sDWQDBYsWGCy_WsZuTCpw`,
-          },
-        }
-      );
-      setData(response.data);
-      console.log("hola", response.data);
-    };
-    getData();
-  }, []);
 
   const positionWidget = useMemo(() => {
     if (data?.widgetPosition === "right") {
