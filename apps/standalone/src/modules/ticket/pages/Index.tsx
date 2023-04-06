@@ -451,8 +451,8 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     deleteTicketApi(selectedRowKeys as string[]);
   }, [selectedRowKeys]);
   const handleResetModal = useCallback(() => {
-    getListTicketApi(filterData);
-    closeFilterModal();
+    // getListTicketApi(filterData);
+    // closeFilterModal();
     setFilterObject(null);
   }, [filterData]);
   const handleApply = (values: any) => {
