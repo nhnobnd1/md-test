@@ -23,6 +23,7 @@ const CreateTicket = (props: CreateTicketProps) => {
       // assignee: "3a08b18a-e690-f9ca-ff56-e7145104fb8d",
     };
   }, [primaryEmail?._id]);
+
   const { run: getPrimaryEmail, processing } = useJob(
     () => {
       return EmailIntegrationRepository()

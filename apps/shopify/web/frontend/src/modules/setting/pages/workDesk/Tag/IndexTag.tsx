@@ -303,8 +303,9 @@ export default function TagIndexPage() {
             selectable={false}
             headings={[
               { title: "Name" },
-              { title: "Number of tickets" },
+              { title: "# of tickets" },
               { title: "Last updated" },
+              { title: "Action" },
             ]}
             hasMoreItems
             loading={loadTag}

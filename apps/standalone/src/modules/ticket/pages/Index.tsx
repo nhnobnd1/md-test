@@ -4,6 +4,7 @@ import {
   PageComponent,
   upperCaseFirst,
   useJob,
+  useLocation,
   useNavigate,
   usePrevious,
   useToggle,
@@ -30,7 +31,7 @@ import {
   UpdateTicket,
 } from "@moose-desk/repo";
 import { PDFDownloadLink } from "@react-pdf/renderer";
-import { Button, Input, TableProps } from "antd";
+import { Button, Input, Spin, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { catchError, forkJoin, map, of } from "rxjs";
@@ -83,7 +84,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       NEW: 0,
     },
   });
-  const [filterObject, setFilterObject] = useState<FilterObject | null>(null);
 
   const agentsOptions = useMemo(() => {
     const mapping = agents.map((item: Agent) => {
@@ -104,6 +104,9 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const navigate = useNavigate();
   const message = useMessage();
   const notification = useNotification();
+  const location = useLocation();
+  const [statusFromTrash, setStatusFromTrash] = useState(location.state);
+  const [filterObject, setFilterObject] = useState<FilterObject | null>(null);
 
   const defaultFilter: () => any = () => ({
     page: 1,
@@ -404,7 +407,15 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     });
     getStatisticTicket();
   }, []);
+  console.log({ statusFromTrash });
+
   useEffect(() => {
+    if (statusFromTrash) {
+      getListTicketFilter({ ...filterData, status: statusFromTrash });
+      setStatusFromTrash("");
+      history.replaceState(null, "", window.location.href);
+      return;
+    }
     if (filterObject) {
       getListTicketFilter({ ...filterData, ...filterObject });
       return;
@@ -550,7 +561,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                   >
                     {({ blob, url, loading, error }) =>
                       loading ? (
-                        "Loading document..."
+                        <Spin />
                       ) : (
                         <div className="flex justify-center items-center">
                           <Button
@@ -574,13 +585,14 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         <div className="grid grid-cols-7 gap-6">
           <div className="col-span-1 min-w-[150px]">
             <CardStatistic
-              status={filterObject?.status}
+              status={filterObject?.status || location.state}
               className="mb-4"
               keyPanel="publicViews"
               panelProps={{
                 header: "Public Views",
               }}
               handleApply={handleApply}
+              screen="ListTicket"
               options={[
                 { label: "New", value: `${statistic?.data.NEW}` },
                 { label: "Open", value: `${statistic?.data.OPEN}` },
@@ -596,6 +608,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                 <Table
                   rowSelection={rowSelection}
                   dataSource={tickets}
+                  scroll={{ x: 1024 }}
                   loading={loadingList}
                   onChange={onChangeTable}
                 >
@@ -663,8 +676,8 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                     render={(_, record: Ticket) => {
                       return (
                         <div className="flex flex-col wrap gap-2">
-                          {record.tags?.slice(-2).map((item) => (
-                            <span className="tag-item" key={item}>
+                          {record.tags?.slice(-2).map((item, index) => (
+                            <span className="tag-item" key={item + index}>
                               #{item}
                             </span>
                           ))}

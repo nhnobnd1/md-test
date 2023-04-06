@@ -135,14 +135,14 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
                 >
                   <div className="flex justify-center items-start gap-2 ">
                     <Popover title={item.name}>
-                      <div className="flex flex-col h-[150px] file-item relative">
+                      <div className="flex flex-col h-[150px] file-item relative justify-between">
                         <div className="fake absolute h-[150px] w-[150px]"></div>
                         <span className="file-name">{item.name}</span>
 
                         <span className=" text-xs text-left inline-block file-size">
                           {filesize(item.size, { base: 2, standard: "jedec" })}
                         </span>
-                        <div className="justify-center items-center file-download">
+                        <div className="justify-center items-center file-download mb-2">
                           <Button
                             onClick={async () => {
                               const response = await axios.get(

@@ -1,7 +1,6 @@
 import {
   emailRegex,
   generatePath,
-  objectIdRegex,
   useJob,
   useNavigate,
 } from "@moose-desk/core";
@@ -246,27 +245,17 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
   }, []);
   const onFinish = (values: any) => {
     const tags: string[] = values.tags;
-    // const result = [];
 
-    // if (tags?.length) {
-    //   for (let i = 0; i < tags.length; i++) {
-    //     const tag = tags[i];
-    //     if (objectIdRegex.test(tag)) {
-    //       result.push(tag);
-    //     } else {
-    //       const findItem = tagsCreated.find((item: Tag) => item.name === tag);
-    //       result.push(findItem?._id);
-    //     }
-    //   }
-    // }
     const dataCreate: any = {
       fromEmail: {
         email: fromEmail?.supportEmail,
         name: fromEmail?.name,
       },
       senderConfigId: values.from,
-      agentObjectId: values.assignee.split(",")[0],
-      agentEmail: values.assignee.split(",")[1],
+      agentObjectId: values.assignee
+        ? values.assignee.split(",")[0]
+        : undefined,
+      agentEmail: values.assignee ? values.assignee.split(",")[1] : undefined,
       toEmails: [{ email: values.to, name: values.to.split("@")[0] }],
       customerObjectId: toEmail.id,
       ccEmails: values?.CC,
@@ -410,7 +399,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
           </div>
 
           <Form.Item label="Assignee" name="assignee">
-            <Select.Assignee
+            <Select.Ajax
               placeholder="Search agents"
               virtual
               loadMore={fetchAgents}

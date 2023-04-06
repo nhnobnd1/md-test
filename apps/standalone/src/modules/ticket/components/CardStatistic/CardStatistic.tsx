@@ -11,6 +11,7 @@ interface CardStatisticProps extends CollapseProps {
   keyPanel: string;
   handleApply?: (object: { status: string }) => void;
   status?: string;
+  screen: string;
 }
 
 export const CardStatistic = ({
@@ -19,8 +20,10 @@ export const CardStatistic = ({
   panelProps,
   handleApply,
   status,
+  screen,
   ...props
 }: CardStatisticProps) => {
+  console.log({ status });
   const navigate = useNavigate();
   return (
     <Collapse
@@ -42,28 +45,53 @@ export const CardStatistic = ({
                 item.label.toUpperCase() === status ? "font-bold" : ""
               }`}
               onClick={() => {
-                if (item.label === "Trash") {
+                if (item.label === "Trash" && screen === "ListTicket") {
                   navigate(generatePath(TicketRoutePaths.Trash));
                 }
                 if (item.label === "Pending") {
+                  if (screen === "Trash") {
+                    navigate(TicketRoutePaths.Index, {
+                      state: StatusTicket.PENDING,
+                    });
+                    return;
+                  }
                   handleApply &&
                     handleApply({
                       status: StatusTicket.PENDING,
                     });
                 }
                 if (item.label === "New") {
+                  if (screen === "Trash") {
+                    navigate(TicketRoutePaths.Index, {
+                      state: StatusTicket.NEW,
+                    });
+                    return;
+                  }
                   handleApply &&
                     handleApply({
                       status: StatusTicket.NEW,
                     });
                 }
                 if (item.label === "Open") {
+                  if (screen === "Trash") {
+                    navigate(TicketRoutePaths.Index, {
+                      state: StatusTicket.OPEN,
+                    });
+                    return;
+                  }
                   handleApply &&
                     handleApply({
                       status: StatusTicket.OPEN,
                     });
                 }
                 if (item.label === "Resolved") {
+                  if (screen === "Trash") {
+                    navigate(TicketRoutePaths.Index, {
+                      state: StatusTicket.RESOLVED,
+                      replace: true,
+                    });
+                    return;
+                  }
                   handleApply &&
                     handleApply({
                       status: StatusTicket.RESOLVED,

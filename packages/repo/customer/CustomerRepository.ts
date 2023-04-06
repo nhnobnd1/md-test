@@ -32,7 +32,7 @@ export const CustomerRepository = createRepository(
     delete(api, data: BaseDeleteList) {
       return api.delete<DeleteCustomerResponse>("", {}, { data });
     },
-    getListTicket(api, id: string, params: any) {
+    getListTicket(api, id: string, params: GetListCustomerRequest) {
       return api.get(`/all-tickets/${id}`, params);
     },
   }

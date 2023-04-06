@@ -4,6 +4,7 @@ import {
   AttachFile,
   Conversation,
   CreateReplyTicketRequest,
+  CustomerRepository,
   EmailIntegration,
   EmailIntegrationRepository,
   GetListTagRequest,
@@ -161,6 +162,30 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
       );
   });
 
+  const fetchCustomer = useCallback(
+    (params: LoadMoreValue) => {
+      const limit = 500;
+      return CustomerRepository()
+        .getList({
+          page: params.page,
+          limit: limit,
+          query: params.searchText,
+        })
+        .pipe(
+          map(({ data }) => {
+            return {
+              options: data.data.map((item) => ({
+                label: `${item.firstName} ${item.lastName} - ${item.email}`,
+                value: item.email,
+                obj: item,
+              })),
+              canLoadMore: params.page < data.metadata.totalPage,
+            };
+          })
+        );
+    },
+    [EmailIntegrationRepository]
+  );
   const initialValues = useMemo(() => {
     const condition = ticket?.incoming || ticket?.createdViaWidget;
     return {
@@ -363,8 +388,10 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
       priority: values.priority,
       status: values.status,
       tags: values.tags,
-      agentObjectId: values.assignee.split(",")[0],
-      agentEmail: values.assignee.split(",")[1],
+      agentObjectId: values.assignee
+        ? values.assignee.split(",")[0]
+        : undefined,
+      agentEmail: values.assignee ? values.assignee.split(",")[1] : undefined,
       ids: [ticket?._id as string],
     });
     setFiles([]);
@@ -390,8 +417,10 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
       priority: values.priority,
       status: values.status,
       tags: values.tags,
-      agentObjectId: values.assignee.split(",")[0],
-      agentEmail: values.assignee.split(",")[1],
+      agentObjectId: values.assignee
+        ? values.assignee.split(",")[0]
+        : undefined,
+      agentEmail: values.assignee ? values.assignee.split(",")[1] : undefined,
       ids: [ticket?._id as string],
     });
   };
@@ -441,10 +470,11 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                   <Select className="w-[150px]" options={statusOptions} />
                 </Form.Item>
                 <Form.Item label="Assignee" name="assignee">
-                  <Select.Assignee
+                  <Select.Ajax
                     placeholder="Search agents"
                     virtual
                     loadMore={fetchAgents}
+                    className="w-[300px]"
                     // onChange={onChangeAssignee}
                   />
                 </Form.Item>
@@ -535,11 +565,11 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                                   }),
                                 ]}
                               >
-                                <Select
-                                  options={[]}
+                                <Select.Tags
+                                  loadMore={fetchCustomer}
                                   mode="tags"
                                   placeholder="Type CC email..."
-                                ></Select>
+                                ></Select.Tags>
                               </Form.Item>
                             ) : (
                               <></>
@@ -565,11 +595,11 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                                   }),
                                 ]}
                               >
-                                <Select
-                                  options={[]}
+                                <Select.Tags
+                                  loadMore={fetchCustomer}
                                   mode="tags"
                                   placeholder="Type BCC email..."
-                                ></Select>
+                                ></Select.Tags>
                               </Form.Item>
                             ) : (
                               <></>

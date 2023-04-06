@@ -281,6 +281,7 @@ const TrashTicket = (props: TrashTicketProps) => {
               panelProps={{
                 header: "Public Views",
               }}
+              screen="Trash"
               options={[
                 { label: "New", value: `${statistic.data.NEW}` },
                 { label: "Open", value: `${statistic?.data.OPEN}` },
@@ -298,6 +299,7 @@ const TrashTicket = (props: TrashTicketProps) => {
                   dataSource={tickets}
                   loading={loadingList}
                   onChange={onChangeTable}
+                  scroll={{ x: 1024 }}
                 >
                   <Table.Column
                     key="ticketId"
