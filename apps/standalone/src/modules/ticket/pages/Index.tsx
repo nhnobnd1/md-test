@@ -407,7 +407,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     });
     getStatisticTicket();
   }, []);
-  console.log({ statusFromTrash });
 
   useEffect(() => {
     if (statusFromTrash) {

@@ -25,10 +25,10 @@ export function useSubdomain() {
   const getDomainStandalone = useCallback(() => {
     switch (import.meta.env.MODE) {
       case "development":
-        return "-dev.moosedesk.net";
+        return ".moosedesk.net";
 
       case "staging":
-        return ".moosedesk.net";
+        return ".moosedesk.com";
 
       default:
         return ".moosedesk.com";

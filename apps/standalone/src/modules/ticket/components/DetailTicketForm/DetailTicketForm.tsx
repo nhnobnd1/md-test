@@ -454,7 +454,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
               loadingButton
             }
             form={form}
-            layout="inline"
+            layout="horizontal"
             initialValues={initialValues}
             enableLoadForm
             enableReinitialize
@@ -479,7 +479,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                   />
                 </Form.Item>
               </div>
-              <div className="flex justify-between items-center w-full mb-6">
+              <div className="flex gap-4 justify-between items-center w-full mb-6 flex-wrap">
                 <Form.Item
                   labelAlign="left"
                   label={<span style={{ width: 50 }}>Priority</span>}
@@ -489,6 +489,22 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                     prefixCls=""
                     className="w-[150px]"
                     options={priorityOptions}
+                  />
+                </Form.Item>
+                <Form.Item
+                  name="tags"
+                  label={<span style={{ width: 60 }}>Tags</span>}
+                  className="flex-1"
+                  labelAlign="left"
+                >
+                  <AntSelect
+                    className="w-[300px]"
+                    placeholder="Add tags"
+                    mode="tags"
+                    options={tags.map((item: Tag) => ({
+                      value: item.name,
+                      label: item.name,
+                    }))}
                   />
                 </Form.Item>
                 <div className="flex items-center">
@@ -520,22 +536,22 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                     </div>
                     <Divider />
                     <div className="box-comment">
-                      <div className="w-[400px]">
-                        <Form.Item
-                          label={<div style={{ width: 35 }}>From</div>}
-                          name="from"
-                          labelAlign="left"
-                        >
-                          <Select
-                            placeholder="Search email integration"
-                            virtual
-                            style={{ maxWidth: 334.99 }}
-                            options={emailIntegrationOptions}
-                          />
-                        </Form.Item>
-                      </div>
-                      <div className="w-full flex items-start gap-4 flex-wrap">
-                        <div className="flex flex-1">
+                      <div className="w-full flex justify-between gap-4 flex-wrap">
+                        <div className="flex flex-1 flex-col">
+                          <div className="w-[400px]">
+                            <Form.Item
+                              label={<div style={{ width: 35 }}>From</div>}
+                              name="from"
+                              labelAlign="left"
+                            >
+                              <Select
+                                placeholder="Search email integration"
+                                virtual
+                                style={{ maxWidth: 334.99 }}
+                                options={emailIntegrationOptions}
+                              />
+                            </Form.Item>
+                          </div>
                           <div className="w-[400px]">
                             <Form.Item
                               label={<div style={{ width: 35 }}> To</div>}
@@ -544,7 +560,11 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                             >
                               <Select disabled placeholder="Customer Email" />
                             </Form.Item>
-                            {enableCC ? (
+                          </div>
+                        </div>
+                        <div className="flex flex-1 flex-col">
+                          {enableCC ? (
+                            <div className="min-w-[300px] max-w-[400px]">
                               <Form.Item
                                 label={<div style={{ width: 35 }}> CC</div>}
                                 name="CC"
@@ -571,10 +591,12 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                                   placeholder="Type CC email..."
                                 ></Select.Tags>
                               </Form.Item>
-                            ) : (
-                              <></>
-                            )}
-                            {enableCC ? (
+                            </div>
+                          ) : (
+                            <></>
+                          )}
+                          {enableCC ? (
+                            <div className="min-w-[300px] max-w-[400px]">
                               <Form.Item
                                 label={<div style={{ width: 35 }}> BCC</div>}
                                 name="BCC"
@@ -601,34 +623,22 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                                   placeholder="Type BCC email..."
                                 ></Select.Tags>
                               </Form.Item>
-                            ) : (
-                              <></>
-                            )}
-                          </div>
-                          <div>
-                            <span
-                              className="link"
-                              onClick={() => {
-                                setEnableCC(!enableCC);
-                              }}
-                            >
-                              CC/BCC
-                            </span>
-                          </div>
+                            </div>
+                          ) : (
+                            <></>
+                          )}
                         </div>
-
-                        <Form.Item name="tags" label="Tags" className="flex-1">
-                          <AntSelect
-                            placeholder="Add tags"
-                            mode="tags"
-                            options={tags.map((item: Tag) => ({
-                              value: item.name,
-                              label: item.name,
-                            }))}
-                          />
-                        </Form.Item>
                       </div>
-
+                      <div>
+                        <span
+                          className="link mb-5 inline-block"
+                          onClick={() => {
+                            setEnableCC(!enableCC);
+                          }}
+                        >
+                          CC/BCC
+                        </span>
+                      </div>
                       <Form.Item
                         name="content"
                         rules={[
@@ -641,6 +651,10 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                         <TextEditorTicket
                           form={form}
                           files={files}
+                          disabled={
+                            form.getFieldValue("status") ===
+                            StatusTicket.RESOLVED
+                          }
                           setFiles={setFiles}
                           setIsChanged={setIsChanged}
                           setLoadingButton={setLoadingButton}

@@ -12,7 +12,7 @@ enum RadioButtonValue {
 }
 
 const RegisterStepsTwo = ({ nextStep }: RegisterStepsTwoProps) => {
-  const { getSubDomain } = useSubdomain();
+  const { getSubDomain, getDomainStandalone } = useSubdomain();
   const TitleCard = () => {
     return (
       <Text variant="headingXl" as="h1">
@@ -45,7 +45,7 @@ const RegisterStepsTwo = ({ nextStep }: RegisterStepsTwoProps) => {
         >
           <div className="mb-2">
             <Text as="h4" variant="bodyLg" fontWeight="bold">
-              support@{getSubDomain()}.moosedesk.com
+              {getSubDomain()}@email{getDomainStandalone()}
             </Text>
           </div>
           <Text as="p" variant="bodyMd">
