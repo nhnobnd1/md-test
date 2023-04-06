@@ -23,7 +23,6 @@ export const CardStatistic = ({
   screen,
   ...props
 }: CardStatisticProps) => {
-  console.log({ status });
   const navigate = useNavigate();
   return (
     <Collapse

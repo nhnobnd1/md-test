@@ -454,7 +454,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
               loadingButton
             }
             form={form}
-            layout="inline"
+            layout="horizontal"
             initialValues={initialValues}
             enableLoadForm
             enableReinitialize
@@ -479,7 +479,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                   />
                 </Form.Item>
               </div>
-              <div className="flex gap-4 justify-between items-center w-full mb-6">
+              <div className="flex gap-4 justify-between items-center w-full mb-6 flex-wrap">
                 <Form.Item
                   labelAlign="left"
                   label={<span style={{ width: 50 }}>Priority</span>}
@@ -498,7 +498,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                   labelAlign="left"
                 >
                   <AntSelect
-                    className="max-w-[300px]"
+                    className="w-[300px]"
                     placeholder="Add tags"
                     mode="tags"
                     options={tags.map((item: Tag) => ({
@@ -651,6 +651,10 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                         <TextEditorTicket
                           form={form}
                           files={files}
+                          disabled={
+                            form.getFieldValue("status") ===
+                            StatusTicket.RESOLVED
+                          }
                           setFiles={setFiles}
                           setIsChanged={setIsChanged}
                           setLoadingButton={setLoadingButton}
