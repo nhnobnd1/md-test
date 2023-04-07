@@ -1,16 +1,18 @@
-import { useJob, useNavigate } from "@moose-desk/core";
+import { useNavigate } from "@moose-desk/core";
 import { formatTimeDDMMYY } from "@moose-desk/core/helper/format";
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import { Customer, CustomerRepository } from "@moose-desk/repo";
 import { message } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import classNames from "classnames";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { map } from "rxjs";
+import { useCallback, useMemo, useState } from "react";
+import { useQuery } from "react-query";
+import { from } from "rxjs";
 import { MDSearchInput } from "src/components/UI/MDSearchInput";
 import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
 import env from "src/core/env";
+import { QUERY_KEY } from "src/modules/customer/helper/constant";
 import {
   ListTicketCustomerFilter,
   TicketCustomerResponse,
@@ -24,7 +26,6 @@ interface IProps {
 export const ListTicketCustomer = ({ customerId }: IProps) => {
   const navigate = useNavigate();
   const [querySearch, setQuerySearch] = useState<string>("");
-  const debounceValue: string = useDebounce(querySearch, 500);
   const [filter, setFilter] = useState<ListTicketCustomerFilter>({
     limit,
     page: 1,
@@ -32,35 +33,26 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
     sortBy: undefined,
     sortOrder: undefined,
   });
-  const [dataSource, setDataSource]: any = useState();
-  const {
-    run: fetListTicketCustomer,
-    processing,
-    cancel,
-  } = useJob((customerId: string, filter: ListTicketCustomerFilter) => {
-    return CustomerRepository()
-      .getListTicket(customerId, filter)
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            setDataSource(data);
-          } else {
-            message.error("Get data ticket customer failed");
-          }
-        })
-      );
-  });
-  useEffect(() => {
-    fetListTicketCustomer(customerId, { ...filter, query: debounceValue });
-    return () => {
-      cancel();
-    };
-  }, [customerId, filter, debounceValue]);
-  const memoDataSource = useMemo(() => {
-    const data = dataSource?.data;
-    return data;
-  }, [dataSource]);
+  const debounceValue: string = useDebounce(querySearch, 500);
+  const getListTicketCustomerFn = from(
+    CustomerRepository().getListTicket(customerId, {
+      ...filter,
+      query: debounceValue,
+    })
+  );
 
+  const { data: dataSource, isFetching: isFetchingListTicket } = useQuery(
+    [QUERY_KEY.LIST_TICKET_CUSTOMER, filter, debounceValue],
+    () => getListTicketCustomerFn.toPromise(),
+    {
+      onError: () => {
+        message.error("Get data ticket customer failed");
+      },
+    }
+  );
+  const memoDataSource = useMemo(() => {
+    return dataSource?.data.data;
+  }, [dataSource]);
   const columns = [
     {
       title: "Ticket title",
@@ -161,7 +153,7 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
           rowKey={(record) => record._id}
           scroll={{ x: 1024 }}
           pagination={false}
-          loading={processing}
+          loading={isFetchingListTicket}
           onChange={handleChangeTable}
           onRow={(record, _) => {
             return {
@@ -173,7 +165,7 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
         <Pagination
           className="mt-4 flex justify-end"
           currentPage={filter.page ?? 1}
-          total={dataSource?.metadata.totalCount}
+          total={dataSource?.data.metadata.totalCount}
           pageSize={filter.limit ?? env.DEFAULT_PAGE_SIZE}
           onChange={handleChangePage}
         />

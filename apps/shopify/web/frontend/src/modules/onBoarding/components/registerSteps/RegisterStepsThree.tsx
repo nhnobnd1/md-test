@@ -15,7 +15,7 @@ const RegisterStepsThree = ({
   redirectIndex,
 }: RegisterStepsThreeProps) => {
   const { user } = useAuth();
-  const { getSubDomain } = useSubdomain();
+  const { getSubDomain, getDomainStandalone } = useSubdomain();
 
   const TitleCard = () => {
     return (
@@ -50,7 +50,10 @@ const RegisterStepsThree = ({
                 Your Support Portal address:
               </Text>
               <Text fontWeight="bold" variant="bodyMd" as="p">
-                <span className="ml-4">{getSubDomain()}.moosedesk.net</span>
+                <span className="ml-4">
+                  {getSubDomain()}
+                  {getDomainStandalone()}
+                </span>
               </Text>
             </TextContainer>
           </div>
@@ -61,7 +64,7 @@ const RegisterStepsThree = ({
               </Text>
               <Text fontWeight="bold" variant="bodyMd" as="p">
                 <span className="ml-4">
-                  {getSubDomain()}@email.moosedesk.net
+                  {getSubDomain()}@email{getDomainStandalone()}
                 </span>
               </Text>
             </TextContainer>

@@ -37,7 +37,7 @@ const ModalFilter = ({
     });
     return optionsTag;
   }, [tags]);
-  const customersTag = useMemo(() => {
+  const customersOptions = useMemo(() => {
     const customersOption = customers.map((item: Customer) => {
       return {
         label: `${item.firstName} ${item.lastName} - ${item.email}`,
@@ -64,7 +64,7 @@ const ModalFilter = ({
       <div className="pt-4">
         <Form layout="vertical" enableReinitialize form={form}>
           <Form.Item label="Customer" name="customer">
-            <Select options={customersTag} />
+            <Select options={customersOptions} />
           </Form.Item>
           <Form.Item label="Tags" name="tags">
             <Select mode="multiple" options={tagsOptions} />

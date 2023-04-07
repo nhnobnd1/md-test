@@ -32,9 +32,9 @@ export default function IndexAccountManager({ props }: any) {
       if (subDomain) {
         switch (mode) {
           case "development":
-            return `https://${subDomain.toLocaleLowerCase()}-dev.moosedesk.net/signup`;
-          case "staging":
             return `https://${subDomain.toLocaleLowerCase()}.moosedesk.net/signup`;
+          case "staging":
+            return `https://${subDomain.toLocaleLowerCase()}.moosedesk.com/signup`;
           case "production":
             return `https://${subDomain.toLocaleLowerCase()}.moosedesk.com/signup`;
           default:

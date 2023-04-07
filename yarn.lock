@@ -1376,6 +1376,13 @@
   dependencies:
     "@iconify/types" "*"
 
+"@iconify-json/ic@^1.1.13":
+  version "1.1.13"
+  resolved "https://registry.yarnpkg.com/@iconify-json/ic/-/ic-1.1.13.tgz#f5405e6ec65c1ac5b85e2d1ea1adde9093b199bd"
+  integrity sha512-5i5zal/VRwTrs99iMTnG1Zu97bgX9Mkiu9TzR1U1rHBylUnBW+HkOweoQVEPgQITGG024/lNbZxU+3Aa2xuDww==
+  dependencies:
+    "@iconify/types" "*"
+
 "@iconify-json/iconoir@^1.1.23":
   version "1.1.23"
   resolved "https://registry.npmjs.org/@iconify-json/iconoir/-/iconoir-1.1.23.tgz"
@@ -1788,6 +1795,24 @@
     emoji-regex "^8.0.0"
     queue "^6.0.1"
 
+"@react-pdf/layout@^3.6.0":
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/@react-pdf/layout/-/layout-3.6.0.tgz#799101f95cb12a76f289cf0c4297a9e61285662a"
+  integrity sha512-xrcVWxtXpobW0iqTd8OmMCVMmeGUM46PYq7B1MGR1fI1QG/EKe4HzFdhSdd0werZYj+t1TRC8+tVSX5POs5SYA==
+  dependencies:
+    "@babel/runtime" "^7.20.13"
+    "@react-pdf/fns" "2.0.1"
+    "@react-pdf/image" "^2.2.1"
+    "@react-pdf/pdfkit" "^3.0.2"
+    "@react-pdf/primitives" "^3.0.0"
+    "@react-pdf/stylesheet" "^4.1.5"
+    "@react-pdf/textkit" "^4.2.0"
+    "@react-pdf/types" "^2.3.1"
+    "@react-pdf/yoga" "^4.1.2"
+    cross-fetch "^3.1.5"
+    emoji-regex "^10.2.1"
+    queue "^6.0.1"
+
 "@react-pdf/pdfkit@^3.0.2":
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/@react-pdf/pdfkit/-/pdfkit-3.0.2.tgz#6ec17f416f464d86c06c0b0d8a76ea9acdff9ddb"
@@ -1836,6 +1861,24 @@
     "@babel/runtime" "^7.20.13"
     "@react-pdf/font" "^2.3.4"
     "@react-pdf/layout" "^3.5.1"
+    "@react-pdf/pdfkit" "^3.0.2"
+    "@react-pdf/primitives" "^3.0.0"
+    "@react-pdf/render" "^3.2.4"
+    "@react-pdf/types" "^2.3.1"
+    events "^3.3.0"
+    object-assign "^4.1.1"
+    prop-types "^15.6.2"
+    queue "^6.0.1"
+    scheduler "^0.17.0"
+
+"@react-pdf/renderer@^3.1.9":
+  version "3.1.9"
+  resolved "https://registry.yarnpkg.com/@react-pdf/renderer/-/renderer-3.1.9.tgz#886bfb0b6263d96303adcf8ea63ee776ff0ef4ad"
+  integrity sha512-kfEH7O+Jy7aihbUqrT9Ej1gx8/twRWvFMfHlACr29QsN+s+w0XzWpHCvbjkinVFABYcvsenluiirik6mf4qwRQ==
+  dependencies:
+    "@babel/runtime" "^7.20.13"
+    "@react-pdf/font" "^2.3.4"
+    "@react-pdf/layout" "^3.6.0"
     "@react-pdf/pdfkit" "^3.0.2"
     "@react-pdf/primitives" "^3.0.0"
     "@react-pdf/render" "^3.2.4"
@@ -4799,6 +4842,11 @@ electron-to-chromium@^1.4.284:
   version "1.4.320"
   resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.4.320.tgz"
   integrity sha512-h70iRscrNluMZPVICXYl5SSB+rBKo22XfuIS1ER0OQxQZpKTnFpuS6coj7wY9M/3trv7OR88rRMOlKmRvDty7Q==
+
+emoji-regex@^10.2.1:
+  version "10.2.1"
+  resolved "https://registry.yarnpkg.com/emoji-regex/-/emoji-regex-10.2.1.tgz#a41c330d957191efd3d9dfe6e1e8e1e9ab048b3f"
+  integrity sha512-97g6QgOk8zlDRdgq1WxwgTMgEWGVAQvB5Fdpgc1MkNy56la5SKP9GsMXKDOdqwn90/41a8yPwIGk1Y6WVbeMQA==
 
 emoji-regex@^8.0.0:
   version "8.0.0"

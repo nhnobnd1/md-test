@@ -174,24 +174,21 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       );
   });
 
-  const { run: fetchConversation } = useJob(
-    (id: string) => {
-      return TicketRepository()
-        .getConversations(id)
-        .pipe(
-          map(({ data }) => {
-            setConversations((previous) => [
-              ...previous,
-              { id, conversations: data.data },
-            ]);
-          }),
-          catchError((err) => {
-            return of(err);
-          })
-        );
-    },
-    { showLoading: false }
-  );
+  const { run: fetchConversation } = useJob((id: string) => {
+    return TicketRepository()
+      .getConversations(id)
+      .pipe(
+        map(({ data }) => {
+          setConversations((previous) => [
+            ...previous,
+            { id, conversations: data.data },
+          ]);
+        }),
+        catchError((err) => {
+          return of(err);
+        })
+      );
+  });
 
   const { run: getListAgentApi } = useJob((payload: GetListAgentRequest) => {
     return AgentRepository()
@@ -358,27 +355,24 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         })
       );
   });
-  const { run: updateTicketApi } = useJob(
-    (data: UpdateTicket) => {
-      return TicketRepository()
-        .update(data)
-        .pipe(
-          map(({ data }) => {
-            // console.log("update ticket success", data);
-            if (data.statusCode === 200) {
-              getStatisticTicket();
-              message.success("Updated tickets successfully");
-            }
-          }),
-          catchError((err) => {
-            message.error("Updated tickets fail");
+  const { run: updateTicketApi } = useJob((data: UpdateTicket) => {
+    return TicketRepository()
+      .update(data)
+      .pipe(
+        map(({ data }) => {
+          // console.log("update ticket success", data);
+          if (data.statusCode === 200) {
+            getStatisticTicket();
+            message.success("Updated tickets successfully");
+          }
+        }),
+        catchError((err) => {
+          message.error("Updated tickets fail");
 
-            return of(err);
-          })
-        );
-    },
-    { showLoading: false }
-  );
+          return of(err);
+        })
+      );
+  });
 
   const onPagination = useCallback(
     ({ page, limit }: { page: number; limit: number }) => {
@@ -454,6 +448,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     // getListTicketApi(filterData);
     // closeFilterModal();
     setFilterObject(null);
+    // closeFilterModal();
   }, [filterData]);
   const handleApply = (values: any) => {
     getListTicketFilter({
