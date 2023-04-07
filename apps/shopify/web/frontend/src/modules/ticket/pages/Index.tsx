@@ -553,10 +553,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   return (
     <Page
       title="Ticket"
-      // primaryAction={{
-      //   content: "Create New Ticket",
-      //   onAction: () => navigate(generatePath(TicketRoutePaths.Create)),
-      // }}
       primaryAction={
         <div className="flex gap-2">
           <div className="min-w-[300px] flex-1">
@@ -564,7 +560,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
               queryValue={filterData.query}
               onQueryChange={handleFiltersQueryChange}
               onQueryClear={handleQueryValueRemove}
-              queryPlaceholder="Search"
+              queryPlaceholder="Search ticket"
               filters={[]}
               onClearAll={resetFilterData}
             ></Filters>
