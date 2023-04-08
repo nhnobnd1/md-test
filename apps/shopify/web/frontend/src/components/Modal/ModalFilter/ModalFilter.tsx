@@ -1,3 +1,4 @@
+import { useNavigate } from "@moose-desk/core";
 import {
   Customer,
   Tag,
@@ -31,6 +32,7 @@ export const ModalFilter: FC<ModalFilterProps> = ({
 }) => {
   const [active, setActive] = useState(false);
   const formRef = useRef<FormikProps<any>>(null);
+  const navigate = useNavigate();
 
   const tagsOptions = useMemo(() => {
     const optionsTag = tags.map((item: Tag) => {
@@ -85,6 +87,7 @@ export const ModalFilter: FC<ModalFilterProps> = ({
               content: "Reset",
               onAction: () => {
                 // handleChange();
+                navigate(location.pathname, {});
                 handleResetModal();
                 formRef.current?.resetForm();
               },

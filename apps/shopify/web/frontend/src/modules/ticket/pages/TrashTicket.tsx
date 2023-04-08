@@ -3,14 +3,20 @@ import {
   upperCaseFirst,
   useJob,
   useNavigate,
+  useToggle,
 } from "@moose-desk/core";
 import {
+  BaseDeleteList,
+  GetListTagRequest,
   GetListTicketRequest,
+  Tag,
+  TagRepository,
   Ticket,
   TicketRepository,
   TicketStatistic,
 } from "@moose-desk/repo";
 import {
+  ButtonGroup,
   EmptySearchResult,
   Filters,
   IndexTable,
@@ -23,21 +29,50 @@ import {
 import { FC, useCallback, useEffect, useState } from "react";
 import { map } from "rxjs";
 
+import { ButtonSort } from "src/components/Button/ButtonSort";
 import { Pagination } from "src/components/Pagination";
 import env from "src/core/env";
+import { SortOrderOptions } from "src/models/Form";
+import { ButtonTrashTicket } from "src/modules/ticket/components/ButtonTrashTicket";
 import CardStatistic from "src/modules/ticket/components/CardStatistic/CardStatistic";
+import { optionsSort } from "src/modules/ticket/constant";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
-
+import CancelIcon from "~icons/mdi/cancel";
+import RestoreIcon from "~icons/mdi/restore";
 interface TrashTicketProps {}
 
 const TrashTicket: FC<TrashTicketProps> = () => {
   const navigate = useNavigate();
   const [tickets, setTickets] = useState<Ticket[]>([]);
-
+  const [tags, setTags] = useState<Tag[]>([]);
+  const {
+    state: btnSort,
+    toggle: toggleBtnSort,
+    off: closeBtnSort,
+  } = useToggle();
+  const [sortValue, setSortValue] = useState<string[]>([]);
   const defaultFilter: () => any = () => ({
     page: 1,
     limit: env.DEFAULT_PAGE_SIZE,
   });
+  const [filterData, setFilterData] = useState<GetListTicketRequest>(
+    defaultFilter()
+  );
+  const handleSort = useCallback(
+    (selected: string[]) => {
+      console.log({ selected });
+      const arraySort = selected[0].split(":");
+      const sortBy = arraySort[0];
+      const sortOrder = arraySort[1] === SortOrderOptions.ACS ? 1 : -1;
+      setSortValue(selected);
+
+      setFilterData((value: any) => {
+        return { ...value, sortBy, sortOrder };
+      });
+    },
+    [filterData]
+  );
+
   const {
     selectedResources,
     allResourcesSelected,
@@ -56,9 +91,6 @@ const TrashTicket: FC<TrashTicketProps> = () => {
   });
   const [meta, setMeta] = useState<any>();
 
-  const [filterData, setFilterData] = useState<GetListTicketRequest>(
-    defaultFilter()
-  );
   const handleFiltersQueryChange = useCallback((queryValue: string) => {
     setFilterData((old: any) => {
       return {
@@ -75,6 +107,59 @@ const TrashTicket: FC<TrashTicketProps> = () => {
       };
     });
   }, []);
+  const { run: getListTagApi } = useJob((payload: GetListTagRequest) => {
+    return TagRepository()
+      .getList(payload)
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            const tags = data.data.map((item: Tag) => ({
+              ...item,
+              id: item._id,
+            }));
+            setTags((prevTags) => {
+              return [...prevTags, ...tags];
+            });
+
+            if (data.metadata.totalPage > (payload.page as number)) {
+              getListTagApi({
+                page: (payload.page as number) + 1,
+                limit: payload.limit,
+              });
+            }
+          } else {
+            // message.error("Get data ticket failed");
+          }
+        })
+      );
+  });
+  const { run: restoreTicketApi } = useJob((payload: BaseDeleteList) => {
+    return TicketRepository()
+      .restore(payload)
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            getListTrashApi(filterData);
+            getStatisticTicket();
+          } else {
+            // message.error("Get data ticket failed");
+          }
+        })
+      );
+  });
+  const { run: getStatisticTicket } = useJob(() => {
+    return TicketRepository()
+      .getStatistic()
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            setStatistic(data);
+          } else {
+            // message.error("Get data ticket failed");
+          }
+        })
+      );
+  });
   const { run: getListTrashApi, processing: loadingList } = useJob(
     (payload: GetListTicketRequest) => {
       return TicketRepository()
@@ -95,6 +180,30 @@ const TrashTicket: FC<TrashTicketProps> = () => {
         );
     }
   );
+  const { run: forceDeleteApi } = useJob((payload: BaseDeleteList) => {
+    return TicketRepository()
+      .deletePermanently(payload)
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            getListTrashApi(filterData);
+            getStatisticTicket();
+          } else {
+            // message.error("Get data ticket failed");
+          }
+        })
+      );
+  });
+  const handleRestore = (ids: string[]): void => {
+    restoreTicketApi({
+      ids,
+    });
+  };
+  const handleDelete = (ids: string[]) => {
+    forceDeleteApi({
+      ids,
+    });
+  };
   const rowMarkup = tickets.map(
     (
       {
@@ -152,14 +261,44 @@ const TrashTicket: FC<TrashTicketProps> = () => {
         <IndexTable.Cell>
           {createdDatetimeFormat(updatedDatetime)}
         </IndexTable.Cell>
-        <IndexTable.Cell></IndexTable.Cell>
+        <IndexTable.Cell>
+          <ButtonGroup>
+            <div className="flex gap-2 ">
+              <ButtonTrashTicket
+                title="Are you sure that you want to restore this ticket"
+                content="This ticket will be moved back to the Ticket list. You can continue working with it."
+                action={() => {
+                  handleRestore([_id]);
+                }}
+                primaryContent="Restore"
+                icon={<RestoreIcon fontSize={16} />}
+              />
+              <ButtonTrashTicket
+                title="Are you sure that you want to permanently remove this ticket?"
+                content="This ticket will be remove permanently. This action cannot be undone."
+                action={() => {
+                  handleDelete([_id]);
+                }}
+                primaryContent="Remove"
+                icon={<CancelIcon fontSize={16} />}
+              />
+            </div>
+          </ButtonGroup>
+        </IndexTable.Cell>
       </IndexTable.Row>
     )
   );
   const resetFilterData = useCallback(() => {
     setFilterData(defaultFilter());
   }, []);
-  const handleApply = () => {};
+
+  useEffect(() => {
+    getListTagApi({
+      page: 1,
+      limit: 500,
+    });
+    getStatisticTicket();
+  }, []);
   useEffect(() => {
     getListTrashApi(filterData);
   }, [filterData]);
@@ -183,12 +322,52 @@ const TrashTicket: FC<TrashTicketProps> = () => {
       }
     >
       <LegacyCard sectioned>
+        <div className="grid grid-cols-5 gap-6 mb-6">
+          <div className="flex justify-end"></div>
+          <div
+            className={`col-span-3 col-start-2 flex gap-3 ${
+              selectedResources?.length ? "block" : "hidden"
+            }`}
+          >
+            <ButtonTrashTicket
+              title="Are you sure that you want to restore this ticket"
+              content="This ticket will be moved back to the Ticket list. You can continue working with it."
+              action={() => {
+                handleRestore(selectedResources);
+              }}
+              primaryContent="Restore"
+              text="Restore Selected"
+              icon={<RestoreIcon fontSize={16} />}
+            />
+            <ButtonTrashTicket
+              title="Are you sure that you want to restore this ticket"
+              content="This ticket will be moved back to the Ticket list. You can continue working with it."
+              action={() => {
+                handleRestore(selectedResources);
+              }}
+              primaryContent="Remove"
+              text="Deleted Selected"
+              icon={<CancelIcon fontSize={16} />}
+            />
+          </div>
+
+          <div className="pl-2 col-span-1 col-start-5 flex justify-end">
+            <ButtonSort
+              active={btnSort}
+              sortValue={sortValue}
+              onSort={handleSort}
+              onShow={toggleBtnSort}
+              onClose={closeBtnSort}
+              options={optionsSort}
+            />
+          </div>
+        </div>
         <div className="grid grid-cols-5 gap-6">
           <div className="col-span-1">
             <CardStatistic
               className="mb-4"
-              handleApply={handleApply}
-              screen="ListTicket"
+              // handleApply={handleApply}
+              screen="Trash"
               title="Public Views"
               options={[
                 { label: "New", value: `${statistic?.data.NEW}` },
