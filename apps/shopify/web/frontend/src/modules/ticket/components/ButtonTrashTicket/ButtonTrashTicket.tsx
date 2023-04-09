@@ -1,20 +1,31 @@
 import { Button, Modal, TextContainer } from "@shopify/polaris";
-import { useCallback, useState } from "react";
-import RemoveIcon from "~icons/material-symbols/delete-outline";
+import { ReactElement, useCallback, useState } from "react";
 
 export interface ModalDelete {
-  handleDeleteSelected: () => void;
+  action: () => void;
+  text?: string;
+  icon: ReactElement;
+  title: string;
+  content: string;
+  primaryContent: string;
 }
-export const ModalDeleteTicket = ({ handleDeleteSelected }: ModalDelete) => {
+export const ButtonTrashTicket = ({
+  action,
+  text,
+  icon,
+  title,
+  content,
+  primaryContent,
+}: ModalDelete) => {
   const [active, setActive] = useState(false);
   const activator = (
     <Button
       onClick={() => {
         setActive(true);
       }}
-      icon={<RemoveIcon fontSize={20} />}
+      icon={icon}
     >
-      Remove Selected
+      {text}
     </Button>
   );
   const handleChange = useCallback(() => setActive(!active), [active]);
@@ -23,14 +34,14 @@ export const ModalDeleteTicket = ({ handleDeleteSelected }: ModalDelete) => {
       open={active}
       activator={activator}
       onClose={handleChange}
-      title="Are you sure that you want to remove these tickets ?"
+      title={title}
       primaryAction={{
-        content: "Remove",
+        content: primaryContent,
         onAction: () => {
           handleChange();
-          handleDeleteSelected();
+          action();
         },
-        destructive: true,
+        destructive: primaryContent === "Remove",
       }}
       secondaryActions={[
         {
@@ -40,12 +51,9 @@ export const ModalDeleteTicket = ({ handleDeleteSelected }: ModalDelete) => {
       ]}
     >
       <Modal.Section>
-        <TextContainer>
-          These tickets will be moved to Trash. You can no longer access to
-          these tickets
-        </TextContainer>
+        <TextContainer>{content}</TextContainer>
       </Modal.Section>
     </Modal>
   );
 };
-export default ModalDeleteTicket;
+export default ButtonTrashTicket;

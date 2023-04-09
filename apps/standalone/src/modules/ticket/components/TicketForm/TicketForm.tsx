@@ -9,7 +9,6 @@ import {
   CustomerRepository,
   EmailIntegration,
   EmailIntegrationRepository,
-  Tag,
   TagRepository,
   TicketRepository,
   priorityOptions,
@@ -25,7 +24,6 @@ import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 // import AutocompleteLoadMore from "src/modules/ticket/components/AutocompleteMore";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
-import { useStore } from "src/providers/StoreProviders";
 
 interface TicketFormProps {
   primaryEmail?: EmailIntegration;
@@ -44,15 +42,13 @@ const validateCCEmail = (value: string[]): boolean => {
   return checked;
 };
 
-export const TicketForm = ({ ...props }: TicketFormProps) => {
+export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
   const [enableCC, setEnableCC] = useState(false);
-  const { storeId } = useStore();
-  const [tagsCreated, setTagsCreated] = useState<Tag[] | []>([]);
   const message = useMessage();
   const notification = useNotification();
   const navigate = useNavigate();
   const initialValues = props.initialValues;
-  const [fromEmail, setFromEmail] = useState(props.primaryEmail);
+  const [fromEmail, setFromEmail] = useState(primaryEmail);
   const [toEmail, setToEmail] = useState({ value: "", id: "" });
   const [form] = Form.useForm();
   const [files, setFiles] = useState<any>([]);
@@ -183,62 +179,39 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
     [EmailIntegrationRepository]
   );
 
-  const { run: createTag } = useJob(
-    (dataSubmit: any) => {
-      return TagRepository()
-        .create(dataSubmit)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              setTagsCreated([...tagsCreated, data.data]);
-            }
-          }),
-          catchError((err) => {
-            return of(err);
-          })
-        );
-    },
-    { showLoading: false }
-  );
-
-  const { run: CreateTicket } = useJob(
-    (dataSubmit: any) => {
-      message.loading.show("Creating Ticket!");
-      return TicketRepository()
-        .create(dataSubmit)
-        .pipe(
-          map(({ data }) => {
-            message.loading.hide();
-            if (data.statusCode === 200) {
-              notification.success("Ticket has been created successfully.");
-              // navigate()
-              navigate(
-                generatePath(TicketRoutePaths.Detail, { id: data.data._id })
-              );
-            } else {
-              if (data.statusCode === 409) {
-                notification.error(
-                  `Ticket is ${dataSubmit.email} already exists.`
-                );
-              }
-            }
-          }),
-          catchError((err) => {
-            message.loading.hide();
-            const errorCode = err.response.status;
-            if (errorCode === 409) {
+  const { run: CreateTicket } = useJob((dataSubmit: any) => {
+    message.loading.show("Creating Ticket!");
+    return TicketRepository()
+      .create(dataSubmit)
+      .pipe(
+        map(({ data }) => {
+          message.loading.hide();
+          if (data.statusCode === 200) {
+            notification.success("Ticket has been created successfully.");
+            // navigate()
+            navigate(
+              generatePath(TicketRoutePaths.Detail, { id: data.data._id })
+            );
+          } else {
+            if (data.statusCode === 409) {
               notification.error(
-                `Email is ${dataSubmit.email} already exists.`
+                `Ticket is ${dataSubmit.email} already exists.`
               );
-            } else {
-              notification.error("Customer Profile has been created failed.");
             }
-            return of(err);
-          })
-        );
-    },
-    { showLoading: false }
-  );
+          }
+        }),
+        catchError((err) => {
+          message.loading.hide();
+          const errorCode = err.response.status;
+          if (errorCode === 409) {
+            notification.error(`Email is ${dataSubmit.email} already exists.`);
+          } else {
+            notification.error("Customer Profile has been created failed.");
+          }
+          return of(err);
+        })
+      );
+  });
 
   const handleChangeForm = useCallback((changedValue) => {
     // console.log('asdasd',changedValue.);
@@ -269,15 +242,6 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
     };
     CreateTicket(dataCreate);
   };
-
-  // const onChangeTag = (value: string) => {
-  //   const idsTagCreated = tagsCreated.map((item) => item.name);
-  //   for (const item of value) {
-  //     if (!objectIdRegex.test(item) && !idsTagCreated.includes(item)) {
-  //       createTag({ name: item, storeId });
-  //     }
-  //   }
-  // };
 
   const onChangeEmailItegration = (value: string, options: any) => {
     setFromEmail(options.obj);

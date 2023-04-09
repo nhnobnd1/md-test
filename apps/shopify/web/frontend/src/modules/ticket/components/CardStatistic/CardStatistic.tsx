@@ -4,8 +4,8 @@ import { CaretDownMinor } from "@shopify/polaris-icons";
 import { Option } from "src/models/Form";
 
 import { StatusTicket } from "@moose-desk/repo";
-import "./CardStatistic.scss";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
+import "./CardStatistic.scss";
 
 interface CardStatisticProps {
   options: Option[];
@@ -49,7 +49,10 @@ const CardStatistic = ({
             >
               <div
                 className={`label  cursor-pointer hover:underline hover:text-blue-500 ${
-                  item.label.toUpperCase() === status ? "font-bold" : ""
+                  item.label.toUpperCase() === status ||
+                  (screen === "Trash" && item.label === "Trash")
+                    ? "font-bold"
+                    : ""
                 }`}
                 onClick={() => {
                   if (item.label === "Trash" && screen === "ListTicket") {
@@ -110,7 +113,10 @@ const CardStatistic = ({
               </div>
               <div
                 className={`value ${
-                  item.label.toUpperCase() === status ? "font-bold" : ""
+                  item.label.toUpperCase() === status ||
+                  (screen === "Trash" && item.label === "Trash")
+                    ? "font-bold"
+                    : ""
                 }`}
               >
                 {item.value}

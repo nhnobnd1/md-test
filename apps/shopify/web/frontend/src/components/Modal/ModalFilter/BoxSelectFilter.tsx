@@ -6,7 +6,7 @@ interface Data {
 }
 interface BoxSelectAutoReplyProps {
   placeholder?: string;
-  label?: string;
+  label?: any;
   value?: string;
   error?: string;
   onChange?: (value: any) => void;
@@ -97,7 +97,7 @@ const BoxSelectFilter = (props: BoxSelectAutoReplyProps) => {
       activator={
         <Combobox.TextField
           onChange={updateText}
-          label={<div className="mb-3">{props.label}</div>}
+          label={props.label}
           labelHidden={!props.label}
           value={inputValue}
           //   placeholder=""

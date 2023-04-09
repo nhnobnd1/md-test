@@ -1,8 +1,8 @@
 import { Choice, SortOrderOptions } from "src/models/Form";
 
 export const optionsSort: Choice[] = [
-  { label: "Ticket title A-Z", value: `title:${SortOrderOptions.ACS}` },
-  { label: "Ticket title Z-A", value: `title:${SortOrderOptions.DES}` },
+  { label: "Ticket title A-Z", value: `subject:${SortOrderOptions.ACS}` },
+  { label: "Ticket title Z-A", value: `subject:${SortOrderOptions.DES}` },
   {
     label: "Customer A-Z",
     value: `customer:${SortOrderOptions.ACS}`,
@@ -13,11 +13,11 @@ export const optionsSort: Choice[] = [
   },
   {
     label: "Tags A-Z",
-    value: `tag:${SortOrderOptions.ACS}`,
+    value: `tags:${SortOrderOptions.ACS}`,
   },
   {
     label: "Tags Z-A",
-    value: `tag:${SortOrderOptions.DES}`,
+    value: `tags:${SortOrderOptions.DES}`,
   },
   {
     label: "Priority A-Z",
@@ -29,10 +29,10 @@ export const optionsSort: Choice[] = [
   },
   {
     label: "Last update A-Z",
-    value: `update:${SortOrderOptions.ACS}`,
+    value: `updatedDatetime:${SortOrderOptions.ACS}`,
   },
   {
     label: "Last update Z-A",
-    value: `update:${SortOrderOptions.DES}`,
+    value: `updatedDatetime:${SortOrderOptions.DES}`,
   },
 ];

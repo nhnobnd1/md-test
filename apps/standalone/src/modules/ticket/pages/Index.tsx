@@ -450,6 +450,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     setFilterObject(null);
     // closeFilterModal();
   }, [filterData]);
+
   const handleApply = (values: any) => {
     getListTicketFilter({
       page: 1,

@@ -5,6 +5,7 @@ import {
   upperCaseFirst,
   useDidUpdate,
   useJob,
+  useLocation,
   useNavigate,
   usePrevious,
   useToggle,
@@ -13,6 +14,7 @@ import {
   Agent,
   AgentRepository,
   BaseListTicketFilterRequest,
+  Conversation,
   Customer,
   CustomerRepository,
   GetListAgentRequest,
@@ -84,7 +86,8 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     off: closeModalDelete,
   } = useToggle(false);
   const [conversations, setConversations] = useState<ItemConversation[]>([]);
-
+  const location = useLocation();
+  const [statusFromTrash, setStatusFromTrash] = useState(location.state);
   const defaultFilter: () => any = () => ({
     page: 1,
     limit: env.DEFAULT_PAGE_SIZE,
@@ -339,6 +342,12 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   });
 
   useEffect(() => {
+    if (statusFromTrash) {
+      getListTicketFilter({ ...filterData, status: statusFromTrash });
+      setStatusFromTrash("");
+      history.replaceState(null, "", window.location.href);
+      return;
+    }
     if (filterObject) {
       getListTicketFilter({ ...filterData, ...filterObject });
       return;
@@ -497,14 +506,14 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         key={ticketId}
         selected={selectedResources.includes(_id)}
         position={index}
-        onClick={() => {}}
+        // onClick={() => {}}
       >
         <IndexTable.Cell>
           <Link
             removeUnderline
             dataPrimaryLink
             onClick={() => {
-              console.log("clicked", _id);
+              navigate(generatePath(TicketRoutePaths.Detail, { id: _id }));
             }}
           >
             <Text variant="bodyMd" fontWeight="bold" as="span">
@@ -536,7 +545,11 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         <IndexTable.Cell>
           <ButtonGroup>
             <div className="flex gap-2">
-              <ButtonEdit onClick={() => {}}></ButtonEdit>
+              <ButtonEdit
+                onClick={() => {
+                  navigate(generatePath(TicketRoutePaths.Detail, { id: _id }));
+                }}
+              ></ButtonEdit>
               <ButtonDelete
                 onClick={() => handleOpenModalDelete(_id)}
                 destructive
@@ -549,22 +562,17 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       </IndexTable.Row>
     )
   );
-
   return (
     <Page
       title="Ticket"
-      // primaryAction={{
-      //   content: "Create New Ticket",
-      //   onAction: () => navigate(generatePath(TicketRoutePaths.Create)),
-      // }}
       primaryAction={
         <div className="flex gap-2">
-          <div className="min-w-[300px] flex-1">
+          <div className="flex-1">
             <Filters
               queryValue={filterData.query}
               onQueryChange={handleFiltersQueryChange}
               onQueryClear={handleQueryValueRemove}
-              queryPlaceholder="Search"
+              queryPlaceholder="Search ticket"
               filters={[]}
               onClearAll={resetFilterData}
             ></Filters>
@@ -614,9 +622,9 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
               />
 
               <div
-                className={`w-[300px] ${
+                className={`${
                   selectedResources?.length ? "block" : "hidden"
-                }`}
+                }  w-[250px]`}
               >
                 <BoxSelectFilter
                   onChange={onChangeAssignTo}
@@ -650,7 +658,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                 >
                   {({ blob, url, loading, error }) =>
                     loading ? (
-                      <>Loading....</>
+                      <Button icon={<UilImport />}>Export</Button>
                     ) : (
                       <div className="flex justify-center items-center">
                         <Button icon={<UilImport />}>Export</Button>
@@ -675,7 +683,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         <div className="grid grid-cols-5 gap-6">
           <div className="col-span-1">
             <CardStatistic
-              status={filterObject?.status}
+              status={filterObject?.status || location.state}
               className="mb-4"
               handleApply={handleApply}
               screen="ListTicket"
@@ -696,6 +704,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
               selectedItemsCount={
                 allResourcesSelected ? "All" : selectedResources?.length
               }
+              // lastColumnSticky
               onSelectionChange={handleSelectionChange}
               loading={loadingList}
               emptyState={

@@ -300,6 +300,7 @@ export default function CustomerIndexPage() {
               { title: "Customer name" },
               { title: "Email address" },
               { title: "Number of tickets" },
+              { title: "Action" },
             ]}
             hasMoreItems
             loading={loadCustomer}

@@ -1,3 +1,4 @@
+import { emailRegex } from "@moose-desk/core";
 import { Combobox, LegacyStack, Listbox, Tag } from "@shopify/polaris";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 interface Data {
@@ -14,7 +15,7 @@ interface BoxSelectAutoReplyProps {
   data: Data[];
 }
 
-const SelectAddTag = (props: BoxSelectAutoReplyProps) => {
+const SelectAddEmail = (props: BoxSelectAutoReplyProps) => {
   const deselectedOptions = useMemo(() => {
     return props.data;
   }, [props.data]);
@@ -65,8 +66,7 @@ const SelectAddTag = (props: BoxSelectAutoReplyProps) => {
   );
   const handleKeyPress = (event: any) => {
     const enterKeyPressed = event.keyCode === 13;
-
-    if (enterKeyPressed && inputValue) {
+    if (enterKeyPressed && emailRegex.test(inputValue)) {
       setSelectedTags((previousTags) => {
         if (previousTags.includes(inputValue)) return previousTags;
         return [...previousTags, inputValue];
@@ -146,4 +146,4 @@ const SelectAddTag = (props: BoxSelectAutoReplyProps) => {
   );
 };
 
-export default memo(SelectAddTag);
+export default memo(SelectAddEmail);

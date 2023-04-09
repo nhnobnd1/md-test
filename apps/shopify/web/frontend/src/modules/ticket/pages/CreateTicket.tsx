@@ -1,8 +1,13 @@
-import { generatePath, useMount, useToggle } from "@moose-desk/core";
-import { Priority } from "@moose-desk/repo";
-import { ContextualSaveBar, Layout, LegacyCard, Page } from "@shopify/polaris";
+import { generatePath, useJob, useMount, useToggle } from "@moose-desk/core";
+import {
+  EmailIntegration,
+  EmailIntegrationRepository,
+  Priority,
+} from "@moose-desk/repo";
+import { Layout, LegacyCard, Page } from "@shopify/polaris";
 import { FormikProps } from "formik";
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { catchError, map, of } from "rxjs";
 import { Banner } from "src/components/Banner";
 import { useBanner } from "src/hooks/useBanner";
 import { TicketForm } from "src/modules/ticket/components/TicketForm";
@@ -13,35 +18,43 @@ interface CreateTicketProps {}
 const CreateTicket = (props: CreateTicketProps) => {
   const { banner, show: showBanner, close: closeBanner } = useBanner();
   const { toggle: updateForm } = useToggle();
+
   const formRef = useRef<FormikProps<any>>(null);
+  const [primaryEmail, setPrimaryEmail] = useState<EmailIntegration>();
+
   const initialValuesForm = useMemo(() => {
     return {
+      priority: Priority.MEDIUM,
+      from: primaryEmail?._id,
+      content: "",
       to: "",
-      assignee: "3a08cb83-d4ea-69c4-f1be-a4d5970f7ebb",
-      priority: Priority.Medium,
+      subject: "",
     };
-  }, []);
+  }, [primaryEmail?._id]);
+  const { run: getPrimaryEmail } = useJob(() => {
+    return EmailIntegrationRepository()
+      .getPrimaryEmail()
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            setPrimaryEmail(data.data);
+          }
+        }),
+        catchError((err) => {
+          return of(err);
+        })
+      );
+  });
 
   useMount(() => {
     updateForm();
   });
+  useEffect(() => {
+    getPrimaryEmail();
+  }, []);
 
   return (
     <>
-      {formRef.current?.dirty && (
-        <ContextualSaveBar
-          fullWidth
-          message={"Unsaved changes"}
-          saveAction={{
-            onAction: () => formRef.current?.submitForm(),
-            disabled: !formRef.current?.dirty,
-            // loading: loadingAddGroup,
-          }}
-          discardAction={{
-            onAction: () => formRef.current?.resetForm(),
-          }}
-        />
-      )}
       <Page
         breadcrumbs={[
           { content: "Ticket", url: generatePath(TicketRoutePaths.Index) },
@@ -63,6 +76,7 @@ const CreateTicket = (props: CreateTicketProps) => {
                 initialValues={initialValuesForm}
                 enableReinitialize
                 onValuesChange={updateForm}
+                primaryEmail={primaryEmail}
               />
             </LegacyCard>
           </Layout.Section>

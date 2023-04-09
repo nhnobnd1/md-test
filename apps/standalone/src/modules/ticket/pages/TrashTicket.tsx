@@ -61,7 +61,6 @@ const TrashTicket = (props: TrashTicketProps) => {
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange,
-    // type: "checkbox",
     preserveSelectedRowKeys: true,
   };
   const onChangeTable = useCallback(
@@ -90,7 +89,7 @@ const TrashTicket = (props: TrashTicketProps) => {
         .pipe(
           map(({ data }) => {
             if (data.statusCode === 200) {
-              const tickets = data.data.map((item) => ({
+              const tickets = data.data.map((item: Ticket) => ({
                 ...item,
                 id: item._id,
               }));
@@ -135,7 +134,7 @@ const TrashTicket = (props: TrashTicketProps) => {
 
   const onPagination = useCallback(
     ({ page, limit }: { page: number; limit: number }) => {
-      setFilterData((value) => {
+      setFilterData((value: any) => {
         return {
           ...value,
           page,
@@ -158,38 +157,32 @@ const TrashTicket = (props: TrashTicketProps) => {
         })
       );
   });
-  const { run: getListTagApi, processing: loadingTags } = useJob(
-    (payload: GetListTagRequest) => {
-      return TagRepository()
-        .getList(payload)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              // let current: any = [];
-              const tags = data.data.map((item) => ({
-                ...item,
-                id: item._id,
-              }));
-              setTags((prevTags) => {
-                // current = [...prevTags, ...tags];
-                return [...prevTags, ...tags];
-              });
+  const { run: getListTagApi } = useJob((payload: GetListTagRequest) => {
+    return TagRepository()
+      .getList(payload)
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            const tags = data.data.map((item: Tag) => ({
+              ...item,
+              id: item._id,
+            }));
+            setTags((prevTags) => {
+              return [...prevTags, ...tags];
+            });
 
-              if (data.metadata.totalPage > (payload.page as number)) {
-                getListTagApi({
-                  page: (payload.page as number) + 1,
-                  limit: payload.limit,
-                });
-                // return;
-              }
-              // console.log("asdasd", current);
-            } else {
-              message.error("Get data ticket failed");
+            if (data.metadata.totalPage > (payload.page as number)) {
+              getListTagApi({
+                page: (payload.page as number) + 1,
+                limit: payload.limit,
+              });
             }
-          })
-        );
-    }
-  );
+          } else {
+            message.error("Get data ticket failed");
+          }
+        })
+      );
+  });
   const handleRestore = (ids: string[]): void => {
     restoreTicketApi({
       ids,
