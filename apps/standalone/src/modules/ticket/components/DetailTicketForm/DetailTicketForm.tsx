@@ -229,27 +229,22 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
     [AgentRepository]
   );
 
-  const { run: getTicketApi, processing } = useJob(
-    (id: string) => {
-      return TicketRepository()
-        .getOne(id)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              if (data.data.createdViaWidget || data.data.incoming) {
-                getPrimaryEmail();
-              }
-              setTicket(data.data);
-            } else {
-              message.error("Get ticket failed");
+  const { run: getTicketApi, processing } = useJob((id: string) => {
+    return TicketRepository()
+      .getOne(id)
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            if (data.data.createdViaWidget || data.data.incoming) {
+              getPrimaryEmail();
             }
-          })
-        );
-    },
-    {
-      showLoading: false,
-    }
-  );
+            setTicket(data.data);
+          } else {
+            message.error("Get ticket failed");
+          }
+        })
+      );
+  });
 
   const { run: postReplyApi } = useJob((payload: CreateReplyTicketRequest) => {
     return TicketRepository()
@@ -266,60 +261,51 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
       );
   });
 
-  const { run: getPrimaryEmail } = useJob(
-    () => {
-      return EmailIntegrationRepository()
-        .getPrimaryEmail()
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              setPrimaryEmail(data.data);
-            }
-          }),
-          catchError((err) => {
-            return of(err);
-          })
-        );
-    },
-    { showLoading: false }
-  );
-  const { run: fetchConversation } = useJob(
-    (id: string) => {
-      return TicketRepository()
-        .getConversations(id)
-        .pipe(
-          map(({ data }) => {
-            getListTagApi({
-              page: 1,
-              limit: 500,
-            });
-            setConversationList(data.data);
-          }),
-          catchError((err) => {
-            return of(err);
-          })
-        );
-    },
-    { showLoading: false }
-  );
-  const { run: updateTicketApi } = useJob(
-    (data: UpdateTicket) => {
-      return TicketRepository()
-        .update(data)
-        .pipe(
-          map(({ data }) => {
-            // console.log("update ticket success", data);
-            if (data.statusCode === 200) {
-              message.success("Update ticket successfully");
-            }
-          }),
-          catchError((err) => {
-            return of(err);
-          })
-        );
-    },
-    { showLoading: false }
-  );
+  const { run: getPrimaryEmail } = useJob(() => {
+    return EmailIntegrationRepository()
+      .getPrimaryEmail()
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            setPrimaryEmail(data.data);
+          }
+        }),
+        catchError((err) => {
+          return of(err);
+        })
+      );
+  });
+  const { run: fetchConversation } = useJob((id: string) => {
+    return TicketRepository()
+      .getConversations(id)
+      .pipe(
+        map(({ data }) => {
+          getListTagApi({
+            page: 1,
+            limit: 500,
+          });
+          setConversationList(data.data);
+        }),
+        catchError((err) => {
+          return of(err);
+        })
+      );
+  });
+  const { run: updateTicketApi } = useJob((data: UpdateTicket) => {
+    return TicketRepository()
+      .update(data)
+      .pipe(
+        map(({ data }) => {
+          // console.log("update ticket success", data);
+          if (data.statusCode === 200) {
+            message.success("Update ticket successfully");
+          }
+        }),
+        catchError((err) => {
+          return of(err);
+        })
+      );
+  });
   const { run: getListTagApi } = useJob((payload: GetListTagRequest) => {
     return TagRepository()
       .getList(payload)

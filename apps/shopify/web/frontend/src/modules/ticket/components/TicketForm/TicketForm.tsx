@@ -89,8 +89,8 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
             return {
               options: data.data.map((item) => ({
                 label: item.lastName.includes("admin")
-                  ? item.firstName
-                  : item.firstName + " " + item.lastName,
+                  ? `${item.firstName} - ${item.email}`
+                  : `${item.firstName} ${item.lastName} - ${item.email}`,
                 value: item._id,
                 obj: item,
               })),
@@ -194,7 +194,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
               });
 
               if (data.metadata.totalPage > (payload.page as number)) {
-                getListEmailIntegration({
+                getListCustomerApi({
                   page: (payload.page as number) + 1,
                   limit: payload.limit,
                 });

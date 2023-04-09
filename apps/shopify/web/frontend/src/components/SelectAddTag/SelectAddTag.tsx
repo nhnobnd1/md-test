@@ -76,11 +76,15 @@ const SelectAddTag = (props: BoxSelectAutoReplyProps) => {
   };
 
   const updateSelection = useCallback(
-    (selected) => {
+    (selected, init = false) => {
       if (selected?.length && inputValue === "") {
         setSelectedTags((previousTags) => {
           if (previousTags.includes(selected)) return previousTags;
-          return [...previousTags, selected];
+          if (init) {
+            return [...previousTags, ...selected];
+          } else {
+            return [...previousTags, selected];
+          }
         });
         setInputValue("");
         setSelectedOption("");
@@ -116,7 +120,7 @@ const SelectAddTag = (props: BoxSelectAutoReplyProps) => {
 
   useEffect(() => {
     setOptions(props.data);
-    updateSelection(props.value);
+    updateSelection(props.value, true);
   }, [props.data]);
 
   return (

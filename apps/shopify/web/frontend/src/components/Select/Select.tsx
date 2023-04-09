@@ -14,7 +14,7 @@ import {
 } from "@shopify/polaris";
 import { uniqBy } from "lodash-es";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { map, Observable } from "rxjs";
+import { Observable, map } from "rxjs";
 
 export interface SelectOptions {
   value: string | number;
