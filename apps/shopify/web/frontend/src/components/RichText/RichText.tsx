@@ -8,6 +8,9 @@ interface RichTextProps extends Omit<IAllProps, "onChange" | "value"> {
   error?: string;
   labelProps?: TextProps;
   formRef?: any;
+  setLoadingButton?: any;
+  setFiles?: any;
+  files?: any;
 }
 
 export const RichText = ({
@@ -16,6 +19,8 @@ export const RichText = ({
   error,
   labelProps,
   formRef,
+  files,
+  setLoadingButton,
   ...props
 }: RichTextProps) => {
   const editorRef = useRef<any>(null);

@@ -20,27 +20,24 @@ const CreateTicket = (props: CreateTicketProps) => {
       from: primaryEmail?._id,
       content: "",
       to: "",
-      // assignee: "3a08b18a-e690-f9ca-ff56-e7145104fb8d",
     };
   }, [primaryEmail?._id]);
 
-  const { run: getPrimaryEmail, processing } = useJob(
-    () => {
-      return EmailIntegrationRepository()
-        .getPrimaryEmail()
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              setPrimaryEmail(data.data);
-            }
-          }),
-          catchError((err) => {
-            return of(err);
-          })
-        );
-    },
-    { showLoading: false }
-  );
+  const { run: getPrimaryEmail, processing } = useJob(() => {
+    return EmailIntegrationRepository()
+      .getPrimaryEmail()
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            setPrimaryEmail(data.data);
+          }
+        }),
+        catchError((err) => {
+          return of(err);
+        })
+      );
+  });
+
   useEffect(() => {
     getPrimaryEmail();
   }, []);
