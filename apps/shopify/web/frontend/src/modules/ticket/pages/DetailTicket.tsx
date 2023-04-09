@@ -18,6 +18,7 @@ import {
   GetListAgentRequest,
   GetListCustomerRequest,
   GetListTagRequest,
+  Priority,
   StatusTicket,
   Tag,
   TagRepository,
