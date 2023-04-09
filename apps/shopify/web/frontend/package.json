@@ -30,6 +30,7 @@
     "@tinymce/tinymce-react": "^4.3.0",
     "classnames": "^2.3.2",
     "dayjs": "^1.11.5",
+    "filesize": "^10.0.7",
     "formik": "^2.2.9",
     "i18next": "^21.10.0",
     "js-file-download": "^0.4.12",

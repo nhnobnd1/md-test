@@ -409,7 +409,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       history.replaceState(null, "", window.location.href);
       return;
     }
-    console.log({ filterObject });
     if (filterObject) {
       getListTicketFilter({ ...filterData, ...filterObject });
       return;

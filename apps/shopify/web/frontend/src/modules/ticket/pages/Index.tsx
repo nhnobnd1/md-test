@@ -506,7 +506,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         key={ticketId}
         selected={selectedResources.includes(_id)}
         position={index}
-        onClick={() => {}}
+        // onClick={() => {}}
       >
         <IndexTable.Cell>
           <Link
@@ -704,6 +704,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
               selectedItemsCount={
                 allResourcesSelected ? "All" : selectedResources?.length
               }
+              // lastColumnSticky
               onSelectionChange={handleSelectionChange}
               loading={loadingList}
               emptyState={
