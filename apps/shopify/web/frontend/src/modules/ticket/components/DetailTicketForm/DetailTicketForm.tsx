@@ -1,4 +1,4 @@
-import { Priority } from "@moose-desk/repo";
+import { priorityOptions } from "@moose-desk/repo";
 import {
   Button,
   FormLayout,
@@ -30,35 +30,11 @@ export const DetailTicketForm = (props: DetailTicketFormProps) => {
     return [{ label: "Minh Thức", value: "1" }];
   }, []);
 
-  const priorityOptions = useMemo<SelectOption[]>(() => {
-    return [
-      {
-        label: "Highest",
-        value: Priority.HIGHEST,
-      },
-      {
-        label: "High",
-        value: Priority.HIGH,
-      },
-      {
-        label: "Medium",
-        value: Priority.MEDIUM,
-      },
-      {
-        label: "Low",
-        value: Priority.LOW,
-      },
-      {
-        label: "Lowest",
-        value: Priority.LOWEST,
-      },
-    ];
-  }, [Priority]);
-
   return (
     <Form
       {...props}
       initialValues={props.initialValues}
+      enableReinitialize
       validationSchema={DetailTicketFormSchema}
       onSubmit={() => {}}
     >

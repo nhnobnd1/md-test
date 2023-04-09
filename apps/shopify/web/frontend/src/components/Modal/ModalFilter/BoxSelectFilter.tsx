@@ -52,11 +52,17 @@ const BoxSelectFilter = (props: BoxSelectAutoReplyProps) => {
 
   const updateSelection = useCallback(
     (selected) => {
+      console.log({ selected });
       const matchedOption = options.find((option) => {
         return option.value === selected;
       });
       setSelectedOption(selected);
+      console.log(
+        "update input value",
+        (matchedOption && matchedOption.label) || ""
+      );
       setInputValue((matchedOption && matchedOption.label) || "");
+
       if (selected !== props.value) {
         props.onChange && props.onChange(selected);
       }
@@ -91,7 +97,7 @@ const BoxSelectFilter = (props: BoxSelectAutoReplyProps) => {
     setOptions(props.data);
     updateSelection(props.value);
   }, [props.data, props.value, props.onChange]);
-
+  console.log({ inputValue, check: props.value });
   return (
     <Combobox
       activator={
@@ -99,12 +105,10 @@ const BoxSelectFilter = (props: BoxSelectAutoReplyProps) => {
           onChange={updateText}
           label={props.label}
           labelHidden={!props.label}
-          value={inputValue}
-          //   placeholder=""
           autoComplete="off"
           error={props.error}
           {...props}
-          // onBlur={handleResetValueText}
+          value={inputValue}
         />
       }
     >

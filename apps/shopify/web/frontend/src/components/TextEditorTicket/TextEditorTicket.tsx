@@ -24,6 +24,7 @@ interface RichTextProps extends Omit<IAllProps, "onChange" | "value"> {
   setLoadingButton?: any;
   setFiles?: any;
   files?: any;
+  setIsChanged?: any;
 }
 
 export const TextEditorTicket = ({
@@ -33,6 +34,7 @@ export const TextEditorTicket = ({
   labelProps,
   formRef,
   setFiles,
+  setIsChanged,
   files,
   setLoadingButton,
   ...props
@@ -160,6 +162,9 @@ export const TextEditorTicket = ({
 
   const handleChange = (content: string) => {
     formRef.current.setFieldValue("content", content);
+    if (setIsChanged) {
+      setIsChanged(content);
+    }
   };
   const handleCloseModal = useCallback(() => {
     closeModal();
