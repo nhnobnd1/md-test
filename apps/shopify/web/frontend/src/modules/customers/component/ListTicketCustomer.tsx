@@ -3,7 +3,6 @@ import { formatTimeDDMMYY } from "@moose-desk/core/helper/format";
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import { CustomerRepository } from "@moose-desk/repo";
 import { EmptySearchResult, IndexTable } from "@shopify/polaris";
-import { message } from "antd";
 import classNames from "classnames";
 import { useEffect, useMemo, useState } from "react";
 import { map } from "rxjs";
@@ -48,7 +47,7 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
           if (data.statusCode === 200) {
             setDataSource(data);
           } else {
-            message.error("Get data ticket customer failed");
+            // message.error("Get data ticket customer failed");
           }
         })
       );
