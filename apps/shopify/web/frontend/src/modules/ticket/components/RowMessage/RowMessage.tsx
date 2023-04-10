@@ -1,11 +1,18 @@
-import { Button, Divider, Text } from "@shopify/polaris";
+import {
+  Button,
+  Collapsible,
+  Divider,
+  Text,
+  TextContainer,
+} from "@shopify/polaris";
 import axios from "axios";
 import { filesize } from "filesize";
 import parse, { Element } from "html-react-parser";
 import fileDownload from "js-file-download";
-import { FC, useMemo, useState } from "react";
+import { FC, useCallback, useMemo, useState } from "react";
 import ImageZoom from "src/components/TextEditorTicket/ImageZoom";
 import { ChatItem } from "src/modules/ticket/pages/DetailTicket";
+import CollapseIcon from "~icons/material-symbols/arrow-right";
 import UserIcon from "~icons/material-symbols/person";
 import AgentIcon from "~icons/material-symbols/support-agent-sharp";
 import QuoteIcon from "~icons/octicon/ellipsis-16";
@@ -56,6 +63,10 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
     }
     return false;
   }, [quote]);
+
+  const [open, setOpen] = useState(false);
+
+  const handleToggle = useCallback(() => setOpen((open) => !open), []);
   return (
     <div className="">
       <div className=" items-center gap-3">
@@ -108,45 +119,77 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
       )}
 
       {item.attachments?.length ? (
-        <div className="flex gap-5 overflow-scroll box-file mt-2 ">
-          {item.attachments?.map((item) => (
-            <div
-              key={item._id}
-              className="flex items-center justify-center mt-1 mb-2 box-img rounded-lg overflow-hidden"
-              style={{
-                backgroundImage: `url(${item.thumbUrl})`,
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-                height: 150,
-                width: 150,
-                backgroundSize: "cover",
-              }}
-            >
-              <div className="flex justify-center items-start gap-2 ">
-                <div title={item.name}>
-                  <div className="flex flex-col h-[150px] file-item relative justify-between">
-                    <div className="fake absolute h-[150px] w-[150px]"></div>
-                    <span className="file-name">{item.name}</span>
+        <div>
+          <Button
+            onClick={handleToggle}
+            ariaExpanded={open}
+            ariaControls="basic-collapsible"
+            fullWidth
+            textAlign="left"
+            icon={<CollapseIcon />}
+            size="medium"
+          >
+            {`${item.attachments?.length} files attached`}
+          </Button>
+          <Collapsible
+            open={open}
+            id="basic-collapsible"
+            transition={{ duration: "500ms", timingFunction: "ease-in-out" }}
+            expandOnPrint
+          >
+            <TextContainer>
+              {item.attachments?.length ? (
+                <div className="flex gap-5 overflow-scroll box-file mt-2 ">
+                  {item.attachments?.map((item) => (
+                    <div
+                      key={item._id}
+                      className="flex items-center justify-center mt-1 mb-2 box-img rounded-lg overflow-hidden"
+                      style={{
+                        backgroundImage: `url(${item.thumbUrl})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        height: 150,
+                        width: 150,
+                        backgroundSize: "cover",
+                      }}
+                    >
+                      <div className="flex justify-center items-start gap-2 ">
+                        <div title={item.name}>
+                          <div className="flex flex-col h-[150px] file-item relative justify-between">
+                            <div className="fake absolute h-[150px] w-[150px]"></div>
+                            <span className="file-name">{item.name}</span>
 
-                    <span className=" text-xs text-left inline-block file-size ">
-                      {filesize(item.size, { base: 2, standard: "jedec" })}
-                    </span>
-                    <div className="justify-center items-center file-download mb-2">
-                      <Button
-                        onClick={async () => {
-                          const response = await axios.get(item.attachmentUrl, {
-                            responseType: "blob",
-                          });
-                          fileDownload(response.data, item.name);
-                        }}
-                        icon={<div>Download</div>}
-                      ></Button>
+                            <span className=" text-xs text-left inline-block file-size ">
+                              {filesize(item.size, {
+                                base: 2,
+                                standard: "jedec",
+                              })}
+                            </span>
+                            <div className="justify-center items-center file-download mb-2">
+                              <Button
+                                onClick={async () => {
+                                  const response = await axios.get(
+                                    item.attachmentUrl,
+                                    {
+                                      responseType: "blob",
+                                    }
+                                  );
+                                  fileDownload(response.data, item.name);
+                                }}
+                                icon={<div>Download</div>}
+                              ></Button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
-              </div>
-            </div>
-          ))}
+              ) : (
+                <></>
+              )}
+            </TextContainer>
+          </Collapsible>
         </div>
       ) : (
         <></>

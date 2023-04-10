@@ -4,6 +4,7 @@ import {
   EmailIntegrationRepository,
   Priority,
 } from "@moose-desk/repo";
+import { useToast } from "@shopify/app-bridge-react";
 import { Layout, LegacyCard, Page } from "@shopify/polaris";
 import { FormikProps } from "formik";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -18,6 +19,7 @@ interface CreateTicketProps {}
 const CreateTicket = (props: CreateTicketProps) => {
   const { banner, show: showBanner, close: closeBanner } = useBanner();
   const { toggle: updateForm } = useToggle();
+  const { show } = useToast();
 
   const formRef = useRef<FormikProps<any>>(null);
   const [primaryEmail, setPrimaryEmail] = useState<EmailIntegration>();

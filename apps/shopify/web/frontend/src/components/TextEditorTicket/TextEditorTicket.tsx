@@ -1,5 +1,6 @@
 import { useJob, useToggle } from "@moose-desk/core";
 import { TicketRepository } from "@moose-desk/repo";
+import { useToast } from "@shopify/app-bridge-react";
 import {
   Button,
   InlineError,
@@ -45,6 +46,7 @@ export const TextEditorTicket = ({
   const [myFiles, setMyFiles] = useState<any>([]);
   const [loading, setLoading] = useState(false);
   const [idAttachments, setIdAttachments] = useState<string[]>([]);
+  const { show } = useToast();
 
   const [errorText, setErrorText] = useState("");
   const onDrop = useCallback(
@@ -100,6 +102,8 @@ export const TextEditorTicket = ({
             setIdAttachments((previousAttachs) => {
               return [...previousAttachs, ...data.data.ids];
             });
+            show("Upload file successfully");
+
             // message.success("Upload file successfully");
           }
         }),

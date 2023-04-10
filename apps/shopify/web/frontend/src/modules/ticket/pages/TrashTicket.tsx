@@ -60,7 +60,6 @@ const TrashTicket: FC<TrashTicketProps> = () => {
   );
   const handleSort = useCallback(
     (selected: string[]) => {
-      console.log({ selected });
       const arraySort = selected[0].split(":");
       const sortBy = arraySort[0];
       const sortOrder = arraySort[1] === SortOrderOptions.ACS ? 1 : -1;
@@ -228,13 +227,7 @@ const TrashTicket: FC<TrashTicketProps> = () => {
         onClick={() => {}}
       >
         <IndexTable.Cell>
-          <Link
-            removeUnderline
-            dataPrimaryLink
-            onClick={() => {
-              console.log("clicked", _id);
-            }}
-          >
+          <Link removeUnderline dataPrimaryLink onClick={() => {}}>
             <Text variant="bodyMd" fontWeight="bold" as="span">
               {ticketId}
             </Text>

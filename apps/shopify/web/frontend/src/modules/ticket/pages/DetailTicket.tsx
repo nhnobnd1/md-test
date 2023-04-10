@@ -339,7 +339,6 @@ const DetailTicket = (props: DetailTicketProps) => {
       from: ticket?.senderConfigId ? ticket.senderConfigId : primaryEmail?._id,
     };
   }, [ticket, primaryEmail]);
-  console.log({ initialValues });
   const DetailTicketFormSchema = Yup.object().shape({
     to: Yup.string()
       .required("Email address is required")

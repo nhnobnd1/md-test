@@ -12,6 +12,7 @@ import {
   TagRepository,
   TicketRepository,
 } from "@moose-desk/repo";
+import { useToast } from "@shopify/app-bridge-react";
 import { Button, FormLayout, Link, Select, TextField } from "@shopify/polaris";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { map } from "rxjs";
@@ -56,6 +57,8 @@ export const priorityOptions = [
 export const TicketForm = ({ ...props }: TicketFormProps) => {
   const [enableCC, setEnableCC] = useState(false);
   const navigate = useNavigate();
+  const { show } = useToast();
+
   const [fromEmail, setFromEmail] = useState(props.primaryEmail);
   const [toEmail, setToEmail] = useState({ value: "", id: "" });
   const [files, setFiles] = useState<any>([]);
@@ -137,6 +140,8 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
           if (data.statusCode === 200) {
             // notification.success("Ticket has been created successfully.");
             // navigate()
+            show("Ticket has been created successfully.");
+
             navigate(
               generatePath(TicketRoutePaths.Detail, { id: data.data._id })
             );
@@ -244,7 +249,6 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
       (item) => item._id === values.from
     );
     const findCustomer = customers.find((item) => item.email === values.to);
-    console.log({ values, findCustomer, files });
     const dataCreate: any = {
       fromEmail: {
         email: findEmailIntegration?.supportEmail,
@@ -272,7 +276,6 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
       attachmentIds: files,
     };
     CreateTicket(dataCreate);
-    console.log({ dataCreate });
   };
 
   return (
@@ -282,7 +285,6 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
       initialValues={props.initialValues}
       validationSchema={TicketFormSchema}
       onSubmit={() => {
-        console.log("on submit");
         onFinish();
       }}
     >

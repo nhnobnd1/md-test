@@ -575,7 +575,18 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
               queryPlaceholder="Search ticket"
               filters={[]}
               onClearAll={resetFilterData}
-            ></Filters>
+            >
+              <div className="pl-2">
+                <ButtonSort
+                  active={btnSort}
+                  sortValue={sortValue}
+                  onSort={handleSort}
+                  onShow={toggleBtnSort}
+                  onClose={closeBtnSort}
+                  options={optionsSort}
+                />
+              </div>
+            </Filters>
           </div>
 
           <Button
@@ -611,7 +622,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       <LegacyCard sectioned>
         <div className="grid grid-cols-5 gap-6 mb-6">
           <div className="flex justify-end"></div>
-          <div className="col-span-3 col-start-2 flex relative items-center ">
+          <div className="col-span-4 col-start-2 flex relative items-center ">
             <div className="flex gap-2 flex-wrap">
               <ModalFilter
                 handleResetModal={handleResetModal}
@@ -668,16 +679,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                 </PDFDownloadLink>
               </div>
             </div>
-          </div>
-          <div className="pl-2 col-span-1 col-start-5 flex justify-end">
-            <ButtonSort
-              active={btnSort}
-              sortValue={sortValue}
-              onSort={handleSort}
-              onShow={toggleBtnSort}
-              onClose={closeBtnSort}
-              options={optionsSort}
-            />
           </div>
         </div>
         <div className="grid grid-cols-5 gap-6">
@@ -744,7 +745,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                           handleDeleteSelected={handleDeleteSelected}
                         />
                       </div>
-                      <div className="col-span-1 flex justify-center">
+                      <div className="col-span-2 flex justify-start">
                         <Pagination
                           total={meta.totalCount}
                           pageSize={filterData.limit ?? 0}
