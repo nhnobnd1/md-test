@@ -1,5 +1,6 @@
 import { emailRegex, useJob, useLocation, useParams } from "@moose-desk/core";
 import {
+  Agent,
   AgentRepository,
   AttachFile,
   Conversation,
@@ -7,6 +8,7 @@ import {
   CustomerRepository,
   EmailIntegration,
   EmailIntegrationRepository,
+  GetListAgentRequest,
   GetListTagRequest,
   Priority,
   StatusTicket,
@@ -82,6 +84,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
   const [files, setFiles] = useState<any>([]);
   const [loadingButton, setLoadingButton] = useState(false);
   const location = useLocation();
+  const [agents, setAgents] = useState<Agent[]>([]);
 
   const [emailIntegrationOptions, setEmailIntegrationOptions] = useState<any>(
     []
@@ -199,36 +202,43 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
     };
   }, [ticket, primaryEmail]);
 
-  const fetchAgents = useCallback(
-    (params: LoadMoreValue) => {
-      const limit = 500;
+  const { run: getListAgentApi } = useJob((payload: GetListAgentRequest) => {
+    return AgentRepository()
+      .getList(payload)
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            const tags = data.data.map((item) => ({
+              ...item,
+              id: item._id,
+            }));
+            setAgents((prevTags) => {
+              return [...prevTags, ...tags];
+            });
 
-      return AgentRepository()
-        .getList({
-          page: params.page,
-          limit: limit,
-          query: params.searchText,
+            if (data.metadata.totalPage > (payload.page as number)) {
+              getListAgentApi({
+                page: (payload.page as number) + 1,
+                limit: payload.limit,
+              });
+            }
+          } else {
+            message.error("Get data ticket failed");
+          }
         })
-        .pipe(
-          map(({ data }) => {
-            return {
-              options: data.data
-                .filter((item) => item.isActive && item.emailConfirmed)
-                .map((item) => ({
-                  label: item.lastName.includes("admin")
-                    ? `${item.firstName} - ${item.email}`
-                    : `${item.firstName} ${item.lastName} - ${item.email}`,
-                  value: `${item._id},${item.email}`,
-                  obj: item,
-                })),
-              canLoadMore: params.page < data.metadata.totalPage,
-            };
-          })
-        );
-    },
-    [AgentRepository]
-  );
-
+      );
+  });
+  const agentsOptions = useMemo(() => {
+    const mapping = agents.map((item: Agent) => {
+      return {
+        value: item._id,
+        label: item.lastName.includes("admin")
+          ? `${item.firstName} - ${item.email}`
+          : `${item.firstName} ${item.lastName} - ${item.email}`,
+      };
+    });
+    return mapping;
+  }, [agents]);
   const { run: getTicketApi, processing } = useJob((id: string) => {
     return TicketRepository()
       .getOne(id)
@@ -337,6 +347,10 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
       getTicketApi(id);
       fetchConversation(id);
       fetchEmailIntegrationApi();
+      getListAgentApi({
+        page: 1,
+        limit: 500,
+      });
     }
   }, [id]);
 
@@ -423,7 +437,6 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [location, form]);
-
   return (
     <>
       {processing ? (
@@ -456,16 +469,15 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                   <Select className="w-[150px]" options={statusOptions} />
                 </Form.Item>
                 <Form.Item label="Assignee" name="assignee">
-                  <Select.Ajax
+                  <AntSelect
                     placeholder="Search agents"
-                    virtual
-                    loadMore={fetchAgents}
                     className="w-[300px]"
+                    options={agentsOptions}
                     // onChange={onChangeAssignee}
-                  />
+                  ></AntSelect>
                 </Form.Item>
               </div>
-              <div className="flex gap-4 justify-between items-center w-full mb-6 flex-wrap">
+              <div className="flex gap-4 justify-between items-center w-full mb-1 flex-wrap">
                 <Form.Item
                   labelAlign="left"
                   label={<span style={{ width: 50 }}>Priority</span>}
@@ -493,11 +505,11 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                     }))}
                   />
                 </Form.Item>
-                <div className="flex items-center">
-                  <Button type="primary" onClick={handleSaveTicket}>
-                    Save
-                  </Button>
-                </div>
+              </div>
+              <div className="flex items-center justify-end">
+                <Button type="primary" onClick={handleSaveTicket}>
+                  Save
+                </Button>
               </div>
               <Divider />
               {ticket ? (

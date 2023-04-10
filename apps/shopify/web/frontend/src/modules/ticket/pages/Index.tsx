@@ -638,7 +638,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                 <BoxSelectFilter
                   onChange={onChangeStatus}
                   data={statusOptions}
-                  placeholder="Status"
+                  placeholder="Set Status"
                 />
               </div>
               <div

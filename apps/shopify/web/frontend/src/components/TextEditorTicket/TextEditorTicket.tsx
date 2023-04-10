@@ -161,7 +161,7 @@ export const TextEditorTicket = ({
   }, []);
 
   const handleChange = (content: string) => {
-    formRef.current.setFieldValue("content", content);
+    formRef.current?.setFieldValue("content", content);
     if (setIsChanged) {
       setIsChanged(content);
     }
