@@ -538,7 +538,11 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                       />
                     </Form.Item>
                     <Form.Item label="" name="status">
-                      <Select className="w-[150px]" options={statusOptions} />
+                      <Select
+                        placeholder="Set Status"
+                        className="w-[150px]"
+                        options={statusOptions}
+                      />
                     </Form.Item>
                   </Form>
 

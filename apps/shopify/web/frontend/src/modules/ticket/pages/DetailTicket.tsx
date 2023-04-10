@@ -344,7 +344,6 @@ const DetailTicket = (props: DetailTicketProps) => {
     to: Yup.string()
       .required("Email address is required")
       .email("The email address is not valid"),
-    content: Yup.string().required("Please input your message!"),
   });
 
   useMount(() => {
@@ -386,7 +385,7 @@ const DetailTicket = (props: DetailTicketProps) => {
       value: item.email,
     }));
   }, [customers]);
-  console.log("test", formRef.current);
+
   const handleReopenTicket = () => {
     const values = formRef.current?.values;
     formRef.current?.setFieldValue("status", "OPEN");
@@ -441,19 +440,19 @@ const DetailTicket = (props: DetailTicketProps) => {
         },
       ],
     };
-    console.log({ dataPost });
+
     postReplyApi(dataPost);
 
-    // updateTicketApi({
-    //   priority: values.priority,
-    //   status: values.status,
-    //   tags: values.tags,
-    //   agentObjectId: values.assignee
-    //     ? values.assignee.split(",")[0]
-    //     : undefined,
-    //   agentEmail: values.assignee ? values.assignee.split(",")[1] : undefined,
-    //   ids: [ticket?._id as string],
-    // });
+    updateTicketApi({
+      priority: values.priority,
+      status: values.status,
+      tags: values.tags,
+      agentObjectId: values.assignee
+        ? values.assignee.split(",")[0]
+        : undefined,
+      agentEmail: values.assignee ? values.assignee.split(",")[1] : undefined,
+      ids: [ticket?._id as string],
+    });
     setFiles([]);
     formRef.current?.setFieldValue("content", "");
   };
@@ -475,10 +474,7 @@ const DetailTicket = (props: DetailTicketProps) => {
                 initialValues={initialValues}
                 enableReinitialize
                 validationSchema={DetailTicketFormSchema}
-                onSubmit={() => {
-                  console.log("values", formRef.current?.values);
-                  // onFinish(formRef.current?.values);
-                }}
+                onSubmit={() => {}}
               >
                 <FormLayout.Group condensed>
                   <div className="flex flex-col gap-3">
@@ -568,6 +564,9 @@ const DetailTicket = (props: DetailTicketProps) => {
                       files={files}
                       setFiles={setFiles}
                       formRef={formRef}
+                      disabled={
+                        formRef.current?.values.status === StatusTicket.RESOLVED
+                      }
                       setIsChanged={setIsChanged}
                       setLoadingButton={setLoadingButton}
                       labelProps={{
@@ -610,7 +609,9 @@ const DetailTicket = (props: DetailTicketProps) => {
                             <span>Reply</span>
                           </div>
                         }
-                        submit
+                        onClick={() => {
+                          onFinish(formRef.current?.values);
+                        }}
                         disabled={!isChanged || loadingButton}
                       ></Button>
                       <Button
