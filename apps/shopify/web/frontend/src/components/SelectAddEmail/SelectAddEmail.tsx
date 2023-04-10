@@ -136,7 +136,11 @@ const SelectAddEmail = (props: BoxSelectAutoReplyProps) => {
         }
       >
         <>
-          <Listbox onSelect={updateSelection}>{optionsMarkup}</Listbox>
+          {props.disabled ? (
+            <></>
+          ) : (
+            <Listbox onSelect={updateSelection}>{optionsMarkup}</Listbox>
+          )}
         </>
       </Combobox>
       <div className="mt-5">

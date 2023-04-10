@@ -107,7 +107,7 @@ const BoxSelectFilter = (props: BoxSelectAutoReplyProps) => {
         />
       }
     >
-      {options.length > 0 ? (
+      {options.length > 0 && !props.disabled ? (
         <Listbox onSelect={updateSelection}>{optionsMarkup}</Listbox>
       ) : null}
     </Combobox>

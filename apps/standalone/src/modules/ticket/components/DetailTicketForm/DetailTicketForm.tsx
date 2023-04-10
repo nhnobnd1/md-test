@@ -1,4 +1,10 @@
-import { emailRegex, useJob, useLocation, useParams } from "@moose-desk/core";
+import {
+  emailRegex,
+  useJob,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "@moose-desk/core";
 import {
   Agent,
   AgentRepository,
@@ -32,6 +38,7 @@ import { Header } from "src/components/UI/Header";
 import Select, { LoadMoreValue } from "src/components/UI/Select/Select";
 import useMessage from "src/hooks/useMessage";
 import { RowMessage } from "src/modules/ticket/components/DetailTicketForm/RowMessage";
+import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import FaMailReply from "~icons/fa/mail-reply";
 import BackIcon from "~icons/mingcute/back-2-fill";
 import "./BoxReply.scss";
@@ -74,6 +81,7 @@ const validateCCEmail = (value: string[]): boolean => {
 const DetailTicketForm = (props: DetailTicketFormProps) => {
   const message = useMessage();
   const { id } = useParams();
+  const navigate = useNavigate();
   const [ticket, setTicket] = useState<Ticket>();
   const [form] = Form.useForm();
   const [conversationList, setConversationList] = useState<Conversation[]>([]);
@@ -446,6 +454,9 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
           <Header
             title={`Ticket ${ticket?.ticketId}: ${ticket?.subject}`}
             back
+            backAction={() => {
+              navigate(TicketRoutePaths.Index);
+            }}
           ></Header>
           <Form
             disabled={

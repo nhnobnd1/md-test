@@ -129,6 +129,7 @@ const SelectAddTag = (props: BoxSelectAutoReplyProps) => {
         activator={
           <div onKeyDown={handleKeyPress}>
             <Combobox.TextField
+              {...props}
               onChange={updateText}
               label={<div>{props.label}</div>}
               labelHidden={!props.label}
@@ -140,7 +141,11 @@ const SelectAddTag = (props: BoxSelectAutoReplyProps) => {
         }
       >
         <>
-          <Listbox onSelect={updateSelection}>{optionsMarkup}</Listbox>
+          {props.disabled ? (
+            <></>
+          ) : (
+            <Listbox onSelect={updateSelection}>{optionsMarkup}</Listbox>
+          )}
         </>
       </Combobox>
       <div className="mt-5">

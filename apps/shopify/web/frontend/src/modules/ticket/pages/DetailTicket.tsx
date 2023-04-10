@@ -1,10 +1,4 @@
-import {
-  generatePath,
-  useJob,
-  useMount,
-  useParams,
-  useToggle,
-} from "@moose-desk/core";
+import { generatePath, useJob, useParams, useToggle } from "@moose-desk/core";
 import {
   Agent,
   AgentRepository,
@@ -345,9 +339,9 @@ const DetailTicket = (props: DetailTicketProps) => {
       .email("The email address is not valid"),
   });
 
-  useMount(() => {
-    updateForm();
-  });
+  // useMount(() => {
+  //   updateForm();
+  // });
   useEffect(() => {
     if (id) {
       getTicketApi(id);
@@ -363,6 +357,10 @@ const DetailTicket = (props: DetailTicketProps) => {
       fetchEmailIntegrationApi();
     }
   }, [id]);
+  const disabled = useMemo(() => {
+    if (formRef.current?.values.status === StatusTicket.RESOLVED) return true;
+    return false;
+  }, [formRef.current?.values.status]);
 
   const agentsOptions = useMemo(() => {
     const mapping = agents.map((item: Agent) => {
@@ -478,26 +476,46 @@ const DetailTicket = (props: DetailTicketProps) => {
                 <FormLayout.Group condensed>
                   <div className="flex flex-col gap-3">
                     <FormItem name="status">
-                      <Select label="Status" options={statusOptions} />
+                      <Select
+                        disabled={disabled}
+                        label="Status"
+                        options={statusOptions}
+                      />
                     </FormItem>
 
                     <FormItem name="priority">
-                      <Select label="Priority" options={priorityOptions} />
+                      <Select
+                        disabled={disabled}
+                        label="Priority"
+                        options={priorityOptions}
+                      />
                     </FormItem>
                   </div>
 
                   <div className="flex flex-col gap-3">
                     <FormItem name="assignee">
-                      <BoxSelectFilter label="Assignee" data={agentsOptions} />
+                      <BoxSelectFilter
+                        disabled={disabled}
+                        label="Assignee"
+                        data={agentsOptions}
+                      />
                     </FormItem>
                     <FormItem name="tags">
-                      <SelectAddTag label="Tags" data={tagsOptions} />
+                      <SelectAddTag
+                        disabled={disabled}
+                        label="Tags"
+                        data={tagsOptions}
+                      />
                     </FormItem>
                   </div>
                 </FormLayout.Group>
 
                 <div className="flex justify-end mb-5">
-                  <Button primary onClick={handleSaveTicket}>
+                  <Button
+                    disabled={disabled}
+                    primary
+                    onClick={handleSaveTicket}
+                  >
                     Save
                   </Button>
                 </div>
@@ -517,6 +535,7 @@ const DetailTicket = (props: DetailTicketProps) => {
                         <BoxSelectFilter
                           label="From"
                           data={emailIntegrationOptions}
+                          disabled={disabled}
                         />
                       </FormItem>
                     </div>
@@ -530,7 +549,11 @@ const DetailTicket = (props: DetailTicketProps) => {
                     {enableCC ? (
                       <div className="min-w-[300px] max-w-[400px]">
                         <FormItem name="CC">
-                          <SelectAddEmail label="CC" data={customersOptions} />
+                          <SelectAddEmail
+                            disabled={disabled}
+                            label="CC"
+                            data={customersOptions}
+                          />
                         </FormItem>
                       </div>
                     ) : (
@@ -539,7 +562,11 @@ const DetailTicket = (props: DetailTicketProps) => {
                     {enableCC ? (
                       <div className="min-w-[300px] max-w-[400px] mt-2">
                         <FormItem name="BCC">
-                          <SelectAddEmail label="BCC" data={customersOptions} />
+                          <SelectAddEmail
+                            disabled={disabled}
+                            label="BCC"
+                            data={customersOptions}
+                          />
                         </FormItem>
                       </div>
                     ) : (
