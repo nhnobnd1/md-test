@@ -1,17 +1,17 @@
 import { useNavigate } from "@moose-desk/core";
 import { formatTimeDDMMYY } from "@moose-desk/core/helper/format";
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
-import { Customer, CustomerRepository } from "@moose-desk/repo";
+import { Customer } from "@moose-desk/repo";
 import { message } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import classNames from "classnames";
 import { useCallback, useMemo, useState } from "react";
 import { useQuery } from "react-query";
-import { from } from "rxjs";
 import { MDSearchInput } from "src/components/UI/MDSearchInput";
 import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
 import env from "src/core/env";
+import { getListTicketCustomer } from "src/modules/customer/api/api";
 import { QUERY_KEY } from "src/modules/customer/helper/constant";
 import {
   ListTicketCustomerFilter,
@@ -34,22 +34,15 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
     sortOrder: undefined,
   });
   const debounceValue: string = useDebounce(querySearch, 500);
-  const getListTicketCustomerFn = from(
-    CustomerRepository().getListTicket(customerId, {
-      ...filter,
-      query: debounceValue,
-    })
-  );
-
-  const { data: dataSource, isFetching: isFetchingListTicket } = useQuery(
-    [QUERY_KEY.LIST_TICKET_CUSTOMER, filter, debounceValue],
-    () => getListTicketCustomerFn.toPromise(),
-    {
-      onError: () => {
-        message.error("Get data ticket customer failed");
-      },
-    }
-  );
+  const { data: dataSource, isFetching: isFetchingListTicket } = useQuery({
+    queryKey: [QUERY_KEY.LIST_TICKET_CUSTOMER, filter, debounceValue],
+    queryFn: () =>
+      getListTicketCustomer(customerId, { ...filter, query: debounceValue }),
+    onError: () => {
+      message.error("Get data ticket customer failed");
+    },
+    keepPreviousData: true,
+  });
   const memoDataSource = useMemo(() => {
     return dataSource?.data.data;
   }, [dataSource]);
@@ -136,7 +129,7 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
         }));
       }
     },
-    [setFilter]
+    []
   );
   const handleClickRow = (record: TicketCustomerResponse) => {
     navigate(`/ticket/${record?._id}`);
