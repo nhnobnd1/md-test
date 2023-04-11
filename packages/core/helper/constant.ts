@@ -8,4 +8,7 @@ export const QUERY_KEY = {
   REPORT_BY_TAGS: "reportByTags",
   REPORT_TOP_FIVE: "reportTopFive",
   LIST_AGENT: "listAgent",
+  LIST_CUSTOMER_SHOPIFY: "listCustomerShopify",
+  CUSTOMER_SHOPIFY: "customerShopify",
+  CUSTOMER_SHOPIFY_ORDER: "customerShopifyOrder",
 };

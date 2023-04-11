@@ -1,0 +1,32 @@
+.wrapContent {
+  position: relative;
+}
+
+.wrapSearchToggle {
+  position: absolute;
+  right: 0;
+  top: 10px;
+  z-index: 1;
+}
+
+.toggleButton {
+  font-size: 30px;
+  animation: scaleUpDown infinite;
+  &:hover {
+    font-size: 35px;
+    transition: all 0.2s ease-out;
+  }
+}
+
+@keyframes scaleUpDown {
+  0% {
+    font-size: 30px;
+  }
+
+  50% {
+    font-size: 35px;
+  }
+  100% {
+    font-size: 30px;
+  }
+}

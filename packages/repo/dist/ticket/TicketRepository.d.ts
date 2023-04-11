@@ -1,5 +1,5 @@
-import { BaseDeleteList } from '../unty';
-import { BaseListTicketFilterRequest, CreateReplyTicketResponse, CreateTicketRequest, CreateTicketResponse, DeleteTicketResponse, GetListTicketConversationResponse, GetListTicketResponse, GetOneTicketResponse, RestoreTicketResponse, UpdateTicketResponse, UploadFileResponse } from './Ticket';
+import { BaseDeleteList } from "../unty";
+import { BaseListTicketFilterRequest, CreateReplyTicketResponse, CreateTicketRequest, CreateTicketResponse, DeleteTicketResponse, GetListTicketConversationResponse, GetListTicketResponse, GetOneTicketResponse, RestoreTicketResponse, UpdateTicketResponse, UploadFileResponse } from "./Ticket";
 export declare const TicketRepository: () => {
     delete: (data: BaseDeleteList) => import("rxjs").Observable<import("axios").AxiosResponse<DeleteTicketResponse, any>>;
     getList: (params: import("./Ticket").BaseListTicketRequest) => import("rxjs").Observable<import("axios").AxiosResponse<GetListTicketResponse, any>>;

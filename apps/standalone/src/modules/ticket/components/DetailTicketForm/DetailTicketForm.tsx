@@ -17,16 +17,16 @@ import {
   GetListAgentRequest,
   GetListTagRequest,
   Priority,
+  priorityOptions,
+  statusOptions,
   StatusTicket,
   Tag,
   TagRepository,
   Ticket,
   TicketRepository,
   UpdateTicket,
-  priorityOptions,
-  statusOptions,
 } from "@moose-desk/repo";
-import { Select as AntSelect, Button, Card, Divider, List } from "antd";
+import { Button, Card, Divider, List, Select as AntSelect } from "antd";
 import moment from "moment";
 import VirtualList from "rc-virtual-list";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -450,14 +450,17 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
       {processing ? (
         <></>
       ) : (
-        <>
+        <div className="wrapContainer">
+          {/* <div className="searchToggle">
+            <LeftCircleOutlined />
+          </div> */}
           <Header
             title={`Ticket ${ticket?.ticketId}: ${ticket?.subject}`}
             back
             backAction={() => {
               navigate(TicketRoutePaths.Index);
             }}
-          ></Header>
+          />
           <Form
             disabled={
               form.getFieldValue("status") === StatusTicket.RESOLVED ||
@@ -721,7 +724,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
               )}
             </Card>
           </Form>
-        </>
+        </div>
       )}
     </>
   );
