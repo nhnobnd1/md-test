@@ -187,12 +187,7 @@ export const ChannelEmail = (props: ChannelEmailProps) => {
   }, [filterData]);
 
   const getDomain = useCallback(() => {
-    switch (import.meta.env.MODE) {
-      case "development":
-        return "localhost:3580";
-      default:
-        return `${getSubDomain()}${getDomainStandalone()}`;
-    }
+    return `${getSubDomain()}${getDomainStandalone()}`;
   }, [import.meta.env.MODE, getSubDomain, getDomainStandalone]);
 
   const handleRedirectStandaloneCreate = useCallback(() => {
