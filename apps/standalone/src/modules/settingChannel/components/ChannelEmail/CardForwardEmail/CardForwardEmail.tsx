@@ -19,6 +19,7 @@ export const CardForwardEmail: FC<CardForwardEmailProps> = () => {
   const [isVerified, setIsVerified] = useState<Status>("Pending");
   const [retryCount, setRetryCount] = useState(0);
   const [retryGoogleCode, setRetryGoogleCode] = useState(0);
+  const [isGmail, setIsGmail] = useState(true);
   const message = useMessage();
   const onFinish = (values: any) => {
     lookUpTypeEmail(values.email);
@@ -67,6 +68,7 @@ export const CardForwardEmail: FC<CardForwardEmailProps> = () => {
               setStep(1);
             } else {
               setStep(2);
+              setIsGmail(false);
             }
           }
         }),
@@ -243,7 +245,11 @@ export const CardForwardEmail: FC<CardForwardEmailProps> = () => {
         </ContentWait>
       )}
       {step === 2 && (
-        <StepGoogleCode code={googleCode} sendVerify={sendVerify} />
+        <StepGoogleCode
+          isGmail={isGmail}
+          code={googleCode}
+          sendVerify={sendVerify}
+        />
       )}
       {step === 3 && (
         <CompleteStep

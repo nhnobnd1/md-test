@@ -23,7 +23,9 @@ export const ContentWait: FC<ContentWaitProps> = ({
     <div className="flex flex-col items-center">
       <Typography.Title level={3}>Set up email forwarding</Typography.Title>
       <div className="flex justify-start items-start gap-2 w-[340px]">
-        <Step1Icon fontSize={20} />
+        <div>
+          <Step1Icon fontSize={20} />
+        </div>
         <div className="flex flex-col">
           <span>Sign in to your Gmail account, and go to</span>
           <span style={{ color: "#2F3941", fontWeight: "bold" }}>
@@ -32,16 +34,17 @@ export const ContentWait: FC<ContentWaitProps> = ({
         </div>
       </div>
       <div className="flex justify-start items-start gap-2 w-[340px] mt-5">
-        <Step2Icon fontSize={20} />
+        <div>
+          <Step2Icon fontSize={20} />
+        </div>
         <div className=" ">
           <>
             Enter{" "}
             <span style={{ color: "#2F3941", fontWeight: "bold" }}>
               {supportEmailDefault}
             </span>{" "}
-            as the
+            as the forwarding email address.
           </>
-          <span style={{ display: "block" }}>forwarding email address.</span>
         </div>
       </div>
       <div>{children}</div>
