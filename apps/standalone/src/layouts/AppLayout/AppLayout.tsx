@@ -85,6 +85,12 @@ export const AppLayout = (props: AppLayoutProps) => {
             link: ReportRoutePaths.ByAgent,
             onClick: () => navigate(generatePath(ReportRoutePaths.ByAgent)),
           },
+          {
+            key: `case-${ReportRoutePaths.ByTags}`,
+            label: "By Tags",
+            link: ReportRoutePaths.ByTags,
+            onClick: () => navigate(generatePath(ReportRoutePaths.ByTags)),
+          },
         ],
       },
       {

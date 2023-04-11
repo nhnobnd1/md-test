@@ -1,38 +1,20 @@
 import { Input } from "antd";
-import { useMemo } from "react";
 import Form, { FormProps } from "src/components/UI/Form/Form";
 import InputPhone from "src/components/UI/InputPhone/InputPhone";
+import { CustomerRequestData } from "src/modules/customer/helper/interface";
 
-export interface CustomerFormValues {
-  _id?: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  phoneNumber: string;
-  isUpdate?: boolean;
-}
 interface CustomerFormProps extends FormProps {
   disabled?: boolean;
+  data?: CustomerRequestData;
 }
 
 export const CustomerForm = ({
   disabled = false,
+  data = undefined,
   ...props
 }: CustomerFormProps) => {
-  const initialValues = useMemo(() => {
-    return (
-      props.initialValues ?? {
-        email: "",
-        firstName: "",
-        lastName: "",
-        phoneNumber: "",
-      }
-    );
-  }, [props.initialValues]);
-
   return (
-    <Form {...props} layout="vertical" initialValues={initialValues}>
-      <Form.Item name="_id" hidden />
+    <Form {...props} layout="vertical" initialValues={data}>
       <Form.Item
         label="First name"
         name="firstName"

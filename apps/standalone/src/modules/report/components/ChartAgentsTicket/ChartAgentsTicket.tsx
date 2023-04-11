@@ -1,3 +1,4 @@
+import { memo } from "react";
 import {
   Bar,
   BarChart,
@@ -8,74 +9,61 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { convertToLongDate } from "src/modules/report/helper/convert";
+import ChartTopFiveRes from "src/modules/report/helper/interface";
+interface ChartAgentsTicketProps {
+  data: ChartTopFiveRes[];
+}
+const defaultEmptyAgent = [
+  {
+    agentObjectId: "emptyId",
+    totalTicket: 0,
+    agentFirstName: "first name",
+    agentLastName: "last name",
+  },
+];
+const LIST_CHART_ITEM_COLOR = [
+  "#1e88e5",
+  "#fb8c00",
+  "#9e9e9e",
+  "#ffeb3b",
+  "#29b6f6",
+];
+const ChartAgentsTicket = ({ data }: ChartAgentsTicketProps) => {
+  const convertTopFiveAgents = data?.map(
+    (item: ChartTopFiveRes) => item?.agentClosed
+  );
+  const topFiveAgents = convertTopFiveAgents?.shift() || [];
+  const convertAgentsForChartData = topFiveAgents?.map((agent: any) => {
+    return {
+      [agent.agentObjectId]: agent.totalTicket,
+    };
+  });
+  const chartData = data?.map((item: any) => {
+    return Object.assign(
+      {},
+      { name: convertToLongDate(item?.date) },
+      ...convertAgentsForChartData
+    );
+  });
+  const _renderListBarChart = () => {
+    if (topFiveAgents?.length === 0) return null;
+    return topFiveAgents?.map((agent: any, index) => (
+      <Bar
+        key={`bar-${index}`}
+        name={`${agent.agentFirstName} ${agent.agentLastName}`}
+        dataKey={agent.agentObjectId}
+        fill={LIST_CHART_ITEM_COLOR[index]}
+      />
+    ));
+  };
 
-interface ChartAgentsTicketProps {}
-
-const ChartAgentsTicket = (props: ChartAgentsTicketProps) => {
-  const data = [
-    {
-      name: "Dec 27th",
-      ab: 35,
-      uv: 23,
-      pv: 45,
-      cd: 36,
-      ef: 29,
-    },
-    {
-      name: "Dec 28th",
-      ab: 23,
-      uv: 38,
-      pv: 21,
-      cd: 51,
-      ef: 22,
-    },
-    {
-      name: "Dec 29th",
-      ab: 45,
-      uv: 33,
-      pv: 32,
-      cd: 21,
-      ef: 46,
-    },
-    {
-      name: "Dec 30th",
-      ab: 36,
-      uv: 37,
-      pv: 51,
-      cd: 30,
-      ef: 47,
-    },
-    {
-      name: "Dec 31st",
-      ab: 29,
-      uv: 21,
-      pv: 20,
-      cd: 18,
-      ef: 11,
-    },
-    {
-      name: "Jan 1st",
-      ab: 0,
-      uv: 0,
-      pv: 0,
-      cd: 0,
-      ef: 0,
-    },
-    {
-      name: "Jan 2nd",
-      ab: 28,
-      uv: 26,
-      pv: 29,
-      cd: 20,
-      ef: 19,
-    },
-  ];
   return (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart
         width={500}
         height={400}
-        data={data}
+        data={chartData}
         margin={{
           top: 5,
           right: 30,
@@ -88,14 +76,10 @@ const ChartAgentsTicket = (props: ChartAgentsTicketProps) => {
         <YAxis />
         <Tooltip />
         <Legend />
-        <Bar dataKey="ab" fill="#1e88e5" />
-        <Bar dataKey="uv" fill="#fb8c00" />
-        <Bar dataKey="pv" fill="#9e9e9e" />
-        <Bar dataKey="cd" fill="#ffeb3b" />
-        <Bar dataKey="ef" fill="#29b6f6" />
+        {_renderListBarChart()}
       </BarChart>
     </ResponsiveContainer>
   );
 };
 
-export default ChartAgentsTicket;
+export default memo(ChartAgentsTicket);

@@ -1,17 +1,38 @@
-import { useToggle } from "@moose-desk/core";
+import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { DatePicker } from "antd";
-import { useCallback } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { useQuery } from "react-query";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
+import { getReportTopFive } from "src/modules/report/api/api";
 import ChartAgentsTicket from "src/modules/report/components/ChartAgentsTicket/ChartAgentsTicket";
 import { ReportAgentTable } from "src/modules/report/components/ReportAgentTable";
+import {
+  convertToTimeStamp,
+  endOfMonth,
+  startOfMonth,
+} from "src/modules/report/helper/convert";
 
 interface ByAgentPageProps {}
-
+enum DataAgent {
+  TOP_FIVE = 0,
+  LIST_AGENT = 1,
+}
 const ByAgentPage = (props: ByAgentPageProps) => {
   const [form] = Form.useForm();
-  const { toggle: updateForm } = useToggle();
-
+  const [filter, setFilter] = useState({
+    startTime: String(startOfMonth),
+    endTime: String(endOfMonth),
+  });
+  const { data: reportTopFiveData } = useQuery({
+    queryKey: [QUERY_KEY.REPORT_TOP_FIVE, filter],
+    queryFn: () => getReportTopFive(filter),
+    keepPreviousData: true,
+  });
+  const memoChartData = useMemo(() => {
+    const convertData = (reportTopFiveData as any)?.data?.data;
+    return convertData;
+  }, [reportTopFiveData]);
   const disabledStartDate = useCallback(
     (current) => {
       return form.getFieldValue("to")
@@ -29,16 +50,28 @@ const ByAgentPage = (props: ByAgentPageProps) => {
     },
     [form.getFieldValue("from")]
   );
-
+  const handleChangeStartTime = (_: any, values: string) => {
+    setFilter((pre) => ({
+      ...pre,
+      startTime: String(convertToTimeStamp(values) || startOfMonth),
+    }));
+  };
+  const handleChangeEndTime = (_: any, values: string) => {
+    setFilter((pre) => ({
+      ...pre,
+      endTime: String(convertToTimeStamp(values) || endOfMonth),
+    }));
+  };
   return (
     <>
       <Header title="Reporting" />
-      <Form onValuesChange={updateForm} form={form} layout="inline">
+      <Form onValuesChange={() => {}} form={form} layout="inline">
         <Form.Item name="from" label="From">
           <DatePicker
             format={"DD/MM/YYYY"}
             placeholder="dd/mm/yyyy"
             disabledDate={disabledStartDate}
+            onChange={handleChangeStartTime}
           />
         </Form.Item>
         <Form.Item name="to" label="To">
@@ -46,6 +79,7 @@ const ByAgentPage = (props: ByAgentPageProps) => {
             format={"DD/MM/YYYY"}
             placeholder="dd/mm/yyyy"
             disabledDate={disabledEndDate}
+            onChange={handleChangeEndTime}
           />
         </Form.Item>
       </Form>
@@ -54,15 +88,15 @@ const ByAgentPage = (props: ByAgentPageProps) => {
           Ticket closed per agent per day (Top 5 Agents)
         </div>
         <div className="w-full h-[450px]">
-          <ChartAgentsTicket />
+          <ChartAgentsTicket data={memoChartData} />
         </div>
       </div>
 
-      <div className="table w-full">
+      <div>
         <div className="title text-lg font-semibold mb-6">
           Tickets by Agents
         </div>
-        <ReportAgentTable />
+        <ReportAgentTable rangeTime={filter} />
       </div>
     </>
   );
