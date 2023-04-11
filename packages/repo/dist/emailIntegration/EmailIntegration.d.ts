@@ -1,4 +1,4 @@
-import { BaseListRequest, BaseListResponse, BaseResponse } from "../unty";
+import { BaseListRequest, BaseListResponse, BaseResponse } from '../unty';
 export declare enum AuthenticationSMTP {
     Plain = "Plain",
     Login = "Login",
@@ -11,7 +11,8 @@ export declare enum AccessType {
 }
 export declare enum MailSettingType {
     CUSTOM = "CUSTOM",
-    MOOSEDESK = "MOOSEDESK"
+    MOOSEDESK = "MOOSEDESK",
+    FORWARD = "FORWARD"
 }
 export declare enum MailBoxType {
     GMAIL = "GMAIL",
@@ -25,7 +26,7 @@ export interface SignInCallbackResponse {
     name: string;
     oauthStatus: string;
     supportEmail: string;
-    type: "new" | "update" | null;
+    type: 'new' | 'update' | null;
 }
 export interface MailSetting {
     mailServer: string;
@@ -65,11 +66,11 @@ export interface EmailIntegration {
 }
 export interface GetEmailGoogleAuthRequest {
     subdomainForTest?: string;
-    type?: "update" | "new";
+    type?: 'update' | 'new';
 }
 export interface GetEmailMicrosoftAuthRequest {
     subdomainForTest?: string;
-    type?: "update" | "new";
+    type?: 'update' | 'new';
 }
 export declare type GetEmailGoogleAuthResponse = BaseResponse<string>;
 export interface GetListEmailRequest extends BaseListRequest {
