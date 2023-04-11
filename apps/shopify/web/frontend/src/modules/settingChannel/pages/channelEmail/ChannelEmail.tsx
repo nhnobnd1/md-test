@@ -187,7 +187,7 @@ export const ChannelEmail = (props: ChannelEmailProps) => {
   }, [filterData]);
 
   const getDomain = useCallback(() => {
-    return `${getSubDomain()}${getDomainStandalone()}`;
+    return `http://${getSubDomain()}${getDomainStandalone()}`;
   }, [import.meta.env.MODE, getSubDomain, getDomainStandalone]);
 
   const handleRedirectStandaloneCreate = useCallback(() => {
