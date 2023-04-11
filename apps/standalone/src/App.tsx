@@ -2,6 +2,7 @@ import { ConfigProvider } from "antd";
 import { ConfigProviderProps } from "antd/es/config-provider";
 import antEnLocale from "antd/es/locale/en_US";
 import antViLocale from "antd/es/locale/vi_VN";
+import enUS from "antd/lib/locale/en_US";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -29,7 +30,7 @@ function App() {
     },
   });
   return (
-    <ConfigProvider {...config}>
+    <ConfigProvider {...config} locale={enUS}>
       <QueryClientProvider client={queryClient}>
         <Provider store={store}>
           <AppRoutes />
