@@ -53,3 +53,10 @@ export interface TicketCustomerResponse {
   _id: string;
   agentEmail?: string;
 }
+export interface CustomerRequestData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber?: string;
+  storeId: string;
+}

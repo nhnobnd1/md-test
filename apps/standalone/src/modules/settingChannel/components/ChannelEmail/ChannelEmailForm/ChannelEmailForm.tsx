@@ -9,6 +9,7 @@ import { Checkbox, Input, Radio } from "antd";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Form, FormProps } from "src/components/UI/Form";
 import { useSubdomain } from "src/hooks/useSubdomain";
+import { CardForwardEmail } from "src/modules/settingChannel/components/ChannelEmail/CardForwardEmail";
 import {
   CardSelectEmail,
   CardSelectMailRefProperties,
@@ -246,6 +247,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
             <Radio value={MailSettingType.MOOSEDESK}>
               Use Moosedesk email address
             </Radio>
+            <Radio value={MailSettingType.FORWARD}>Email Forwarding</Radio>
           </Radio.Group>
         </Form.Item>
 
@@ -260,6 +262,8 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
               form={form}
             />
           )}
+          {form.getFieldValue("mailSettingType") ===
+            MailSettingType.FORWARD && <CardForwardEmail />}
 
           <div className="flex gap-8">
             <Form.Item name="isPrimaryEmail" valuePropName="checked">

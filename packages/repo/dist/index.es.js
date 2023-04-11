@@ -7200,7 +7200,7 @@ const t0 = Vt(
     }
   }
 );
-var W_ = /* @__PURE__ */ ((t) => (t.Plain = "Plain", t.Login = "Login", t.MD5 = "CRAM - MD5", t))(W_ || {}), H_ = /* @__PURE__ */ ((t) => (t.Both = "both", t.Incoming = "incoming", t.Outgoing = "outgoing", t))(H_ || {}), V_ = /* @__PURE__ */ ((t) => (t.CUSTOM = "CUSTOM", t.MOOSEDESK = "MOOSEDESK", t))(V_ || {}), z_ = /* @__PURE__ */ ((t) => (t.GMAIL = "GMAIL", t.OUTLOOK = "OUTLOOK", t.OTHER = "OTHER", t.MOOSEDESK = "MOOSEDESK", t))(z_ || {});
+var W_ = /* @__PURE__ */ ((t) => (t.Plain = "Plain", t.Login = "Login", t.MD5 = "CRAM - MD5", t))(W_ || {}), H_ = /* @__PURE__ */ ((t) => (t.Both = "both", t.Incoming = "incoming", t.Outgoing = "outgoing", t))(H_ || {}), V_ = /* @__PURE__ */ ((t) => (t.CUSTOM = "CUSTOM", t.MOOSEDESK = "MOOSEDESK", t.FORWARD = "FORWARD", t))(V_ || {}), z_ = /* @__PURE__ */ ((t) => (t.GMAIL = "GMAIL", t.OUTLOOK = "OUTLOOK", t.OTHER = "OTHER", t.MOOSEDESK = "MOOSEDESK", t))(z_ || {});
 const e0 = Vt(
   () => ({
     baseURL: `${zt.getApiUrl()}/api/v1/email-integration`
@@ -7235,6 +7235,26 @@ const e0 = Vt(
     },
     checkConnectionSmtp(t, e) {
       return t.post("/smtp-check-connection", e);
+    },
+    verifyTypeMail(t, e) {
+      return t.get(
+        `/lookup-mx?email=${e}`
+      );
+    },
+    verifyGoogleCode(t, e) {
+      return t.get(
+        `/google-confirmation-code?email=${e}`
+      );
+    },
+    sendVerifyForwardEmail(t, e) {
+      return t.get(
+        `/send-verify-fwd-email?email=${e}`
+      );
+    },
+    checkVerifyForwardEmail(t, e) {
+      return t.get(
+        `/check-verify-fwd-email?email=${e}`
+      );
     }
   }
 ), r0 = Vt(

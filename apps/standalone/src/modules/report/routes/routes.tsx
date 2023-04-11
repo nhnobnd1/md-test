@@ -18,6 +18,10 @@ const reportRoutes: IRoute = {
       path: ReportRoutePaths.ByAgent,
       component: lazy(() => import("src/modules/report/pages/ByAgent")),
     },
+    {
+      path: ReportRoutePaths.ByTags,
+      component: lazy(() => import("src/modules/report/pages/ByTags")),
+    },
   ],
 };
 
