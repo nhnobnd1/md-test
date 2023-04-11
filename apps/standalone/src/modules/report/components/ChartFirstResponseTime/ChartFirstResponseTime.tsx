@@ -1,3 +1,4 @@
+import { memo } from "react";
 import {
   Area,
   AreaChart,
@@ -7,46 +8,28 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { convertToLongDate } from "src/modules/report/helper/convert";
+import ChartFirstResponseTimeRes from "src/modules/report/helper/interface";
 
-interface ChartFirstResponseTimeProps {}
+interface ChartFirstResponseTimeProps {
+  data: ChartFirstResponseTimeRes[];
+}
 
-export const ChartFirstResponseTime = (props: ChartFirstResponseTimeProps) => {
-  const data = [
-    {
-      name: "Dec 27th",
-      uv: 4000,
-    },
-    {
-      name: "Dec 28th",
-      uv: 3000,
-    },
-    {
-      name: "Dec 29th",
-      uv: 2000,
-    },
-    {
-      name: "Dec 30th",
-      uv: 2780,
-    },
-    {
-      name: "Dec 31st",
-      uv: 1890,
-    },
-    {
-      name: "Jan 1st",
-      uv: 2390,
-    },
-    {
-      name: "Jan 2nd",
-      uv: 3490,
-    },
-  ];
+export const ChartFirstResponseTime = ({
+  data,
+}: ChartFirstResponseTimeProps) => {
+  const chartData = data?.map((item: ChartFirstResponseTimeRes) => {
+    return {
+      name: convertToLongDate(item?.date),
+      time: item?.avgFirstResponseTime,
+    };
+  });
   return (
     <ResponsiveContainer width="100%" height="100%">
       <AreaChart
         width={500}
         height={400}
-        data={data}
+        data={chartData}
         margin={{
           top: 10,
           right: 30,
@@ -58,10 +41,10 @@ export const ChartFirstResponseTime = (props: ChartFirstResponseTimeProps) => {
         <XAxis dataKey="name" />
         <YAxis />
         <Tooltip />
-        <Area type="monotone" dataKey="uv" stroke="#8884d8" fill="#8884d8" />
+        <Area type="monotone" dataKey="time" stroke="#8884d8" fill="#8884d8" />
       </AreaChart>
     </ResponsiveContainer>
   );
 };
 
-export default ChartFirstResponseTime;
+export default memo(ChartFirstResponseTime);

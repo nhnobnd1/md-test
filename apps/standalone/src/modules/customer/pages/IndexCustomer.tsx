@@ -1,36 +1,30 @@
-import {
-  PageComponent,
-  useDebounceFn,
-  useJob,
-  usePrevious,
-  useToggle,
-} from "@moose-desk/core";
+import { PageComponent, useToggle } from "@moose-desk/core";
+import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import {
   BaseListCustomerRequest,
-  BaseMetaDataListResponse,
   Customer,
-  CustomerRepository,
   GetListCustomerRequest,
 } from "@moose-desk/repo";
-import { Input, TableProps } from "antd";
+import { TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
-import { useCallback, useEffect, useState } from "react";
-import { catchError, map, of } from "rxjs";
+import { useCallback, useState } from "react";
+import { useMutation, useQuery } from "react-query";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
 import { Header } from "src/components/UI/Header";
+import { MDSearchInput } from "src/components/UI/MDSearchInput";
 import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
 import TableAction from "src/components/UI/Table/TableAction/TableAction";
 import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
-import { CustomerFormValues } from "src/modules/customer/component/CustomerForm";
+import { deleteCustomer, getListCustomer } from "src/modules/customer/api/api";
 import PopupCustomer from "src/modules/customer/component/PopupCustomer";
+import { QUERY_KEY } from "src/modules/customer/helper/constant";
 
 interface CustomerIndexPageProps {}
 
 const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
-  const [customers, setCustomers] = useState<Customer[]>([]);
   const message = useMessage();
   const notification = useNotification();
   const {
@@ -38,12 +32,23 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
     on: openPopupCustomer,
     off: closePopupCustomer,
   } = useToggle();
-  const [dataPopup, setDataPopup] = useState<CustomerFormValues | undefined>({
+  const [dataPopup, setDataPopup] = useState<
+    | {
+        email: string;
+        firstName: string;
+        lastName: string;
+        phoneNumber: string;
+      }
+    | undefined
+  >({
     email: "",
     firstName: "",
     lastName: "",
     phoneNumber: "",
   });
+  const [querySearch, setQuerySearch] = useState<string>("");
+  const debounceValue: string = useDebounce(querySearch, 500);
+
   const defaultFilter: () => GetListCustomerRequest = () => ({
     page: 1,
     limit: env.DEFAULT_PAGE_SIZE,
@@ -62,44 +67,99 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
       query: value,
     }));
   }, []);
-  const [meta, setMeta] = useState<BaseMetaDataListResponse>();
-
-  const prevFilter = usePrevious<GetListCustomerRequest>(filterData);
-
-  const { run: getListCustomerApi, processing: loadingList } = useJob(
-    (payload: GetListCustomerRequest) => {
-      return CustomerRepository()
-        .getList(payload)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              const listCustomer = data.data.map((item) => ({
-                ...item,
-                id: item._id,
-              }));
-              setCustomers(listCustomer);
-              setMeta(data.metadata);
-            } else {
-              message.error("Get data customer failed");
-            }
-          })
-        );
-    }
-  );
-
-  const { run: getListDebounce } = useDebounceFn(
-    (payload: GetListCustomerRequest) => {
-      getListCustomerApi(payload);
+  const {
+    data: listCustomer,
+    refetch: refetchListCustomer,
+    isFetching: isFetchingListCustomer,
+  } = useQuery({
+    queryKey: [QUERY_KEY.LIST_CUSTOMER, filterData, debounceValue],
+    queryFn: () => getListCustomer({ ...filterData, query: debounceValue }),
+    keepPreviousData: true,
+    onError: () => {
+      message.error("Get data customer failed");
     },
-    { wait: 300 }
-  );
-
+  });
+  const { mutate: deleteCustomerMutate, isLoading: deleting } = useMutation({
+    mutationFn: (payload: { ids: string[] }) => deleteCustomer(payload),
+    onSuccess: () => {
+      refetchListCustomer();
+      notification.success(
+        "Customer and his tickets have been removed successfully!"
+      );
+    },
+    onError: () => {
+      notification.error("There is an error with remove customer", {
+        description: "Remove customer failed",
+        style: {
+          width: 450,
+        },
+      });
+    },
+  });
+  const columns = [
+    {
+      title: "Customer name",
+      dataIndex: "name",
+      width: "25%",
+      sorter: {
+        compare: (a: any, b: any) => a.lastName - b.lastName,
+      },
+      render: (_: string, record: Customer) => (
+        <div>{`${record.firstName} ${record.lastName}`}</div>
+      ),
+    },
+    {
+      title: "Email address",
+      dataIndex: "email",
+      sorter: {
+        compare: (a: any, b: any) => {
+          return a.email - b.email;
+        },
+      },
+      width: "25%",
+    },
+    {
+      title: "Number of tickets",
+      dataIndex: "ticketsCount",
+      sorter: {
+        compare: (a: any, b: any) => a.numberOfTicket - b.numberOfTicket,
+      },
+      width: "25%",
+    },
+    {
+      title: "Action",
+      dataIndex: "",
+      width: "25%",
+      render: (_: any, record: Customer) => (
+        <TableAction
+          record={record}
+          edit
+          onlyIcon
+          onEdit={handleEdit}
+          specialDelete={{
+            title: "Are you sure that you want to remove this customer?",
+            description:
+              "This customer will be removed permanently. All customer's tickets and his profile will no longer accessible.",
+            textDelete: "Remove",
+          }}
+          onSpecialDelete={handleDeleteCustomer}
+        />
+      ),
+    },
+  ];
+  const handleSearchInput = (e: any) => {
+    const newQuery = e.target.value;
+    setQuerySearch(newQuery);
+  };
   const handleEdit = (record: Customer) => {
     setDataPopup(record);
     openPopupCustomer();
   };
-
-  const onPagination = useCallback(
+  const handleAddCustomer = () => {
+    openPopupCustomer();
+    setDataPopup(undefined);
+  };
+  const handleChangePage = useCallback(
     ({ page, limit }: { page: number; limit: number }) => {
       setFilterData((value) => {
         return {
@@ -112,65 +172,17 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
     []
   );
 
-  const handleChangePopup = useCallback(() => {
-    getListCustomerApi(filterData);
-    closePopupCustomer();
-  }, []);
-  const { run: deleteCustomerApi } = useJob((id: string[]) => {
-    message.loading.show("Removing customer");
-    return CustomerRepository()
-      .delete({
-        ids: id,
-      })
-      .pipe(
-        map(({ data }) => {
-          message.loading.hide();
-          if (data.statusCode === 200) {
-            notification.success(
-              "Customer and his tickets have been removed successfully!"
-            );
-            getListCustomerApi({
-              page: 1,
-              limit: env.DEFAULT_PAGE_SIZE,
-            });
-          } else {
-            notification.error("There is an error with remove customer", {
-              description: "Remove customer failed",
-              style: {
-                width: 450,
-              },
-            });
-          }
-        }),
-        catchError((err) => {
-          notification.error("There is an error with remove customer", {
-            description: "Remove customer failed",
-            style: {
-              width: 450,
-            },
-          });
-          return of(err);
-        })
-      );
-  });
+  const handleDeleteCustomer = (customer: Customer) => {
+    deleteCustomerMutate({ ids: [customer._id] });
+  };
 
-  const handleDeleteCustomer = useCallback((customer: Customer) => {
-    deleteCustomerApi([customer._id]);
-  }, []);
-  useEffect(() => {
-    if (prevFilter?.query !== filterData.query && filterData.query) {
-      getListDebounce(filterData);
-    } else {
-      getListCustomerApi(filterData);
-    }
-  }, [filterData]);
-  const onChangeTable = useCallback(
-    (pagination: any, filters: any, sorter: SorterResult<Customer>) => {
-      if (sorter.order && sorter.columnKey) {
-        setFilterData((value) => ({
-          ...value,
-          sortBy: sorter.columnKey as string,
-          sortOrder: sorter.order === "ascend" ? 1 : -1,
+  const handleChangeTable = useCallback(
+    (_: any, __: any, sorter: SorterResult<Customer>) => {
+      if (sorter.order && sorter.field) {
+        setFilterData((pre) => ({
+          ...pre,
+          sortBy: sorter?.field as string,
+          sortOrder: sorter?.order === "ascend" ? 1 : -1,
         }));
       } else {
         setFilterData((value) => ({
@@ -180,7 +192,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
         }));
       }
     },
-    [setFilterData]
+    []
   ) as TableProps<Customer>["onChange"];
   return (
     <div>
@@ -188,103 +200,30 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
         open={popupCustomer}
         dataForm={dataPopup as Customer}
         onCancel={closePopupCustomer}
-        onChange={handleChangePopup}
       />
       <Header title="Customer">
         <div className="flex-1 flex justify-end">
-          <ButtonAdd
-            onClick={() => {
-              openPopupCustomer();
-              setDataPopup(undefined);
-            }}
-          >
-            Add customer
-          </ButtonAdd>
+          <ButtonAdd onClick={handleAddCustomer}>Add customer</ButtonAdd>
         </div>
       </Header>
-      <div className="pb-2">
-        <Input.Search
-          placeholder="Search"
-          className="mr-2"
-          onSearch={handleChangeValueInput}
-          allowClear
-          enterButton
-        />
+      <div className="mb-10">
+        <MDSearchInput onChange={handleSearchInput} value={querySearch} />
       </div>
       <div>
-        {customers && (
-          <>
-            <Table
-              dataSource={customers}
-              loading={loadingList}
-              onChange={onChangeTable}
-            >
-              <Table.Column
-                key="lastName"
-                title="Customer name"
-                render={(_, record: Customer) => (
-                  <span
-                    className="cursor-pointer hover:underline hover:text-blue-500"
-                    onClick={() => handleEdit(record)}
-                  >
-                    {`${record.firstName} ${record.lastName}`}
-                  </span>
-                )}
-                sorter={{
-                  compare: (a: any, b: any) => a.lastName - b.lastName,
-                }}
-              />
-              <Table.Column
-                key="email"
-                title="Email address"
-                dataIndex="email"
-                sorter={{
-                  compare: (a: any, b: any) => a.email - b.email,
-                }}
-              ></Table.Column>
-              <Table.Column
-                key="numberOfTicket"
-                title="Number of tickets"
-                dataIndex="ticketsCount"
-                sorter={{
-                  compare: (a: any, b: any) =>
-                    a.numberOfTicket - b.numberOfTicket,
-                }}
-              ></Table.Column>
-              <Table.Column
-                align="center"
-                title="Action"
-                render={(_, record: Customer) => (
-                  <TableAction
-                    record={record}
-                    edit
-                    onlyIcon
-                    onEdit={handleEdit}
-                    specialDelete={{
-                      title:
-                        "Are you sure that you want to remove this customer?",
-                      description:
-                        "This customer will be removed permanently. All customer's tickets and his profile will no longer accessible.",
-                      textDelete: "Remove",
-                    }}
-                    onSpecialDelete={handleDeleteCustomer}
-                  />
-                )}
-              />
-            </Table>
-            {meta?.totalCount
-              ? meta && (
-                  <Pagination
-                    className="mt-4 flex justify-end"
-                    currentPage={filterData.page ?? 1}
-                    total={meta?.totalCount}
-                    pageSize={filterData.limit ?? env.DEFAULT_PAGE_SIZE}
-                    onChange={onPagination}
-                  />
-                )
-              : null}
-          </>
-        )}
+        <Table
+          dataSource={listCustomer?.data?.data}
+          loading={isFetchingListCustomer}
+          onChange={handleChangeTable}
+          columns={columns}
+          scroll={{ x: 1024 }}
+        />
+        <Pagination
+          className="mt-4 flex justify-end"
+          currentPage={filterData.page ?? 1}
+          total={listCustomer?.data?.metadata?.totalCount || 0}
+          pageSize={filterData.limit ?? env.DEFAULT_PAGE_SIZE}
+          onChange={handleChangePage}
+        />
       </div>
     </div>
   );
