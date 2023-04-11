@@ -1,9 +1,10 @@
-import { useJob, useMount } from "@moose-desk/core";
+import { useJob, useMount, useUser } from "@moose-desk/core";
 import { GetStoreIdRequest, StoreRepository } from "@moose-desk/repo";
 import { ReactNode, createContext, useContext, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import useNotification from "src/hooks/useNotification";
 import { useSubdomain } from "src/hooks/useSubdomain";
+import { getStoreId } from "src/utils/localValue";
 
 export interface StoreContextType {
   storeId: string;
@@ -43,12 +44,16 @@ export const StoreProviders = ({ children }: StoreProvidersProps) => {
   );
 
   useMount(() => {
-    const subDomain = getSubDomain();
-    fetchStoreId({ subdomain: subDomain });
+    if (!getStoreId()) {
+      const subDomain = getSubDomain();
+      fetchStoreId({ subdomain: subDomain });
+    } else {
+      setStoreId(getStoreId());
+    }
   });
 
   return (
-    <StoreContext.Provider value={{ storeId }}>
+    <StoreContext.Provider value={{ storeId: storeId }}>
       {children}
     </StoreContext.Provider>
   );
