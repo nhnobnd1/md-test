@@ -290,7 +290,7 @@ const TrashTicket = (props: TrashTicketProps) => {
                 <Table
                   rowSelection={rowSelection}
                   dataSource={tickets}
-                  loading={loadingList}
+                  // loading={loadingList}
                   onChange={onChangeTable}
                   scroll={{ x: 1024 }}
                 >

@@ -60,7 +60,7 @@ const TextEditorTicket = ({
       const totalArray = [...myFiles, ...acceptedFiles];
       if (rejectedFiles.length > 0 || totalArray.length > 3) {
         setErrorText(
-          "Only maximum of 3 files with each file size <30MB are allowed to be uploaded"
+          "Only maximum of 3 files with each file size <50MB are allowed to be uploaded"
         );
 
         return;
@@ -77,7 +77,7 @@ const TextEditorTicket = ({
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     maxFiles: 3,
-    maxSize: 30 * 1024 * 1024,
+    maxSize: 50 * 1024 * 1024,
 
     accept: {
       "application/pdf": [],
