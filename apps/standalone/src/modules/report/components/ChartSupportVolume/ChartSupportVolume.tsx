@@ -1,3 +1,4 @@
+import { formatTimeDDMMYY } from "@moose-desk/core/helper/format";
 import { memo } from "react";
 import {
   Bar,
@@ -9,7 +10,6 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { convertToLongDate } from "src/modules/report/helper/convert";
 import ChartSupportVolumeRes from "src/modules/report/helper/interface";
 interface ChartSupportVolumeProps {
   data: ChartSupportVolumeRes[];
@@ -18,7 +18,7 @@ interface ChartSupportVolumeProps {
 export const ChartSupportVolume = ({ data }: ChartSupportVolumeProps) => {
   const chartData = data?.map((item: ChartSupportVolumeRes) => {
     return {
-      name: convertToLongDate(item?.date),
+      name: formatTimeDDMMYY(item?.date),
       uv: item?.ticketsCreated,
       pv: item?.ticketsResponded,
       cd: item?.ticketsResolved,
