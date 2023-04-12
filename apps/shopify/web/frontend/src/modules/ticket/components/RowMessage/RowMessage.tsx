@@ -4,6 +4,7 @@ import {
   Divider,
   Text,
   TextContainer,
+  Tooltip,
 } from "@shopify/polaris";
 import axios from "axios";
 import { filesize } from "filesize";
@@ -101,13 +102,15 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
       {disableQuote ? (
         <></>
       ) : (
-        <Button
-          plain
-          onClick={() => {
-            setToggleQuote(!toggleQuote);
-          }}
-          icon={<QuoteIcon style={{ color: "black", fontSize: 20 }} />}
-        ></Button>
+        <Tooltip content="Quote" preferredPosition="above">
+          <Button
+            plain
+            onClick={() => {
+              setToggleQuote(!toggleQuote);
+            }}
+            icon={<QuoteIcon style={{ color: "black", fontSize: 20 }} />}
+          ></Button>
+        </Tooltip>
       )}
 
       {toggleQuote ? (
@@ -154,7 +157,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
                       }}
                     >
                       <div className="flex justify-center items-start gap-2 ">
-                        <div title={item.name}>
+                        <Tooltip content={item.name} preferredPosition="above">
                           <div className="flex flex-col h-[150px] file-item relative justify-between">
                             <div className="fake absolute h-[150px] w-[150px]"></div>
                             <span className="file-name">{item.name}</span>
@@ -180,7 +183,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
                               ></Button>
                             </div>
                           </div>
-                        </div>
+                        </Tooltip>
                       </div>
                     </div>
                   ))}

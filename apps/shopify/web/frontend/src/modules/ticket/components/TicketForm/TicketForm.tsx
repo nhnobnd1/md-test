@@ -18,12 +18,12 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { map } from "rxjs";
 import Form, { FormProps } from "src/components/Form";
 import FormItem from "src/components/Form/Item";
-import BoxSelectFilter from "src/components/Modal/ModalFilter/BoxSelectFilter";
 import { Select as ComboSelect, LoadMoreValue } from "src/components/Select";
 import SelectAddEmail from "src/components/SelectAddEmail/SelectAddEmail";
 import SelectAddTag from "src/components/SelectAddTag/SelectAddTag";
 import { TextEditorTicket } from "src/components/TextEditorTicket";
 import env from "src/core/env";
+import BoxSelectCustomer from "src/modules/ticket/components/BoxSelectCustomer/BoxSelectCustomer";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import * as Yup from "yup";
 
@@ -73,8 +73,22 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
     to: Yup.string()
       .required("Email address is required")
       .email("The email address is not valid"),
-    content: Yup.string().required("Please input your message!"),
-    subject: Yup.string().required("Subject is required"),
+    content: Yup.string()
+      .required("Please input your message!")
+      .test("is-blank", "Content is required", (value) => {
+        if (value && value.trim().length === 0) {
+          return false;
+        }
+        return true;
+      }),
+    subject: Yup.string()
+      .required("Subject is required")
+      .test("is-blank", "Subject is required", (value) => {
+        if (value && value.trim().length === 0) {
+          return false;
+        }
+        return true;
+      }),
   });
 
   const fetchAgents = useCallback(
@@ -183,6 +197,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
         );
     }
   );
+
   const { run: getListCustomerApi } = useJob(
     (payload: GetListCustomerRequest) => {
       return CustomerRepository()
@@ -294,7 +309,8 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
             <div className="flex-1">
               <div className="flex-1">
                 <FormItem name="to">
-                  <BoxSelectFilter
+                  <BoxSelectCustomer
+                    form={props.innerRef}
                     label={
                       <div>
                         <span className="mr-1 text-red-500">*</span>
