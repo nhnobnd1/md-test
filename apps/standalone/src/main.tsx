@@ -3,7 +3,6 @@ import {
   AuthProvider,
   BrowserRouter,
   LoadingProvider,
-  TokenManager,
 } from "@moose-desk/core";
 import LazyComponent from "@moose-desk/core/components/LazyComponent";
 import { AccountRepository, Env } from "@moose-desk/repo";
@@ -17,6 +16,7 @@ import ErrorBoundary from "src/ErrorBoundary";
 import AppConfigProviders from "src/providers/AppConfigProviders";
 import InitApp from "src/providers/InitAppProviders";
 import { StoreProviders } from "src/providers/StoreProviders";
+import { getBaseToken, getRefreshToken } from "src/utils/localValue";
 import("src/styles/tailwind.scss").then(() =>
   import("antd/dist/reset.css").then(() => import("src/styles/index.scss"))
 );
@@ -45,8 +45,8 @@ ReactDOM.render(
             <InitApp>
               <AuthProvider
                 defaultTokens={() => ({
-                  base_token: TokenManager.getToken("base_token"),
-                  refresh_token: TokenManager.getToken("refresh_token"),
+                  base_token: getBaseToken(),
+                  refresh_token: getRefreshToken(),
                 })}
                 fetchRefreshToken={(refreshToken: string) =>
                   AccountRepository().refreshToken({

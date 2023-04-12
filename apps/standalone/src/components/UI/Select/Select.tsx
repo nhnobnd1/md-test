@@ -621,7 +621,7 @@ Select.Auto = ({
       map((data) => {
         stopLoading();
         setOptions((value) => {
-          return _.uniqBy([...value, ...data.options], "value");
+          return data.options;
         });
 
         setCanLoadMore(data.canLoadMore);

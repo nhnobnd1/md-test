@@ -345,6 +345,12 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     if (statusFromTrash) {
       getListTicketFilter({ ...filterData, status: statusFromTrash });
       setStatusFromTrash("");
+      setFilterObject({
+        status: statusFromTrash,
+        tags: "",
+        customer: "",
+        priority: "",
+      });
       history.replaceState(null, "", window.location.href);
       return;
     }
@@ -506,7 +512,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         key={ticketId}
         selected={selectedResources.includes(_id)}
         position={index}
-        // onClick={() => {}}
+        onClick={() => {}}
       >
         <IndexTable.Cell>
           <Link

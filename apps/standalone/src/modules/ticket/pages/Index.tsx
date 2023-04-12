@@ -406,7 +406,14 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     if (statusFromTrash) {
       getListTicketFilter({ ...filterData, status: statusFromTrash });
       setStatusFromTrash("");
+      setFilterObject({
+        status: statusFromTrash,
+        tags: "",
+        customer: "",
+        priority: "",
+      });
       history.replaceState(null, "", window.location.href);
+
       return;
     }
     if (filterObject) {

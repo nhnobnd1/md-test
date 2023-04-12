@@ -100,6 +100,7 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
     borderColor: "#000",
     borderWidth: 1,
     borderTopWidth: 0,
+    overflow: "hidden",
   };
 
   const tableCellHeaderStyle: any = {
@@ -223,6 +224,19 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
     );
   };
 
+  function splitText(text: string, maxLength: number) {
+    const result = [];
+    let currentIndex = 0;
+
+    while (currentIndex < text.length) {
+      const slice = text.slice(currentIndex, currentIndex + maxLength);
+      result.push(slice);
+      currentIndex += maxLength;
+    }
+
+    return result;
+  }
+
   const itemConversation = (one: any) => {
     const removeQuote = one.chat.match(regexQuote)
       ? one.chat.match(regexQuote)[0]
@@ -272,19 +286,23 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
     return (
       <View key={item._id} style={tableRowStyle}>
         <View style={{ ...firstTableColStyle, flexBasis: 40 }}>
-          <Text style={tableCellStyle}>{item.ticketId}</Text>
+          <Text wrap style={tableCellStyle}>
+            {item.ticketId}
+          </Text>
         </View>
         <View style={{ ...firstTableColStyle, flexGrow: 1 }}>
-          <Text style={tableCellStyle}>{item.subject}</Text>
+          <Text wrap style={tableCellStyle}>
+            {item.subject}
+          </Text>
         </View>
-        <View style={firstTableColStyle}>
-          <Text wrap={false} style={tableCellStyle}>
-            {customerName}
+        <View style={{ ...firstTableColStyle }}>
+          <Text wrap style={{ ...tableCellStyle, wordWrap: "break-word" }}>
+            {splitText(customerName, 7)}
           </Text>
         </View>
         <View style={firstTableColStyle}>
           {item.tags?.slice(-2).map((itemTag) => (
-            <Text style={tableCellStyle} key={itemTag}>
+            <Text wrap style={tableCellStyle} key={itemTag}>
               #{itemTag}
             </Text>
           ))}
