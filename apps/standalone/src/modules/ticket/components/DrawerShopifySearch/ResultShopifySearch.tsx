@@ -1,19 +1,26 @@
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
-import React from "react";
+import useSaveDataGlobal from "@moose-desk/core/hooks/useSaveDataGlobal";
+import React, { useCallback, useState } from "react";
 import { useQuery } from "react-query";
 import { Table } from "src/components/UI/Table";
 import { getDetailShopifyCustomer } from "src/modules/ticket/api/api";
+import { DetailOrderCustomer } from "src/modules/ticket/components/DrawerShopifySearch/DetailOrderCustomer";
 import ListShopifyCustomerRes from "src/modules/ticket/helper/interface";
 import styles from "./styles.module.scss";
 interface IProps {
   id: number;
 }
 export const ResultShopifySearch = React.memo(({ id }: IProps) => {
+  const { setDataSaved } = useSaveDataGlobal();
+  const [dataOrder, setDataOrder] = useState<any>();
   const { data: resultData, isLoading } = useQuery({
     queryKey: [QUERY_KEY.CUSTOMER_SHOPIFY, id],
     queryFn: () => getDetailShopifyCustomer(String(id)),
     enabled: !!id,
-    keepPreviousData: true,
+    keepPreviousData: false,
+    onSuccess: ({ data }) => {
+      setDataSaved({ email: data?.data?.customerInfo?.email });
+    },
   });
   const convertResult: { customerInfo: ListShopifyCustomerRes; orders: any } = (
     resultData as any
@@ -42,10 +49,17 @@ export const ResultShopifySearch = React.memo(({ id }: IProps) => {
   ];
   const convertDataTable = convertResult?.orders.map((item: any) => {
     return {
+      ...item,
       name: item?.name,
       total: item?.total_price,
     };
   });
+  const handleClickRow = (record: any) => {
+    setDataOrder(record);
+  };
+  const handleBack = useCallback(() => {
+    setDataOrder(undefined);
+  }, []);
   const columns = [
     {
       title: "",
@@ -74,18 +88,28 @@ export const ResultShopifySearch = React.memo(({ id }: IProps) => {
       </div>
     );
   };
+  const _renderTableOrDetailOrder = () => {
+    return dataOrder?.name ? (
+      <DetailOrderCustomer onBack={handleBack} dataOrder={dataOrder} />
+    ) : (
+      <Table
+        columns={columns}
+        dataSource={convertDataTable}
+        rowKey={(record) => record.id}
+        onRow={(record, _) => {
+          return {
+            onClick: () => handleClickRow(record),
+          };
+        }}
+        scroll={{ y: 500 }}
+      />
+    );
+  };
   const _renderListOrder = () => {
     return isLoading ? (
       <div>Loading Orders...</div>
     ) : (
-      <div className="mt-10">
-        <Table
-          columns={columns}
-          dataSource={convertDataTable}
-          rowKey={(record) => record.id}
-          scroll={{ y: 500 }}
-        />
-      </div>
+      <div className="mt-10">{_renderTableOrDetailOrder()}</div>
     );
   };
   return (

@@ -1,6 +1,6 @@
 import { useJob, useMount } from "@moose-desk/core";
 import { GetStoreIdRequest, StoreRepository } from "@moose-desk/repo";
-import { createContext, ReactNode, useContext, useState } from "react";
+import { ReactNode, createContext, useContext, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import useNotification from "src/hooks/useNotification";
 import { useSubdomain } from "src/hooks/useSubdomain";
@@ -27,6 +27,7 @@ export const StoreProviders = ({ children }: StoreProvidersProps) => {
         .pipe(
           map(({ data }) => {
             if (data.statusCode === 200) {
+              console.log("fetch Store");
               setStoreId(data.data.storeId);
             } else {
               notification.error("Get store failed");

@@ -1,19 +1,19 @@
-import { createRepository } from "@moose-desk/core";
-import env from "../env";
-import { BaseResponse } from "../unty";
+import { createRepository } from '@moose-desk/core';
+import env from '../env';
+import { BaseResponse } from '../unty';
 import {
-  CheckConnectionRequest,
-  CreateEmailIntegrationRequest,
-  CreateEmailIntegrationResponse,
-  GetEmailGoogleAuthRequest,
-  GetEmailGoogleAuthResponse,
-  GetEmailMicrosoftAuthRequest,
-  GetListEmailRequest,
-  GetListEmailResponse,
-  GetOneEmailResponse,
-  UpdateEmailIntegrationRequest,
-  UpdateEmailIntegrationResponse,
-} from "./EmailIntegration";
+	CheckConnectionRequest,
+	CreateEmailIntegrationRequest,
+	CreateEmailIntegrationResponse,
+	GetEmailGoogleAuthRequest,
+	GetEmailGoogleAuthResponse,
+	GetEmailMicrosoftAuthRequest,
+	GetListEmailRequest,
+	GetListEmailResponse,
+	GetOneEmailResponse,
+	UpdateEmailIntegrationRequest,
+	UpdateEmailIntegrationResponse,
+} from './EmailIntegration';
 
 export const EmailIntegrationRepository = createRepository(
 	() => ({
@@ -57,6 +57,26 @@ export const EmailIntegrationRepository = createRepository(
 					success: boolean;
 				}>
 			>('/smtp-check-connection', payload);
+		},
+		verifyTypeMail(api, email: string) {
+			return api.get<BaseResponse<{ isGoogle: boolean }>>(
+				`/lookup-mx?email=${email}`
+			);
+		},
+		verifyGoogleCode(api, email: string) {
+			return api.get<BaseResponse<{ confirmationCode: string }>>(
+				`/google-confirmation-code?email=${email}`
+			);
+		},
+		sendVerifyForwardEmail(api, email: string) {
+			return api.get<BaseResponse<any>>(
+				`/send-verify-fwd-email?email=${email}`
+			);
+		},
+		checkVerifyForwardEmail(api, email: string) {
+			return api.get<BaseResponse<{ isVerified: boolean }>>(
+				`/check-verify-fwd-email?email=${email}`
+			);
 		},
 	}
 );

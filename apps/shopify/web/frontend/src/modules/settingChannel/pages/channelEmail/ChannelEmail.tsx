@@ -187,14 +187,14 @@ export const ChannelEmail = (props: ChannelEmailProps) => {
   }, [filterData]);
 
   const getDomain = useCallback(() => {
-    return `${getSubDomain()}${getDomainStandalone()}`;
+    return `https://${getSubDomain()}${getDomainStandalone()}`;
   }, [import.meta.env.MODE, getSubDomain, getDomainStandalone]);
 
   const handleRedirectStandaloneCreate = useCallback(() => {
     const baseToken = TokenManager.getToken("base_token");
     const refreshToken = TokenManager.getToken("refresh_token");
     window.open(
-      `http://${getDomain()}/setting-channel/channel-email/redirect?baseToken=${baseToken}&refreshToken=${refreshToken}&type=create`
+      `https://${getDomain()}/setting-channel/channel-email/redirect?baseToken=${baseToken}&refreshToken=${refreshToken}&type=create`
     );
   }, [window.location.href, import.meta.env.MODE]);
 
@@ -203,7 +203,7 @@ export const ChannelEmail = (props: ChannelEmailProps) => {
       const baseToken = TokenManager.getToken("base_token");
       const refreshToken = TokenManager.getToken("refresh_token");
       window.open(
-        `http://${getDomain()}/setting-channel/channel-email/redirect?baseToken=${baseToken}&refreshToken=${refreshToken}&type=update&id=${id}`
+        `https://${getDomain()}/setting-channel/channel-email/redirect?baseToken=${baseToken}&refreshToken=${refreshToken}&type=update&id=${id}`
       );
     },
     [window.location.href, getDomain]

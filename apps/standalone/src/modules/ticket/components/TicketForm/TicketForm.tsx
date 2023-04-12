@@ -4,17 +4,19 @@ import {
   useJob,
   useNavigate,
 } from "@moose-desk/core";
+import useSaveDataGlobal from "@moose-desk/core/hooks/useSaveDataGlobal";
 import {
   AgentRepository,
   CustomerRepository,
   EmailIntegration,
   EmailIntegrationRepository,
+  priorityOptions,
   TagRepository,
   TicketRepository,
-  priorityOptions,
 } from "@moose-desk/repo";
 import { Button, Input } from "antd";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useQueryClient } from "react-query";
 import { catchError, map, of } from "rxjs";
 import TextEditorTicket from "src/components/UI/Editor/TextEditorTicket";
 import { Form } from "src/components/UI/Form";
@@ -43,6 +45,7 @@ const validateCCEmail = (value: string[]): boolean => {
 };
 
 export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
+  const queryClient = useQueryClient();
   const [enableCC, setEnableCC] = useState(false);
   const message = useMessage();
   const notification = useNotification();
@@ -53,7 +56,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
   const [form] = Form.useForm();
   const [files, setFiles] = useState<any>([]);
   const [loadingButton, setLoadingButton] = useState(false);
-
+  const { dataSaved }: any = useSaveDataGlobal();
   const fetchAgents = useCallback(
     (params: LoadMoreValue) => {
       const limit = 500;
@@ -257,7 +260,16 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
   const onChangeAssignee = (value: string, options: any) => {
     console.log({ value, options });
   };
-
+  useEffect(() => {
+    if (form) {
+      form.setFieldsValue({ to: dataSaved?.email });
+    }
+  }, [dataSaved]);
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries(["saveData"]);
+    };
+  }, []);
   return (
     <Form
       form={form}
