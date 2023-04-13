@@ -5,7 +5,7 @@ import {
 } from "@ant-design/icons";
 import { formatTimeDDMMYY } from "@moose-desk/core/helper/format";
 import classNames from "classnames";
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import { Table } from "src/components/UI/Table";
 import styles from "./styles.module.scss";
 
@@ -16,9 +16,9 @@ interface IProps {
 export const DetailOrderCustomer = memo(({ onBack, dataOrder }: IProps) => {
   const countShippingPrice = () => {
     return (
-      (dataOrder?.total_price || 0) -
-      (dataOrder?.subtotal_price || 0) -
-      (dataOrder?.total_tax || 0)
+      (dataOrder?.current_total_price || 0) -
+      (dataOrder?.current_subtotal_price || 0) -
+      (dataOrder?.current_total_tax || 0)
     );
   };
   const countPrice = (item: any) => {
@@ -43,7 +43,7 @@ export const DetailOrderCustomer = memo(({ onBack, dataOrder }: IProps) => {
     },
     {
       title: "Tax",
-      value: `${dataOrder?.total_tax || 0}$`,
+      value: `${dataOrder?.current_total_tax || 0}$`,
     },
     {
       title: "Shipping",
@@ -51,7 +51,7 @@ export const DetailOrderCustomer = memo(({ onBack, dataOrder }: IProps) => {
     },
     {
       title: "Total",
-      value: `${dataOrder?.total_price || 0}$`,
+      value: `${dataOrder?.current_total_price || 0}$`,
       style: "text-bold",
     },
   ];
@@ -60,7 +60,12 @@ export const DetailOrderCustomer = memo(({ onBack, dataOrder }: IProps) => {
       title: "",
       dataIndex: "name",
       width: "40%",
-      render: (nameOrder: string) => <div>{nameOrder}</div>,
+      render: (nameOrder: string, record: any) => (
+        <div>
+          <div>{nameOrder}</div>
+          {record?.sku && <div>{record?.sku}</div>}
+        </div>
+      ),
     },
     {
       title: "",
@@ -79,12 +84,16 @@ export const DetailOrderCustomer = memo(({ onBack, dataOrder }: IProps) => {
       render: (_: any, record: any) => <div>{countPrice(record)}$</div>,
     },
   ];
-  const dataSource: any = dataOrder?.line_items;
-  const refundInfo = dataOrder?.refunds?.shift();
+  const memoDataSource = useMemo(() => {
+    const listRefundsItem = dataOrder?.refunds;
+    const dataSource: any = [...listRefundsItem, ...dataOrder?.line_items];
+    return dataSource;
+  }, [dataOrder]);
+
   const _renderContentShipping = () => {
     const addressOverview = dataOrder?.shipping_address;
     const trackingAddress = dataOrder?.fulfillments?.shift();
-    if (!dataOrder?.fulfillment_status) {
+    if (dataOrder?.fulfillment_status === "Unfulfilled") {
       return (
         <div className="pt-5 pl-5 d-flex">
           <div className="text-bold mr-5">Address:</div>
@@ -138,7 +147,7 @@ export const DetailOrderCustomer = memo(({ onBack, dataOrder }: IProps) => {
         <div className={styles.tableItemOrder}>
           <Table
             columns={columns}
-            dataSource={dataSource}
+            dataSource={memoDataSource}
             rowKey={(record) => record.id}
             scroll={{ y: 500 }}
           />
@@ -151,28 +160,28 @@ export const DetailOrderCustomer = memo(({ onBack, dataOrder }: IProps) => {
             {_renderContentShipping()}
           </div>
         </div>
-        {dataOrder?.financial_status === "partially_refunded" ||
-          (dataOrder?.financial_status === "refunded" && (
-            <div className={styles.wrapRefund}>
-              <div className={styles.subTitle}>
-                <UndoOutlined /> Refund
-              </div>
-              <div className={styles.contentRefund}>
-                <div className="pt-5 pl-5">
-                  <div>
-                    <span className="text-bold">Refunded:</span>
-                    <span className="ml-1">10$</span>
-                  </div>
+        {(dataOrder?.financial_status === "partially_refunded" ||
+          dataOrder?.financial_status === "refunded") && (
+          <div className={styles.wrapRefund}>
+            <div className={styles.subTitle}>
+              <UndoOutlined /> Refund
+            </div>
+            <div className={styles.contentRefund}>
+              <div className="pt-5 pl-5">
+                <div>
+                  <span className="text-bold">Refunded:</span>
+                  <span className="ml-1">10$</span>
                 </div>
-                <div className="pt-2 pl-5">
-                  <div>
-                    <span className="text-bold">Reason:</span>{" "}
-                    <span className="ml-1">{refundInfo?.note}</span>
-                  </div>
+              </div>
+              <div className="pt-2 pl-5">
+                <div>
+                  <span className="text-bold">Reason:</span>{" "}
+                  <span className="ml-1">thich thi reject</span>
                 </div>
               </div>
             </div>
-          ))}
+          </div>
+        )}
       </div>
     </section>
   );

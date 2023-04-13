@@ -1,6 +1,11 @@
 import { PageComponent, useNavigate } from "@moose-desk/core";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
+import {
+  formatTimeByTimezone,
+  formatTimeStamp,
+} from "@moose-desk/core/helper/format";
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
+import useTimezone from "@moose-desk/core/hooks/useTimezone";
 import { DatePicker, Form, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useForm } from "antd/lib/form/Form";
@@ -11,11 +16,6 @@ import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
 import env from "src/core/env";
 import { getReportByTags } from "src/modules/report/api/api";
-import {
-  convertToTimeStamp,
-  endOfMonth,
-  startOfMonth,
-} from "src/modules/report/helper/convert";
 interface ByTagsProps {}
 interface ITableFilter {
   page: number;
@@ -28,6 +28,8 @@ interface ITableFilter {
 }
 export const ByTags: PageComponent<ByTagsProps> = () => {
   const navigate = useNavigate();
+  const { timezone } = useTimezone(true);
+  const { startOfMonth, endOfMonth } = formatTimeByTimezone(timezone);
   const [form] = useForm();
   const [filterData, setFilterData] = useState<ITableFilter>({
     page: 1,
@@ -146,13 +148,17 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
   const handleChangeStartTime = (_: any, values: string) => {
     setFilterData((pre) => ({
       ...pre,
-      startTime: String(convertToTimeStamp(values) || startOfMonth),
+      startTime: String(
+        formatTimeStamp(values, "DD/MM/YYYY", timezone) || startOfMonth
+      ),
     }));
   };
   const handleChangeEndTime = (_: any, values: string) => {
     setFilterData((pre) => ({
       ...pre,
-      endTime: String(convertToTimeStamp(values) || endOfMonth),
+      endTime: String(
+        formatTimeStamp(values, "DD/MM/YYYY", timezone) || endOfMonth
+      ),
     }));
   };
   return (

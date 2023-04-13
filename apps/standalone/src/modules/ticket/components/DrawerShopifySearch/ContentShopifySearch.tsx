@@ -3,15 +3,16 @@ import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import useSaveDataGlobal from "@moose-desk/core/hooks/useSaveDataGlobal";
 import { Select } from "antd";
-import { memo, useMemo, useState } from "react";
+import { memo, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "react-query";
 import shopifyLogo from "src/assets/images/shopifyIcon.png";
 import { getListShopifyCustomer } from "src/modules/ticket/api/api";
-import { ResultShopifySearch } from "src/modules/ticket/components/DrawerShopifySearch/ResultShopifySearch";
+import ResultShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ResultShopifySearch";
 import ListShopifyCustomerRes from "src/modules/ticket/helper/interface";
 import styles from "./styles.module.scss";
 const ContentShopifySearch = () => {
   const queryClient = useQueryClient();
+  const parentRef: any = useRef(null);
   const { setDataSaved } = useSaveDataGlobal();
   const [querySearch, setQuerySearch] = useState<string>("");
   const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -33,6 +34,7 @@ const ContentShopifySearch = () => {
   };
   const handleSelectCustomer = (value: number) => {
     setSelectedId(value);
+    parentRef?.current?.clearDataOrder();
   };
   const handleClearSearch = () => {
     queryClient.removeQueries([
@@ -42,6 +44,7 @@ const ContentShopifySearch = () => {
     setDataSaved("");
     setSelectedId(null);
     setQuerySearch("");
+    parentRef?.current?.clearDataOrder();
   };
   const _renderListOption = () => {
     return memoDataSearch?.map((item: ListShopifyCustomerRes) => (
@@ -52,7 +55,9 @@ const ContentShopifySearch = () => {
     ));
   };
   const _renderResultSearch = () => {
-    return selectedId ? <ResultShopifySearch id={selectedId} /> : null;
+    return selectedId ? (
+      <ResultShopifySearch ref={parentRef} id={selectedId} />
+    ) : null;
   };
   return (
     <section className={styles.searchContainer}>

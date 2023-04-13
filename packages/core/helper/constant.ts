@@ -11,4 +11,5 @@ export const QUERY_KEY = {
   LIST_CUSTOMER_SHOPIFY: "listCustomerShopify",
   CUSTOMER_SHOPIFY: "customerShopify",
   CUSTOMER_SHOPIFY_ORDER: "customerShopifyOrder",
+  BUSINESS_HOURS: "businessHour",
 };
