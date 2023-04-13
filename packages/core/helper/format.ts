@@ -6,8 +6,13 @@ dayjs.extend(timezone);
 export const formatTimeDDMMYY = (timeString: string) => {
   return dayjs(timeString).format("DD/MM/YYYY");
 };
-export const formatTimeByTimezone = (timezoneString: string) => {
-  const currentDay = dayjs().tz(timezoneString);
+export const formatTimeByTimezone = (timezoneString: string | undefined) => {
+  const currentDay = !timezoneString ? dayjs() : dayjs().tz(timezoneString);
+  console.log({
+    timezoneString: timezoneString,
+    startOfMonth: currentDay.startOf("month").unix(),
+    endOfMonth: currentDay.endOf("month").unix(),
+  });
   return {
     startOfMonth: currentDay.startOf("month").unix(),
     endOfMonth: currentDay.endOf("month").unix(),

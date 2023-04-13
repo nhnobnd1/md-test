@@ -20,7 +20,7 @@ enum DataAgent {
 }
 const ByAgentPage = (props: ByAgentPageProps) => {
   const [form] = Form.useForm();
-  const { timezone } = useTimezone(true);
+  const { timezone } = useTimezone();
   const { startOfMonth, endOfMonth } = formatTimeByTimezone(timezone);
   const [filter, setFilter] = useState({
     startTime: String(startOfMonth),
