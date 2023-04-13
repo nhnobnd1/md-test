@@ -1,5 +1,10 @@
 import { PageComponent } from "@moose-desk/core";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
+import {
+  formatTimeByTimezone,
+  formatTimeStamp,
+} from "@moose-desk/core/helper/format";
+import useTimezone from "@moose-desk/core/hooks/useTimezone";
 import { DatePicker } from "antd";
 import { useCallback, useMemo, useState } from "react";
 import { useQueries } from "react-query";
@@ -15,11 +20,6 @@ import { ChartFirstResponseTime } from "src/modules/report/components/ChartFirst
 import { ChartResolutionTime } from "src/modules/report/components/ChartResolutionTime";
 import { ChartSupportVolume } from "src/modules/report/components/ChartSupportVolume";
 import { Statistic } from "src/modules/report/components/Statistic";
-import {
-  convertToTimeStamp,
-  endOfMonth,
-  startOfMonth,
-} from "src/modules/report/helper/convert";
 interface ReportIndexPageProps {}
 enum ChartReportData {
   SUMMARY = 0,
@@ -29,6 +29,8 @@ enum ChartReportData {
 }
 const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
   const [form] = Form.useForm();
+  const { timezone } = useTimezone(true);
+  const { startOfMonth, endOfMonth } = formatTimeByTimezone(timezone);
   const [filter, setFilter] = useState({
     startTime: String(startOfMonth),
     endTime: String(endOfMonth),
@@ -79,13 +81,17 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
   const handleChangeStartTime = (_: any, values: string) => {
     setFilter((pre) => ({
       ...pre,
-      startTime: String(convertToTimeStamp(values) || startOfMonth),
+      startTime: String(
+        formatTimeStamp(values, "DD/MM/YYYY", timezone) || startOfMonth
+      ),
     }));
   };
   const handleChangeEndTime = (_: any, values: string) => {
     setFilter((pre) => ({
       ...pre,
-      endTime: String(convertToTimeStamp(values) || endOfMonth),
+      endTime: String(
+        formatTimeStamp(values, "DD/MM/YYYY", timezone) || endOfMonth
+      ),
     }));
   };
   return (

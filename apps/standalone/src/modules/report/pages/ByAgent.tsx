@@ -1,4 +1,9 @@
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
+import {
+  formatTimeByTimezone,
+  formatTimeStamp,
+} from "@moose-desk/core/helper/format";
+import useTimezone from "@moose-desk/core/hooks/useTimezone";
 import { DatePicker } from "antd";
 import { useCallback, useMemo, useState } from "react";
 import { useQuery } from "react-query";
@@ -7,11 +12,6 @@ import { Header } from "src/components/UI/Header";
 import { getReportTopFive } from "src/modules/report/api/api";
 import ChartAgentsTicket from "src/modules/report/components/ChartAgentsTicket/ChartAgentsTicket";
 import { ReportAgentTable } from "src/modules/report/components/ReportAgentTable";
-import {
-  convertToTimeStamp,
-  endOfMonth,
-  startOfMonth,
-} from "src/modules/report/helper/convert";
 
 interface ByAgentPageProps {}
 enum DataAgent {
@@ -20,6 +20,8 @@ enum DataAgent {
 }
 const ByAgentPage = (props: ByAgentPageProps) => {
   const [form] = Form.useForm();
+  const { timezone } = useTimezone(true);
+  const { startOfMonth, endOfMonth } = formatTimeByTimezone(timezone);
   const [filter, setFilter] = useState({
     startTime: String(startOfMonth),
     endTime: String(endOfMonth),
@@ -53,13 +55,17 @@ const ByAgentPage = (props: ByAgentPageProps) => {
   const handleChangeStartTime = (_: any, values: string) => {
     setFilter((pre) => ({
       ...pre,
-      startTime: String(convertToTimeStamp(values) || startOfMonth),
+      startTime: String(
+        formatTimeStamp(values, "DD/MM/YYYY", timezone) || startOfMonth
+      ),
     }));
   };
   const handleChangeEndTime = (_: any, values: string) => {
     setFilter((pre) => ({
       ...pre,
-      endTime: String(convertToTimeStamp(values) || endOfMonth),
+      endTime: String(
+        formatTimeStamp(values, "DD/MM/YYYY", timezone) || endOfMonth
+      ),
     }));
   };
   return (

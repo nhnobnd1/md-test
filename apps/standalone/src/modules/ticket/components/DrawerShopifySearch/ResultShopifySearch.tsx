@@ -1,6 +1,6 @@
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import useSaveDataGlobal from "@moose-desk/core/hooks/useSaveDataGlobal";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useImperativeHandle, useState } from "react";
 import { useQuery } from "react-query";
 import { Table } from "src/components/UI/Table";
 import { getDetailShopifyCustomer } from "src/modules/ticket/api/api";
@@ -10,7 +10,7 @@ import styles from "./styles.module.scss";
 interface IProps {
   id: number;
 }
-export const ResultShopifySearch = React.memo(({ id }: IProps) => {
+const ResultShopifySearch = React.forwardRef(({ id }: IProps, ref) => {
   const { setDataSaved } = useSaveDataGlobal();
   const [dataOrder, setDataOrder] = useState<any>();
   const { data: resultData, isLoading } = useQuery({
@@ -51,9 +51,20 @@ export const ResultShopifySearch = React.memo(({ id }: IProps) => {
     return {
       ...item,
       name: item?.name,
-      total: item?.total_price,
+      total: item?.current_total_price,
     };
   });
+  useImperativeHandle(
+    ref,
+    () => {
+      return {
+        clearDataOrder() {
+          setDataOrder(undefined);
+        },
+      };
+    },
+    []
+  );
   const handleClickRow = (record: any) => {
     setDataOrder(record);
   };
@@ -119,3 +130,4 @@ export const ResultShopifySearch = React.memo(({ id }: IProps) => {
     </div>
   );
 });
+export default React.memo(ResultShopifySearch);
