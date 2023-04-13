@@ -28,7 +28,7 @@ interface ITableFilter {
 }
 export const ByTags: PageComponent<ByTagsProps> = () => {
   const navigate = useNavigate();
-  const { timezone } = useTimezone(true);
+  const { timezone } = useTimezone();
   const { startOfMonth, endOfMonth } = formatTimeByTimezone(timezone);
   const [form] = useForm();
   const [filterData, setFilterData] = useState<ITableFilter>({

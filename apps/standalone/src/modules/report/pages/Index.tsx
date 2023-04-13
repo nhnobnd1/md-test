@@ -29,7 +29,7 @@ enum ChartReportData {
 }
 const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
   const [form] = Form.useForm();
-  const { timezone } = useTimezone(true);
+  const { timezone } = useTimezone();
   const { startOfMonth, endOfMonth } = formatTimeByTimezone(timezone);
   const [filter, setFilter] = useState({
     startTime: String(startOfMonth),
