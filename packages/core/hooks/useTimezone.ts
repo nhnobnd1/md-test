@@ -13,7 +13,7 @@ export default function useTimezone(enabled = false) {
         .catch((error) => reject(error));
     });
   };
-  const { data } = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: [QUERY_KEY.BUSINESS_HOURS, { page: 1, limit: 10 }],
     queryFn: () => getBusinessHours({ page: 1, limit: 10 }),
     enabled: enabled,
@@ -21,5 +21,6 @@ export default function useTimezone(enabled = false) {
   const deepData = (data as any)?.data?.data[0];
   return {
     timezone: deepData?.timezone,
+    refetchTimezone: refetch,
   };
 }

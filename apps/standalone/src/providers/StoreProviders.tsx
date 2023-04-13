@@ -1,6 +1,6 @@
-import { useJob, useMount, useUser } from "@moose-desk/core";
+import { useJob, useMount } from "@moose-desk/core";
 import { GetStoreIdRequest, StoreRepository } from "@moose-desk/repo";
-import { ReactNode, createContext, useContext, useState } from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import useNotification from "src/hooks/useNotification";
 import { useSubdomain } from "src/hooks/useSubdomain";
@@ -51,7 +51,6 @@ export const StoreProviders = ({ children }: StoreProvidersProps) => {
       setStoreId(getStoreId());
     }
   });
-
   return (
     <StoreContext.Provider value={{ storeId: storeId }}>
       {children}
