@@ -1,4 +1,5 @@
-import { memo } from "react";
+import { formatTimeDDMMYY } from "@moose-desk/core/helper/format";
+import { memo, useMemo } from "react";
 import {
   Area,
   AreaChart,
@@ -8,19 +9,49 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { convertToLongDate } from "src/modules/report/helper/convert";
+import { convertSecondsToHoursMinutes } from "src/modules/report/helper/convert";
 import ChartResolutionTimeRes from "src/modules/report/helper/interface";
 interface ChartResolutionTimeProps {
   data: ChartResolutionTimeRes[];
 }
 
 export const ChartResolutionTime = ({ data }: ChartResolutionTimeProps) => {
-  const chartData = data?.map((item: ChartResolutionTimeRes) => {
+  const chartData: any[] = data?.map((item: ChartResolutionTimeRes) => {
     return {
-      name: convertToLongDate(item?.date),
+      name: formatTimeDDMMYY(item?.date),
       time: item?.avgResolutionTicket,
     };
   });
+
+  const formatYAxis = (tickItem: number) => {
+    return `${convertSecondsToHoursMinutes(tickItem)}`;
+  };
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="custom-tooltip">
+          <p className="label">{`${label}`}</p>
+          <p className="time">{`time: ${convertSecondsToHoursMinutes(
+            payload[0].value
+          )}`}</p>
+        </div>
+      );
+    }
+    return null;
+  };
+  // const maxYValue = useMemo(() => {
+  //   const convertChartDataToNumberArray = chartData?.map(
+  //     (data) => data?.time || 0
+  //   );
+  //   return Math.max(...convertChartDataToNumberArray);
+  // }, [chartData]);
+  const maxYValue = useMemo(() => {
+    const listTime: any = data?.map(
+      (item: ChartResolutionTimeRes) => item.avgResolutionTicket
+    );
+    return Math.max(...(listTime || [0, 0]));
+  }, [chartData]);
+
   return (
     <ResponsiveContainer width="100%" height="100%">
       <AreaChart
@@ -36,8 +67,11 @@ export const ChartResolutionTime = ({ data }: ChartResolutionTimeProps) => {
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" />
-        <YAxis />
-        <Tooltip />
+        <YAxis
+          tickFormatter={formatYAxis}
+          domain={maxYValue ? [0, maxYValue] : undefined}
+        />
+        <Tooltip content={<CustomTooltip />} />
         <Area type="monotone" dataKey="time" stroke="#8884d8" fill="#8884d8" />
       </AreaChart>
     </ResponsiveContainer>

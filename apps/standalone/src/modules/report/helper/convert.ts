@@ -13,9 +13,14 @@ export const convertToLongDate = (date: string) => {
   return dayjs(date, "MM/DD/YYYY").local().format("MMMM Do YYYY");
 };
 export const convertSecondsToHoursMinutes = (seconds: number) => {
-  if (!seconds) return `0m`;
+  if (!seconds) return `0s`;
   const duration = dayjs.duration(seconds, "seconds");
   const hours = duration.hours();
   const minutes = duration.minutes();
-  return `${hours}h${minutes}m`;
+  if (seconds < 60) {
+    return `${seconds}s`;
+  }
+  if (seconds > 60 && seconds < 3600) {
+    return `${minutes}m`;
+  } else return `${hours}h${minutes}m`;
 };

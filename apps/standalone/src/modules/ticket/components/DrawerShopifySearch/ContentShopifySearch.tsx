@@ -1,6 +1,7 @@
 import { SearchOutlined } from "@ant-design/icons";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
+import useSaveDataGlobal from "@moose-desk/core/hooks/useSaveDataGlobal";
 import { Select } from "antd";
 import { memo, useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "react-query";
@@ -11,6 +12,7 @@ import ListShopifyCustomerRes from "src/modules/ticket/helper/interface";
 import styles from "./styles.module.scss";
 const ContentShopifySearch = () => {
   const queryClient = useQueryClient();
+  const { setDataSaved } = useSaveDataGlobal();
   const [querySearch, setQuerySearch] = useState<string>("");
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const debounceSearch: string = useDebounce(querySearch, 300);
@@ -26,7 +28,6 @@ const ContentShopifySearch = () => {
     const data = (listCustomerOrdered as any)?.data?.data;
     return data;
   }, [listCustomerOrdered]);
-
   const handleSearch = (value: any) => {
     setQuerySearch(value);
   };
@@ -34,10 +35,11 @@ const ContentShopifySearch = () => {
     setSelectedId(value);
   };
   const handleClearSearch = () => {
-    queryClient.cancelQueries([
+    queryClient.removeQueries([
       QUERY_KEY.LIST_CUSTOMER_SHOPIFY,
       debounceSearch,
     ]);
+    setDataSaved("");
     setSelectedId(null);
     setQuerySearch("");
   };
@@ -53,7 +55,7 @@ const ContentShopifySearch = () => {
     return selectedId ? <ResultShopifySearch id={selectedId} /> : null;
   };
   return (
-    <section>
+    <section className={styles.searchContainer}>
       <div className="flex-center justify-between">
         <img className={styles.icon} src={shopifyLogo} alt="logo" />
         <div className={styles.wrapSearchInput}>

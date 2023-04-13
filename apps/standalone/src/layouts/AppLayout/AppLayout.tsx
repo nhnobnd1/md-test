@@ -5,6 +5,7 @@ import {
   useLocation,
   useNavigate,
 } from "@moose-desk/core";
+import useToggleGlobal from "@moose-desk/core/hooks/useToggleGlobal";
 import { AccountRepository } from "@moose-desk/repo";
 import { Layout, Menu, MenuProps } from "antd";
 import classNames from "classnames";
@@ -43,6 +44,7 @@ export const AppLayout = (props: AppLayoutProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { breadCrumb, setBreadCrumb } = useAppConfig();
+  const { visible } = useToggleGlobal(); // lấy giá trị visible khi bấm vào nút mở search shopify customer
   const [collapsed, setCollapsed] = useState(false);
   const { logout } = useAuth();
   const caseTopMenu = useMemo<MenuProps["items"]>(() => {
@@ -201,7 +203,9 @@ export const AppLayout = (props: AppLayoutProps) => {
       },
     ];
   }, [AgentRoutePaths, DashboardRoutePaths, SettingRoutePaths, RoutePaths]);
-
+  useEffect(() => {
+    setCollapsed(visible); // set lại khi bấm nút show/hide shopify customer
+  }, [visible]);
   const getDefaultOpenKeys = useCallback(
     (
       list: any[],
@@ -324,7 +328,6 @@ export const AppLayout = (props: AppLayoutProps) => {
   const handleLogout = () => {
     SignOutApi();
   };
-
   return (
     <Layout className="app-layout min-h-screen">
       <Layout.Header className="header">
