@@ -251,7 +251,7 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
                 // dataIndex="storeId"
                 render={(_, record: any) => (
                   <span
-                    className="cursor-pointer hover:underline hover:text-blue-500 name-tag"
+                    className="cursor-pointer hover:underline hover:text-blue-500 "
                     onClick={() => {
                       navigate(
                         generatePath(

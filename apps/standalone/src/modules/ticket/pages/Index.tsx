@@ -749,7 +749,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                           <div></div>
                         )}
                         <Pagination
-                          className="mt-4 flex justify-end"
+                          className="mt-4 flex justify-end flex-wrap "
                           currentPage={filterData.page ?? 1}
                           total={meta?.totalCount}
                           pageSize={filterData.limit ?? env.DEFAULT_PAGE_SIZE}

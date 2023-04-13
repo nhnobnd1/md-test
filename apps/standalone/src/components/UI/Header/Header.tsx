@@ -37,7 +37,7 @@ export const Header = ({
             <LeftOutlined />
           </Button>
         )}
-        <h2 className={classNames(["translate-y-[4px]"])}>{title}</h2>
+        <h2 className={classNames(["translate-y-[4px] truncate"])}>{title}</h2>
         {children}
       </div>
     </div>
