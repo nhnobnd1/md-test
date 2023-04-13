@@ -376,7 +376,7 @@ const TrashTicket = (props: TrashTicketProps) => {
                     }}
                   ></Table.Column>
                   <Table.Column
-                    key="lastUpdate"
+                    key="updatedTimestamp"
                     title="Last Update"
                     render={(_, record: Ticket) => (
                       <span>
