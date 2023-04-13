@@ -1,16 +1,16 @@
 import { CloudUploadOutlined, DeleteOutlined } from "@ant-design/icons";
-import { useJob, useToggle } from "@moose-desk/core";
+import { useJob, useLocation, useNavigate, useToggle } from "@moose-desk/core";
+import { TicketRepository } from "@moose-desk/repo";
 import { Editor, IAllProps } from "@tinymce/tinymce-react";
 import { Button, FormInstance, Modal, Popover } from "antd";
 import { filesize } from "filesize";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { catchError, map, of } from "rxjs";
+import useMessage from "src/hooks/useMessage";
 import ImageZoom from "src/modules/ticket/components/DetailTicketForm/ImageZoom";
 import "./editor.scss";
 
-import { TicketRepository } from "@moose-desk/repo";
-import useMessage from "src/hooks/useMessage";
 interface TextEditorProps extends Omit<IAllProps, "onChange" | "value"> {
   value?: any;
   onChange?: (value: any) => void;
@@ -52,6 +52,8 @@ const TextEditorTicket = ({
     }
   };
   const [myFiles, setMyFiles] = useState<any>([]);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const [errorText, setErrorText] = useState("");
 
@@ -180,6 +182,19 @@ const TextEditorTicket = ({
       setMyFiles([]);
     }
   }, [files]);
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (form?.getFieldValue("content")) {
+        event.preventDefault();
+        event.returnValue = "";
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [location, form]);
 
   return (
     <div>

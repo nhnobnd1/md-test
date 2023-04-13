@@ -1,10 +1,4 @@
-import {
-  emailRegex,
-  useJob,
-  useLocation,
-  useNavigate,
-  useParams,
-} from "@moose-desk/core";
+import { emailRegex, useJob, useNavigate, useParams } from "@moose-desk/core";
 import {
   Agent,
   AgentRepository,
@@ -17,16 +11,16 @@ import {
   GetListAgentRequest,
   GetListTagRequest,
   Priority,
-  priorityOptions,
-  statusOptions,
   StatusTicket,
   Tag,
   TagRepository,
   Ticket,
   TicketRepository,
   UpdateTicket,
+  priorityOptions,
+  statusOptions,
 } from "@moose-desk/repo";
-import { Button, Card, Divider, List, Select as AntSelect } from "antd";
+import { Select as AntSelect, Button, Card, Divider, List } from "antd";
 import moment from "moment";
 import VirtualList from "rc-virtual-list";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -91,7 +85,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
   const [primaryEmail, setPrimaryEmail] = useState<EmailIntegration>();
   const [files, setFiles] = useState<any>([]);
   const [loadingButton, setLoadingButton] = useState(false);
-  const location = useLocation();
+
   const [agents, setAgents] = useState<Agent[]>([]);
 
   const [emailIntegrationOptions, setEmailIntegrationOptions] = useState<any>(
@@ -433,18 +427,6 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
     });
   };
 
-  useEffect(() => {
-    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      if (form.getFieldValue("content")) {
-        event.preventDefault();
-        event.returnValue = "";
-      }
-    };
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [location, form]);
   return (
     <>
       {processing ? (

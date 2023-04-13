@@ -228,7 +228,7 @@ const TrashTicket = (props: TrashTicketProps) => {
           <div className="col-span-4 col-start-2">
             <div className="flex ">
               <div
-                className={`filters flex gap-3  ${
+                className={`filters flex gap-3 h-[56px] items-center ${
                   selectedRowKeys.length
                     ? "opacity-100"
                     : "opacity-0 pointer-events-none"
