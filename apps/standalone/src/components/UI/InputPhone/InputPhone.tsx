@@ -101,7 +101,7 @@ const InputPhone = ({
   }, [props]);
 
   return (
-    <div className="flex">
+    <div className="flex flex-wrap gap-3">
       <Select
         showSearch
         searchValue={filterValue}
@@ -110,7 +110,7 @@ const InputPhone = ({
         onChange={(value) => handleChangeValueSelect(value)}
         disabled={disabled}
         style={{ maxWidth: "300px", maxHeight: "330px" }}
-        className="flex mr-2"
+        className="flex"
       >
         {dataSelect.map((item) => (
           <Select.Option
@@ -131,6 +131,7 @@ const InputPhone = ({
         ))}
       </Select>
       <InputTextNumber
+        style={{ flex: 1, flexBasis: 300 }}
         type="tel"
         {...props}
         autoComplete="tel"

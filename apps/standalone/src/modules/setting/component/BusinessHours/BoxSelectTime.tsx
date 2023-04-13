@@ -171,7 +171,7 @@ const BoxSelectTime = ({
             options={optionsMarkupStart}
           ></Select>
         </div>
-        <div className="ml-4 mr-4">
+        <div className="ml-4 mr-4 w-[20px]">
           <Typography.Text>to</Typography.Text>
         </div>
         <div style={{ maxWidth: 130 }}>

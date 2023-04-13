@@ -1,6 +1,6 @@
 import { TokenManager, useJob, useMount } from "@moose-desk/core";
 import { AgentRepository } from "@moose-desk/repo";
-import { Button, Input } from "antd";
+import { Button, Card, Input } from "antd";
 import * as jose from "jose";
 import { useCallback } from "react";
 import { catchError, map, of } from "rxjs";
@@ -61,77 +61,79 @@ export default function IndexProfileManager() {
   useMount(() => fetDetailsProfile(token.sub ?? ""));
   return (
     <div>
-      <Form
-        onFinish={handleSubmitForm}
-        layout="vertical"
-        initialValues={result}
-        enableReinitialize
-      >
-        <Form.Item name="_id" hidden />
-        <Form.Item
-          label="First name"
-          name="firstName"
-          rules={[
-            { required: true, message: "First name is required!" },
-            {
-              max: 255,
-              message: "First name up to 255 characters",
-            },
-            {
-              pattern: /[^\s]/,
-              message: "First name is required!",
-            },
-          ]}
+      <Card title="Profile">
+        <Form
+          onFinish={handleSubmitForm}
+          layout="vertical"
+          initialValues={result}
+          enableReinitialize
         >
-          <Input placeholder="Enter first name" />
-        </Form.Item>
-        <Form.Item
-          label="Last name"
-          name="lastName"
-          rules={[
-            { required: true, message: "Last name is required!" },
-            {
-              max: 255,
-              message: "Last name up to 255 characters",
-            },
-            {
-              pattern: /[^\s]/,
-              message: "Last name is required!",
-            },
-          ]}
-        >
-          <Input placeholder="Enter last name" />
-        </Form.Item>
-        <Form.Item
-          label="Email"
-          name="email"
-          rules={[
-            { required: true, message: "You must enter your email!" },
-            { type: "email", message: "Email is invalid!" },
-          ]}
-        >
-          <Input disabled={true} placeholder="Enter email" />
-        </Form.Item>
+          <Form.Item name="_id" hidden />
+          <Form.Item
+            label="First name"
+            name="firstName"
+            rules={[
+              { required: true, message: "First name is required!" },
+              {
+                max: 255,
+                message: "First name up to 255 characters",
+              },
+              {
+                pattern: /[^\s]/,
+                message: "First name is required!",
+              },
+            ]}
+          >
+            <Input placeholder="Enter first name" />
+          </Form.Item>
+          <Form.Item
+            label="Last name"
+            name="lastName"
+            rules={[
+              { required: true, message: "Last name is required!" },
+              {
+                max: 255,
+                message: "Last name up to 255 characters",
+              },
+              {
+                pattern: /[^\s]/,
+                message: "Last name is required!",
+              },
+            ]}
+          >
+            <Input placeholder="Enter last name" />
+          </Form.Item>
+          <Form.Item
+            label="Email"
+            name="email"
+            rules={[
+              { required: true, message: "You must enter your email!" },
+              { type: "email", message: "Email is invalid!" },
+            ]}
+          >
+            <Input disabled={true} placeholder="Enter email" />
+          </Form.Item>
 
-        <Form.Item
-          label="Phone No."
-          name="phoneNumber"
-          rules={[
-            {
-              pattern: regexPhoneValidate,
-              message: "The input phone number is not valid",
-            },
-          ]}
-        >
-          <InputPhone placeholder="Enter phone number" />
-        </Form.Item>
-        <div className="flex-1 text-right mt-4">
-          <Button onClick={handleResetForm}>Cancel</Button>
-          <Button htmlType="submit" type="primary" className="ml-4">
-            Save
-          </Button>
-        </div>
-      </Form>
+          <Form.Item
+            label="Phone No."
+            name="phoneNumber"
+            rules={[
+              {
+                pattern: regexPhoneValidate,
+                message: "The input phone number is not valid",
+              },
+            ]}
+          >
+            <InputPhone placeholder="Enter phone number" />
+          </Form.Item>
+          <div className="flex-1 text-right mt-4">
+            <Button onClick={handleResetForm}>Cancel</Button>
+            <Button htmlType="submit" type="primary" className="ml-4">
+              Save
+            </Button>
+          </div>
+        </Form>
+      </Card>
     </div>
   );
 }

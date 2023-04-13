@@ -85,7 +85,7 @@ const ModalFilter = ({
             <Select options={customersOptions} />
           </Form.Item>
           <Form.Item label="Tags" name="tags">
-            <Select mode="multiple" options={tagsOptions} />
+            <Select mode="multiple" options={tagsOptions} listHeight={180} />
           </Form.Item>
           <Form.Item label="Priority" name="priority">
             <Select options={priorityOptions} />
