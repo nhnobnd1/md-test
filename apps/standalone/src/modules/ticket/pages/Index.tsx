@@ -588,8 +588,8 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-7 gap-6">
-          <div className="col-span-1 min-w-[150px]">
+        <div className="grid grid-cols-7 gap-4">
+          <div className="col-span-1 ">
             <CardStatistic
               status={filterObject?.status || location.state}
               className="mb-4"

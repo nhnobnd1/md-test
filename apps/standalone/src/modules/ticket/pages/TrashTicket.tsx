@@ -266,8 +266,8 @@ const TrashTicket = (props: TrashTicketProps) => {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-7 gap-6">
-          <div className="col-span-1 min-w-[150px]">
+        <div className="grid grid-cols-7 gap-4">
+          <div className="col-span-1 ">
             <CardStatistic
               className="mb-4"
               keyPanel="publicViews"
@@ -284,7 +284,7 @@ const TrashTicket = (props: TrashTicketProps) => {
               ]}
             />
           </div>
-          <div className="col-span-6">
+          <div className="col-span-6 ">
             {tickets && (
               <>
                 <Table

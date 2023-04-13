@@ -206,6 +206,16 @@ export const AppLayout = (props: AppLayoutProps) => {
   useEffect(() => {
     setCollapsed(visible); // set lại khi bấm nút show/hide shopify customer
   }, [visible]);
+
+  useEffect(() => {
+    function handleResize() {
+      setCollapsed(window.innerWidth < 1000);
+    }
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   const getDefaultOpenKeys = useCallback(
     (
       list: any[],

@@ -220,6 +220,7 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
               dataSource={tags}
               loading={loadingList}
               onChange={onChangeTable}
+              scroll={{ x: 1024 }}
             >
               <Table.Column
                 key="name"

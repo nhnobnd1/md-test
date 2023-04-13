@@ -6,6 +6,7 @@ interface TableProps extends ATableProps<any> {}
 export const Table = (props: TableProps) => {
   return (
     <ATable
+      scroll={{ x: 512 }}
       className="Table"
       pagination={false}
       locale={{

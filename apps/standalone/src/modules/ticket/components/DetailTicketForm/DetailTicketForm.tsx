@@ -437,6 +437,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
             <LeftCircleOutlined />
           </div> */}
           <Header
+            className="mr-10"
             title={`Ticket ${ticket?.ticketId}: ${ticket?.subject}`}
             back
             backAction={() => {
@@ -456,8 +457,9 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
             onFinish={onFinish}
           >
             <Card className="w-full">
-              <div className="w-full flex items-center gap-4">
+              <div className="w-full flex items-center gap-1 flex-wrap">
                 <Form.Item
+                  className="mr-4"
                   labelAlign="left"
                   label={<span style={{ width: 50 }}>Status</span>}
                   name="status"
@@ -473,8 +475,9 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                   ></AntSelect>
                 </Form.Item>
               </div>
-              <div className="flex gap-4 justify-between items-center w-full mb-1 flex-wrap">
+              <div className="flex gap-1 justify-between items-center w-full mb-1 flex-wrap">
                 <Form.Item
+                  className="mr-4"
                   labelAlign="left"
                   label={<span style={{ width: 50 }}>Priority</span>}
                   name="priority"
