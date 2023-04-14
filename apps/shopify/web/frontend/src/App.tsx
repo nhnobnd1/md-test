@@ -3,6 +3,7 @@ import { NavigationMenu, useToast } from "@shopify/app-bridge-react";
 import { NavigationLink } from "@shopify/app-bridge-react/components/NavigationMenu/NavigationMenu";
 import { useEffect, useMemo } from "react";
 import { useCookies } from "react-cookie";
+import { QueryClient } from "react-query";
 import { RichText } from "src/components/RichText";
 import env from "src/core/env";
 import { useApi, useShopDomain } from "src/hooks";
@@ -11,10 +12,18 @@ import { useSubdomain } from "src/hooks/useSubdomain";
 import { LoginResponse } from "src/models/Auth";
 import { useStore } from "src/providers/StoreProviders";
 import { AppRoutes } from "src/routes";
-
 export default function App() {
   const { routes } = useRoutes();
-
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+        cacheTime: 24 * 3600 * 1000, // cache for 1 day
+        retry: false,
+        // enabled: import.meta.env.VITE_USER_NODE_ENV === "development",
+      },
+    },
+  });
   const shop = useShopDomain();
   const { subDomain } = useSubdomain();
   const api = useApi();
@@ -22,7 +31,7 @@ export default function App() {
   const { show } = useToast();
   const { login, isLoggedIn, user } = useAuth();
   const { storeId } = useStore();
-
+  // useGlobalData(isLoggedIn);
   useEffect(() => {
     if ((shop && !isLoggedIn) || (!user && shop)) {
       console.log("Start login with token...");
@@ -85,5 +94,8 @@ export default function App() {
         />
       </div>
     </>
+    // <QueryProvider>
+
+    // </QueryProvider>
   );
 }

@@ -1,5 +1,5 @@
-import { useJob, useMount, useRole, useToggle } from "@moose-desk/core";
-import useTimezone from "@moose-desk/core/hooks/useTimezone";
+import { useJob, useMount, useToggle } from "@moose-desk/core";
+import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import {
   AutoReply,
   BusinessCalendar,
@@ -25,7 +25,7 @@ interface BusinessHoursProps {}
 const BusinessHours = (props: BusinessHoursProps) => {
   const message = useMessage();
   const notification = useNotification();
-  const { refetchTimezone } = useTimezone();
+  const { refetchGlobal } = useGlobalData();
   // main code
   const [dataBusinessCalendar, setDataBusinessCalendar] =
     useState<BusinessCalendar>();
@@ -111,7 +111,7 @@ const BusinessHours = (props: BusinessHoursProps) => {
               notification.success(
                 "Your settings have been changed successfully."
               );
-              refetchTimezone();
+              refetchGlobal();
             } else {
               notification.error("Business hours has been updated failed.", {
                 description: "Update failed!",

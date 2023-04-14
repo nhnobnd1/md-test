@@ -11,6 +11,7 @@ import { Loading } from "@shopify/polaris";
 import { lazy, Suspense } from "react";
 import { CookiesProvider } from "react-cookie";
 import ReactDOM from "react-dom";
+import { QueryClient } from "react-query";
 import { Provider as ReduxProvider } from "react-redux";
 import {
   AppBridgeProvider,
@@ -28,12 +29,13 @@ import("src/styles/index.scss").then(() => {
 });
 
 Env.setApiUrl(env.API_URL);
-
+const queryClient = new QueryClient();
 ReactDOM.render(
   <ErrorBoundary>
     <PolarisProvider>
       <BrowserRouter>
         <AppBridgeProvider>
+          {/* <QueryClientProvider client={queryClient}> */}
           <QueryProvider>
             <Suspense
               fallback={
@@ -78,6 +80,7 @@ ReactDOM.render(
               </LoadingProvider>
             </Suspense>
           </QueryProvider>
+          {/* </QueryClientProvider> */}
         </AppBridgeProvider>
       </BrowserRouter>
     </PolarisProvider>

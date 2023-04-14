@@ -1,0 +1,19 @@
+.groupFilter {
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    .dateTime {
+        display: flex;
+    }
+}
+.wrapPagination {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+.datePickerCustomer {
+    width: 100px;
+}
+.endDateBlock {
+    margin-left: 15px;
+}

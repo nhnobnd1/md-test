@@ -10,6 +10,7 @@ import {
   HomeMinor,
   ProfileMinor,
   ReadTimeMinor,
+  ReportMinor,
   SettingsMajor,
   SettingsMinor,
 } from "@shopify/polaris-icons";
@@ -17,6 +18,7 @@ import AgentRoutePaths from "src/modules/agent/routes/paths";
 import CustomersRoutePaths from "src/modules/customers/routes/paths";
 import DashboardRoutePaths from "src/modules/dashboard/routes/paths";
 import GroupsRoutePaths from "src/modules/groups/routes/paths";
+import ReportRoutePaths from "src/modules/report/routes/paths";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
@@ -54,11 +56,35 @@ const caseNavigation: NavigationItems[] = [
   //   url: "/organization",
   //   icon: () => <FinancesMinor />,
   // },
-  // {
-  //   label: "Reporting",
-  //   url: "/reporting",
-  //   icon: () => <ReportMinor />,
-  // },
+  {
+    label: "Reporting",
+    url: ReportRoutePaths.Index,
+    icon: () => <ReportMinor />,
+    subNavigationItems: [
+      {
+        label: "Over view",
+        url: ReportRoutePaths.Overview,
+      },
+      {
+        label: "By Agent",
+        url: ReportRoutePaths.ByAgent,
+      },
+      {
+        label: "By Tags",
+        url: ReportRoutePaths.ByTags,
+      },
+    ],
+    tabBarNavigation: [
+      // {
+      //   label: "Security",
+      //   url: SettingRoutePaths.AccountSecurity.Security.Index,
+      // },
+      // {
+      //   label: "Access Manager",
+      //   url: SettingRoutePaths.AccountSecurity.AccessManager.Index,
+      // },
+    ],
+  },
   {
     label: "Settings",
     url: AgentRoutePaths.Index,

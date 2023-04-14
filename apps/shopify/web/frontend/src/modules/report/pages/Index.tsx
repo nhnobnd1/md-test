@@ -1,0 +1,153 @@
+import { PageComponent } from "@moose-desk/core";
+import { Card, Page } from "@shopify/polaris";
+import { useCallback, useState } from "react";
+import MDDatePicker from "src/components/DatePicker/MDDatePicker";
+import styles from "./styles.module.scss";
+
+interface ReportIndexPageProps {}
+enum ChartReportData {
+  SUMMARY = 0,
+  SUPPORT_VOLUME = 1,
+  RESOLUTION_TIME = 2,
+  FIRST_RESPONSE_TIME = 3,
+}
+const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
+  // const { timezone }: any = useGlobalData();
+  // const { startOfMonth, endOfMonth } = formatTimeByTimezone(timezone);
+  const [filter, setFilter] = useState({
+    // startTime: String(startOfMonth),
+    // endTime: String(endOfMonth),
+    startTime: String(1),
+    endTime: String(2),
+  });
+  // const queries = useQueries([
+  //   {
+  //     queryKey: [QUERY_KEY.SUMMARY, filter],
+  //     queryFn: () => getReportSummaryReport(filter),
+  //     keepPreviousData: true,
+  //   },
+  //   {
+  //     queryKey: [QUERY_KEY.REPORT_SUPPORT_VOLUME, filter],
+  //     queryFn: () => getSupportVolume(filter),
+  //   },
+  //   {
+  //     queryKey: [QUERY_KEY.REPORT_RESOLUTION_TIME, filter],
+  //     queryFn: () => getResolutionTime(filter),
+  //   },
+  //   {
+  //     queryKey: [QUERY_KEY.REPORT_FIRST_RESPONSE_TIME, filter],
+  //     queryFn: () => getFirstResponseTime(filter),
+  //   },
+  // ]);
+
+  // const memoData = useMemo(() => {
+  //   const convertListDataQueries = queries?.map((dataItem: any) => {
+  //     return dataItem?.data?.data?.data;
+  //   });
+  //   return convertListDataQueries;
+  // }, [queries]);
+
+  const disabledStartDate = useCallback((current) => {
+    // return form.getFieldValue("to")
+    //   ? current > form.getFieldValue("to")
+    //   : false;
+  }, []);
+
+  // const disabledEndDate = useCallback((current) => {}, []);
+  // const handleChangeStartTime = (_: any, values: string) => {
+  //   setFilter((pre) => ({
+  //     ...pre,
+  //     startTime: String(
+  //       formatTimeStamp(values, "DD/MM/YYYY", timezone) || startOfMonth
+  //     ),
+  //   }));
+  // };
+  // const handleChangeEndTime = (_: any, values: string) => {
+  //   setFilter((pre) => ({
+  //     ...pre,
+  //     endTime: String(
+  //       formatTimeStamp(values, "DD/MM/YYYY", timezone) || endOfMonth
+  //     ),
+  //   }));
+  // };
+  const handleChangeStartDate = useCallback(
+    (value: { start: Date; end: Date }) => {
+      // setFilter((pre) => ({
+      //   ...pre,
+      //   startTime: String(convertTimeStamp(value.start, timezone)),
+      // }));
+    },
+    []
+  );
+  const handleChangeEndDate = useCallback(
+    (value: { start: Date; end: Date }) => {
+      // setFilter((pre) => ({
+      //   ...pre,
+      //   endTime: String(convertTimeStamp(value.end, timezone)),
+      // }));
+    },
+    []
+  );
+  return (
+    <Page title="Reporting" compactTitle fullWidth>
+      <Card>
+        <div className="px-4 pt-4 pb-2">
+          <div className={styles.groupFilter}>
+            <div className={styles.dateTime}>
+              <MDDatePicker
+                type="start"
+                onDateChange={handleChangeStartDate}
+                datePickerClassName={styles.datePickerCustomer}
+                // multiMonth
+                // allowRange
+              />
+              <MDDatePicker
+                type="end"
+                onDateChange={handleChangeEndDate}
+                datePickerClassName={styles.datePickerCustomer}
+                containerClassName={styles.endDateBlock}
+                // multiMonth
+                // allowRange
+              />
+            </div>
+          </div>
+          <div className="card-statistic mb-8">
+            {/* <Statistic data={memoData[ChartReportData.SUMMARY]} /> */}
+          </div>
+          <div className="wrap-chart mb-[40px]">
+            <div className="title text-lg font-semibold mb-6">
+              Support Volume
+            </div>
+            <div className="w-full h-[450px]">
+              {/* <ChartSupportVolume
+              // data={memoData[ChartReportData.SUPPORT_VOLUME]}
+              /> */}
+            </div>
+          </div>
+          <div className="wrap-chart mb-[50px]">
+            <div className="title text-lg font-semibold mb-6">
+              Resolution Time (median)
+            </div>
+            <div className="w-full h-[450px]">
+              {/* <ChartResolutionTime
+                data={memoData[ChartReportData.RESOLUTION_TIME]}
+              /> */}
+            </div>
+          </div>
+          <div className="wrap-chart">
+            <div className="title text-lg font-semibold mb-6">
+              First Response Time (median)
+            </div>
+            <div className="w-full h-[450px]">
+              {/* <ChartFirstResponseTime
+                data={memoData[ChartReportData.FIRST_RESPONSE_TIME]}
+              /> */}
+            </div>
+          </div>
+        </div>
+      </Card>
+    </Page>
+  );
+};
+
+export default ReportIndexPage;
