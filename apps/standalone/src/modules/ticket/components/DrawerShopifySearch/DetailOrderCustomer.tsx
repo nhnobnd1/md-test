@@ -4,6 +4,7 @@ import {
   UndoOutlined,
 } from "@ant-design/icons";
 import { formatTimeDDMMYY } from "@moose-desk/core/helper/format";
+import Link from "antd/es/typography/Link";
 import classNames from "classnames";
 import { memo, useMemo } from "react";
 import { Table } from "src/components/UI/Table";
@@ -14,6 +15,7 @@ interface IProps {
   dataOrder: any;
 }
 export const DetailOrderCustomer = memo(({ onBack, dataOrder }: IProps) => {
+  const unit = dataOrder?.currency;
   const countShippingPrice = () => {
     return (
       (dataOrder?.current_total_price || 0) -
@@ -43,15 +45,15 @@ export const DetailOrderCustomer = memo(({ onBack, dataOrder }: IProps) => {
     },
     {
       title: "Tax",
-      value: `${dataOrder?.current_total_tax || 0}$`,
+      value: `${dataOrder?.current_total_tax || 0}${unit}`,
     },
     {
       title: "Shipping",
-      value: `${countShippingPrice()}$`,
+      value: `${countShippingPrice()}${unit}`,
     },
     {
       title: "Total",
-      value: `${dataOrder?.current_total_price || 0}$`,
+      value: `${dataOrder?.current_total_price || 0}${unit}`,
       style: "text-bold",
     },
   ];
@@ -79,7 +81,8 @@ export const DetailOrderCustomer = memo(({ onBack, dataOrder }: IProps) => {
       width: "30%",
       render: (price: string, record: any) => (
         <div className={record?.isRefund ? "text-line-through" : ""}>
-          {record?.quantity}x{price}$
+          {record?.quantity}x{price}
+          {unit}
         </div>
       ),
     },
@@ -89,7 +92,8 @@ export const DetailOrderCustomer = memo(({ onBack, dataOrder }: IProps) => {
       width: "30%",
       render: (_: any, record: any) => (
         <div className={record?.isRefund ? "text-line-through" : ""}>
-          {countPrice(record)}$
+          {countPrice(record)}
+          {unit}
         </div>
       ),
     },
@@ -105,6 +109,7 @@ export const DetailOrderCustomer = memo(({ onBack, dataOrder }: IProps) => {
         price: deepItem?.line_item?.price,
         note: item?.note,
         isRefund: true,
+        currency: unit,
       };
     });
     const listPaymentItemUnfulfilled = dataOrder?.line_items?.map(
@@ -114,6 +119,7 @@ export const DetailOrderCustomer = memo(({ onBack, dataOrder }: IProps) => {
           name: item?.name,
           sku: item?.sku,
           price: item?.price,
+          currency: unit,
         };
       }
     );
@@ -124,6 +130,7 @@ export const DetailOrderCustomer = memo(({ onBack, dataOrder }: IProps) => {
           name: item?.name,
           sku: item?.sku,
           price: item?.price,
+          currency: unit,
         };
       });
     const listPaymentItem =
@@ -178,7 +185,13 @@ export const DetailOrderCustomer = memo(({ onBack, dataOrder }: IProps) => {
             <div>
               <span className="text-bold">Tracking Url:</span>
               <span className="ml-1">
-                {trackingAddress?.tracking_url || "(empty)"}
+                {trackingAddress?.tracking_url ? (
+                  <Link href={trackingAddress?.tracking_url}>
+                    {trackingAddress?.tracking_url}
+                  </Link>
+                ) : (
+                  "(empty)"
+                )}
               </span>
             </div>
           </div>
@@ -237,7 +250,10 @@ export const DetailOrderCustomer = memo(({ onBack, dataOrder }: IProps) => {
               <div className="pt-5 pl-5">
                 <div>
                   <span className="text-bold">Refunded:</span>
-                  <span className="ml-1">{memoDetailRefund?.totalRefund}$</span>
+                  <span className="ml-1">
+                    {memoDetailRefund?.totalRefund}
+                    {unit}
+                  </span>
                 </div>
               </div>
               <div className="pt-2 pl-5">

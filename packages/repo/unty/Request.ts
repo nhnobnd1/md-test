@@ -5,6 +5,10 @@ export interface BaseListResponse<T> {
   datetime: string;
   errorCode?: string;
 }
+export interface ResponseGlobal<T> {
+  data: T[];
+  statusCode: number;
+}
 export interface BaseResponse<T> {
   data: T;
   message?: string;
@@ -31,5 +35,5 @@ export interface BaseDeleteList {
   ids: string[];
 }
 export interface DeleteTagsRequest {
-	names: string[];
+  names: string[];
 }

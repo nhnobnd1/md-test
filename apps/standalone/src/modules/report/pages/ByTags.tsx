@@ -20,7 +20,7 @@ interface ByTagsProps {}
 interface ITableFilter {
   page: number;
   limit: number;
-  query: string;
+  query?: string;
   sortBy?: string;
   sortOrder?: number;
   startTime: string;
