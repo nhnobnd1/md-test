@@ -1,7 +1,11 @@
-import { useJob, useMount } from "@moose-desk/core";
-import { GetStoreIdRequest, StoreRepository } from "@moose-desk/repo";
-import { createContext, ReactNode, useContext, useState } from "react";
-import { catchError, map, of } from "rxjs";
+import {
+  GetStoreIdRequest,
+  GetStoreIdResponse,
+  StoreRepository,
+} from "@moose-desk/repo";
+import { ReactNode, createContext, useContext, useState } from "react";
+import { useQuery } from "react-query";
+import { lastValueFrom } from "rxjs";
 import useNotification from "src/hooks/useNotification";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { getStoreId } from "src/utils/localValue";
@@ -15,41 +19,33 @@ const StoreContext = createContext<StoreContextType | undefined>(undefined);
 interface StoreProvidersProps {
   children?: ReactNode;
 }
+const getStoreApi = (payload: GetStoreIdRequest) => {
+  return new Promise((resolve, reject) => {
+    lastValueFrom(StoreRepository().getStore(payload))
+      .then(({ data }) => resolve(data))
+      .catch((error) => reject(error));
+  });
+};
 
 export const StoreProviders = ({ children }: StoreProvidersProps) => {
   const [storeId, setStoreId] = useState<string>("");
   const { getSubDomain } = useSubdomain();
   const notification = useNotification();
 
-  const { run: fetchStoreId } = useJob(
-    (payload: GetStoreIdRequest) => {
-      return StoreRepository()
-        .getStore(payload)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              console.log("fetch Store");
-              setStoreId(data.data.storeId);
-            } else {
-              notification.error("Get store failed");
-            }
-          }),
-          catchError((err) => {
-            notification.error("Get store failed");
-            return of(err);
-          })
-        );
+  useQuery({
+    queryKey: ["getStoreId"],
+    queryFn: () =>
+      getStoreApi({
+        subdomain: getSubDomain(),
+      }),
+    retry: 3,
+    onSuccess: (data: GetStoreIdResponse) => {
+      setStoreId(data.data.storeId);
     },
-    { showLoading: true }
-  );
-
-  useMount(() => {
-    if (!getStoreId()) {
-      const subDomain = getSubDomain();
-      fetchStoreId({ subdomain: subDomain });
-    } else {
-      setStoreId(getStoreId());
-    }
+    onError: () => {
+      notification.error("Get store failed");
+    },
+    enabled: !getStoreId(),
   });
   return (
     <StoreContext.Provider value={{ storeId: storeId }}>

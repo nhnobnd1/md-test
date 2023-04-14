@@ -1,24 +1,18 @@
-import {
-  createdDatetimeFormat,
-  upperCaseFirst,
-  useJob,
-} from "@moose-desk/core";
+import { createdDatetimeFormat, upperCaseFirst } from "@moose-desk/core";
 import {
   BaseDeleteList,
   BaseListTicketRequest,
   BaseMetaDataListResponse,
-  GetListTagRequest,
-  GetListTicketRequest,
+  GetListTagResponse,
+  GetListTicketResponse,
   Tag,
-  TagRepository,
   Ticket,
-  TicketRepository,
   TicketStatistic,
 } from "@moose-desk/repo";
 import { Input, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
-import { useCallback, useEffect, useState } from "react";
-import { map } from "rxjs";
+import { useCallback, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Header } from "src/components/UI/Header";
 import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
@@ -26,12 +20,18 @@ import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
 import { ButtonTicket } from "src/modules/ticket/components/ButtonTicket";
 import { CardStatistic } from "src/modules/ticket/components/CardStatistic";
+import {
+  forceDeleteApi,
+  getListTrashApi,
+  getStatisticTicket,
+  getTagsTicket,
+  restoreTicketApi,
+} from "src/modules/ticket/helper/api";
 import CancelIcon from "~icons/mdi/cancel";
 import RestoreIcon from "~icons/mdi/restore";
 import "./ListTicket.scss";
-interface TrashTicketProps {}
 
-const TrashTicket = (props: TrashTicketProps) => {
+const TrashTicket = () => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
@@ -41,6 +41,7 @@ const TrashTicket = (props: TrashTicketProps) => {
     page: 1,
     limit: env.DEFAULT_PAGE_SIZE,
   });
+  const queryClient = useQueryClient();
 
   const [filterData, setFilterData] =
     useState<BaseListTicketRequest>(defaultFilter);
@@ -63,6 +64,17 @@ const TrashTicket = (props: TrashTicketProps) => {
     onChange: onSelectChange,
     preserveSelectedRowKeys: true,
   };
+  useQuery({
+    queryKey: ["getStatisticTicket"],
+    queryFn: () => getStatisticTicket(),
+    retry: 3,
+    onSuccess: (data: TicketStatistic) => {
+      setStatistic(data);
+    },
+    onError: () => {
+      message.error("Get data ticket failed");
+    },
+  });
   const onChangeTable = useCallback(
     (pagination: any, filters: any, sorter: SorterResult<any>) => {
       if (sorter.order && sorter.columnKey) {
@@ -82,54 +94,57 @@ const TrashTicket = (props: TrashTicketProps) => {
     [setFilterData]
   ) as TableProps<any>["onChange"];
 
-  const { run: getListTrashApi, processing: loadingList } = useJob(
-    (payload: GetListTicketRequest) => {
-      return TicketRepository()
-        .getListTrash(payload)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              const tickets = data.data.map((item: Ticket) => ({
-                ...item,
-                id: item._id,
-              }));
-              setTickets(tickets);
-              setMeta(data.metadata);
-            } else {
-              message.error("Get data ticket failed");
-            }
-          })
-        );
-    }
-  );
-
-  const { run: restoreTicketApi } = useJob((payload: BaseDeleteList) => {
-    return TicketRepository()
-      .restore(payload)
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            getListTrashApi(filterData);
-            getStatisticTicket();
-          } else {
-            message.error("Get data ticket failed");
-          }
-        })
-      );
+  useQuery({
+    queryKey: ["getListTrash", filterData],
+    queryFn: () => getListTrashApi(filterData),
+    retry: 1,
+    onSuccess: (data: GetListTicketResponse) => {
+      setTickets(data.data);
+      setMeta(data.metadata);
+    },
+    onError: () => {
+      message.error("Get data trash ticket failed");
+    },
   });
-  const { run: forceDeleteApi } = useJob((payload: BaseDeleteList) => {
-    return TicketRepository()
-      .deletePermanently(payload)
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            getListTrashApi(filterData);
-            getStatisticTicket();
-          } else {
-            message.error("Get data ticket failed");
-          }
-        })
-      );
+  useQuery({
+    queryKey: [
+      "getTagsTicket",
+      {
+        page: 1,
+        limit: 500,
+      },
+    ],
+    queryFn: () =>
+      getTagsTicket({
+        page: 1,
+        limit: 500,
+      }),
+    retry: 1,
+    onSuccess: (data: GetListTagResponse) => {
+      setTags(data.data);
+    },
+    onError: () => {
+      message.error("Get tags failed");
+    },
+  });
+
+  const restore = useMutation({
+    mutationFn: (payload: BaseDeleteList) => restoreTicketApi(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["getListTrash"],
+      });
+      queryClient.invalidateQueries({ queryKey: ["getStatisticTicket"] });
+    },
+  });
+  const forceDelete = useMutation({
+    mutationFn: (payload: BaseDeleteList) => forceDeleteApi(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["getListTrash"],
+      });
+      queryClient.invalidateQueries({ queryKey: ["getStatisticTicket"] });
+    },
   });
 
   const onPagination = useCallback(
@@ -144,65 +159,17 @@ const TrashTicket = (props: TrashTicketProps) => {
     },
     []
   );
-  const { run: getStatisticTicket } = useJob(() => {
-    return TicketRepository()
-      .getStatistic()
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            setStatistic(data);
-          } else {
-            message.error("Get data ticket failed");
-          }
-        })
-      );
-  });
-  const { run: getListTagApi } = useJob((payload: GetListTagRequest) => {
-    return TagRepository()
-      .getList(payload)
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            const tags = data.data.map((item: Tag) => ({
-              ...item,
-              id: item._id,
-            }));
-            setTags((prevTags) => {
-              return [...prevTags, ...tags];
-            });
 
-            if (data.metadata.totalPage > (payload.page as number)) {
-              getListTagApi({
-                page: (payload.page as number) + 1,
-                limit: payload.limit,
-              });
-            }
-          } else {
-            message.error("Get data ticket failed");
-          }
-        })
-      );
-  });
   const handleRestore = (ids: string[]): void => {
-    restoreTicketApi({
+    restore.mutate({
       ids,
     });
   };
   const handleDelete = (ids: string[]) => {
-    forceDeleteApi({
+    forceDelete.mutate({
       ids,
     });
   };
-  useEffect(() => {
-    getListTagApi({
-      page: 1,
-      limit: 500,
-    });
-    getStatisticTicket();
-  }, []);
-  useEffect(() => {
-    getListTrashApi(filterData);
-  }, [filterData]);
 
   return (
     <>
@@ -290,7 +257,6 @@ const TrashTicket = (props: TrashTicketProps) => {
                 <Table
                   rowSelection={rowSelection}
                   dataSource={tickets}
-                  // loading={loadingList}
                   onChange={onChangeTable}
                   scroll={{ x: 1024 }}
                 >
@@ -346,7 +312,6 @@ const TrashTicket = (props: TrashTicketProps) => {
                     key="tags"
                     title="Tags"
                     render={(_, record: Ticket) => {
-                      // if (!record) return <></>;
                       const filterItemTag = tags.filter((item) =>
                         record.tags?.slice(-2).includes(item.id)
                       );
