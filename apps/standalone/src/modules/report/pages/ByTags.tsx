@@ -5,7 +5,7 @@ import {
   formatTimeStamp,
 } from "@moose-desk/core/helper/format";
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
-import useTimezone from "@moose-desk/core/hooks/useTimezone";
+import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import { DatePicker, Form, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useForm } from "antd/lib/form/Form";
@@ -28,7 +28,7 @@ interface ITableFilter {
 }
 export const ByTags: PageComponent<ByTagsProps> = () => {
   const navigate = useNavigate();
-  const { timezone } = useTimezone();
+  const { timezone } = useGlobalData();
   const { startOfMonth, endOfMonth } = formatTimeByTimezone(timezone);
   const [form] = useForm();
   const [filterData, setFilterData] = useState<ITableFilter>({

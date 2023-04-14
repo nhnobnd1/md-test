@@ -4,7 +4,7 @@ import {
   formatTimeByTimezone,
   formatTimeStamp,
 } from "@moose-desk/core/helper/format";
-import useTimezone from "@moose-desk/core/hooks/useTimezone";
+import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import { DatePicker } from "antd";
 import { useCallback, useMemo, useState } from "react";
 import { useQueries } from "react-query";
@@ -29,7 +29,7 @@ enum ChartReportData {
 }
 const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
   const [form] = Form.useForm();
-  const { timezone } = useTimezone();
+  const { timezone } = useGlobalData();
   const { startOfMonth, endOfMonth } = formatTimeByTimezone(timezone);
   const [filter, setFilter] = useState({
     startTime: String(startOfMonth),

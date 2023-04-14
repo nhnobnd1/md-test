@@ -81,6 +81,7 @@ ReactDOM.render(
         </AppBridgeProvider>
       </BrowserRouter>
     </PolarisProvider>
+    {/* <ReactQueryDevtools initialIsOpen={false} /> */}
   </ErrorBoundary>,
   document.getElementById("app")
 );
