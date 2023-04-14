@@ -43,14 +43,14 @@ const GroupChildPage: PageComponent<GroupChildPageProps> = () => {
             } else {
               if (data.errorCode) {
                 message.loading.hide().then(() => {
-                  notification.success("Create a group failed.");
+                  notification.error("Create a group failed.");
                 });
               }
             }
           }),
           catchError((err) => {
             message.loading.hide().then(() => {
-              notification.success("Create a group failed.");
+              notification.error("Create a group failed.");
             });
             return of(err);
           })

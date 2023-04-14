@@ -6,6 +6,7 @@ import { catchError, map, of } from "rxjs";
 import { Form } from "src/components/UI/Form";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
+import { usePermission } from "src/hooks/usePerrmisson";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import InputDisableSubmit from "src/modules/setting/component/InputDisableSubmit/InputDisableSubmit";
 import SwitchForm from "src/modules/setting/component/Switch/Switch";
@@ -14,6 +15,7 @@ export default function IndexAccountManager({ props }: any) {
   const [valueInput, setValueInput] = useState("");
   const message = useMessage();
   const { subDomain } = useSubdomain();
+  const { isAdmin } = usePermission();
   const getLinkSignUp = useCallback(
     (mode: string) => {
       if (subDomain) {
@@ -155,7 +157,8 @@ export default function IndexAccountManager({ props }: any) {
   };
 
   useEffect(() => {
-    fetchAccountManagerStatus();
+    // eslint-disable-next-line no-unused-expressions
+    isAdmin ? fetchAccountManagerStatus() : "";
   }, []);
   return (
     <Form

@@ -16,6 +16,7 @@ interface ButtonModalDeleteProps {
   modalProps?: Omit<ModalProps, "title" | "description" | "onCancel" | "onOk">;
   textDelete?: string;
   okeText?: string;
+  disabled?: boolean;
 }
 
 export const ButtonModalDelete = ({
@@ -30,6 +31,7 @@ export const ButtonModalDelete = ({
   onClosePopup,
   textDelete,
   okeText,
+  disabled,
 }: ButtonModalDeleteProps) => {
   const [openModal, setOpenModal] = useState(false);
 
@@ -44,6 +46,7 @@ export const ButtonModalDelete = ({
         }}
         icon={<DeleteOutlined />}
         {...buttonProps}
+        disabled={disabled}
       >
         {textDelete && !onlyIcon ? textDelete : undefined}
       </Button>

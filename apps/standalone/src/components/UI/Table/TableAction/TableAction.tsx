@@ -17,7 +17,7 @@ interface TableActionProps {
     description: string;
     textDelete?: string;
     okeText?: string;
-  };
+  } | null;
 
   onView?: (record: any) => void;
   onEdit?: (record: any) => void;

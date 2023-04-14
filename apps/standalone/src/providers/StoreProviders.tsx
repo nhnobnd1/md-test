@@ -19,7 +19,7 @@ const StoreContext = createContext<StoreContextType | undefined>(undefined);
 interface StoreProvidersProps {
   children?: ReactNode;
 }
-const getStoreApi = (payload: GetStoreIdRequest) => {
+export const getStoreApi = (payload: GetStoreIdRequest) => {
   return new Promise((resolve, reject) => {
     lastValueFrom(StoreRepository().getStore(payload))
       .then(({ data }) => resolve(data))
@@ -28,7 +28,7 @@ const getStoreApi = (payload: GetStoreIdRequest) => {
 };
 
 export const StoreProviders = ({ children }: StoreProvidersProps) => {
-  const [storeId, setStoreId] = useState<string>("");
+  const [storeId, setStoreId] = useState<string>(getStoreId());
   const { getSubDomain } = useSubdomain();
   const notification = useNotification();
 

@@ -8271,7 +8271,7 @@ const _l = go(void 0), jb = ({
     },
     [c]
   ), m = le(() => {
-    s(void 0), o({}), l(!1);
+    s(void 0), o({}), l(!1), localStorage.clear();
   }, []);
   De(() => {
     var D;

@@ -1,4 +1,4 @@
-import { useJob, useMount, useToggle } from "@moose-desk/core";
+import { useJob, useMount, useRole, useToggle } from "@moose-desk/core";
 import useTimezone from "@moose-desk/core/hooks/useTimezone";
 import {
   AutoReply,
@@ -15,6 +15,7 @@ import { Header } from "src/components/UI/Header";
 import timeZoneList from "src/constaint/timeZone";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
+import { Role } from "src/models/Rule";
 import AutoReplyTab from "src/modules/setting/component/AutoReply/AutoReplyTab";
 import BusinessHoursTab from "src/modules/setting/component/BusinessHours/BusinessHoursTab";
 import HolidayTab from "src/modules/setting/component/Holidays/HolidayTab";
@@ -35,6 +36,7 @@ const BusinessHours = (props: BusinessHoursProps) => {
     useState("");
   const [selected, setSelected] = useState(0);
   const [form] = Form.useForm();
+  const role = useRole();
   // const [disabled, setDisabled] = useState(false);
   const handleTabChange = useCallback(
     (selectedTabIndex) => setSelected(selectedTabIndex),
@@ -143,7 +145,10 @@ const BusinessHours = (props: BusinessHoursProps) => {
   }, []);
   // UI Tabs
   // handle Effect
-  useMount(() => fetchListBusinessCalendar());
+  useMount(() => {
+    // eslint-disable-next-line no-unused-expressions
+    role === Role.Admin ? fetchListBusinessCalendar() : "";
+  });
   return (
     <>
       <Header title="Business Hours"></Header>

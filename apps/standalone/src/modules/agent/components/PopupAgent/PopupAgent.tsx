@@ -17,6 +17,7 @@ import Form from "src/components/UI/Form/Form";
 import { Header } from "src/components/UI/Header";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
+import { usePermission } from "src/hooks/usePerrmisson";
 import {
   AgentForm,
   AgentFormValues,
@@ -43,6 +44,7 @@ export const PopupAgent = ({
   const message = useMessage();
   const notification = useNotification();
   const [dataForm, setDataForm] = useState<Agent>();
+  const { isAdmin } = usePermission();
   const {
     state: countDown,
     clearCountDown,
@@ -362,6 +364,7 @@ export const PopupAgent = ({
               {!dataForm.emailConfirmed && dataForm.isActive ? (
                 <>
                   <ButtonModalDelete
+                    disabled={!isAdmin}
                     title="Are you sure that you want to permanently remove this Agent"
                     description="This Agent will be removed permanently. This action cannot be undone"
                     onConfirm={handleDeleteAgent}

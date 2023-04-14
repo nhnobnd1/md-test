@@ -61,6 +61,7 @@ export const AuthProvider = ({
     setUser(undefined);
     setTokens({});
     setIsLoggedIn(false);
+    localStorage.clear();
   }, []);
 
   // Fetch user and change login state on mount

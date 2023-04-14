@@ -11,12 +11,12 @@ const settingChannelRoutes: IRoute = {
     {
       path: SettingChannelRoutePaths.Index,
       index: true,
-      middleware: "user",
+      middleware: "admin",
       component: lazy(() => import("src/modules/settingChannel/pages/Index")),
     },
     {
       path: SettingChannelRoutePaths.ChannelEmail.Index,
-      middleware: "user",
+      middleware: "admin",
       component: lazy(
         () =>
           import("src/modules/settingChannel/pages/ChannelEmail/ChannelEmail")
@@ -38,7 +38,7 @@ const settingChannelRoutes: IRoute = {
     // },
     {
       path: SettingChannelRoutePaths.ChannelEmail.Create,
-      middleware: "user",
+      middleware: "admin",
       component: lazy(
         () =>
           import(
@@ -48,7 +48,7 @@ const settingChannelRoutes: IRoute = {
     },
     {
       path: SettingChannelRoutePaths.ChannelEmail.Update,
-      middleware: "user",
+      middleware: "admin",
       component: lazy(
         () =>
           import(

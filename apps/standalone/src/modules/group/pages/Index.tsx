@@ -25,6 +25,7 @@ import TableAction from "src/components/UI/Table/TableAction/TableAction";
 import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
+import { usePermission } from "src/hooks/usePerrmisson";
 import GroupRoutePaths from "src/modules/group/routes/paths";
 
 interface GroupIndexPageProps {}
@@ -34,6 +35,7 @@ const GroupIndexPage: PageComponent<GroupIndexPageProps> = () => {
   const navigate = useNavigate();
   const message = useMessage();
   const notification = useNotification();
+  const { isAdmin } = usePermission();
 
   const defaultFilter: () => GetListUserGroupRequest = () => ({
     page: 1,
@@ -228,12 +230,16 @@ const GroupIndexPage: PageComponent<GroupIndexPageProps> = () => {
               <TableAction
                 record={record}
                 edit
-                specialDelete={{
-                  title:
-                    "Are you sure that you want to permanently remove this group",
-                  description:
-                    "This group will be removed permanently. This action cannot be undone",
-                }}
+                specialDelete={
+                  isAdmin
+                    ? {
+                        title:
+                          "Are you sure that you want to permanently remove this group",
+                        description:
+                          "This group will be removed permanently. This action cannot be undone",
+                      }
+                    : null
+                }
                 onSpecialDelete={handleDelete}
                 onlyIcon
                 onEdit={() => {

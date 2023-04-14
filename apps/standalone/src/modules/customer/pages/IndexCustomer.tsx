@@ -18,6 +18,7 @@ import TableAction from "src/components/UI/Table/TableAction/TableAction";
 import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
+import { usePermission } from "src/hooks/usePerrmisson";
 import { deleteCustomer, getListCustomer } from "src/modules/customer/api/api";
 import PopupCustomer from "src/modules/customer/component/PopupCustomer";
 import { QUERY_KEY } from "src/modules/customer/helper/constant";
@@ -32,6 +33,8 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
     on: openPopupCustomer,
     off: closePopupCustomer,
   } = useToggle();
+  const { isAdmin } = usePermission();
+
   const [dataPopup, setDataPopup] = useState<
     | {
         email: string;
@@ -136,12 +139,16 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
           edit
           onlyIcon
           onEdit={handleEdit}
-          specialDelete={{
-            title: "Are you sure that you want to remove this customer?",
-            description:
-              "This customer will be removed permanently. All customer's tickets and his profile will no longer accessible.",
-            textDelete: "Remove",
-          }}
+          specialDelete={
+            isAdmin
+              ? {
+                  title: "Are you sure that you want to remove this customer?",
+                  description:
+                    "This customer will be removed permanently. All customer's tickets and his profile will no longer accessible.",
+                  textDelete: "Remove",
+                }
+              : null
+          }
           onSpecialDelete={handleDeleteCustomer}
         />
       ),

@@ -36,6 +36,7 @@ const settingRoutes: IRoute = {
     },
     {
       path: SettingRoutePaths.AccountSecurity.AccessManager.Index,
+      middleware: "admin",
       component: lazy(
         () =>
           import(
@@ -52,6 +53,7 @@ const settingRoutes: IRoute = {
     // genaral setting
     {
       path: SettingRoutePaths.GenaralSetting.BusinessHours.Index,
+      middleware: "admin",
       component: lazy(
         () =>
           import(
