@@ -1,10 +1,9 @@
 import { TokenManager, useRoutes } from "@moose-desk/core";
-import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import { NavigationMenu, useToast } from "@shopify/app-bridge-react";
 import { NavigationLink } from "@shopify/app-bridge-react/components/NavigationMenu/NavigationMenu";
 import { useEffect, useMemo } from "react";
 import { useCookies } from "react-cookie";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient } from "react-query";
 import { RichText } from "src/components/RichText";
 import env from "src/core/env";
 import { useApi, useShopDomain } from "src/hooks";
@@ -32,7 +31,7 @@ export default function App() {
   const { show } = useToast();
   const { login, isLoggedIn, user } = useAuth();
   const { storeId } = useStore();
-  useGlobalData(isLoggedIn);
+  // useGlobalData(isLoggedIn);
   useEffect(() => {
     if ((shop && !isLoggedIn) || (!user && shop)) {
       console.log("Start login with token...");
@@ -87,15 +86,16 @@ export default function App() {
 
   return (
     <>
-      <QueryClientProvider client={queryClient}>
-        <NavigationMenu navigationLinks={navigationLinks} />
-        <AppRoutes />
-        <div className="hidden">
-          <RichText
-            labelProps={{ children: "aaa", as: "h1", variant: "bodyLg" }}
-          />
-        </div>
-      </QueryClientProvider>
+      <NavigationMenu navigationLinks={navigationLinks} />
+      <AppRoutes />
+      <div className="hidden">
+        <RichText
+          labelProps={{ children: "aaa", as: "h1", variant: "bodyLg" }}
+        />
+      </div>
     </>
+    // <QueryProvider>
+
+    // </QueryProvider>
   );
 }
