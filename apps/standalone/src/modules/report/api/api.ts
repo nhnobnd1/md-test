@@ -4,6 +4,11 @@ import { lastValueFrom } from "rxjs";
 interface IReportFilter {
   startTime?: string;
   endTime?: string;
+  query?: string;
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: number;
 }
 export const getReportSummaryReport = (params: IReportFilter) => {
   return new Promise((resolve, reject) => {
