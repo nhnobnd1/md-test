@@ -35,16 +35,16 @@ const ChannelIndexPage = (props: ChannelIndexPageProps) => {
         link: SettingChannelRoutePaths.Widgets.Index,
         icon: <TablerCheckupList />,
       },
-      {
-        title: ChannelTitle.LiveChatConfiguration,
-        link: "",
-        icon: <MaterialSymbolsChat />,
-      },
-      {
-        title: ChannelTitle.SocialConfiguration,
-        link: "",
-        icon: <EntypoSocialFacebook />,
-      },
+      // {
+      //   title: ChannelTitle.LiveChatConfiguration,
+      //   link: "",
+      //   icon: <MaterialSymbolsChat />,
+      // },
+      // {
+      //   title: ChannelTitle.SocialConfiguration,
+      //   link: "",
+      //   icon: <EntypoSocialFacebook />,
+      // },
     ],
     []
   );

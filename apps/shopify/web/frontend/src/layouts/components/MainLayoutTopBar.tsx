@@ -6,11 +6,14 @@ import "src/assets/styles/layouts/components/main-layout-topbar.scss";
 
 interface MainLayoutTopBarProps {
   navigationToggle: () => void;
+  setShowMainLayout: any;
 }
 
-const MainLayoutTopBar = ({ navigationToggle }: MainLayoutTopBarProps) => {
-  const [expandedMenu, setExpendedMenu] = useState(false);
-
+const MainLayoutTopBar = ({
+  navigationToggle,
+  setShowMainLayout,
+}: MainLayoutTopBarProps) => {
+  const [expandedMenu, setExpendedMenu] = useState(true);
   const SecondaryMenu = () => {
     return (
       <div className="Md-TopBar__Wrapper">
@@ -18,11 +21,12 @@ const MainLayoutTopBar = ({ navigationToggle }: MainLayoutTopBarProps) => {
           <div className="Md-Toggle__Navigation">
             <Button
               plain
-              onClick={() =>
+              onClick={() => {
                 setExpendedMenu(() => {
                   return !expandedMenu;
-                })
-              }
+                });
+                setShowMainLayout(!expandedMenu);
+              }}
               icon={
                 <Icon
                   source={() => (

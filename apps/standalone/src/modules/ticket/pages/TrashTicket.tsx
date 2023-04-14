@@ -119,6 +119,7 @@ const TrashTicket = () => {
         page: 1,
         limit: 500,
       }),
+    staleTime: 10000,
     retry: 1,
     onSuccess: (data: GetListTagResponse) => {
       setTags(data.data);

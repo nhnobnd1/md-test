@@ -116,8 +116,8 @@ export default function IndexAccountManager({ props }: any) {
             return data.data;
           })
         );
-    },
-    { showLoading: false }
+    }
+    // { showLoading: true }
   );
   // update data
   const handleSubmit = useCallback(
@@ -161,7 +161,7 @@ export default function IndexAccountManager({ props }: any) {
     <Form
       initialValues={result || initialValues}
       onFinish={handleSubmit}
-      enableLoadForm
+      // enableLoadForm
       enableReinitialize
       form={form}
     >

@@ -340,7 +340,7 @@ export const AppLayout = (props: AppLayoutProps) => {
   };
   return (
     <Layout className="app-layout min-h-screen">
-      <Layout.Header className="header">
+      <Layout.Header className="header p-0 pr-10">
         <div className="flex justify-between items-center">
           <div
             className="logo hover:cursor-pointer"

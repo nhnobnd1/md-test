@@ -25,9 +25,11 @@ import {
   Stack,
   Text,
 } from "@shopify/polaris";
-import { DeleteMajor, EditMajor, SortMinor } from "@shopify/polaris-icons";
+import { SortMinor } from "@shopify/polaris-icons";
 import { useCallback, useEffect, useState } from "react";
 import { catchError, map, of } from "rxjs";
+import { ButtonDelete } from "src/components/Button/ButtonDelete";
+import { ButtonEdit } from "src/components/Button/ButtonEdit";
 import { ModalDelete } from "src/components/Modal/ModalDelete";
 import Pagination from "src/components/Pagination/Pagination";
 import env from "src/core/env";
@@ -67,20 +69,15 @@ export default function CustomerIndexPage() {
         <IndexTable.Cell className="py-3">{storeId}</IndexTable.Cell>
         <IndexTable.Cell className="py-3">
           <ButtonGroup>
-            <Button
-              onClick={() => navigateShowDetails(id)}
-              icon={() => <Icon source={() => <EditMajor />} color="base" />}
-            />
-            <Button
-              icon={() => (
-                <Icon
-                  accessibilityLabel="Delete"
-                  source={() => <DeleteMajor />}
-                />
-              )}
-              onClick={() => handleOpenModalDelete(id)}
-              destructive
-            />
+            <div className="flex gap-2">
+              <ButtonEdit onClick={() => navigateShowDetails(id)}></ButtonEdit>
+              <ButtonDelete
+                onClick={() => handleOpenModalDelete(id)}
+                destructive
+              >
+                Remove
+              </ButtonDelete>
+            </div>
           </ButtonGroup>
         </IndexTable.Cell>
       </IndexTable.Row>

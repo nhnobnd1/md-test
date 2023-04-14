@@ -6,28 +6,32 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 24px;
+    min-width: 28px;
+    height: 28px;
     border: 1px solid transparent;
     border-radius: 6px;
     margin: 0 4px;
+
     &:hover {
-      text-decoration: underline;
-      color: rgba(44, 110, 203, 1);
+      // text-decoration: underline;
+      // color: rgba(44, 110, 203, 1);
+      background-color: rgba(0, 0, 0, 0.06);
+      // padding: 5px;
     }
 
     &.active {
       background-color: #fff;
-      border-color: #1677ff;
-      min-width: 32px;
-      height: 32px;
-      color: #1677ff;
+      border-color: rgba(0.32, 0.34, 0.35, 1);
+      min-width: 28px;
+      height: 28px;
+      color: rgba(0.32, 0.34, 0.35, 1);
       font-weight: 600;
     }
     &__more {
       cursor: pointer;
       &:hover {
         text-decoration: underline;
-        color: rgba(44, 110, 203, 1);
+        color: rgba(0.32, 0.34, 0.35, 1);
       }
     }
   }

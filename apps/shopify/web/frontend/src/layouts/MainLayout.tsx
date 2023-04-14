@@ -19,6 +19,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   const { routes } = useRoutes();
   const location = useLocation();
   const [mobileNavigationActive, setMobileNavigationActive] = useState(false);
+  const [showMainLayout, setShowMainLayout] = useState(true);
 
   const getItemRouteNavigation = useCallback(
     (
@@ -134,12 +135,19 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   );
 
   return (
-    <div className="Md-Layout">
+    <div className="Md-Layout ">
       <Frame
         topBar={
-          <MainLayoutTopBar navigationToggle={toggleMobileNavigationActive} />
+          <MainLayoutTopBar
+            setShowMainLayout={setShowMainLayout}
+            navigationToggle={toggleMobileNavigationActive}
+          />
         }
-        navigation={<MainLayoutNavigation />}
+        navigation={
+          showMainLayout || mobileNavigationActive ? (
+            <MainLayoutNavigation />
+          ) : null
+        }
         showMobileNavigation={mobileNavigationActive}
         onNavigationDismiss={toggleMobileNavigationActive}
       >

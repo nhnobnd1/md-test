@@ -45,18 +45,18 @@ const SettingChannelIndexPage: PageComponent<
           navigate(SettingChannelRoutePaths.Widgets.Index);
         },
       },
-      {
-        title: "Live Chat Configuration",
-        link: "",
-        icon: () => <ChatMajor />,
-        onConfigure: () => {},
-      },
-      {
-        title: "Facebook, Instagram and Messenger Configuration",
-        link: "",
-        icon: () => <SocialPostMajor />,
-        onConfigure: () => {},
-      },
+      // {
+      //   title: "Live Chat Configuration",
+      //   link: "",
+      //   icon: () => <ChatMajor />,
+      //   onConfigure: () => {},
+      // },
+      // {
+      //   title: "Facebook, Instagram and Messenger Configuration",
+      //   link: "",
+      //   icon: () => <SocialPostMajor />,
+      //   onConfigure: () => {},
+      // },
     ],
     []
   );

@@ -37,7 +37,6 @@ import {
   Filters,
   IndexTable,
   LegacyCard,
-  Link,
   Page,
   Text,
   useIndexResourceState,
@@ -515,9 +514,8 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         onClick={() => {}}
       >
         <IndexTable.Cell>
-          <Link
-            removeUnderline
-            dataPrimaryLink
+          <div
+            className="hover:underline"
             onClick={() => {
               navigate(generatePath(TicketRoutePaths.Detail, { id: _id }));
             }}
@@ -525,7 +523,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
             <Text variant="bodyMd" fontWeight="bold" as="span">
               {ticketId}
             </Text>
-          </Link>
+          </div>
         </IndexTable.Cell>
         <IndexTable.Cell>{subject}</IndexTable.Cell>
         <IndexTable.Cell>
