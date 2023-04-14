@@ -6,6 +6,7 @@ import {
   useRoutes,
 } from "@moose-desk/core";
 import useTimezone from "@moose-desk/core/hooks/useTimezone";
+
 import { memo, useEffect, useState } from "react";
 import { RolePermission } from "src/constaint/RolePermission";
 import useAuth from "src/hooks/useAuth";
@@ -18,7 +19,9 @@ const AppRoutesBased = () => {
   const { routes } = useRoutes();
   const role = useRole();
 
-  const { timezone } = useTimezone(isLoggedIn);
+  useTimezone(isLoggedIn);
+  // console.log(timezone);
+  // const {} = useGlobalData(isLoggedIn);
   useEffect(() => {
     RouterHandler.registerMiddleware({
       guest: () => true,

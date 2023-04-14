@@ -75,14 +75,19 @@ const ResultShopifySearch = React.forwardRef(({ id }: IProps, ref) => {
     {
       title: "",
       dataIndex: "name",
-      width: "70%",
+      width: "50%",
       render: (nameOrder: string) => <div>Order{nameOrder}</div>,
     },
     {
       title: "",
       dataIndex: "total",
-      width: "30%",
-      render: (price: string) => <div>${price}</div>,
+      width: "50%",
+      render: (price: string, record: any) => (
+        <div>
+          {price}
+          {record?.currency}
+        </div>
+      ),
     },
   ];
   const _renderInfoCustomer = () => {
@@ -104,6 +109,7 @@ const ResultShopifySearch = React.forwardRef(({ id }: IProps, ref) => {
       <DetailOrderCustomer onBack={handleBack} dataOrder={dataOrder} />
     ) : (
       <Table
+        className={styles.tableListOrder}
         columns={columns}
         dataSource={convertDataTable}
         rowKey={(record) => record.id}
