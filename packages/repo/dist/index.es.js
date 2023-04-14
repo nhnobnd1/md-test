@@ -7280,11 +7280,11 @@ const e0 = Vt(
   }
 ), n0 = Vt(
   () => ({
-    baseURL: `${zt.getApiUrl()}/api/v1/store`
+    baseURL: `${zt.getApiUrl()}/api/v1/general/info`
   }),
   {
     getStore(t, e) {
-      return t.get("/store-id", e);
+      return t.get("", e);
     }
   }
 ), o0 = Vt(

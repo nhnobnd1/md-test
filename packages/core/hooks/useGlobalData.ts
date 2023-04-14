@@ -16,9 +16,10 @@ export default function useGlobalData(enabled = false) {
     queryFn: () => getGlobalData(),
     enabled: enabled,
   });
-  const deepData = (data as any)?.data;
+  const deepData: any = (data as any)?.data?.data;
   return {
     dataGlobal: deepData,
+    timezone: deepData?.timezone,
     refetchGlobal: refetch,
   };
 }
