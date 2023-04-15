@@ -32,6 +32,7 @@ export function api() {
         method: "POST",
         body: JSON.stringify(customConfig.body),
       });
+      console.log("process.env.API_URL + url: ", process.env.API_URL + url);
       const data = await response.json();
       return data;
     },
