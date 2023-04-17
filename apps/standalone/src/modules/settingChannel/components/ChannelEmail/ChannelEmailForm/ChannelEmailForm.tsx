@@ -62,6 +62,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
       dispatch(setSignInCallback(initialState.signInCallback));
     };
   }, []);
+  console.log({ signInCallback });
 
   useEffect(() => {
     if (signInCallback.callbackName && signInCallback.oauthStatus) {
@@ -102,7 +103,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
           name: signInCallback.name || "",
           mailSettingType: MailSettingType.CUSTOM,
           mailboxType: MailBoxType.GMAIL,
-          accessType: signInCallback.accessType || "",
+          accessType: AccessType.Both,
           refKey: signInCallback.refKey || undefined,
           supportEmail: signInCallback.supportEmail || "",
           isPrimaryEmail: false,

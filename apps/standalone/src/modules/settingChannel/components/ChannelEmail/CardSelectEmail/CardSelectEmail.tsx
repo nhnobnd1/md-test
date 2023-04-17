@@ -1,13 +1,12 @@
-import { useJob } from "@moose-desk/core";
+import { useJob, useParams } from "@moose-desk/core";
 import {
-  AccessType,
   CheckConnectionRequest,
   GetEmailGoogleAuthRequest,
   GetEmailMicrosoftAuthRequest,
   MailBoxType,
 } from "@moose-desk/repo";
 import EmailIntegrationRepository from "@moose-desk/repo/emailIntegration/EmailIntegrationRepository";
-import { Button, Card, Checkbox, FormInstance, Radio } from "antd";
+import { Button, Card, FormInstance, Radio } from "antd";
 import {
   ForwardedRef,
   forwardRef,
@@ -49,18 +48,21 @@ export const CardSelectEmail = forwardRef(
     const { getSubDomain } = useSubdomain();
     const dispatch = useAppDispatch();
     const message = useMessage();
-
+    const { id } = useParams();
+    console.log({ id });
     const signCallback = useAppSelector(
       (state) => state.channelEmail.signInCallback
     );
 
     const { run: getEmailGoogleAuth } = useJob(
       (payload: GetEmailGoogleAuthRequest) => {
+        console.log({ payload });
         return EmailIntegrationRepository()
           .getEmailGoogleAuth(payload)
           .pipe(
             map(({ data }) => {
               if (data.statusCode === 200) {
+                console.log("data", data.data);
                 window.location.href = data.data;
               }
             })
@@ -92,6 +94,7 @@ export const CardSelectEmail = forwardRef(
       (social: "google" | "microsoft") => {
         const payload: GetEmailGoogleAuthRequest = {
           type: type,
+          id: id,
           // ...(import.meta.env.MODE === "development" && {
           //   subdomainForTest: "localhost:3580",
           // }),
@@ -270,7 +273,7 @@ export const CardSelectEmail = forwardRef(
               Change email address
             </span>
           </div>
-          <Form.Item name="accessType">
+          {/* <Form.Item name="accessType">
             <Radio.Group>
               <Radio className="mr-4" value={AccessType.Both}>
                 Both
@@ -285,7 +288,7 @@ export const CardSelectEmail = forwardRef(
           </Form.Item>
           <Form.Item name="deleteFromServer" valuePropName="checked">
             <Checkbox>Delete from server after fetching</Checkbox>
-          </Form.Item>
+          </Form.Item> */}
         </>
       );
     };

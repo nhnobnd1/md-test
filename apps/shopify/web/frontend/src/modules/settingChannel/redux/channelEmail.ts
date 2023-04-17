@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface SignInCallBack extends SignInCallbackResponse {
   callbackName: "gmail" | "microsoft" | undefined;
+  id: string;
 }
 
 export const initialState: {
@@ -16,6 +17,7 @@ export const initialState: {
     supportEmail: "",
     type: null,
     callbackName: undefined,
+    id: "",
   },
 };
 

@@ -67,6 +67,7 @@ export interface EmailIntegration {
 export interface GetEmailGoogleAuthRequest {
     subdomainForTest?: string;
     type?: 'update' | 'new';
+    id?: string;
 }
 export interface GetEmailMicrosoftAuthRequest {
     subdomainForTest?: string;

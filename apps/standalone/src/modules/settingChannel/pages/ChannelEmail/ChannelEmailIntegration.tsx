@@ -47,7 +47,16 @@ const ChannelEmailIntegration = (props: ChannelEmailIntegrationProps) => {
           },
         });
       } else {
-        navigate(generatePath(SettingChannelRoutePaths.ChannelEmail.Update));
+        navigate(
+          generatePath(SettingChannelRoutePaths.ChannelEmail.Update, {
+            id: signInCallback?.id,
+          }),
+          {
+            state: {
+              callBack: true,
+            },
+          }
+        );
       }
     } else {
       setError({

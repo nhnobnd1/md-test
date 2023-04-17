@@ -6,6 +6,7 @@ import {
   useToggle,
 } from "@moose-desk/core";
 import {
+  AccessType,
   CreateEmailIntegrationRequest,
   EmailIntegration,
   EmailIntegrationRepository,
@@ -79,7 +80,7 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
             mailSettingType: MailSettingType.CUSTOM,
             mailboxType: email.mailboxType,
             isPrimaryEmail: email.isPrimaryEmail,
-            accessType: mailBoxConfig?.accessType,
+            accessType: AccessType.Both,
             deleteFromServer: mailBoxConfig.incoming.deleteFromServer,
           };
 

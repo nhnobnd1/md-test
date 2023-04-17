@@ -52,7 +52,7 @@ export function useFormChannelEmail() {
         isPrimaryEmail: values.isPrimaryEmail,
         mailboxType: values.mailboxType,
         mailboxConfig: {
-          accessType: values.accessType ?? AccessType.Both,
+          accessType: AccessType.Both,
           refKey: signCallback.refKey,
           incoming: getSettingIncomingMail(values),
           outgoing: getSettingOutGoingMail(values),

@@ -1,8 +1,9 @@
-import { SignInCallbackResponse } from "@moose-desk/repo";
+import { AccessType, SignInCallbackResponse } from "@moose-desk/repo";
 import { createSlice } from "@reduxjs/toolkit";
 
 export interface SignInCallBack extends SignInCallbackResponse {
   callbackName: "gmail" | "microsoft" | undefined;
+  id: string;
 }
 
 export const initialState: {
@@ -11,12 +12,13 @@ export const initialState: {
 } = {
   signInCallback: {
     refKey: "",
-    accessType: "",
+    accessType: AccessType.Both,
     name: "",
     oauthStatus: "",
     supportEmail: "",
     type: null,
     callbackName: undefined,
+    id: "",
   },
   externalMailConnection: false,
 };
