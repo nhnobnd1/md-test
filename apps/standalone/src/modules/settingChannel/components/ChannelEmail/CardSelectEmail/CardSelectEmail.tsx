@@ -271,7 +271,7 @@ export const CardSelectEmail = forwardRef(
               Change email address
             </span>
           </div>
-          {/* <Form.Item name="accessType">
+          <Form.Item name="accessType">
             <Radio.Group>
               <Radio className="mr-4" value={AccessType.Both}>
                 Both
@@ -286,14 +286,14 @@ export const CardSelectEmail = forwardRef(
           </Form.Item>
           <Form.Item name="deleteFromServer" valuePropName="checked">
             <Checkbox>Delete from server after fetching</Checkbox>
-          </Form.Item> */}
+          </Form.Item>
         </>
       );
     };
 
     return (
       <Card className={className} type="inner" title="Mail Server">
-        {/* <Form.Item className="mb-[40px]" name="mailboxType">
+        <Form.Item className="mb-[40px]" name="mailboxType">
           <Radio.Group>
             <Radio className="mr-4" value={MailBoxType.GMAIL}>
               <LogosGoogleIcon className="text-[16px] mr-1 ml-[4px] translate-y-1" />
@@ -308,7 +308,7 @@ export const CardSelectEmail = forwardRef(
               <span>External Email</span>
             </Radio>
           </Radio.Group>
-        </Form.Item> */}
+        </Form.Item>
         <div>
           {/* gmail and logged */}
           {form.getFieldValue("mailboxType") === MailBoxType.GMAIL && (
