@@ -18,6 +18,7 @@ export type Customer = {
   email: string;
   phoneNumber: string;
   storeId: string;
+  ticketsCount?: number;
 };
 export interface BaseListCustomerRequest extends BaseListRequest {
   sortBy?: string;

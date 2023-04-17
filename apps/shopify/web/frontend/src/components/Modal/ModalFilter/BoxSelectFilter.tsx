@@ -22,7 +22,6 @@ const BoxSelectFilter = (props: BoxSelectAutoReplyProps) => {
   const deselectedOptions = useMemo(() => {
     return props.data;
   }, [props.data]);
-
   const [selectedOption, setSelectedOption] = useState();
   const [inputValue, setInputValue] = useState("");
   const [options, setOptions] = useState<
@@ -100,10 +99,10 @@ const BoxSelectFilter = (props: BoxSelectAutoReplyProps) => {
           onChange={updateText}
           label={props.label}
           labelHidden={!props.label}
+          value={inputValue}
           autoComplete="off"
           error={props.error}
-          {...props}
-          value={inputValue}
+          // {...props} //for fix bug cannot search select by keyword => cannot detect event onchange
         />
       }
     >
