@@ -26,7 +26,6 @@ import CardSettingExternalMail, {
 import { IsLoggedServer } from "src/modules/settingChannel/components/ChannelEmail/ChannelEmailForm";
 import { setExternalMailConnection } from "src/modules/settingChannel/redux/channelEmail";
 import { useAppDispatch, useAppSelector } from "src/redux/hook";
-import EntypoMail from "~icons/entypo/mail";
 import LogosGoogleIcon from "~icons/logos/google-icon";
 import LogosMicrosoftWindows from "~icons/logos/microsoft-windows";
 
@@ -298,14 +297,6 @@ export const CardSelectEmail = forwardRef(
             <Radio className="mr-4" value={MailBoxType.GMAIL}>
               <LogosGoogleIcon className="text-[16px] mr-1 ml-[4px] translate-y-1" />
               <span>Gmail</span>
-            </Radio>
-            <Radio className="mr-4" value={MailBoxType.OUTLOOK}>
-              <LogosMicrosoftWindows className="text-[16px] mr-1 ml-[4px] translate-y-1" />
-              <span>Microsoft</span>
-            </Radio>
-            <Radio value={MailBoxType.OTHER}>
-              <EntypoMail className="text-[16px] mr-1 ml-[4px] translate-y-1" />
-              <span>External Email</span>
             </Radio>
           </Radio.Group>
         </Form.Item>

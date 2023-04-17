@@ -76,7 +76,6 @@ const ChannelEmailCreate = (props: ChannelEmailCreateProps) => {
           createMailExternal(values);
         }
       } else if (values.mailSettingType === MailSettingType.FORWARD) {
-        console.log("hehe", values);
         createMailOther(values);
       } else {
         createMailMooseDesk(values);

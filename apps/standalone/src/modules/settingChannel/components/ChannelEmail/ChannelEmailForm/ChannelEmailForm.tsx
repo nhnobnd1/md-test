@@ -101,11 +101,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
       : {
           name: signInCallback.name || "",
           mailSettingType: MailSettingType.CUSTOM,
-          mailboxType:
-            signInCallback.callbackName &&
-            signInCallback.callbackName === "microsoft"
-              ? MailBoxType.OUTLOOK
-              : MailBoxType.GMAIL,
+          mailboxType: MailBoxType.GMAIL,
           accessType: signInCallback.accessType || "",
           refKey: signInCallback.refKey || undefined,
           supportEmail: signInCallback.supportEmail || "",
@@ -151,8 +147,16 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
             import.meta.env.MODE === "production"
               ? `${getSubDomain()}@email.moosedesk.com`
               : `${getSubDomain()}@email.moosedesk.net`;
-          form.setFieldValue("name", "");
+          // form.setFieldValue("name", "");
           form.setFieldValue("supportEmail", supportEmailDefault);
+        } else if (changedValue.mailSettingType === MailSettingType.FORWARD) {
+          console.log("wtf");
+          form.setFieldValue(
+            "supportEmail",
+            props.initialValues?.mailboxType === MailBoxType.OTHER
+              ? props.initialValues?.supportEmail
+              : ""
+          );
         } else {
           if (type === "new") {
             form.setFieldValue("name", signInCallback.name);
@@ -161,7 +165,9 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
             form.setFieldValue("name", props.initialValues?.name ?? "");
             form.setFieldValue(
               "supportEmail",
-              props.initialValues?.supportEmail ?? ""
+              props.initialValues?.mailboxType === MailBoxType.GMAIL
+                ? props.initialValues?.supportEmail
+                : ""
             );
           }
         }
@@ -196,6 +202,11 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
 
     [signInCallback, props.initialValues]
   );
+  useEffect(() => {
+    if (form.getFieldValue("mailSettingType") === MailSettingType.CUSTOM) {
+      form.setFieldValue("mailboxType", MailBoxType.GMAIL);
+    }
+  }, [form.getFieldValue("mailSettingType")]);
 
   return (
     <Form

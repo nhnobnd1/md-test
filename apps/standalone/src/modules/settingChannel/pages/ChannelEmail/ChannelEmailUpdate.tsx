@@ -58,6 +58,9 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
     if (mailSettingType === MailSettingType.MOOSEDESK) {
       return true;
     }
+    if (mailSettingType === MailSettingType.FORWARD) {
+      return true;
+    }
     if (mailboxType === MailBoxType.OTHER) {
       return externalEmailConnection;
     } else {
@@ -70,17 +73,6 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
       const mailBoxConfig = email.mailboxConfig as MailBoxConfig;
       switch (email.mailboxType) {
         case MailBoxType.GMAIL:
-          return {
-            name: email.name,
-            supportEmail: email.supportEmail || "",
-            mailSettingType: MailSettingType.CUSTOM,
-            mailboxType: email.mailboxType,
-            isPrimaryEmail: email.isPrimaryEmail,
-            accessType: mailBoxConfig?.accessType,
-            deleteFromServer: mailBoxConfig.incoming.deleteFromServer,
-          };
-
-        case MailBoxType.OUTLOOK:
           return {
             name: email.name,
             supportEmail: email.supportEmail || "",
@@ -104,7 +96,7 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
           return {
             name: email.name,
             supportEmail: email.supportEmail || "",
-            mailSettingType: MailSettingType.CUSTOM,
+            mailSettingType: MailSettingType.FORWARD,
             mailboxType: email.mailboxType,
             isPrimaryEmail: email.isPrimaryEmail,
             incoming: mailBoxConfig.incoming,
@@ -191,6 +183,8 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
         } else {
           updateMailExternal(values);
         }
+      } else if (values.mailSettingType === MailSettingType.FORWARD) {
+        createMailOther(values);
       } else {
         createMailMooseDesk(values);
       }
@@ -198,8 +192,12 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
     [signCallback]
   );
 
-  const { payloadEmailGoogle, payloadMailExternal, payloadMailMooseDesk } =
-    useFormChannelEmail();
+  const {
+    payloadEmailGoogle,
+    payloadMailExternal,
+    payloadMailMooseDesk,
+    payloadMailOther,
+  } = useFormChannelEmail();
 
   const updateMailGoogle = useCallback(
     (values: ValuesForm) => {
@@ -221,6 +219,9 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
 
   const createMailMooseDesk = useCallback((values: ValuesForm) => {
     updateEmailIntegration(payloadMailMooseDesk(values));
+  }, []);
+  const createMailOther = useCallback((values: ValuesForm) => {
+    updateEmailIntegration(payloadMailOther(values));
   }, []);
 
   return (
