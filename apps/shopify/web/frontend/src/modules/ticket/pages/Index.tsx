@@ -525,7 +525,18 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
             </Text>
           </div>
         </IndexTable.Cell>
-        <IndexTable.Cell>{subject}</IndexTable.Cell>
+        <IndexTable.Cell>
+          {
+            <div
+              className="hover:underline "
+              onClick={() => {
+                navigate(generatePath(TicketRoutePaths.Detail, { id: _id }));
+              }}
+            >
+              {subject}
+            </div>
+          }
+        </IndexTable.Cell>
         <IndexTable.Cell>
           {createdViaWidget || incoming ? (
             <span className="subject">{`${fromEmail.email}`}</span>

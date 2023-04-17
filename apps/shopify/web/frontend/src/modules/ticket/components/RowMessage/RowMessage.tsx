@@ -14,6 +14,7 @@ import { FC, useCallback, useMemo, useState } from "react";
 import ImageZoom from "src/components/TextEditorTicket/ImageZoom";
 import { ChatItem } from "src/modules/ticket/pages/DetailTicket";
 import CollapseIcon from "~icons/material-symbols/arrow-right";
+import DownloadIcon from "~icons/material-symbols/cloud-download-outline-rounded";
 import UserIcon from "~icons/material-symbols/person";
 import AgentIcon from "~icons/material-symbols/support-agent-sharp";
 import QuoteIcon from "~icons/octicon/ellipsis-16";
@@ -66,6 +67,15 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
   }, [quote]);
 
   const [open, setOpen] = useState(false);
+
+  function shortenFilename(text: string, length: number) {
+    if (text.length <= length) {
+      return text;
+    } else {
+      const [filename, extension] = text.split(".");
+      return `${filename.slice(0, length)}...${extension}`;
+    }
+  }
 
   const handleToggle = useCallback(() => setOpen((open) => !open), []);
   return (
@@ -157,33 +167,33 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
                       }}
                     >
                       <div className="flex justify-center items-start gap-2 ">
-                        <Tooltip content={item.name} preferredPosition="above">
-                          <div className="flex flex-col h-[150px] file-item relative justify-between">
-                            <div className="fake absolute h-[150px] w-[150px]"></div>
-                            <span className="file-name">{item.name}</span>
+                        <div className="flex flex-col h-[150px] file-item relative justify-between">
+                          <div className="fake absolute h-[150px] w-[150px]"></div>
+                          <span className="file-name break-words">
+                            {shortenFilename(item.name, 20)}
+                          </span>
 
-                            <span className=" text-xs text-left inline-block file-size ">
-                              {filesize(item.size, {
-                                base: 2,
-                                standard: "jedec",
-                              })}
-                            </span>
-                            <div className="justify-center items-center file-download mb-2">
-                              <Button
-                                onClick={async () => {
-                                  const response = await axios.get(
-                                    item.attachmentUrl,
-                                    {
-                                      responseType: "blob",
-                                    }
-                                  );
-                                  fileDownload(response.data, item.name);
-                                }}
-                                icon={<div>Download</div>}
-                              ></Button>
-                            </div>
+                          <span className=" text-xs text-left inline-block file-size ">
+                            {filesize(item.size, {
+                              base: 2,
+                              standard: "jedec",
+                            })}
+                          </span>
+                          <div className="justify-center items-center file-download mb-2">
+                            <Button
+                              onClick={async () => {
+                                const response = await axios.get(
+                                  item.attachmentUrl,
+                                  {
+                                    responseType: "blob",
+                                  }
+                                );
+                                fileDownload(response.data, item.name);
+                              }}
+                              icon={<DownloadIcon style={{ fontSize: 16 }} />}
+                            ></Button>
                           </div>
-                        </Tooltip>
+                        </div>
                       </div>
                     </div>
                   ))}

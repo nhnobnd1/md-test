@@ -59,7 +59,14 @@ export default function TagIndexPage() {
             </Text>
           </Link>
         </IndexTable.Cell>
-        <IndexTable.Cell className="py-3">{ticketsCount}</IndexTable.Cell>
+        <IndexTable.Cell className="py-3">
+          <div
+            className="hover:underline hover:cursor-pointer"
+            onClick={() => navigateToViewTicket(name)}
+          >
+            {ticketsCount}
+          </div>
+        </IndexTable.Cell>
         <IndexTable.Cell className="py-3">
           {updatedDatetime
             ? dayjs(updatedDatetime).format("DD-MM-YYYY")

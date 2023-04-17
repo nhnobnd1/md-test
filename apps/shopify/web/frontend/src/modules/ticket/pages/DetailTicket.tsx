@@ -500,13 +500,15 @@ const DetailTicket = (props: DetailTicketProps) => {
                         data={agentsOptions}
                       />
                     </FormItem>
-                    <FormItem name="tags">
-                      <SelectAddTag
-                        disabled={disabled}
-                        label="Tags"
-                        data={tagsOptions}
-                      />
-                    </FormItem>
+                    <div>
+                      <FormItem name="tags">
+                        <SelectAddTag
+                          disabled={disabled}
+                          label="Tags"
+                          data={tagsOptions}
+                        />
+                      </FormItem>
+                    </div>
                   </div>
                 </FormLayout.Group>
 
