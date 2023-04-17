@@ -1,4 +1,4 @@
-import { useJob, useMount, useToggle } from "@moose-desk/core";
+import { useJob, useMount, useRole, useToggle } from "@moose-desk/core";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import {
   AutoReply,

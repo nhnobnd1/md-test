@@ -1,6 +1,15 @@
 import { useJob } from "@moose-desk/core";
 import { EmailIntegrationRepository } from "@moose-desk/repo";
-import { Button, Card, Form, Input, Spin, Steps, Typography } from "antd";
+import {
+  Button,
+  Card,
+  Form,
+  FormInstance,
+  Input,
+  Spin,
+  Steps,
+  Typography,
+} from "antd";
 import { FC, useEffect, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import useMessage from "src/hooks/useMessage";
@@ -8,10 +17,12 @@ import { CompleteStep } from "src/modules/settingChannel/components/ChannelEmail
 import { ContentWait } from "src/modules/settingChannel/components/ChannelEmail/CardForwardEmail/ContentWait";
 import { StepGoogleCode } from "src/modules/settingChannel/components/ChannelEmail/CardForwardEmail/StepGoogleCode";
 
-interface CardForwardEmailProps {}
+interface CardForwardEmailProps {
+  formEmail: FormInstance<any>;
+}
 type Status = "Pending" | "Success" | "Fail";
 
-export const CardForwardEmail: FC<CardForwardEmailProps> = () => {
+export const CardForwardEmail: FC<CardForwardEmailProps> = ({ formEmail }) => {
   const [form] = Form.useForm();
   const [step, setStep] = useState(0);
   const [googleCode, setGoogleCode] = useState("");
@@ -130,6 +141,10 @@ export const CardForwardEmail: FC<CardForwardEmailProps> = () => {
         map(({ data }) => {
           if (data.statusCode === 200) {
             if (data.data.isVerified) {
+              formEmail.setFieldValue(
+                "supportEmail",
+                form.getFieldValue("email")
+              );
               setIsVerified("Success");
             } else {
               setTimeout(() => {
@@ -156,20 +171,20 @@ export const CardForwardEmail: FC<CardForwardEmailProps> = () => {
   return (
     <Card className="mb-5 " title="Forwarding details" type="inner">
       <Steps
-        className="mb-10"
+        className="mb-5"
         current={step}
         items={[
           {
-            title: "Step 1",
+            title: <span style={{ fontSize: 14 }}>Step 1</span>,
           },
           {
-            title: "Step 2",
+            title: <span style={{ fontSize: 14 }}>Step 2</span>,
           },
           {
-            title: "Step 3",
+            title: <span style={{ fontSize: 14 }}>Step 3</span>,
           },
           {
-            title: "Step 4",
+            title: <span style={{ fontSize: 14 }}>Step 4</span>,
           },
         ]}
       />
@@ -188,7 +203,7 @@ export const CardForwardEmail: FC<CardForwardEmailProps> = () => {
       >
         {step === 0 && (
           <div className="flex flex-col items-center">
-            <Typography.Title level={3}>
+            <Typography.Title className="font-medium text-md" level={3}>
               Enter current support address
             </Typography.Title>
             <div className="flex gap-3 flex-col items-center mt-1">

@@ -243,7 +243,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
         </Form.Item>
         <Form.Item name="mailSettingType">
           <Radio.Group>
-            <Radio value={MailSettingType.CUSTOM}>Use your email address</Radio>
+            <Radio value={MailSettingType.CUSTOM}>Use your Gmail</Radio>
             <Radio value={MailSettingType.MOOSEDESK}>
               Use Moosedesk email address
             </Radio>
@@ -263,7 +263,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
             />
           )}
           {form.getFieldValue("mailSettingType") ===
-            MailSettingType.FORWARD && <CardForwardEmail />}
+            MailSettingType.FORWARD && <CardForwardEmail formEmail={form} />}
 
           <div className="flex gap-8">
             <Form.Item name="isPrimaryEmail" valuePropName="checked">

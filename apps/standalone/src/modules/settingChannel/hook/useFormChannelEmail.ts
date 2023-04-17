@@ -99,10 +99,27 @@ export function useFormChannelEmail() {
     },
     [signCallback]
   );
+  const payloadMailOther = useCallback<
+    (values: ValuesForm) => CreateEmailIntegrationRequest
+  >(
+    (values: ValuesForm) => {
+      return {
+        name: values.name,
+        supportEmail: values.supportEmail,
+        isPrimaryEmail: values.isPrimaryEmail,
+        mailboxType: MailBoxType.OTHER,
+        mailboxConfig: {
+          forwardEmail: values.supportEmail,
+        },
+      };
+    },
+    [signCallback]
+  );
 
   return {
     payloadEmailGoogle,
     payloadMailExternal,
     payloadMailMooseDesk,
+    payloadMailOther,
   };
 }
