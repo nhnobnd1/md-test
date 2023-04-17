@@ -8,12 +8,9 @@ export const formatTimeDDMMYY = (timeString: string) => {
 };
 export const formatTimeByTimezone = (timezoneString: string | undefined) => {
   const currentDay = !timezoneString ? dayjs() : dayjs().tz(timezoneString);
-  console.log({
-    timezoneString: timezoneString,
-    startOfMonth: currentDay.startOf("month").unix(),
-    endOfMonth: currentDay.endOf("month").unix(),
-  });
   return {
+    startOfMonthDateFormat: currentDay.startOf("month"),
+    endOfMonthDateFormat: currentDay.endOf("month"),
     startOfMonth: currentDay.startOf("month").unix(),
     endOfMonth: currentDay.endOf("month").unix(),
   };
