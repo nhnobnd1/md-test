@@ -148,7 +148,7 @@ const SelectAddTag = (props: BoxSelectAutoReplyProps) => {
           )}
         </>
       </Combobox>
-      <div className="mt-5">
+      <div className="mb-1">
         <LegacyStack spacing="tight">{tagMarkup}</LegacyStack>
       </div>
     </>

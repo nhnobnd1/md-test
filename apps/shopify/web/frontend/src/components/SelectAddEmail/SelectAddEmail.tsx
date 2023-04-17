@@ -143,7 +143,7 @@ const SelectAddEmail = (props: BoxSelectAutoReplyProps) => {
           )}
         </>
       </Combobox>
-      <div className="mt-5">
+      <div className="">
         <LegacyStack spacing="tight">{tagMarkup}</LegacyStack>
       </div>
     </>

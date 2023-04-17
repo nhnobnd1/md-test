@@ -89,7 +89,7 @@ const SelectDateHolidays = ({
             error={error}
           />
         </div>
-        <div className={error ? "mb-8" : "mb-1"}>
+        <div className={error ? "mb-8" : "mb-9px"}>
           <Text as="p" variant="bodyMd">
             to
           </Text>

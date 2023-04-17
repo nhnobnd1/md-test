@@ -52,7 +52,7 @@ export default function CustomerIndexPage() {
     plural: "customers",
   };
   const rowMarkup = customers.map(
-    ({ id, firstName, lastName, email, storeId }, index) => (
+    ({ id, firstName, lastName, email, storeId, ticketsCount }, index) => (
       <IndexTable.Row id={id} key={id} position={index}>
         <IndexTable.Cell className="py-3">
           <Link
@@ -66,7 +66,7 @@ export default function CustomerIndexPage() {
           </Link>
         </IndexTable.Cell>
         <IndexTable.Cell className="py-3">{email}</IndexTable.Cell>
-        <IndexTable.Cell className="py-3">{storeId}</IndexTable.Cell>
+        <IndexTable.Cell className="py-3">{ticketsCount}</IndexTable.Cell>
         <IndexTable.Cell className="py-3">
           <ButtonGroup>
             <div className="flex gap-2">
