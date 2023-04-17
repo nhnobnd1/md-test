@@ -104,13 +104,16 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
         .pipe(
           map(({ data }) => {
             return {
-              options: data.data.map((item) => ({
-                label: item.lastName.includes("admin")
-                  ? `${item.firstName} - ${item.email}`
-                  : `${item.firstName} ${item.lastName} - ${item.email}`,
-                value: item._id,
-                obj: item,
-              })),
+              options: data.data
+                .filter((item) => item.isActive && item.emailConfirmed)
+
+                .map((item) => ({
+                  label: item.lastName.includes("admin")
+                    ? `${item.firstName} - ${item.email}`
+                    : `${item.firstName} ${item.lastName} - ${item.email}`,
+                  value: item._id,
+                  obj: item,
+                })),
               canLoadMore: params.page < data.metadata.totalPage,
             };
           })
@@ -331,7 +334,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
                 <></>
               )}
               {enableCC ? (
-                <div className="flex-1">
+                <div className="flex-1 mt-3">
                   <FormItem name="BCC">
                     <SelectAddEmail label="BCC" data={customersOptions} />
                   </FormItem>
@@ -355,7 +358,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
               <ComboSelect.Ajax
                 label="Assignee"
                 placeholder="Search agents"
-                height="250px"
+                height=""
                 loadMore={fetchAgents}
               />
             </FormItem>

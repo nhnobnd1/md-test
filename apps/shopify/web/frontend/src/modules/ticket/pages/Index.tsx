@@ -317,17 +317,18 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
           // message.loading.hide();
           if (data.statusCode === 200) {
             show("The selected Ticket has been removed from the system.");
-            getListTicketApi({
-              page: 1,
-              limit: env.DEFAULT_PAGE_SIZE,
-            });
+            getStatisticTicket();
+            if (filterObject) {
+              getListTicketFilter({ ...filterData, ...filterObject });
+              return;
+            }
+            getListTicketApi(filterData);
             setFilterData((old: any) => {
               return {
                 ...old,
                 page: 1,
               };
             });
-            getStatisticTicket();
           } else {
             // notification.error("There is an error with remove Ticket.", {
             //   description: "Remove Ticket failed",
