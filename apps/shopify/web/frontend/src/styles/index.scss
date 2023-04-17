@@ -12,7 +12,15 @@
   text-decoration: underline;
   color: #202223;
 }
-
+.d-flex {
+  display: flex;
+}
+.d-none {
+  display: none;
+}
+.text-line-through {
+  text-decoration: line-through;
+}
 .tox-notifications-container {
   display: none !important;
 }
@@ -24,10 +32,24 @@
     }
   }
 }
-
+.a-wrap {
+  a {
+    word-break: break-all;
+  }
+}
+.pointer {
+  cursor: pointer;
+}
 .text-red {
   color: rgba(215, 44, 13, 1);
 }
 .mb-9px {
   margin-bottom: 9px;
+}
+.flex-center {
+ display: flex;
+ align-items: center;
+} 
+.justify-between {
+  justify-content: space-between;
 }

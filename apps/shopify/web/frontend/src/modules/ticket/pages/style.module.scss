@@ -1,0 +1,75 @@
+.wrapSearchToggle {
+    position: absolute;
+    right: 20px;
+    top: 25px;
+    z-index: 1;
+    width: 30px;
+    cursor: pointer;
+}
+.wrapContent {
+    max-width: calc(100% - 300px);
+    min-width: calc(100% - 300px);
+    padding-right: 20px;
+}
+.wrapSearch {
+    width: 100%;
+    max-width: 300px;
+}
+.toggleButton {
+    font-size: 30px;
+    animation: scaleUpDown infinite;
+
+    &:hover {
+        transform: scale(1.2);
+        transition: all 0.2s ease-out;
+    }
+}
+
+.toggleButtonOpen,
+.toggleButtonClose {
+    &::after {
+        content: "Search Order";
+        position: absolute;
+        bottom: 110%;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 5px 10px;
+        background-color: #000;
+        color: #fff;
+        border-radius: 3px;
+        font-size: 12px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        padding: 5px;
+        height: 20px;
+        width: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    &:hover::after {
+        opacity: 1;
+    }
+}
+
+.toggleButtonClose {
+    &::after {
+        content: "Close";
+        width: 60px;
+    }
+}
+
+@keyframes scaleUpDown {
+    0% {
+        font-size: 30px;
+    }
+
+    50% {
+        font-size: 35px;
+    }
+
+    100% {
+        font-size: 30px;
+    }
+}
