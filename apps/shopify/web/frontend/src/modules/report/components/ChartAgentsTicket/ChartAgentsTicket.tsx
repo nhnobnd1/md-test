@@ -1,3 +1,4 @@
+import { formatTimeDDMMYY } from "@moose-desk/core/helper/format";
 import { memo } from "react";
 import {
   Bar,
@@ -9,7 +10,6 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { convertToLongDate } from "src/modules/report/helper/convert";
 import ChartTopFiveRes from "src/modules/report/helper/interface";
 interface ChartAgentsTicketProps {
   data?: ChartTopFiveRes[];
@@ -45,7 +45,7 @@ const ChartAgentsTicket = ({
   const chartData = data?.map((item: any) => {
     return Object.assign(
       {},
-      { name: convertToLongDate(item?.date) },
+      { name: formatTimeDDMMYY(item?.date) },
       ...convertAgentsForChartData
     );
   });

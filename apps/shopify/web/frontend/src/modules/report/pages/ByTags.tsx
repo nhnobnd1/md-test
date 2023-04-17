@@ -1,11 +1,17 @@
 import { PageComponent } from "@moose-desk/core";
+import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
-import { Card, DataTable, Page } from "@shopify/polaris";
-import { useCallback, useState } from "react";
+import { Card, DataTable, EmptySearchResult, Page } from "@shopify/polaris";
+import { useCallback, useMemo, useState } from "react";
+import { useQuery } from "react-query";
 import MDDatePicker from "src/components/DatePicker/MDDatePicker";
 import { MDTextField } from "src/components/Input/TextFieldPassword/MDTextField";
 import { Pagination } from "src/components/Pagination";
 import env from "src/core/env";
+import useGlobalData from "src/hooks/useGlobalData";
+import { getReportByTags } from "src/modules/report/api/api";
+import { convertTimeStamp } from "src/modules/report/helper/convert";
+import { formatTimeByTimezone } from "src/modules/report/helper/format";
 import styles from "./styles.module.scss";
 interface ByTagsProps {}
 interface ITableFilter {
@@ -17,36 +23,44 @@ interface ITableFilter {
   startTime: string;
   endTime: string;
 }
+const headings = ["Tag", "Total Tickets", "Percentage", "Percentage Closed"];
+const listSort = ["tagName", "totalTicket", "percentage", "percentageClosed"];
 export const ByTags: PageComponent<ByTagsProps> = () => {
   // const navigate = useNavigate();
   // const { timezone } = useTimezone();
   // const { startOfMonth, endOfMonth } = formatTimeByTimezone(timezone);
   // const [form] = useForm();
-  // const { timezone }: any = useGlobalData();
-  // const { startOfMonth, endOfMonth } = formatTimeByTimezone(timezone);
+  const { timezone }: any = useGlobalData();
+  const { startOfMonth, endOfMonth } = formatTimeByTimezone(timezone);
   const [filterData, setFilterData] = useState<ITableFilter>({
     page: 1,
     limit: env.DEFAULT_PAGE_SIZE,
     query: "",
     sortBy: undefined,
     sortOrder: undefined,
-    // startTime: String(startOfMonth),
-    // endTime: String(endOfMonth),
-    startTime: String(123),
-    endTime: String(123),
+    startTime: String(startOfMonth),
+    endTime: String(endOfMonth),
   });
   const [querySearch, setQuerySearch] = useState<string>("");
   const debounceValue: string = useDebounce(querySearch, 500);
 
-  // const { data: listReportTags, isFetching } = useQuery({
-  //   queryKey: [QUERY_KEY.REPORT_BY_TAGS, filterData, debounceValue],
-  //   queryFn: () => getReportByTags({ ...filterData, query: debounceValue }),
-  //   keepPreviousData: true,
-  // });
-  // const memoChartData = useMemo(() => {
-  //   const convertData = (listReportTags as any)?.data?.data || [];
-  //   return convertData;
-  // }, [listReportTags]);
+  const { data: listReportTags, isFetching } = useQuery({
+    queryKey: [QUERY_KEY.REPORT_BY_TAGS, filterData, debounceValue],
+    queryFn: () => getReportByTags({ ...filterData, query: debounceValue }),
+    keepPreviousData: true,
+  });
+  const memoChartData = useMemo(() => {
+    const convertData = (listReportTags as any)?.data?.data || [];
+    const rows = convertData?.map((item: any) => {
+      return [
+        item?.tagName,
+        item?.totalTicket,
+        item?.percentage,
+        item?.percentageClosed,
+      ];
+    });
+    return rows;
+  }, [listReportTags]);
 
   const handleSearchInput = (value: string) => {
     setQuerySearch(value);
@@ -80,52 +94,36 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
   //   },
   //   [form.getFieldValue("from")]
   // );
-  // const handleChangeStartTime = (_: any, values: string) => {
-  //   setFilterData((pre) => ({
-  //     ...pre,
-  //     startTime: String(
-  //       formatTimeStamp(values, "DD/MM/YYYY", timezone) || startOfMonth
-  //     ),
-  //   }));
-  // };
-  // const handleChangeEndTime = (_: any, values: string) => {
-  //   setFilterData((pre) => ({
-  //     ...pre,
-  //     endTime: String(
-  //       formatTimeStamp(values, "DD/MM/YYYY", timezone) || endOfMonth
-  //     ),
-  //   }));
-  // };
   const handleChangePage = (page: number) =>
     setFilterData((val) => {
       return { ...val, page };
     });
-  const rows = [
-    ["Emerald Silk Gown", 1, 124689, 140],
-    ["Mauve Cashmere Scarf", 20, 124533, 83],
-    ["Mauve Cashmere Scarf", 20, 124533, 83],
-  ];
+
   const handleSortTable = (
     headingIndex: number,
     direction: "ascending" | "descending" | "none"
   ) => {
-    console.log(headingIndex, direction);
+    setFilterData((pre) => ({
+      ...pre,
+      sortBy: listSort[headingIndex],
+      sortOrder: direction === "ascending" ? 1 : -1,
+    }));
   };
   const handleChangeStartDate = useCallback(
     (value: { start: Date; end: Date }) => {
-      // setFilterData((pre) => ({
-      //   ...pre,
-      //   startTime: String(convertTimeStamp(value.start, timezone)),
-      // }));
+      setFilterData((pre) => ({
+        ...pre,
+        startTime: String(convertTimeStamp(value.start, timezone)),
+      }));
     },
     []
   );
   const handleChangeEndDate = useCallback(
     (value: { start: Date; end: Date }) => {
-      // setFilterData((pre) => ({
-      //   ...pre,
-      //   endTime: String(convertTimeStamp(value.end, timezone)),
-      // }));
+      setFilterData((pre) => ({
+        ...pre,
+        endTime: String(convertTimeStamp(value.end, timezone)),
+      }));
     },
     []
   );
@@ -160,18 +158,25 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
             </div>
           </div>
           <div>
-            <DataTable
-              columnContentTypes={["text", "numeric", "numeric", "numeric"]}
-              headings={[
-                "Tag",
-                "Total Tickets",
-                "Percentage",
-                "Percentage Closed",
-              ]}
-              rows={rows}
-              sortable={[true, true, true, true]}
-              onSort={handleSortTable}
-            />
+            {!memoChartData?.length ? (
+              <div className="mt-3">
+                <EmptySearchResult
+                  title={
+                    "Sorry! There is no records matched with your search criteria"
+                  }
+                  description={"Try changing the filters or search term"}
+                  withIllustration
+                />
+              </div>
+            ) : (
+              <DataTable
+                columnContentTypes={["text", "numeric", "numeric", "numeric"]}
+                headings={headings}
+                rows={memoChartData}
+                sortable={[true, true, true, true]}
+                onSort={handleSortTable}
+              />
+            )}
             <div className={styles.wrapPagination}>
               <Pagination
                 total={10}

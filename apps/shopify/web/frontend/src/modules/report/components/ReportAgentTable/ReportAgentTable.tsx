@@ -1,5 +1,5 @@
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
-import { DataTable } from "@shopify/polaris";
+import { DataTable, EmptySearchResult } from "@shopify/polaris";
 import { useMemo, useState } from "react";
 import { MDTextField } from "src/components/Input/TextFieldPassword/MDTextField";
 import { Pagination } from "src/components/Pagination";
@@ -15,6 +15,13 @@ interface ReportAgentTableProps {
     endTime: string;
   };
 }
+const listSort = [
+  "agentFirstName",
+  "ticketAssigned",
+  "ticketClosed",
+  "percentage",
+];
+
 interface ITableFilter {
   page: number;
   limit: number;
@@ -48,10 +55,17 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
   });
   const memoChartData = useMemo(() => {
     const convertData = (listAgentData as any)?.data?.data || [];
-    return convertData;
+    const rows = convertData?.map((item: any) => {
+      return [
+        item?.agentFirstName + item?.agentLastName,
+        item?.ticketAssigned,
+        item?.ticketClosed,
+        item?.percentage,
+      ];
+    });
+    return rows;
   }, [listAgentData]);
 
-  console.log(memoChartData, "memoChartData");
   const handleSearchInput = (value: string) => {
     setQuerySearch(value);
   };
@@ -59,16 +73,16 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
     setFilterData((val) => {
       return { ...val, page };
     });
-  const rows = [
-    ["Emerald Silk Gown", 1, 124689, 140],
-    ["Mauve Cashmere Scarf", 20, 124533, 83],
-    ["Mauve Cashmere Scarf", 20, 124533, 83],
-  ];
+
   const handleSortTable = (
     headingIndex: number,
     direction: "ascending" | "descending" | "none"
   ) => {
-    console.log(headingIndex, direction);
+    setFilterData((pre) => ({
+      ...pre,
+      sortBy: listSort[headingIndex],
+      sortOrder: direction === "ascending" ? 1 : -1,
+    }));
   };
   return (
     <div>
@@ -79,18 +93,30 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
           onChange={handleSearchInput}
         />
       </div>
-      <DataTable
-        columnContentTypes={["text", "numeric", "numeric", "numeric"]}
-        headings={[
-          "Agent Name",
-          "Ticket Assigned",
-          "Tickets Closed",
-          "Percentage (Resolved)",
-        ]}
-        rows={rows}
-        sortable={[true, true, true, true]}
-        onSort={handleSortTable}
-      />
+      {!memoChartData?.length ? (
+        <div className="mt-3">
+          <EmptySearchResult
+            title={
+              "Sorry! There is no records matched with your search criteria"
+            }
+            description={"Try changing the filters or search term"}
+            withIllustration
+          />
+        </div>
+      ) : (
+        <DataTable
+          columnContentTypes={["text", "numeric", "numeric", "numeric"]}
+          headings={[
+            "Agent Name",
+            "Ticket Assigned",
+            "Tickets Closed",
+            "Percentage (Resolved)",
+          ]}
+          rows={memoChartData}
+          sortable={[true, true, true, true]}
+          onSort={handleSortTable}
+        />
+      )}
       <div className={styles.wrapPagination}>
         <Pagination
           total={10}
