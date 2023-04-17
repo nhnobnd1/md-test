@@ -26,14 +26,19 @@ export function api() {
     },
 
     post: async (url, customConfig) => {
-      const response = await fetch(process.env.API_URL + url, {
-        ...config,
-        ...customConfig,
-        method: "POST",
-        body: JSON.stringify(customConfig.body),
-      });
-      const data = await response.json();
-      return data;
+      try {
+        console.log("process.env.API_URL + url: ", process.env.API_URL + url);
+        const response = await fetch(process.env.API_URL + url, {
+          ...config,
+          ...customConfig,
+          method: "POST",
+          body: JSON.stringify(customConfig.body),
+        });
+        const data = await response.json();
+        return data;
+      } catch (e) {
+        console.log("error registerUser: ", e);
+      }
     },
   };
 }

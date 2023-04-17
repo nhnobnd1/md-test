@@ -65,9 +65,7 @@ app.get(
         companyName: null,
         timezone: payloadTimeZone,
       };
-
       await registerUser(payload);
-
       res.cookie(
         process.env.HOST ?? "",
         {
@@ -82,7 +80,6 @@ app.get(
         }
       );
     }
-
     next();
   },
   shopify.redirectToShopifyOrAppRoot()
