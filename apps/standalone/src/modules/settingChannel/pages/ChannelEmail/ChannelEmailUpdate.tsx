@@ -70,7 +70,7 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
   }, [externalEmailConnection, mailboxType, mailSettingType]);
 
   const initialForm = useMemo(() => {
-    if (signCallback) {
+    if (signCallback?.oauthStatus) {
       return {
         name: signCallback.name,
         supportEmail: signCallback.supportEmail,
