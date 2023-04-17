@@ -1,0 +1,75 @@
+.icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+.wrapSearchInput {
+    // width: 230px;
+    .customizeSelect {
+        width: 100%;
+    }
+}
+.itemSearched {
+    padding: 5px 0;
+    padding-left: 10px;
+    border-bottom: 1px solid #d9d9d9;
+    cursor: pointer;
+}
+.searchContainer {
+    padding-left: 20px;
+    // width: 400px;
+    // min-width: 400px;
+    width: 100%;
+    border-left: 1px solid #d9d9d9;
+    transition: all 0.5s;
+    height: 100%;
+}
+.detailContainer {
+    border: 1px solid #d9d9d9;
+    border-radius: 5px;
+    padding: 10px;
+    .back {
+        width: fit-content;
+        cursor: pointer;
+        display: flex;
+        .backTitle {
+            color: #1677ff;
+            margin-left: 10px;
+            text-decoration: underline;
+        }
+    }
+    .content {
+        .overview {
+            margin-top: 10px;
+            .blockItem {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-top: 5px;
+                .titleBlock {
+                    width: 40%;
+                }
+                .dataBlock {
+                    width: 60%;
+                }
+            }
+        }
+        .tableItemOrder, .wrapShipping, .wrapRefund {
+            border: 1px solid #d9d9d9;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+        .wrapShipping, .wrapRefund {
+            padding-bottom: 20px;
+            padding-right: 20px;
+            position: relative;
+            .subTitle {
+                position: absolute;
+                top: -15px;
+                left: 10px;
+                padding: 5px;
+                background-color: #ffff;
+            }
+        }
+    }
+}
