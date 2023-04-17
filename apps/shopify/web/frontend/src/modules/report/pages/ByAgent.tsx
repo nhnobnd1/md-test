@@ -1,6 +1,14 @@
+import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { Card, Page } from "@shopify/polaris";
-import { useCallback } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { useQuery } from "react-query";
 import MDDatePicker from "src/components/DatePicker/MDDatePicker";
+import useGlobalData from "src/hooks/useGlobalData";
+import { getReportTopFive } from "src/modules/report/api/api";
+import ChartAgentsTicket from "src/modules/report/components/ChartAgentsTicket/ChartAgentsTicket";
+import { ReportAgentTable } from "src/modules/report/components/ReportAgentTable";
+import { convertTimeStamp } from "src/modules/report/helper/convert";
+import { formatTimeByTimezone } from "src/modules/report/helper/format";
 import styles from "./styles.module.scss";
 
 interface ByAgentPageProps {}
@@ -13,29 +21,23 @@ interface ITableFilter {
   endTime: string;
 }
 const ByAgentPage = (props: ByAgentPageProps) => {
-  // const { timezone } = useTimezone();
-  // const { startOfMonth, endOfMonth } = formatTimeByTimezone(timezone);
-  // const [filter, setFilter] = useState({
-  //   startTime: String(startOfMonth),
-  //   endTime: String(endOfMonth),
-  // });
-  // const { timezone }: any = useGlobalData();
-  // const { startOfMonth, endOfMonth } = formatTimeByTimezone(timezone);
+  const { timezone }: any = useGlobalData();
+  const { startOfMonth, endOfMonth } = formatTimeByTimezone(timezone);
 
-  // const [filterData, setFilterData] = useState<ITableFilter>({
-  //   startTime: String(startOfMonth),
-  //   endTime: String(endOfMonth),
-  // });
+  const [filterData, setFilterData] = useState<ITableFilter>({
+    startTime: String(startOfMonth),
+    endTime: String(endOfMonth),
+  });
 
-  // const { data: reportTopFiveData } = useQuery({
-  //   queryKey: [QUERY_KEY.REPORT_TOP_FIVE, filterData],
-  //   queryFn: () => getReportTopFive(filterData),
-  //   keepPreviousData: true,
-  // });
-  // const memoChartData = useMemo(() => {
-  //   const convertData = (reportTopFiveData as any)?.data?.data;
-  //   return convertData;
-  // }, [reportTopFiveData]);
+  const { data: reportTopFiveData } = useQuery({
+    queryKey: [QUERY_KEY.REPORT_TOP_FIVE, filterData],
+    queryFn: () => getReportTopFive(filterData),
+    keepPreviousData: true,
+  });
+  const memoChartData = useMemo(() => {
+    const convertData = (reportTopFiveData as any)?.data?.data;
+    return convertData;
+  }, [reportTopFiveData]);
   const disabledStartDate = useCallback((current) => {
     // return form.getFieldValue("to")
     //   ? current > form.getFieldValue("to")
@@ -50,19 +52,19 @@ const ByAgentPage = (props: ByAgentPageProps) => {
 
   const handleChangeStartDate = useCallback(
     (value: { start: Date; end: Date }) => {
-      // setFilterData((pre) => ({
-      //   ...pre,
-      //   startTime: String(convertTimeStamp(value.start, timezone)),
-      // }));
+      setFilterData((pre) => ({
+        ...pre,
+        startTime: String(convertTimeStamp(value.start, timezone)),
+      }));
     },
     []
   );
   const handleChangeEndDate = useCallback(
     (value: { start: Date; end: Date }) => {
-      // setFilterData((pre) => ({
-      //   ...pre,
-      //   endTime: String(convertTimeStamp(value.end, timezone)),
-      // }));
+      setFilterData((pre) => ({
+        ...pre,
+        endTime: String(convertTimeStamp(value.end, timezone)),
+      }));
     },
     []
   );
@@ -94,14 +96,14 @@ const ByAgentPage = (props: ByAgentPageProps) => {
               Ticket closed per agent per day (Top 5 Agents)
             </div>
             <div className="w-full h-[450px]">
-              {/* <ChartAgentsTicket data={memoChartData} /> */}
+              <ChartAgentsTicket data={memoChartData} />
             </div>
           </div>
           <div>
             <div className="title text-lg font-semibold mb-6">
               Tickets by Agents
             </div>
-            {/* <ReportAgentTable rangeTime={filterData} /> */}
+            <ReportAgentTable rangeTime={filterData} />
           </div>
         </div>
       </Card>

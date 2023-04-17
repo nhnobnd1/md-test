@@ -14,13 +14,19 @@ const MDDatePicker = ({
   onDateChange,
   datePickerClassName,
   containerClassName,
-}: MDDatePicker) => {
+}: // ...props
+MDDatePicker) => {
+  const dateNow = new Date();
+
   const [visible, setVisible] = useState(false);
-  const [{ month, year }, setDate] = useState({ month: 1, year: 2018 });
-  const [selectedDates, setSelectedDates] = useState({
-    start: new Date("Wed Feb 07 2018 00:00:00 GMT-0500 (EST)"),
-    end: new Date("Mon Mar 12 2018 00:00:00 GMT-0500 (EST)"),
+  const [{ month, year }, setDate] = useState({
+    month: dateNow.getMonth(),
+    year: dateNow.getFullYear(),
   });
+  const [selectedDates, setSelectedDates] = useState<{
+    start: Date;
+    end: Date;
+  }>();
   const handleSelectDate = (dates: { start: Date; end: Date }) => {
     setSelectedDates(dates);
     onDateChange(dates);
@@ -40,8 +46,12 @@ const MDDatePicker = ({
     return (
       <div className={styles.value}>
         {type === "start"
-          ? dayjs(selectedDates?.start).format("DD/MM/YYYY")
-          : dayjs(selectedDates?.end).format("DD/MM/YYYY")}
+          ? selectedDates?.start
+            ? dayjs(selectedDates?.start).format("DD/MM/YYYY")
+            : dayjs().startOf("month").format("DD/MM/YYYY")
+          : selectedDates?.end
+          ? dayjs(selectedDates?.end).format("DD/MM/YYYY")
+          : dayjs().endOf("month").format("DD/MM/YYYY")}
       </div>
     );
   };
@@ -70,7 +80,7 @@ const MDDatePicker = ({
               year={year}
               onChange={handleSelectDate}
               onMonthChange={handleMonthChange}
-              selected={selectedDates}
+              selected={selectedDates as any}
               // {...props}
             />
           </div>

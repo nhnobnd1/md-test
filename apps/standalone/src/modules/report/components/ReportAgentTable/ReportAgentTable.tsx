@@ -93,7 +93,7 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
           return a.percentage - b.percentage;
         },
       },
-      width: "20%%",
+      width: "20%",
     },
   ];
   const onChangeTable = useCallback(

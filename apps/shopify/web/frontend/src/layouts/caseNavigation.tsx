@@ -58,7 +58,7 @@ const caseNavigation: NavigationItems[] = [
   // },
   {
     label: "Reporting",
-    url: ReportRoutePaths.Index,
+    url: ReportRoutePaths.Overview,
     icon: () => <ReportMinor />,
     subNavigationItems: [
       {
