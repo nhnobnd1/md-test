@@ -9,6 +9,7 @@ import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import { DatePicker, Form, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useForm } from "antd/lib/form/Form";
+import dayjs from "dayjs";
 import { useCallback, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import { MDSearchInput } from "src/components/UI/MDSearchInput";
@@ -171,26 +172,24 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
       <section className="flex-start mb-10 justify-between">
         <div>
           <Form onValuesChange={() => {}} form={form} layout="inline">
-            <Form.Item
-              name="from"
-              label="From"
-              initialValue={startOfMonthDateFormat}
-            >
+            <Form.Item name="from" label="From">
               <DatePicker
                 format={"DD/MM/YYYY"}
                 placeholder="dd/mm/yyyy"
                 disabledDate={disabledStartDate}
                 onChange={handleChangeStartTime}
                 allowClear={false}
+                defaultValue={dayjs().tz(timezone).startOf("month")}
               />
             </Form.Item>
-            <Form.Item name="to" label="To" initialValue={endOfMonthDateFormat}>
+            <Form.Item name="to" label="To">
               <DatePicker
                 format={"DD/MM/YYYY"}
                 placeholder="dd/mm/yyyy"
                 disabledDate={disabledEndDate}
                 onChange={handleChangeEndTime}
                 allowClear={false}
+                defaultValue={dayjs().tz(timezone).endOf("month")}
               />
             </Form.Item>
           </Form>
