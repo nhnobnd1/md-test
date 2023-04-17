@@ -29,7 +29,12 @@ interface ITableFilter {
 export const ByTags: PageComponent<ByTagsProps> = () => {
   const navigate = useNavigate();
   const { timezone } = useGlobalData();
-  const { startOfMonth, endOfMonth } = formatTimeByTimezone(timezone);
+  const {
+    startOfMonth,
+    endOfMonth,
+    startOfMonthDateFormat,
+    endOfMonthDateFormat,
+  } = formatTimeByTimezone(timezone);
   const [form] = useForm();
   const [filterData, setFilterData] = useState<ITableFilter>({
     page: 1,
@@ -166,20 +171,26 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
       <section className="flex-start mb-10 justify-between">
         <div>
           <Form onValuesChange={() => {}} form={form} layout="inline">
-            <Form.Item name="from" label="From">
+            <Form.Item
+              name="from"
+              label="From"
+              initialValue={startOfMonthDateFormat}
+            >
               <DatePicker
                 format={"DD/MM/YYYY"}
                 placeholder="dd/mm/yyyy"
                 disabledDate={disabledStartDate}
                 onChange={handleChangeStartTime}
+                allowClear={false}
               />
             </Form.Item>
-            <Form.Item name="to" label="To">
+            <Form.Item name="to" label="To" initialValue={endOfMonthDateFormat}>
               <DatePicker
                 format={"DD/MM/YYYY"}
                 placeholder="dd/mm/yyyy"
                 disabledDate={disabledEndDate}
                 onChange={handleChangeEndTime}
+                allowClear={false}
               />
             </Form.Item>
           </Form>

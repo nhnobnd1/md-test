@@ -5,7 +5,6 @@ import {
   GetOneEmailResponse,
   Priority,
 } from "@moose-desk/repo";
-import { Tooltip } from "antd";
 import classNames from "classnames";
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
@@ -52,12 +51,12 @@ const CreateTicket = () => {
   const _renderButtonToggle = () => {
     return !visible ? (
       <LeftCircleOutlined
-        className={styles.toggleButton}
+        className={classNames(styles.toggleButton, styles.toggleButtonOpen)}
         onClick={handleOpenDrawerSearch}
       />
     ) : (
       <RightCircleOutlined
-        className={styles.toggleButton}
+        className={classNames(styles.toggleButton, styles.toggleButtonClose)}
         onClick={handleCloseDrawerSearch}
       />
     );
@@ -65,11 +64,7 @@ const CreateTicket = () => {
   return (
     <section className={classNames(styles.container, { "d-flex": visible })}>
       <div className={styles.wrapContent}>
-        <div className={styles.wrapSearchToggle}>
-          <Tooltip title={visible ? "Close" : "Search Order Shopify"}>
-            {_renderButtonToggle()}
-          </Tooltip>
-        </div>
+        <div className={styles.wrapSearchToggle}>{_renderButtonToggle()}</div>
         <Header className="mb-[40px]" title="New Ticket" back></Header>
 
         {isLoading ? (
