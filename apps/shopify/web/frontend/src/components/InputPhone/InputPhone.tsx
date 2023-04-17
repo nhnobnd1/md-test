@@ -44,7 +44,6 @@ const InputPhone = (props: InputPhoneProps) => {
   const handleSearchChange = useCallback((value: string) => {
     setFilterValue(value);
   }, []);
-
   const handleQueryValueRemove = useCallback(() => {
     setFilterValue("");
   }, []);
@@ -57,7 +56,7 @@ const InputPhone = (props: InputPhoneProps) => {
       value: item.code,
       disabled: props.disabled,
     }));
-  }, [props.disabled]);
+  }, [props.disabled, dataSelect]);
 
   // set flag and value
 
@@ -125,13 +124,14 @@ const InputPhone = (props: InputPhoneProps) => {
   // handle Effect
 
   useEffect(() => {
-    setDataSelect(
-      optionSelectPhone.filter((option) =>
+    const listFilter = optionSelectPhone.filter(
+      (option) =>
         option.countryName
           .toLocaleLowerCase()
-          .match(filterValue.toLocaleLowerCase())
-      )
+          .match(filterValue.toLocaleLowerCase()) ||
+        option.phonePrefix.match(filterValue)
     );
+    setDataSelect(listFilter);
   }, [filterValue]);
 
   useEffect(() => {

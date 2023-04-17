@@ -11,7 +11,7 @@ import { Loading } from "@shopify/polaris";
 import { lazy, Suspense } from "react";
 import { CookiesProvider } from "react-cookie";
 import ReactDOM from "react-dom";
-import { QueryClient } from "react-query";
+import { QueryClient, QueryClientProvider } from "react-query";
 import { Provider as ReduxProvider } from "react-redux";
 import {
   AppBridgeProvider,
@@ -31,59 +31,60 @@ import("src/styles/index.scss").then(() => {
 Env.setApiUrl(env.API_URL);
 const queryClient = new QueryClient();
 ReactDOM.render(
-  <ErrorBoundary>
-    <PolarisProvider>
-      <BrowserRouter>
-        <AppBridgeProvider>
-          {/* <QueryClientProvider client={queryClient}> */}
-          <QueryProvider>
-            <Suspense
-              fallback={
-                <div
-                  className="flex items-center content-center w"
-                  style={{ width: "100vw", height: "100vh" }}
-                >
-                  <Loading />
-                </div>
-              }
-            >
-              <LoadingProvider
-                component={({ state }) => <>{state && <Loading />}</>}
+  <QueryClientProvider client={queryClient}>
+    <ErrorBoundary>
+      <PolarisProvider>
+        <BrowserRouter>
+          <AppBridgeProvider>
+            <QueryProvider>
+              <Suspense
+                fallback={
+                  <div
+                    className="flex items-center content-center w"
+                    style={{ width: "100vw", height: "100vh" }}
+                  >
+                    <Loading />
+                  </div>
+                }
               >
-                <ApiLoadingHandlerProvider>
-                  <CookiesProvider>
-                    <InitApp>
-                      <AuthProvider
-                        defaultTokens={() => ({
-                          base_token: TokenManager.getToken("base_token"),
-                          refresh_token: TokenManager.getToken("refresh_token"),
-                        })}
-                        fetchRefreshToken={(refreshToken: string) =>
-                          AccountRepository().refreshToken({
-                            refreshToken,
-                          })
-                        }
-                      >
-                        <StoreProviders>
-                          <ModuleLoader>
-                            <ReduxProvider store={store}>
-                              <LazyComponent
-                                component={lazy(() => import("src/App"))}
-                              />
-                            </ReduxProvider>
-                          </ModuleLoader>
-                        </StoreProviders>
-                      </AuthProvider>
-                    </InitApp>
-                  </CookiesProvider>
-                </ApiLoadingHandlerProvider>
-              </LoadingProvider>
-            </Suspense>
-          </QueryProvider>
-          {/* </QueryClientProvider> */}
-        </AppBridgeProvider>
-      </BrowserRouter>
-    </PolarisProvider>
-  </ErrorBoundary>,
+                <LoadingProvider
+                  component={({ state }) => <>{state && <Loading />}</>}
+                >
+                  <ApiLoadingHandlerProvider>
+                    <CookiesProvider>
+                      <InitApp>
+                        <AuthProvider
+                          defaultTokens={() => ({
+                            base_token: TokenManager.getToken("base_token"),
+                            refresh_token:
+                              TokenManager.getToken("refresh_token"),
+                          })}
+                          fetchRefreshToken={(refreshToken: string) =>
+                            AccountRepository().refreshToken({
+                              refreshToken,
+                            })
+                          }
+                        >
+                          <StoreProviders>
+                            <ModuleLoader>
+                              <ReduxProvider store={store}>
+                                <LazyComponent
+                                  component={lazy(() => import("src/App"))}
+                                />
+                              </ReduxProvider>
+                            </ModuleLoader>
+                          </StoreProviders>
+                        </AuthProvider>
+                      </InitApp>
+                    </CookiesProvider>
+                  </ApiLoadingHandlerProvider>
+                </LoadingProvider>
+              </Suspense>
+            </QueryProvider>
+          </AppBridgeProvider>
+        </BrowserRouter>
+      </PolarisProvider>
+    </ErrorBoundary>
+  </QueryClientProvider>,
   document.getElementById("app")
 );

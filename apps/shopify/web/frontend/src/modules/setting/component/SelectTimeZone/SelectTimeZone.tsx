@@ -17,11 +17,10 @@ const SelectTimeZone = (props: SelectTimeZoneProps) => {
   // init data
 
   const optionSelectTimeZone = timeZoneList.timeZone;
-
   const deselectedOptions = useMemo(() => {
     return optionSelectTimeZone.map((item) => ({
       label: item.description,
-      value: item.description,
+      value: item.olsonName,
     }));
   }, []);
 
@@ -58,7 +57,6 @@ const SelectTimeZone = (props: SelectTimeZoneProps) => {
     },
     [options, props.value]
   );
-
   const optionsMarkup =
     options.length > 0
       ? options.map((option, index) => {
@@ -88,7 +86,6 @@ const SelectTimeZone = (props: SelectTimeZoneProps) => {
       setInputValue(findItemload?.description);
     }
   }, [props.value]);
-  console.log({ inputValue });
   return (
     <Combobox
       activator={
