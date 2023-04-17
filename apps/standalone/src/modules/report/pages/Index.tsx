@@ -6,6 +6,7 @@ import {
 } from "@moose-desk/core/helper/format";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import { DatePicker } from "antd";
+import dayjs from "dayjs";
 import { useCallback, useMemo, useState } from "react";
 import { useQueries } from "react-query";
 import { Form } from "src/components/UI/Form";
@@ -30,6 +31,7 @@ enum ChartReportData {
 const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
   const [form] = Form.useForm();
   const { timezone } = useGlobalData();
+  // console.log(timezone, "timezone");
   const {
     startOfMonth,
     endOfMonth,
@@ -103,26 +105,24 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
     <>
       <Header title="Reporting" />
       <Form onValuesChange={() => {}} form={form} layout="inline">
-        <Form.Item
-          name="from"
-          label="From"
-          initialValue={startOfMonthDateFormat}
-        >
+        <Form.Item name="from" label="From">
           <DatePicker
             format={"DD/MM/YYYY"}
             placeholder="dd/mm/yyyy"
             disabledDate={disabledStartDate}
             onChange={handleChangeStartTime}
             allowClear={false}
+            defaultValue={dayjs().tz(timezone).startOf("month")}
           />
         </Form.Item>
-        <Form.Item name="to" label="To" initialValue={endOfMonthDateFormat}>
+        <Form.Item name="to" label="To">
           <DatePicker
             format={"DD/MM/YYYY"}
             placeholder="dd/mm/yyyy"
             disabledDate={disabledEndDate}
             onChange={handleChangeEndTime}
             allowClear={false}
+            defaultValue={dayjs().tz(timezone).endOf("month")}
           />
         </Form.Item>
       </Form>
