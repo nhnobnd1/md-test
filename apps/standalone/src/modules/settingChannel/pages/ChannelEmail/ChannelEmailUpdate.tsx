@@ -70,6 +70,17 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
   }, [externalEmailConnection, mailboxType, mailSettingType]);
 
   const initialForm = useMemo(() => {
+    if (signCallback) {
+      return {
+        name: signCallback.name,
+        supportEmail: signCallback.supportEmail,
+        mailSettingType: MailSettingType.CUSTOM,
+        mailboxType: MailBoxType.GMAIL,
+        isPrimaryEmail: email?.isPrimaryEmail,
+        accessType: AccessType.Both,
+        deleteFromServer: true,
+      };
+    }
     if (email && email.mailboxType) {
       const mailBoxConfig = email.mailboxConfig as MailBoxConfig;
       switch (email.mailboxType) {
@@ -110,7 +121,7 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
     } else {
       return undefined;
     }
-  }, [email]);
+  }, [email, signCallback]);
 
   const { run: getChannelEmail } = useJob(
     (id: string) => {
