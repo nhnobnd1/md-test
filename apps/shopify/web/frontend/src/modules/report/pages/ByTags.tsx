@@ -2,7 +2,7 @@ import { PageComponent } from "@moose-desk/core";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import { Card, DataTable, EmptySearchResult, Page } from "@shopify/polaris";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import MDDatePicker from "src/components/DatePicker/MDDatePicker";
 import { MDTextField } from "src/components/Input/TextFieldPassword/MDTextField";
@@ -10,8 +10,10 @@ import { Pagination } from "src/components/Pagination";
 import env from "src/core/env";
 import useGlobalData from "src/hooks/useGlobalData";
 import { getReportByTags } from "src/modules/report/api/api";
-import { convertTimeStamp } from "src/modules/report/helper/convert";
-import { formatTimeByTimezone } from "src/modules/report/helper/format";
+import {
+  convertTimeStamp,
+  getTimeFilterDefault,
+} from "src/modules/report/helper/convert";
 import styles from "./styles.module.scss";
 interface ByTagsProps {}
 interface ITableFilter {
@@ -26,21 +28,26 @@ interface ITableFilter {
 const headings = ["Tag", "Total Tickets", "Percentage", "Percentage Closed"];
 const listSort = ["tagName", "totalTicket", "percentage", "percentageClosed"];
 export const ByTags: PageComponent<ByTagsProps> = () => {
-  // const navigate = useNavigate();
-  // const { timezone } = useTimezone();
-  // const { startOfMonth, endOfMonth } = formatTimeByTimezone(timezone);
-  // const [form] = useForm();
   const { timezone }: any = useGlobalData();
-  const { startOfMonth, endOfMonth } = formatTimeByTimezone(timezone);
+  const { current, twoWeekAgo } = getTimeFilterDefault();
+
   const [filterData, setFilterData] = useState<ITableFilter>({
     page: 1,
     limit: env.DEFAULT_PAGE_SIZE,
     query: "",
     sortBy: undefined,
     sortOrder: undefined,
-    startTime: String(startOfMonth),
-    endTime: String(endOfMonth),
+    startTime: "",
+    endTime: "",
   });
+  useEffect(() => {
+    if (!timezone) return;
+    setFilterData((pre) => ({
+      ...pre,
+      startTime: String(twoWeekAgo.unix()),
+      endTime: String(current.unix()),
+    }));
+  }, [timezone]);
   const [querySearch, setQuerySearch] = useState<string>("");
   const debounceValue: string = useDebounce(querySearch, 500);
 
@@ -48,6 +55,7 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
     queryKey: [QUERY_KEY.REPORT_BY_TAGS, filterData, debounceValue],
     queryFn: () => getReportByTags({ ...filterData, query: debounceValue }),
     keepPreviousData: true,
+    enabled: !!filterData.startTime && !!filterData.endTime,
   });
   const memoChartData = useMemo(() => {
     const convertData = (listReportTags as any)?.data?.data || [];

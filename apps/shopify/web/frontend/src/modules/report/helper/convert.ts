@@ -1,8 +1,10 @@
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
+import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 dayjs.extend(duration);
 dayjs.extend(utc);
+dayjs.extend(timezone);
 export const startOfMonth = dayjs().utc().startOf("month").unix();
 export const endOfMonth = dayjs().utc().endOf("month").unix();
 export const convertToTimeStamp = (date: string) => {
@@ -26,5 +28,12 @@ export const convertSecondsToHoursMinutes = (seconds: number) => {
 };
 
 export const convertTimeStamp = (date: Date, timezone: string) => {
-  return dayjs(date).tz(timezone).unix();
+  const Date = dayjs(date);
+  return Date.tz(timezone).unix();
+};
+export const getTimeFilterDefault = () => {
+  return {
+    twoWeekAgo: dayjs().subtract(2, "weeks"),
+    current: dayjs(),
+  };
 };

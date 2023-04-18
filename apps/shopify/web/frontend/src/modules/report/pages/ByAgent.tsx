@@ -1,14 +1,16 @@
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { Card, Page } from "@shopify/polaris";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import MDDatePicker from "src/components/DatePicker/MDDatePicker";
 import useGlobalData from "src/hooks/useGlobalData";
 import { getReportTopFive } from "src/modules/report/api/api";
 import ChartAgentsTicket from "src/modules/report/components/ChartAgentsTicket/ChartAgentsTicket";
 import { ReportAgentTable } from "src/modules/report/components/ReportAgentTable";
-import { convertTimeStamp } from "src/modules/report/helper/convert";
-import { formatTimeByTimezone } from "src/modules/report/helper/format";
+import {
+  convertTimeStamp,
+  getTimeFilterDefault,
+} from "src/modules/report/helper/convert";
 import styles from "./styles.module.scss";
 
 interface ByAgentPageProps {}
@@ -22,17 +24,24 @@ interface ITableFilter {
 }
 const ByAgentPage = (props: ByAgentPageProps) => {
   const { timezone }: any = useGlobalData();
-  const { startOfMonth, endOfMonth } = formatTimeByTimezone(timezone);
+  const { current, twoWeekAgo } = getTimeFilterDefault();
 
   const [filterData, setFilterData] = useState<ITableFilter>({
-    startTime: String(startOfMonth),
-    endTime: String(endOfMonth),
+    startTime: "",
+    endTime: "",
   });
-
+  useEffect(() => {
+    if (!timezone) return;
+    setFilterData({
+      startTime: String(twoWeekAgo.unix()),
+      endTime: String(current.unix()),
+    });
+  }, [timezone]);
   const { data: reportTopFiveData } = useQuery({
     queryKey: [QUERY_KEY.REPORT_TOP_FIVE, filterData],
     queryFn: () => getReportTopFive(filterData),
     keepPreviousData: true,
+    enabled: !!filterData.startTime && !!filterData.endTime,
   });
   const memoChartData = useMemo(() => {
     const convertData = (reportTopFiveData as any)?.data?.data;

@@ -2,6 +2,7 @@ import { DatePicker, DatePickerProps, Popover } from "@shopify/polaris";
 import classNames from "classnames";
 import dayjs from "dayjs";
 import { memo, useCallback, useState } from "react";
+import { getTimeFilterDefault } from "src/modules/report/helper/convert";
 import styles from "./style.module.scss";
 interface MDDatePicker extends DatePickerProps {
   type?: "start" | "end";
@@ -17,6 +18,7 @@ const MDDatePicker = ({
 }: // ...props
 MDDatePicker) => {
   const dateNow = new Date();
+  const { current, twoWeekAgo } = getTimeFilterDefault();
 
   const [visible, setVisible] = useState(false);
   const [{ month, year }, setDate] = useState({
@@ -48,10 +50,10 @@ MDDatePicker) => {
         {type === "start"
           ? selectedDates?.start
             ? dayjs(selectedDates?.start).format("DD/MM/YYYY")
-            : dayjs().startOf("month").format("DD/MM/YYYY")
+            : twoWeekAgo.format("DD/MM/YYYY")
           : selectedDates?.end
           ? dayjs(selectedDates?.end).format("DD/MM/YYYY")
-          : dayjs().endOf("month").format("DD/MM/YYYY")}
+          : current.format("DD/MM/YYYY")}
       </div>
     );
   };
