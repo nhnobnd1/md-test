@@ -15,6 +15,7 @@ import { Header } from "src/components/UI/Header";
 import timeZoneList from "src/constaint/timeZone";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
+import { useSubdomain } from "src/hooks/useSubdomain";
 import { Role } from "src/models/Rule";
 import AutoReplyTab from "src/modules/setting/component/AutoReply/AutoReplyTab";
 import BusinessHoursTab from "src/modules/setting/component/BusinessHours/BusinessHoursTab";
@@ -25,7 +26,8 @@ interface BusinessHoursProps {}
 const BusinessHours = (props: BusinessHoursProps) => {
   const message = useMessage();
   const notification = useNotification();
-  const { refetchGlobal } = useGlobalData();
+  const { subDomain } = useSubdomain();
+  const { refetchGlobal } = useGlobalData(false, subDomain || "");
   // main code
   const [dataBusinessCalendar, setDataBusinessCalendar] =
     useState<BusinessCalendar>();
