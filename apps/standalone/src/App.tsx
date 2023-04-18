@@ -24,7 +24,11 @@ function App() {
       <Provider store={store}>
         <AppRoutes />
       </Provider>
-      <ReactQueryDevtools initialIsOpen={false} />
+      {import.meta.env.DEV ? (
+        <ReactQueryDevtools initialIsOpen={false} />
+      ) : (
+        <></>
+      )}
     </ConfigProvider>
   );
 }
