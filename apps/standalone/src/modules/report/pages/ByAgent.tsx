@@ -6,6 +6,7 @@ import { useQuery } from "react-query";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
 import { usePermission } from "src/hooks/usePerrmisson";
+import { useSubdomain } from "src/hooks/useSubdomain";
 import { getReportTopFive } from "src/modules/report/api/api";
 import ChartAgentsTicket from "src/modules/report/components/ChartAgentsTicket/ChartAgentsTicket";
 import { ReportAgentTable } from "src/modules/report/components/ReportAgentTable";
@@ -22,7 +23,9 @@ enum DataAgent {
 }
 const ByAgentPage = (props: ByAgentPageProps) => {
   const [form] = Form.useForm();
-  const { timezone } = useGlobalData();
+  const { subDomain } = useSubdomain();
+
+  const { timezone } = useGlobalData(false, subDomain || "");
   const { isAgent } = usePermission();
   const { current, twoWeekAgo } = getTimeFilterDefault();
 
@@ -33,8 +36,8 @@ const ByAgentPage = (props: ByAgentPageProps) => {
   useEffect(() => {
     if (!timezone) return;
     form.setFieldsValue({
-      to: current,
-      from: twoWeekAgo,
+      to: current.tz(timezone),
+      from: twoWeekAgo.tz(timezone),
     });
     setFilter({
       startTime: String(twoWeekAgo.tz(timezone).unix()),

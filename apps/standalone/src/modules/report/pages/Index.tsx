@@ -7,6 +7,7 @@ import { useQueries } from "react-query";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
 import { usePermission } from "src/hooks/usePerrmisson";
+import { useSubdomain } from "src/hooks/useSubdomain";
 import {
   getFirstResponseTime,
   getReportSummaryReport,
@@ -32,7 +33,8 @@ enum ChartReportData {
 }
 const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
   const [form] = Form.useForm();
-  const { timezone } = useGlobalData();
+  const { subDomain } = useSubdomain();
+  const { timezone } = useGlobalData(false, subDomain || "");
   const { isAgent } = usePermission();
   const { current, twoWeekAgo } = getTimeFilterDefault();
   const [filter, setFilter] = useState({
@@ -42,14 +44,13 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
   useEffect(() => {
     if (!timezone) return;
     form.setFieldsValue({
-      to: current,
-      from: twoWeekAgo,
+      to: current.tz(timezone),
+      from: twoWeekAgo.tz(timezone),
     });
     setFilter({
       startTime: String(twoWeekAgo.tz(timezone).unix()),
       endTime: String(current.tz(timezone).unix()),
     });
-    console.log(twoWeekAgo.tz(timezone));
   }, [timezone]);
   const queries = useQueries([
     {

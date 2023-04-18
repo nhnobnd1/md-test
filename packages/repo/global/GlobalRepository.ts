@@ -8,8 +8,8 @@ export const GlobalRepository = createRepository(
     baseURL: `${env.getApiUrl()}/api/v1/general/info`,
   }),
   {
-    get(api) {
-      return api.get<ResponseGlobal<GlobalProps>>("");
+    get(api, payload: { subdomain: string }) {
+      return api.get<ResponseGlobal<GlobalProps>>("", payload);
     },
   }
 );
