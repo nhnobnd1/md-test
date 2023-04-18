@@ -6,7 +6,6 @@ import {
 } from "@moose-desk/core/helper/format";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import { DatePicker } from "antd";
-import dayjs from "dayjs";
 import { useCallback, useMemo, useState } from "react";
 import { useQueries } from "react-query";
 import { Form } from "src/components/UI/Form";
@@ -22,6 +21,10 @@ import { ChartFirstResponseTime } from "src/modules/report/components/ChartFirst
 import { ChartResolutionTime } from "src/modules/report/components/ChartResolutionTime";
 import { ChartSupportVolume } from "src/modules/report/components/ChartSupportVolume";
 import { Statistic } from "src/modules/report/components/Statistic";
+import {
+  getTwoWeeksAfter,
+  getTwoWeeksBefore,
+} from "src/modules/report/helper/convert";
 interface ReportIndexPageProps {}
 enum ChartReportData {
   SUMMARY = 0,
@@ -32,16 +35,10 @@ enum ChartReportData {
 const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
   const [form] = Form.useForm();
   const { timezone } = useGlobalData();
-  // console.log(timezone, "timezone");
-  const {
-    startOfMonth,
-    endOfMonth,
-    startOfMonthDateFormat,
-    endOfMonthDateFormat,
-  } = formatTimeByTimezone(timezone);
+  const { startOfMonth, endOfMonth } = formatTimeByTimezone(timezone);
   const [filter, setFilter] = useState({
-    startTime: String(startOfMonth),
-    endTime: String(endOfMonth),
+    startTime: "",
+    endTime: "",
   });
   const { isAgent } = usePermission();
   const queries = useQueries([
@@ -49,22 +46,22 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
       queryKey: [QUERY_KEY.SUMMARY, filter],
       queryFn: () => getReportSummaryReport(filter),
       keepPreviousData: true,
-      enabled: !isAgent,
+      enabled: !isAgent && !!filter.startTime && !!filter.endTime,
     },
     {
       queryKey: [QUERY_KEY.REPORT_SUPPORT_VOLUME, filter],
       queryFn: () => getSupportVolume(filter),
-      enabled: !isAgent,
+      enabled: !isAgent && !!filter.startTime && !!filter.endTime,
     },
     {
       queryKey: [QUERY_KEY.REPORT_RESOLUTION_TIME, filter],
       queryFn: () => getResolutionTime(filter),
-      enabled: !isAgent,
+      enabled: !isAgent && !!filter.startTime && !!filter.endTime,
     },
     {
       queryKey: [QUERY_KEY.REPORT_FIRST_RESPONSE_TIME, filter],
       queryFn: () => getFirstResponseTime(filter),
-      enabled: !isAgent,
+      enabled: !isAgent && !!filter.startTime && !!filter.endTime,
     },
   ]);
   const memoData = useMemo(() => {
@@ -77,7 +74,8 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
   const disabledStartDate = useCallback(
     (current) => {
       return form.getFieldValue("to")
-        ? current > form.getFieldValue("to")
+        ? current > form.getFieldValue("to") ||
+            current <= getTwoWeeksBefore(form.getFieldValue("to"))
         : false;
     },
     [form.getFieldValue("to")]
@@ -86,7 +84,8 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
   const disabledEndDate = useCallback(
     (current) => {
       return form.getFieldValue("from")
-        ? current < form.getFieldValue("from")
+        ? current < form.getFieldValue("from") ||
+            current >= getTwoWeeksAfter(form.getFieldValue("from"))
         : false;
     },
     [form.getFieldValue("from")]
@@ -94,17 +93,17 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
   const handleChangeStartTime = (_: any, values: string) => {
     setFilter((pre) => ({
       ...pre,
-      startTime: String(
-        formatTimeStamp(values, "DD/MM/YYYY", timezone) || startOfMonth
-      ),
+      startTime: values
+        ? String(formatTimeStamp(values, "DD/MM/YYYY", timezone))
+        : "",
     }));
   };
   const handleChangeEndTime = (_: any, values: string) => {
     setFilter((pre) => ({
       ...pre,
-      endTime: String(
-        formatTimeStamp(values, "DD/MM/YYYY", timezone) || endOfMonth
-      ),
+      endTime: values
+        ? String(formatTimeStamp(values, "DD/MM/YYYY", timezone))
+        : "",
     }));
   };
   return (
@@ -117,8 +116,6 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
             placeholder="dd/mm/yyyy"
             disabledDate={disabledStartDate}
             onChange={handleChangeStartTime}
-            allowClear={false}
-            defaultValue={dayjs().tz(timezone).startOf("month")}
           />
         </Form.Item>
         <Form.Item name="to" label="To">
@@ -127,8 +124,6 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
             placeholder="dd/mm/yyyy"
             disabledDate={disabledEndDate}
             onChange={handleChangeEndTime}
-            allowClear={false}
-            defaultValue={dayjs().tz(timezone).endOf("month")}
           />
         </Form.Item>
       </Form>

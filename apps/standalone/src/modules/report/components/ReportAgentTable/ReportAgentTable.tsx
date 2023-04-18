@@ -48,7 +48,7 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
         ...rangeTime,
       }),
     keepPreviousData: true,
-    enabled: !isAgent,
+    enabled: !isAgent && !!filterData.startTime && !!filterData.endTime,
   });
   const memoChartData: ListAgentTableRes[] = useMemo(() => {
     const convertData = (listAgentData as any)?.data?.data || [];

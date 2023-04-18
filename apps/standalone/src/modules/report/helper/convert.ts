@@ -24,3 +24,12 @@ export const convertSecondsToHoursMinutes = (seconds: number) => {
     return `${minutes}m`;
   } else return `${hours}h${minutes}m`;
 };
+export const getTwoWeeksAfter = (currentTime: Date) => {
+  // if (!currentTime) return;
+  const twoWeekFromCurrent = dayjs(currentTime).add(2, "weeks");
+  return twoWeekFromCurrent;
+};
+export const getTwoWeeksBefore = (currentTime: Date) => {
+  const twoWeekBeforeCurrent = dayjs(currentTime).subtract(2, "weeks");
+  return twoWeekBeforeCurrent;
+};

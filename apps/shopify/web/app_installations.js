@@ -15,8 +15,12 @@ export const AppInstallations = {
 
   delete: async function (shopDomain) {
     const shopSessions = await Shopify.Context.SESSION_STORAGE.findSessionsByShop(shopDomain);
+    // console.log("deleteApp")
+    // alert("deleteApp")
     if (shopSessions.length > 0) {
       await Shopify.Context.SESSION_STORAGE.deleteSessions(shopSessions.map((session) => session.id));
+    //   console.log("deleteAppChecked")
+    // alert("deleteAppChecked")
     }
   },
 };
