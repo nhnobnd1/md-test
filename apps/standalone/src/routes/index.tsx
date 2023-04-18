@@ -28,6 +28,10 @@ const AppRoutesBased = () => {
         (isLoggedIn && role === RolePermission.Admin) || (
           <Navigate to={RoutePaths.Dashboard.Index} />
         ),
+      notBasic: () =>
+        (isLoggedIn && role !== RolePermission.BasicAgent) || (
+          <Navigate to={RoutePaths.Dashboard.Index} />
+        ),
     });
     setIsRegisteredMiddleware(true);
 

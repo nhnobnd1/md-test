@@ -27,6 +27,7 @@ import TableAction from "src/components/UI/Table/TableAction/TableAction";
 import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
+import { usePermission } from "src/hooks/usePerrmisson";
 import PopupTag from "src/modules/setting/component/PopupTag";
 import { TagFormValues } from "src/modules/setting/component/TagForm";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
@@ -40,6 +41,7 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
   const notification = useNotification();
   const { state: popupTag, on: openPopupTag, off: closePopupTag } = useToggle();
   const navigate = useNavigate();
+  const { isAgent } = usePermission();
 
   const [dataPopup, setDataPopup] = useState<TagFormValues | undefined>({
     name: "",
@@ -288,13 +290,17 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
                     record={record}
                     edit
                     onEdit={handleEdit}
-                    specialDelete={{
-                      title:
-                        "Are you sure that you want to premanently remove this Tag?",
-                      description:
-                        "This Tag will be removed permanently. This actions can not be undone. All tickets which are using this tag will get affected too.",
-                      textDelete: "Remove",
-                    }}
+                    specialDelete={
+                      !isAgent
+                        ? {
+                            title:
+                              "Are you sure that you want to premanently remove this Tag?",
+                            description:
+                              "This Tag will be removed permanently. This actions can not be undone. All tickets which are using this tag will get affected too.",
+                            textDelete: "Remove",
+                          }
+                        : null
+                    }
                     onSpecialDelete={handleDeleteTag}
                     onlyIcon
                   />

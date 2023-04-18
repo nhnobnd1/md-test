@@ -13,14 +13,17 @@ const reportRoutes: IRoute = {
       path: ReportRoutePaths.Overview,
       index: true,
       component: lazy(() => import("src/modules/report/pages/Index")),
+      middleware: "notBasic",
     },
     {
       path: ReportRoutePaths.ByAgent,
       component: lazy(() => import("src/modules/report/pages/ByAgent")),
+      middleware: "notBasic",
     },
     {
       path: ReportRoutePaths.ByTags,
       component: lazy(() => import("src/modules/report/pages/ByTags")),
+      middleware: "notBasic",
     },
   ],
 };

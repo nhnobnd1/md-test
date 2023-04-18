@@ -8,6 +8,7 @@ import { MDSearchInput } from "src/components/UI/MDSearchInput";
 import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
 import env from "src/core/env";
+import { usePermission } from "src/hooks/usePerrmisson";
 import { getListAgent } from "src/modules/report/api/api";
 import ListAgentTableRes from "src/modules/report/helper/interface";
 interface ReportAgentTableProps {
@@ -37,6 +38,7 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
   });
   const [querySearch, setQuerySearch] = useState<string>("");
   const debounceValue: string = useDebounce(querySearch, 500);
+  const { isAgent } = usePermission();
 
   const { data: listAgentData, isFetching } = useQuery({
     queryKey: [QUERY_KEY.LIST_AGENT, filterData, rangeTime, debounceValue],
@@ -46,6 +48,7 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
         ...rangeTime,
       }),
     keepPreviousData: true,
+    enabled: !isAgent,
   });
   const memoChartData: ListAgentTableRes[] = useMemo(() => {
     const convertData = (listAgentData as any)?.data?.data || [];

@@ -23,6 +23,7 @@ import { Table } from "src/components/UI/Table";
 import TableAction from "src/components/UI/Table/TableAction/TableAction";
 import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
+import { usePermission } from "src/hooks/usePerrmisson";
 import { AgentFormValues } from "src/modules/agent/components/AgentForm";
 import { PopupAgent } from "src/modules/agent/components/PopupAgent";
 import { getStatusAgent } from "src/modules/agent/constant";
@@ -51,6 +52,7 @@ const AgentsIndex = (props: AgentsIndexProps) => {
     page: 1,
     limit: env.DEFAULT_PAGE_SIZE,
   });
+  const { isAgent } = usePermission();
 
   const [filterData, setFilterData] =
     useState<GetListAgentRequest>(defaultFilter);
@@ -170,6 +172,7 @@ const AgentsIndex = (props: AgentsIndexProps) => {
       <Header title="Account">
         <div className="flex-1 flex justify-end">
           <ButtonAdd
+            disabled={isAgent}
             onClick={() => {
               openPopupAgent();
               setDataPopup(undefined);
@@ -207,8 +210,16 @@ const AgentsIndex = (props: AgentsIndexProps) => {
               title="Agent"
               render={(_, record: Agent) => (
                 <span
-                  className="cursor-pointer hover:underline hover:text-blue-500"
-                  onClick={() => handleEdit(record)}
+                  className={
+                    !isAgent
+                      ? `cursor-pointer hover:underline hover:text-blue-500`
+                      : ``
+                  }
+                  onClick={() => {
+                    if (!isAgent) {
+                      handleEdit(record);
+                    }
+                  }}
                 >
                   {record.lastName === "admin"
                     ? record.firstName
@@ -268,18 +279,22 @@ const AgentsIndex = (props: AgentsIndexProps) => {
                   a.twoFactorEnabled - b.twoFactorEnabled,
               }}
             />
-            <Table.Column
-              align="center"
-              title="Action"
-              render={(_, record: Agent) => (
-                <TableAction
-                  record={record}
-                  edit
-                  onlyIcon
-                  onEdit={handleEdit}
-                />
-              )}
-            />
+            {!isAgent ? (
+              <Table.Column
+                align="center"
+                title="Action"
+                render={(_, record: Agent) => (
+                  <TableAction
+                    record={record}
+                    edit={!isAgent}
+                    onlyIcon
+                    onEdit={handleEdit}
+                  />
+                )}
+              />
+            ) : (
+              <></>
+            )}
           </Table>
           {meta && agents.length > 0 && (
             <Pagination

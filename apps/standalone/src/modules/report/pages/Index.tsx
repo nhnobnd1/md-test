@@ -11,6 +11,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useQueries } from "react-query";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
+import { usePermission } from "src/hooks/usePerrmisson";
 import {
   getFirstResponseTime,
   getReportSummaryReport,
@@ -42,23 +43,28 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
     startTime: String(startOfMonth),
     endTime: String(endOfMonth),
   });
+  const { isAgent } = usePermission();
   const queries = useQueries([
     {
       queryKey: [QUERY_KEY.SUMMARY, filter],
       queryFn: () => getReportSummaryReport(filter),
       keepPreviousData: true,
+      enabled: !isAgent,
     },
     {
       queryKey: [QUERY_KEY.REPORT_SUPPORT_VOLUME, filter],
       queryFn: () => getSupportVolume(filter),
+      enabled: !isAgent,
     },
     {
       queryKey: [QUERY_KEY.REPORT_RESOLUTION_TIME, filter],
       queryFn: () => getResolutionTime(filter),
+      enabled: !isAgent,
     },
     {
       queryKey: [QUERY_KEY.REPORT_FIRST_RESPONSE_TIME, filter],
       queryFn: () => getFirstResponseTime(filter),
+      enabled: !isAgent,
     },
   ]);
   const memoData = useMemo(() => {

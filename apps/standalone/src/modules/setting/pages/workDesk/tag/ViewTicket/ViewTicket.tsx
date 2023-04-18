@@ -20,6 +20,7 @@ import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
 import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
+import { usePermission } from "src/hooks/usePerrmisson";
 import { ButtonRemoveTag } from "src/modules/setting/component/ButtonRemoveTag";
 import "./ViewTicket.scss";
 interface ViewTicketProps {}
@@ -36,6 +37,7 @@ const ViewTicket: FC<ViewTicketProps> = () => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [meta, setMeta] = useState<BaseMetaDataListResponse>();
   const navigate = useNavigate();
+  const { isAgent } = usePermission();
 
   const [filterData, setFilterData] =
     useState<BaseListTagRequest>(defaultFilter);
@@ -124,12 +126,16 @@ const ViewTicket: FC<ViewTicketProps> = () => {
         <div className="flex-1 flex justify-end"></div>
       </Header>
       <div className="flex justify-end">
-        <ButtonRemoveTag
-          title="Are you sure that you want to permanently remove all?"
-          content="All tickets will remove this tag permanently. This action cannot be undone."
-          action={handleDelete}
-          textAction="Remove"
-        />
+        {!isAgent ? (
+          <ButtonRemoveTag
+            title="Are you sure that you want to permanently remove all?"
+            content="All tickets will remove this tag permanently. This action cannot be undone."
+            action={handleDelete}
+            textAction="Remove"
+          />
+        ) : (
+          <></>
+        )}
       </div>
       <Table className="mt-10" dataSource={tickets} onChange={onChangeTable}>
         <Table.Column

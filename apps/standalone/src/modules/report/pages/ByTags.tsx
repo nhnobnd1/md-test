@@ -16,6 +16,7 @@ import { MDSearchInput } from "src/components/UI/MDSearchInput";
 import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
 import env from "src/core/env";
+import { usePermission } from "src/hooks/usePerrmisson";
 import { getReportByTags } from "src/modules/report/api/api";
 interface ByTagsProps {}
 interface ITableFilter {
@@ -48,11 +49,13 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
   });
   const [querySearch, setQuerySearch] = useState<string>("");
   const debounceValue: string = useDebounce(querySearch, 500);
+  const { isAgent } = usePermission();
 
   const { data: listReportTags, isFetching } = useQuery({
     queryKey: [QUERY_KEY.REPORT_BY_TAGS, filterData, debounceValue],
     queryFn: () => getReportByTags({ ...filterData, query: debounceValue }),
     keepPreviousData: true,
+    enabled: !isAgent,
   });
   const memoChartData = useMemo(() => {
     const convertData = (listReportTags as any)?.data?.data || [];

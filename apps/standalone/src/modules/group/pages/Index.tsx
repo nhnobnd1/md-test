@@ -35,7 +35,7 @@ const GroupIndexPage: PageComponent<GroupIndexPageProps> = () => {
   const navigate = useNavigate();
   const message = useMessage();
   const notification = useNotification();
-  const { isAdmin } = usePermission();
+  const { isAdmin, isAgent } = usePermission();
 
   const defaultFilter: () => GetListUserGroupRequest = () => ({
     page: 1,
@@ -167,6 +167,7 @@ const GroupIndexPage: PageComponent<GroupIndexPageProps> = () => {
             onClick={() => {
               navigate(GroupRoutePaths.Create);
             }}
+            disabled={isAgent}
           >
             Add Group
           </ButtonAdd>
@@ -223,33 +224,37 @@ const GroupIndexPage: PageComponent<GroupIndexPageProps> = () => {
             }}
           ></Table.Column>
 
-          <Table.Column
-            align="center"
-            title="Action"
-            render={(_, record: Agent) => (
-              <TableAction
-                record={record}
-                edit
-                specialDelete={
-                  isAdmin
-                    ? {
-                        title:
-                          "Are you sure that you want to permanently remove this group",
-                        description:
-                          "This group will be removed permanently. This action cannot be undone",
-                      }
-                    : null
-                }
-                onSpecialDelete={handleDelete}
-                onlyIcon
-                onEdit={() => {
-                  navigate(
-                    generatePath(GroupRoutePaths.Detail, { id: record._id })
-                  );
-                }}
-              />
-            )}
-          />
+          {!isAgent ? (
+            <Table.Column
+              align="center"
+              title="Action"
+              render={(_, record: Agent) => (
+                <TableAction
+                  record={record}
+                  edit={!isAgent}
+                  specialDelete={
+                    isAdmin
+                      ? {
+                          title:
+                            "Are you sure that you want to permanently remove this group",
+                          description:
+                            "This group will be removed permanently. This action cannot be undone",
+                        }
+                      : null
+                  }
+                  onSpecialDelete={handleDelete}
+                  onlyIcon
+                  onEdit={() => {
+                    navigate(
+                      generatePath(GroupRoutePaths.Detail, { id: record._id })
+                    );
+                  }}
+                />
+              )}
+            />
+          ) : (
+            <></>
+          )}
         </Table>
         {meta?.totalCount && meta ? (
           <Pagination

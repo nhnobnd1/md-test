@@ -10,6 +10,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
+import { usePermission } from "src/hooks/usePerrmisson";
 import { getReportTopFive } from "src/modules/report/api/api";
 import ChartAgentsTicket from "src/modules/report/components/ChartAgentsTicket/ChartAgentsTicket";
 import { ReportAgentTable } from "src/modules/report/components/ReportAgentTable";
@@ -31,10 +32,13 @@ const ByAgentPage = (props: ByAgentPageProps) => {
     startTime: String(startOfMonth),
     endTime: String(endOfMonth),
   });
+  const { isAgent } = usePermission();
+
   const { data: reportTopFiveData } = useQuery({
     queryKey: [QUERY_KEY.REPORT_TOP_FIVE, filter],
     queryFn: () => getReportTopFive(filter),
     keepPreviousData: true,
+    enabled: !isAgent,
   });
   const memoChartData = useMemo(() => {
     const convertData = (reportTopFiveData as any)?.data?.data;
