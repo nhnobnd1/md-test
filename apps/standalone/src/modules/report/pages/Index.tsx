@@ -1,6 +1,5 @@
 import { PageComponent } from "@moose-desk/core";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
-import { formatTimeStamp } from "@moose-desk/core/helper/format";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import { DatePicker } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -19,6 +18,7 @@ import { ChartResolutionTime } from "src/modules/report/components/ChartResoluti
 import { ChartSupportVolume } from "src/modules/report/components/ChartSupportVolume";
 import { Statistic } from "src/modules/report/components/Statistic";
 import {
+  convertTimeStamp,
   getTimeFilterDefault,
   getTwoWeeksAfter,
   getTwoWeeksBefore,
@@ -103,7 +103,7 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
     setFilter((pre) => ({
       ...pre,
       startTime: values
-        ? String(formatTimeStamp(values, "DD/MM/YYYY", timezone))
+        ? String(convertTimeStamp(values, "DD/MM/YYYY", timezone, "start"))
         : "",
     }));
   };
@@ -111,7 +111,7 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
     setFilter((pre) => ({
       ...pre,
       endTime: values
-        ? String(formatTimeStamp(values, "DD/MM/YYYY", timezone))
+        ? String(convertTimeStamp(values, "DD/MM/YYYY", timezone, "end"))
         : "",
     }));
   };

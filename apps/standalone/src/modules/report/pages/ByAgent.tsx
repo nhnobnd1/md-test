@@ -1,5 +1,4 @@
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
-import { formatTimeStamp } from "@moose-desk/core/helper/format";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import { DatePicker } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -11,6 +10,7 @@ import { getReportTopFive } from "src/modules/report/api/api";
 import ChartAgentsTicket from "src/modules/report/components/ChartAgentsTicket/ChartAgentsTicket";
 import { ReportAgentTable } from "src/modules/report/components/ReportAgentTable";
 import {
+  convertTimeStamp,
   getTimeFilterDefault,
   getTwoWeeksAfter,
   getTwoWeeksBefore,
@@ -74,7 +74,7 @@ const ByAgentPage = (props: ByAgentPageProps) => {
     setFilter((pre) => ({
       ...pre,
       startTime: values
-        ? String(formatTimeStamp(values, "DD/MM/YYYY", timezone))
+        ? String(convertTimeStamp(values, "DD/MM/YYYY", timezone, "start"))
         : "",
     }));
   };
@@ -82,7 +82,7 @@ const ByAgentPage = (props: ByAgentPageProps) => {
     setFilter((pre) => ({
       ...pre,
       endTime: values
-        ? String(formatTimeStamp(values, "DD/MM/YYYY", timezone))
+        ? String(convertTimeStamp(values, "DD/MM/YYYY", timezone, "end"))
         : "",
     }));
   };
