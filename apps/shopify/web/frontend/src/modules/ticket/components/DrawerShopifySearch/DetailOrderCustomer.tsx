@@ -93,13 +93,19 @@ export const DetailOrderCustomer = memo(({ onBack, dataOrder }: IProps) => {
   ];
   const memoDataSource = useMemo(() => {
     const listRefundsItem = dataOrder?.refunds;
-    const convertListRefundsItem = listRefundsItem?.map((item: any) => {
-      const deepItem = item?.refund_line_items[0];
+    const listRefunds: any = [];
+
+    listRefundsItem?.forEach((items: any) => {
+      items?.refund_line_items.forEach((item: any) => {
+        listRefunds.push({ ...item, note: items?.note });
+      });
+    });
+    const convertListRefundsItem = listRefunds?.map((item: any) => {
       return {
-        quantity: deepItem?.quantity,
-        name: deepItem?.line_item?.name,
-        sku: deepItem?.line_item?.sku,
-        price: deepItem?.line_item?.price,
+        quantity: item?.quantity,
+        name: item?.line_item?.name,
+        sku: item?.line_item?.sku,
+        price: item?.line_item?.price,
         note: item?.note,
         isRefund: true,
         currency: unit,
@@ -145,7 +151,10 @@ export const DetailOrderCustomer = memo(({ onBack, dataOrder }: IProps) => {
 
     return {
       totalRefund: totalRefundMoney,
-      listNote: getListNoteRefund.filter((note: string) => !!note), // loại bỏ những note bỏ trống hoặc empty
+      listNote: getListNoteRefund.filter(
+        (note: string, index: number) =>
+          getListNoteRefund?.indexOf(note) === index && !!note
+      ), // loại bỏ các phần tử trùng nhau và trốn
     };
   }, [memoDataSource]);
   const _renderContentShipping = () => {
