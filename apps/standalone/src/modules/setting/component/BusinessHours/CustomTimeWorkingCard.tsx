@@ -43,7 +43,7 @@ const CustomTimeWorkingCard = ({
           };
         }
       }
-      return data;
+      return { ...data, checked: false };
     });
     return initialValue;
   }, [value, initialData]);
