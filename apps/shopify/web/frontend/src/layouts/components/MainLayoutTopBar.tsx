@@ -1,8 +1,16 @@
+import { useToggle } from "@moose-desk/core";
 import { Button, Icon, Text, TopBar } from "@shopify/polaris";
-import { CancelMajor, MobileHamburgerMajor } from "@shopify/polaris-icons";
-import { useState } from "react";
+import {
+  CancelMajor,
+  MaximizeMinor,
+  MinimizeMinor,
+  MobileHamburgerMajor,
+} from "@shopify/polaris-icons";
+import { useEffect, useState } from "react";
 import Images from "src/assets/images";
+
 import "src/assets/styles/layouts/components/main-layout-topbar.scss";
+import useFullScreen from "src/store/useFullScreen";
 
 interface MainLayoutTopBarProps {
   navigationToggle: () => void;
@@ -14,6 +22,16 @@ const MainLayoutTopBar = ({
   setShowMainLayout,
 }: MainLayoutTopBarProps) => {
   const [expandedMenu, setExpendedMenu] = useState(true);
+
+  const fullScreenState = useFullScreen((state) => state.fullScreen);
+  const { state: fullScreen, toggle: toggleFullScreen } =
+    useToggle(fullScreenState);
+
+  const changeUpdateScreen = useFullScreen((state) => state.changeUpdateScreen);
+  useEffect(() => {
+    fullScreen ? changeUpdateScreen(true) : changeUpdateScreen(false);
+  }, [fullScreen]);
+
   const SecondaryMenu = () => {
     return (
       <div className="Md-TopBar__Wrapper">
@@ -50,7 +68,26 @@ const MainLayoutTopBar = ({
             </Text>
           </div>
         </div>
-        <div></div>
+        <div className="mr-10 flex items-center">
+          <Button
+            plain
+            onClick={toggleFullScreen}
+            icon={
+              <Icon
+                source={() => (
+                  <>
+                    {fullScreen ? (
+                      <MinimizeMinor style={{ fontSize: 24 }} />
+                    ) : (
+                      <MaximizeMinor style={{ fontSize: 24 }} />
+                    )}
+                  </>
+                )}
+                color="base"
+              />
+            }
+          />
+        </div>
       </div>
     );
   };

@@ -1,5 +1,11 @@
 import { TokenManager, useRoutes } from "@moose-desk/core";
-import { NavigationMenu, useToast } from "@shopify/app-bridge-react";
+import {
+  NavigationMenu,
+  useAppBridge,
+  useToast,
+} from "@shopify/app-bridge-react";
+import { Fullscreen } from "@shopify/app-bridge/actions";
+
 import { NavigationLink } from "@shopify/app-bridge-react/components/NavigationMenu/NavigationMenu";
 import { useEffect, useMemo } from "react";
 import { useCookies } from "react-cookie";
@@ -12,6 +18,8 @@ import { useSubdomain } from "src/hooks/useSubdomain";
 import { LoginResponse } from "src/models/Auth";
 import { useStore } from "src/providers/StoreProviders";
 import { AppRoutes } from "src/routes";
+import useFullScreen from "src/store/useFullScreen";
+
 export default function App() {
   const { routes } = useRoutes();
   const queryClient = new QueryClient({
@@ -24,6 +32,8 @@ export default function App() {
       },
     },
   });
+  const app = useAppBridge();
+  const fullscreen = Fullscreen.create(app);
   const shop = useShopDomain();
   const { subDomain } = useSubdomain();
   const api = useApi();
@@ -31,7 +41,13 @@ export default function App() {
   const { show } = useToast();
   const { login, isLoggedIn, user } = useAuth();
   const { storeId } = useStore();
+  const fullScreen = useFullScreen((state) => state.fullScreen);
   // useGlobalData(isLoggedIn);
+  useEffect(() => {
+    fullScreen
+      ? fullscreen.dispatch(Fullscreen.Action.ENTER)
+      : fullscreen.dispatch(Fullscreen.Action.EXIT);
+  }, [fullscreen, fullScreen]);
   useEffect(() => {
     if ((shop && !isLoggedIn) || (!user && shop)) {
       console.log("Start login with token...");
