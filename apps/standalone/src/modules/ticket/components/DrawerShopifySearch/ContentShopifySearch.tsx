@@ -51,7 +51,7 @@ const ContentShopifySearch = () => {
       <Select.Option
         key={item.id}
         value={item.id}
-      >{`${item.first_name} ${item.last_name}`}</Select.Option>
+      >{`${item.first_name} ${item.last_name} - ${item.email}`}</Select.Option>
     ));
   };
   const _renderResultSearch = () => {
