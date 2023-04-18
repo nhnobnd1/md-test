@@ -1,8 +1,9 @@
 import { Outlet, useLocation, useRoutes } from "@moose-desk/core";
 import { Frame, Navigation } from "@shopify/polaris";
 import { TabDescriptor } from "@shopify/polaris/build/ts/latest/src/components/Tabs/types";
-import { ReactNode, useCallback, useMemo, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import "src/assets/styles/layouts/main-layout.scss";
+import useToggleGlobal from "src/hooks/useToggleGlobal";
 import caseNavigation, {
   NavigationItems,
   SubNavigation,
@@ -20,7 +21,10 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   const location = useLocation();
   const [mobileNavigationActive, setMobileNavigationActive] = useState(false);
   const [showMainLayout, setShowMainLayout] = useState(true);
-
+  const { visible } = useToggleGlobal(); // lấy giá trị visible khi bấm vào nút mở search shopify customer
+  useEffect(() => {
+    setShowMainLayout(!visible); // set lại khi bấm nút show/hide shopify customer
+  }, [visible]);
   const getItemRouteNavigation = useCallback(
     (
       routesItem: NavigationItems | SubNavigation,

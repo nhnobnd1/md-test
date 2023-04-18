@@ -13,14 +13,14 @@ import {
   GetListCustomerRequest,
   GetListTagRequest,
   Priority,
+  priorityOptions,
+  statusOptions,
   StatusTicket,
   Tag,
   TagRepository,
   Ticket,
   TicketRepository,
   UpdateTicket,
-  priorityOptions,
-  statusOptions,
 } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
@@ -34,6 +34,8 @@ import {
   Select,
   TextField,
 } from "@shopify/polaris";
+import { CircleLeftMajor, CircleRightMajor } from "@shopify/polaris-icons";
+import classNames from "classnames";
 import { FormikProps } from "formik";
 import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -44,11 +46,14 @@ import BoxSelectFilter from "src/components/Modal/ModalFilter/BoxSelectFilter";
 import SelectAddEmail from "src/components/SelectAddEmail/SelectAddEmail";
 import SelectAddTag from "src/components/SelectAddTag/SelectAddTag";
 import { TextEditorTicket } from "src/components/TextEditorTicket";
+import useToggleGlobal from "src/hooks/useToggleGlobal";
+import ContentShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ContentShopifySearch";
 import { RowMessage } from "src/modules/ticket/components/RowMessage/RowMessage";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import * as Yup from "yup";
 import FaMailReply from "~icons/fa/mail-reply";
 import BackIcon from "~icons/mingcute/back-2-fill";
+import styles from "./style.module.scss";
 
 export interface ChatItem {
   id: string;
@@ -92,6 +97,7 @@ const DetailTicket = (props: DetailTicketProps) => {
   );
   const [agents, setAgents] = useState<Agent[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
+  const { visible, setVisible } = useToggleGlobal();
 
   const listChat = useMemo<ChatItem[]>(() => {
     const conversationMapping: any = conversationList?.map(
@@ -453,7 +459,25 @@ const DetailTicket = (props: DetailTicketProps) => {
     setFiles([]);
     formRef.current?.setFieldValue("content", "");
   };
-
+  const handleOpenDrawerSearch = () => {
+    setVisible(true);
+  };
+  const handleCloseDrawerSearch = () => {
+    setVisible(false);
+  };
+  const _renderButtonToggle = () => {
+    return !visible ? (
+      <CircleLeftMajor
+        className={classNames(styles.toggleButton, styles.toggleButtonOpen)}
+        onClick={handleOpenDrawerSearch}
+      />
+    ) : (
+      <CircleRightMajor
+        className={classNames(styles.toggleButton, styles.toggleButtonClose)}
+        onClick={handleCloseDrawerSearch}
+      />
+    );
+  };
   return (
     <>
       <Page
@@ -466,192 +490,204 @@ const DetailTicket = (props: DetailTicketProps) => {
         <Layout>
           <Layout.Section>
             <LegacyCard sectioned>
-              <Form
-                innerRef={formRef}
-                initialValues={initialValues}
-                enableReinitialize
-                validationSchema={DetailTicketFormSchema}
-                onSubmit={() => {}}
-              >
-                <FormLayout.Group condensed>
-                  <div className="flex flex-col gap-3">
-                    <FormItem name="status">
-                      <Select
-                        disabled={disabled}
-                        label="Status"
-                        options={statusOptions}
-                      />
-                    </FormItem>
-
-                    <FormItem name="priority">
-                      <Select
-                        disabled={disabled}
-                        label="Priority"
-                        options={priorityOptions}
-                      />
-                    </FormItem>
+              <div className="d-flex">
+                <div className={visible ? styles.wrapContent : ""}>
+                  <div className={styles.wrapSearchToggle}>
+                    {_renderButtonToggle()}
                   </div>
-
-                  <div className="flex flex-col gap-3">
-                    <FormItem name="assignee">
-                      <BoxSelectFilter
-                        disabled={disabled}
-                        label="Assignee"
-                        data={agentsOptions}
-                      />
-                    </FormItem>
-                    <div>
-                      <FormItem name="tags">
-                        <SelectAddTag
-                          disabled={disabled}
-                          label="Tags"
-                          data={tagsOptions}
-                        />
-                      </FormItem>
-                    </div>
-                  </div>
-                </FormLayout.Group>
-
-                <div className="flex justify-end mb-5">
-                  <Button
-                    disabled={disabled}
-                    primary
-                    onClick={handleSaveTicket}
+                  <Form
+                    innerRef={formRef}
+                    initialValues={initialValues}
+                    enableReinitialize
+                    validationSchema={DetailTicketFormSchema}
+                    onSubmit={() => {}}
                   >
-                    Save
-                  </Button>
-                </div>
-                <Divider />
-
-                <div className="mt-5 mb-5">
-                  {listChat.map((item: ChatItem) => (
-                    <div key={item.id}>
-                      <RowMessage item={item} />
-                    </div>
-                  ))}
-                </div>
-                <div className="w-full flex justify-between gap-4 flex-wrap">
-                  <div className="flex flex-1 flex-col">
-                    <div className="w-[400px]">
-                      <FormItem name="from">
-                        <BoxSelectFilter
-                          label="From"
-                          data={emailIntegrationOptions}
-                          disabled={disabled}
-                        />
-                      </FormItem>
-                    </div>
-                    <div className="w-[400px] mt-5">
-                      <FormItem name="to">
-                        <TextField label="To" disabled autoComplete="off" />
-                      </FormItem>
-                    </div>
-                  </div>
-                  <div className="flex flex-1 flex-col">
-                    {enableCC ? (
-                      <div className="min-w-[300px] max-w-[400px]">
-                        <FormItem name="CC">
-                          <SelectAddEmail
+                    <FormLayout.Group condensed>
+                      <div className="flex flex-col gap-3">
+                        <FormItem name="status">
+                          <Select
                             disabled={disabled}
-                            label="CC"
-                            data={customersOptions}
+                            label="Status"
+                            options={statusOptions}
+                          />
+                        </FormItem>
+
+                        <FormItem name="priority">
+                          <Select
+                            disabled={disabled}
+                            label="Priority"
+                            options={priorityOptions}
                           />
                         </FormItem>
                       </div>
-                    ) : (
-                      <></>
-                    )}
-                    {enableCC ? (
-                      <div className="min-w-[300px] max-w-[400px] mt-2">
-                        <FormItem name="BCC">
-                          <SelectAddEmail
+
+                      <div className="flex flex-col gap-3">
+                        <FormItem name="assignee">
+                          <BoxSelectFilter
                             disabled={disabled}
-                            label="BCC"
-                            data={customersOptions}
+                            label="Assignee"
+                            data={agentsOptions}
                           />
                         </FormItem>
+                        <div>
+                          <FormItem name="tags">
+                            <SelectAddTag
+                              disabled={disabled}
+                              label="Tags"
+                              data={tagsOptions}
+                            />
+                          </FormItem>
+                        </div>
                       </div>
-                    ) : (
-                      <></>
-                    )}
-                  </div>
-                </div>
-                <Link>
-                  <span
-                    className="link mt-5 mb-5 inline-block"
-                    onClick={() => {
-                      setEnableCC(!enableCC);
-                    }}
-                  >
-                    CC/BCC
-                  </span>
-                </Link>
-                <div>
-                  <FormItem name="content">
-                    <TextEditorTicket
-                      files={files}
-                      setFiles={setFiles}
-                      formRef={formRef}
-                      disabled={
-                        formRef.current?.values.status === StatusTicket.RESOLVED
-                      }
-                      setIsChanged={setIsChanged}
-                      setLoadingButton={setLoadingButton}
-                      labelProps={{
-                        as: "span",
-                        variant: "bodyMd",
-                        children: "Content",
-                      }}
-                      init={{
-                        height: 400,
-                        placeholder: "Please input your message here......",
-                      }}
-                    />
-                  </FormItem>
-                </div>
-                <div className="flex justify-end mt-5">
-                  {formRef.current?.values.status === StatusTicket.RESOLVED ? (
-                    <>
+                    </FormLayout.Group>
+
+                    <div className="flex justify-end mb-5">
                       <Button
-                        icon={
-                          <div className="flex">
-                            <span className="mr-2 ">
-                              <BackIcon fontSize={14} />
-                            </span>
-                            <span>Reopen</span>
-                          </div>
-                        }
-                        onClick={handleReopenTicket}
-                        disabled={false}
-                      ></Button>
-                    </>
-                  ) : (
-                    <div className="flex items-center gap-2">
-                      <Button
+                        disabled={disabled}
                         primary
-                        icon={
-                          <div className="flex justify-center items-center">
-                            <span className="mr-2">
-                              <FaMailReply fontSize={14} />
-                            </span>
-                            <span>Reply</span>
-                          </div>
-                        }
-                        onClick={() => {
-                          onFinish(formRef.current?.values);
-                        }}
-                        disabled={!isChanged || loadingButton}
-                      ></Button>
-                      <Button
-                        disabled={!isChanged || loadingButton}
-                        onClick={handleCloseTicket}
+                        onClick={handleSaveTicket}
                       >
-                        Reply & Close Ticket
+                        Save
                       </Button>
                     </div>
-                  )}
+                    <Divider />
+
+                    <div className="mt-5 mb-5">
+                      {listChat.map((item: ChatItem) => (
+                        <div key={item.id}>
+                          <RowMessage item={item} />
+                        </div>
+                      ))}
+                    </div>
+                    <div className="w-full flex justify-between gap-4 flex-wrap">
+                      <div className="flex flex-1 flex-col">
+                        <div className="w-[400px]">
+                          <FormItem name="from">
+                            <BoxSelectFilter
+                              label="From"
+                              data={emailIntegrationOptions}
+                              disabled={disabled}
+                            />
+                          </FormItem>
+                        </div>
+                        <div className="w-[400px] mt-5">
+                          <FormItem name="to">
+                            <TextField label="To" disabled autoComplete="off" />
+                          </FormItem>
+                        </div>
+                      </div>
+                      <div className="flex flex-1 flex-col">
+                        {enableCC ? (
+                          <div className="min-w-[300px] max-w-[400px]">
+                            <FormItem name="CC">
+                              <SelectAddEmail
+                                disabled={disabled}
+                                label="CC"
+                                data={customersOptions}
+                              />
+                            </FormItem>
+                          </div>
+                        ) : (
+                          <></>
+                        )}
+                        {enableCC ? (
+                          <div className="min-w-[300px] max-w-[400px] mt-2">
+                            <FormItem name="BCC">
+                              <SelectAddEmail
+                                disabled={disabled}
+                                label="BCC"
+                                data={customersOptions}
+                              />
+                            </FormItem>
+                          </div>
+                        ) : (
+                          <></>
+                        )}
+                      </div>
+                    </div>
+                    <Link>
+                      <span
+                        className="link mt-5 mb-5 inline-block"
+                        onClick={() => {
+                          setEnableCC(!enableCC);
+                        }}
+                      >
+                        CC/BCC
+                      </span>
+                    </Link>
+                    <div>
+                      <FormItem name="content">
+                        <TextEditorTicket
+                          files={files}
+                          setFiles={setFiles}
+                          formRef={formRef}
+                          disabled={
+                            formRef.current?.values.status ===
+                            StatusTicket.RESOLVED
+                          }
+                          setIsChanged={setIsChanged}
+                          setLoadingButton={setLoadingButton}
+                          labelProps={{
+                            as: "span",
+                            variant: "bodyMd",
+                            children: "Content",
+                          }}
+                          init={{
+                            height: 400,
+                            placeholder: "Please input your message here......",
+                          }}
+                        />
+                      </FormItem>
+                    </div>
+                    <div className="flex justify-end mt-5">
+                      {formRef.current?.values.status ===
+                      StatusTicket.RESOLVED ? (
+                        <>
+                          <Button
+                            icon={
+                              <div className="flex">
+                                <span className="mr-2 ">
+                                  <BackIcon fontSize={14} />
+                                </span>
+                                <span>Reopen</span>
+                              </div>
+                            }
+                            onClick={handleReopenTicket}
+                            disabled={false}
+                          ></Button>
+                        </>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <Button
+                            primary
+                            icon={
+                              <div className="flex justify-center items-center">
+                                <span className="mr-2">
+                                  <FaMailReply fontSize={14} />
+                                </span>
+                                <span>Reply</span>
+                              </div>
+                            }
+                            onClick={() => {
+                              onFinish(formRef.current?.values);
+                            }}
+                            disabled={!isChanged || loadingButton}
+                          ></Button>
+                          <Button
+                            disabled={!isChanged || loadingButton}
+                            onClick={handleCloseTicket}
+                          >
+                            Reply & Close Ticket
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  </Form>
                 </div>
-              </Form>
+                <div className={visible ? styles.wrapSearch : "d-none"}>
+                  <ContentShopifySearch />
+                </div>
+              </div>
             </LegacyCard>
           </Layout.Section>
         </Layout>

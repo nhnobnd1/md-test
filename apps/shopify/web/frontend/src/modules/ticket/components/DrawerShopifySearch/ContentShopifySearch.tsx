@@ -1,14 +1,13 @@
-import { SearchOutlined } from "@ant-design/icons";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
-import useSaveDataGlobal from "@moose-desk/core/hooks/useSaveDataGlobal";
-import { Select } from "antd";
+// import { Select } from "antd";
 import { memo, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "react-query";
-import shopifyLogo from "src/assets/images/shopifyIcon.png";
+import { MDTextField } from "src/components/Input/TextFieldPassword/MDTextField";
+import useSaveDataGlobal from "src/hooks/useSaveDataGlobal";
 import { getListShopifyCustomer } from "src/modules/ticket/api/api";
 import ResultShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ResultShopifySearch";
-import ListShopifyCustomerRes from "src/modules/ticket/helper/interface";
+// import ListShopifyCustomerRes from "src/modules/ticket/helper/interface";
 import styles from "./styles.module.scss";
 const ContentShopifySearch = () => {
   const queryClient = useQueryClient();
@@ -25,12 +24,13 @@ const ContentShopifySearch = () => {
     cacheTime: 0,
     staleTime: 0,
   });
-  const memoDataSearch: ListShopifyCustomerRes[] = useMemo(() => {
+  const memoDataSearch: any[] = useMemo(() => {
     const data = (listCustomerOrdered as any)?.data?.data;
     return data;
   }, [listCustomerOrdered]);
   const handleSearch = (value: any) => {
     setQuerySearch(value);
+    setSelectedId(null);
   };
   const handleSelectCustomer = (value: number) => {
     setSelectedId(value);
@@ -47,11 +47,12 @@ const ContentShopifySearch = () => {
     parentRef?.current?.clearDataOrder();
   };
   const _renderListOption = () => {
-    return memoDataSearch?.map((item: ListShopifyCustomerRes) => (
-      <Select.Option
-        key={item.id}
-        value={item.id}
-      >{`${item.first_name} ${item.last_name} - ${item.email}`}</Select.Option>
+    return memoDataSearch?.map((item: any, index: number) => (
+      <div
+        className={styles.itemSearched}
+        key={index}
+        onClick={() => handleSelectCustomer(item?.id)}
+      >{`${item.first_name} ${item.last_name} - ${item.email}`}</div>
     ));
   };
   const _renderResultSearch = () => {
@@ -61,10 +62,16 @@ const ContentShopifySearch = () => {
   };
   return (
     <section className={styles.searchContainer}>
-      <div className="flex-center justify-between">
-        <img className={styles.icon} src={shopifyLogo} alt="logo" />
-        <div className={styles.wrapSearchInput}>
-          <Select
+      {/* <img className={styles.icon} src={shopifyLogo} alt="logo" /> */}
+      <div className={styles.wrapSearchInput}>
+        <MDTextField
+          value={querySearch}
+          type="search"
+          onChange={handleSearch}
+        />
+        {!selectedId && _renderListOption()}
+        {_renderResultSearch()}
+        {/* <Select
             className={styles.customizeSelect}
             allowClear={true}
             suffixIcon={<SearchOutlined />}
@@ -76,10 +83,10 @@ const ContentShopifySearch = () => {
             onClear={handleClearSearch}
           >
             {!!querySearch && _renderListOption()}
-          </Select>
-        </div>
+          </Select> */}
       </div>
-      {_renderResultSearch()}
+
+      {/* {_renderResultSearch()} */}
     </section>
   );
 };
