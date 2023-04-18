@@ -43,7 +43,7 @@ if (host === "localhost") {
   };
 }
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   root: dirname(fileURLToPath(import.meta.url)),
   plugins: [
     react(),
@@ -73,4 +73,7 @@ export default defineConfig({
       "^/api(/|(\\?.*)?$)": proxyOptions,
     },
   },
-});
+  esbuild: {
+    drop: mode === "production" ? ["console", "debugger"] : [],
+  },
+}));
