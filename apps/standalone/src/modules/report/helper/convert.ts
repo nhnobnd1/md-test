@@ -33,3 +33,9 @@ export const getTwoWeeksBefore = (currentTime: Date) => {
   const twoWeekBeforeCurrent = dayjs(currentTime).subtract(2, "weeks");
   return twoWeekBeforeCurrent;
 };
+export const getTimeFilterDefault = () => {
+  return {
+    twoWeekAgo: dayjs().subtract(2, "weeks"),
+    current: dayjs(),
+  };
+};

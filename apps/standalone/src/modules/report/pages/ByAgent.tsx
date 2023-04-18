@@ -2,7 +2,7 @@ import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { formatTimeStamp } from "@moose-desk/core/helper/format";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import { DatePicker } from "antd";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
@@ -11,6 +11,7 @@ import { getReportTopFive } from "src/modules/report/api/api";
 import ChartAgentsTicket from "src/modules/report/components/ChartAgentsTicket/ChartAgentsTicket";
 import { ReportAgentTable } from "src/modules/report/components/ReportAgentTable";
 import {
+  getTimeFilterDefault,
   getTwoWeeksAfter,
   getTwoWeeksBefore,
 } from "src/modules/report/helper/convert";
@@ -22,12 +23,24 @@ enum DataAgent {
 const ByAgentPage = (props: ByAgentPageProps) => {
   const [form] = Form.useForm();
   const { timezone } = useGlobalData();
+  const { isAgent } = usePermission();
+  const { current, twoWeekAgo } = getTimeFilterDefault();
+
   const [filter, setFilter] = useState({
     startTime: "",
     endTime: "",
   });
-  const { isAgent } = usePermission();
-
+  useEffect(() => {
+    if (!timezone) return;
+    form.setFieldsValue({
+      to: current,
+      from: twoWeekAgo,
+    });
+    setFilter({
+      startTime: String(twoWeekAgo.unix()),
+      endTime: String(current.unix()),
+    });
+  }, [timezone]);
   const { data: reportTopFiveData } = useQuery({
     queryKey: [QUERY_KEY.REPORT_TOP_FIVE, filter],
     queryFn: () => getReportTopFive(filter),

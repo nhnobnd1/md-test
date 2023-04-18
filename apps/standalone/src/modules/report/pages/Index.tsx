@@ -3,7 +3,7 @@ import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { formatTimeStamp } from "@moose-desk/core/helper/format";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import { DatePicker } from "antd";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQueries } from "react-query";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
@@ -19,6 +19,7 @@ import { ChartResolutionTime } from "src/modules/report/components/ChartResoluti
 import { ChartSupportVolume } from "src/modules/report/components/ChartSupportVolume";
 import { Statistic } from "src/modules/report/components/Statistic";
 import {
+  getTimeFilterDefault,
   getTwoWeeksAfter,
   getTwoWeeksBefore,
 } from "src/modules/report/helper/convert";
@@ -32,11 +33,23 @@ enum ChartReportData {
 const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
   const [form] = Form.useForm();
   const { timezone } = useGlobalData();
+  const { isAgent } = usePermission();
+  const { current, twoWeekAgo } = getTimeFilterDefault();
   const [filter, setFilter] = useState({
     startTime: "",
     endTime: "",
   });
-  const { isAgent } = usePermission();
+  useEffect(() => {
+    if (!timezone) return;
+    form.setFieldsValue({
+      to: current,
+      from: twoWeekAgo,
+    });
+    setFilter({
+      startTime: String(twoWeekAgo.unix()),
+      endTime: String(current.unix()),
+    });
+  }, [timezone]);
   const queries = useQueries([
     {
       queryKey: [QUERY_KEY.SUMMARY, filter],
@@ -112,6 +125,7 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
             placeholder="dd/mm/yyyy"
             disabledDate={disabledStartDate}
             onChange={handleChangeStartTime}
+            // defaultValue={twoWeekAgo}
           />
         </Form.Item>
         <Form.Item name="to" label="To">
@@ -120,6 +134,7 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
             placeholder="dd/mm/yyyy"
             disabledDate={disabledEndDate}
             onChange={handleChangeEndTime}
+            // defaultValue={current}
           />
         </Form.Item>
       </Form>

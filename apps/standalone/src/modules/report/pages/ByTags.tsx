@@ -6,7 +6,7 @@ import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import { DatePicker, Form, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useForm } from "antd/lib/form/Form";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import { MDSearchInput } from "src/components/UI/MDSearchInput";
 import Pagination from "src/components/UI/Pagination/Pagination";
@@ -15,6 +15,7 @@ import env from "src/core/env";
 import { usePermission } from "src/hooks/usePerrmisson";
 import { getReportByTags } from "src/modules/report/api/api";
 import {
+  getTimeFilterDefault,
   getTwoWeeksAfter,
   getTwoWeeksBefore,
 } from "src/modules/report/helper/convert";
@@ -32,6 +33,9 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
   const navigate = useNavigate();
   const { timezone } = useGlobalData();
   const [form] = useForm();
+  const { isAgent } = usePermission();
+  const { current, twoWeekAgo } = getTimeFilterDefault();
+
   const [filterData, setFilterData] = useState<ITableFilter>({
     page: 1,
     limit: env.DEFAULT_PAGE_SIZE,
@@ -41,9 +45,20 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
     startTime: "",
     endTime: "",
   });
+  useEffect(() => {
+    if (!timezone) return;
+    form.setFieldsValue({
+      to: current,
+      from: twoWeekAgo,
+    });
+    setFilterData((pre) => ({
+      ...pre,
+      startTime: String(twoWeekAgo.unix()),
+      endTime: String(current.unix()),
+    }));
+  }, [timezone]);
   const [querySearch, setQuerySearch] = useState<string>("");
   const debounceValue: string = useDebounce(querySearch, 500);
-  const { isAgent } = usePermission();
 
   const { data: listReportTags, isFetching } = useQuery({
     queryKey: [QUERY_KEY.REPORT_BY_TAGS, filterData, debounceValue],
