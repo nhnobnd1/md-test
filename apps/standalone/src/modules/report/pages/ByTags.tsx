@@ -1,15 +1,11 @@
 import { PageComponent, useNavigate } from "@moose-desk/core";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
-import {
-  formatTimeByTimezone,
-  formatTimeStamp,
-} from "@moose-desk/core/helper/format";
+import { formatTimeStamp } from "@moose-desk/core/helper/format";
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import { DatePicker, Form, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useForm } from "antd/lib/form/Form";
-import dayjs from "dayjs";
 import { useCallback, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import { MDSearchInput } from "src/components/UI/MDSearchInput";
@@ -18,6 +14,10 @@ import { Table } from "src/components/UI/Table";
 import env from "src/core/env";
 import { usePermission } from "src/hooks/usePerrmisson";
 import { getReportByTags } from "src/modules/report/api/api";
+import {
+  getTwoWeeksAfter,
+  getTwoWeeksBefore,
+} from "src/modules/report/helper/convert";
 interface ByTagsProps {}
 interface ITableFilter {
   page: number;
@@ -31,12 +31,6 @@ interface ITableFilter {
 export const ByTags: PageComponent<ByTagsProps> = () => {
   const navigate = useNavigate();
   const { timezone } = useGlobalData();
-  const {
-    startOfMonth,
-    endOfMonth,
-    startOfMonthDateFormat,
-    endOfMonthDateFormat,
-  } = formatTimeByTimezone(timezone);
   const [form] = useForm();
   const [filterData, setFilterData] = useState<ITableFilter>({
     page: 1,
@@ -44,8 +38,8 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
     query: "",
     sortBy: undefined,
     sortOrder: undefined,
-    startTime: String(startOfMonth),
-    endTime: String(endOfMonth),
+    startTime: "",
+    endTime: "",
   });
   const [querySearch, setQuerySearch] = useState<string>("");
   const debounceValue: string = useDebounce(querySearch, 500);
@@ -55,7 +49,7 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
     queryKey: [QUERY_KEY.REPORT_BY_TAGS, filterData, debounceValue],
     queryFn: () => getReportByTags({ ...filterData, query: debounceValue }),
     keepPreviousData: true,
-    enabled: !isAgent,
+    enabled: !isAgent && !!filterData.startTime && !!filterData.endTime,
   });
   const memoChartData = useMemo(() => {
     const convertData = (listReportTags as any)?.data?.data || [];
@@ -140,7 +134,8 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
   const disabledStartDate = useCallback(
     (current) => {
       return form.getFieldValue("to")
-        ? current > form.getFieldValue("to")
+        ? current > form.getFieldValue("to") ||
+            current <= getTwoWeeksBefore(form.getFieldValue("to"))
         : false;
     },
     [form.getFieldValue("to")]
@@ -149,7 +144,8 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
   const disabledEndDate = useCallback(
     (current) => {
       return form.getFieldValue("from")
-        ? current < form.getFieldValue("from")
+        ? current < form.getFieldValue("from") ||
+            current >= getTwoWeeksAfter(form.getFieldValue("from"))
         : false;
     },
     [form.getFieldValue("from")]
@@ -157,17 +153,17 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
   const handleChangeStartTime = (_: any, values: string) => {
     setFilterData((pre) => ({
       ...pre,
-      startTime: String(
-        formatTimeStamp(values, "DD/MM/YYYY", timezone) || startOfMonth
-      ),
+      startTime: values
+        ? String(formatTimeStamp(values, "DD/MM/YYYY", timezone))
+        : "",
     }));
   };
   const handleChangeEndTime = (_: any, values: string) => {
     setFilterData((pre) => ({
       ...pre,
-      endTime: String(
-        formatTimeStamp(values, "DD/MM/YYYY", timezone) || endOfMonth
-      ),
+      endTime: values
+        ? String(formatTimeStamp(values, "DD/MM/YYYY", timezone))
+        : "",
     }));
   };
   return (
@@ -181,8 +177,8 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
                 placeholder="dd/mm/yyyy"
                 disabledDate={disabledStartDate}
                 onChange={handleChangeStartTime}
-                allowClear={false}
-                defaultValue={dayjs().tz(timezone).startOf("month")}
+                // allowClear={false}
+                // defaultValue={dayjs().tz(timezone).startOf("month")}
               />
             </Form.Item>
             <Form.Item name="to" label="To">
@@ -191,8 +187,8 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
                 placeholder="dd/mm/yyyy"
                 disabledDate={disabledEndDate}
                 onChange={handleChangeEndTime}
-                allowClear={false}
-                defaultValue={dayjs().tz(timezone).endOf("month")}
+                // allowClear={false}
+                // defaultValue={dayjs().tz(timezone).endOf("month")}
               />
             </Form.Item>
           </Form>
