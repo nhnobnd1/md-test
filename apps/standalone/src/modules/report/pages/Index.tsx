@@ -46,9 +46,10 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
       from: twoWeekAgo,
     });
     setFilter({
-      startTime: String(twoWeekAgo.unix()),
-      endTime: String(current.unix()),
+      startTime: String(twoWeekAgo.tz(timezone).unix()),
+      endTime: String(current.tz(timezone).unix()),
     });
+    console.log(twoWeekAgo.tz(timezone));
   }, [timezone]);
   const queries = useQueries([
     {

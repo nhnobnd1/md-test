@@ -37,8 +37,8 @@ const ByAgentPage = (props: ByAgentPageProps) => {
       from: twoWeekAgo,
     });
     setFilter({
-      startTime: String(twoWeekAgo.unix()),
-      endTime: String(current.unix()),
+      startTime: String(twoWeekAgo.tz(timezone).unix()),
+      endTime: String(current.tz(timezone).unix()),
     });
   }, [timezone]);
   const { data: reportTopFiveData } = useQuery({

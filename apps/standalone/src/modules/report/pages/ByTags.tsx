@@ -53,8 +53,8 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
     });
     setFilterData((pre) => ({
       ...pre,
-      startTime: String(twoWeekAgo.unix()),
-      endTime: String(current.unix()),
+      startTime: String(twoWeekAgo.tz(timezone).unix()),
+      endTime: String(current.tz(timezone).unix()),
     }));
   }, [timezone]);
   const [querySearch, setQuerySearch] = useState<string>("");
