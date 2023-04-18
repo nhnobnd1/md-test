@@ -1,7 +1,7 @@
 import { PageComponent } from "@moose-desk/core";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { Card, Page } from "@shopify/polaris";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQueries } from "react-query";
 import MDDatePicker from "src/components/DatePicker/MDDatePicker";
 import useGlobalData from "src/hooks/useGlobalData";
@@ -15,8 +15,10 @@ import ChartFirstResponseTime from "src/modules/report/components/ChartFirstResp
 import ChartResolutionTime from "src/modules/report/components/ChartResolutionTime/ChartResolutionTime";
 import ChartSupportVolume from "src/modules/report/components/ChartSupportVolume/ChartSupportVolume";
 import Statistic from "src/modules/report/components/Statistic/Statistic";
-import { convertTimeStamp } from "src/modules/report/helper/convert";
-import { formatTimeByTimezone } from "src/modules/report/helper/format";
+import {
+  convertTimeStamp,
+  getTimeFilterDefault,
+} from "src/modules/report/helper/convert";
 import styles from "./styles.module.scss";
 interface ReportIndexPageProps {}
 enum ChartReportData {
@@ -27,28 +29,39 @@ enum ChartReportData {
 }
 const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
   const { timezone }: any = useGlobalData();
-  const { startOfMonth, endOfMonth } = formatTimeByTimezone(timezone);
+  const { current, twoWeekAgo } = getTimeFilterDefault();
   const [filter, setFilter] = useState({
-    startTime: String(startOfMonth),
-    endTime: String(endOfMonth),
+    startTime: "",
+    endTime: "",
   });
+  useEffect(() => {
+    if (!timezone) return;
+    setFilter({
+      startTime: String(twoWeekAgo.unix()),
+      endTime: String(current.unix()),
+    });
+  }, [timezone]);
   const queries = useQueries([
     {
       queryKey: [QUERY_KEY.SUMMARY, filter],
       queryFn: () => getReportSummaryReport(filter),
       keepPreviousData: true,
+      enabled: !!filter.startTime && !!filter.endTime,
     },
     {
       queryKey: [QUERY_KEY.REPORT_SUPPORT_VOLUME, filter],
       queryFn: () => getSupportVolume(filter),
+      enabled: !!filter.startTime && !!filter.endTime,
     },
     {
       queryKey: [QUERY_KEY.REPORT_RESOLUTION_TIME, filter],
       queryFn: () => getResolutionTime(filter),
+      enabled: !!filter.startTime && !!filter.endTime,
     },
     {
       queryKey: [QUERY_KEY.REPORT_FIRST_RESPONSE_TIME, filter],
       queryFn: () => getFirstResponseTime(filter),
+      enabled: !!filter.startTime && !!filter.endTime,
     },
   ]);
 
