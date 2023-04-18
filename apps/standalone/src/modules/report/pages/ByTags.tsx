@@ -1,6 +1,5 @@
 import { PageComponent, useNavigate } from "@moose-desk/core";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
-import { formatTimeStamp } from "@moose-desk/core/helper/format";
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import { DatePicker, Form, TableProps } from "antd";
@@ -15,6 +14,7 @@ import env from "src/core/env";
 import { usePermission } from "src/hooks/usePerrmisson";
 import { getReportByTags } from "src/modules/report/api/api";
 import {
+  convertTimeStamp,
   getTimeFilterDefault,
   getTwoWeeksAfter,
   getTwoWeeksBefore,
@@ -169,7 +169,7 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
     setFilterData((pre) => ({
       ...pre,
       startTime: values
-        ? String(formatTimeStamp(values, "DD/MM/YYYY", timezone))
+        ? String(convertTimeStamp(values, "DD/MM/YYYY", timezone, "start"))
         : "",
     }));
   };
@@ -177,7 +177,7 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
     setFilterData((pre) => ({
       ...pre,
       endTime: values
-        ? String(formatTimeStamp(values, "DD/MM/YYYY", timezone))
+        ? String(convertTimeStamp(values, "DD/MM/YYYY", timezone, "end"))
         : "",
     }));
   };

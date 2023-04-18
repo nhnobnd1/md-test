@@ -33,9 +33,21 @@ export const getTwoWeeksBefore = (currentTime: Date) => {
   const twoWeekBeforeCurrent = dayjs(currentTime).subtract(2, "weeks");
   return twoWeekBeforeCurrent;
 };
+export const convertTimeStamp = (
+  date: string,
+  format: string,
+  timezone: string,
+  type: "start" | "end"
+) => {
+  const convertDate =
+    type === "start"
+      ? dayjs(date, format).startOf("day")
+      : dayjs(date, format).endOf("day");
+  return convertDate.tz(timezone).unix();
+};
 export const getTimeFilterDefault = () => {
   return {
-    twoWeekAgo: dayjs().subtract(2, "weeks"),
-    current: dayjs(),
+    twoWeekAgo: dayjs().subtract(2, "weeks").startOf("day"),
+    current: dayjs().endOf("day"),
   };
 };

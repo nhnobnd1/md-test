@@ -83,7 +83,6 @@ MDDatePicker) => {
               onChange={handleSelectDate}
               onMonthChange={handleMonthChange}
               selected={selectedDates as any}
-              // {...props}
             />
           </div>
         </Popover>
