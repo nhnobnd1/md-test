@@ -12,6 +12,7 @@ import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
 import env from "src/core/env";
 import { usePermission } from "src/hooks/usePerrmisson";
+import { useSubdomain } from "src/hooks/useSubdomain";
 import { getReportByTags } from "src/modules/report/api/api";
 import {
   convertTimeStamp,
@@ -31,7 +32,10 @@ interface ITableFilter {
 }
 export const ByTags: PageComponent<ByTagsProps> = () => {
   const navigate = useNavigate();
-  const { timezone } = useGlobalData();
+  const { subDomain } = useSubdomain();
+
+  const { timezone } = useGlobalData(false, subDomain || "");
+
   const [form] = useForm();
   const { isAgent } = usePermission();
   const { current, twoWeekAgo } = getTimeFilterDefault();
@@ -48,13 +52,13 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
   useEffect(() => {
     if (!timezone) return;
     form.setFieldsValue({
-      to: current,
-      from: twoWeekAgo,
+      to: current.tz(timezone),
+      from: twoWeekAgo.tz(timezone),
     });
     setFilterData((pre) => ({
       ...pre,
-      startTime: String(twoWeekAgo.unix()),
-      endTime: String(current.unix()),
+      startTime: String(twoWeekAgo.tz(timezone).unix()),
+      endTime: String(current.tz(timezone).unix()),
     }));
   }, [timezone]);
   const [querySearch, setQuerySearch] = useState<string>("");
