@@ -2,7 +2,7 @@ import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import { TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import { MDSearchInput } from "src/components/UI/MDSearchInput";
 import Pagination from "src/components/UI/Pagination/Pagination";
@@ -36,13 +36,6 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
     endTime: "",
     query: "",
   });
-  useEffect(() => {
-    setFilterData((pre) => ({
-      ...pre,
-      startTime: rangeTime.startTime,
-      endTime: rangeTime.endTime,
-    }));
-  }, [rangeTime]);
   const [querySearch, setQuerySearch] = useState<string>("");
   const debounceValue: string = useDebounce(querySearch, 500);
   const { isAgent } = usePermission();
@@ -54,8 +47,8 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
         ...{ ...filterData, query: debounceValue },
         ...rangeTime,
       }),
-    keepPreviousData: true,
-    enabled: !isAgent && !!filterData.startTime && !!filterData.endTime,
+    // keepPreviousData: true,
+    enabled: !isAgent && !!rangeTime.startTime && !!rangeTime.endTime,
   });
 
   const memoChartData: ListAgentTableRes[] = useMemo(() => {
