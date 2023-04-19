@@ -24,11 +24,11 @@ const defaultEmptyAgent: any = [
   },
 ];
 const LIST_CHART_ITEM_COLOR = [
-  "#1e88e5",
-  "#fb8c00",
-  "#9e9e9e",
-  "#ffeb3b",
-  "#29b6f6",
+  "#FF5252",
+  "#7E57C2",
+  "#00BCD4",
+  "#4CAF50",
+  "#FFEB3B",
 ];
 const ChartAgentsTicket = ({
   data = defaultEmptyAgent,
