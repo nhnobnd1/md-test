@@ -135,7 +135,7 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
           </div>
           <div className="wrap-chart mb-[50px]">
             <div className="title text-lg font-semibold mb-6">
-              Resolution Time (median)
+              Resolution Time (Median)
             </div>
             <div className="w-full h-[450px]">
               <ChartResolutionTime
@@ -145,7 +145,7 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
           </div>
           <div className="wrap-chart">
             <div className="title text-lg font-semibold mb-6">
-              First Response Time (median)
+              First Response Time (Median)
             </div>
             <div className="w-full h-[450px]">
               <ChartFirstResponseTime
