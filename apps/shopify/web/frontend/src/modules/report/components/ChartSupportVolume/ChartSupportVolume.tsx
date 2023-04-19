@@ -44,13 +44,13 @@ export const ChartSupportVolume = ({ data }: ChartSupportVolumeProps) => {
         <Tooltip />
         <Legend />
         <Bar
-          name="Ticket created"
+          name="Ticket Created"
           dataKey="uv"
           fill="#42A5F5"
           radius={[5, 5, 0, 0]}
         />
         <Bar
-          name="Ticket responded"
+          name="Ticket Responded"
           dataKey="pv"
           fill="#FFC107"
           radius={[5, 5, 0, 0]}
