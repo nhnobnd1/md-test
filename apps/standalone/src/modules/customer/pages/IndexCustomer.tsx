@@ -99,7 +99,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
       });
     },
   });
-  const columns = [
+  const columns: any = [
     {
       title: "Customer name",
       dataIndex: "name",
@@ -108,7 +108,10 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
         compare: (a: any, b: any) => a.lastName - b.lastName,
       },
       render: (_: string, record: Customer) => (
-        <div>{`${record.firstName} ${record.lastName}`}</div>
+        <div
+          className="cursor-pointer"
+          onClick={() => handleEdit(record)}
+        >{`${record.firstName} ${record.lastName}`}</div>
       ),
     },
     {
@@ -133,6 +136,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
       title: "Action",
       dataIndex: "",
       width: "25%",
+      align: "center",
       render: (_: any, record: Customer) => (
         <TableAction
           record={record}
@@ -218,7 +222,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
       </div>
       <div>
         <Table
-          dataSource={listCustomer?.data?.data}
+          dataSource={(listCustomer as any)?.data?.data}
           loading={isFetchingListCustomer}
           onChange={handleChangeTable}
           columns={columns}
@@ -227,7 +231,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
         <Pagination
           className="mt-4 flex justify-end"
           currentPage={filterData.page ?? 1}
-          total={listCustomer?.data?.metadata?.totalCount || 0}
+          total={(listCustomer as any)?.data?.metadata?.totalCount || 0}
           pageSize={filterData.limit ?? env.DEFAULT_PAGE_SIZE}
           onChange={handleChangePage}
         />
