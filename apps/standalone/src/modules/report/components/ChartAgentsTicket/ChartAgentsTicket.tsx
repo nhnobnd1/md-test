@@ -32,17 +32,16 @@ const ChartAgentsTicket = ({ data }: ChartAgentsTicketProps) => {
   const convertTopFiveAgents: any =
     data?.map((item: ChartTopFiveRes | any) => item?.agentClosed) || [];
   const memoChartData = useMemo(() => {
-    const convertList = data.map((item: any) => {
+    const convertList = data?.map((item: any) => {
       const formatItemInList = item?.agentClosed?.map((agent: any) => {
         return { [agent?.agentObjectId]: agent?.totalTicket };
       });
       return formatItemInList;
     });
-    const convertListAgent = convertList.map((item: any) => {
-      const obj = Object.assign({}, ...item);
-      return obj;
-    });
-    return data.map((item: any, index: number) => {
+    const convertListAgent = convertList?.map((item: any) =>
+      Object.assign({}, ...item)
+    );
+    return data?.map((item: any, index: number) => {
       return {
         date: item?.date,
         ...convertListAgent[index],
