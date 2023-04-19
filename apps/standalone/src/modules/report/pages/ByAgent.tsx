@@ -40,8 +40,8 @@ const ByAgentPage = (props: ByAgentPageProps) => {
       from: twoWeekAgo.tz(timezone),
     });
     setFilter({
-      startTime: String(twoWeekAgo.tz(timezone).unix()),
-      endTime: String(current.tz(timezone).unix()),
+      startTime: String(twoWeekAgo.tz(timezone).startOf("day").unix()),
+      endTime: String(current.tz(timezone).endOf("day").unix()),
     });
   }, [timezone]);
   const { data: reportTopFiveData } = useQuery({
@@ -58,7 +58,7 @@ const ByAgentPage = (props: ByAgentPageProps) => {
     (current) => {
       return form.getFieldValue("to")
         ? current > form.getFieldValue("to") ||
-            current <= getTwoWeeksBefore(form.getFieldValue("to"))
+            current < getTwoWeeksBefore(form.getFieldValue("to"))
         : false;
     },
     [form.getFieldValue("to")]
@@ -68,7 +68,7 @@ const ByAgentPage = (props: ByAgentPageProps) => {
     (current) => {
       return form.getFieldValue("from")
         ? current < form.getFieldValue("from") ||
-            current >= getTwoWeeksAfter(form.getFieldValue("from"))
+            current > getTwoWeeksAfter(form.getFieldValue("from"))
         : false;
     },
     [form.getFieldValue("from")]

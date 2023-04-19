@@ -27,9 +27,16 @@ export const convertSecondsToHoursMinutes = (seconds: number) => {
   } else return `${hours}h${minutes}m`;
 };
 
-export const convertTimeStamp = (date: Date, timezone: string) => {
-  const Date = dayjs(date);
-  return Date.tz(timezone).unix();
+export const convertTimeStamp = (
+  date: Date,
+  timezone: string,
+  type: "start" | "end"
+) => {
+  const convertDate =
+    type === "start"
+      ? dayjs(date).tz(timezone).startOf("day")
+      : dayjs(date).tz(timezone).endOf("day");
+  return convertDate.unix();
 };
 export const getTimeFilterDefault = () => {
   return {

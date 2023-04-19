@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQueries } from "react-query";
 import MDDatePicker from "src/components/DatePicker/MDDatePicker";
 import useGlobalData from "src/hooks/useGlobalData";
+import { useSubdomain } from "src/hooks/useSubdomain";
 import {
   getFirstResponseTime,
   getReportSummaryReport,
@@ -28,7 +29,8 @@ enum ChartReportData {
   FIRST_RESPONSE_TIME = 3,
 }
 const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
-  const { timezone }: any = useGlobalData();
+  const { subDomain } = useSubdomain();
+  const { timezone }: any = useGlobalData(false, subDomain || "");
   const { current, twoWeekAgo } = getTimeFilterDefault();
   const [filter, setFilter] = useState({
     startTime: "",
@@ -37,8 +39,8 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
   useEffect(() => {
     if (!timezone) return;
     setFilter({
-      startTime: String(twoWeekAgo.unix()),
-      endTime: String(current.unix()),
+      startTime: String(twoWeekAgo.tz(timezone).startOf("day").unix()),
+      endTime: String(current.tz(timezone).endOf("day").unix()),
     });
   }, [timezone]);
   const queries = useQueries([
@@ -77,29 +79,11 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
     //   ? current > form.getFieldValue("to")
     //   : false;
   }, []);
-
-  // const disabledEndDate = new Date();
-  // const handleChangeStartTime = (_: any, values: string) => {
-  //   setFilter((pre) => ({
-  //     ...pre,
-  //     startTime: String(
-  //       formatTimeStamp(values, "DD/MM/YYYY", timezone) || startOfMonth
-  //     ),
-  //   }));
-  // };
-  // const handleChangeEndTime = (_: any, values: string) => {
-  //   setFilter((pre) => ({
-  //     ...pre,
-  //     endTime: String(
-  //       formatTimeStamp(values, "DD/MM/YYYY", timezone) || endOfMonth
-  //     ),
-  //   }));
-  // };
   const handleChangeStartDate = useCallback(
     (value: { start: Date; end: Date }) => {
       setFilter((pre) => ({
         ...pre,
-        startTime: String(convertTimeStamp(value.start, timezone)),
+        startTime: String(convertTimeStamp(value.start, timezone, "start")),
       }));
     },
     []
@@ -108,7 +92,7 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
     (value: { start: Date; end: Date }) => {
       setFilter((pre) => ({
         ...pre,
-        endTime: String(convertTimeStamp(value.end, timezone)),
+        endTime: String(convertTimeStamp(value.end, timezone, "end")),
       }));
     },
     []

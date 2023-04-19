@@ -9,6 +9,7 @@ import { MDTextField } from "src/components/Input/TextFieldPassword/MDTextField"
 import { Pagination } from "src/components/Pagination";
 import env from "src/core/env";
 import useGlobalData from "src/hooks/useGlobalData";
+import { useSubdomain } from "src/hooks/useSubdomain";
 import { getReportByTags } from "src/modules/report/api/api";
 import {
   convertTimeStamp,
@@ -28,7 +29,8 @@ interface ITableFilter {
 const headings = ["Tag", "Total Tickets", "Percentage", "Percentage Closed"];
 const listSort = ["tagName", "totalTicket", "percentage", "percentageClosed"];
 export const ByTags: PageComponent<ByTagsProps> = () => {
-  const { timezone }: any = useGlobalData();
+  const { subDomain } = useSubdomain();
+  const { timezone }: any = useGlobalData(false, subDomain || "");
   const { current, twoWeekAgo } = getTimeFilterDefault();
 
   const [filterData, setFilterData] = useState<ITableFilter>({
@@ -44,8 +46,8 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
     if (!timezone) return;
     setFilterData((pre) => ({
       ...pre,
-      startTime: String(twoWeekAgo.unix()),
-      endTime: String(current.unix()),
+      startTime: String(twoWeekAgo.tz(timezone).startOf("day").unix()),
+      endTime: String(current.tz(timezone).endOf("day").unix()),
     }));
   }, [timezone]);
   const [querySearch, setQuerySearch] = useState<string>("");
@@ -121,7 +123,7 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
     (value: { start: Date; end: Date }) => {
       setFilterData((pre) => ({
         ...pre,
-        startTime: String(convertTimeStamp(value.start, timezone)),
+        startTime: String(convertTimeStamp(value.start, timezone, "start")),
       }));
     },
     []
@@ -130,7 +132,7 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
     (value: { start: Date; end: Date }) => {
       setFilterData((pre) => ({
         ...pre,
-        endTime: String(convertTimeStamp(value.end, timezone)),
+        endTime: String(convertTimeStamp(value.end, timezone, "end")),
       }));
     },
     []

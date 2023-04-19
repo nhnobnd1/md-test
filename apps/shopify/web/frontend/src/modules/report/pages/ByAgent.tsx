@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import MDDatePicker from "src/components/DatePicker/MDDatePicker";
 import useGlobalData from "src/hooks/useGlobalData";
+import { useSubdomain } from "src/hooks/useSubdomain";
 import { getReportTopFive } from "src/modules/report/api/api";
 import ChartAgentsTicket from "src/modules/report/components/ChartAgentsTicket/ChartAgentsTicket";
 import { ReportAgentTable } from "src/modules/report/components/ReportAgentTable";
@@ -23,7 +24,8 @@ interface ITableFilter {
   endTime: string;
 }
 const ByAgentPage = (props: ByAgentPageProps) => {
-  const { timezone }: any = useGlobalData();
+  const { subDomain } = useSubdomain();
+  const { timezone }: any = useGlobalData(false, subDomain || "");
   const { current, twoWeekAgo } = getTimeFilterDefault();
 
   const [filterData, setFilterData] = useState<ITableFilter>({
@@ -33,8 +35,8 @@ const ByAgentPage = (props: ByAgentPageProps) => {
   useEffect(() => {
     if (!timezone) return;
     setFilterData({
-      startTime: String(twoWeekAgo.unix()),
-      endTime: String(current.unix()),
+      startTime: String(twoWeekAgo.tz(timezone).startOf("day").unix()),
+      endTime: String(current.tz(timezone).endOf("day").unix()),
     });
   }, [timezone]);
   const { data: reportTopFiveData } = useQuery({
@@ -63,7 +65,7 @@ const ByAgentPage = (props: ByAgentPageProps) => {
     (value: { start: Date; end: Date }) => {
       setFilterData((pre) => ({
         ...pre,
-        startTime: String(convertTimeStamp(value.start, timezone)),
+        startTime: String(convertTimeStamp(value.start, timezone, "start")),
       }));
     },
     []
@@ -72,7 +74,7 @@ const ByAgentPage = (props: ByAgentPageProps) => {
     (value: { start: Date; end: Date }) => {
       setFilterData((pre) => ({
         ...pre,
-        endTime: String(convertTimeStamp(value.end, timezone)),
+        endTime: String(convertTimeStamp(value.end, timezone, "end")),
       }));
     },
     []
