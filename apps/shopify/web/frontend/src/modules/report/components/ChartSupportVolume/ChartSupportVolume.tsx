@@ -56,7 +56,7 @@ export const ChartSupportVolume = ({ data }: ChartSupportVolumeProps) => {
           radius={[5, 5, 0, 0]}
         />
         <Bar
-          name="Ticket resolved"
+          name="Ticket Closed"
           dataKey="cd"
           fill="#8E24AA"
           radius={[5, 5, 0, 0]}
