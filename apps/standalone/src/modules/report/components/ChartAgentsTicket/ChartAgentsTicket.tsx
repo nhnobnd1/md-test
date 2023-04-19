@@ -43,7 +43,7 @@ const ChartAgentsTicket = ({ data }: ChartAgentsTicketProps) => {
     );
     return data?.map((item: any, index: number) => {
       return {
-        date: item?.date,
+        name: item?.date,
         ...convertListAgent[index],
       };
     });
