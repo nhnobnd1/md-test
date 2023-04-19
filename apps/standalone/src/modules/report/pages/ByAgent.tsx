@@ -36,12 +36,12 @@ const ByAgentPage = (props: ByAgentPageProps) => {
   useEffect(() => {
     if (!timezone) return;
     form.setFieldsValue({
-      to: current.tz(timezone),
-      from: twoWeekAgo.tz(timezone),
+      to: current?.tz(timezone),
+      from: twoWeekAgo?.tz(timezone),
     });
     setFilter({
-      startTime: String(twoWeekAgo.tz(timezone).startOf("day").unix()),
-      endTime: String(current.tz(timezone).endOf("day").unix()),
+      startTime: String(twoWeekAgo?.tz(timezone).startOf("day").unix()),
+      endTime: String(current?.tz(timezone).endOf("day").unix()),
     });
   }, [timezone]);
   const { data: reportTopFiveData } = useQuery({
