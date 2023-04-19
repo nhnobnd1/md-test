@@ -54,7 +54,7 @@ export const CustomerForm = ({
         name="email"
         rules={[
           { required: true, message: "Email address is required!" },
-          { type: "email", message: "The input email domain is not valid" },
+          { type: "email", message: "The email address is not valid" },
         ]}
       >
         <Input disabled={disabled} placeholder="Enter email" />
