@@ -101,20 +101,18 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
     },
     [form.getFieldValue("from")]
   );
-  const handleChangeStartTime = (_: any, values: string) => {
+  const handleChangeStartTime = (date: any, values: string) => {
     setFilter((pre) => ({
       ...pre,
       startTime: values
-        ? String(convertTimeStamp(values, "DD/MM/YYYY", timezone, "start"))
+        ? String(convertTimeStamp(date, timezone, "start"))
         : "",
     }));
   };
-  const handleChangeEndTime = (_: any, values: string) => {
+  const handleChangeEndTime = (date: any, values: string) => {
     setFilter((pre) => ({
       ...pre,
-      endTime: values
-        ? String(convertTimeStamp(values, "DD/MM/YYYY", timezone, "end"))
-        : "",
+      endTime: values ? String(convertTimeStamp(date, timezone, "end")) : "",
     }));
   };
   return (

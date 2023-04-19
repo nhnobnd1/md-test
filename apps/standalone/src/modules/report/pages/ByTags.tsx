@@ -169,20 +169,18 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
     },
     [form.getFieldValue("from")]
   );
-  const handleChangeStartTime = (_: any, values: string) => {
+  const handleChangeStartTime = (date: any, values: string) => {
     setFilterData((pre) => ({
       ...pre,
       startTime: values
-        ? String(convertTimeStamp(values, "DD/MM/YYYY", timezone, "start"))
+        ? String(convertTimeStamp(date, timezone, "start"))
         : "",
     }));
   };
-  const handleChangeEndTime = (_: any, values: string) => {
+  const handleChangeEndTime = (date: any, values: string) => {
     setFilterData((pre) => ({
       ...pre,
-      endTime: values
-        ? String(convertTimeStamp(values, "DD/MM/YYYY", timezone, "end"))
-        : "",
+      endTime: values ? String(convertTimeStamp(date, timezone, "end")) : "",
     }));
   };
   return (

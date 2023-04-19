@@ -34,16 +34,15 @@ export const getTwoWeeksBefore = (currentTime: Date) => {
   return twoWeekBeforeCurrent;
 };
 export const convertTimeStamp = (
-  date: string,
-  format: string,
+  date: Date,
   timezone: string,
   type: "start" | "end"
 ) => {
   const convertDate =
     type === "start"
-      ? dayjs(date, format).startOf("day")
-      : dayjs(date, format).endOf("day");
-  return convertDate.tz(timezone).unix();
+      ? dayjs(date).tz(timezone).startOf("day")
+      : dayjs(date).tz(timezone).endOf("day");
+  return convertDate.unix();
 };
 export const getTimeFilterDefault = () => {
   return {
