@@ -1,6 +1,6 @@
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import { DataTable, EmptySearchResult } from "@shopify/polaris";
-import { useMemo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import { MDTextField } from "src/components/Input/TextFieldPassword/MDTextField";
 import { Pagination } from "src/components/Pagination";
 import styles from "./styles.module.scss";
@@ -37,8 +37,8 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
     limit: env.DEFAULT_PAGE_SIZE,
     sortBy: undefined,
     sortOrder: undefined,
-    startTime: rangeTime.startTime,
-    endTime: rangeTime.endTime,
+    startTime: "",
+    endTime: "",
     query: "",
   });
   const [querySearch, setQuerySearch] = useState<string>("");
@@ -51,7 +51,8 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
         ...{ ...filterData, query: debounceValue },
         ...rangeTime,
       }),
-    keepPreviousData: true,
+    // keepPreviousData: true,
+    enabled: !!rangeTime.startTime && !!rangeTime.endTime,
   });
   const memoChartData = useMemo(() => {
     const convertData = (listAgentData as any)?.data?.data || [];
@@ -129,4 +130,4 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
   );
 };
 
-export default ReportAgentTable;
+export default memo(ReportAgentTable);
