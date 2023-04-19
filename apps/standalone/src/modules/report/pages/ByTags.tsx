@@ -57,8 +57,8 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
     });
     setFilterData((pre) => ({
       ...pre,
-      startTime: String(twoWeekAgo.tz(timezone).unix()),
-      endTime: String(current.tz(timezone).unix()),
+      startTime: String(twoWeekAgo.tz(timezone).startOf("day").unix()),
+      endTime: String(current.tz(timezone).endOf("day").unix()),
     }));
   }, [timezone]);
   const [querySearch, setQuerySearch] = useState<string>("");
@@ -154,7 +154,7 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
     (current) => {
       return form.getFieldValue("to")
         ? current > form.getFieldValue("to") ||
-            current <= getTwoWeeksBefore(form.getFieldValue("to"))
+            current < getTwoWeeksBefore(form.getFieldValue("to"))
         : false;
     },
     [form.getFieldValue("to")]
@@ -164,7 +164,7 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
     (current) => {
       return form.getFieldValue("from")
         ? current < form.getFieldValue("from") ||
-            current >= getTwoWeeksAfter(form.getFieldValue("from"))
+            current > getTwoWeeksAfter(form.getFieldValue("from"))
         : false;
     },
     [form.getFieldValue("from")]

@@ -47,7 +47,7 @@ export const convertTimeStamp = (
 };
 export const getTimeFilterDefault = () => {
   return {
-    twoWeekAgo: dayjs().subtract(2, "weeks").startOf("day"),
-    current: dayjs().endOf("day"),
+    twoWeekAgo: dayjs().subtract(2, "weeks"),
+    current: dayjs(),
   };
 };
