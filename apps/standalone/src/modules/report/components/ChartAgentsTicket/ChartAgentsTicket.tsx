@@ -1,5 +1,4 @@
-import { formatTimeDDMMYY } from "@moose-desk/core/helper/format";
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import {
   Bar,
   BarChart,
@@ -30,25 +29,29 @@ const LIST_CHART_ITEM_COLOR = [
   "#FFEB3B",
 ];
 const ChartAgentsTicket = ({ data }: ChartAgentsTicketProps) => {
-  const convertTopFiveAgents = data?.map(
-    (item: ChartTopFiveRes) => item?.agentClosed
-  );
-  const topFiveAgents = convertTopFiveAgents?.shift() || [];
-  const convertAgentsForChartData = topFiveAgents?.map((agent: any) => {
-    return {
-      [agent.agentObjectId]: agent.totalTicket,
-    };
-  });
-  const chartData = data?.map((item: any) => {
-    return Object.assign(
-      {},
-      { name: formatTimeDDMMYY(item?.date) },
-      ...convertAgentsForChartData
-    );
-  });
+  const convertTopFiveAgents: any =
+    data?.map((item: ChartTopFiveRes | any) => item?.agentClosed) || [];
+  const memoChartData = useMemo(() => {
+    const convertList = data.map((item: any) => {
+      const formatItemInList = item?.agentClosed?.map((agent: any) => {
+        return { [agent?.agentObjectId]: agent?.totalTicket };
+      });
+      return formatItemInList;
+    });
+    const convertListAgent = convertList.map((item: any) => {
+      const obj = Object.assign({}, ...item);
+      return obj;
+    });
+    return data.map((item: any, index: number) => {
+      return {
+        date: item?.date,
+        ...convertListAgent[index],
+      };
+    });
+  }, [data]);
   const _renderListBarChart = () => {
-    if (topFiveAgents?.length === 0) return null;
-    return topFiveAgents?.map((agent: any, index) => (
+    if (convertTopFiveAgents?.length === 0) return null;
+    return convertTopFiveAgents[0]?.map((agent: any, index: number) => (
       <Bar
         key={`bar-${index}`}
         name={`${agent.agentFirstName} ${agent.agentLastName}`}
@@ -57,13 +60,12 @@ const ChartAgentsTicket = ({ data }: ChartAgentsTicketProps) => {
       />
     ));
   };
-
   return (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart
         width={500}
         height={400}
-        data={chartData}
+        data={memoChartData}
         margin={{
           top: 5,
           right: 30,
