@@ -69,7 +69,7 @@ export const ChartFirstResponseTime = ({
           domain={maxYValue ? [0, maxYValue] : undefined}
         />
         <Tooltip content={<CustomTooltip />} />
-        <Area type="monotone" dataKey="time" stroke="#8884d8" fill="#8884d8" />
+        <Area type="monotone" dataKey="time" stroke="#43A047" fill="#43A047" />
       </AreaChart>
     </ResponsiveContainer>
   );

@@ -43,9 +43,24 @@ export const ChartSupportVolume = ({ data }: ChartSupportVolumeProps) => {
         <YAxis />
         <Tooltip />
         <Legend />
-        <Bar name="Ticket request" dataKey="uv" fill="#8884d8" />
-        <Bar name="Ticket responded" dataKey="pv" fill="#82ca9d" />
-        <Bar name="Ticket resolved" dataKey="cd" fill="#e53935" />
+        <Bar
+          name="Ticket request"
+          dataKey="uv"
+          fill="#42A5F5"
+          radius={[5, 5, 0, 0]}
+        />
+        <Bar
+          name="Ticket responded"
+          dataKey="pv"
+          fill="#FFC107"
+          radius={[5, 5, 0, 0]}
+        />
+        <Bar
+          name="Ticket resolved"
+          dataKey="cd"
+          fill="#8E24AA"
+          radius={[5, 5, 0, 0]}
+        />
       </BarChart>
     </ResponsiveContainer>
   );
