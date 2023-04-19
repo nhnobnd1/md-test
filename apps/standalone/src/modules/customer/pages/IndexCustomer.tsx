@@ -109,7 +109,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
       },
       render: (_: string, record: Customer) => (
         <div
-          className="cursor-pointer"
+          className="cursor-pointer fit-content"
           onClick={() => handleEdit(record)}
         >{`${record.firstName} ${record.lastName}`}</div>
       ),
