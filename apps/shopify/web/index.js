@@ -87,6 +87,7 @@ app.get(
 
 app.post(
   shopify.config.webhooks.path,
+  
   shopify.processWebhooks({ webhookHandlers: GDPRWebhookHandlers })
 );
 
@@ -94,6 +95,7 @@ app.post(
 app.use("/api/*", shopify.validateAuthenticatedSession());
 
 app.use(async (req, res, next) => {
+  
   const { shop, offlineSession, shopDomain } = await getInformationShop(
     req.query.shop
   );
@@ -103,6 +105,7 @@ app.use(async (req, res, next) => {
     console.log("shop: ", shop);
 
     res.cookie(
+      
       process.env.HOST,
       {
         offlineToken: offlineSession.accessToken ?? "",
@@ -129,5 +132,6 @@ app.use("/*", shopify.ensureInstalledOnShop(), async (_req, res, _next) => {
     .set("Content-Type", "text/html")
     .send(readFileSync(join(STATIC_PATH, "index.html")));
 });
+
 
 app.listen(PORT);

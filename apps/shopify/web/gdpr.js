@@ -80,4 +80,18 @@ export default {
       // }
     },
   },
+  APP_UNINSTALLED: {
+    deliveryMethod: DeliveryMethod.Http,
+    callbackUrl: "/api/webhooks",
+    callback: async (topic, shop, body, webhookId) => {
+      const payload = JSON.parse(body);
+      console.log(topic, shop, body);
+      await AppInstallations.delete(shop);
+      // Payload has the following shape:
+      // {
+      //   "shop_id": 954889,
+      //   "shop_domain": "{shop}.myshopify.com"
+      // }
+    },
+  },
 };

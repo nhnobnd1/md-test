@@ -24,6 +24,8 @@ import { useCallback, useRef, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
+import useGlobalData from "src/hooks/useGlobalData";
+import { useSubdomain } from "src/hooks/useSubdomain";
 import AutoReplyTab from "src/modules/setting/component/AutoReply/AutoReplyTab";
 import BoxSelectAutoReply from "src/modules/setting/component/BusinessHours/BoxSelectAutoReply";
 import BusinessHoursTab from "src/modules/setting/component/BusinessHours/BusinessHoursTab";
@@ -45,7 +47,8 @@ const BusinessHours = (props: BusinessHoursProps) => {
     type: "success",
   });
   const { show } = useToast();
-  // main code
+  const { subDomain } = useSubdomain();
+  const { refetchGlobal } = useGlobalData(false, subDomain || ""); // main code
   const [dataBusinessCalendar, setDataBusinessCalendar] =
     useState<BusinessCalendar>();
   const { toggle: updateForm } = useToggle();
@@ -125,6 +128,7 @@ const BusinessHours = (props: BusinessHoursProps) => {
                 message: "Your settings have been changed successfully.",
                 type: "success",
               });
+              refetchGlobal();
               show("Your settings have been changed successfully.");
             } else {
               setBanner({
