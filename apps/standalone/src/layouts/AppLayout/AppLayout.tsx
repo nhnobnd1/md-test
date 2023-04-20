@@ -7,7 +7,7 @@ import {
 } from "@moose-desk/core";
 import useToggleGlobal from "@moose-desk/core/hooks/useToggleGlobal";
 import { AccountRepository } from "@moose-desk/repo";
-import { Layout, Menu, MenuProps } from "antd";
+import { Layout, Menu } from "antd";
 import classNames from "classnames";
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { map } from "rxjs";
@@ -16,6 +16,7 @@ import { Loading } from "src/components/Loading";
 import Breadcrumb from "src/components/UI/Breadcrums/Breadcrumb";
 import TextEditor from "src/components/UI/Editor/TextEditor";
 import useAuth from "src/hooks/useAuth";
+import { usePermission } from "src/hooks/usePerrmisson";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
 import CustomersRoutePaths from "src/modules/customer/routes/paths";
 import DashboardRoutePaths from "src/modules/dashboard/routes/paths";
@@ -47,7 +48,8 @@ export const AppLayout = (props: AppLayoutProps) => {
   const { visible } = useToggleGlobal(); // lấy giá trị visible khi bấm vào nút mở search shopify customer
   const [collapsed, setCollapsed] = useState(false);
   const { logout } = useAuth();
-  const caseTopMenu = useMemo<MenuProps["items"]>(() => {
+  const { isAdmin, isLead, isAgent } = usePermission();
+  const caseTopMenu = useMemo<any["items"]>(() => {
     return [
       {
         key: `case-${DashboardRoutePaths.Index}`,
@@ -70,61 +72,66 @@ export const AppLayout = (props: AppLayoutProps) => {
         label: "Customers",
         onClick: () => navigate(generatePath(CustomersRoutePaths.Index)),
       },
-      {
-        key: `case-2`,
-        icon: <IconoirReports />,
-        label: "Reporting",
-        children: [
-          {
-            key: `case-${ReportRoutePaths.Overview}`,
-            label: "Overview",
-            link: ReportRoutePaths.Overview,
-            onClick: () => navigate(generatePath(ReportRoutePaths.Overview)),
-          },
-          {
-            key: `case-${ReportRoutePaths.ByAgent}`,
-            label: "By Agents",
-            link: ReportRoutePaths.ByAgent,
-            onClick: () => navigate(generatePath(ReportRoutePaths.ByAgent)),
-          },
-          {
-            key: `case-${ReportRoutePaths.ByTags}`,
-            label: "By Tags",
-            link: ReportRoutePaths.ByTags,
-            onClick: () => navigate(generatePath(ReportRoutePaths.ByTags)),
-          },
-        ],
-      },
+      !isAgent
+        ? {
+            key: `case-2`,
+            icon: <IconoirReports />,
+            label: "Reporting",
+            children: [
+              {
+                key: `case-${ReportRoutePaths.Overview}`,
+                label: "Overview",
+                link: ReportRoutePaths.Overview,
+                onClick: () =>
+                  navigate(generatePath(ReportRoutePaths.Overview)),
+              },
+              {
+                key: `case-${ReportRoutePaths.ByAgent}`,
+                label: "By Agents",
+                link: ReportRoutePaths.ByAgent,
+                onClick: () => navigate(generatePath(ReportRoutePaths.ByAgent)),
+              },
+              {
+                key: `case-${ReportRoutePaths.ByTags}`,
+                label: "By Tags",
+                link: ReportRoutePaths.ByTags,
+                onClick: () => navigate(generatePath(ReportRoutePaths.ByTags)),
+              },
+            ],
+          }
+        : "",
       {
         key: `case-3`,
         label: "Settings",
         icon: <MaterialSymbolsSettings />,
         children: [
-          {
-            key: `case-3-0`,
-            label: "General Settings",
-            icon: <MaterialSymbolsSettingsInputComponentOutline />,
-            children: [
-              {
-                key: `case-${SettingChannelRoutePaths.Index}`,
-                label: "Channels",
-                link: SettingChannelRoutePaths.Index,
-                onClick: () =>
-                  navigate(generatePath(SettingChannelRoutePaths.Index)),
-              },
-              {
-                key: `case-${SettingRoutePaths.GenaralSetting.BusinessHours.Index}`,
-                label: "Business Hours",
-                link: SettingRoutePaths.GenaralSetting.BusinessHours.Index,
-                onClick: () =>
-                  navigate(
-                    generatePath(
-                      SettingRoutePaths.GenaralSetting.BusinessHours.Index
-                    )
-                  ),
-              },
-            ],
-          },
+          isAdmin
+            ? {
+                key: `case-3-0`,
+                label: "General Settings",
+                icon: <MaterialSymbolsSettingsInputComponentOutline />,
+                children: [
+                  {
+                    key: `case-${SettingChannelRoutePaths.Index}`,
+                    label: "Channels",
+                    link: SettingChannelRoutePaths.Index,
+                    onClick: () =>
+                      navigate(generatePath(SettingChannelRoutePaths.Index)),
+                  },
+                  {
+                    key: `case-${SettingRoutePaths.GenaralSetting.BusinessHours.Index}`,
+                    label: "Business Hours",
+                    link: SettingRoutePaths.GenaralSetting.BusinessHours.Index,
+                    onClick: () =>
+                      navigate(
+                        generatePath(
+                          SettingRoutePaths.GenaralSetting.BusinessHours.Index
+                        )
+                      ),
+                  },
+                ],
+              }
+            : "",
           {
             key: `case-3-1`,
             label: "People",
@@ -186,17 +193,19 @@ export const AppLayout = (props: AppLayoutProps) => {
                     )
                   ),
               },
-              {
-                key: `case-${SettingRoutePaths.AccountSecurity.AccessManager.Index}`,
-                label: "Access Manager",
-                link: SettingRoutePaths.AccountSecurity.AccessManager.Index,
-                onClick: () =>
-                  navigate(
-                    generatePath(
-                      SettingRoutePaths.AccountSecurity.AccessManager.Index
-                    )
-                  ),
-              },
+              isAdmin
+                ? {
+                    key: `case-${SettingRoutePaths.AccountSecurity.AccessManager.Index}`,
+                    label: "Access Manager",
+                    link: SettingRoutePaths.AccountSecurity.AccessManager.Index,
+                    onClick: () =>
+                      navigate(
+                        generatePath(
+                          SettingRoutePaths.AccountSecurity.AccessManager.Index
+                        )
+                      ),
+                  }
+                : "",
             ],
           },
         ],
