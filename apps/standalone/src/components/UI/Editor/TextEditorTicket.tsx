@@ -215,7 +215,7 @@ const TextEditorTicket = ({
               })}
             >
               <CloudUploadOutlined style={{ fontSize: 50 }} />
-              <input {...getInputProps()} />
+              <input {...(getInputProps() as any)} />
               {/* <p className="text">Upload files (max 3)</p> */}
               <span>Drag&drop or Click to add your files</span>
             </div>

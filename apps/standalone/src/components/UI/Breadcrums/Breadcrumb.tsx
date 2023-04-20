@@ -1,12 +1,11 @@
 import {
-  Breadcrumb as BreadcrumbAnt,
   BreadcrumbItemProps as ABreadcrumbItemProps,
-  BreadcrumbProps as ABreadcrumbProps,
+  Breadcrumb as BreadcrumbAnt,
 } from "antd";
 import classNames from "classnames";
 import "./BreadCrumb.scss";
 
-export interface BreadcrumbProps extends ABreadcrumbProps {
+export interface BreadcrumbProps {
   items: Array<{
     key: string;
     props: ABreadcrumbItemProps;

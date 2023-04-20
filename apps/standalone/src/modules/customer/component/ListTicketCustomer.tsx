@@ -44,7 +44,7 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
     keepPreviousData: true,
   });
   const memoDataSource = useMemo(() => {
-    return dataSource?.data.data;
+    return (dataSource as any)?.data.data;
   }, [dataSource]);
   const columns = [
     {
@@ -158,7 +158,7 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
         <Pagination
           className="mt-4 flex justify-end"
           currentPage={filter.page ?? 1}
-          total={dataSource?.data.metadata.totalCount}
+          total={(dataSource as any)?.data.metadata.totalCount}
           pageSize={filter.limit ?? env.DEFAULT_PAGE_SIZE}
           onChange={handleChangePage}
         />
