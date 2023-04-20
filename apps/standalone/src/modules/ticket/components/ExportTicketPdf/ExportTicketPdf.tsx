@@ -3,7 +3,6 @@ import {
   upperCaseFirst,
   useUser,
 } from "@moose-desk/core";
-import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import { Agent, Conversation, Ticket } from "@moose-desk/repo";
 import {
   Document,
@@ -15,7 +14,6 @@ import {
 } from "@react-pdf/renderer";
 import moment from "moment";
 import { FC, useMemo } from "react";
-import { useSubdomain } from "src/hooks/useSubdomain";
 interface ItemConversation {
   id: string;
   conversations: Conversation[];
@@ -69,9 +67,6 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
   conversations,
 }) => {
   const user: any = useUser();
-
-  const { subDomain } = useSubdomain();
-  const { timezone } = useGlobalData(false, subDomain || "");
 
   const filterItem = useMemo(() => {
     return tickets.filter((item) => selectedRowKeys.includes(item._id));
@@ -317,7 +312,7 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
         </View>
         <View style={{ ...firstTableColStyle, flexBasis: 80 }}>
           <Text style={tableCellStyle}>
-            {createdDatetimeFormat(item.updatedDatetime, timezone)}
+            {createdDatetimeFormat(item.updatedDatetime)}
           </Text>
         </View>
       </View>
