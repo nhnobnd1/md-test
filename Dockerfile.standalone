@@ -6,7 +6,8 @@ COPY packages ./packages
 COPY package.json ./
 COPY yarn.lock ./
 COPY turbo.json ./
-COPY apps/standalone ./apps/standalone
-RUN yarn install
+COPY apps/standalone/package.json ./apps/standalone/
+RUN cd apps/standalone && yarn install
+COPY apps/standalone/ ./apps/standalone/
 EXPOSE 3580
 CMD ["yarn", "run", "dev"]
