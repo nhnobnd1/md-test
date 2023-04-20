@@ -38,9 +38,10 @@ const ChartAgentsTicket = ({ data }: ChartAgentsTicketProps) => {
       });
       return formatItemInList;
     });
-    const convertListAgent = convertList?.map((item: any) =>
-      Object.assign({}, ...item)
-    );
+    const convertListAgent = convertList?.map((item: any) => {
+      if (!item) return [{}];
+      return Object.assign({}, ...item);
+    });
     return data?.map((item: any, index: number) => {
       return {
         name: item?.date,
