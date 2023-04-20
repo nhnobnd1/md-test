@@ -1,4 +1,5 @@
 import { createdDatetimeFormat, upperCaseFirst } from "@moose-desk/core";
+import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import {
   BaseDeleteList,
   BaseListTicketRequest,
@@ -18,6 +19,7 @@ import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
 import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
+import { useSubdomain } from "src/hooks/useSubdomain";
 import { ButtonTicket } from "src/modules/ticket/components/ButtonTicket";
 import { CardStatistic } from "src/modules/ticket/components/CardStatistic";
 import {
@@ -45,6 +47,8 @@ const TrashTicket = () => {
 
   const [filterData, setFilterData] =
     useState<BaseListTicketRequest>(defaultFilter);
+  const { subDomain } = useSubdomain();
+  const { timezone } = useGlobalData(false, subDomain || "");
 
   const [statistic, setStatistic] = useState<TicketStatistic>({
     statusCode: 200,
@@ -346,7 +350,10 @@ const TrashTicket = () => {
                     title="Last Update"
                     render={(_, record: Ticket) => (
                       <span>
-                        {createdDatetimeFormat(record.updatedDatetime)}
+                        {createdDatetimeFormat(
+                          record.updatedDatetime,
+                          timezone
+                        )}
                       </span>
                     )}
                     sorter={{

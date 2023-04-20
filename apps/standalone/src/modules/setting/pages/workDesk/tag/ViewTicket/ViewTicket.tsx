@@ -5,6 +5,7 @@ import {
   useNavigate,
   useParams,
 } from "@moose-desk/core";
+import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import {
   BaseListTagRequest,
   BaseMetaDataListResponse,
@@ -21,6 +22,7 @@ import { Table } from "src/components/UI/Table";
 import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
 import { usePermission } from "src/hooks/usePerrmisson";
+import { useSubdomain } from "src/hooks/useSubdomain";
 import { ButtonRemoveTag } from "src/modules/setting/component/ButtonRemoveTag";
 import "./ViewTicket.scss";
 interface ViewTicketProps {}
@@ -38,6 +40,8 @@ const ViewTicket: FC<ViewTicketProps> = () => {
   const [meta, setMeta] = useState<BaseMetaDataListResponse>();
   const navigate = useNavigate();
   const { isAgent } = usePermission();
+  const { subDomain } = useSubdomain();
+  const { timezone } = useGlobalData(false, subDomain || "");
 
   const [filterData, setFilterData] =
     useState<BaseListTagRequest>(defaultFilter);
@@ -154,7 +158,10 @@ const ViewTicket: FC<ViewTicketProps> = () => {
           key="createdTimestamp"
           title="Date Requested"
           render={(_, record: Ticket) => (
-            <span>{`${createdDatetimeFormat(record.createdDatetime)}`}</span>
+            <span>{`${createdDatetimeFormat(
+              record.createdDatetime,
+              timezone
+            )}`}</span>
           )}
           sorter={{
             compare: (a: any, b: any) => a.createdDatetime - b.createdDatetime,
@@ -164,7 +171,10 @@ const ViewTicket: FC<ViewTicketProps> = () => {
           key="updatedTimestamp"
           title="Last Updated"
           render={(_, record: Ticket) => (
-            <span>{`${createdDatetimeFormat(record.updatedDatetime)}`}</span>
+            <span>{`${createdDatetimeFormat(
+              record.updatedDatetime,
+              timezone
+            )}`}</span>
           )}
           sorter={{
             compare: (a: any, b: any) =>

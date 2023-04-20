@@ -8,6 +8,7 @@ import {
   usePrevious,
   useToggle,
 } from "@moose-desk/core";
+import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import {
   BaseListTagRequest,
   BaseMetaDataListResponse,
@@ -28,6 +29,7 @@ import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { usePermission } from "src/hooks/usePerrmisson";
+import { useSubdomain } from "src/hooks/useSubdomain";
 import PopupTag from "src/modules/setting/component/PopupTag";
 import { TagFormValues } from "src/modules/setting/component/TagForm";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
@@ -47,6 +49,8 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
     name: "",
     description: "",
   });
+  const { subDomain } = useSubdomain();
+  const { timezone } = useGlobalData(false, subDomain || "");
   const defaultFilter: () => GetListTagRequest = () => ({
     page: 1,
     limit: env.DEFAULT_PAGE_SIZE,
@@ -276,7 +280,9 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
                 key="updatedTimestamp"
                 title="Last updated"
                 render={(_, record: Tag) => (
-                  <span>{createdDatetimeFormat(record.updatedDatetime)}</span>
+                  <span>
+                    {createdDatetimeFormat(record.updatedDatetime, timezone)}
+                  </span>
                 )}
                 sorter={{
                   compare: (a: any, b: any) => a.lastUpdate - b.lastUpdate,

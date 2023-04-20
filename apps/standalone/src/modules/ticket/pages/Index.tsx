@@ -9,6 +9,7 @@ import {
   usePrevious,
   useToggle,
 } from "@moose-desk/core";
+import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import {
   Agent,
   AgentRepository,
@@ -46,6 +47,7 @@ import TableAction from "src/components/UI/Table/TableAction/TableAction";
 import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
+import { useSubdomain } from "src/hooks/useSubdomain";
 import { CardStatistic } from "src/modules/ticket/components/CardStatistic";
 import { DeleteSelectedModal } from "src/modules/ticket/components/DeleteSelectedModal";
 import { ExportTicketPdf } from "src/modules/ticket/components/ExportTicketPdf/ExportTicketPdf";
@@ -73,6 +75,8 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const [agents, setAgents] = useState<Agent[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [conversations, setConversations] = useState<ItemConversation[]>([]);
+  const { subDomain } = useSubdomain();
+  const { timezone } = useGlobalData(false, subDomain || "");
 
   const [statistic, setStatistic] = useState<TicketStatistic>({
     statusCode: 200,
@@ -712,7 +716,10 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                     title="Last Update"
                     render={(_, record: Ticket) => (
                       <span>
-                        {createdDatetimeFormat(record.updatedDatetime)}
+                        {createdDatetimeFormat(
+                          record.updatedDatetime,
+                          timezone
+                        )}
                       </span>
                     )}
                     sorter={{
