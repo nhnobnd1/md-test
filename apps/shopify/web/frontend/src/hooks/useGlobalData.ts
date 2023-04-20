@@ -14,7 +14,7 @@ export default function useGlobalData(enabled = false, subdomain: string) {
   const { data, refetch } = useQuery({
     queryKey: [QUERY_KEY.GLOBAL, { subdomain }],
     queryFn: () => getGlobalData({ subdomain }),
-    enabled: enabled,
+    enabled: enabled && !!subdomain,
   });
   const deepData: any = (data as any)?.data?.data;
 
