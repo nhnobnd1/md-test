@@ -1,4 +1,4 @@
-import { memo, useMemo } from "react";
+import { memo } from "react";
 import {
   Bar,
   BarChart,
@@ -31,28 +31,26 @@ const LIST_CHART_ITEM_COLOR = [
   "#FFEB3B",
 ];
 const ChartAgentsTicket = ({ data }: ChartAgentsTicketProps) => {
-  const convertTopFiveAgents: any = useMemo(() => {
-    return data?.map((item: ChartTopFiveRes | any) => item?.agentClosed) || [];
-  }, [data]);
+  const convertTopFiveAgents: any =
+    data?.map((item: ChartTopFiveRes | any) => item?.agentClosed) || [];
 
-  const memoChartData = useMemo(() => {
-    const convertList = data?.map((item: any) => {
-      const formatItemInList = item?.agentClosed?.map((agent: any) => {
-        return { [agent?.agentObjectId]: agent?.totalTicket };
-      });
-      return formatItemInList;
+  const convertList = data?.map((item: any) => {
+    const formatItemInList = item?.agentClosed?.map((agent: any) => {
+      return { [agent?.agentObjectId]: agent?.totalTicket };
     });
-    const convertListAgent = convertList?.map((item: any) => {
-      if (!item) return [{}];
-      return Object.assign({}, ...item);
-    });
-    return data?.map((item: any, index: number) => {
-      return {
-        name: item?.date,
-        ...convertListAgent[index],
-      };
-    });
-  }, [data]);
+    return formatItemInList;
+  });
+  const convertListAgent = convertList?.map((item: any) => {
+    if (!item) return [{}];
+    return Object.assign({}, ...item);
+  });
+  const memoChartData = data?.map((item: any, index: number) => {
+    return {
+      name: item?.date,
+      ...convertListAgent[index],
+    };
+  });
+
   const _renderListBarChart = () => {
     if (convertTopFiveAgents?.length === 0) return null;
     return convertTopFiveAgents[0]?.map((agent: any, index: number) => (
