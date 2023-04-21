@@ -54,84 +54,7 @@ export const PopupCustomer = ({
       notification.error("Customer Profile has been updated failed.");
     },
   });
-  // const { run: createCustomer } = useJob(
-  //   (dataSubmit: any) => {
-  //     message.loading.show("Creating Customer!");
-  //     return CustomerRepository()
-  //       .create(dataSubmit)
-  //       .pipe(
-  //         map(({ data }) => {
-  //           message.loading.hide();
-  //           if (data.statusCode === 200) {
-  //             onChange && onChange();
-  //             notification.success(
-  //               "Customer Profile has been created succcesfully."
-  //             );
-  //           } else {
-  //             if (data.statusCode === 409) {
-  //               notification.error(
-  //                 `Email is ${dataSubmit.email} already exists.`
-  //               );
-  //             }
-  //           }
-  //         }),
-  //         catchError((err) => {
-  //           message.loading.hide();
-  //           const errorCode = err.response.status;
-  //           if (errorCode === 409) {
-  //             notification.error(
-  //               `Email is ${dataSubmit.email} already exists.`
-  //             );
-  //           } else {
-  //             notification.error("Customer Profile has been created failed.");
-  //           }
-  //           return of(err);
-  //         })
-  //       );
-  //   },
-  //   { showLoading: false }
-  // );
 
-  // const { run: updateCustomer } = useJob(
-  //   (dataSubmit: any) => {
-  //     message.loading.show("Updating Customer");
-  //     return CustomerRepository()
-  //       .update(dataSubmit._id, dataSubmit)
-  //       .pipe(
-  //         map(
-  //           ({ data }) => {
-  //             if (data.statusCode === 200) {
-  //               onChange && onChange();
-  //               message.loading.hide();
-  //               notification.success(
-  //                 "Customer Profile has been updated succcesfully."
-  //               );
-  //             } else {
-  //               message.loading.hide();
-  //               if (data.statusCode === 409) {
-  //                 notification.error(
-  //                   `Email is ${dataSubmit.email} already exists.`
-  //                 );
-  //               }
-  //             }
-  //           },
-  //           catchError((err) => {
-  //             message.loading.hide();
-  //             const errorCode = err.response.status;
-  //             if (errorCode === 409) {
-  //               notification.error(
-  //                 `Email is ${dataSubmit.email} already exists.`
-  //               );
-  //             } else {
-  //               notification.error("Customer Profile has been updated failed.");
-  //             }
-  //             return of(err);
-  //           })
-  //         )
-  //       );
-  //   },
-  //   { showLoading: false }
-  // );
   const handleSubmitValue = useCallback(
     (values: any) => {
       if (dataForm?._id) {
@@ -154,6 +77,7 @@ export const PopupCustomer = ({
     },
     [dataForm?._id]
   );
+  const handleSubmit = () => form.submit();
   const _renderTitleModal = () => {
     return dataForm?._id
       ? `${dataForm.firstName} ${dataForm.lastName}`
@@ -203,7 +127,7 @@ export const PopupCustomer = ({
       footer={
         <Space>
           <Button onClick={onCancel}>Cancel</Button>
-          <Button type="primary" onClick={() => form.submit()}>
+          <Button type="primary" onClick={handleSubmit}>
             Save
           </Button>
         </Space>

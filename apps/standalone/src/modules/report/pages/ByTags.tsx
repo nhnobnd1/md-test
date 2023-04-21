@@ -132,7 +132,7 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
         }));
       }
     },
-    [setFilterData]
+    []
   ) as TableProps<any>["onChange"];
   const handleSearchInput = (e: any) => {
     const newQuery = e.target.value;
@@ -187,7 +187,7 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
     <>
       <section className="flex-start mb-10 justify-between">
         <div>
-          <Form onValuesChange={() => {}} form={form} layout="inline">
+          <Form form={form} layout="inline">
             <Form.Item name="from" label="From">
               <DatePicker
                 format={"DD/MM/YYYY"}

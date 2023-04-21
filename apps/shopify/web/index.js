@@ -87,10 +87,9 @@ app.get(
 
 app.post(
   shopify.config.webhooks.path,
-  
+  // @ts-ignore
   shopify.processWebhooks({ webhookHandlers: GDPRWebhookHandlers })
 );
-
 // All endpoints after this point will require an active session
 app.use("/api/*", shopify.validateAuthenticatedSession());
 

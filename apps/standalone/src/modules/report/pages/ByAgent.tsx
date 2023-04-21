@@ -90,7 +90,7 @@ const ByAgentPage = (props: ByAgentPageProps) => {
   return (
     <>
       <Header title="Reporting" />
-      <Form onValuesChange={() => {}} form={form} layout="inline">
+      <Form form={form} layout="inline">
         <Form.Item name="from" label="From">
           <DatePicker
             format={"DD/MM/YYYY"}

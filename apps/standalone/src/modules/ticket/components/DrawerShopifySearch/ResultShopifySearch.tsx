@@ -1,6 +1,11 @@
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import useSaveDataGlobal from "@moose-desk/core/hooks/useSaveDataGlobal";
-import React, { useCallback, useImperativeHandle, useState } from "react";
+import React, {
+  useCallback,
+  useImperativeHandle,
+  useMemo,
+  useState,
+} from "react";
 import { useQuery } from "react-query";
 import { Table } from "src/components/UI/Table";
 import { getDetailShopifyCustomer } from "src/modules/ticket/api/api";
@@ -47,13 +52,15 @@ const ResultShopifySearch = React.forwardRef(({ id }: IProps, ref) => {
       value: convertResult?.customerInfo.orders_count,
     },
   ];
-  const convertDataTable = convertResult?.orders.map((item: any) => {
-    return {
-      ...item,
-      name: item?.name,
-      total: item?.current_total_price,
-    };
-  });
+  const convertDataTable = useMemo(() => {
+    return convertResult?.orders.map((item: any) => {
+      return {
+        ...item,
+        name: item?.name,
+        total: item?.current_total_price,
+      };
+    });
+  }, [convertResult?.orders]);
   useImperativeHandle(
     ref,
     () => {

@@ -63,13 +63,6 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
   const [filterData, setFilterData] =
     useState<BaseListCustomerRequest>(defaultFilter);
 
-  const handleChangeValueInput = useCallback((value: string) => {
-    setFilterData(() => ({
-      page: 1,
-      ...filterData,
-      query: value,
-    }));
-  }, []);
   const {
     data: listCustomer,
     refetch: refetchListCustomer,

@@ -116,7 +116,7 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
         }));
       }
     },
-    [setFilterData]
+    []
   ) as TableProps<any>["onChange"];
   const handleSearchInput = (e: any) => {
     const newQuery = e.target.value;
