@@ -13,14 +13,16 @@ import ChartTopFiveRes from "src/modules/report/helper/interface";
 interface ChartAgentsTicketProps {
   data: ChartTopFiveRes[];
 }
-const defaultEmptyAgent = [
-  {
-    agentObjectId: "emptyId",
-    totalTicket: 0,
-    agentFirstName: "first name",
-    agentLastName: "last name",
+const barChartStyle = {
+  margin: {
+    top: 5,
+    right: 30,
+    left: 20,
+    bottom: 5,
   },
-];
+  width: 500,
+  height: 400,
+};
 const LIST_CHART_ITEM_COLOR = [
   "#FF5252",
   "#7E57C2",
@@ -29,8 +31,10 @@ const LIST_CHART_ITEM_COLOR = [
   "#FFEB3B",
 ];
 const ChartAgentsTicket = ({ data }: ChartAgentsTicketProps) => {
-  const convertTopFiveAgents: any =
-    data?.map((item: ChartTopFiveRes | any) => item?.agentClosed) || [];
+  const convertTopFiveAgents: any = useMemo(() => {
+    return data?.map((item: ChartTopFiveRes | any) => item?.agentClosed) || [];
+  }, [data]);
+
   const memoChartData = useMemo(() => {
     const convertList = data?.map((item: any) => {
       const formatItemInList = item?.agentClosed?.map((agent: any) => {
@@ -63,15 +67,10 @@ const ChartAgentsTicket = ({ data }: ChartAgentsTicketProps) => {
   return (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart
-        width={500}
-        height={400}
+        width={barChartStyle.width}
+        height={barChartStyle.height}
         data={memoChartData}
-        margin={{
-          top: 5,
-          right: 30,
-          left: 20,
-          bottom: 5,
-        }}
+        margin={barChartStyle.margin}
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" />

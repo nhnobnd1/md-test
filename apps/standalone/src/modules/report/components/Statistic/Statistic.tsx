@@ -1,5 +1,4 @@
 import { Card, Statistic as AntStatistic } from "antd";
-import { memo } from "react";
 import { convertSecondsToHoursMinutes } from "src/modules/report/helper/convert";
 import SummaryReportRes from "src/modules/report/helper/interface";
 
@@ -37,4 +36,4 @@ export const Statistic = ({ data }: StatisticProps) => {
   );
 };
 
-export default memo(Statistic);
+export default Statistic;

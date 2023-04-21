@@ -14,14 +14,25 @@ import ChartResolutionTimeRes from "src/modules/report/helper/interface";
 interface ChartResolutionTimeProps {
   data: ChartResolutionTimeRes[];
 }
-
+const barChartStyle = {
+  margin: {
+    top: 5,
+    right: 30,
+    left: 20,
+    bottom: 5,
+  },
+  width: 500,
+  height: 400,
+};
 export const ChartResolutionTime = ({ data }: ChartResolutionTimeProps) => {
-  const chartData: any[] = data?.map((item: ChartResolutionTimeRes) => {
-    return {
-      name: formatTimeDDMMYY(item?.date),
-      time: item?.avgResolutionTicket,
-    };
-  });
+  const chartData: any[] = useMemo(() => {
+    return data?.map((item: ChartResolutionTimeRes) => {
+      return {
+        name: formatTimeDDMMYY(item?.date),
+        time: item?.avgResolutionTicket,
+      };
+    });
+  }, [data]);
 
   const formatYAxis = (tickItem: number) => {
     return `${convertSecondsToHoursMinutes(tickItem)}`;
@@ -55,15 +66,10 @@ export const ChartResolutionTime = ({ data }: ChartResolutionTimeProps) => {
   return (
     <ResponsiveContainer width="100%" height="100%">
       <AreaChart
-        width={500}
-        height={400}
+        width={barChartStyle.width}
+        height={barChartStyle.height}
         data={chartData}
-        margin={{
-          top: 10,
-          right: 30,
-          left: 0,
-          bottom: 0,
-        }}
+        margin={barChartStyle.margin}
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" />

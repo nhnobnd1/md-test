@@ -216,22 +216,31 @@ export const DetailOrderCustomer = memo(({ onBack, dataOrder }: IProps) => {
       );
     }
   };
+  const _renderListBlock = () => {
+    return LIST_OVERVIEW.map((block, index) => (
+      <div key={index} className={styles.blockItem}>
+        <div className={styles.titleBlock}>{block.title}: </div>
+        <div className={classNames(styles.dataBlock, block.style)}>
+          {block.value}
+        </div>
+      </div>
+    ));
+  };
+  const _renderListNote = () => {
+    return memoDetailRefund?.listNote?.map((note: string, index: number) => (
+      <span key={index}>
+        {note}
+        {index + 1 < memoDetailRefund?.listNote?.length && ", "}
+      </span>
+    ));
+  };
   return (
     <section className={styles.detailContainer}>
       <div className={styles.back} onClick={onBack}>
         <ArrowLeftOutlined /> <span className={styles.backTitle}>Back</span>
       </div>
       <div className={styles.content}>
-        <div className={styles.overview}>
-          {LIST_OVERVIEW.map((block, index) => (
-            <div key={index} className={styles.blockItem}>
-              <div className={styles.titleBlock}>{block.title}: </div>
-              <div className={classNames(styles.dataBlock, block.style)}>
-                {block.value}
-              </div>
-            </div>
-          ))}
-        </div>
+        <div className={styles.overview}>{_renderListBlock()}</div>
         <div className={styles.tableItemOrder}>
           <Table
             columns={columns}
@@ -268,17 +277,7 @@ export const DetailOrderCustomer = memo(({ onBack, dataOrder }: IProps) => {
               <div className="pt-2 pl-5">
                 <div>
                   <span className="text-bold">Reason:</span>{" "}
-                  <span className="ml-1">
-                    {memoDetailRefund?.listNote?.map(
-                      (note: string, index: number) => (
-                        <span key={index}>
-                          {note}
-                          {index + 1 < memoDetailRefund?.listNote?.length &&
-                            ", "}
-                        </span>
-                      )
-                    )}
-                  </span>
+                  <span className="ml-1">{_renderListNote()}</span>
                 </div>
               </div>
             </div>
