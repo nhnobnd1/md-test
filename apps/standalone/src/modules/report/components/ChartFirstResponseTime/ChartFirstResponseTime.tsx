@@ -1,5 +1,5 @@
 import { formatTimeDDMMYY } from "@moose-desk/core/helper/format";
-import { memo, useMemo } from "react";
+import { memo } from "react";
 import {
   Area,
   AreaChart,
@@ -28,14 +28,12 @@ const barChartStyle = {
 export const ChartFirstResponseTime = ({
   data,
 }: ChartFirstResponseTimeProps) => {
-  const chartData: any = useMemo(() => {
-    return data?.map((item: ChartFirstResponseTimeRes) => {
-      return {
-        name: formatTimeDDMMYY(item?.date),
-        time: item?.avgFirstResponseTime,
-      };
-    });
-  }, [data]);
+  const chartData: any = data?.map((item: ChartFirstResponseTimeRes) => {
+    return {
+      name: formatTimeDDMMYY(item?.date),
+      time: item?.avgFirstResponseTime,
+    };
+  });
 
   const formatYAxis = (tickItem: number) => {
     return `${convertSecondsToHoursMinutes(tickItem)}`;
@@ -53,12 +51,12 @@ export const ChartFirstResponseTime = ({
     }
     return null;
   };
-  const maxYValue = useMemo(() => {
-    const listTime: any = data?.map(
-      (item: ChartFirstResponseTimeRes) => item.avgFirstResponseTime
-    );
-    return Math.max(...(listTime || [0, 0]));
-  }, [chartData]);
+
+  const listTime: any = data?.map(
+    (item: ChartFirstResponseTimeRes) => item.avgFirstResponseTime
+  );
+  const maxYValue = Math.max(...(listTime || [0, 0]));
+
   // const maxYValue = 0;
   return (
     <ResponsiveContainer width="100%" height="100%">

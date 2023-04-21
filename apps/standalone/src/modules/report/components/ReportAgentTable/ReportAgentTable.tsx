@@ -2,7 +2,7 @@ import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import { TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import { useQuery } from "react-query";
 import { MDSearchInput } from "src/components/UI/MDSearchInput";
 import Pagination from "src/components/UI/Pagination/Pagination";
@@ -51,10 +51,8 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
     enabled: !isAgent && !!rangeTime.startTime && !!rangeTime.endTime,
   });
 
-  const memoChartData: ListAgentTableRes[] = useMemo(() => {
-    const convertData = (listAgentData as any)?.data?.data || [];
-    return convertData;
-  }, [listAgentData]);
+  const convertData = (listAgentData as any)?.data?.data || [];
+  const memoChartData: ListAgentTableRes[] = convertData;
   const columns = [
     {
       title: "Agent Name",

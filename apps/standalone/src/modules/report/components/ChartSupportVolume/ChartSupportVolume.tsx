@@ -1,5 +1,5 @@
 import { formatTimeDDMMYY } from "@moose-desk/core/helper/format";
-import { memo, useMemo } from "react";
+import { memo } from "react";
 import {
   Bar,
   BarChart,
@@ -25,16 +25,14 @@ const barChartStyle = {
   height: 400,
 };
 export const ChartSupportVolume = ({ data }: ChartSupportVolumeProps) => {
-  const chartData = useMemo(() => {
-    return data?.map((item: ChartSupportVolumeRes) => {
-      return {
-        name: formatTimeDDMMYY(item?.date),
-        uv: item?.ticketsCreated,
-        pv: item?.ticketsResponded,
-        cd: item?.ticketsResolved,
-      };
-    });
-  }, [data]);
+  const chartData = data?.map((item: ChartSupportVolumeRes) => {
+    return {
+      name: formatTimeDDMMYY(item?.date),
+      uv: item?.ticketsCreated,
+      pv: item?.ticketsResponded,
+      cd: item?.ticketsResolved,
+    };
+  });
 
   return (
     <ResponsiveContainer width="100%" height="100%">
