@@ -10,7 +10,12 @@
   text-decoration: underline;
   color: #202223;
 }
-
+.hover-text {
+  &:hover {
+    text-decoration: underline;
+    color: #1677ff;
+  }
+}
 .link {
   color: #1677ff;
   text-decoration: underline;
