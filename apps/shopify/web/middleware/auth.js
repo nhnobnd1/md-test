@@ -56,7 +56,6 @@ export default function applyAuthMiddleware(
           }
         );
       }
-
       const responses = await Shopify.Webhooks.Registry.registerAll({
         shop: session.shop,
         accessToken: session.accessToken,
