@@ -103,47 +103,47 @@ const ModalAutoReply = ({
                 // value={dataForm?.value.content}
                 init={{
                   toolbar:
-                    "undo redo blocks fontfamily fontsize bold italic underline strikethrough link image media table mergetags addcomment showcomments spellcheckdialog a11ycheck typography align lineheight | selectTypeAutoReply",
+                    "undo redo blocks fontfamily fontsize bold italic underline strikethrough link image media table mergetags addcomment showcomments spellcheckdialog a11ycheck typography align lineheight ",
                   setup: (editor) => {
                     /* Helper functions */
                     const handleText = (text: string) => {
                       return text;
                     };
-                    editor.ui.registry.addMenuButton("selectTypeAutoReply", {
-                      text: "Holiday name",
-                      fetch: (callback: any) => {
-                        const items = [
-                          {
-                            type: "menuitem",
-                            text: "Holiday Date",
-                            onAction: () => {
-                              editor.insertContent(
-                                handleText("{{holiday.date}}")
-                              );
-                            },
-                          },
-                          {
-                            type: "menuitem",
-                            text: "Business Hours",
-                            onAction: () => {
-                              editor.insertContent(
-                                handleText("{{businesscalendar.hours}}")
-                              );
-                            },
-                          },
-                          {
-                            type: "menuitem",
-                            text: "Business Date",
-                            onAction: () => {
-                              editor.insertContent(
-                                handleText("{{businesscalendar.date}}")
-                              );
-                            },
-                          },
-                        ];
-                        callback(items);
-                      },
-                    });
+                    // editor.ui.registry.addMenuButton("selectTypeAutoReply", {
+                    //   text: "Holiday name",
+                    //   fetch: (callback: any) => {
+                    //     const items = [
+                    //       {
+                    //         type: "menuitem",
+                    //         text: "Holiday Date",
+                    //         onAction: () => {
+                    //           editor.insertContent(
+                    //             handleText("{{holiday.date}}")
+                    //           );
+                    //         },
+                    //       },
+                    //       {
+                    //         type: "menuitem",
+                    //         text: "Business Hours",
+                    //         onAction: () => {
+                    //           editor.insertContent(
+                    //             handleText("{{businesscalendar.hours}}")
+                    //           );
+                    //         },
+                    //       },
+                    //       {
+                    //         type: "menuitem",
+                    //         text: "Business Date",
+                    //         onAction: () => {
+                    //           editor.insertContent(
+                    //             handleText("{{businesscalendar.date}}")
+                    //           );
+                    //         },
+                    //       },
+                    //     ];
+                    //     callback(items);
+                    //   },
+                    // });
                   },
                 }}
               />

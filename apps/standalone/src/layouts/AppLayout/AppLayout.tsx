@@ -4,6 +4,7 @@ import {
   useJob,
   useLocation,
   useNavigate,
+  useUser,
 } from "@moose-desk/core";
 import useToggleGlobal from "@moose-desk/core/hooks/useToggleGlobal";
 import { AccountRepository } from "@moose-desk/repo";
@@ -49,6 +50,8 @@ export const AppLayout = (props: AppLayoutProps) => {
   const [collapsed, setCollapsed] = useState(false);
   const { logout } = useAuth();
   const { isAdmin, isLead, isAgent } = usePermission();
+  const user = useUser();
+  console.log({ user });
   const caseTopMenu = useMemo<any["items"]>(() => {
     return [
       {
@@ -360,9 +363,16 @@ export const AppLayout = (props: AppLayoutProps) => {
             <img src={Images.Logo.LogoMooseDesk} width="150"></img>
           </div>
           <div className="user-action">
-            <div className="btn-logout" onClick={handleLogout}>
-              <RiLogoutCircleRLine />
-              Logout
+            <div className="flex gap-3">
+              <div className="flex ">
+                <span>
+                  {user?.subdomain} / {user?.email}
+                </span>
+              </div>
+              <div className="btn-logout" onClick={handleLogout}>
+                <RiLogoutCircleRLine />
+                Logout
+              </div>
             </div>
           </div>
         </div>
