@@ -238,7 +238,7 @@ const ChannelEmail = (props: ChannelEmailProps) => {
                     }
                     onSpecialDelete={() => handleDeleteEmail(record._id)}
                   />
-                  {record.isPrimaryEmail && (
+                  {record.mailboxType === "MOOSEDESK" && (
                     <Tooltip
                       placement="top"
                       title={
