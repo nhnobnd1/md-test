@@ -226,7 +226,7 @@ const ChannelEmail = (props: ChannelEmailProps) => {
                       );
                     }}
                     specialDelete={
-                      !record.isPrimaryEmail
+                      record.mailboxType !== "MOOSEDESK"
                         ? {
                             title:
                               "Are you sure that you want to permanently remove this email connection.",

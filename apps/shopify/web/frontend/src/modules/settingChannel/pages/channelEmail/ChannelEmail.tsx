@@ -309,7 +309,7 @@ export const ChannelEmail = (props: ChannelEmailProps) => {
                       }
                     ></ButtonEdit>
                     <ButtonDelete
-                      disabled={emailItem?.isPrimaryEmail}
+                      disabled={emailItem?.mailboxType === "MOOSEDESK"}
                       onClick={() => handleOpenModalDelete(emailItem._id)}
                       destructive
                     >
