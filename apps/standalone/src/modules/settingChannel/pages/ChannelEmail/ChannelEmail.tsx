@@ -12,7 +12,7 @@ import {
   EmailIntegrationRepository,
   GetListEmailRequest,
 } from "@moose-desk/repo";
-import { Button, Input, Space, TableProps, Tooltip } from "antd";
+import { Button, Input, Space, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useCallback, useEffect, useState } from "react";
 import { catchError, map, of } from "rxjs";
@@ -226,6 +226,7 @@ const ChannelEmail = (props: ChannelEmailProps) => {
                       );
                     }}
                     specialDelete={
+                      !record.isPrimaryEmail &&
                       record.mailboxType !== "MOOSEDESK"
                         ? {
                             title:
@@ -238,23 +239,14 @@ const ChannelEmail = (props: ChannelEmailProps) => {
                     }
                     onSpecialDelete={() => handleDeleteEmail(record._id)}
                   />
-                  {record.mailboxType === "MOOSEDESK" && (
-                    <Tooltip
-                      placement="top"
-                      title={
-                        <p className="text-center">
-                          This is your primary email and cannot be deleted.
-                        </p>
-                      }
-                      arrowContent
-                    >
-                      <Button
-                        danger
-                        type="primary"
-                        disabled
-                        icon={<DeleteOutlined />}
-                      ></Button>
-                    </Tooltip>
+                  {(record.isPrimaryEmail ||
+                    record.mailboxType === "MOOSEDESK") && (
+                    <Button
+                      danger
+                      type="primary"
+                      disabled
+                      icon={<DeleteOutlined />}
+                    ></Button>
                   )}
                 </Space>
               )}
