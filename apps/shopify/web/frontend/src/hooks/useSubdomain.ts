@@ -21,19 +21,18 @@ export function useSubdomain() {
     setSubDomain(getSubDomain());
     getDomainStandalone();
   });
-
   const getDomainStandalone = useCallback(() => {
-    switch (import.meta.env.MODE) {
+    switch (import.meta.env.VITE_MODE) {
       case "development":
         return ".moosedesk.net";
 
       case "staging":
-        return ".moosedesk.com";
+        return ".moosedesk.net";
 
       default:
         return ".moosedesk.com";
     }
-  }, [import.meta.env.MODE]);
+  }, [import.meta.env.VITE_MODE]);
 
   return {
     subDomain,
