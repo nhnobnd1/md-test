@@ -295,7 +295,7 @@ export const CardSelectEmail = forwardRef(
 
     return (
       <Card className={className} type="inner" title="Mail Server">
-        <Form.Item className="mb-[40px]" name="mailboxType">
+        <Form.Item className="mb-[40px] hidden" name="mailboxType">
           <Radio.Group>
             <Radio className="mr-4" value={MailBoxType.GMAIL}>
               <LogosGoogleIcon className="text-[16px] mr-1 ml-[4px] translate-y-1" />
