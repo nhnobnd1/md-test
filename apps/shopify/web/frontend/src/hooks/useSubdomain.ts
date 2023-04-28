@@ -7,6 +7,9 @@ export function useSubdomain() {
   const [subDomain, setSubDomain] = useState<string | undefined>();
   const shop = useShopDomain();
   const [cookies, setCookie] = useCookies();
+  console.log({ cookies });
+  console.log("host", process.env.HOST);
+  console.log("shop", shop);
 
   const getSubDomain = useCallback(() => {
     const payload = cookies[process.env.HOST ?? (shop as any)];
@@ -14,7 +17,7 @@ export function useSubdomain() {
       const domain: string = payload?.shop?.myshopify_domain;
       return domain.split(".")[0];
     }
-    return undefined;
+    return shop ? shop.split(".")[0] : undefined;
   }, [cookies, process.env.HOST, shop]);
 
   useMount(() => {

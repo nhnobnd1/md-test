@@ -36,20 +36,21 @@ app.get(
     console.log("Offline session", offlineSession);
 
     if (shop && offlineSession) {
-      const timezone = shop.timezone
-        .replace("(", "")
-        .replace(")", "")
-        .split(" ");
-      const timeGTM = timezone.find((item) => item.includes("GMT+"));
+      // const timezone = shop.timezone
+      //   .replace("(", "")
+      //   .replace(")", "")
+      //   .split(" ");
+      // const timeGTM = timezone.find((item) => item.includes("GMT+"));
 
-      let payloadTimeZone = null;
+			let payloadTimeZone = shop?.iana_timezone;
 
-      for (const [key, value] of Object.entries(TIME_ZONES_GMT)) {
-        if (value === timeGTM) {
-          payloadTimeZone = TIME_ZONES[key];
-          break;
-        }
-      }
+
+      // for (const [key, value] of Object.entries(TIME_ZONES_GMT)) {
+      //   if (value === timeGTM) {
+      //     payloadTimeZone = TIME_ZONES[key];
+      //     break;
+      //   }
+      // }
 
       console.log("payloadTimeZone", payloadTimeZone);
 
