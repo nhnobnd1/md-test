@@ -22,7 +22,7 @@ export async function getOfflineSession(shopDomain) {
 export async function getInformationShop(reqQueryShop) {
 	try {
 		const { offlineSession } = await getOfflineSession(reqQueryShop);
-		console.log({ reqQueryShop });
+
 		const client = new shopify.api.clients.Rest({
 			session: offlineSession,
 		});
@@ -35,7 +35,12 @@ export async function getInformationShop(reqQueryShop) {
 		const data = await client.get({
 			path: 'shop',
 		});
-
+		console.log({
+			reqQueryShop,
+			shop: data?.body?.shop,
+			shopDomain: reqQueryShop,
+			offlineSession,
+		});
 		return {
 			shop: data?.body?.shop,
 			shopDomain: reqQueryShop,
