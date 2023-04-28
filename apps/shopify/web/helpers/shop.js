@@ -1,51 +1,52 @@
-import shopify from "../shopify.js";
+import shopify from '../shopify.js';
 
 export async function getOfflineSession(shopDomain) {
-  const offlineSessionId = await shopify.api.session.getOfflineId(shopDomain);
-  const offlineSession = await shopify.config.sessionStorage.loadSession(
-    offlineSessionId
-  );
+	const offlineSessionId = await shopify.api.session.getOfflineId(shopDomain);
+	const offlineSession = await shopify.config.sessionStorage.loadSession(
+		offlineSessionId
+	);
 
-  if (offlineSession) {
-    return {
-      shopDomain: shopDomain ?? "",
-      offlineSession: offlineSession,
-    };
-  }
+	if (offlineSession) {
+		return {
+			shopDomain: shopDomain ?? '',
+			offlineSession: offlineSession,
+		};
+	}
 
-  return {
-    shopDomain: shopDomain ?? "",
-    offlineSession: null,
-  };
+	return {
+		shopDomain: shopDomain ?? '',
+		offlineSession: null,
+	};
 }
 
 export async function getInformationShop(reqQueryShop) {
-  try {
-    const { offlineSession } = await getOfflineSession(reqQueryShop);
-    const client = new shopify.api.clients.Rest({
-      session: offlineSession,
-    });
+	try {
+		const { offlineSession } = await getOfflineSession(reqQueryShop);
+		console.log({ reqQueryShop });
+		const client = new shopify.api.clients.Rest({
+			session: offlineSession,
+		});
 
-    // const dataCustomer = await shopify.api.rest.Customer.all({
-    //   session: offlineSession,
-    // });
-    // console.log("data.....", dataCustomer);
+		// const dataCustomer = await shopify.api.rest.Customer.all({
+		//   session: offlineSession,
+		// });
+		// console.log("data.....", dataCustomer);
 
-    const data = await client.get({
-      path: "shop",
-    });
+		const data = await client.get({
+			path: 'shop',
+		});
 
-    return {
-      shop: data?.body?.shop,
-      shopDomain: reqQueryShop,
-      offlineSession,
-    };
-  } catch (error) {
-    console.error("Get shop information error", error);
-    return {
-      shop: null,
-      shopDomain: null,
-      offlineSession: null,
-    };
-  }
+		return {
+			shop: data?.body?.shop,
+			shopDomain: reqQueryShop,
+			offlineSession,
+		};
+	} catch (error) {
+		// console.error("Get shop information error", error);
+		return {
+			shop: null,
+			shopDomain: null,
+			offlineSession: null,
+		};
+	}
 }
