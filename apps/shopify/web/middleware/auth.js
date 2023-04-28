@@ -21,9 +21,10 @@ export default function applyAuthMiddleware(
         res,
         req.query
       );
+      console.log('????',req.query)
 
       const { shop, offlineSession, shopDomain } = await getInformationShop(
-        req.query.shop
+        req.query?.shop
       );
 
       if (shop && offlineSession.accessToken) {

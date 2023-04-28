@@ -97,9 +97,8 @@ app.post(
 app.use('/api/*', shopify.validateAuthenticatedSession());
 
 app.use(async (req, res, next) => {
-	console.log('abc use', req.query);
 	const { shop, offlineSession, shopDomain } = await getInformationShop(
-		req.query.shop
+		req.query?.shop
 	);
 
 	// signup insall app -> offlineSession null
