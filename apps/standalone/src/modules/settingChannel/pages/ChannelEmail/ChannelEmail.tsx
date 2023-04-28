@@ -12,7 +12,7 @@ import {
   EmailIntegrationRepository,
   GetListEmailRequest,
 } from "@moose-desk/repo";
-import { Button, Input, Space, TableProps } from "antd";
+import { Button, Input, Space, TableProps, Tooltip } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useCallback, useEffect, useState } from "react";
 import { catchError, map, of } from "rxjs";
@@ -226,8 +226,7 @@ const ChannelEmail = (props: ChannelEmailProps) => {
                       );
                     }}
                     specialDelete={
-                      !record.isPrimaryEmail &&
-                      record.mailboxType !== "MOOSEDESK"
+                      !record.isPrimaryEmail
                         ? {
                             title:
                               "Are you sure that you want to permanently remove this email connection.",
@@ -239,14 +238,23 @@ const ChannelEmail = (props: ChannelEmailProps) => {
                     }
                     onSpecialDelete={() => handleDeleteEmail(record._id)}
                   />
-                  {(record.isPrimaryEmail ||
-                    record.mailboxType === "MOOSEDESK") && (
-                    <Button
-                      danger
-                      type="primary"
-                      disabled
-                      icon={<DeleteOutlined />}
-                    ></Button>
+                  {record.isPrimaryEmail && (
+                    <Tooltip
+                      placement="top"
+                      title={
+                        <p className="text-center">
+                          This is your primary email and cannot be deleted.
+                        </p>
+                      }
+                      arrowContent
+                    >
+                      <Button
+                        danger
+                        type="primary"
+                        disabled
+                        icon={<DeleteOutlined />}
+                      ></Button>
+                    </Tooltip>
                   )}
                 </Space>
               )}

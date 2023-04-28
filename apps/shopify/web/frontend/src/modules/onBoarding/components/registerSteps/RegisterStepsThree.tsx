@@ -1,9 +1,13 @@
+import { useJob } from "@moose-desk/core";
+import { GetTourGuideRequest, TourGuideRepository } from "@moose-desk/repo";
 import { Card, Link, Page, Text, TextContainer } from "@shopify/polaris";
 import { useCallback } from "react";
+import { map } from "rxjs";
 import StorageManager from "src/core/utilities/StorageManager";
 import useAuth from "src/hooks/useAuth";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import "src/modules/onBoarding/assets/style/components/registerSteps/register-steps-three.scss";
+import { useStore } from "src/providers/StoreProviders";
 
 interface RegisterStepsThreeProps {
   previousStep: () => void;
@@ -16,6 +20,7 @@ const RegisterStepsThree = ({
 }: RegisterStepsThreeProps) => {
   const { user } = useAuth();
   const { getSubDomain, getDomainStandalone } = useSubdomain();
+  const { storeId } = useStore();
 
   const TitleCard = () => {
     return (
@@ -24,9 +29,24 @@ const RegisterStepsThree = ({
       </Text>
     );
   };
+  const { run: updateTourGuide } = useJob(
+    (payload: GetTourGuideRequest) => {
+      return TourGuideRepository()
+        .updateTourGuide(payload)
+        .pipe(
+          map(({ data }) => {
+            if (data.statusCode === 200) {
+              console.log("done tour guild", data);
+            }
+          })
+        );
+    },
+    { showLoading: true }
+  );
 
   const redirectLandingPage = useCallback(() => {
     StorageManager.setToken("isAcceptUsing", "accepted");
+    updateTourGuide({ subdomain: storeId, isOnboardingComplete: true });
     redirectIndex();
   }, []);
   return (

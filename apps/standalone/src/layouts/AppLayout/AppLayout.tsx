@@ -364,7 +364,7 @@ export const AppLayout = (props: AppLayoutProps) => {
           </div>
           <div className="user-action">
             <div className="flex gap-3">
-              <div className="flex ">
+              <div className="md:flex hidden">
                 <span>
                   {user?.subdomain} / {user?.email}
                 </span>

@@ -1,12 +1,15 @@
 import { useJob, useMount } from "@moose-desk/core";
 import { GetStoreIdRequest, StoreRepository } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
-import { createContext, ReactNode, useContext, useState } from "react";
+import { ReactNode, createContext, useContext, useState } from "react";
 import { catchError, map, of } from "rxjs";
+import StorageManager from "src/core/utilities/StorageManager";
 import { useSubdomain } from "src/hooks/useSubdomain";
 
 interface StoreContextType {
   storeId: string;
+  timezone: string;
+  isOnboardingComplete: boolean;
 }
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
@@ -16,7 +19,7 @@ interface StoreProvidersProps {
 }
 
 export const StoreProviders = ({ children }: StoreProvidersProps) => {
-  const [storeId, setStoreId] = useState<string>("");
+  const [generalInfo, setGeneralInfo] = useState<StoreContextType>();
   const { getSubDomain } = useSubdomain();
   const { show } = useToast();
 
@@ -27,7 +30,11 @@ export const StoreProviders = ({ children }: StoreProvidersProps) => {
         .pipe(
           map(({ data }) => {
             if (data.statusCode === 200) {
-              setStoreId(data.data.storeId);
+              setGeneralInfo(data.data);
+              StorageManager.setToken(
+                "isAcceptUsing",
+                data.data.isOnboardingComplete ? "accepted" : ""
+              );
             }
           }),
           catchError((err) => {
@@ -48,7 +55,7 @@ export const StoreProviders = ({ children }: StoreProvidersProps) => {
   });
 
   return (
-    <StoreContext.Provider value={{ storeId }}>
+    <StoreContext.Provider value={generalInfo}>
       {children}
     </StoreContext.Provider>
   );

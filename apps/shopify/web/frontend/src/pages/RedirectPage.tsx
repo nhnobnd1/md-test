@@ -1,8 +1,8 @@
 import { generatePath, Navigate } from "@moose-desk/core";
-import StorageManager from "src/core/utilities/StorageManager";
 import useAuth from "src/hooks/useAuth";
 import DashboardRoutePaths from "src/modules/dashboard/routes/paths";
 import OnBoardingRoutePaths from "src/modules/onBoarding/routes/paths";
+import { useStore } from "src/providers/StoreProviders";
 
 interface RedirectPageProps {
   children?: React.ReactElement | React.ReactNode;
@@ -10,7 +10,8 @@ interface RedirectPageProps {
 
 const RedirectPage = ({ children }: RedirectPageProps) => {
   const { isLoggedIn } = useAuth();
-  if (isLoggedIn && StorageManager.getToken("isAcceptUsing")) {
+  const { isOnboardingComplete } = useStore();
+  if (isLoggedIn && isOnboardingComplete) {
     return (
       <Navigate to={generatePath(DashboardRoutePaths.Index)} replace></Navigate>
     );
