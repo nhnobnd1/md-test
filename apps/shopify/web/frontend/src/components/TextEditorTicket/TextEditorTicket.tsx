@@ -108,6 +108,10 @@ export const TextEditorTicket = ({
           }
         }),
         catchError((err) => {
+          setLoadingButton(false);
+          setLoading(false);
+          show("Upload file fail");
+
           return of(err);
         })
       );

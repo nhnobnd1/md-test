@@ -115,6 +115,11 @@ const TextEditorTicket = ({
           }
         }),
         catchError((err) => {
+          setLoadingButton(false);
+          setLoading(false);
+
+          message.error("Upload file fail");
+
           return of(err);
         })
       );
