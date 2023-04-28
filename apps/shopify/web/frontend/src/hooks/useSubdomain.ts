@@ -7,9 +7,6 @@ export function useSubdomain() {
   const [subDomain, setSubDomain] = useState<string | undefined>();
   const shop = useShopDomain();
   const [cookies, setCookie] = useCookies();
-  console.log({ cookies });
-  console.log("host", process.env.HOST);
-  console.log("shop", shop);
 
   const getSubDomain = useCallback(() => {
     const payload = cookies[process.env.HOST ?? (shop as any)];

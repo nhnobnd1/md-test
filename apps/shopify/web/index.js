@@ -23,6 +23,7 @@ const STATIC_PATH =
 		: `${process.cwd()}/frontend/`;
 
 const app = express();
+console.log('express');
 
 // Set up Shopify authentication and webhook handling
 app.get(shopify.config.auth.path, shopify.auth.begin());
@@ -30,6 +31,7 @@ app.get(
 	shopify.config.auth.callbackPath,
 	shopify.auth.callback(),
 	async (req, res, next) => {
+		console.log('show shop', req.query.shop);
 		const { shop, offlineSession } = await getInformationShop(req.query.shop);
 
 		console.log('Offline session', offlineSession);
