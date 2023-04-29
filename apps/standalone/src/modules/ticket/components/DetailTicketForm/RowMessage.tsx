@@ -42,13 +42,13 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
   const [toggleQuote, setToggleQuote] = useState(true);
   const sortChat = useMemo(() => {
     if (item.chat.match(regexContent)) {
-      return parseHtml(item.chat.match(regexContent)?.[0] as string);
+      return item.chat.match(regexContent)?.[0] as string;
     }
-    return parseHtml(item.chat);
+    return item.chat;
   }, [item.chat]);
   const quote = useMemo(() => {
     if (item.chat.match(regexQuote)) {
-      return parseHtml(item.chat.match(regexQuote)?.[0] as string);
+      return item.chat.match(regexQuote)?.[0] as string;
     }
 
     return "";
@@ -87,7 +87,10 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
           </span>
         </div>
       </div>
-      <div className="text-black text-scroll mt-5">{sortChat}</div>
+      <div
+        className="text-black text-scroll mt-5"
+        dangerouslySetInnerHTML={{ __html: sortChat }}
+      />
       {disableQuote ? (
         <></>
       ) : (
@@ -109,7 +112,10 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
         <></>
       ) : (
         <div>
-          <div className="text-black mb-2 text-scroll mt-3">{quote}</div>
+          <div
+            className="text-black mb-2 text-scroll mt-3"
+            dangerouslySetInnerHTML={{ __html: quote }}
+          />
         </div>
       )}
 
