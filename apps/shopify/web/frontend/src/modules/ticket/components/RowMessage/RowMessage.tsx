@@ -247,7 +247,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
 
                           <span
                             className={` text-xs text-left inline-block file-size  ${
-                              item.thumbUrl ? "opacity-100" : "opacity-0"
+                              item.thumbUrl ? "block" : "opacity-0"
                             } `}
                           >
                             {filesize(item.size, {
