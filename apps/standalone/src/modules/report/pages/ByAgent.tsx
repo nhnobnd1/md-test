@@ -94,7 +94,6 @@ const ByAgentPage = (props: ByAgentPageProps) => {
         <Form.Item name="from" label="From">
           <DatePicker
             format={"MM/DD/YYYY"}
-            placeholder="MM/DD/YYYY"
             disabledDate={disabledStartDate}
             onChange={handleChangeStartTime}
           />
@@ -102,7 +101,6 @@ const ByAgentPage = (props: ByAgentPageProps) => {
         <Form.Item name="to" label="To">
           <DatePicker
             format={"MM/DD/YYYY"}
-            placeholder="MM/DD/YYYY"
             disabledDate={disabledEndDate}
             onChange={handleChangeEndTime}
           />

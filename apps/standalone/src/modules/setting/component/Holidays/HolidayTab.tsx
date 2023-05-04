@@ -1,6 +1,5 @@
 import { AutoReply, Holidays } from "@moose-desk/repo";
 import Link from "antd/es/typography/Link";
-import dayjs from "dayjs";
 import moment from "moment";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Pagination from "src/components/UI/Pagination/Pagination";
@@ -169,26 +168,8 @@ const HolidayTab = ({
               render={(_, record: Holidays) => (
                 <span>
                   {record.startDate === record.endDate
-                    ? `${dayjs(
-                        `${record.startDate.slice(3)}-${record.startDate.slice(
-                          0,
-                          2
-                        )}-${day.getFullYear()}`,
-                        "MM-DD-YYYY"
-                      ).format("MM/DD")}`
-                    : `${dayjs(
-                        `${record.startDate.slice(3)}-${record.startDate.slice(
-                          0,
-                          2
-                        )}-${day.getFullYear()}`,
-                        "MM-DD-YYYY"
-                      ).format("MM/DD")} to ${dayjs(
-                        `${record.endDate.slice(3)}-${record.endDate.slice(
-                          0,
-                          2
-                        )}-${day.getFullYear()}`,
-                        "MM-DD-YYYY"
-                      ).format("MM/DD")}`}
+                    ? record.startDate
+                    : `${record?.startDate} to ${record?.endDate}`}
                 </span>
               )}
             ></Table.Column>
