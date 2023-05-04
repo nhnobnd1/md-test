@@ -34,6 +34,7 @@ export default function App() {
   });
   const app = useAppBridge();
   const fullscreen = Fullscreen.create(app);
+  console.log({ fullscreen });
   const shop = useShopDomain();
   const { subDomain } = useSubdomain();
   const api = useApi();
@@ -73,6 +74,7 @@ export default function App() {
   //   getEventUninstallApp();
   // }, [window]);
   useEffect(() => {
+    console.log({ shop, isLoggedIn, user, cookies, storeId });
     if ((shop && !isLoggedIn) || (!user && shop)) {
       console.log("Start login with token...");
       const payload = cookies[process.env.HOST ?? shop];
