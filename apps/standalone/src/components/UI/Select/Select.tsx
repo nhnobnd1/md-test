@@ -520,7 +520,7 @@ Select.Tags = ({
   useEffect(() => {
     if (props.value) {
       if (!options.filter((option) => option.value === props.value).length) {
-        setValue(props.placeholder ? undefined : "");
+        setValue(props.value);
       } else {
         setValue(props.value);
       }

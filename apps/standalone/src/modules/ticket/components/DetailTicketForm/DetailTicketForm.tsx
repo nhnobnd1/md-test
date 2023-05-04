@@ -208,8 +208,12 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
       content: "",
       from: ticket?.senderConfigId ? ticket.senderConfigId : primaryEmail?._id,
       ccEmails: ticket?.ccEmails,
-      // CC: ticket?.ccEmails,
-      // BCC: ticket?.bccEmails,
+      CC: ticket?.ccEmails?.map((item) => {
+        return item.replace(/.*<([^>]*)>.*/, "$1") || item;
+      }),
+      BCC: ticket?.bccEmails?.map((item) => {
+        return item.replace(/.*<([^>]*)>.*/, "$1") || item;
+      }),
     };
   }, [ticket, primaryEmail]);
 
@@ -260,6 +264,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
               getPrimaryEmail();
             }
             setTicket(data.data);
+            setEnableCC(data.data.ccEmails.length > 0);
           } else {
             message.error("Get ticket failed");
           }

@@ -123,7 +123,13 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
                 className="truncate"
               >
                 <span style={{ fontWeight: "bold" }}>CC</span>:{" "}
-                {item.ccEmails.toString()}
+                {item.ccEmails.map((i, index) =>
+                  index === (item?.ccEmails?.length as number) - 1 ? (
+                    <span key={i}>{i}</span>
+                  ) : (
+                    <span key={i}>{i}, </span>
+                  )
+                )}
               </span>
             </>
           ) : (
@@ -136,7 +142,13 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
                 style={{ color: "black", fontSize: 12 }}
               >
                 <span style={{ fontWeight: "bold" }}>BCC</span>:{" "}
-                {item.bccEmails.toString()}
+                {item.bccEmails.map((i, index) =>
+                  index === (item?.bccEmails?.length as number) - 1 ? (
+                    <span key={i}>{i}</span>
+                  ) : (
+                    <span key={i}>{i}, </span>
+                  )
+                )}
               </span>
             </>
           ) : (

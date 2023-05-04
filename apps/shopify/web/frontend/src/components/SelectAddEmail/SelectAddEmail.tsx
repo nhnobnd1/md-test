@@ -13,6 +13,7 @@ interface BoxSelectAutoReplyProps {
   onChange?: (value: any) => void;
   disabled?: boolean;
   data: Data[];
+  defaultTag: string[];
 }
 
 const SelectAddEmail = (props: BoxSelectAutoReplyProps) => {
@@ -29,6 +30,13 @@ const SelectAddEmail = (props: BoxSelectAutoReplyProps) => {
     }[]
   >(deselectedOptions);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (props?.defaultTag?.length > 0) {
+      setSelectedTags(props.defaultTag);
+    }
+  }, [props?.defaultTag]);
+
   const removeTag = useCallback(
     (tag: string) => () => {
       setSelectedTags((previousTags) =>
@@ -37,6 +45,7 @@ const SelectAddEmail = (props: BoxSelectAutoReplyProps) => {
     },
     []
   );
+  console.log({ selectedTags });
 
   const tagMarkup =
     selectedTags?.length > 0
@@ -116,7 +125,7 @@ const SelectAddEmail = (props: BoxSelectAutoReplyProps) => {
 
   useEffect(() => {
     setOptions(props.data);
-    updateSelection(props.value);
+    // updateSelection(props.value);
   }, [props.data]);
 
   return (

@@ -328,7 +328,11 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
               {enableCC ? (
                 <div className="flex-1 mt-3">
                   <FormItem name="CC">
-                    <SelectAddEmail label="CC" data={customersOptions} />
+                    <SelectAddEmail
+                      label="CC"
+                      data={customersOptions}
+                      defaultTag={[]}
+                    />
                   </FormItem>
                 </div>
               ) : (
@@ -337,7 +341,11 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
               {enableCC ? (
                 <div className="flex-1 mt-3">
                   <FormItem name="BCC">
-                    <SelectAddEmail label="BCC" data={customersOptions} />
+                    <SelectAddEmail
+                      label="BCC"
+                      data={customersOptions}
+                      defaultTag={[]}
+                    />
                   </FormItem>
                 </div>
               ) : (

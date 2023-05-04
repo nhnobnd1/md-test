@@ -99,6 +99,8 @@ const DetailTicket = (props: DetailTicketProps) => {
   const [agents, setAgents] = useState<Agent[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const { visible, setVisible } = useToggleGlobal();
+  const [ccDefault, setCCDefault] = useState<string[]>([]);
+  const [bccDefault, setBCCDefault] = useState<string[]>([]);
 
   const listChat = useMemo<ChatItem[]>(() => {
     const conversationMapping: any = conversationList?.map(
@@ -268,6 +270,17 @@ const DetailTicket = (props: DetailTicketProps) => {
               getPrimaryEmail();
             }
             setTicket(data.data);
+            setEnableCC(data.data.ccEmails.length > 0);
+            setCCDefault(
+              data.data?.ccEmails?.map((item) => {
+                return item.replace(/.*<([^>]*)>.*/, "$1") || item;
+              })
+            );
+            setBCCDefault(
+              data.data?.bccEmails?.map((item) => {
+                return item.replace(/.*<([^>]*)>.*/, "$1") || item;
+              })
+            );
           } else {
             // message.error("Get ticket failed");
           }
@@ -342,6 +355,13 @@ const DetailTicket = (props: DetailTicketProps) => {
       tags: ticket?.tags,
       content: "",
       from: ticket?.senderConfigId ? ticket.senderConfigId : primaryEmail?._id,
+      ccEmails: ticket?.ccEmails,
+      CC: ticket?.ccEmails?.map((item) => {
+        return item.replace(/.*<([^>]*)>.*/, "$1") || item;
+      }),
+      BCC: ticket?.bccEmails?.map((item) => {
+        return item.replace(/.*<([^>]*)>.*/, "$1") || item;
+      }),
     };
   }, [ticket, primaryEmail]);
   const DetailTicketFormSchema = Yup.object().shape({
@@ -588,6 +608,7 @@ const DetailTicket = (props: DetailTicketProps) => {
                           <div className="min-w-[300px] max-w-[400px]">
                             <FormItem name="CC">
                               <SelectAddEmail
+                                defaultTag={ccDefault}
                                 disabled={disabled}
                                 label="CC"
                                 data={customersOptions}
@@ -601,6 +622,7 @@ const DetailTicket = (props: DetailTicketProps) => {
                           <div className="min-w-[300px] max-w-[400px] mt-5">
                             <FormItem name="BCC">
                               <SelectAddEmail
+                                defaultTag={bccDefault}
                                 disabled={disabled}
                                 label="BCC"
                                 data={customersOptions}
