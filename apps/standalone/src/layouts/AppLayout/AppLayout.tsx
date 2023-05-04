@@ -51,7 +51,6 @@ export const AppLayout = (props: AppLayoutProps) => {
   const { logout } = useAuth();
   const { isAdmin, isLead, isAgent } = usePermission();
   const user = useUser();
-  console.log({ user });
   const caseTopMenu = useMemo<any["items"]>(() => {
     return [
       {

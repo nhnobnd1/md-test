@@ -65,6 +65,8 @@ export interface ChatItem {
   typeChat?: "reported via widget" | "reported via email" | "agent created";
   toEmail?: string;
   incoming?: boolean;
+  ccEmails?: [];
+  bccEmails?: [];
 }
 interface ValueForm {
   status: StatusTicket;
@@ -117,6 +119,8 @@ const DetailTicket = (props: DetailTicketProps) => {
           attachments: item.attachments,
           toEmail: item.toEmails[0].email,
           incoming: item?.incoming,
+          ccEmails: item?.ccEmails,
+          bccEmails: item?.bccEmails,
         };
       }
     );
@@ -145,6 +149,8 @@ const DetailTicket = (props: DetailTicketProps) => {
         typeChat,
         toEmail: ticket.toEmails ? ticket.toEmails[0].email : "",
         incoming: ticket?.incoming || ticket?.createdViaWidget,
+        ccEmails: ticket?.ccEmails,
+        bccEmails: ticket?.bccEmails,
       });
     }
     return conversationMapping;
@@ -541,7 +547,7 @@ const DetailTicket = (props: DetailTicketProps) => {
                       </div>
                     </FormLayout.Group>
 
-                    <div className="flex justify-end mb-5">
+                    <div className="flex justify-end mb-3 mt-3">
                       <Button
                         disabled={disabled}
                         primary

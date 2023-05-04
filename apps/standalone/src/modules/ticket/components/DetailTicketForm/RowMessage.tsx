@@ -91,10 +91,36 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
         <div className="flex gap-3 justify-between mt-2">
           <span className="text-xs">{item.time}</span>
         </div>
-        <div className="flex gap-3 justify-between mt-2">
+        <div className="flex gap-3  mt-2 flex-wrap">
           <span style={{ color: "black", fontSize: 12 }}>
-            To: {item.toEmail}
+            <span style={{ fontWeight: "bold" }}>To </span>: {item.toEmail}
           </span>
+          {item?.ccEmails?.length ? (
+            <>
+              <span
+                style={{ color: "black", fontSize: 12 }}
+                className="truncate"
+              >
+                <span style={{ fontWeight: "bold" }}>CC</span>:{" "}
+                {item.ccEmails.toString()}
+              </span>
+            </>
+          ) : (
+            <></>
+          )}
+          {item?.bccEmails?.length ? (
+            <>
+              <span
+                className="truncate"
+                style={{ color: "black", fontSize: 12 }}
+              >
+                <span style={{ fontWeight: "bold" }}>BCC</span>:{" "}
+                {item.bccEmails.toString()}
+              </span>
+            </>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
       <div

@@ -59,6 +59,8 @@ export interface ChatItem {
   typeChat?: "reported via widget" | "reported via email" | "agent created";
   toEmail?: string;
   incoming?: boolean;
+  ccEmails?: [];
+  bccEmails?: [];
 }
 const validateCCEmail = (value: string[]): boolean => {
   if (!value) return true;
@@ -110,6 +112,8 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
           attachments: item.attachments,
           toEmail: item.toEmails[0].email,
           incoming: item?.incoming,
+          ccEmails: item?.ccEmails,
+          bccEmails: item?.bccEmails,
         };
       }
     );
@@ -138,6 +142,8 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
         typeChat,
         toEmail: ticket.toEmails ? ticket.toEmails[0].email : "",
         incoming: ticket?.incoming || ticket?.createdViaWidget,
+        ccEmails: ticket?.ccEmails,
+        bccEmails: ticket?.bccEmails,
       });
     }
     return conversationMapping;
@@ -201,6 +207,9 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
       tags: ticket?.tags,
       content: "",
       from: ticket?.senderConfigId ? ticket.senderConfigId : primaryEmail?._id,
+      ccEmails: ticket?.ccEmails,
+      // CC: ticket?.ccEmails,
+      // BCC: ticket?.bccEmails,
     };
   }, [ticket, primaryEmail]);
 
@@ -583,6 +592,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                                 ]}
                               >
                                 <Select.Tags
+                                  defaultValue={form.getFieldValue("CC")}
                                   loadMore={fetchCustomer}
                                   mode="tags"
                                   placeholder="Type CC email..."
