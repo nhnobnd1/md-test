@@ -13,6 +13,7 @@ interface StoreContextType {
 }
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
+console.log({ StoreContext });
 
 interface StoreProvidersProps {
   children?: ReactNode;
