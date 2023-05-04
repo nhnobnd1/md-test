@@ -102,6 +102,7 @@ const BoxSelectFilter = (props: BoxSelectAutoReplyProps) => {
           value={inputValue}
           autoComplete="off"
           error={props.error}
+          placeholder={props.placeholder}
           // {...props} //for fix bug cannot search select by keyword => cannot detect event onchange
         />
       }

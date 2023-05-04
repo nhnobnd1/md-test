@@ -321,6 +321,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
                       </div>
                     }
                     data={customersOptions}
+                    placeholder="Email"
                   />
                 </FormItem>
               </div>
@@ -379,7 +380,11 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
           </div>
           <div className="mt-4">
             <FormItem name="tags">
-              <SelectAddTag label="Tags" data={tagsOptions} />
+              <SelectAddTag
+                label="Tags"
+                data={tagsOptions}
+                placeholder="Add Tags"
+              />
             </FormItem>
           </div>
           <div className="mt-4">

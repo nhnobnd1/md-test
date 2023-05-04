@@ -13,14 +13,14 @@ import {
   GetListCustomerRequest,
   GetListTagRequest,
   Priority,
-  priorityOptions,
-  statusOptions,
   StatusTicket,
   Tag,
   TagRepository,
   Ticket,
   TicketRepository,
   UpdateTicket,
+  priorityOptions,
+  statusOptions,
 } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
@@ -29,7 +29,6 @@ import {
   FormLayout,
   Layout,
   LegacyCard,
-  Link,
   Page,
   Select,
   TextField,
@@ -533,6 +532,7 @@ const DetailTicket = (props: DetailTicketProps) => {
                             disabled={disabled}
                             label="Assignee"
                             data={agentsOptions}
+                            placeholder="Search agents"
                           />
                         </FormItem>
                         <div>
@@ -541,6 +541,7 @@ const DetailTicket = (props: DetailTicketProps) => {
                               disabled={disabled}
                               label="Tags"
                               data={tagsOptions}
+                              placeholder="Add Tags"
                             />
                           </FormItem>
                         </div>
@@ -611,16 +612,15 @@ const DetailTicket = (props: DetailTicketProps) => {
                         )}
                       </div>
                     </div>
-                    <Link>
-                      <span
-                        className="link mt-5 mb-5 inline-block"
-                        onClick={() => {
-                          setEnableCC(!enableCC);
-                        }}
-                      >
-                        CC/BCC
-                      </span>
-                    </Link>
+
+                    <span
+                      className="link mt-5 mb-5 inline-block hover:underline hover:cursor-pointer hover:text-blue-500"
+                      onClick={() => {
+                        setEnableCC(!enableCC);
+                      }}
+                    >
+                      CC/BCC
+                    </span>
                     <div>
                       <FormItem name="content">
                         <TextEditorTicket
