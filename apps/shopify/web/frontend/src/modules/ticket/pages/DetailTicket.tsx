@@ -597,7 +597,7 @@ const DetailTicket = (props: DetailTicketProps) => {
                           <></>
                         )}
                         {enableCC ? (
-                          <div className="min-w-[300px] max-w-[400px] mt-2">
+                          <div className="min-w-[300px] max-w-[400px] mt-5">
                             <FormItem name="BCC">
                               <SelectAddEmail
                                 disabled={disabled}

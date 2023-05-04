@@ -77,7 +77,7 @@ const SelectAddEmail = (props: BoxSelectAutoReplyProps) => {
 
   const updateSelection = useCallback(
     (selected) => {
-      if (selected?.length && inputValue === "") {
+      if (selected?.length) {
         setSelectedTags((previousTags) => {
           if (previousTags.includes(selected)) return previousTags;
           return [...previousTags, selected];
@@ -143,7 +143,7 @@ const SelectAddEmail = (props: BoxSelectAutoReplyProps) => {
           )}
         </>
       </Combobox>
-      <div className="">
+      <div className="mt-1">
         <LegacyStack spacing="tight">{tagMarkup}</LegacyStack>
       </div>
     </>
