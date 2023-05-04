@@ -44,16 +44,16 @@ MDDatePicker) => {
     setVisible(false);
   };
   const _renderValueDatePicker = () => {
-    if (!type) return <div className={styles.placeholder}>DD/MM/YYYY</div>;
+    if (!type) return <div className={styles.placeholder}>MM/DD/YYYY</div>;
     return (
       <div className={styles.value}>
         {type === "start"
           ? selectedDates?.start
-            ? dayjs(selectedDates?.start).format("DD/MM/YYYY")
-            : twoWeekAgo.format("DD/MM/YYYY")
+            ? dayjs(selectedDates?.start).format("MM/DD/YYYY")
+            : twoWeekAgo.format("MM/DD/YYYY")
           : selectedDates?.end
-          ? dayjs(selectedDates?.end).format("DD/MM/YYYY")
-          : current.format("DD/MM/YYYY")}
+          ? dayjs(selectedDates?.end).format("MM/DD/YYYY")
+          : current.format("MM/DD/YYYY")}
       </div>
     );
   };

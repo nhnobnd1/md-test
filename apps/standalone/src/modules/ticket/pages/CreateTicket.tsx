@@ -1,17 +1,17 @@
 import { LeftCircleOutlined, RightCircleOutlined } from "@ant-design/icons";
+import { useJob } from "@moose-desk/core";
 import useToggleGlobal from "@moose-desk/core/hooks/useToggleGlobal";
 import {
   EmailIntegration,
-  GetOneEmailResponse,
+  EmailIntegrationRepository,
   Priority,
 } from "@moose-desk/repo";
 import classNames from "classnames";
 import { useEffect, useMemo, useState } from "react";
-import { useQuery } from "react-query";
+import { catchError, map, of } from "rxjs";
 import { Header } from "src/components/UI/Header";
 import ContentShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ContentShopifySearch";
 import { TicketForm } from "src/modules/ticket/components/TicketForm";
-import { emailIntegrationApi } from "src/modules/ticket/helper/api";
 import styles from "./styles.module.scss";
 interface CreateTicketProps {}
 
@@ -27,17 +27,23 @@ const CreateTicket = () => {
     };
   }, [primaryEmail?._id]);
 
-  const { isLoading } = useQuery({
-    queryKey: ["getPrimaryEmail"],
-    queryFn: () => emailIntegrationApi(),
-    retry: 3,
-    onSuccess: (data: GetOneEmailResponse) => {
-      setPrimaryEmail(data.data);
-    },
-    onError: () => {},
+  const { run: getPrimaryEmail, processing } = useJob(() => {
+    return EmailIntegrationRepository()
+      .getPrimaryEmail()
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            setPrimaryEmail(data.data);
+          }
+        }),
+        catchError((err) => {
+          return of(err);
+        })
+      );
   });
 
   useEffect(() => {
+    getPrimaryEmail();
     return () => {
       setVisible(false);
     };
@@ -67,7 +73,7 @@ const CreateTicket = () => {
         <div className={styles.wrapSearchToggle}>{_renderButtonToggle()}</div>
         <Header className="mb-[40px]" title="New Ticket" back></Header>
 
-        {isLoading ? (
+        {processing ? (
           <></>
         ) : (
           <TicketForm

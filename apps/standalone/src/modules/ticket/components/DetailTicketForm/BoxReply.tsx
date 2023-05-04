@@ -65,7 +65,7 @@ const BoxReply = ({
           time: moment
             .unix(item.createdTimestamp)
             .local()
-            .format("HH:mm DD/MM/YYYY Z"),
+            .format("HH:mm MM/DD/YYYY"),
           chat: item.description,
           email: item.fromEmail?.email,
         };
@@ -77,7 +77,7 @@ const BoxReply = ({
       time: moment
         .unix(ticket.createdTimestamp)
         .local()
-        .format("HH:mm DD/MM/YYYY Z"),
+        .format("HH:mm MM/DD/YYYY"),
       chat: ticket.description,
       email: ticket.fromEmail.email,
     });

@@ -262,12 +262,12 @@ const ViewTicket: FC<ViewTicketProps> = () => {
                   </IndexTable.Cell>
                   <IndexTable.Cell className="py-3">
                     {item.createdDatetime
-                      ? dayjs(item.createdDatetime).format("DD-MM-YYYY")
+                      ? dayjs(item.createdDatetime).format("MM/DD/YYYY")
                       : ""}
                   </IndexTable.Cell>
                   <IndexTable.Cell className="py-3">
                     {item.updatedDatetime
-                      ? dayjs(item.updatedDatetime).format("DD-MM-YYYY")
+                      ? dayjs(item.updatedDatetime).format("MM/DD/YYYY")
                       : ""}
                   </IndexTable.Cell>
                   <IndexTable.Cell className="py-3">

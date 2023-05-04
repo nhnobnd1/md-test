@@ -121,8 +121,8 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
       <Form form={form} layout="inline">
         <Form.Item name="from" label="From">
           <DatePicker
-            format={"DD/MM/YYYY"}
-            placeholder="dd/mm/yyyy"
+            format={"MM/DD/YYYY"}
+            placeholder="MM/DD/YYYY"
             disabledDate={disabledStartDate}
             onChange={handleChangeStartTime}
             // defaultValue={twoWeekAgo}
@@ -130,8 +130,8 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
         </Form.Item>
         <Form.Item name="to" label="To">
           <DatePicker
-            format={"DD/MM/YYYY"}
-            placeholder="dd/mm/yyyy"
+            format={"MM/DD/YYYYY"}
+            placeholder="MM/DD/YYYY"
             disabledDate={disabledEndDate}
             onChange={handleChangeEndTime}
             // defaultValue={current}

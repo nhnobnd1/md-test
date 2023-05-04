@@ -69,8 +69,8 @@ export default function TagIndexPage() {
         </IndexTable.Cell>
         <IndexTable.Cell className="py-3">
           {updatedDatetime
-            ? dayjs(updatedDatetime).format("DD-MM-YYYY")
-            : dayjs(createdDatetime).format("DD-MM-YYYY")}
+            ? dayjs(updatedDatetime).format("MM/DD/YYYY")
+            : dayjs(createdDatetime).format("MM/DD/YYYY")}
         </IndexTable.Cell>
         <IndexTable.Cell className="py-3">
           <ButtonGroup>

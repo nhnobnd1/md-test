@@ -64,7 +64,7 @@ const AutoReplyTab = ({
         </IndexTable.Cell>
         <IndexTable.Cell className="py-3">
           {/* <div dangerouslySetInnerHTML={{ __html: value.content }}></div> */}
-          {value.createAt ? dayjs(value.createAt).format("DD-MMM-YYYY") : ""}
+          {value.createAt ? dayjs(value.createAt).format("MM/DD/YYYY") : ""}
         </IndexTable.Cell>
         <IndexTable.Cell className="py-3">
           <ButtonGroup>

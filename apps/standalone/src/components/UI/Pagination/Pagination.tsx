@@ -97,6 +97,7 @@ const Pagination = ({
       current={currentPage}
       onChange={handleChangePagination}
       onShowSizeChange={handleSizeChange}
+      showSizeChanger={false}
     />
   );
 };

@@ -53,10 +53,10 @@ const ModalHoliday = ({
       onChange &&
         onChange({
           startDate: dayjs(valueDate ? valueDate.startDate : Date.now()).format(
-            "DD-MM"
+            "MM/DD"
           ),
           endDate: dayjs(valueDate ? valueDate.endDate : Date.now()).format(
-            "DD-MM"
+            "MM/DD"
           ),
           name: values.name,
           autoReplyCode: values.autoReplyCode,
@@ -74,11 +74,11 @@ const ModalHoliday = ({
       setValueDate({
         startDate: dayjs(
           `${dataForm.value.startDate}-${dateNow.getFullYear()}`,
-          "DD-MM-YYYY"
+          "MM/DD/YYYY"
         ).toDate(),
         endDate: dayjs(
           `${dataForm.value.endDate}-${dateNow.getFullYear()}`,
-          "DD-MM-YYYY"
+          "MM/DD/YYYY"
         ).toDate(),
       });
     } else {

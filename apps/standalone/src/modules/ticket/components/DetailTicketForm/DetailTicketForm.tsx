@@ -104,7 +104,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
             .fromNow()} (${moment
             .unix(item.createdTimestamp)
             .local()
-            .format("HH:mm DD/MM/YYYY")})`,
+            .format("HH:mm MM/DD/YYYY")})`,
           chat: item.description,
           email: item.fromEmail?.email,
           attachments: item.attachments,
@@ -131,7 +131,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
           .fromNow()} (${moment
           .unix(ticket.createdTimestamp)
           .local()
-          .format("HH:mm DD/MM/YYYY")})`,
+          .format("HH:mm MM/DD/YYYY")})`,
         chat: ticket.description,
         email: ticket.fromEmail.email,
         attachments: ticket.attachments,

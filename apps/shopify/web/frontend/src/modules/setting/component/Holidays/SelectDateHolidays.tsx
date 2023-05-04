@@ -83,7 +83,7 @@ const SelectDateHolidays = ({
             }
             value={
               selectedDates
-                ? dayjs(selectedDates.start).format("DD-MM-YYYY")
+                ? dayjs(selectedDates.start).format("MM/DD/YYYY")
                 : ""
             }
             error={error}
@@ -100,7 +100,7 @@ const SelectDateHolidays = ({
             label="Date:"
             labelHidden
             value={
-              selectedDates ? dayjs(selectedDates.end).format("DD-MM-YYYY") : ""
+              selectedDates ? dayjs(selectedDates.end).format("MM/DD/YYYY") : ""
             }
             error={error}
           />

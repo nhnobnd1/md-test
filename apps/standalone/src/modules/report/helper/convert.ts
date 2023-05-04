@@ -9,7 +9,7 @@ export const startOfMonth = dayjs().utc().startOf("month").unix();
 export const endOfMonth = dayjs().utc().endOf("month").unix();
 export const convertToTimeStamp = (date: string) => {
   if (!date) return;
-  return dayjs(date, "DD/MM/'YYYY").utc().unix();
+  return dayjs(date, "MM/DD/YYYY").utc().unix();
 };
 export const convertToLongDate = (date: string) => {
   return dayjs(date, "MM/DD/YYYY").local().format("MMMM Do YYYY");

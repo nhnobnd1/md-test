@@ -4,7 +4,7 @@ import timezone from "dayjs/plugin/timezone";
 dayjs.extend(timezone);
 
 export const formatTimeDDMMYY = (timeString: string) => {
-  return dayjs(timeString).format("DD/MM/YYYY");
+  return dayjs(timeString).format("MM/DD/YYYY");
 };
 export const formatTimeByTimezone = (timezoneString: string | undefined) => {
   const currentDay = !timezoneString ? dayjs() : dayjs().tz(timezoneString);

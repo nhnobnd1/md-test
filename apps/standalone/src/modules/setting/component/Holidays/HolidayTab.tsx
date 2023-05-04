@@ -175,20 +175,20 @@ const HolidayTab = ({
                           2
                         )}-${day.getFullYear()}`,
                         "MM-DD-YYYY"
-                      ).format("DD-MMM")}`
+                      ).format("MM/DD")}`
                     : `${dayjs(
                         `${record.startDate.slice(3)}-${record.startDate.slice(
                           0,
                           2
                         )}-${day.getFullYear()}`,
                         "MM-DD-YYYY"
-                      ).format("DD-MMM")} to ${dayjs(
+                      ).format("MM/DD")} to ${dayjs(
                         `${record.endDate.slice(3)}-${record.endDate.slice(
                           0,
                           2
                         )}-${day.getFullYear()}`,
                         "MM-DD-YYYY"
-                      ).format("DD-MMM")}`}
+                      ).format("MM/DD")}`}
                 </span>
               )}
             ></Table.Column>

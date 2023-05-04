@@ -202,7 +202,7 @@ const AutoReplyTab = ({
               key="date"
               title="Date Create"
               render={(_, record: AutoReply) => (
-                <span>{dayjs(`${record.createAt}`).format("DD-MMM-YYYY")}</span>
+                <span>{dayjs(`${record.createAt}`).format("MM/DD/YYYY")}</span>
               )}
               sorter={{
                 compare: (a: AutoReply, b: AutoReply) => {

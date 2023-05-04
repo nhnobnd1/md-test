@@ -16,6 +16,16 @@ interface RowMessageProps {
   item: ChatItem;
 }
 
+function splitText(fileName: string, maxLength: number) {
+  if (fileName.length <= maxLength) {
+    return fileName;
+  }
+  const extension = fileName.substr(fileName.lastIndexOf("."));
+  const shortName =
+    fileName.substr(0, maxLength - extension.length) + "..." + extension;
+  return shortName;
+}
+
 const regexQuote = /<div class="md_quote">[\s\S]*?<\/blockquote>/;
 
 const regexContent = /^.*(?=<div class="md_quote">)/s;
@@ -142,10 +152,34 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
                   <div className="flex justify-center items-start gap-2 ">
                     <Popover title={item.name}>
                       <div className="flex flex-col h-[150px] file-item relative justify-between">
+                        <div
+                          className={`${
+                            item.thumbUrl ? "hidden" : "block"
+                          } px-3 pt-3`}
+                        >
+                          <span> {splitText(item.name, 25)}</span>
+                          <p className="mt-2">
+                            {" "}
+                            {filesize(item.size, {
+                              base: 2,
+                              standard: "jedec",
+                            })}
+                          </p>
+                        </div>
                         <div className="fake absolute h-[150px] w-[150px]"></div>
-                        <span className="file-name">{item.name}</span>
+                        <span
+                          className={`file-name ${
+                            item.thumbUrl ? "block" : "hidden"
+                          }`}
+                        >
+                          {splitText(item.name, 25)}
+                        </span>
 
-                        <span className=" text-xs text-left inline-block file-size">
+                        <span
+                          className={` text-xs text-left inline-block file-size  ${
+                            item.thumbUrl ? "opacity-100" : "opacity-0"
+                          }`}
+                        >
                           {filesize(item.size, { base: 2, standard: "jedec" })}
                         </span>
                         <div className="justify-center items-center file-download mb-2">

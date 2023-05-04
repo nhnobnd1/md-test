@@ -73,21 +73,21 @@ const HolidayTab = ({
                   0,
                   2
                 )}-${day.getFullYear()}`,
-                "YYYY-DD-MM"
-              ).format("DD-MMM")}`
+                "MM/DD/YYYY"
+              ).format("MM/DD")}`
             : `${dayjs(
                 `${value.startDate.slice(3)}-${value.startDate.slice(
                   0,
                   2
                 )}-${day.getFullYear()}`,
-                "YYYY-DD-MM"
-              ).format("DD-MMM")} to ${dayjs(
+                "MM/DD/YYYY"
+              ).format("MM/DD")} to ${dayjs(
                 `${value.endDate.slice(3)}-${value.endDate.slice(
                   0,
                   2
                 )}-${day.getFullYear()}`,
-                "YYYY-DD-MM"
-              ).format("DD-MMM")}`}
+                "MM/DD/YYYY"
+              ).format("MM/DD")}`}
         </IndexTable.Cell>
         <IndexTable.Cell className="py-3">
           {getAutoReplyName(value.autoReplyCode)}

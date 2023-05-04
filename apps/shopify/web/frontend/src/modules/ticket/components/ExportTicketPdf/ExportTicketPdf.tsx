@@ -164,7 +164,7 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
           time: moment
             .unix(one.createdTimestamp)
             .local()
-            .format("HH:mm DD/MM/YYYY"),
+            .format("HH:mm MM/DD/YYYY"),
           chat: one.description,
         };
       }
@@ -176,7 +176,7 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
       time: moment
         .unix(item.createdTimestamp)
         .local()
-        .format("HH:mm DD/MM/YYYY"),
+        .format("HH:mm MM/DD/YYYY"),
       chat: item.description,
     });
     return (
@@ -328,7 +328,7 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
               fontFamily: "Roboto",
             }}
           >
-            Date: {moment().format("DD-MM-YYYY HH:mm:ss")}
+            Date: {moment().format("MM/DD/YYYY HH:mm:ss")}
           </Text>
           <Text
             style={{
