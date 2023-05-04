@@ -47,11 +47,12 @@ export function api() {
 export async function registerUser(payload) {
 	try {
 		// check register
-		const tourGuide = await api().post('/v1/general/info', {
-			subdomain: payload.subdomain,
-		});
+		const tourGuide = await api().get(
+			`/v1/general/info?subdomain=${payload.subdomain}`
+		);
+		console.log({ tourGuide });
 		// if dont' have tour guide
-		if (tourGuide.isOnboardingComplete) {
+		if (tourGuide.data.isOnboardingComplete) {
 			return;
 		}
 
