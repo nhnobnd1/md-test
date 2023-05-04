@@ -163,7 +163,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
       return CustomerRepository()
         .getList({
           page: params.page,
-          limit: limit,
+          limit: 500,
           query: params.searchText,
         })
         .pipe(
@@ -324,11 +324,11 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
                       }),
                     ]}
                   >
-                    <Select
-                      options={[]}
+                    <Select.Tags
+                      loadMore={fetchCustomer}
                       mode="tags"
                       placeholder="Type CC email..."
-                    ></Select>
+                    ></Select.Tags>
                   </Form.Item>
                 ) : (
                   <></>
@@ -351,11 +351,11 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
                       }),
                     ]}
                   >
-                    <Select
-                      options={[]}
+                    <Select.Tags
+                      loadMore={fetchCustomer}
                       mode="tags"
                       placeholder="Type BCC email..."
-                    ></Select>
+                    ></Select.Tags>
                   </Form.Item>
                 ) : (
                   <></>
