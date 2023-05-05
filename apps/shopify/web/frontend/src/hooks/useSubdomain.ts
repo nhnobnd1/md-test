@@ -7,7 +7,7 @@ export function useSubdomain() {
   const shop = useShopDomain();
 
   const getSubDomain = useCallback(() => {
-    return JSON.parse(localStorage.getItem("dataShopify") as any)?.subdomain;
+    return localStorage.getItem("subdomain") as string;
   }, [process.env.HOST, shop]);
 
   useMount(() => {

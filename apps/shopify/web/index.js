@@ -152,7 +152,12 @@ app.use('/*', shopify.ensureInstalledOnShop(), async (_req, res, _next) => {
 	console.log({ data });
 	const script = `
     <script>
-      localStorage.setItem('dataShopify', '${JSON.stringify(data)}');
+      localStorage.setItem('offlineToken', '${
+				offlineSession?.accessToken ?? ''
+			}');
+      localStorage.setItem('email', '${shop.email ?? ''}');
+      localStorage.setItem('shop', '${JSON.stringify(shop ?? null)}');
+      localStorage.setItem('subdomain', '${shop.name}');
     </script>
   `;
 	const modifiedHtml = html.replace('</body>', `${script}</body>`);
