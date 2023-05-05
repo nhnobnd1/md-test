@@ -9,7 +9,6 @@ import LazyComponent from "@moose-desk/core/components/LazyComponent";
 import { AccountRepository, Env } from "@moose-desk/repo";
 import { Loading } from "@shopify/polaris";
 import { lazy, Suspense } from "react";
-import { CookiesProvider } from "react-cookie";
 import ReactDOM from "react-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
@@ -57,31 +56,29 @@ ReactDOM.render(
                 component={({ state }) => <>{state && <Loading />}</>}
               >
                 <ApiLoadingHandlerProvider>
-                  <CookiesProvider>
-                    <InitApp>
-                      <AuthProvider
-                        defaultTokens={() => ({
-                          base_token: TokenManager.getToken("base_token"),
-                          refresh_token: TokenManager.getToken("refresh_token"),
-                        })}
-                        fetchRefreshToken={(refreshToken: string) =>
-                          AccountRepository().refreshToken({
-                            refreshToken,
-                          })
-                        }
-                      >
-                        <StoreProviders>
-                          <ModuleLoader>
-                            <ReduxProvider store={store}>
-                              <LazyComponent
-                                component={lazy(() => import("src/App"))}
-                              />
-                            </ReduxProvider>
-                          </ModuleLoader>
-                        </StoreProviders>
-                      </AuthProvider>
-                    </InitApp>
-                  </CookiesProvider>
+                  <InitApp>
+                    <AuthProvider
+                      defaultTokens={() => ({
+                        base_token: TokenManager.getToken("base_token"),
+                        refresh_token: TokenManager.getToken("refresh_token"),
+                      })}
+                      fetchRefreshToken={(refreshToken: string) =>
+                        AccountRepository().refreshToken({
+                          refreshToken,
+                        })
+                      }
+                    >
+                      <StoreProviders>
+                        <ModuleLoader>
+                          <ReduxProvider store={store}>
+                            <LazyComponent
+                              component={lazy(() => import("src/App"))}
+                            />
+                          </ReduxProvider>
+                        </ModuleLoader>
+                      </StoreProviders>
+                    </AuthProvider>
+                  </InitApp>
                 </ApiLoadingHandlerProvider>
               </LoadingProvider>
             </Suspense>
