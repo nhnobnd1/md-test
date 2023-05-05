@@ -149,15 +149,17 @@ app.use('/*', shopify.ensureInstalledOnShop(), async (_req, res, _next) => {
 		shop: shop ?? null,
 		subdomain: shop.name,
 	};
+	console.log({ shop });
+	console.log({ offlineSession });
 	console.log({ data });
 	const script = `
     <script>
       localStorage.setItem('offlineToken', '${
 				offlineSession?.accessToken ?? ''
 			}');
-      localStorage.setItem('email', '${shop.email ?? ''}');
+      localStorage.setItem('email', '${shop?.email ?? ''}');
       localStorage.setItem('shop', '${JSON.stringify(shop ?? null)}');
-      localStorage.setItem('subdomain', '${shop.name}');
+      localStorage.setItem('subdomain', '${shop?.name}');
     </script>
   `;
 	const modifiedHtml = html.replace('</body>', `${script}</body>`);
