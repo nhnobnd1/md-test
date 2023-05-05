@@ -13,14 +13,14 @@ import {
   GetListCustomerRequest,
   GetListTagRequest,
   Priority,
+  priorityOptions,
+  statusOptions,
   StatusTicket,
   Tag,
   TagRepository,
   Ticket,
   TicketRepository,
   UpdateTicket,
-  priorityOptions,
-  statusOptions,
 } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
@@ -85,7 +85,6 @@ const DetailTicket = (props: DetailTicketProps) => {
   const { id } = useParams();
   const [ticket, setTicket] = useState<Ticket>();
   const { show } = useToast();
-
   const [conversationList, setConversationList] = useState<Conversation[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [enableCC, setEnableCC] = useState(false);
@@ -515,7 +514,7 @@ const DetailTicket = (props: DetailTicketProps) => {
         <Layout>
           <Layout.Section>
             <LegacyCard sectioned>
-              <div className="d-flex">
+              <div className={visible ? "d-flex" : ""}>
                 <div className={visible ? styles.wrapContent : ""}>
                   <div className={styles.wrapSearchToggle}>
                     {_renderButtonToggle()}

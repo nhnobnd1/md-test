@@ -60,6 +60,7 @@ const ContentShopifySearch = () => {
       <ResultShopifySearch ref={parentRef} id={selectedId} />
     ) : null;
   };
+
   return (
     <section className={styles.searchContainer}>
       {/* <img className={styles.icon} src={shopifyLogo} alt="logo" /> */}

@@ -1,4 +1,10 @@
-import { generatePath, useJob, useMount, useToggle } from "@moose-desk/core";
+import {
+  generatePath,
+  useJob,
+  useMount,
+  useToggle,
+  useUnMount,
+} from "@moose-desk/core";
 import {
   EmailIntegration,
   EmailIntegrationRepository,
@@ -26,8 +32,8 @@ const CreateTicket = (props: CreateTicketProps) => {
   const { toggle: updateForm } = useToggle();
   const { show } = useToast();
   const { visible, setVisible } = useToggleGlobal();
-  const { dataSaved }: any = useSaveDataGlobal();
-  console.log(dataSaved?.email);
+  const { dataSaved, setDataSaved }: any = useSaveDataGlobal();
+
   const formRef = useRef<FormikProps<any>>(null);
   const [primaryEmail, setPrimaryEmail] = useState<EmailIntegration>();
   const initialValuesForm = useMemo(() => {
@@ -39,10 +45,6 @@ const CreateTicket = (props: CreateTicketProps) => {
       subject: "",
     };
   }, [primaryEmail?._id]);
-  useEffect(() => {
-    if (!dataSaved?.email) return;
-    formRef?.current?.setFieldValue("to", dataSaved?.email);
-  }, [dataSaved?.email, formRef]); // check
   const { run: getPrimaryEmail } = useJob(() => {
     return EmailIntegrationRepository()
       .getPrimaryEmail()
@@ -60,6 +62,10 @@ const CreateTicket = (props: CreateTicketProps) => {
 
   useMount(() => {
     updateForm();
+  });
+  useUnMount(() => {
+    setVisible(false);
+    setDataSaved(undefined);
   });
   useEffect(() => {
     getPrimaryEmail();
@@ -101,7 +107,7 @@ const CreateTicket = (props: CreateTicketProps) => {
 
           <Layout.Section>
             <LegacyCard sectioned>
-              <div className="d-flex">
+              <div className={visible ? "d-flex" : ""}>
                 <div className={visible ? styles.wrapContent : ""}>
                   <div className={styles.wrapSearchToggle}>
                     {_renderButtonToggle()}
