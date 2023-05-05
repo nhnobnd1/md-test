@@ -145,9 +145,9 @@ app.use('/*', shopify.ensureInstalledOnShop(), async (_req, res, _next) => {
 	const html = readFileSync(join(STATIC_PATH, 'index.html'), 'utf8');
 	const data = {
 		offlineToken: offlineSession?.accessToken ?? '',
-		email: shop.email ?? '',
+		email: shop?.email ?? '',
 		shop: shop ?? null,
-		subdomain: shop.name,
+		subdomain: shop?.name,
 	};
 	console.log({ shop });
 	console.log({ offlineSession });
