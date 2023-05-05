@@ -149,11 +149,10 @@ app.use('/*', shopify.ensureInstalledOnShop(), async (_req, res, _next) => {
 		shop: shop ?? null,
 		subdomain: shop?.name,
 	};
-	console.log({ shop });
-	console.log({ offlineSession });
-	console.log({ data });
+
 	const script = `
     <script>
+		sessionStorage.setItem('test','test');
       localStorage.setItem('offlineToken', '${
 				offlineSession?.accessToken ?? ''
 			}');
