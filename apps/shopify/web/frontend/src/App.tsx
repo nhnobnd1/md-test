@@ -8,7 +8,6 @@ import { Fullscreen } from "@shopify/app-bridge/actions";
 
 import { NavigationLink } from "@shopify/app-bridge-react/components/NavigationMenu/NavigationMenu";
 import { useEffect, useMemo } from "react";
-import { useCookies } from "react-cookie";
 import { RichText } from "src/components/RichText";
 import env from "src/core/env";
 import { useApi, useShopDomain } from "src/hooks";
@@ -24,11 +23,9 @@ export default function App() {
 
   const app = useAppBridge();
   const fullscreen = Fullscreen.create(app);
-  console.log({ fullscreen });
   const shop = useShopDomain();
   const { subDomain } = useSubdomain();
   const api = useApi();
-  const [cookies, setCookie] = useCookies();
   const { show } = useToast();
   const { login, isLoggedIn, user } = useAuth();
   const { storeId } = useStore();
@@ -64,10 +61,15 @@ export default function App() {
   //   getEventUninstallApp();
   // }, [window]);
   useEffect(() => {
-    console.log({ shop, isLoggedIn, user, cookies, storeId });
+    console.log({ shop, isLoggedIn, user, storeId });
     if ((shop && !isLoggedIn) || (!user && shop)) {
       console.log("Start login with token...");
-      const payload = cookies[process.env.HOST ?? shop];
+      const payload = {
+        email: localStorage.getItem("email"),
+        offlineToken: localStorage.getItem("offlineToken"),
+        shop: JSON.parse(localStorage.getItem("shop") as string),
+      };
+      console.log({ payload });
       if (payload && payload.email && payload.offlineToken && storeId) {
         console.log("Processing login");
         api
@@ -103,7 +105,7 @@ export default function App() {
           });
       }
     }
-  }, [shop, isLoggedIn, user, cookies, storeId]);
+  }, [shop, isLoggedIn, user, storeId]);
 
   const navigationLinks = useMemo((): NavigationLink[] => {
     return routes
