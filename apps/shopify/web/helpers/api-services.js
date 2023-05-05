@@ -72,3 +72,22 @@ export async function registerUser(payload) {
 		console.log(' register first', response);
 	}
 }
+
+export const uninstall = async (storeId) => {
+  try {
+    console.log("Call Api uninstall");
+    const res = await api().post('/v1/shopify/uninstall-app', {
+		headers: {
+			"storeId": storeId
+		}
+	});
+
+    if (res.status < 200 || res.status > 304) {
+      console.log("Call api error");
+    }
+    return console.log('success', res.status);
+  } catch (e) {
+    console.log("Api uninstall fail: ", e);
+    return null;
+  }
+};

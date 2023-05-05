@@ -1,5 +1,4 @@
 import { Shopify } from "@shopify/shopify-api";
-
 export const AppInstallations = {
   includes: async function (shopDomain) {
     const shopSessions = await Shopify.Context.SESSION_STORAGE.findSessionsByShop(shopDomain);

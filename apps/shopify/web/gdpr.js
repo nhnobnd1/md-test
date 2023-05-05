@@ -1,5 +1,5 @@
 import { DeliveryMethod } from "@shopify/shopify-api";
-
+import { uninstall } from "./helpers/api-services.js";
 export default {
   /**
    * Customers can request their data from a store owner. When this happens,
@@ -85,12 +85,9 @@ export default {
     callbackUrl: "/api/webhooks",
     callback: async (topic, shop, body, webhookId) => {
       const payload = JSON.parse(body);
-      await AppInstallations.delete(shop);
-      // Payload has the following shape:
-      // {
-      //   "shop_id": 954889,
-      //   "shop_domain": "{shop}.myshopify.com"
-      // }
-    },
+      // await AppInstallations.delete(shop);
+      const storeId = String(payload.id)
+      await uninstall(storeId)
+    }
   },
 };
