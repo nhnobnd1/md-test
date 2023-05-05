@@ -65,6 +65,7 @@ const ResultShopifySearch = React.forwardRef(({ id }: IProps, ref) => {
     },
     []
   );
+
   const handleClickRow = (record: any) => {
     setDataOrder(record);
   };

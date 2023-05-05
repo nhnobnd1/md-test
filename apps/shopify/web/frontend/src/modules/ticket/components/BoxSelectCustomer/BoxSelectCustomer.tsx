@@ -1,5 +1,6 @@
 import { Combobox, Listbox } from "@shopify/polaris";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import useSaveDataGlobal from "src/hooks/useSaveDataGlobal";
 interface Data {
   value: string;
   label: string;
@@ -19,6 +20,7 @@ const BoxSelectCustomer = (props: BoxSelectAutoReplyProps) => {
   // config UI
 
   // init data
+  const { dataSaved }: any = useSaveDataGlobal();
 
   const deselectedOptions = useMemo(() => {
     return props.data;
@@ -32,7 +34,11 @@ const BoxSelectCustomer = (props: BoxSelectAutoReplyProps) => {
       value: string;
     }[]
   >(deselectedOptions);
-
+  useEffect(() => {
+    if (!dataSaved?.email) return;
+    setInputValue(dataSaved?.email);
+    props.form.current.setFieldValue("to", dataSaved?.email);
+  }, [dataSaved?.email]);
   const updateText = useCallback(
     (value) => {
       setInputValue(value);

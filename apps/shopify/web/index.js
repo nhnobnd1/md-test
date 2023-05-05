@@ -139,13 +139,25 @@ app.use('/*', addSessionShopToReqParams);
 
 app.use('/*', shopify.ensureInstalledOnShop(), async (_req, res, _next) => {
 	console.log('request', _req.query);
+	const { shop, offlineSession, shopDomain } = await getInformationShop(
+		_req.query?.shop
+	);
 	const html = readFileSync(join(STATIC_PATH, 'index.html'), 'utf8');
+	const data = {
+		offlineToken: offlineSession?.accessToken ?? '',
+		email: shop?.email ?? '',
+		shop: shop ?? null,
+		subdomain: shop?.name,
+	};
 
-	const subdomain = _req.query?.shop.split('.')[0];
-	console.log('hehe', subdomain);
 	const script = `
     <script>
-      localStorage.setItem('subdomain', '${subdomain}');
+      localStorage.setItem('offlineToken', '${
+				offlineSession?.accessToken ?? ''
+			}');
+      localStorage.setItem('email', '${shop?.email ?? ''}');
+      localStorage.setItem('shop', '${JSON.stringify(shop ?? null)}');
+      localStorage.setItem('subdomain', '${shop?.name}');
     </script>
   `;
 	const modifiedHtml = html.replace('</body>', `${script}</body>`);

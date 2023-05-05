@@ -1,4 +1,10 @@
-import { generatePath, useJob, useMount, useToggle } from "@moose-desk/core";
+import {
+  generatePath,
+  useJob,
+  useMount,
+  useToggle,
+  useUnMount,
+} from "@moose-desk/core";
 import {
   EmailIntegration,
   EmailIntegrationRepository,
@@ -9,7 +15,7 @@ import { Layout, LegacyCard, Page } from "@shopify/polaris";
 import { CircleLeftMajor, CircleRightMajor } from "@shopify/polaris-icons";
 import classNames from "classnames";
 import { FormikProps } from "formik";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import { Banner } from "src/components/Banner";
 import { useBanner } from "src/hooks/useBanner";
@@ -26,19 +32,19 @@ const CreateTicket = (props: CreateTicketProps) => {
   const { toggle: updateForm } = useToggle();
   const { show } = useToast();
   const { visible, setVisible } = useToggleGlobal();
-  const { dataSaved }: any = useSaveDataGlobal();
+  const { dataSaved, setDataSaved }: any = useSaveDataGlobal();
+
   const formRef = useRef<FormikProps<any>>(null);
   const [primaryEmail, setPrimaryEmail] = useState<EmailIntegration>();
-  const [initialValuesForm, setInitialValuesForm] = useState<any>();
-  useEffect(() => {
-    setInitialValuesForm({
+  const initialValuesForm = useMemo(() => {
+    return {
       priority: Priority.MEDIUM,
       from: primaryEmail?._id,
       content: "",
-      to: dataSaved?.email || "",
+      to: "",
       subject: "",
-    });
-  }, [primaryEmail?._id, dataSaved?.email]);
+    };
+  }, [primaryEmail?._id]);
   const { run: getPrimaryEmail } = useJob(() => {
     return EmailIntegrationRepository()
       .getPrimaryEmail()
@@ -56,6 +62,10 @@ const CreateTicket = (props: CreateTicketProps) => {
 
   useMount(() => {
     updateForm();
+  });
+  useUnMount(() => {
+    setVisible(false);
+    setDataSaved(undefined);
   });
   useEffect(() => {
     getPrimaryEmail();

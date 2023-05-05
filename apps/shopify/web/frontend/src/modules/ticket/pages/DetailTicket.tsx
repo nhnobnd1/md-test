@@ -85,7 +85,6 @@ const DetailTicket = (props: DetailTicketProps) => {
   const { id } = useParams();
   const [ticket, setTicket] = useState<Ticket>();
   const { show } = useToast();
-
   const [conversationList, setConversationList] = useState<Conversation[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [enableCC, setEnableCC] = useState(false);

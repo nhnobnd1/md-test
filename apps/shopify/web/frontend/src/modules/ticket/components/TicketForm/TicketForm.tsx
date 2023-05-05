@@ -18,11 +18,12 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { map } from "rxjs";
 import Form, { FormProps } from "src/components/Form";
 import FormItem from "src/components/Form/Item";
-import { Select as ComboSelect, LoadMoreValue } from "src/components/Select";
+import { LoadMoreValue, Select as ComboSelect } from "src/components/Select";
 import SelectAddEmail from "src/components/SelectAddEmail/SelectAddEmail";
 import SelectAddTag from "src/components/SelectAddTag/SelectAddTag";
 import { TextEditorTicket } from "src/components/TextEditorTicket";
 import env from "src/core/env";
+import useSaveDataGlobal from "src/hooks/useSaveDataGlobal";
 import BoxSelectCustomer from "src/modules/ticket/components/BoxSelectCustomer/BoxSelectCustomer";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import * as Yup from "yup";
@@ -58,7 +59,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
   const [enableCC, setEnableCC] = useState(false);
   const navigate = useNavigate();
   const { show } = useToast();
-
+  const { dataSaved }: any = useSaveDataGlobal();
   const [fromEmail, setFromEmail] = useState(props.primaryEmail);
   const [toEmail, setToEmail] = useState({ value: "", id: "" });
   const [files, setFiles] = useState<any>([]);
@@ -262,7 +263,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
   //   console.log({ value });
   // };
   const onFinish = () => {
-    const values = props.innerRef?.current.values;
+    const values = (props.innerRef as any)?.current.values;
     const findEmailIntegration = emailIntegrations.find(
       (item) => item._id === values.from
     );
