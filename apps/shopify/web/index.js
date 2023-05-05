@@ -30,10 +30,9 @@ app.get(
 	shopify.config.auth.callbackPath,
 	shopify.auth.callback(),
 	async (req, res, next) => {
-
 		const { shop, offlineSession } = await getInformationShop(req.query.shop);
 
-		console.log('Offline session 11',offlineSession);
+		console.log('Offline session 11', offlineSession);
 		console.log('shop11', shop);
 
 		if (shop && offlineSession) {
@@ -100,7 +99,7 @@ app.use(async (req, res, next) => {
 	const { shop, offlineSession, shopDomain } = await getInformationShop(
 		req.query?.shop
 	);
-	console.log('shop22',shop)
+	console.log('shop22', shop);
 	console.log('offlineSession22', offlineSession);
 
 	// signup insall app -> offlineSession null
@@ -139,10 +138,18 @@ app.use('/api/*', shopify.validateAuthenticatedSession());
 app.use('/*', addSessionShopToReqParams);
 
 app.use('/*', shopify.ensureInstalledOnShop(), async (_req, res, _next) => {
-	return res
-		.status(200)
-		.set('Content-Type', 'text/html')
-		.send(readFileSync(join(STATIC_PATH, 'index.html')));
+	console.log('request', _req.query);
+	const html = readFileSync(join(STATIC_PATH, 'index.html'), 'utf8');
+
+	const subdomain = _req.query?.shop.split('.')[0];
+	console.log('hehe', subdomain);
+	const script = `
+    <script>
+      localStorage.setItem('subdomain', '${subdomain}');
+    </script>
+  `;
+	const modifiedHtml = html.replace('</body>', `${script}</body>`);
+	return res.status(200).set('Content-Type', 'text/html').send(modifiedHtml);
 });
 
 app.listen(PORT);
