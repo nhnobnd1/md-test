@@ -34,7 +34,7 @@ app.get(
 		console.log('show shop', req.query.shop);
 		const { shop, offlineSession } = await getInformationShop(req.query.shop);
 
-		console.log('Offline session', offlineSession);
+		console.log('Offline session', { offlineSession, shop });
 
 		if (shop && offlineSession) {
 			// const timezone = shop.timezone
