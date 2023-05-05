@@ -9,7 +9,7 @@ import { Layout, LegacyCard, Page } from "@shopify/polaris";
 import { CircleLeftMajor, CircleRightMajor } from "@shopify/polaris-icons";
 import classNames from "classnames";
 import { FormikProps } from "formik";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import { Banner } from "src/components/Banner";
 import { useBanner } from "src/hooks/useBanner";
@@ -27,22 +27,18 @@ const CreateTicket = (props: CreateTicketProps) => {
   const { show } = useToast();
   const { visible, setVisible } = useToggleGlobal();
   const { dataSaved }: any = useSaveDataGlobal();
-  console.log(dataSaved?.email);
   const formRef = useRef<FormikProps<any>>(null);
   const [primaryEmail, setPrimaryEmail] = useState<EmailIntegration>();
-  const initialValuesForm = useMemo(() => {
-    return {
+  const [initialValuesForm, setInitialValuesForm] = useState<any>();
+  useEffect(() => {
+    setInitialValuesForm({
       priority: Priority.MEDIUM,
       from: primaryEmail?._id,
       content: "",
-      to: "",
+      to: dataSaved?.email || "",
       subject: "",
-    };
-  }, [primaryEmail?._id]);
-  useEffect(() => {
-    if (!dataSaved?.email) return;
-    formRef?.current?.setFieldValue("to", dataSaved?.email);
-  }, [dataSaved?.email, formRef]); // check
+    });
+  }, [primaryEmail?._id, dataSaved?.email]);
   const { run: getPrimaryEmail } = useJob(() => {
     return EmailIntegrationRepository()
       .getPrimaryEmail()
@@ -101,7 +97,7 @@ const CreateTicket = (props: CreateTicketProps) => {
 
           <Layout.Section>
             <LegacyCard sectioned>
-              <div className="d-flex">
+              <div className={visible ? "d-flex" : ""}>
                 <div className={visible ? styles.wrapContent : ""}>
                   <div className={styles.wrapSearchToggle}>
                     {_renderButtonToggle()}
