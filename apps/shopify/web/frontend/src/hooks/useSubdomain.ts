@@ -10,6 +10,8 @@ export function useSubdomain() {
 
   const getSubDomain = useCallback(() => {
     const payload = cookies[process.env.HOST ?? (shop as any)];
+    console.log({ payload });
+    console.log({ cookies });
     if (payload) {
       const domain: string = payload?.shop?.myshopify_domain;
       return domain.split(".")[0];
