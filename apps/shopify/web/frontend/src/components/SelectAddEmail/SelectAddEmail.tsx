@@ -45,7 +45,6 @@ const SelectAddEmail = (props: BoxSelectAutoReplyProps) => {
     },
     []
   );
-  console.log({ selectedTags });
 
   const tagMarkup =
     selectedTags?.length > 0

@@ -69,7 +69,6 @@ export default function App() {
         offlineToken: localStorage.getItem("offlineToken"),
         shop: JSON.parse(localStorage.getItem("shop") as string),
       };
-      console.log({ payload });
       if (payload && payload.email && payload.offlineToken && storeId) {
         console.log("Processing login");
         api

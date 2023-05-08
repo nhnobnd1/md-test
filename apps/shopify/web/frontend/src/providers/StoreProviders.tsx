@@ -13,7 +13,6 @@ interface StoreContextType {
 }
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
-console.log({ StoreContext });
 
 interface StoreProvidersProps {
   children?: ReactNode;
@@ -48,7 +47,6 @@ export const StoreProviders = ({ children }: StoreProvidersProps) => {
 
   useMount(() => {
     const subDomain = getSubDomain();
-    console.log({ subDomain });
     if (subDomain) {
       fetchStoreId({ subdomain: subDomain });
     } else {

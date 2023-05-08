@@ -199,23 +199,50 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
   );
   const initialValues = useMemo(() => {
     const condition = ticket?.incoming || ticket?.createdViaWidget;
-    return {
-      status: ticket?.status,
-      assignee: ticket?.agentObjectId,
-      priority: ticket?.priority,
-      to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
-      tags: ticket?.tags,
-      content: "",
-      from: ticket?.senderConfigId ? ticket.senderConfigId : primaryEmail?._id,
-      ccEmails: ticket?.ccEmails,
-      CC: ticket?.ccEmails?.map((item) => {
-        return item.replace(/.*<([^>]*)>.*/, "$1") || item;
-      }),
-      BCC: ticket?.bccEmails?.map((item) => {
-        return item.replace(/.*<([^>]*)>.*/, "$1") || item;
-      }),
-    };
-  }, [ticket, primaryEmail]);
+    if (conversationList.length === 0) {
+      return {
+        status: ticket?.status,
+        assignee: ticket?.agentObjectId,
+        priority: ticket?.priority,
+        to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
+        tags: ticket?.tags,
+        content: "",
+        from: ticket?.senderConfigId
+          ? ticket.senderConfigId
+          : primaryEmail?._id,
+        ccEmails: ticket?.ccEmails,
+        CC: ticket?.ccEmails?.map((item) => {
+          return item.replace(/.*<([^>]*)>.*/, "$1") || item;
+        }),
+        BCC: ticket?.bccEmails?.map((item) => {
+          return item.replace(/.*<([^>]*)>.*/, "$1") || item;
+        }),
+      };
+    } else {
+      return {
+        status: ticket?.status,
+        assignee: ticket?.agentObjectId,
+        priority: ticket?.priority,
+        to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
+        tags: ticket?.tags,
+        content: "",
+        from: ticket?.senderConfigId
+          ? ticket.senderConfigId
+          : primaryEmail?._id,
+        ccEmails: ticket?.ccEmails,
+        CC: conversationList[conversationList.length - 1]?.ccEmails?.map(
+          (item) => {
+            return item.replace(/.*<([^>]*)>.*/, "$1") || item;
+          }
+        ),
+        BCC: conversationList[conversationList.length - 1]?.bccEmails?.map(
+          (item) => {
+            return item.replace(/.*<([^>]*)>.*/, "$1") || item;
+          }
+        ),
+      };
+    }
+  }, [ticket, primaryEmail, conversationList]);
 
   const { run: getListAgentApi } = useJob((payload: GetListAgentRequest) => {
     return AgentRepository()
