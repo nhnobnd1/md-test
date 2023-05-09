@@ -1,5 +1,6 @@
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { Card, Page } from "@shopify/polaris";
+import dayjs from "dayjs";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import MDDatePicker from "src/components/DatePicker/MDDatePicker";
@@ -9,8 +10,9 @@ import { getReportTopFive } from "src/modules/report/api/api";
 import ChartAgentsTicket from "src/modules/report/components/ChartAgentsTicket/ChartAgentsTicket";
 import { ReportAgentTable } from "src/modules/report/components/ReportAgentTable";
 import {
-  convertTimeStamp,
   getTimeFilterDefault,
+  getTwoWeeksAfter,
+  getTwoWeeksBefore,
 } from "src/modules/report/helper/convert";
 import styles from "./styles.module.scss";
 
@@ -32,11 +34,17 @@ const ByAgentPage = (props: ByAgentPageProps) => {
     startTime: "",
     endTime: "",
   });
+  const [timeDisable, setTimeDisable] = useState({
+    start: dayjs().subtract(2, "weeks").startOf("day"),
+    end: dayjs().endOf("day"),
+  });
   useEffect(() => {
     if (!timezone) return;
     setFilterData({
-      startTime: String(twoWeekAgo.tz(timezone).startOf("day").unix()),
-      endTime: String(current.tz(timezone).endOf("day").unix()),
+      startTime: String(
+        dayjs().tz(timezone).subtract(2, "weeks").startOf("day").unix()
+      ),
+      endTime: String(dayjs().tz(timezone).endOf("day").unix()),
     });
   }, [timezone]);
   const { data: reportTopFiveData } = useQuery({
@@ -61,24 +69,27 @@ const ByAgentPage = (props: ByAgentPageProps) => {
     //   : false;
   }, []);
 
-  const handleChangeStartDate = useCallback(
-    (value: { start: Date; end: Date }) => {
-      setFilterData((pre) => ({
-        ...pre,
-        startTime: String(convertTimeStamp(value.start, timezone, "start")),
-      }));
-    },
-    []
-  );
-  const handleChangeEndDate = useCallback(
-    (value: { start: Date; end: Date }) => {
-      setFilterData((pre) => ({
-        ...pre,
-        endTime: String(convertTimeStamp(value.end, timezone, "end")),
-      }));
-    },
-    []
-  );
+  const handleChangeStartDate = useCallback((value: string) => {
+    const date = dayjs(value, "MM/DD/YYYY")
+      .startOf("days")
+      .format("YYYY-MM-DD HH:mm:ss");
+
+    setFilterData((pre) => ({
+      ...pre,
+      startTime: String(dayjs.tz(date, timezone).unix()),
+    }));
+    setTimeDisable((pre: any) => ({ ...pre, start: dayjs(date) }));
+  }, []);
+  const handleChangeEndDate = useCallback((value: string) => {
+    const date = dayjs(value, "MM/DD/YYYY")
+      .endOf("days")
+      .format("YYYY-MM-DD HH:mm:ss");
+    setFilterData((pre) => ({
+      ...pre,
+      endTime: String(dayjs.tz(date, timezone).unix()),
+    }));
+    setTimeDisable((pre: any) => ({ ...pre, end: dayjs(date) }));
+  }, []);
   return (
     <Page title="By Agent" compactTitle fullWidth>
       <Card>
@@ -89,16 +100,20 @@ const ByAgentPage = (props: ByAgentPageProps) => {
                 type="start"
                 onDateChange={handleChangeStartDate}
                 datePickerClassName={styles.datePickerCustomer}
-                // multiMonth
-                // allowRange
+                disableDatesBefore={getTwoWeeksBefore(
+                  timeDisable.end.toDate()
+                ).toDate()}
+                disableDatesAfter={timeDisable.end.toDate()}
               />
               <MDDatePicker
                 type="end"
                 onDateChange={handleChangeEndDate}
                 datePickerClassName={styles.datePickerCustomer}
                 containerClassName={styles.endDateBlock}
-                // multiMonth
-                // allowRange
+                disableDatesBefore={timeDisable.start.toDate()}
+                disableDatesAfter={getTwoWeeksAfter(
+                  timeDisable.start.toDate()
+                ).toDate()}
               />
             </div>
           </div>

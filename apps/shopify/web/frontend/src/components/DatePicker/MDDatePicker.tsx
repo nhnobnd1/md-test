@@ -1,12 +1,14 @@
 import { DatePicker, DatePickerProps, Popover } from "@shopify/polaris";
 import classNames from "classnames";
 import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
 import { memo, useCallback, useState } from "react";
 import { getTimeFilterDefault } from "src/modules/report/helper/convert";
 import styles from "./style.module.scss";
+dayjs.extend(timezone);
 interface MDDatePicker extends DatePickerProps {
   type?: "start" | "end";
-  onDateChange: (value: { start: Date; end: Date }) => void;
+  onDateChange: (value: string) => void;
   datePickerClassName?: string;
   containerClassName?: string;
 }
@@ -15,6 +17,7 @@ const MDDatePicker = ({
   onDateChange,
   datePickerClassName,
   containerClassName,
+  ...props
 }: // ...props
 MDDatePicker) => {
   const dateNow = new Date();
@@ -30,8 +33,10 @@ MDDatePicker) => {
     end: Date;
   }>();
   const handleSelectDate = (dates: { start: Date; end: Date }) => {
+    const date = dates.start;
+    onDateChange(dayjs(date).format("MM/DD/YYYY"));
     setSelectedDates(dates);
-    onDateChange(dates);
+
     setVisible(false);
   };
   const handleMonthChange = useCallback((month: number, year: number) => {
@@ -83,6 +88,7 @@ MDDatePicker) => {
               onChange={handleSelectDate}
               onMonthChange={handleMonthChange}
               selected={selectedDates as any}
+              {...props}
             />
           </div>
         </Popover>
