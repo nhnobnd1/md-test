@@ -30,9 +30,38 @@ export const CardForwardEmail: FC<CardForwardEmailProps> = ({ formEmail }) => {
   const [isVerified, setIsVerified] = useState<Status>("Pending");
   const [retryCount, setRetryCount] = useState(0);
   const [retryGoogleCode, setRetryGoogleCode] = useState(0);
+  const [emails, setEmails] = useState<string[]>([]);
   const [isGmail, setIsGmail] = useState(true);
   const message = useMessage();
+
+  const { run: getListEmailApi, processing: loadingList } = useJob(
+    (payload: any) => {
+      return EmailIntegrationRepository()
+        .getListEmail(payload)
+        .pipe(
+          map(({ data }) => {
+            if (data.statusCode === 200) {
+              const listEmails = data.data.map((item) => item.supportEmail);
+              setEmails(listEmails);
+            } else {
+              message.error("Get data agent failed");
+            }
+          })
+        );
+    }
+  );
+
   const onFinish = (values: any) => {
+    if (emails.length > 0 && emails.includes(values.email)) {
+      form.setFields([
+        {
+          name: "email",
+          value: values.email,
+          errors: ["Email has already been set up"],
+        },
+      ]);
+      return;
+    }
     lookUpTypeEmail(values.email);
   };
   const handleVerifyCodeGoogle = () => {
@@ -168,6 +197,13 @@ export const CardForwardEmail: FC<CardForwardEmailProps> = ({ formEmail }) => {
       setRetryGoogleCode(0);
     }
   }, [step]);
+
+  useEffect(() => {
+    getListEmailApi({
+      limit: 1000,
+      page: 1,
+    });
+  }, []);
   return (
     <Card className="mb-5 " title="Forwarding details" type="inner">
       <Steps
