@@ -2,7 +2,7 @@ import { PageComponent } from "@moose-desk/core";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { Card, Page } from "@shopify/polaris";
 import dayjs from "dayjs";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useQueries } from "react-query";
 import MDDatePicker from "src/components/DatePicker/MDDatePicker";
 import useGlobalData from "src/hooks/useGlobalData";
@@ -30,13 +30,14 @@ enum ChartReportData {
   FIRST_RESPONSE_TIME = 3,
 }
 const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
+  const dateRef: any = useRef(null);
   const { subDomain } = useSubdomain();
   const { timezone }: any = useGlobalData(false, subDomain || "");
   const [filter, setFilter] = useState({
     startTime: "",
     endTime: "",
   });
-  const [timeDisable, setTimeDisable] = useState({
+  const [timeDisable, setTimeDisable] = useState<any>({
     start: dayjs().subtract(2, "weeks").startOf("day"),
     end: dayjs().endOf("day"),
   });
@@ -59,20 +60,24 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
     {
       queryKey: [QUERY_KEY.REPORT_SUPPORT_VOLUME, filter],
       queryFn: () => getSupportVolume(filter),
+      keepPreviousData: true,
       enabled: !!filter.startTime && !!filter.endTime,
     },
     {
       queryKey: [QUERY_KEY.REPORT_RESOLUTION_TIME, filter],
       queryFn: () => getResolutionTime(filter),
+      keepPreviousData: true,
+
       enabled: !!filter.startTime && !!filter.endTime,
     },
     {
       queryKey: [QUERY_KEY.REPORT_FIRST_RESPONSE_TIME, filter],
       queryFn: () => getFirstResponseTime(filter),
+      keepPreviousData: true,
+
       enabled: !!filter.startTime && !!filter.endTime,
     },
   ]);
-
   const memoData = useMemo(() => {
     const convertListDataQueries = queries?.map((dataItem: any) => {
       return dataItem?.data?.data?.data;
@@ -80,17 +85,29 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
     return convertListDataQueries;
   }, [queries]);
 
-  const handleChangeStartDate = useCallback((value: string) => {
+  const handleChangeStartDate = (value: string) => {
     const date = dayjs(value, "MM/DD/YYYY")
       .startOf("days")
       .format("YYYY-MM-DD HH:mm:ss");
 
+    if (dayjs(date) > timeDisable.end) {
+      dateRef?.current?.clearValue();
+      setTimeDisable((pre: any) => ({
+        end: undefined,
+        start: dayjs(date),
+      }));
+      setFilter((pre) => ({
+        endTime: "",
+        startTime: String(dayjs.tz(date, timezone).unix()),
+      }));
+      return;
+    }
     setFilter((pre) => ({
       ...pre,
       startTime: String(dayjs.tz(date, timezone).unix()),
     }));
     setTimeDisable((pre: any) => ({ ...pre, start: dayjs(date) }));
-  }, []);
+  };
   const handleChangeEndDate = useCallback((value: string) => {
     const date = dayjs(value, "MM/DD/YYYY")
       .endOf("days")
@@ -111,12 +128,14 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
                 type="start"
                 onDateChange={handleChangeStartDate}
                 datePickerClassName={styles.datePickerCustomer}
-                disableDatesBefore={getTwoWeeksBefore(
-                  timeDisable.end.toDate()
-                ).toDate()}
-                disableDatesAfter={timeDisable.end.toDate()}
+                disableDatesBefore={
+                  timeDisable.end &&
+                  getTwoWeeksBefore(timeDisable.end?.toDate()).toDate()
+                }
+                // disableDatesAfter={timeDisable.end.toDate()}
               />
               <MDDatePicker
+                ref={dateRef}
                 type="end"
                 onDateChange={handleChangeEndDate}
                 datePickerClassName={styles.datePickerCustomer}
