@@ -122,7 +122,7 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
         <Pagination
           total={10}
           pageSize={filterData.limit ?? 0}
-          currentPage={filterData.page}
+          currentPage={filterData.page || 1}
           onChangePage={handleChangePage}
         />
       </div>
