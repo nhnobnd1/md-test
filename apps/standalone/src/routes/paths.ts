@@ -6,6 +6,8 @@ const DefaultRoutes = createRoutePath({
   OnBoarding: "invitation",
   ForgotPassword: "forgot-password",
   ResetPassword: "reset-password",
+  VerifyEmailSuccess: "verify-email-success",
+  VerifyEmailFail: "verify-email-fail",
 } as const);
 
 const RoutePaths = {
