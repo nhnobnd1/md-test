@@ -122,13 +122,13 @@ export const OnBoarding = (props: OnBoardingProps) => {
                         <div className="text-center">
                           <img src={Images.Logo.LogoIcon} width={240} alt="" />
                         </div>
-                        <div className="text-center font-medium">
+                        {/* <div className="text-center font-medium">
                           Lorem ipsum dolor sit amet consectetur adipisicing
                           elit. Sed ab incidunt iusto fugit. Adipisci, id.
                           Possimus, doloribus soluta nam aliquam quibusdam ipsam
                           nesciunt minima autem deleniti eaque perferendis
                           voluptatem nemo!
-                        </div>
+                        </div> */}
                       </div>
                       <div className="card-boarding__actions">
                         <div className="text-center">
