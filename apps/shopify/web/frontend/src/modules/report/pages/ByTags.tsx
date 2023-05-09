@@ -2,6 +2,7 @@ import { PageComponent } from "@moose-desk/core";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import { Card, DataTable, EmptySearchResult, Page } from "@shopify/polaris";
+import dayjs from "dayjs";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import MDDatePicker from "src/components/DatePicker/MDDatePicker";
@@ -12,8 +13,9 @@ import useGlobalData from "src/hooks/useGlobalData";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { getReportByTags } from "src/modules/report/api/api";
 import {
-  convertTimeStamp,
   getTimeFilterDefault,
+  getTwoWeeksAfter,
+  getTwoWeeksBefore,
 } from "src/modules/report/helper/convert";
 import styles from "./styles.module.scss";
 interface ByTagsProps {}
@@ -42,12 +44,18 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
     startTime: "",
     endTime: "",
   });
+  const [timeDisable, setTimeDisable] = useState({
+    start: dayjs().subtract(2, "weeks").startOf("day"),
+    end: dayjs().endOf("day"),
+  });
   useEffect(() => {
     if (!timezone) return;
     setFilterData((pre) => ({
       ...pre,
-      startTime: String(twoWeekAgo.tz(timezone).startOf("day").unix()),
-      endTime: String(current.tz(timezone).endOf("day").unix()),
+      startTime: String(
+        dayjs().tz(timezone).subtract(2, "weeks").startOf("day").unix()
+      ),
+      endTime: String(dayjs().tz(timezone).endOf("day").unix()),
     }));
   }, [timezone]);
   const [querySearch, setQuerySearch] = useState<string>("");
@@ -119,24 +127,27 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
       sortOrder: direction === "ascending" ? 1 : -1,
     }));
   };
-  const handleChangeStartDate = useCallback(
-    (value: { start: Date; end: Date }) => {
-      setFilterData((pre) => ({
-        ...pre,
-        startTime: String(convertTimeStamp(value.start, timezone, "start")),
-      }));
-    },
-    []
-  );
-  const handleChangeEndDate = useCallback(
-    (value: { start: Date; end: Date }) => {
-      setFilterData((pre) => ({
-        ...pre,
-        endTime: String(convertTimeStamp(value.end, timezone, "end")),
-      }));
-    },
-    []
-  );
+  const handleChangeStartDate = useCallback((value: string) => {
+    const date = dayjs(value, "MM/DD/YYYY")
+      .startOf("days")
+      .format("YYYY-MM-DD HH:mm:ss");
+
+    setFilterData((pre) => ({
+      ...pre,
+      startTime: String(dayjs.tz(date, timezone).unix()),
+    }));
+    setTimeDisable((pre: any) => ({ ...pre, start: dayjs(date) }));
+  }, []);
+  const handleChangeEndDate = useCallback((value: string) => {
+    const date = dayjs(value, "MM/DD/YYYY")
+      .endOf("days")
+      .format("YYYY-MM-DD HH:mm:ss");
+    setFilterData((pre) => ({
+      ...pre,
+      endTime: String(dayjs.tz(date, timezone).unix()),
+    }));
+    setTimeDisable((pre: any) => ({ ...pre, end: dayjs(date) }));
+  }, []);
   return (
     <Page title="By Tags" compactTitle fullWidth>
       <Card>
@@ -147,6 +158,10 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
                 type="start"
                 onDateChange={handleChangeStartDate}
                 datePickerClassName={styles.datePickerCustomer}
+                disableDatesBefore={getTwoWeeksBefore(
+                  timeDisable.end.toDate()
+                ).toDate()}
+                disableDatesAfter={timeDisable.end.toDate()}
                 // multiMonth
                 // allowRange
               />
@@ -155,6 +170,10 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
                 onDateChange={handleChangeEndDate}
                 datePickerClassName={styles.datePickerCustomer}
                 containerClassName={styles.endDateBlock}
+                disableDatesBefore={timeDisable.start.toDate()}
+                disableDatesAfter={getTwoWeeksAfter(
+                  timeDisable.start.toDate()
+                ).toDate()}
                 // multiMonth
                 // allowRange
               />
