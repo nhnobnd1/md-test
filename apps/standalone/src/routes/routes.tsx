@@ -39,6 +39,24 @@ const appRootRoutes: IRoute[] = [
             import("src/modules/agent/pages/auth/resetPassword/ResetPassword")
         ),
       },
+      {
+        path: RoutePaths.VerifyEmailSuccess,
+        component: lazy(
+          () =>
+            import(
+              "src/modules/agent/pages/auth/verifyEmailSuccess/VerifyEmailSuccess"
+            )
+        ),
+      },
+      {
+        path: RoutePaths.VerifyEmailFail,
+        component: lazy(
+          () =>
+            import(
+              "src/modules/agent/pages/auth/verifyEmailFail/VerifyEmailFail"
+            )
+        ),
+      },
     ],
   },
 ];
