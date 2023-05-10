@@ -171,10 +171,6 @@ export const CardForwardEmail: FC<CardForwardEmailProps> = ({ formEmail }) => {
         map(({ data }) => {
           if (data.statusCode === 200) {
             if (data.data.isVerified) {
-              formEmail.setFieldValue(
-                "supportEmail",
-                form.getFieldValue("email")
-              );
               setIsVerified("Success");
             } else {
               setTimeout(() => {
@@ -309,6 +305,7 @@ export const CardForwardEmail: FC<CardForwardEmailProps> = ({ formEmail }) => {
           setStep={setStep}
           handleVerifyFinish={handleVerifyFinish}
           email={form.getFieldValue("email")}
+          formEmail={formEmail}
         />
       )}
     </Card>

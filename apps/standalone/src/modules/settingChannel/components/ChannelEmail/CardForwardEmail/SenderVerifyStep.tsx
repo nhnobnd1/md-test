@@ -2,16 +2,21 @@
 import { useJob } from "@moose-desk/core";
 import { EmailIntegrationRepository } from "@moose-desk/repo";
 import { Result, Spin, Typography } from "antd";
+import { FormInstance } from "antd/lib/form/Form";
 import { FC, useEffect, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import useMessage from "src/hooks/useMessage";
 
 interface ContentWaitProps {
   email: string;
+  formEmail: FormInstance<any>;
 }
 type Status = "Pending" | "Success" | "Fail";
 
-export const SenderVerifyStep: FC<ContentWaitProps> = ({ email }) => {
+export const SenderVerifyStep: FC<ContentWaitProps> = ({
+  email,
+  formEmail,
+}) => {
   const [isVerifySender, setIsVerifySender] = useState("Pending");
   const [retrySenderCount, setRetrySenderCount] = useState(0);
   const message = useMessage();
@@ -40,6 +45,7 @@ export const SenderVerifyStep: FC<ContentWaitProps> = ({ email }) => {
         map(({ data }) => {
           if (data.statusCode === 200) {
             if (data.data.isVerified) {
+              formEmail.setFieldValue("supportEmail", email);
               setIsVerifySender("Success");
             } else {
               setTimeout(() => {

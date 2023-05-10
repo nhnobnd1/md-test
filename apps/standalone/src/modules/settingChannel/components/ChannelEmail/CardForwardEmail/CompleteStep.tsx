@@ -1,5 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 import { Button, Result, Spin, Typography } from "antd";
+import { FormInstance } from "antd/lib/form/Form";
 import { Dispatch, FC, SetStateAction, useEffect } from "react";
 import { SenderVerifyStep } from "src/modules/settingChannel/components/ChannelEmail/CardForwardEmail/SenderVerifyStep";
 interface ContentWaitProps {
@@ -7,6 +8,7 @@ interface ContentWaitProps {
   handleVerifyFinish: () => void;
   isVerified: Status;
   email: string;
+  formEmail: FormInstance<any>;
 }
 type Status = "Pending" | "Success" | "Fail";
 
@@ -16,6 +18,7 @@ export const CompleteStep: FC<ContentWaitProps> = ({
   handleVerifyFinish,
   isVerified,
   email,
+  formEmail,
 }) => {
   //   const [status, setStatus] = useState<Status>("Pending");
   useEffect(() => {
@@ -39,7 +42,7 @@ export const CompleteStep: FC<ContentWaitProps> = ({
     );
   }
   if (isVerified === "Success") {
-    return <SenderVerifyStep email={email} />;
+    return <SenderVerifyStep email={email} formEmail={formEmail} />;
   }
   return (
     <div className="flex flex-col items-center">
