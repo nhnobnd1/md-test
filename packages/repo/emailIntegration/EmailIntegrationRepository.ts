@@ -70,12 +70,12 @@ export const EmailIntegrationRepository = createRepository(
 		},
 		sendVerifyForwardEmail(api, email: string) {
 			return api.get<BaseResponse<any>>(
-				`/send-verify-fwd-email?email=${email}`
+				`/send-fwd-verification-email?email=${email}`
 			);
 		},
 		checkVerifyForwardEmail(api, email: string) {
 			return api.get<BaseResponse<{ isVerified: boolean }>>(
-				`/check-verify-fwd-email?email=${email}`
+				`/check-fwd-verification-email?email=${email}`
 			);
 		},
 	}
