@@ -52,6 +52,7 @@ export const CardSelectEmail = forwardRef(
     const signCallback = useAppSelector(
       (state) => state.channelEmail.signInCallback
     );
+    console.log({ signCallback });
 
     const { run: getEmailGoogleAuth } = useJob(
       (payload: GetEmailGoogleAuthRequest) => {
@@ -261,16 +262,27 @@ export const CardSelectEmail = forwardRef(
     const SettingUpMail = (props: any) => {
       return (
         <>
-          <div className="pb-6">
+          <div className="pb-6 flex items-center gap-2">
             The Email you just signed in is:{" "}
             <span className="font-bold">
               {signCallback.supportEmail || form.getFieldValue("supportEmail")}
             </span>
-            <span className="ml-4 link" onClick={onChangeEmail}>
-              Change email address
-            </span>
+            <div className="flex gap-2 items-center flex-wrap">
+              <Button
+                className="flex items-center "
+                size="middle"
+                icon={
+                  <span className="flex items-center mr-2 text-[16px]">
+                    <LogosGoogleIcon />
+                  </span>
+                }
+                onClick={() => handleSignInSocial("google")}
+              >
+                Sign In Gmail
+              </Button>
+            </div>
           </div>
-          {!form.getFieldValue("isLive") ? (
+          {!signCallback.name && !form.getFieldValue("isLive") ? (
             <Alert
               message="Your Gmail credentials have expired. Please sign in again."
               type="warning"
