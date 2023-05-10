@@ -8413,12 +8413,22 @@ const Wa = K0(
     },
     sendVerifyForwardEmail(M, b) {
       return M.get(
-        `/send-verify-fwd-email?email=${b}`
+        `/send-fwd-verification-email?email=${b}`
       );
     },
     checkVerifyForwardEmail(M, b) {
       return M.get(
-        `/check-verify-fwd-email?email=${b}`
+        `/check-fwd-verification-email?email=${b}`
+      );
+    },
+    sendVerifyEmailSes(M, b) {
+      return M.get(
+        `/send-verification-email-ses?email=${b}`
+      );
+    },
+    checkVerifyEmailSes(M, b) {
+      return M.get(
+        `/check-verification-email-ses?email=${b}`
       );
     }
   }

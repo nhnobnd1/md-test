@@ -78,6 +78,16 @@ export const EmailIntegrationRepository = createRepository(
 				`/check-fwd-verification-email?email=${email}`
 			);
 		},
+		sendVerifyEmailSes(api, email: string) {
+			return api.get<BaseResponse<{ isVerified: boolean }>>(
+				`/send-verification-email-ses?email=${email}`
+			);
+		},
+		checkVerifyEmailSes(api, email: string) {
+			return api.get<BaseResponse<any>>(
+				`/check-verification-email-ses?email=${email}`
+			);
+		},
 	}
 );
 

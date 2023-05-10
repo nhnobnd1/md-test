@@ -25,6 +25,10 @@ export declare const EmailIntegrationRepository: () => {
     checkVerifyForwardEmail: (email: string) => import("rxjs").Observable<import("axios").AxiosResponse<BaseResponse<{
         isVerified: boolean;
     }>, any>>;
+    sendVerifyEmailSes: (email: string) => import("rxjs").Observable<import("axios").AxiosResponse<BaseResponse<{
+        isVerified: boolean;
+    }>, any>>;
+    checkVerifyEmailSes: (email: string) => import("rxjs").Observable<import("axios").AxiosResponse<BaseResponse<any>, any>>;
 };
 export default EmailIntegrationRepository;
 //# sourceMappingURL=EmailIntegrationRepository.d.ts.map

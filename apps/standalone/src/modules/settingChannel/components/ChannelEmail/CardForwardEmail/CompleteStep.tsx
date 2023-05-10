@@ -1,10 +1,12 @@
 /* eslint-disable react/no-unescaped-entities */
 import { Button, Result, Spin, Typography } from "antd";
 import { Dispatch, FC, SetStateAction, useEffect } from "react";
+import { SenderVerifyStep } from "src/modules/settingChannel/components/ChannelEmail/CardForwardEmail/SenderVerifyStep";
 interface ContentWaitProps {
   setStep: Dispatch<SetStateAction<number>>;
   handleVerifyFinish: () => void;
   isVerified: Status;
+  email: string;
 }
 type Status = "Pending" | "Success" | "Fail";
 
@@ -13,6 +15,7 @@ export const CompleteStep: FC<ContentWaitProps> = ({
   setStep,
   handleVerifyFinish,
   isVerified,
+  email,
 }) => {
   //   const [status, setStatus] = useState<Status>("Pending");
   useEffect(() => {
@@ -36,38 +39,10 @@ export const CompleteStep: FC<ContentWaitProps> = ({
     );
   }
   if (isVerified === "Success") {
-    return (
-      <div className="flex flex-col items-center">
-        <Result status="success" title="Your setup has been successful" />
-      </div>
-    );
+    return <SenderVerifyStep email={email} />;
   }
   return (
     <div className="flex flex-col items-center">
-      {/* <Typography.Title level={3}>Couldn't complete setup</Typography.Title>
-      <div className="flex justify-start items-start gap-2 w-[340px]">
-        <div className="flex flex-col">
-          <p style={{ color: "red" }}>
-            Your address has been added, but emails are not being forwarded to
-            your MooseDesk. Check your forwarding settings, and verify again.
-          </p>
-          <p>
-            Please read our <a href="#">Help Center article</a> for step-by-step
-            instructions.
-          </p>
-        </div>
-      </div>
-      <div>{children}</div>
-      <div className="flex gap-5 justify-center mt-5">
-        <Button
-          onClick={() => {
-            setStep(0);
-          }}
-          type="primary"
-        >
-          Start Over
-        </Button>
-      </div> */}
       <Result
         status="error"
         title="Couldn't complete setup"

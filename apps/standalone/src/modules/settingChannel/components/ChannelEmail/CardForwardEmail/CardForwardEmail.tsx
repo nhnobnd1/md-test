@@ -32,6 +32,7 @@ export const CardForwardEmail: FC<CardForwardEmailProps> = ({ formEmail }) => {
   const [retryGoogleCode, setRetryGoogleCode] = useState(0);
   const [emails, setEmails] = useState<string[]>([]);
   const [isGmail, setIsGmail] = useState(true);
+
   const message = useMessage();
 
   const { run: getListEmailApi, processing: loadingList } = useJob(
@@ -307,6 +308,7 @@ export const CardForwardEmail: FC<CardForwardEmailProps> = ({ formEmail }) => {
           isVerified={isVerified}
           setStep={setStep}
           handleVerifyFinish={handleVerifyFinish}
+          email={form.getFieldValue("email")}
         />
       )}
     </Card>

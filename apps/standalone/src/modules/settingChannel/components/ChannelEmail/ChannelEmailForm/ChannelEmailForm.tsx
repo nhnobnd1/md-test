@@ -62,7 +62,6 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
       dispatch(setSignInCallback(initialState.signInCallback));
     };
   }, []);
-  console.log({ signInCallback });
 
   useEffect(() => {
     if (signInCallback.callbackName && signInCallback.oauthStatus) {
@@ -218,7 +217,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
       onValuesChange={handleFormChange}
       layout="vertical"
     >
-      <div className="md:w-[70%] lg:w-[70%]">
+      <div className="md:w-[90%] lg:w-[80%]">
         <Form.Item
           name="name"
           label="Name"
