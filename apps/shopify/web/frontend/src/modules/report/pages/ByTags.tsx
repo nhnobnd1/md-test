@@ -3,7 +3,7 @@ import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import { Card, DataTable, EmptySearchResult, Page } from "@shopify/polaris";
 import dayjs from "dayjs";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import MDDatePicker from "src/components/DatePicker/MDDatePicker";
 import { MDTextField } from "src/components/Input/TextFieldPassword/MDTextField";
@@ -31,11 +31,13 @@ interface ITableFilter {
 const headings = ["Tag", "Total Tickets", "Percentage", "Percentage Closed"];
 const listSort = ["tagName", "totalTicket", "percentage", "percentageClosed"];
 export const ByTags: PageComponent<ByTagsProps> = () => {
+  const dateRef: any = useRef(null);
+
   const { subDomain } = useSubdomain();
   const { timezone }: any = useGlobalData(false, subDomain || "");
   const { current, twoWeekAgo } = getTimeFilterDefault();
 
-  const [filterData, setFilterData] = useState<ITableFilter>({
+  const [filterData, setFilterData] = useState<ITableFilter | any>({
     page: 1,
     limit: env.DEFAULT_PAGE_SIZE,
     query: "",
@@ -44,13 +46,13 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
     startTime: "",
     endTime: "",
   });
-  const [timeDisable, setTimeDisable] = useState({
+  const [timeDisable, setTimeDisable] = useState<any>({
     start: dayjs().subtract(2, "weeks").startOf("day"),
     end: dayjs().endOf("day"),
   });
   useEffect(() => {
     if (!timezone) return;
-    setFilterData((pre) => ({
+    setFilterData((pre: any) => ({
       ...pre,
       startTime: String(
         dayjs().tz(timezone).subtract(2, "weeks").startOf("day").unix()
@@ -113,7 +115,7 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
   //   [form.getFieldValue("from")]
   // );
   const handleChangePage = (page: number) =>
-    setFilterData((val) => {
+    setFilterData((val: any) => {
       return { ...val, page };
     });
 
@@ -121,28 +123,40 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
     headingIndex: number,
     direction: "ascending" | "descending" | "none"
   ) => {
-    setFilterData((pre) => ({
+    setFilterData((pre: any) => ({
       ...pre,
       sortBy: listSort[headingIndex],
       sortOrder: direction === "ascending" ? 1 : -1,
     }));
   };
-  const handleChangeStartDate = useCallback((value: string) => {
+  const handleChangeStartDate = (value: string) => {
     const date = dayjs(value, "MM/DD/YYYY")
       .startOf("days")
       .format("YYYY-MM-DD HH:mm:ss");
 
-    setFilterData((pre) => ({
+    if (dayjs(date) > timeDisable.end) {
+      dateRef?.current?.clearValue();
+      setTimeDisable((pre: any) => ({
+        end: undefined,
+        start: dayjs(date),
+      }));
+      setFilterData((pre: any) => ({
+        endTime: "",
+        startTime: String(dayjs.tz(date, timezone).unix()),
+      }));
+      return;
+    }
+    setFilterData((pre: any) => ({
       ...pre,
       startTime: String(dayjs.tz(date, timezone).unix()),
     }));
     setTimeDisable((pre: any) => ({ ...pre, start: dayjs(date) }));
-  }, []);
+  };
   const handleChangeEndDate = useCallback((value: string) => {
     const date = dayjs(value, "MM/DD/YYYY")
       .endOf("days")
       .format("YYYY-MM-DD HH:mm:ss");
-    setFilterData((pre) => ({
+    setFilterData((pre: any) => ({
       ...pre,
       endTime: String(dayjs.tz(date, timezone).unix()),
     }));
@@ -159,13 +173,14 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
                 onDateChange={handleChangeStartDate}
                 datePickerClassName={styles.datePickerCustomer}
                 disableDatesBefore={getTwoWeeksBefore(
-                  timeDisable.end.toDate()
+                  timeDisable.end?.toDate()
                 ).toDate()}
-                disableDatesAfter={timeDisable.end.toDate()}
+                // disableDatesAfter={timeDisable.end.toDate()}
                 // multiMonth
                 // allowRange
               />
               <MDDatePicker
+                ref={dateRef}
                 type="end"
                 onDateChange={handleChangeEndDate}
                 datePickerClassName={styles.datePickerCustomer}
@@ -209,8 +224,8 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
             <div className={styles.wrapPagination}>
               <Pagination
                 total={10}
-                pageSize={filterData.limit ?? 0}
-                currentPage={filterData.page}
+                pageSize={filterData.limit || 10}
+                currentPage={filterData.page || 1}
                 onChangePage={handleChangePage}
               />
             </div>
