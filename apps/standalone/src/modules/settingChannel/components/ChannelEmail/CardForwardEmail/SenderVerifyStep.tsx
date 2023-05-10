@@ -1,21 +1,23 @@
 /* eslint-disable react/no-unescaped-entities */
 import { useJob } from "@moose-desk/core";
 import { EmailIntegrationRepository } from "@moose-desk/repo";
-import { Result, Spin, Typography } from "antd";
+import { Button, Result, Spin, Typography } from "antd";
 import { FormInstance } from "antd/lib/form/Form";
-import { FC, useEffect, useState } from "react";
+import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import useMessage from "src/hooks/useMessage";
 
 interface ContentWaitProps {
   email: string;
   formEmail: FormInstance<any>;
+  setStep: Dispatch<SetStateAction<number>>;
 }
 type Status = "Pending" | "Success" | "Fail";
 
 export const SenderVerifyStep: FC<ContentWaitProps> = ({
   email,
   formEmail,
+  setStep,
 }) => {
   const [isVerifySender, setIsVerifySender] = useState("Pending");
   const [retrySenderCount, setRetrySenderCount] = useState(0);
@@ -85,21 +87,44 @@ export const SenderVerifyStep: FC<ContentWaitProps> = ({
     );
   }
 
+  if (isVerifySender === "Fail") {
+    return (
+      <div className="flex flex-col items-center">
+        <Result
+          status="error"
+          title="Your setup has been failure"
+          extra={[
+            <Button
+              onClick={() => {
+                setStep(0);
+              }}
+              type="primary"
+              key="console"
+            >
+              Start Over
+            </Button>,
+          ]}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col items-center">
       <Typography.Title level={3}>
         Sender Verification in progress ...
       </Typography.Title>
-      <div className="flex justify-start items-start gap-2 w-[340px] mt-5">
+      <div className="flex justify-start items-start gap-2  mt-5">
         <div className="flex flex-col">
           <p className="text-center">
-            To use the email {email} for sending messages, we have sent an email
-            to {email}.
+            To use your email for sending tickets, we have sent a verification
+            email to the address {email}
           </p>
           <p className="text-center">
-            Please check your mailbox and click on the link in the email to
-            authenticate the sender.
+            Please check your inbox and click on the link within to use this
+            email for sending tickets
           </p>
+          <p className="text-center"></p>
         </div>
       </div>
       <Spin size="large" className="mt-2" />

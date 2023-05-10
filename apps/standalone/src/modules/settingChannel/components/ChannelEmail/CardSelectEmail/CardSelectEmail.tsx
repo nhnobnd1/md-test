@@ -284,7 +284,7 @@ export const CardSelectEmail = forwardRef(
                 message="Your Gmail credentials have expired. Please sign in again."
                 type="warning"
                 showIcon
-                closable
+                // closable
               />
               <div className="flex gap-2 items-center flex-wrap mt-3">
                 <Button

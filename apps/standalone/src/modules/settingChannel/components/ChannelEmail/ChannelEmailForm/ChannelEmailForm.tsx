@@ -1,4 +1,4 @@
-import { useLocation, useMount, useToggle } from "@moose-desk/core";
+import { useLocation, useMount, useParams, useToggle } from "@moose-desk/core";
 import {
   AccessType,
   MailBoxType,
@@ -47,6 +47,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
   const { getSubDomain } = useSubdomain();
   const cardSelectMail = useRef<CardSelectMailRefProperties>(null);
   const { state } = useLocation();
+  const { id } = useParams();
   const [isLoggedServer, setIsLoggedServer] = useState<IsLoggedServer | null>(
     null
   );
@@ -251,7 +252,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
           <Input disabled={true} />
         </Form.Item>
         <Form.Item name="mailSettingType">
-          <Radio.Group>
+          <Radio.Group disabled={!!id}>
             <Radio value={MailSettingType.CUSTOM}>Use your Gmail</Radio>
             <Radio value={MailSettingType.MOOSEDESK}>
               Use Moosedesk email address

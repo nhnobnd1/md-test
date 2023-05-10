@@ -42,7 +42,9 @@ export const CompleteStep: FC<ContentWaitProps> = ({
     );
   }
   if (isVerified === "Success") {
-    return <SenderVerifyStep email={email} formEmail={formEmail} />;
+    return (
+      <SenderVerifyStep setStep={setStep} email={email} formEmail={formEmail} />
+    );
   }
   return (
     <div className="flex flex-col items-center">
