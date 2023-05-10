@@ -121,7 +121,7 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
       <div className={styles.wrapPagination}>
         <Pagination
           total={10}
-          pageSize={filterData.limit ?? 0}
+          pageSize={filterData.limit || 10}
           currentPage={filterData.page || 1}
           onChangePage={handleChangePage}
         />
