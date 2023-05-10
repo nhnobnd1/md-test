@@ -80,19 +80,23 @@ export const MainLayout = (props: MainLayoutProps) => {
       (item) => item?.key === `case-${location.pathname}`
     )?.key as string;
   }, [caseTopMenu, location]);
-
   return (
     <Layout className="main-layout min-h-screen">
-      <Layout.Header className="header">
-        <div className="logo" />
-        <Menu
-          className="main-layout__menu"
-          mode="horizontal"
-          theme="dark"
-          selectedKeys={[activeKeys]}
-          items={caseTopMenu}
-        />
-      </Layout.Header>
+      {location.pathname === RoutePaths.VerifyEmailFail ||
+      location.pathname === RoutePaths.VerifyEmailSuccess ? (
+        <></>
+      ) : (
+        <Layout.Header className="header">
+          <div className="logo" />
+          <Menu
+            className="main-layout__menu"
+            mode="horizontal"
+            theme="dark"
+            selectedKeys={[activeKeys]}
+            items={caseTopMenu}
+          />
+        </Layout.Header>
+      )}
       <Layout className="p-6">
         <Layout.Content>
           <div className="wrap-main-content">

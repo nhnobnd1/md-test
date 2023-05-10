@@ -93,6 +93,7 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
             isPrimaryEmail: email.isPrimaryEmail,
             accessType: AccessType.Both,
             deleteFromServer: mailBoxConfig.incoming.deleteFromServer,
+            isLive: email.isLive,
           };
 
         case MailBoxType.MOOSEDESK:

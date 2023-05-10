@@ -68,6 +68,7 @@ export interface EmailIntegration {
 	mailboxType: MailBoxType;
 	mailboxConfig: MailBoxConfig | { forwardEmail: string };
 	storeId: string;
+	isLive?: boolean;
 }
 export interface GetEmailGoogleAuthRequest {
 	subdomainForTest?: string;

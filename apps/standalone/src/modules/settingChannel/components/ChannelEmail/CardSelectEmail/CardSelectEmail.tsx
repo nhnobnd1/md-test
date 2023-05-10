@@ -6,7 +6,7 @@ import {
   MailBoxType,
 } from "@moose-desk/repo";
 import EmailIntegrationRepository from "@moose-desk/repo/emailIntegration/EmailIntegrationRepository";
-import { Button, Card, FormInstance, Radio } from "antd";
+import { Alert, Button, Card, FormInstance, Radio } from "antd";
 import {
   ForwardedRef,
   forwardRef,
@@ -49,20 +49,17 @@ export const CardSelectEmail = forwardRef(
     const dispatch = useAppDispatch();
     const message = useMessage();
     const { id } = useParams();
-    console.log({ id });
     const signCallback = useAppSelector(
       (state) => state.channelEmail.signInCallback
     );
 
     const { run: getEmailGoogleAuth } = useJob(
       (payload: GetEmailGoogleAuthRequest) => {
-        console.log({ payload });
         return EmailIntegrationRepository()
           .getEmailGoogleAuth(payload)
           .pipe(
             map(({ data }) => {
               if (data.statusCode === 200) {
-                console.log("data", data.data);
                 window.location.href = data.data;
               }
             })
@@ -273,6 +270,16 @@ export const CardSelectEmail = forwardRef(
               Change email address
             </span>
           </div>
+          {!form.getFieldValue("isLive") ? (
+            <Alert
+              message="Your Gmail credentials have expired. Please sign in again."
+              type="warning"
+              showIcon
+              closable
+            />
+          ) : (
+            <></>
+          )}
           {/* <Form.Item name="accessType">
             <Radio.Group>
               <Radio className="mr-4" value={AccessType.Both}>
@@ -292,7 +299,6 @@ export const CardSelectEmail = forwardRef(
         </>
       );
     };
-
     return (
       <Card className={className} type="inner" title="Mail Server">
         <Form.Item className="mb-[40px] hidden" name="mailboxType">
@@ -311,18 +317,20 @@ export const CardSelectEmail = forwardRef(
               loggedServer?.callBackName === "gmail" ? (
                 <SettingUpMail />
               ) : (
-                <Button
-                  className="flex items-center mb-4"
-                  size="middle"
-                  icon={
-                    <span className="flex items-center mr-2 text-[16px]">
-                      <LogosGoogleIcon />
-                    </span>
-                  }
-                  onClick={() => handleSignInSocial("google")}
-                >
-                  Sign In Gmail
-                </Button>
+                <div className="flex gap-2 items-center flex-wrap">
+                  <Button
+                    className="flex items-center "
+                    size="middle"
+                    icon={
+                      <span className="flex items-center mr-2 text-[16px]">
+                        <LogosGoogleIcon />
+                      </span>
+                    }
+                    onClick={() => handleSignInSocial("google")}
+                  >
+                    Sign In Gmail
+                  </Button>
+                </div>
               )}
             </>
           )}

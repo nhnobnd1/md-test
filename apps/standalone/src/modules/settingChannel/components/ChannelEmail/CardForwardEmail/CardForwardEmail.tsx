@@ -1,4 +1,4 @@
-import { useJob } from "@moose-desk/core";
+import { useJob, useParams } from "@moose-desk/core";
 import { EmailIntegrationRepository } from "@moose-desk/repo";
 import {
   Button,
@@ -6,6 +6,7 @@ import {
   Form,
   FormInstance,
   Input,
+  Result,
   Spin,
   Steps,
   Typography,
@@ -32,25 +33,72 @@ export const CardForwardEmail: FC<CardForwardEmailProps> = ({ formEmail }) => {
   const [retryGoogleCode, setRetryGoogleCode] = useState(0);
   const [emails, setEmails] = useState<string[]>([]);
   const [isGmail, setIsGmail] = useState(true);
+  const [isVerifySender, setIsVerifySender] = useState("Pending");
+  const [retrySenderCount, setRetrySenderCount] = useState(0);
 
+  const { id } = useParams();
   const message = useMessage();
 
-  const { run: getListEmailApi, processing: loadingList } = useJob(
-    (payload: any) => {
+  const { run: getListEmailApi } = useJob((payload: any) => {
+    return EmailIntegrationRepository()
+      .getListEmail(payload)
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            const listEmails = data.data.map((item) => item.supportEmail);
+            setEmails(listEmails);
+          } else {
+            message.error("Get data agent failed");
+          }
+        })
+      );
+  });
+
+  const { run: checkVerifyEmail, processing: loadingCheck } = useJob(
+    (payload: string) => {
       return EmailIntegrationRepository()
-        .getListEmail(payload)
+        .checkVerifyEmailSes(payload)
         .pipe(
           map(({ data }) => {
             if (data.statusCode === 200) {
-              const listEmails = data.data.map((item) => item.supportEmail);
-              setEmails(listEmails);
-            } else {
-              message.error("Get data agent failed");
+              if (data.data.isVerified) {
+                setIsVerifySender("Success");
+              } else {
+                retrySenderCount === 0
+                  ? setIsVerifySender("Fail")
+                  : setIsVerifySender("Pending");
+                setTimeout(
+                  () => {
+                    setRetrySenderCount(retrySenderCount + 1);
+                  },
+                  retrySenderCount === 0 ? 0 : 3000
+                );
+              }
             }
+          }),
+          catchError((err) => {
+            message.error("Something went wrong !");
+            return of(err);
           })
         );
     }
   );
+
+  const { run: sendVerifyEmail } = useJob((payload: string) => {
+    return EmailIntegrationRepository()
+      .sendVerifyEmailSes(payload)
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            setRetrySenderCount(1);
+          }
+        }),
+        catchError((err) => {
+          message.error("Something went wrong !");
+          return of(err);
+        })
+      );
+  });
 
   const onFinish = (values: any) => {
     if (emails.length > 0 && emails.includes(values.email)) {
@@ -200,114 +248,157 @@ export const CardForwardEmail: FC<CardForwardEmailProps> = ({ formEmail }) => {
       limit: 1000,
       page: 1,
     });
-  }, []);
-  return (
-    <Card className="mb-5 " title="Forwarding details" type="inner">
-      <Steps
-        className="mb-5"
-        current={step}
-        items={[
-          {
-            title: <span style={{ fontSize: 14 }}>Step 1</span>,
-          },
-          {
-            title: <span style={{ fontSize: 14 }}>Step 2</span>,
-          },
-          {
-            title: <span style={{ fontSize: 14 }}>Step 3</span>,
-          },
-          {
-            title: <span style={{ fontSize: 14 }}>Step 4</span>,
-          },
-        ]}
-      />
+    if (id) {
+      checkVerifyEmail(formEmail.getFieldValue("supportEmail"));
+    }
+  }, [id]);
 
-      <Form
-        name="forward-mail"
-        form={form}
-        onFinish={onFinish}
-        scrollToFirstError
-        initialValues={{ email: "" }}
-        onKeyPress={(e) => {
-          if (e.key === "Enter") {
-            form.submit();
-          }
-        }}
-      >
-        {step === 0 && (
-          <div className="flex flex-col items-center">
-            <Typography.Title className="font-medium text-md" level={3}>
-              Enter current support address
-            </Typography.Title>
-            <div className="flex gap-3 flex-col items-center mt-1">
-              <Form.Item
-                name="email"
-                rules={[
-                  { required: true, message: "You must enter your email!" },
-                  { type: "email", message: "Email is invalid!" },
-                ]}
-              >
-                <Input
-                  onKeyPress={(e) => {
-                    e.key === "Enter" && e.preventDefault();
-                  }}
-                  className="w-[300px]"
-                  placeholder="e.g. support@company.com"
-                />
-              </Form.Item>
-              <Button
-                type="primary"
-                onClick={() => {
-                  form.submit();
-                }}
-                className="w-[100px] mt-5"
-              >
-                Go
-              </Button>
-            </div>
-          </div>
-        )}
-      </Form>
-      {step === 1 && (
-        <ContentWait
-          setStep={setStep}
-          handleVerifyCodeGoogle={handleVerifyCodeGoogle}
-        >
-          {errorTextGoogle && retryGoogleCode === 0 ? (
-            <p
-              style={{ color: "red" }}
-              className="max-w-[340px] text-center mt-4"
+  useEffect(() => {
+    if (retrySenderCount === 20) {
+      setIsVerifySender("Fail");
+      setRetrySenderCount(0);
+      return;
+    }
+    if (retrySenderCount > 1 && isVerifySender !== "Success") {
+      checkVerifyEmail(formEmail.getFieldValue("supportEmail"));
+    }
+  }, [retrySenderCount, isVerifySender]);
+  return (
+    <>
+      {id ? (
+        !(loadingCheck && retrySenderCount === 0) && (
+          <Card className="mb-5 " title="" type="inner">
+            {isVerifySender === "Success" ? (
+              <Result status="success" title="Your setup has been successful" />
+            ) : (
+              <>
+                <Result status="error" title="Your setup has been failure" />
+                <div className="flex gap-5 justify-center ">
+                  <Button
+                    loading={isVerifySender === "Pending"}
+                    onClick={() => {
+                      sendVerifyEmail(formEmail.getFieldValue("supportEmail"));
+                      setIsVerifySender("Pending");
+                      setRetrySenderCount(2);
+                    }}
+                    type="primary"
+                  >
+                    Retry
+                  </Button>
+                </div>
+              </>
+            )}
+          </Card>
+        )
+      ) : (
+        <Card className="mb-5 " title="Forwarding details" type="inner">
+          <Steps
+            className="mb-5"
+            current={step}
+            items={[
+              {
+                title: <span style={{ fontSize: 14 }}>Step 1</span>,
+              },
+              {
+                title: <span style={{ fontSize: 14 }}>Step 2</span>,
+              },
+              {
+                title: <span style={{ fontSize: 14 }}>Step 3</span>,
+              },
+              {
+                title: <span style={{ fontSize: 14 }}>Step 4</span>,
+              },
+            ]}
+          />
+
+          <Form
+            name="forward-mail"
+            form={form}
+            onFinish={onFinish}
+            scrollToFirstError
+            initialValues={{ email: "" }}
+            onKeyPress={(e) => {
+              if (e.key === "Enter") {
+                form.submit();
+              }
+            }}
+          >
+            {step === 0 && (
+              <div className="flex flex-col items-center">
+                <Typography.Title className="font-medium text-md" level={3}>
+                  Enter current support address
+                </Typography.Title>
+                <div className="flex gap-3 flex-col items-center mt-1">
+                  <Form.Item
+                    name="email"
+                    rules={[
+                      { required: true, message: "You must enter your email!" },
+                      { type: "email", message: "Email is invalid!" },
+                    ]}
+                  >
+                    <Input
+                      onKeyPress={(e) => {
+                        e.key === "Enter" && e.preventDefault();
+                      }}
+                      className="w-[300px]"
+                      placeholder="e.g. support@company.com"
+                    />
+                  </Form.Item>
+                  <Button
+                    type="primary"
+                    onClick={() => {
+                      form.submit();
+                    }}
+                    className="w-[100px] mt-5"
+                  >
+                    Go
+                  </Button>
+                </div>
+              </div>
+            )}
+          </Form>
+          {step === 1 && (
+            <ContentWait
+              setStep={setStep}
+              handleVerifyCodeGoogle={handleVerifyCodeGoogle}
             >
-              {errorTextGoogle}
-            </p>
-          ) : (
-            <></>
+              {errorTextGoogle && retryGoogleCode === 0 ? (
+                <p
+                  style={{ color: "red" }}
+                  className="max-w-[340px] text-center mt-4"
+                >
+                  {errorTextGoogle}
+                </p>
+              ) : (
+                <></>
+              )}
+              {retryGoogleCode > 0 && retryGoogleCode !== 10 ? (
+                <>
+                  <Spin size="large" className="mt-3" />
+                </>
+              ) : (
+                <></>
+              )}
+            </ContentWait>
           )}
-          {retryGoogleCode > 0 && retryGoogleCode !== 10 ? (
-            <>
-              <Spin size="large" className="mt-3" />
-            </>
-          ) : (
-            <></>
+          {step === 2 && (
+            <StepGoogleCode
+              isGmail={isGmail}
+              code={googleCode}
+              sendVerify={sendVerify}
+            />
           )}
-        </ContentWait>
+          {step === 3 && (
+            <CompleteStep
+              isVerified={isVerified}
+              setStep={setStep}
+              handleVerifyFinish={handleVerifyFinish}
+              email={form.getFieldValue("email")}
+              formEmail={formEmail}
+            />
+          )}
+        </Card>
       )}
-      {step === 2 && (
-        <StepGoogleCode
-          isGmail={isGmail}
-          code={googleCode}
-          sendVerify={sendVerify}
-        />
-      )}
-      {step === 3 && (
-        <CompleteStep
-          isVerified={isVerified}
-          setStep={setStep}
-          handleVerifyFinish={handleVerifyFinish}
-          email={form.getFieldValue("email")}
-          formEmail={formEmail}
-        />
-      )}
-    </Card>
+    </>
   );
 };

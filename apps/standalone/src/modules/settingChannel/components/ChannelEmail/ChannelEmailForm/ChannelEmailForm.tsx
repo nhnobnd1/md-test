@@ -50,7 +50,6 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
   const [isLoggedServer, setIsLoggedServer] = useState<IsLoggedServer | null>(
     null
   );
-
   const signInCallback = useAppSelector(
     (state) => state.channelEmail.signInCallback
   );
@@ -150,7 +149,6 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
           // form.setFieldValue("name", "");
           form.setFieldValue("supportEmail", supportEmailDefault);
         } else if (changedValue.mailSettingType === MailSettingType.FORWARD) {
-          console.log("wtf");
           form.setFieldValue(
             "supportEmail",
             props.initialValues?.mailboxType === MailBoxType.OTHER

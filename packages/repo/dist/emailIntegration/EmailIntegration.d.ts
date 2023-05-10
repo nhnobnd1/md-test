@@ -63,6 +63,7 @@ export interface EmailIntegration {
         forwardEmail: string;
     };
     storeId: string;
+    isLive?: boolean;
 }
 export interface GetEmailGoogleAuthRequest {
     subdomainForTest?: string;
