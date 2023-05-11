@@ -45,6 +45,7 @@ const CreateTicket = (props: CreateTicketProps) => {
       subject: "",
     };
   }, [primaryEmail?._id]);
+  console.log({ primaryEmail });
   const { run: getPrimaryEmail } = useJob(() => {
     return EmailIntegrationRepository()
       .getPrimaryEmail()
