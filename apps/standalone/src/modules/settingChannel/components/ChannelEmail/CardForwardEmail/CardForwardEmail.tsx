@@ -1,19 +1,22 @@
+import { InfoCircleOutlined } from "@ant-design/icons";
 import { useJob, useParams } from "@moose-desk/core";
 import { EmailIntegrationRepository } from "@moose-desk/repo";
 import {
+  Alert,
   Button,
   Card,
   Form,
   FormInstance,
   Input,
-  Result,
   Spin,
   Steps,
+  Tooltip,
   Typography,
 } from "antd";
 import { FC, useEffect, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import useMessage from "src/hooks/useMessage";
+import useNotification from "src/hooks/useNotification";
 import { CompleteStep } from "src/modules/settingChannel/components/ChannelEmail/CardForwardEmail/CompleteStep";
 import { ContentWait } from "src/modules/settingChannel/components/ChannelEmail/CardForwardEmail/ContentWait";
 import { StepGoogleCode } from "src/modules/settingChannel/components/ChannelEmail/CardForwardEmail/StepGoogleCode";
@@ -38,6 +41,7 @@ export const CardForwardEmail: FC<CardForwardEmailProps> = ({ formEmail }) => {
 
   const { id } = useParams();
   const message = useMessage();
+  const notification = useNotification();
 
   const { run: getListEmailApi } = useJob((payload: any) => {
     return EmailIntegrationRepository()
@@ -267,23 +271,51 @@ export const CardForwardEmail: FC<CardForwardEmailProps> = ({ formEmail }) => {
     <>
       {id ? (
         !(loadingCheck && retrySenderCount === 0) && (
-          <Card className="mb-5 " title="" type="inner">
+          <Card
+            className="mb-5 "
+            title={
+              <>
+                <span>Sender verification status</span>
+                <Tooltip
+                  className="ml-3"
+                  title="To use your email for sending tickets, sender verification is required"
+                >
+                  <InfoCircleOutlined />
+                </Tooltip>
+              </>
+            }
+            type="inner"
+          >
             {isVerifySender === "Success" ? (
-              <Result status="success" title="Your setup has been successful" />
+              <Alert
+                message="Verified. You can use this email to send tickets."
+                type="success"
+                showIcon
+              />
             ) : (
               <>
-                <Result status="error" title="Your setup has been failure" />
-                <div className="flex gap-5 justify-center ">
+                <Alert
+                  message="This email has not been verified, please verify it in order to use this email for sending tickets."
+                  type="error"
+                  showIcon
+                />
+                <div className="flex gap-5 justify-center mt-2">
                   <Button
                     loading={isVerifySender === "Pending"}
                     onClick={() => {
                       sendVerifyEmail(formEmail.getFieldValue("supportEmail"));
                       setIsVerifySender("Pending");
                       setRetrySenderCount(2);
+                      notification.success(`We have sent a verification email to the address ${formEmail.getFieldValue(
+                        "supportEmail"
+                      )}. 
+Please check your inbox and click on the link within to use this email for sending tickets`);
                     }}
                     type="primary"
                   >
-                    Retry
+                    {isVerifySender === "Pending"
+                      ? "Sender verification inprogress ..."
+                      : "Send verification email"}
                   </Button>
                 </div>
               </>
