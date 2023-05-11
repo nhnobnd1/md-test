@@ -9,6 +9,9 @@ interface ContentWaitProps {
   isVerified: Status;
   email: string;
   formEmail: FormInstance<any>;
+  setRetryCount: Dispatch<SetStateAction<number>>;
+  setIsVerified: Dispatch<SetStateAction<Status>>;
+  sendVerify: () => void;
 }
 type Status = "Pending" | "Success" | "Fail";
 
@@ -19,6 +22,9 @@ export const CompleteStep: FC<ContentWaitProps> = ({
   isVerified,
   email,
   formEmail,
+  setRetryCount,
+  setIsVerified,
+  sendVerify,
 }) => {
   //   const [status, setStatus] = useState<Status>("Pending");
   useEffect(() => {
@@ -51,17 +57,18 @@ export const CompleteStep: FC<ContentWaitProps> = ({
       <Result
         status="error"
         title="Couldn't complete setup"
-        subTitle=" Your address has been added, but emails are not being forwarded to
-            your MooseDesk. Check your forwarding settings, and verify again."
+        subTitle="Cannot be verified yet. Please check your email and click on the link to verify. Click on the re-check button to check the verification status again"
         extra={[
           <Button
             onClick={() => {
-              setStep(0);
+              sendVerify();
+              setRetryCount(2);
+              setIsVerified("Pending");
             }}
             type="primary"
             key="console"
           >
-            Start Over
+            Re-check
           </Button>,
         ]}
       />

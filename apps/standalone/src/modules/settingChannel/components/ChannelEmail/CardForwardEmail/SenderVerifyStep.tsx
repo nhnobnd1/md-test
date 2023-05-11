@@ -92,16 +92,18 @@ export const SenderVerifyStep: FC<ContentWaitProps> = ({
       <div className="flex flex-col items-center">
         <Result
           status="error"
-          title="Your setup has been failure"
+          // title="Your setup has been failure"
+          subTitle="Cannot be verified yet. Please check your email and click on the link to verify. Click on the re-check button to check the verification status again"
           extra={[
             <Button
               onClick={() => {
-                setStep(0);
+                setRetrySenderCount(2);
+                setIsVerifySender("Pending");
               }}
               type="primary"
               key="console"
             >
-              Start Over
+              Re-check
             </Button>,
           ]}
         />

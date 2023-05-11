@@ -36,7 +36,7 @@ export const CardForwardEmail: FC<CardForwardEmailProps> = ({ formEmail }) => {
   const [retryGoogleCode, setRetryGoogleCode] = useState(0);
   const [emails, setEmails] = useState<string[]>([]);
   const [isGmail, setIsGmail] = useState(true);
-  const [isVerifySender, setIsVerifySender] = useState("Pending");
+  const [isVerifySender, setIsVerifySender] = useState<Status>("Pending");
   const [retrySenderCount, setRetrySenderCount] = useState(0);
 
   const { id } = useParams();
@@ -427,6 +427,9 @@ Please check your inbox and click on the link within to use this email for sendi
               handleVerifyFinish={handleVerifyFinish}
               email={form.getFieldValue("email")}
               formEmail={formEmail}
+              setRetryCount={setRetryCount}
+              setIsVerified={setIsVerified}
+              sendVerify={sendVerify}
             />
           )}
         </Card>
