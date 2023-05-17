@@ -77,12 +77,12 @@ const HolidayTab = ({
                 "MM/DD/YYYY"
               ).format("MM/DD")}`
             : `${dayjs(
-                `${value.startDate.slice(3)}-${value.startDate.slice(
-                  0,
-                  2
-                )}-${day.getFullYear()}`,
+                `${value.startDate}-${day.getFullYear()}`,
                 "MM/DD/YYYY"
-              ).format("MM/DD")} to ${value.endDate}`}
+              ).format("MM/DD")} to ${dayjs(
+                `${value.endDate}-${day.getFullYear()}`,
+                "MM/DD/YYYY"
+              ).format("MM/DD")}`}
         </IndexTable.Cell>
         <IndexTable.Cell className="py-3">
           {getAutoReplyName(value.autoReplyCode)}

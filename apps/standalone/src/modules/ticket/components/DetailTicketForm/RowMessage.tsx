@@ -220,7 +220,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
                         >
                           {filesize(item.size, { base: 2, standard: "jedec" })}
                         </span>
-                        <div className="justify-center items-center file-download mb-2">
+                        <div className="justify-center items-center file-download mb-0">
                           <Button
                             onClick={async () => {
                               const response = await axios.get(

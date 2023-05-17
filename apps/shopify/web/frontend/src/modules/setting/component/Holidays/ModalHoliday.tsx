@@ -63,16 +63,11 @@ const ModalHoliday = ({
     if (dataForm) {
       setValueDate({
         startDate: dayjs(
-          `${dataForm.value.startDate.slice(
-            3
-          )}-${dataForm.value.startDate.slice(0, 2)}-${dateNow.getFullYear()}`,
+          `${dataForm.value.startDate}-${dateNow.getFullYear()}`,
           "MM/DD/YYYY"
         ).toDate(),
         endDate: dayjs(
-          `${dataForm.value.endDate.slice(3)}-${dataForm.value.endDate.slice(
-            0,
-            2
-          )}-${dateNow.getFullYear()}`,
+          `${dataForm.value.endDate}-${dateNow.getFullYear()}`,
           "MM/DD/YYYY"
         ).toDate(),
       });
@@ -80,7 +75,6 @@ const ModalHoliday = ({
       setValueDate(undefined);
     }
   }, [dataForm]);
-
   return (
     <Modal
       {...props}
