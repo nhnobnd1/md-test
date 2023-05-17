@@ -84,6 +84,7 @@ export default function App() {
           })
           .subscribe({
             next({ data }) {
+              console.log({ data });
               TokenManager.setToken("base_token", data.data.accessToken);
               TokenManager.setToken("refresh_token", data.data.refreshToken);
               login(
