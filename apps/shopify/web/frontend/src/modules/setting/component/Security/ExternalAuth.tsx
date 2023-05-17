@@ -2,6 +2,7 @@ import { useJob, useMount } from "@moose-desk/core";
 import { UserSettingRepository } from "@moose-desk/repo";
 import { Button, FormLayout, Layout, Stack, Text } from "@shopify/polaris";
 import { memo, useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
@@ -41,6 +42,8 @@ const ExternalAuth = ({
     },
     [initialValues]
   );
+  const { t, i18n } = useTranslation();
+
   const { run: submit } = useJob((dataSubmit: any) => {
     return UserSettingRepository()
       .verifySetupOTP(dataSubmit)
@@ -53,19 +56,16 @@ const ExternalAuth = ({
             back(1);
             setBanner({
               isShowBanner: true,
-              message:
-                "Your Two-Factor Authentication has been enabled successfully.",
+              message: t("messages:success.enable_two_factor"),
               status: "success",
             });
-            show(
-              "Your Two-Factor Authentication has been enabled successfully."
-            );
+            show(t("messages:success.enable_two_factor"));
           } else {
-            setError("The input OTP is incorrect");
+            setError(t("messages:error.input_otp"));
           }
         }),
         catchError((error) => {
-          setError("The input OTP is incorrect");
+          setError(t("messages:error.input_otp"));
           return of(error);
         })
       );

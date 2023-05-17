@@ -26,6 +26,7 @@ import {
   Text,
 } from "@shopify/polaris";
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import { ButtonDelete } from "src/components/Button/ButtonDelete";
 import { ButtonEdit } from "src/components/Button/ButtonEdit";
@@ -44,6 +45,8 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
   const [sortValue, setSortValue] = useState<string[]>([]);
   const [groups, setGroups] = useState<UserGroup[]>([]);
   const { show } = useToast();
+  const { t, i18n } = useTranslation();
+
   const {
     state: btnSort,
     toggle: toggleBtnSort,
@@ -95,15 +98,15 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
             closeModalDelete();
             if (data.statusCode === 200) {
               getListGroupApi(filterData);
-              show("Delete group success");
+              show(t("messages:success.delete_group"));
             } else {
-              show("Delete group failed", {
+              show(t("messages:error.delete_group"), {
                 isError: true,
               });
             }
           }),
           catchError((error) => {
-            show("Delete group failed", {
+            show(t("messages:error.delete_group"), {
               isError: true,
             });
             return of(error);

@@ -21,6 +21,7 @@ import {
 } from "@shopify/polaris";
 import { FormikProps } from "formik";
 import { useCallback, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
@@ -47,6 +48,8 @@ const BusinessHours = (props: BusinessHoursProps) => {
     type: "success",
   });
   const { show } = useToast();
+  const { t, i18n } = useTranslation();
+
   const { subDomain } = useSubdomain();
   const { refetchGlobal } = useGlobalData(false, subDomain || ""); // main code
   const [dataBusinessCalendar, setDataBusinessCalendar] =
@@ -125,18 +128,18 @@ const BusinessHours = (props: BusinessHoursProps) => {
               );
               setBanner({
                 isShow: true,
-                message: "Your settings have been changed successfully.",
+                message: t("messages:success.update_business_calendar"),
                 type: "success",
               });
               refetchGlobal();
-              show("Your settings have been changed successfully.");
+              show(t("messages:success.update_business_calendar"));
             } else {
               setBanner({
                 isShow: true,
                 type: "critical",
-                message: "Business hours has been updated failed.",
+                message: t("messages:error.update_business_calendar"),
               });
-              show("Business hours has been updated failed.", {
+              show(t("messages:error.update_business_calendar"), {
                 isError: true,
               });
             }
@@ -145,9 +148,9 @@ const BusinessHours = (props: BusinessHoursProps) => {
             setBanner({
               isShow: true,
               type: "critical",
-              message: `Business hours has been updated failed.`,
+              message: t("messages:success.update_business_calendar"),
             });
-            show(`Business hours has been updated failed.`, {
+            show(t("messages:success.update_business_calendar"), {
               isError: true,
             });
             return of(error);

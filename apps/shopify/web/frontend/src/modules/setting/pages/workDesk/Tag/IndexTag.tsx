@@ -24,6 +24,7 @@ import {
 import { DeleteMajor, EditMajor, SortMinor } from "@shopify/polaris-icons";
 import dayjs from "dayjs";
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import { ModalDelete } from "src/components/Modal/ModalDelete";
 import Pagination from "src/components/Pagination/Pagination";
@@ -33,6 +34,8 @@ import SettingRoutePaths from "src/modules/setting/routes/paths";
 export default function TagIndexPage() {
   const navigate = useNavigate();
   const { show } = useToast();
+  const { t, i18n } = useTranslation();
+
   const [tags, setTags] = useState<Tag[]>([]);
   const [popoverSort, setPopoverSort] = useState(false);
   const [deleteTag, setDeleteTag] = useState<string>("");
@@ -196,17 +199,17 @@ export default function TagIndexPage() {
       .pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
-            show("Delete tag success");
+            show(t("messages:success.delete_tag"));
             fetchListTag();
             setDeleteTag("");
           } else {
-            show("Delete tag failed", {
+            show(t("messages:error.delete_tag"), {
               isError: true,
             });
           }
         }),
         catchError((error) => {
-          show("Delete tag failed", {
+          show(t("messages:error.delete_tag"), {
             isError: true,
           });
           return of(error);

@@ -41,7 +41,6 @@ export const TextEditorTicket = ({
   setLoadingButton,
   ...props
 }: RichTextProps) => {
-  const { t } = useTranslation();
   const editorRef = useRef<any>(null);
   const [isShowFile, setIsShowFile] = useState(false);
   const { state: modal, on: openModal, off: closeModal } = useToggle();
@@ -49,6 +48,7 @@ export const TextEditorTicket = ({
   const [loading, setLoading] = useState(false);
   const [idAttachments, setIdAttachments] = useState<string[]>([]);
   const { show } = useToast();
+  const { t, i18n } = useTranslation();
 
   const [errorText, setErrorText] = useState("");
   const onDrop = useCallback(

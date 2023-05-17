@@ -29,13 +29,13 @@ import AgentRoutePaths from "src/modules/agent/routes/paths";
 interface CreateAgentProps {}
 
 const CreateAgent = (props: CreateAgentProps) => {
-  const { t } = useTranslation();
   const { show } = useToast();
   const { user } = useAuth();
   const navigate = useNavigate();
   const formRef = useRef<FormikProps<any>>(null);
   const { banner, show: showBanner, close: closeBanner } = useBanner();
   const { toggle } = useToggle();
+  const { t, i18n } = useTranslation();
 
   const { run: createAgentApi, processing: loadingCreate } = useJob(
     (payload: CreateAgentRequest) => {
@@ -44,7 +44,7 @@ const CreateAgent = (props: CreateAgentProps) => {
         .pipe(
           map(({ data }) => {
             if (data.statusCode === 200) {
-              show(t("messages:success.create_agent"));
+              show(t("messages:success.inactive_email"));
               navigate(
                 generatePath(AgentRoutePaths.Detail, { id: data.data._id }),
                 {

@@ -16,6 +16,7 @@ import {
 } from "@shopify/polaris";
 import { FormikProps } from "formik";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import TagForm from "src/modules/setting/component/TagForm";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
@@ -44,6 +45,8 @@ export default function DetailsTag() {
     type: "success",
   });
   const { show } = useToast();
+  const { t, i18n } = useTranslation();
+
   const { run: fetDetailsTag } = useJob(
     () => {
       return TagRepository()
@@ -69,10 +72,10 @@ export default function DetailsTag() {
             setTitle(`${data.data.name}`);
             setBanner({
               isShow: true,
-              message: "Tag has been updated succcesfully.",
+              message: t("messages:success.update_tag"),
               type: "success",
             });
-            show("Tag has been updated succcesfully.");
+            show(t("messages:success.update_tag"));
             setDataTag(data.data);
           } else {
             if (data.statusCode === 409) {
@@ -88,9 +91,9 @@ export default function DetailsTag() {
               setBanner({
                 isShow: true,
                 type: "critical",
-                message: "Customer Profile has been updated failed.",
+                message: t("messages:error.update_tag"),
               });
-              show("Customer Profile has been updated failed.", {
+              show(t("messages:error.update_tag"), {
                 isError: true,
               });
             }
@@ -110,9 +113,9 @@ export default function DetailsTag() {
             setBanner({
               isShow: true,
               type: "critical",
-              message: "Tag name has been updated failed.",
+              message: t("messages:error.update_tag"),
             });
-            show("Tag name has been updated failed.", {
+            show(t("messages:error.update_tag"), {
               isError: true,
             });
           }

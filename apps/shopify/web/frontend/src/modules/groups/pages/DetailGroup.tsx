@@ -15,6 +15,7 @@ import { useToast } from "@shopify/app-bridge-react";
 import { Card, ContextualSaveBar, Layout, Page } from "@shopify/polaris";
 import { FormikProps } from "formik";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import { Banner } from "src/components/Banner";
 import { useBanner } from "src/hooks/useBanner";
@@ -32,6 +33,7 @@ const DetailGroup = (props: DetailGroupProps) => {
   const { state } = useLocation();
   const { toggle: updateForm } = useToggle();
   const { id } = useParams();
+  const { t, i18n } = useTranslation();
 
   const { run: getGroupApi } = useJob(() => {
     return UserGroupRepository()
@@ -53,14 +55,14 @@ const DetailGroup = (props: DetailGroupProps) => {
         .pipe(
           map(({ data }) => {
             if (data.statusCode === 200) {
-              show("Update Group Success");
+              show(t("messages:success.update_group"));
               navigate(
                 generatePath(GroupsRoutePaths.Detail, { id: data.data._id }),
                 {
                   state: {
                     banner: {
                       status: "success",
-                      message: `Group has been updated succcesfully.`,
+                      message: t("messages:success.update_group"),
                     },
                   },
                 }

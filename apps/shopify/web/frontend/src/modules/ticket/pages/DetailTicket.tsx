@@ -13,14 +13,14 @@ import {
   GetListCustomerRequest,
   GetListTagRequest,
   Priority,
-  priorityOptions,
-  statusOptions,
   StatusTicket,
   Tag,
   TagRepository,
   Ticket,
   TicketRepository,
   UpdateTicket,
+  priorityOptions,
+  statusOptions,
 } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
@@ -38,6 +38,7 @@ import classNames from "classnames";
 import { FormikProps } from "formik";
 import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
@@ -85,6 +86,8 @@ const DetailTicket = (props: DetailTicketProps) => {
   const { id } = useParams();
   const [ticket, setTicket] = useState<Ticket>();
   const { show } = useToast();
+  const { t, i18n } = useTranslation();
+
   const [conversationList, setConversationList] = useState<Conversation[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [enableCC, setEnableCC] = useState(false);
@@ -226,7 +229,7 @@ const DetailTicket = (props: DetailTicketProps) => {
       .pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
-            show("Send mail successfully");
+            show(t("messages:success.send_mail"));
             setConversationList([...conversationList, data.data]);
           }
         })
@@ -291,10 +294,8 @@ const DetailTicket = (props: DetailTicketProps) => {
       .update(data)
       .pipe(
         map(({ data }) => {
-          // console.log("update ticket success", data);
           if (data.statusCode === 200) {
-            // message.success("Update ticket successfully");
-            show("Update ticket successfully");
+            show(t("messages:success.update_ticket"));
           }
         }),
         catchError((err) => {

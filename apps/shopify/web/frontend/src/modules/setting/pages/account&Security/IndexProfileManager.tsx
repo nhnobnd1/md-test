@@ -12,6 +12,7 @@ import {
 import { FormikProps } from "formik";
 import * as jose from "jose";
 import { useCallback, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import ProfileForm from "src/modules/setting/component/ProfileForm";
 
@@ -39,6 +40,7 @@ export default function IndexProfileManager() {
     message: "",
   });
   const { show } = useToast();
+  const { t, i18n } = useTranslation();
 
   const { run: fetDetailsProfile } = useJob(
     (payload: string) => {
@@ -63,17 +65,17 @@ export default function IndexProfileManager() {
             setBanner({
               isShow: true,
               type: "success",
-              message: "Your Profile has been updated succcesfully.",
+              message: t("messages:success.update_profile"),
             });
-            show("Your Profile has been updated succcesfully.");
+            show(t("messages:success.update_profile"));
             setDataProfile(data.data);
           } else {
             setBanner({
               isShow: true,
               type: "critical",
-              message: "Your Profile has been updated failed.",
+              message: t("messages:error.update_profile"),
             });
-            show("Your Profile has been updated failed.", {
+            show(t("messages:error.update_profile"), {
               isError: true,
             });
           }
@@ -82,9 +84,9 @@ export default function IndexProfileManager() {
           setBanner({
             isShow: true,
             type: "critical",
-            message: "Your Profile has been updated failed.",
+            message: t("messages:error.update_profile"),
           });
-          show("Your Profile has been updated failed.", {
+          show(t("messages:error.update_profile"), {
             isError: true,
           });
           return of(error);

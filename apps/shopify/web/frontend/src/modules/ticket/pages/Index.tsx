@@ -60,6 +60,7 @@ import { optionsSort } from "src/modules/ticket/constant";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import UilImport from "~icons/uil/import";
 
+import { useTranslation } from "react-i18next";
 import { ExportTicketPdf } from "src/modules/ticket/components/ExportTicketPdf";
 import "./ListTicket.scss";
 
@@ -78,6 +79,7 @@ interface ItemConversation {
 const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const navigate = useNavigate();
   const { show } = useToast();
+  const { t, i18n } = useTranslation();
 
   const {
     state: modalDelete,
@@ -292,22 +294,14 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       .update(data)
       .pipe(
         map(({ data }) => {
-          // console.log("update ticket success", data);
           if (data.statusCode === 200) {
-            show("Updated tickets successfully");
+            show(t("messages:success.update_ticket"));
             getStatisticTicket();
-            // message.success("Updated tickets successfully");
           }
         })
-        // catchError((err) => {
-        //   message.error("Updated tickets fail");
-
-        //   return of(err);
-        // })
       );
   });
   const { run: deleteTicketApi } = useJob((id: string[]) => {
-    // message.loading.show("Removing Ticket...");
     return TicketRepository()
       .delete({
         ids: id,
@@ -316,7 +310,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         map(({ data }) => {
           // message.loading.hide();
           if (data.statusCode === 200) {
-            show("The selected Ticket has been removed from the system.");
+            show(t("messages:success.delete_ticket"));
             getStatisticTicket();
             if (filterObject) {
               getListTicketFilter({ ...filterData, ...filterObject });
@@ -330,12 +324,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
               };
             });
           } else {
-            // notification.error("There is an error with remove Ticket.", {
-            //   description: "Remove Ticket failed",
-            //   style: {
-            //     width: 450,
-            //   },
-            // });
+            show(t("messages:error.delete_ticket"));
           }
         })
       );

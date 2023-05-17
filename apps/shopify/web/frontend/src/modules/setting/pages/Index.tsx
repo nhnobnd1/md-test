@@ -19,6 +19,7 @@ import {
 } from "@shopify/polaris";
 import { isEmpty } from "lodash-es";
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import { ModalDelete } from "src/components/Modal/ModalDelete";
 import Pagination from "src/components/Pagination/Pagination";
@@ -30,6 +31,8 @@ export default function SettingIndexPage() {
   const param = useParams();
   const navigate = useNavigate();
   const { show } = useToast();
+  const { t, i18n } = useTranslation();
+
   const [tags, setTags] = useState<Tag[]>([]);
   const resourceName = {
     singular: "tag",
@@ -127,17 +130,17 @@ export default function SettingIndexPage() {
       .pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
-            show("Delete tag success");
+            show(t("messages:success.delete_tag"));
             fetchListTag();
             clearSelection();
           } else {
-            show("Delete tag failed", {
+            show(t("messages:error.delete_tag"), {
               isError: true,
             });
           }
         }),
         catchError((error) => {
-          show("Delete tag failed", {
+          show(t("messages:error.delete_tag"), {
             isError: true,
           });
           return of(error);

@@ -21,7 +21,6 @@ import useFullScreen from "src/store/useFullScreen";
 
 export default function App() {
   const { routes } = useRoutes();
-  const { t } = useTranslation();
   const app = useAppBridge();
   const fullscreen = Fullscreen.create(app);
   const shop = useShopDomain();
@@ -31,6 +30,8 @@ export default function App() {
   const { login, isLoggedIn, user } = useAuth();
   const { storeId } = useStore();
   const fullScreen = useFullScreen((state) => state.fullScreen);
+  const { t, i18n } = useTranslation();
+
   // useGlobalData(isLoggedIn);
   useEffect(() => {
     fullScreen

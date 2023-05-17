@@ -10,6 +10,7 @@ import {
 } from "@shopify/polaris";
 import { FormikProps } from "formik";
 import { useCallback, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import useAuth from "src/hooks/useAuth";
 import CustomerForm from "src/modules/customers/component/CustomerForm";
@@ -23,6 +24,7 @@ export default function CreateCustomer() {
   const [disable, setDisable] = useState(true);
   const [messageError, setMessageError] = useState("");
   const [banner, setBanner] = useState(false);
+  const { t, i18n } = useTranslation();
 
   const initialValuesForm = useMemo(() => {
     return {
@@ -45,7 +47,7 @@ export default function CreateCustomer() {
       .pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
-            show("Customer Profile has been created successfully.");
+            show(t("messages:success.create_customer"));
             navigateShowDetails(data.data._id, data.statusCode);
           } else {
             if (data.statusCode === 409) {
@@ -54,7 +56,7 @@ export default function CreateCustomer() {
                 isError: true,
               });
             } else {
-              show("Create customer failed", {
+              show(t("messages:error.create_customer"), {
                 isError: true,
               });
             }
@@ -68,7 +70,7 @@ export default function CreateCustomer() {
               isError: true,
             });
           } else {
-            show("Create customer failed", {
+            show(t("messages:error.create_customer"), {
               isError: true,
             });
           }

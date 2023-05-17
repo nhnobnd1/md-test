@@ -10,7 +10,6 @@ import {
   EmailIntegrationRepository,
   Priority,
 } from "@moose-desk/repo";
-import { useToast } from "@shopify/app-bridge-react";
 import { Layout, LegacyCard, Page } from "@shopify/polaris";
 import { CircleLeftMajor, CircleRightMajor } from "@shopify/polaris-icons";
 import classNames from "classnames";
@@ -30,7 +29,6 @@ interface CreateTicketProps {}
 const CreateTicket = (props: CreateTicketProps) => {
   const { banner, show: showBanner, close: closeBanner } = useBanner();
   const { toggle: updateForm } = useToggle();
-  const { show } = useToast();
   const { visible, setVisible } = useToggleGlobal();
   const { dataSaved, setDataSaved }: any = useSaveDataGlobal();
 
