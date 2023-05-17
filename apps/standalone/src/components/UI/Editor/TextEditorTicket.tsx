@@ -6,6 +6,7 @@ import { Button, FormInstance, Modal, Popover } from "antd";
 import { filesize } from "filesize";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import useMessage from "src/hooks/useMessage";
 import ImageZoom from "src/modules/ticket/components/DetailTicketForm/ImageZoom";
@@ -51,6 +52,8 @@ const TextEditorTicket = ({
       setIsChanged(content);
     }
   };
+  const { t, i18n } = useTranslation();
+
   const [myFiles, setMyFiles] = useState<any>([]);
   const location = useLocation();
   const navigate = useNavigate();
@@ -111,14 +114,14 @@ const TextEditorTicket = ({
             setIdAttachments((previousAttachs) => {
               return [...previousAttachs, ...data.data.ids];
             });
-            message.success("Upload file successfully");
+            message.success(t("messages:success.file_upload"));
           }
         }),
         catchError((err) => {
           setLoadingButton(false);
           setLoading(false);
 
-          message.error("Upload file fail");
+          message.error(t("messages:error.file_upload"));
 
           return of(err);
         })

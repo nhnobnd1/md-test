@@ -13,6 +13,7 @@ import {
 import { Input, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Header } from "src/components/UI/Header";
 import Pagination from "src/components/UI/Pagination/Pagination";
@@ -49,6 +50,7 @@ const TrashTicket = () => {
     useState<BaseListTicketRequest>(defaultFilter);
   const { subDomain } = useSubdomain();
   const { timezone } = useGlobalData(false, subDomain || "");
+  const { t, i18n } = useTranslation();
 
   const [statistic, setStatistic] = useState<TicketStatistic>({
     statusCode: 200,
@@ -76,7 +78,7 @@ const TrashTicket = () => {
       setStatistic(data);
     },
     onError: () => {
-      message.error("Get data ticket failed");
+      message.error(t("messages:error.get_ticket"));
     },
   });
   const onChangeTable = useCallback(
@@ -107,7 +109,7 @@ const TrashTicket = () => {
       setMeta(data.metadata);
     },
     onError: () => {
-      message.error("Get data trash ticket failed");
+      message.error(t("messages:error.get_ticket"));
     },
   });
   useQuery({
@@ -129,7 +131,7 @@ const TrashTicket = () => {
       setTags(data.data);
     },
     onError: () => {
-      message.error("Get tags failed");
+      message.error(t("messages:error.get_tag"));
     },
   });
 

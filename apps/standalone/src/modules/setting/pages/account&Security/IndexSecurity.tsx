@@ -2,6 +2,7 @@ import { useJob, useMount } from "@moose-desk/core";
 import { AccountRepository } from "@moose-desk/repo";
 import { Button, Card, Input, Typography } from "antd";
 import { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import { Form } from "src/components/UI/Form";
 import useMessage from "src/hooks/useMessage";
@@ -10,6 +11,7 @@ import Enable2FAModal from "src/modules/setting/component/Security/Enable2FAModa
 import { rulesValidatePassword } from "src/regex";
 export default function IndexAccountManager() {
   const [status, setStatus] = useState(false);
+  const { t, i18n } = useTranslation();
 
   const message = useMessage();
   const notification = useNotification();
@@ -57,21 +59,18 @@ export default function IndexAccountManager() {
   }, []);
 
   const { run: submit } = useJob((dataSubmit: any) => {
-    message.loading.show("Updating password ...");
+    message.loading.show(t("messages:loading.updating_password"));
+
     return AccountRepository()
       .changePassword(dataSubmit)
       .pipe(
         map(({ data }) => {
           message.loading.hide();
           if (data.statusCode === 200) {
-            notification.success(
-              "Your password has been updated successfully."
-            );
+            notification.success(t("messages:success.change_password"));
             handleResetForm();
           } else {
-            notification.error(
-              "System error. Please try again in a few minutes!"
-            );
+            notification.error(t("messages:error.change_password"));
           }
         }),
         catchError((error) => {

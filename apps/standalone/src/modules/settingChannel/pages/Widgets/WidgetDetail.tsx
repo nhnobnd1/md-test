@@ -7,6 +7,7 @@ import {
 } from "@moose-desk/repo";
 import { Button, Tabs } from "antd";
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import { Header } from "src/components/UI/Header";
 import env from "src/core/env";
@@ -31,6 +32,7 @@ const WidgetDetail = () => {
   const message = useMessage();
   const notification = useNotification();
   const [widget, setWidget] = useState<HelpWidget>();
+  const { t, i18n } = useTranslation();
 
   const widgetSetting = useWidgetSetting((state) => state.widgetSetting);
   const updateSave = useUpdateSave((state) => state.changeUpdate);
@@ -54,7 +56,7 @@ const WidgetDetail = () => {
                 id: data.data[0]._id,
               });
             } else {
-              message.error("Get data customer failed");
+              message.error(t("messages:error.get_customer"));
             }
           })
         );
@@ -62,7 +64,7 @@ const WidgetDetail = () => {
   );
   const { run: updateHelpWidgetApi } = useJob(
     (id: string, object: any) => {
-      message.loading.show("Updating Widget");
+      message.loading.show(t("messages:loading.updating_widget"));
 
       return HelpWidgetRepository()
         .update(id, object)
@@ -72,14 +74,14 @@ const WidgetDetail = () => {
               message.loading.hide().then(() => {
                 if (data.statusCode === 200) {
                   notification.success(
-                    "Your changes have been updated successfully."
+                    t("messages:success.update_help_widget")
                   );
 
                   updateWidgetSetting(data.data.settings);
                   setWidget(data.data);
                 } else {
                   if (data.statusCode === 409) {
-                    notification.error(`Error`);
+                    notification.error(t("messages:error.update_help_widget"));
                   }
                 }
               });
@@ -87,11 +89,7 @@ const WidgetDetail = () => {
             catchError((err) => {
               message.loading.hide().then(() => {
                 const errorCode = err.response.status;
-                if (errorCode === 409) {
-                  notification.error(`Error`);
-                } else {
-                  notification.error("Widget has been updated failed.");
-                }
+                notification.error(t("messages:error.update_help_widget"));
               });
               return of(err);
             })

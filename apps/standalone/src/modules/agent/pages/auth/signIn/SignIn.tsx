@@ -13,6 +13,7 @@ import {
 import { AccountRepository, SignInAccountAgentRequest } from "@moose-desk/repo";
 import { Button, Form, Input } from "antd";
 import { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
@@ -56,6 +57,7 @@ export const SignIn = (props: SignInProps) => {
       password: "",
     };
   }, []);
+  const { t, i18n } = useTranslation();
 
   const { run: signInApi } = useJob(
     (payload: SignInAccountAgentRequest, resend?: boolean) => {
@@ -63,7 +65,7 @@ export const SignIn = (props: SignInProps) => {
         .agentSignIn(payload)
         .pipe(
           map(({ data }) => {
-            message.success("Login successfully");
+            message.success(t("messages:success.login"));
             login({
               base_token: data.data.accessToken,
               refresh_token: data.data.refreshToken,
@@ -72,7 +74,7 @@ export const SignIn = (props: SignInProps) => {
           }),
           catchError((err) => {
             if (resend) {
-              message.success("Requested to resend OTP");
+              message.success(t("messages:success.request_otp"));
             }
             const error = err.response.data.error;
             const errorCode = err.response.data.errorCode;
@@ -98,13 +100,14 @@ export const SignIn = (props: SignInProps) => {
               });
             } else {
               if (error.includes("INVALID_AUTHENTICATOR_CODE")) {
-                notification.error("The input OTP is incorrect");
+                notification.error(t("messages:error.input_otp"));
               } else if (error.includes("USER_NOT_FOUND")) {
                 setErrorMessage(
                   "We're sorry, the email address you entered does not exist in our system. Please double-check your email address"
                 );
               } else {
-                message.error("Login failed");
+                message.error(t("messages:error.login"));
+
                 const numberLoginFailed = error[0].split("/")[0];
                 const totalAcceptFailed = error[0].split("/")[1];
                 if (numberLoginFailed < totalAcceptFailed) {

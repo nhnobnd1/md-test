@@ -16,6 +16,7 @@ import {
 } from "@moose-desk/repo";
 import { Button } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map } from "rxjs";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
@@ -38,6 +39,8 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
   const message = useMessage();
   const notification = useNotification();
   const { id } = useParams();
+  const { t, i18n } = useTranslation();
+
   const { toggle: updateForm } = useToggle();
   const signCallback = useAppSelector(
     (state) => state.channelEmail.signInCallback
@@ -133,7 +136,7 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
             if (data.statusCode === 200) {
               setEmail(data.data);
             } else {
-              message.error("Get email failed");
+              message.error(t("messages:error.get_email"));
             }
           })
         );
@@ -145,14 +148,15 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
 
   const { run: updateEmailIntegration } = useJob(
     (payload: CreateEmailIntegrationRequest) => {
-      message.loading.show("Updating new email");
+      message.loading.show(t("messages:loading.updating_email"));
+
       return EmailIntegrationRepository()
         .updateEmailIntegration(id, payload)
         .pipe(
           map(({ data }) => {
             if (data.statusCode === 200) {
               message.loading.hide().then(() => {
-                notification.success("Update email successfully");
+                notification.success(t("messages:success.update_email"));
                 navigate(
                   generatePath(SettingChannelRoutePaths.ChannelEmail.Index)
                 );
@@ -160,7 +164,7 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
             } else {
               message.loading.hide().then(() => {
                 message.loading.hide().then(() => {
-                  notification.error("Update email failed");
+                  notification.error(t("messages:error.update_email"));
                 });
               });
             }

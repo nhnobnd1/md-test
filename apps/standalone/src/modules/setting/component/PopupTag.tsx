@@ -2,6 +2,7 @@ import { useJob } from "@moose-desk/core";
 import { Tag, TagRepository } from "@moose-desk/repo";
 import { Button, Modal, ModalProps, Space } from "antd";
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import Form from "src/components/UI/Form/Form";
 import { Header } from "src/components/UI/Header";
@@ -27,10 +28,12 @@ export const PopupTag = ({
   const message = useMessage();
   const notification = useNotification();
   const [isUpdate, setIsUpdate] = useState(false);
+  const { t, i18n } = useTranslation();
 
   const { run: createTag } = useJob(
     (dataSubmit: any) => {
-      message.loading.show("Creating Tag!");
+      message.loading.show(t("messages:loading.creating_tag"));
+
       return TagRepository()
         .create(dataSubmit)
         .pipe(
@@ -38,7 +41,7 @@ export const PopupTag = ({
             message.loading.hide();
             if (data.statusCode === 200) {
               onChange && onChange();
-              notification.success("Tag has been create succcesfully.");
+              notification.success(t("messages:success.create_tag"));
             } else {
               if (data.statusCode === 409) {
                 notification.error(
@@ -55,7 +58,7 @@ export const PopupTag = ({
                 `Tag name is ${dataSubmit.name} already exists.`
               );
             } else {
-              notification.error("Tag has been created failed.");
+              notification.error(t("messages:error.create_tag"));
             }
             return of(err);
           })
@@ -66,7 +69,8 @@ export const PopupTag = ({
 
   const { run: updateTag } = useJob(
     (dataSubmit: any) => {
-      message.loading.show("Updating Tag");
+      message.loading.show(t("messages:loading.updating_tag"));
+
       return TagRepository()
         .update(dataSubmit._id, dataSubmit)
         .pipe(
@@ -75,7 +79,7 @@ export const PopupTag = ({
               if (data.statusCode === 200) {
                 onChange && onChange();
                 message.loading.hide();
-                notification.success("Tag has been update succcesfully");
+                notification.success(t("messages:success.update_tag"));
               } else {
                 message.loading.hide();
                 if (data.statusCode === 409) {
@@ -93,7 +97,7 @@ export const PopupTag = ({
                   `Tag name is ${dataSubmit.email} already exists.`
                 );
               } else {
-                notification.error("Tag has been update failed.");
+                notification.error(t("messages:error.update_tag"));
               }
               return of(err);
             })

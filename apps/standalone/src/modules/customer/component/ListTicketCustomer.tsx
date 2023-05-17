@@ -6,6 +6,7 @@ import { message } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import classNames from "classnames";
 import { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import { MDSearchInput } from "src/components/UI/MDSearchInput";
 import Pagination from "src/components/UI/Pagination/Pagination";
@@ -25,6 +26,8 @@ interface IProps {
 }
 export const ListTicketCustomer = ({ customerId }: IProps) => {
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
+
   const [querySearch, setQuerySearch] = useState<string>("");
   const [filter, setFilter] = useState<ListTicketCustomerFilter>({
     limit,
@@ -39,7 +42,7 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
     queryFn: () =>
       getListTicketCustomer(customerId, { ...filter, query: debounceValue }),
     onError: () => {
-      message.error("Get data ticket customer failed");
+      message.error(t("messages:error.get_ticket_customer"));
     },
     keepPreviousData: true,
   });

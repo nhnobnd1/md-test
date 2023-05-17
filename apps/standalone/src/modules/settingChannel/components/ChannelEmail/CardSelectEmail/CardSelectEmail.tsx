@@ -15,6 +15,7 @@ import {
   useImperativeHandle,
   useState,
 } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import Images from "src/assets/images";
 import { Form } from "src/components/UI/Form";
@@ -50,9 +51,11 @@ export const CardSelectEmail = forwardRef(
     const dispatch = useAppDispatch();
     const message = useMessage();
     const { id } = useParams();
+
     const signCallback = useAppSelector(
       (state) => state.channelEmail.signInCallback
     );
+    const { t, i18n } = useTranslation();
 
     const { run: getEmailGoogleAuth } = useJob(
       (payload: GetEmailGoogleAuthRequest) => {
@@ -134,7 +137,8 @@ export const CardSelectEmail = forwardRef(
 
     const { run: checkConnectionImap, processing: loadingCheckImap } = useJob(
       (payload: CheckConnectionRequest) => {
-        message.loading.show("Checking connection server");
+        message.loading.show(t("messages:loading.checking_connection_server"));
+
         return EmailIntegrationRepository()
           .checkConnectionImap(payload)
           .pipe(
@@ -142,9 +146,10 @@ export const CardSelectEmail = forwardRef(
               message.loading.hide().then(() => {
                 if (data.statusCode === 200 && data.data.success) {
                   setConnectionImap(true);
-                  message.success("Connection successful");
+                  message.success(t("messages:success.connection"));
                 } else {
-                  message.error("Connection failed");
+                  message.error(t("messages:error.connection"));
+
                   setConnectionImap(false);
                 }
               });
@@ -152,7 +157,7 @@ export const CardSelectEmail = forwardRef(
             catchError((err) => {
               message.loading.hide().then(() => {
                 setConnectionImap(false);
-                message.error("Connection failed");
+                message.error(t("messages:error.connection"));
               });
               return of(err);
             })
@@ -162,7 +167,8 @@ export const CardSelectEmail = forwardRef(
 
     const { run: checkConnectionSmtp, processing: loadingCheckSmtp } = useJob(
       (payload: CheckConnectionRequest) => {
-        message.loading.show("Checking connection server");
+        message.loading.show(t("messages:loading.checking_connection_server"));
+
         return EmailIntegrationRepository()
           .checkConnectionSmtp(payload)
           .pipe(
@@ -170,9 +176,10 @@ export const CardSelectEmail = forwardRef(
               message.loading.hide().then(() => {
                 if (data.statusCode === 200 && data.data.success) {
                   setConnectionSmtp(true);
-                  message.success("Connection successful");
+                  message.success(t("messages:success.connection"));
                 } else {
-                  message.error("Connection failed");
+                  message.error(t("messages:error.connection"));
+
                   setConnectionSmtp(false);
                 }
               });
@@ -180,7 +187,7 @@ export const CardSelectEmail = forwardRef(
             catchError((err) => {
               message.loading.hide().then(() => {
                 setConnectionSmtp(false);
-                message.error("Connection failed");
+                message.error(t("messages:error.connection"));
               });
               return of(err);
             })

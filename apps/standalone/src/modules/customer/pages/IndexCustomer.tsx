@@ -8,6 +8,7 @@ import {
 import { TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "react-query";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
 import { Header } from "src/components/UI/Header";
@@ -62,6 +63,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
 
   const [filterData, setFilterData] =
     useState<BaseListCustomerRequest>(defaultFilter);
+  const { t, i18n } = useTranslation();
 
   const {
     data: listCustomer,
@@ -72,19 +74,17 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
     queryFn: () => getListCustomer({ ...filterData, query: debounceValue }),
     keepPreviousData: true,
     onError: () => {
-      message.error("Get data customer failed");
+      message.error(t("messages:error.get_customer"));
     },
   });
   const { mutate: deleteCustomerMutate, isLoading: deleting } = useMutation({
     mutationFn: (payload: { ids: string[] }) => deleteCustomer(payload),
     onSuccess: () => {
       refetchListCustomer();
-      notification.success(
-        "Customer and his tickets have been removed successfully!"
-      );
+      notification.success(t("messages:success.delete_customer"));
     },
     onError: () => {
-      notification.error("There is an error with remove customer", {
+      notification.error(t("messages:error.delete_customer"), {
         description: "Remove customer failed",
         style: {
           width: 450,

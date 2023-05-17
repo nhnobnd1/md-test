@@ -15,6 +15,7 @@ import {
 import { TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { FC, useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { map } from "rxjs";
 import { Header } from "src/components/UI/Header";
 import Pagination from "src/components/UI/Pagination/Pagination";
@@ -42,6 +43,7 @@ const ViewTicket: FC<ViewTicketProps> = () => {
   const { isAgent } = usePermission();
   const { subDomain } = useSubdomain();
   const { timezone } = useGlobalData(false, subDomain || "");
+  const { t, i18n } = useTranslation();
 
   const [filterData, setFilterData] =
     useState<BaseListTagRequest>(defaultFilter);
@@ -87,7 +89,7 @@ const ViewTicket: FC<ViewTicketProps> = () => {
               setTickets(data.data);
               setMeta(data.metadata);
             } else {
-              message.error("Get ticket failed");
+              message.error(t("messages:error.get_ticket"));
             }
           })
         );
@@ -103,10 +105,9 @@ const ViewTicket: FC<ViewTicketProps> = () => {
         map(({ data }) => {
           if (data.statusCode === 200) {
             getTicketByTagApi(id, filterData);
-            message.success("Deleted Successfully !");
-            // navigate(SettingRoutePaths.Workdesk.Tag.Index);
+            message.success(t("messages:success.deleted"));
           } else {
-            message.error("Get ticket failed");
+            message.error(t("messages:error.deleted"));
           }
         })
       );

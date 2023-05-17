@@ -9,6 +9,7 @@ import {
 import BusinessCalendarRepository from "@moose-desk/repo/businessCalendar/BusinessCalendarRepository";
 import { Button, Card, Space, Tabs } from "antd";
 import { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
@@ -37,6 +38,8 @@ const BusinessHours = (props: BusinessHoursProps) => {
   const [dataBusinessHoursAutoReplyCode, setDataBusinessHoursAutoReplyCode] =
     useState("");
   const [selected, setSelected] = useState(0);
+  const { t, i18n } = useTranslation();
+
   const [form] = Form.useForm();
   const role = useRole();
   // const [disabled, setDisabled] = useState(false);
@@ -78,21 +81,12 @@ const BusinessHours = (props: BusinessHoursProps) => {
                 data.data[0].businessHoursAutoReplyCode
               );
             } else {
-              message.error(
-                "Get data business calendar failed! Please try again."
-              );
+              message.error(t("messages:error.get_business_calendar"));
             }
           }),
           catchError((error) => {
-            notification.error(
-              "Get data business calendar failed! Please try again.",
-              {
-                description: "Get data failed!",
-                style: {
-                  width: 450,
-                },
-              }
-            );
+            message.error(t("messages:error.get_business_calendar"));
+
             return of(error);
           })
         );
@@ -102,7 +96,8 @@ const BusinessHours = (props: BusinessHoursProps) => {
 
   // update business calendar
   const { run: updateBusinessCalendar } = useJob((dataSubmit: any) => {
-    message.loading.show("Updating business calendar...");
+    message.loading.show(t("messages:loading.updating_business_calendar"));
+
     const { _id } = dataSubmit;
     return BusinessCalendarRepository()
       .updateBusinessCalendar(_id, dataSubmit)
@@ -111,11 +106,11 @@ const BusinessHours = (props: BusinessHoursProps) => {
           message.loading.hide().then(() => {
             if (data.statusCode === 200) {
               notification.success(
-                "Your settings have been changed successfully."
+                t("messages:success.update_business_calendar")
               );
               refetchGlobal();
             } else {
-              notification.error("Business hours has been updated failed.", {
+              notification.error(t("messages:error.update_business_calendar"), {
                 description: "Update failed!",
                 style: {
                   width: 450,
@@ -126,7 +121,7 @@ const BusinessHours = (props: BusinessHoursProps) => {
         }),
         catchError((error) => {
           message.loading.hide().then(() => {
-            notification.error("Business hours has been updated failed.", {
+            notification.error(t("messages:error.update_business_calendar"), {
               description: "Update failed!",
               style: {
                 width: 450,

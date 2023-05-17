@@ -19,6 +19,7 @@ import {
 import { Input, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
 import { Header } from "src/components/UI/Header";
@@ -70,6 +71,7 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
     }));
   }, []);
   const [meta, setMeta] = useState<BaseMetaDataListResponse>();
+  const { t, i18n } = useTranslation();
 
   const prevFilter = usePrevious<GetListTagRequest>(filterData);
 
@@ -87,7 +89,7 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
               setTags(listTag);
               setMeta(data.metadata);
             } else {
-              message.error("Get data tag failed");
+              message.error(t("messages:error.get_tag"));
             }
           })
         );
@@ -124,7 +126,8 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
     closePopupTag();
   }, []);
   const { run: deleteTagApi } = useJob((id: string[]) => {
-    message.loading.show("Removing tag...");
+    message.loading.show(t("messages:loading.removing_tag"));
+
     return TagRepository()
       .delete({
         names: id,
@@ -133,15 +136,13 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
         map(({ data }) => {
           message.loading.hide();
           if (data.statusCode === 200) {
-            notification.success(
-              "The selected tag has been removed from the system."
-            );
+            notification.success(t("messages:success.delete_tag"));
             getListTagApi({
               page: 1,
               limit: env.DEFAULT_PAGE_SIZE,
             });
           } else {
-            notification.error("There is an error with remove tag.", {
+            notification.error(t("messages:error.delete_tag"), {
               description: "Remove tag failed",
               style: {
                 width: 450,
@@ -150,7 +151,7 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
           }
         }),
         catchError((err) => {
-          notification.error("There is an error with remove tag.", {
+          notification.error(t("messages:error.delete_tag"), {
             description: "Remove tag failed",
             style: {
               width: 450,

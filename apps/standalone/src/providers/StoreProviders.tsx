@@ -4,6 +4,7 @@ import {
   StoreRepository,
 } from "@moose-desk/repo";
 import { ReactNode, createContext, useContext, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import { lastValueFrom } from "rxjs";
 import useNotification from "src/hooks/useNotification";
@@ -31,6 +32,7 @@ export const StoreProviders = ({ children }: StoreProvidersProps) => {
   const [storeId, setStoreId] = useState<string>(getStoreId());
   const { getSubDomain } = useSubdomain();
   const notification = useNotification();
+  const { t, i18n } = useTranslation();
 
   useQuery({
     queryKey: ["getStoreId"],
@@ -43,7 +45,7 @@ export const StoreProviders = ({ children }: StoreProvidersProps) => {
       setStoreId(data.data.storeId);
     },
     onError: () => {
-      notification.error("Get store failed");
+      notification.error(t("messages:error.get_store"));
     },
     enabled: !getStoreId(),
   });

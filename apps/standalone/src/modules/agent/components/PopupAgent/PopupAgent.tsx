@@ -10,6 +10,7 @@ import {
 import { Button, Modal, ModalProps, Space, Tag } from "antd";
 import classNames from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import { Loading } from "src/components/Loading";
 import { ButtonModalDelete } from "src/components/UI/Button/ButtonModalDelete";
@@ -45,6 +46,8 @@ export const PopupAgent = ({
   const notification = useNotification();
   const [dataForm, setDataForm] = useState<Agent>();
   const { isAdmin } = usePermission();
+  const { t, i18n } = useTranslation();
+
   const {
     state: countDown,
     clearCountDown,
@@ -78,11 +81,11 @@ export const PopupAgent = ({
               if (data.statusCode === 200) {
                 setDataForm(data.data);
               } else {
-                message.error("Get data agent failed");
+                message.error(t("messages:error.get_agent"));
               }
             },
             catchError((err) => {
-              message.error("Get data agent failed");
+              message.error(t("messages:error.get_agent"));
               return of(err);
             })
           )
@@ -100,7 +103,7 @@ export const PopupAgent = ({
 
   const { run: createAgent, processing: loadingCreate } = useJob(
     (payload: CreateAgentRequest) => {
-      message.loading.show("Creating Agent");
+      message.loading.show(t("messages:loading.creating_agent"));
       return AgentRepository()
         .create(payload)
         .pipe(
@@ -109,9 +112,7 @@ export const PopupAgent = ({
               message.loading.hide();
               if (data.statusCode === 200) {
                 onChange && onChange(true);
-                notification.success(
-                  "Invitation Email has been sent to Agent's email address."
-                );
+                notification.success(t("messages:success.inactive_email"));
               } else {
                 if (data.errorCode) {
                   notification.error(
@@ -137,7 +138,8 @@ export const PopupAgent = ({
 
   const { run: updateAgentApi, processing: loadingUpdate } = useJob(
     (id: string, payload: UpdateAgentRequest) => {
-      message.loading.show("Updating agent");
+      message.loading.show(t("messages:loading.updating_agent"));
+
       return AgentRepository()
         .update(id, payload)
         .pipe(
@@ -149,17 +151,18 @@ export const PopupAgent = ({
                 notification.success(
                   `Update ${data.data?.firstName} ${data.data?.lastName}`,
                   {
-                    description: "Agent has been updated successfully",
+                    description: t("messages:success.agent_update"),
                   }
                 );
                 onChange && onChange(true);
               } else {
-                notification.error("Agent has been updated failed");
+                notification.error(t("messages:error.agent_update"));
               }
             },
             catchError((err) => {
               message.loading.hide();
-              notification.error("Agent has been updated failed");
+              notification.error(t("messages:error.agent_update"));
+
               return of(err);
             })
           )
@@ -184,18 +187,19 @@ export const PopupAgent = ({
               if (data.statusCode === 200) {
                 initCountdown(dataForm?._id ?? "");
                 notification.success(`Resend invitation ${payload.email}`, {
-                  description: "Resend invitation mail success",
+                  description: t("messages:success.resend_invitation_email"),
                   style: {
                     width: 450,
                   },
                 });
               } else {
-                notification.error("Resend invitation email failed");
+                notification.error(t("messages:error.resend_invitation_email"));
               }
             },
 
             catchError((err) => {
-              notification.error("Resend invitation email failed");
+              notification.error(t("messages:error.resend_invitation_email"));
+
               return of(err);
             })
           )
@@ -205,19 +209,18 @@ export const PopupAgent = ({
 
   const { run: deleteAgentApi, processing: loadingDelete } = useJob(
     (id: string) => {
-      message.loading.show("Removing agent");
+      message.loading.show(t("messages:loading.removing_agent"));
+
       return AgentRepository()
         .delete(id)
         .pipe(
           map(({ data }) => {
             message.loading.hide();
             if (data.statusCode === 200) {
-              notification.success(
-                "The selected agent has been removed from the system."
-              );
+              notification.success(t("messages:success.deleted_agent"));
               onChange && onChange(true);
             } else {
-              notification.error("There is an error with remove agent", {
+              notification.error(t("messages:error.deleted_agent"), {
                 description: "Remove agent failed",
                 style: {
                   width: 450,
@@ -227,7 +230,7 @@ export const PopupAgent = ({
           }),
           catchError((err) => {
             message.loading.hide();
-            notification.error("There is an error with remove agent", {
+            notification.error(t("messages:error.deleted_agent"), {
               description: "Remove agent failed",
               style: {
                 width: 450,
@@ -241,22 +244,24 @@ export const PopupAgent = ({
 
   const { run: deActiveAgentApi, processing: loadingDeactivate } = useJob(
     (id: string) => {
-      message.loading.show("Deactivating agent");
+      message.loading.show(t("messages:loading.deactivating_agent"));
+
       return AgentRepository()
         .deActiveAgent(id)
         .pipe(
           map(
             ({ data }) => {
               if (data.statusCode === 200) {
-                message.success("Agent has been deactivated successfully.");
+                message.success(t("messages:success.deactivate_agent"));
                 onChange && onChange();
                 getDetailAgentApi(id);
               } else {
-                message.error("Deactivate agent failed");
+                message.error(t("messages:error.deactivate_agent"));
               }
             },
             catchError((err) => {
-              message.error("Deactivate agent failed");
+              message.error(t("messages:error.deactivate_agent"));
+
               return of(err);
             })
           )
@@ -266,22 +271,24 @@ export const PopupAgent = ({
 
   const { run: activeAgentApi, processing: loadingActive } = useJob(
     (id: string) => {
-      message.loading.show("Activating agent");
+      message.loading.show(t("messages:loading.activating_agent"));
+
       return AgentRepository()
         .reActiveAgent(id)
         .pipe(
           map(
             ({ data }) => {
               if (data.statusCode === 200) {
-                message.success("Active agent success");
+                message.success(t("messages:error.active_agent"));
                 onChange && onChange();
                 getDetailAgentApi(id);
               } else {
-                message.error("Active agent failed");
+                message.error(t("messages:error.active_agent"));
               }
             },
             catchError((err) => {
-              message.error("Active agent failed");
+              message.error(t("messages:error.active_agent"));
+
               return of(err);
             })
           )
@@ -300,7 +307,7 @@ export const PopupAgent = ({
         storeId: dataForm.storeId,
       });
     } else {
-      notification.error("There is an error with resend invitation email", {
+      notification.error(t("messages:error.resend_invitation_email"), {
         description: "Resend invitation email failed",
         style: {
           width: 450,
@@ -339,7 +346,7 @@ export const PopupAgent = ({
     if (dataForm?._id) {
       deleteAgentApi(dataForm?._id);
     } else {
-      notification.error("There is an error with remove agent", {
+      notification.error(t("messages:error.deleted_agent"), {
         description: "Remove agent failed",
       });
     }

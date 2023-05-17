@@ -1,5 +1,6 @@
 import { Button, Card, Divider, Row } from "antd";
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import useMessage from "src/hooks/useMessage";
 import useWidgetSetting from "src/modules/settingChannel/store/useSetting";
 import { useStore } from "src/providers/StoreProviders";
@@ -12,6 +13,7 @@ export default function Integration({ idWidget }: IntegrationProps) {
   const data = useWidgetSetting((state) => state.widgetSetting);
   const { storeId } = useStore();
   const message = useMessage();
+  const { t, i18n } = useTranslation();
 
   console.log({ storeId });
 
@@ -48,7 +50,7 @@ export default function Integration({ idWidget }: IntegrationProps) {
   const handleClickCopy = () => {
     navigator.clipboard.writeText(scriptCode);
     setCopied(true);
-    message.success("Copied");
+    message.success(t("messages:success.copied"));
   };
 
   useEffect(() => {

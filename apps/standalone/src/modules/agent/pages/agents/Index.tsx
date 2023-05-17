@@ -15,6 +15,7 @@ import {
 import { Input, TableProps, Tag } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { map } from "rxjs";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
 import { Header } from "src/components/UI/Header";
@@ -47,6 +48,7 @@ const AgentsIndex = (props: AgentsIndexProps) => {
     phoneNumber: "",
     role: Role.BasicAgent,
   });
+  const { t, i18n } = useTranslation();
 
   const defaultFilter: () => GetListAgentRequest = () => ({
     page: 1,
@@ -74,7 +76,7 @@ const AgentsIndex = (props: AgentsIndexProps) => {
               setAgents(listAgent);
               setMeta(data.metadata);
             } else {
-              message.error("Get data agent failed");
+              message.error(t("messages:error.get_agent"));
             }
           })
         );

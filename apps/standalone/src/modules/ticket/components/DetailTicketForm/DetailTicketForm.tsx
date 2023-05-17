@@ -25,6 +25,7 @@ import moment from "moment";
 import VirtualList from "rc-virtual-list";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import TextEditorTicket from "src/components/UI/Editor/TextEditorTicket";
 import { Form, FormProps } from "src/components/UI/Form";
@@ -87,6 +88,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
   const [primaryEmail, setPrimaryEmail] = useState<EmailIntegration>();
   const [files, setFiles] = useState<any>([]);
   const [loadingButton, setLoadingButton] = useState(false);
+  const { t, i18n } = useTranslation();
 
   const [agents, setAgents] = useState<Agent[]>([]);
 
@@ -265,7 +267,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
               });
             }
           } else {
-            message.error("Get data ticket failed");
+            message.error(t("messages:error.get_agent"));
           }
         })
       );
@@ -293,7 +295,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
             setTicket(data.data);
             setEnableCC(data.data.ccEmails.length > 0);
           } else {
-            message.error("Get ticket failed");
+            message.error(t("messages:error.get_ticket"));
           }
         })
       );
@@ -306,7 +308,8 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
         map(({ data }) => {
           if (data.statusCode === 200) {
             // console.log("response create reply", data);
-            message.success("Send mail successfully");
+            message.success(t("messages:success.send_mail"));
+
             // getTicketApi(payload.id);
             setConversationList([...conversationList, data.data]);
           }
@@ -351,7 +354,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
         map(({ data }) => {
           // console.log("update ticket success", data);
           if (data.statusCode === 200) {
-            message.success("Update ticket successfully");
+            message.success(t("messages:success.update_ticket"));
           }
         }),
         catchError((err) => {
@@ -380,7 +383,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
               });
             }
           } else {
-            message.error("Get data ticket failed");
+            message.error(t("messages:error.get_ticket"));
           }
         })
       );

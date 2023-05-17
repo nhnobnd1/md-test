@@ -7,6 +7,7 @@ import {
 } from "@moose-desk/repo";
 import { Button } from "antd";
 import { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map } from "rxjs";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
@@ -27,20 +28,23 @@ const ChannelEmailCreate = (props: ChannelEmailCreateProps) => {
   const navigate = useNavigate();
   const message = useMessage();
   const notification = useNotification();
+  const { t, i18n } = useTranslation();
+
   const signCallback = useAppSelector(
     (state) => state.channelEmail.signInCallback
   );
 
   const { run: createMailAPI } = useJob(
     (payload: CreateEmailIntegrationRequest) => {
-      message.loading.show("Creating new email");
+      message.loading.show(t("messages:loading.creating_email"));
+
       return EmailIntegrationRepository()
         .createEmailIntegration(payload)
         .pipe(
           map(({ data }) => {
             if (data.statusCode === 200) {
               message.loading.hide().then(() => {
-                notification.success("Create email successfully");
+                notification.success(t("messages:success.create_email"));
                 navigate(
                   generatePath(SettingChannelRoutePaths.ChannelEmail.Index)
                 );
@@ -48,7 +52,7 @@ const ChannelEmailCreate = (props: ChannelEmailCreateProps) => {
             } else {
               message.loading.hide().then(() => {
                 message.loading.hide().then(() => {
-                  notification.error("Create email failed");
+                  notification.error(t("messages:error.create_email"));
                 });
               });
             }

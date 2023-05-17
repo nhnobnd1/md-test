@@ -3,6 +3,7 @@ import { AccountRepository } from "@moose-desk/repo";
 import { Button, Form, Input } from "antd";
 import { useCallback, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
@@ -22,10 +23,12 @@ export const ForgotPassword = (props: ForgotPasswordProps) => {
   const { storeId } = useStore();
   const navigate = useNavigate();
   const notification = useNotification();
+  const { t, i18n } = useTranslation();
 
   const { run: sendForgotPassword } = useJob(
     (payload: { email: string; storeId: string }) => {
-      message.loading.show("Sending request forgot password");
+      message.loading.show(t("messages:loading.send_request_forgot_password"));
+
       return AccountRepository()
         .forgotPasswordReset(payload)
         .pipe(
@@ -38,7 +41,7 @@ export const ForgotPassword = (props: ForgotPasswordProps) => {
           }),
           catchError((err) => {
             message.loading.hide();
-            notification.error("Forgot password failed");
+            notification.error(t("messages:error.forgot_password"));
             setFinalPage({
               status: true,
               isSuccess: false,

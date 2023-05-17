@@ -3,6 +3,7 @@ import Link from "antd/es/typography/Link";
 import dayjs from "dayjs";
 import moment from "moment";
 import { memo, useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
 import TableAction from "src/components/UI/Table/TableAction/TableAction";
@@ -31,6 +32,8 @@ const AutoReplyTab = ({
   const [valueTableAutoReply, setValueTableAutoReply] = useState<AutoReply[]>(
     []
   );
+  const { t, i18n } = useTranslation();
+
   const defaultFilter = () => ({
     page: 1,
     limit: 10,
@@ -71,15 +74,12 @@ const AutoReplyTab = ({
           return init;
         });
       } else {
-        notification.error(
-          "Auto Reply is being used in a holiday or business hours. Please check again!",
-          {
-            description: "Update failed!",
-            style: {
-              width: 450,
-            },
-          }
-        );
+        notification.error(t("messages:error.delete_auto_reply"), {
+          description: "Update failed!",
+          style: {
+            width: 450,
+          },
+        });
       }
     },
     [valueListAutoReplys, dataHolidays, dataBusinessHoursAutoReplyCode]
@@ -97,7 +97,7 @@ const AutoReplyTab = ({
           ) {
             init.splice(dataForm.index, 1, value);
             onChange && onChange([...init]);
-            notification.success("Edit Auto Reply success!");
+            notification.success(t("messages:success.edit_auto_reply"));
             return init;
           } else {
             notification.error(
@@ -116,7 +116,7 @@ const AutoReplyTab = ({
         setValueListAutoReplys((init: AutoReply[]) => {
           if (!init.find((data) => data.name === value.name)) {
             onChange && onChange([...init, { ...value }]);
-            notification.success("New Auto Reply has been created!");
+            notification.success(t("messages:success.create_auto_reply"));
             return [...init, { ...value }];
           } else {
             notification.error(

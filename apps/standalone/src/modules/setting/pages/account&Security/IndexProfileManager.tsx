@@ -3,6 +3,7 @@ import { AgentRepository } from "@moose-desk/repo";
 import { Button, Card, Input } from "antd";
 import * as jose from "jose";
 import { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import { Form } from "src/components/UI/Form";
 import InputPhone from "src/components/UI/InputPhone/InputPhone";
@@ -12,6 +13,7 @@ import { regexPhoneValidate } from "src/regex";
 
 export default function IndexProfileManager() {
   const token = jose.decodeJwt(TokenManager.getToken("base_token") || "");
+  const { t, i18n } = useTranslation();
 
   const message = useMessage();
   const notification = useNotification();
@@ -29,7 +31,8 @@ export default function IndexProfileManager() {
     { showLoading: false }
   );
   const { run: submit } = useJob((dataSubmit: any) => {
-    message.loading.show("Updating profile ...");
+    message.loading.show(t("messages:loading.updating_profile"));
+
     const { _id } = dataSubmit;
     return AgentRepository()
       .update(_id, dataSubmit)
@@ -37,15 +40,16 @@ export default function IndexProfileManager() {
         map(({ data }) => {
           message.loading.hide();
           if (data.statusCode === 200) {
-            notification.success("Your Profile has been updated successfully.");
+            notification.success(t("messages:success.update_profile"));
             fetDetailsProfile(token.sub ?? "");
           } else {
-            notification.error("Update profile failed.");
+            notification.error(t("messages:error.update_profile"));
           }
         }),
         catchError((error) => {
           message.loading.hide();
-          notification.error("Update profile failed.");
+          notification.error(t("messages:error.update_profile"));
+
           return of(error);
         })
       );

@@ -10,12 +10,13 @@ import {
   CustomerRepository,
   EmailIntegration,
   EmailIntegrationRepository,
-  priorityOptions,
   TagRepository,
   TicketRepository,
+  priorityOptions,
 } from "@moose-desk/repo";
 import { Button, Input } from "antd";
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useQueryClient } from "react-query";
 import { catchError, map, of } from "rxjs";
 import TextEditorTicket from "src/components/UI/Editor/TextEditorTicket";
@@ -57,6 +58,8 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
   const [files, setFiles] = useState<any>([]);
   const [loadingButton, setLoadingButton] = useState(false);
   const { dataSaved }: any = useSaveDataGlobal();
+  const { t, i18n } = useTranslation();
+
   const fetchAgents = useCallback(
     (params: LoadMoreValue) => {
       const limit = 500;
@@ -183,14 +186,15 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
   );
 
   const { run: CreateTicket } = useJob((dataSubmit: any) => {
-    message.loading.show("Creating Ticket!");
+    message.loading.show(t("messages:loading.creating_ticket"));
+
     return TicketRepository()
       .create(dataSubmit)
       .pipe(
         map(({ data }) => {
           message.loading.hide();
           if (data.statusCode === 200) {
-            notification.success("Ticket has been created successfully.");
+            notification.success(t("messages:success.create_ticket"));
             // navigate()
             navigate(
               generatePath(TicketRoutePaths.Detail, { id: data.data._id })
@@ -205,12 +209,8 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
         }),
         catchError((err) => {
           message.loading.hide();
-          const errorCode = err.response.status;
-          if (errorCode === 409) {
-            notification.error(`Email is ${dataSubmit.email} already exists.`);
-          } else {
-            notification.error("Customer Profile has been created failed.");
-          }
+          notification.error(t("messages:error.create_ticket"));
+
           return of(err);
         })
       );

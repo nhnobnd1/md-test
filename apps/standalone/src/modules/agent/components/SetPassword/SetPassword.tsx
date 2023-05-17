@@ -1,6 +1,7 @@
 import { useJob, useNavigate } from "@moose-desk/core";
 import { ActiveNewAgentRequest, AgentRepository } from "@moose-desk/repo";
 import { Button, Form, Input } from "antd";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
@@ -23,32 +24,32 @@ export const SetPassword = ({
   const navigate = useNavigate();
   const message = useMessage();
   const notification = useNotification();
+  const { t, i18n } = useTranslation();
 
   const { run: activeNewAgent } = useJob(
     (payload: ActiveNewAgentRequest) => {
-      message.loading.show("Activating account");
+      message.loading.show(t("messages:loading.activating_account"));
+
       return AgentRepository()
         .activeNewAgent(payload)
         .pipe(
           map(({ data }) => {
             message.loading.hide().then(() => {
               if (data.statusCode === 200) {
-                notification.success("Account activation successful");
+                notification.success(t("messages:success.account_activation"));
                 navigate(RoutePaths.Login);
               } else {
                 if (data.statusCode === 404) {
-                  notification.error(
-                    "Token has expired, please contact the admin."
-                  );
+                  notification.error(t("messages:error.token_expired"));
                 } else {
-                  notification.error("Account activation failed");
+                  notification.error(t("messages:error.account_activation"));
                 }
               }
             });
           }),
           catchError((err) => {
             message.loading.hide().then(() => {
-              notification.error("Account activation failed");
+              notification.error(t("messages:error.account_activation"));
             });
             return of(err);
           })

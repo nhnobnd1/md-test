@@ -6,6 +6,7 @@ import {
   HelpWidgetRepository,
 } from "@moose-desk/repo";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { map } from "rxjs";
 
 import env from "src/core/env";
@@ -30,6 +31,7 @@ const Widgets = () => {
     sortBy: undefined,
     sortOrder: undefined,
   });
+  const { t, i18n } = useTranslation();
 
   const [filterData, setFilterData] =
     useState<BaseListHelpWidgetRequest>(defaultFilter);
@@ -52,7 +54,7 @@ const Widgets = () => {
                 id: data.data[0]._id,
               });
             } else {
-              message.error("Get data customer failed");
+              message.error(t("messages:error.get_customer"));
             }
           })
         );

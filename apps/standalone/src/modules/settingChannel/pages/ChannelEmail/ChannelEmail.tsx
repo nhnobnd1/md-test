@@ -15,6 +15,7 @@ import {
 import { Button, Input, Space, TableProps, Tooltip } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
 import { Header } from "src/components/UI/Header";
@@ -32,6 +33,7 @@ const ChannelEmail = (props: ChannelEmailProps) => {
   const navigate = useNavigate();
   const message = useMessage();
   const notification = useNotification();
+  const { t, i18n } = useTranslation();
 
   const defaultFilter: () => any = () => ({
     page: 1,
@@ -120,25 +122,26 @@ const ChannelEmail = (props: ChannelEmailProps) => {
 
   const { run: deleteEmailApi } = useJob(
     (id: string) => {
-      message.loading.show("Deleting the email");
+      message.loading.show(t("messages:loading.deleting_email"));
+
       return EmailIntegrationRepository()
         .deleteEmailIntegration(id)
         .pipe(
           map(({ data }) => {
             if (data.statusCode === 200) {
               message.loading.hide().then(() => {
-                notification.success("Delete email successfully");
+                notification.success(t("messages:success.delete_email"));
                 getListEmailApi(filterData);
               });
             } else {
               message.loading.hide().then(() => {
-                notification.error("Delete email failed");
+                notification.error(t("messages:error.delete_email"));
               });
             }
           }),
           catchError((err) => {
             message.loading.hide().then(() => {
-              notification.error("Delete email failed");
+              notification.error(t("messages:error.delete_email"));
             });
             return of(err);
           })

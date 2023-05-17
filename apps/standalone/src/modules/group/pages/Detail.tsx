@@ -13,6 +13,7 @@ import {
 } from "@moose-desk/repo";
 import { Button } from "antd";
 import { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
@@ -32,6 +33,7 @@ const DetailGroup = (props: DetailGroupProps) => {
   const navigate = useNavigate();
   const [group, setGroup] = useState<UserGroup>();
   const { id } = useParams();
+  const { t, i18n } = useTranslation();
 
   const { run: getGroupApi } = useJob(() => {
     return UserGroupRepository()
@@ -48,27 +50,28 @@ const DetailGroup = (props: DetailGroupProps) => {
 
   const { run: updateGroupApi, processing: loadingUpdateGroup } = useJob(
     (id: string, payload: UpdateUserGroupRequest) => {
-      message.loading.show("Updating a group");
+      message.loading.show(t("messages:loading.updating_group"));
+
       return UserGroupRepository()
         .update(id, payload)
         .pipe(
           map(({ data }) => {
             if (data.statusCode === 200) {
               message.loading.hide().then(() => {
-                notification.success("Group has been updated succcesfully.");
+                notification.success(t("messages:success.update_group"));
                 navigate(generatePath(GroupRoutePaths.Index));
               });
             } else {
               if (data.errorCode) {
                 message.loading.hide().then(() => {
-                  notification.success("Update a group failed.");
+                  notification.error(t("messages:error.update_group"));
                 });
               }
             }
           }),
           catchError((err) => {
             message.loading.hide().then(() => {
-              notification.success("Update a group failed.");
+              notification.error(t("messages:error.update_group"));
             });
             return of(err);
           })

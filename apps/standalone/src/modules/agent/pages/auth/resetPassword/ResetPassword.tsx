@@ -12,6 +12,7 @@ import {
 } from "@moose-desk/repo";
 import { Button, Form, Input } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
@@ -31,6 +32,8 @@ const ResetPassword = (props: ResetPasswordProps) => {
   const [isValid, setIsValid] = useState<boolean | null>(null);
   const { storeId } = useStore();
   const notification = useNotification();
+  const { t, i18n } = useTranslation();
+
   const [account, setAccount] = useState({
     userId: "",
     token: "",
@@ -64,7 +67,7 @@ const ResetPassword = (props: ResetPasswordProps) => {
             if (data.statusCode === 200) {
               setIsValid(data.data.isValid);
             } else {
-              notification.error("Get store failed");
+              notification.error(t("messages:error.get_store"));
             }
           })
         );
@@ -86,7 +89,8 @@ const ResetPassword = (props: ResetPasswordProps) => {
 
   const { run: resetPasswordApi } = useJob(
     (payload: ForgotPasswordRequest) => {
-      message.loading.show("Sending request reset password");
+      message.loading.show(t("messages:loading.send_request_reset_password"));
+
       return AccountRepository()
         .forgotPasswordResetWithToken(payload)
         .pipe(
@@ -94,7 +98,7 @@ const ResetPassword = (props: ResetPasswordProps) => {
             setFinalPage(true);
             message.loading.hide().then(() => {
               notification.success(
-                "Your password has been updated successfully."
+                t("messages:success.account_forgot_password_reset")
               );
             });
           }),
@@ -105,13 +109,15 @@ const ResetPassword = (props: ResetPasswordProps) => {
               )
             ) {
               message.loading.hide().then(() => {
-                notification.error("Token has expired or is not valid.", {
+                notification.error(t("messages:error.token_expired"), {
                   description: "Please submit a new request.",
                 });
               });
             } else {
               message.loading.hide().then(() => {
-                notification.error("Reset password failed");
+                notification.error(
+                  t("messages:error.account_forgot_password_reset")
+                );
               });
             }
             return of(err);

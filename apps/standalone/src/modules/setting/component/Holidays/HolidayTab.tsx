@@ -2,6 +2,7 @@ import { AutoReply, Holidays } from "@moose-desk/repo";
 import Link from "antd/es/typography/Link";
 import moment from "moment";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
 import TableAction from "src/components/UI/Table/TableAction/TableAction";
@@ -20,6 +21,8 @@ const HolidayTab = ({
   ...props
 }: HolidayTabProps) => {
   const notification = useNotification();
+  const { t, i18n } = useTranslation();
+
   const [valueListHolidays, setValueListHolidays] = useState<Holidays[]>([]);
   const [valueTableHolidays, setValueTableHolidays] = useState<Holidays[]>([]);
   const defaultFilter = () => ({
@@ -79,13 +82,14 @@ const HolidayTab = ({
         setValueListHolidays((init: Holidays[]) => {
           init.splice(dataForm.index, 1, value);
           onChange && onChange([...init]);
-          notification.success("Edit Holiday success!");
+          notification.success(t("messages:success.edit_holiday"));
           return init;
         });
       } else {
         setValueListHolidays((init: Holidays[]) => {
           onChange && onChange([...init, { ...value }]);
-          notification.success("New Holiday has been created!");
+          notification.success(t("messages:success.create_holiday"));
+
           return [...init, { ...value }];
         });
       }

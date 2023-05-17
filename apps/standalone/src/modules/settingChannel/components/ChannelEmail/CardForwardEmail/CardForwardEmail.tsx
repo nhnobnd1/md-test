@@ -14,6 +14,7 @@ import {
   Typography,
 } from "antd";
 import { FC, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
@@ -38,6 +39,7 @@ export const CardForwardEmail: FC<CardForwardEmailProps> = ({ formEmail }) => {
   const [isGmail, setIsGmail] = useState(true);
   const [isVerifySender, setIsVerifySender] = useState<Status>("Pending");
   const [retrySenderCount, setRetrySenderCount] = useState(0);
+  const { t, i18n } = useTranslation();
 
   const { id } = useParams();
   const message = useMessage();
@@ -52,7 +54,7 @@ export const CardForwardEmail: FC<CardForwardEmailProps> = ({ formEmail }) => {
             const listEmails = data.data.map((item) => item.supportEmail);
             setEmails(listEmails);
           } else {
-            message.error("Get data agent failed");
+            message.error(t("messages:error.get_agent"));
           }
         })
       );
@@ -81,7 +83,8 @@ export const CardForwardEmail: FC<CardForwardEmailProps> = ({ formEmail }) => {
             }
           }),
           catchError((err) => {
-            message.error("Something went wrong !");
+            message.error(t("messages:error.something_went_wrong"));
+
             return of(err);
           })
         );
@@ -98,7 +101,8 @@ export const CardForwardEmail: FC<CardForwardEmailProps> = ({ formEmail }) => {
           }
         }),
         catchError((err) => {
-          message.error("Something went wrong !");
+          message.error(t("messages:error.something_went_wrong"));
+
           return of(err);
         })
       );
@@ -166,7 +170,8 @@ export const CardForwardEmail: FC<CardForwardEmailProps> = ({ formEmail }) => {
           }
         }),
         catchError((err) => {
-          message.error("Something went wrong !");
+          message.error(t("messages:error.something_went_wrong"));
+
           return of(err);
         })
       );
@@ -192,7 +197,8 @@ export const CardForwardEmail: FC<CardForwardEmailProps> = ({ formEmail }) => {
           }
         }),
         catchError((err) => {
-          message.error("Something went wrong !");
+          message.error(t("messages:error.something_went_wrong"));
+
           setErrorTextGoogle(
             "Please make sure you’ve updated your Gmail settings by following the steps above."
           );
@@ -210,7 +216,8 @@ export const CardForwardEmail: FC<CardForwardEmailProps> = ({ formEmail }) => {
           }
         }),
         catchError((err) => {
-          message.error("Something went wrong !");
+          message.error(t("messages:error.something_went_wrong"));
+
           return of(err);
         })
       );
@@ -232,7 +239,8 @@ export const CardForwardEmail: FC<CardForwardEmailProps> = ({ formEmail }) => {
           }
         }),
         catchError((err) => {
-          message.error("Something went wrong !");
+          message.error(t("messages:error.something_went_wrong"));
+
           return of(err);
         })
       );

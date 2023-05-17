@@ -113,7 +113,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const location = useLocation();
   const [statusFromTrash, setStatusFromTrash] = useState(location.state);
   const [filterObject, setFilterObject] = useState<FilterObject | null>(null);
-  console.log("hehe", t("messages:ticket_error"));
 
   const defaultFilter: () => any = () => ({
     page: 1,
@@ -141,7 +140,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
               setTickets(tickets);
               setMeta(data.metadata);
             } else {
-              message.error("Get data ticket failed");
+              message.error(t("messages:error.get_ticket"));
             }
           })
         );
@@ -161,7 +160,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
               setTickets(tickets);
               setMeta(data.metadata);
             } else {
-              message.error("Get data ticket failed");
+              message.error(t("messages:error.get_ticket"));
             }
           })
         );
@@ -175,7 +174,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
           if (data.statusCode === 200) {
             setStatistic(data);
           } else {
-            message.error("Get data ticket failed");
+            message.error(t("messages:error.get_ticket"));
           }
         })
       );
@@ -222,7 +221,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
             }
             // console.log("asdasd", current);
           } else {
-            message.error("Get data ticket failed");
+            message.error(t("messages:error.get_agent"));
           }
         })
       );
@@ -254,7 +253,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
               }
               // console.log("asdasd", current);
             } else {
-              message.error("Get data ticket failed");
+              message.error(t("messages:error.get_tag"));
             }
           })
         );
@@ -282,7 +281,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                 });
               }
             } else {
-              message.error("Get data ticket failed");
+              message.error(t("messages:error.get_customer"));
             }
           })
         );
@@ -325,7 +324,8 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   ) as TableProps<any>["onChange"];
 
   const { run: deleteTicketApi } = useJob((id: string[]) => {
-    message.loading.show("Removing Ticket...");
+    message.loading.show(t("messages:loading.removing_ticket"));
+
     return TicketRepository()
       .delete({
         ids: id,
@@ -334,9 +334,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         map(({ data }) => {
           message.loading.hide();
           if (data.statusCode === 200) {
-            notification.success(
-              "The selected Ticket has been removed from the system."
-            );
+            notification.success(t("messages:success.delete_ticket"));
             getStatisticTicket();
             if (filterObject) {
               getListTicketFilter({ ...filterData, ...filterObject });
@@ -346,7 +344,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
 
             // setFilterObject(null);
           } else {
-            notification.error("There is an error with remove Ticket.", {
+            notification.error(t("messages:error.delete_ticket"), {
               description: "Remove Ticket failed",
               style: {
                 width: 450,
@@ -355,7 +353,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
           }
         }),
         catchError((err) => {
-          notification.error("There is an error with remove Ticket.", {
+          notification.error(t("messages:error.delete_ticket"), {
             description: "Remove Ticket failed",
             style: {
               width: 450,
@@ -373,11 +371,11 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
           // console.log("update ticket success", data);
           if (data.statusCode === 200) {
             getStatisticTicket();
-            message.success("Updated tickets successfully");
+            message.success(t("messages:success.update_ticket"));
           }
         }),
         catchError((err) => {
-          message.error("Updated tickets fail");
+          message.error(t("messages:error.update_ticket"));
 
           return of(err);
         })

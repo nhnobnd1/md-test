@@ -16,6 +16,7 @@ import {
 import { Input, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
 import { Header } from "src/components/UI/Header";
@@ -45,6 +46,7 @@ const GroupIndexPage: PageComponent<GroupIndexPageProps> = () => {
   const [filterData, setFilterData] =
     useState<GetListUserGroupRequest>(defaultFilter);
   const [meta, setMeta] = useState<BaseMetaDataListResponse>();
+  const { t, i18n } = useTranslation();
 
   const prevFilter = usePrevious<GetListUserGroupRequest>(filterData);
 
@@ -63,11 +65,12 @@ const GroupIndexPage: PageComponent<GroupIndexPageProps> = () => {
                 setGroups(listGroup);
                 setMeta(data.metadata);
               } else {
-                message.error("Get data agent failed");
+                message.error(t("messages:error.get_agent"));
               }
             },
             catchError((err) => {
-              message.error("Get data agent failed");
+              message.error(t("messages:error.get_agent"));
+
               return of(err);
             })
           )
@@ -77,25 +80,26 @@ const GroupIndexPage: PageComponent<GroupIndexPageProps> = () => {
 
   const { run: deleteGroupApi } = useJob(
     (id: string) => {
-      message.loading.show("Deleting the group");
+      message.loading.show(t("messages:loading.deleting_group"));
+
       return UserGroupRepository()
         .delete(id)
         .pipe(
           map(({ data }) => {
             if (data.statusCode === 200) {
               message.loading.hide().then(() => {
-                notification.success("Delete group successfully");
+                notification.success(t("messages:success.delete_group"));
                 getListGroup(filterData);
               });
             } else {
               message.loading.hide().then(() => {
-                notification.error("Delete group failed");
+                notification.error(t("messages:error.delete_group"));
               });
             }
           }),
           catchError((err) => {
             message.loading.hide().then(() => {
-              notification.error("Delete group failed");
+              notification.error(t("messages:error.delete_group"));
             });
             return of(err);
           })

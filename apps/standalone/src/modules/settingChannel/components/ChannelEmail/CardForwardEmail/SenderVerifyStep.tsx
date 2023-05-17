@@ -4,6 +4,7 @@ import { EmailIntegrationRepository } from "@moose-desk/repo";
 import { Button, Result, Spin, Typography } from "antd";
 import { FormInstance } from "antd/lib/form/Form";
 import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import useMessage from "src/hooks/useMessage";
 
@@ -22,6 +23,7 @@ export const SenderVerifyStep: FC<ContentWaitProps> = ({
   const [isVerifySender, setIsVerifySender] = useState("Pending");
   const [retrySenderCount, setRetrySenderCount] = useState(0);
   const message = useMessage();
+  const { t, i18n } = useTranslation();
 
   const { run: verifyFinish } = useJob((payload: string) => {
     return EmailIntegrationRepository()
@@ -29,12 +31,12 @@ export const SenderVerifyStep: FC<ContentWaitProps> = ({
       .pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
-            console.log("send verify success");
             setRetrySenderCount(1);
           }
         }),
         catchError((err) => {
-          message.error("Something went wrong !");
+          message.error(t("messages:error.something_went_wrong"));
+
           return of(err);
         })
       );
@@ -57,7 +59,8 @@ export const SenderVerifyStep: FC<ContentWaitProps> = ({
           }
         }),
         catchError((err) => {
-          message.error("Something went wrong !");
+          message.error(t("messages:error.something_went_wrong"));
+
           return of(err);
         })
       );

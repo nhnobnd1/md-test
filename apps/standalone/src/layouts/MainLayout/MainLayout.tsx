@@ -8,6 +8,7 @@ import {
 import { AccountRepository } from "@moose-desk/repo";
 import { Layout, Menu, MenuProps } from "antd";
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import useAuth from "src/hooks/useAuth";
 import useNotification from "src/hooks/useNotification";
@@ -23,6 +24,7 @@ export const MainLayout = (props: MainLayoutProps) => {
   const location = useLocation();
   const { isLoggedIn, logout } = useAuth();
   const notification = useNotification();
+  const { t, i18n } = useTranslation();
 
   const { run: signOut } = useJob(() => {
     return AccountRepository()
@@ -31,10 +33,11 @@ export const MainLayout = (props: MainLayoutProps) => {
         map(({ data }) => {
           logout();
           navigate(generatePath(RoutePaths.Login));
-          notification.success("Logout success");
+          notification.success(t("messages:success.logout"));
         }),
         catchError((err) => {
-          notification.success("Logout failed");
+          notification.error(t("messages:error.logout"));
+
           return of(err);
         })
       );

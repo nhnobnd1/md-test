@@ -2,6 +2,7 @@ import { useJob, useMount } from "@moose-desk/core";
 import { MethodOTP, UserSettingRepository } from "@moose-desk/repo";
 import { Button, Modal } from "antd";
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
@@ -35,6 +36,8 @@ export default function Enable2FAModal({
   const [step, setStep] = useState(1);
   const [errorMessage, setErrorMessage] = useState<string>();
   const message = useMessage();
+  const { t, i18n } = useTranslation();
+
   const notification = useNotification();
   const [status2FA, setStatus2FA] = useState<{
     twoFactorEnabled: boolean;
@@ -61,9 +64,7 @@ export default function Enable2FAModal({
             switch (data.data.method) {
               case MethodOTP.Disabled:
                 handleCloseModal();
-                notification.success(
-                  "Your Two-Factor Authentication has been disabled."
-                );
+                notification.success(t("messages:success.disable_two_factor"));
                 fetch2FAStatus();
                 break;
               case MethodOTP.Email:
@@ -76,11 +77,12 @@ export default function Enable2FAModal({
                 break;
             }
           } else {
-            notification.error("Any problem when send data...");
+            notification.error(t("messages:error.something_went_wrong"));
           }
         }),
         catchError((error) => {
-          notification.error("Any problem when send data...");
+          notification.error(t("messages:error.something_went_wrong"));
+
           return of(error);
         })
       );
@@ -89,7 +91,8 @@ export default function Enable2FAModal({
 
   const [dataSubmitEmailOTP, setDataSubmitEmailOTP] = useState<any>();
   const { run: submitEmailOTP } = useJob((dataSubmit: any) => {
-    message.loading.show("Updating Two-Factor Authentication ...");
+    message.loading.show(t("messages:loading.updating_two_factor"));
+
     return UserSettingRepository()
       .verifySetupOTP({
         method: MethodOTP.Email,
@@ -99,20 +102,19 @@ export default function Enable2FAModal({
         map(({ data }) => {
           message.loading.hide();
           if (data.statusCode === 200) {
-            notification.success(
-              "Your Two-Factor Authentication has been enabled successfully."
-            );
+            notification.success(t("messages:success.enable_two_factor"));
             handleCloseModal();
             fetch2FAStatus();
           } else {
             //
             setErrorMessage("The input OTP is incorrect!");
-            notification.error("The input OTP is incorrect!");
+            notification.error(t("messages:error.input_otp"));
           }
         }),
         catchError((error) => {
           message.loading.hide();
-          notification.error("The input OTP is incorrect!");
+          notification.error(t("messages:error.input_otp"));
+
           setErrorMessage("The input OTP is incorrect!");
           return of(error);
         })
@@ -132,21 +134,22 @@ export default function Enable2FAModal({
         map(({ data }) => {
           message.loading.hide();
           if (data.statusCode === 200) {
-            notification.success(
-              "Your Two-Factor Authentication has been enabled successfully."
-            );
+            notification.success(t("messages:success.enable_two_factor"));
+
             handleCloseModal();
             fetch2FAStatus();
           } else {
             //
-            notification.error("The input OTP is incorrect!");
+            notification.error(t("messages:error.input_otp"));
+
             setErrorMessage("The input OTP is incorrect!");
           }
         }),
         catchError((error) => {
           message.loading.hide();
           setErrorMessage("The input OTP is incorrect!");
-          notification.error("The input OTP is incorrect!");
+          notification.error(t("messages:error.input_otp"));
+
           return of(error);
         })
       );

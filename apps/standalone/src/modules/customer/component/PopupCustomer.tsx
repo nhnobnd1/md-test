@@ -1,6 +1,7 @@
 import { Customer } from "@moose-desk/repo";
 import { Button, Card, Modal, ModalProps, Space, Tabs } from "antd";
 import React, { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { useMutation, useQueryClient } from "react-query";
 import Form from "src/components/UI/Form/Form";
 import { Header } from "src/components/UI/Header";
@@ -28,6 +29,7 @@ export const PopupCustomer = ({
   const { storeId } = useStore();
   const message = useMessage();
   const notification = useNotification();
+  const { t, i18n } = useTranslation();
 
   const { mutate: createCustomerMutate } = useMutation({
     mutationFn: (payload: any) => createCustomer(payload),
@@ -36,10 +38,10 @@ export const PopupCustomer = ({
       form.resetFields();
       onCancel && onCancel();
       message.loading.hide();
-      notification.success("Customer Profile has been created successfully.");
+      notification.success(t("messages:success.create_customer"));
     },
     onError: () => {
-      notification.error("Customer Profile has been created failed.");
+      notification.error(t("messages:error.create_customer"));
     },
   });
   const { mutate: updateCustomerMutate } = useMutation({
@@ -48,10 +50,10 @@ export const PopupCustomer = ({
       await queryClient.invalidateQueries(QUERY_KEY.LIST_CUSTOMER);
       onCancel && onCancel();
       message.loading.hide();
-      notification.success("Customer Profile has been updated successfully.");
+      notification.success(t("messages:success.update_customer"));
     },
     onError: () => {
-      notification.error("Customer Profile has been updated failed.");
+      notification.error(t("messages:error.update_customer"));
     },
   });
 

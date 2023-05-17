@@ -2,6 +2,7 @@ import { useJob } from "@moose-desk/core";
 import { AccessManger, UserSettingRepository } from "@moose-desk/repo";
 import { Button, Card, Space, Tag } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import { Form } from "src/components/UI/Form";
 import useMessage from "src/hooks/useMessage";
@@ -15,6 +16,8 @@ export default function IndexAccountManager({ props }: any) {
   const [valueInput, setValueInput] = useState("");
   const message = useMessage();
   const { subDomain } = useSubdomain();
+  const { t, i18n } = useTranslation();
+
   const { isAdmin } = usePermission();
   const getLinkSignUp = useCallback(
     (mode: string) => {
@@ -130,22 +133,24 @@ export default function IndexAccountManager({ props }: any) {
     [selectedDomain]
   );
   const { run: submit } = useJob((dataSubmit: AccessManger) => {
-    message.loading.show("Updating account manager ...");
+    message.loading.show(t("messages:loading.updating_account_manager"));
+
     return UserSettingRepository()
       .updateAccessManagerSetting(dataSubmit)
       .pipe(
         map(({ data }) => {
           message.loading.hide();
           if (data.statusCode === 200) {
-            notification.success("Access manager updated successfully.");
+            notification.success(t("messages:success.update_access_manager"));
             fetchAccountManagerStatus();
           } else {
-            notification.error("Update failed.");
+            notification.error(t("messages:error.update_access_manager"));
           }
         }),
         catchError((error) => {
           message.loading.hide();
-          notification.error("Update failed.");
+          notification.error(t("messages:error.update_access_manager"));
+
           return of(error);
         })
       );
