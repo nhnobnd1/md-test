@@ -39,7 +39,6 @@ export default function applyAuthMiddleware(
 					companyName: null,
 					timezone: shop.timezone,
 				};
-
 				await registerUser(payload);
 
 				res.cookie(

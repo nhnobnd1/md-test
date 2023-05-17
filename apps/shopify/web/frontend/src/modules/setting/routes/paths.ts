@@ -34,7 +34,7 @@ const SettingRoutePaths = createRoutePath({
     },
   },
   GenaralSetting: {
-    Index: "genaral-setting",
+    Index: "general-setting",
     BusinessHours: {
       Index: "business-hours",
     },

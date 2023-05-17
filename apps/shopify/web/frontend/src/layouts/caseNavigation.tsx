@@ -94,7 +94,7 @@ const caseNavigation: NavigationItems[] = [
       // { label: "Account Profile", url: "/settings/account-profile" },
 
       {
-        label: "Genaral Settings",
+        label: "General Settings",
         url: SettingChannelRoutePaths.Index,
         icon: () => <SettingsMajor />,
         tabBarNavigation: [
