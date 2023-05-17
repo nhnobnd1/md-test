@@ -35,6 +35,7 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 import { Button, Input, Spin, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, forkJoin, map, of } from "rxjs";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
 import { Form } from "src/components/UI/Form";
@@ -105,12 +106,14 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     on: openFilterModal,
     off: closeFilterModal,
   } = useToggle();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const message = useMessage();
   const notification = useNotification();
   const location = useLocation();
   const [statusFromTrash, setStatusFromTrash] = useState(location.state);
   const [filterObject, setFilterObject] = useState<FilterObject | null>(null);
+  console.log("hehe", t("messages:ticket_error"));
 
   const defaultFilter: () => any = () => ({
     page: 1,
