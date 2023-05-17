@@ -8,6 +8,7 @@ import { Fullscreen } from "@shopify/app-bridge/actions";
 
 import { NavigationLink } from "@shopify/app-bridge-react/components/NavigationMenu/NavigationMenu";
 import { useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { RichText } from "src/components/RichText";
 import env from "src/core/env";
 import { useApi, useShopDomain } from "src/hooks";
@@ -20,7 +21,7 @@ import useFullScreen from "src/store/useFullScreen";
 
 export default function App() {
   const { routes } = useRoutes();
-
+  const { t } = useTranslation();
   const app = useAppBridge();
   const fullscreen = Fullscreen.create(app);
   const shop = useShopDomain();
@@ -97,7 +98,7 @@ export default function App() {
               );
             },
             error() {
-              show("Login app failed !", {
+              show(t("messages:error.login"), {
                 isError: true,
               });
               TokenManager.setToken("refresh_token", "");

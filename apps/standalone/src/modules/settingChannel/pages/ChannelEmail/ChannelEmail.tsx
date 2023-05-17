@@ -63,7 +63,7 @@ const ChannelEmail = (props: ChannelEmailProps) => {
               setEmails(listEmails);
               setMeta(data.metadata);
             } else {
-              message.error("Get data agent failed");
+              message.error(t("messages:error.get_agent"));
             }
           })
         );

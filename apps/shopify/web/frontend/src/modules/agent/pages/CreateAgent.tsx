@@ -15,6 +15,7 @@ import {
 } from "@shopify/polaris";
 import { FormikProps } from "formik";
 import { useCallback, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import { Banner } from "src/components/Banner";
 import useAuth from "src/hooks/useAuth";
@@ -28,6 +29,7 @@ import AgentRoutePaths from "src/modules/agent/routes/paths";
 interface CreateAgentProps {}
 
 const CreateAgent = (props: CreateAgentProps) => {
+  const { t } = useTranslation();
   const { show } = useToast();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -42,14 +44,14 @@ const CreateAgent = (props: CreateAgentProps) => {
         .pipe(
           map(({ data }) => {
             if (data.statusCode === 200) {
-              show("Create Agent Success");
+              show(t("messages:success.create_agent"));
               navigate(
                 generatePath(AgentRoutePaths.Detail, { id: data.data._id }),
                 {
                   state: {
                     banner: {
                       status: "success",
-                      message: `Invitation Email has been sent to Agent's email address.`,
+                      message: t("messages:success.inactive_email"),
                     },
                   },
                 }
@@ -86,7 +88,7 @@ const CreateAgent = (props: CreateAgentProps) => {
         return "The invitation is sent to an existing user.";
 
       default:
-        return "Add agent failed";
+        return t("messages:error.add_agent");
     }
   }, []);
 

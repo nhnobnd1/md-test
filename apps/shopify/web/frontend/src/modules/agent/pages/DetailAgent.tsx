@@ -31,6 +31,7 @@ import { Status } from "@shopify/polaris/build/ts/latest/src/components/Badge";
 import classNames from "classnames";
 import { FormikProps } from "formik";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import Banner from "src/components/Banner/Banner";
 import { ModalDelete } from "src/components/Modal/ModalDelete";
@@ -45,6 +46,7 @@ interface CreateAgentProps {}
 
 const DetailAgent = (props: CreateAgentProps) => {
   const { show } = useToast();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const formRef = useRef<FormikProps<any>>(null);
   const { banner, show: showBanner, close: closeBanner } = useBanner();
@@ -77,16 +79,16 @@ const DetailAgent = (props: CreateAgentProps) => {
                 setAgentSaved(data.data);
               } else {
                 showBanner("critical", {
-                  message: "Get data agent failed",
+                  message: t("messages:error.get_agent"),
                 });
-                show("Get data agent failed", { isError: true });
+                show(t("messages:error.get_agent"), { isError: true });
               }
             },
             catchError((err) => {
               showBanner("critical", {
-                message: "Get data agent failed",
+                message: t("messages:error.get_agent"),
               });
-              show("Get data agent failed", { isError: true });
+              show(t("messages:error.get_agent"), { isError: true });
               return of(err);
             })
           )
@@ -101,7 +103,7 @@ const DetailAgent = (props: CreateAgentProps) => {
     } else {
       showBanner("critical", {
         title: "There is an error with information agent",
-        message: "Get data agent failed",
+        message: t("messages:error.get_agent"),
       });
     }
   });

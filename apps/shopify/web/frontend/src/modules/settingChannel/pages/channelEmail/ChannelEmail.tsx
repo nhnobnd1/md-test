@@ -26,6 +26,7 @@ import {
   Text,
 } from "@shopify/polaris";
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import { ButtonDelete } from "src/components/Button/ButtonDelete";
 import { ButtonEdit } from "src/components/Button/ButtonEdit";
@@ -43,6 +44,7 @@ export interface ChannelEmailProps {}
 
 export const ChannelEmail = (props: ChannelEmailProps) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [sortValue, setSortValue] = useState<string[]>([]);
   const [emails, setEmails] = useState<EmailIntegration[]>([]);
   const { show } = useToast();
@@ -85,7 +87,7 @@ export const ChannelEmail = (props: ChannelEmailProps) => {
               setEmails(listEmails);
               setMeta(data.metadata);
             } else {
-              show("Get data agent failed", {
+              show(t("messages:error.get_agent"), {
                 isError: true,
               });
             }
