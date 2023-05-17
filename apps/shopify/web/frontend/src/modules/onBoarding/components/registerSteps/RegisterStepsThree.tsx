@@ -1,6 +1,14 @@
 import { useJob } from "@moose-desk/core";
 import { GetTourGuideRequest, TourGuideRepository } from "@moose-desk/repo";
-import { Card, Link, Page, Text, TextContainer } from "@shopify/polaris";
+import {
+  Button,
+  Card,
+  Link,
+  Page,
+  Text,
+  TextContainer,
+} from "@shopify/polaris";
+import classNames from "classnames";
 import { useCallback } from "react";
 import { map } from "rxjs";
 import StorageManager from "src/core/utilities/StorageManager";
@@ -8,7 +16,7 @@ import useAuth from "src/hooks/useAuth";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import "src/modules/onBoarding/assets/style/components/registerSteps/register-steps-three.scss";
 import { useStore } from "src/providers/StoreProviders";
-
+import styles from "./styles.module.scss";
 interface RegisterStepsThreeProps {
   previousStep: () => void;
   redirectIndex: () => void;
@@ -53,11 +61,11 @@ const RegisterStepsThree = ({
     <Page>
       <Card
         title={<TitleCard />}
-        primaryFooterAction={{
-          content: "Back",
-          onAction: previousStep,
-          destructive: true,
-        }}
+        // primaryFooterAction={{
+        //   content: "Back",
+        //   onAction: previousStep,
+        //   destructive: true,
+        // }}
         sectioned
       >
         <Text variant="heading2xl" as="h4">
@@ -93,11 +101,14 @@ const RegisterStepsThree = ({
             Any emails sent to this email address will automatically create new
             ticket in your support portal
           </Text>
-          <div className="mt-4">
-            <Link onClick={redirectLandingPage} external>
-              Click here to start using your portal
-            </Link>
-          </div>
+        </div>
+        <div className={classNames(styles.redirectLandingPage, "mt-4")}>
+          <Button onClick={previousStep} destructive>
+            Back
+          </Button>
+          <Link onClick={redirectLandingPage} external>
+            Click here to start using your portal
+          </Link>
         </div>
       </Card>
     </Page>

@@ -51,7 +51,7 @@ const CreateAgent = (props: CreateAgentProps) => {
                   state: {
                     banner: {
                       status: "success",
-                      message: `Invitation Email has been sent to Agent's email address.`,
+                      message: t("messages:success.inactive_email"),
                     },
                   },
                 }
@@ -88,7 +88,7 @@ const CreateAgent = (props: CreateAgentProps) => {
         return "The invitation is sent to an existing user.";
 
       default:
-        return "Add agent failed";
+        return t("messages:error.add_agent");
     }
   }, []);
 

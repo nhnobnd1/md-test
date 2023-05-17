@@ -1,6 +1,7 @@
 {
   "error": {
     "file_upload": "File upload failed",
+    "add_agent": "Add agent failed",
     "get_agent": "Get data agent failed",
     "deactivate_agent": "Deactivate agent failed",
     "active_agent": "Active agent failed",
@@ -47,6 +48,7 @@
     "delete_ticket": "There is an error with remove Ticket."
   },
   "success": {
+    "create_agent": "Create Agent Success",
     "file_upload": "File upload successful",
     "deactivate_agent": "Agent has been deactivated successful",
     "active_agent": "Active agent successful",

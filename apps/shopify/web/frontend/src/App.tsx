@@ -8,6 +8,7 @@ import { Fullscreen } from "@shopify/app-bridge/actions";
 
 import { NavigationLink } from "@shopify/app-bridge-react/components/NavigationMenu/NavigationMenu";
 import { useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { RichText } from "src/components/RichText";
 import env from "src/core/env";
 import { useApi, useShopDomain } from "src/hooks";
@@ -17,11 +18,9 @@ import { LoginResponse } from "src/models/Auth";
 import { useStore } from "src/providers/StoreProviders";
 import { AppRoutes } from "src/routes";
 import useFullScreen from "src/store/useFullScreen";
-import { useTranslation } from "react-i18next";
 
 export default function App() {
   const { routes } = useRoutes();
-
   const app = useAppBridge();
   const fullscreen = Fullscreen.create(app);
   const shop = useShopDomain();
