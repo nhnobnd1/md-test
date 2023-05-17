@@ -69,19 +69,9 @@ export default function App() {
         offlineToken: localStorage.getItem("offlineToken"),
         shop: JSON.parse(localStorage.getItem("shop") as string),
       };
-      console.log({ payload, storeId });
       if (payload && payload.email && payload.offlineToken && storeId) {
         console.log("Processing login");
-        console.log("request", {
-          url: "/v1/account/shopify/sign-in",
-          method: "POST",
-          baseURL: env.API_URL + "/api",
-          data: {
-            email: payload.email,
-            password: payload.offlineToken,
-            storeId: storeId,
-          },
-        });
+
         api
           .request<LoginResponse>({
             url: "/v1/account/shopify/sign-in",

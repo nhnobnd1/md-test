@@ -56,6 +56,7 @@ const HolidayTab = ({
     index: number;
   }>();
   const day = new Date();
+  console.log({ valueTableHolidays });
   const rowMarkup = useMemo(() => {
     return valueTableHolidays.map((value, index) => (
       <IndexTable.Row id={value.name} key={value.name} position={index}>
@@ -81,13 +82,7 @@ const HolidayTab = ({
                   2
                 )}-${day.getFullYear()}`,
                 "MM/DD/YYYY"
-              ).format("MM/DD")} to ${dayjs(
-                `${value.endDate.slice(3)}-${value.endDate.slice(
-                  0,
-                  2
-                )}-${day.getFullYear()}`,
-                "MM/DD/YYYY"
-              ).format("MM/DD")}`}
+              ).format("MM/DD")} to ${value.endDate}`}
         </IndexTable.Cell>
         <IndexTable.Cell className="py-3">
           {getAutoReplyName(value.autoReplyCode)}
