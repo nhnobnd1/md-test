@@ -38,7 +38,7 @@ export const StoreProviders = ({ children }: StoreProvidersProps) => {
     queryKey: ["getStoreId"],
     queryFn: () =>
       getStoreApi({
-        subdomain: getSubDomain(),
+        subdomain: (getSubDomain() as string).toLowerCase(),
       }),
     retry: 3,
     onSuccess: (data: GetStoreIdResponse) => {
