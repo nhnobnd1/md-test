@@ -10,6 +10,7 @@ import {
   Text,
 } from "@shopify/polaris";
 import { memo, useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
@@ -46,6 +47,8 @@ const EmailOPT = ({
   const [secondResend, setSecondResend] = useState(false);
   const [onResendEmail, setOnResendEmail] = useState(false);
   const [error, setError] = useState<string>();
+  const { t, i18n } = useTranslation();
+
   const handleSubmit = useCallback(
     (data: any) => {
       submit({ method: initialValues?.twoFactorMethod, ...data });
@@ -69,19 +72,16 @@ const EmailOPT = ({
             back(1);
             setBanner({
               isShowBanner: true,
-              message:
-                "Your Two-Factor Authentication has been enabled successfully.",
+              message: t("messages:success.enable_two_factor"),
               status: "success",
             });
-            show(
-              "Your Two-Factor Authentication has been enabled successfully."
-            );
+            show(t("messages:success.enable_two_factor"));
           } else {
-            setError("The input OTP is incorrect");
+            setError(t("messages:error.input_otp"));
           }
         }),
         catchError((error) => {
-          setError("The input OTP is incorrect");
+          setError(t("messages:error.input_otp"));
           return of(error);
         })
       );

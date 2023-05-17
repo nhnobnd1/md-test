@@ -31,6 +31,7 @@ import { Status } from "@shopify/polaris/build/ts/latest/src/components/Badge";
 import classNames from "classnames";
 import { FormikProps } from "formik";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import Banner from "src/components/Banner/Banner";
 import { ModalDelete } from "src/components/Modal/ModalDelete";
@@ -61,6 +62,7 @@ const DetailAgent = (props: CreateAgentProps) => {
     initValue: 300,
     key: id ?? "",
   });
+  const { t, i18n } = useTranslation();
 
   const isSendingMail = useMemo(() => {
     return checkTimerProcess;
@@ -77,16 +79,16 @@ const DetailAgent = (props: CreateAgentProps) => {
                 setAgentSaved(data.data);
               } else {
                 showBanner("critical", {
-                  message: "Get data agent failed",
+                  message: t("messages:error.get_agent"),
                 });
-                show("Get data agent failed", { isError: true });
+                show(t("messages:error.get_agent"), { isError: true });
               }
             },
             catchError((err) => {
               showBanner("critical", {
-                message: "Get data agent failed",
+                message: t("messages:error.get_agent"),
               });
-              show("Get data agent failed", { isError: true });
+              show(t("messages:error.get_agent"), { isError: true });
               return of(err);
             })
           )
@@ -101,7 +103,7 @@ const DetailAgent = (props: CreateAgentProps) => {
     } else {
       showBanner("critical", {
         title: "There is an error with information agent",
-        message: "Get data agent failed",
+        message: t("messages:error.get_agent"),
       });
     }
   });
@@ -125,24 +127,24 @@ const DetailAgent = (props: CreateAgentProps) => {
               if (data.statusCode === 200) {
                 showBanner("success", {
                   title: `Update ${data.data?.firstName} ${data.data?.lastName}`,
-                  message: "Agent has been updated successfully",
+                  message: t("messages:success.agent_update"),
                 });
                 setAgentSaved(data.data);
-                show("Agent has been updated successfully");
+                show(t("messages:success.agent_update"));
               } else {
                 showBanner("critical", {
                   title: `Update ${agentSaved?.firstName} ${agentSaved?.lastName}`,
-                  message: "Agent has been updated failed",
+                  message: t("messages:error.agent_update"),
                 });
-                show("Agent has been updated failed", { isError: true });
+                show(t("messages:error.agent_update"), { isError: true });
               }
             },
             catchError((err) => {
               showBanner("critical", {
                 title: `Update ${agentSaved?.firstName} ${agentSaved?.lastName}`,
-                message: "Agent has been updated failed",
+                message: t("messages:error.agent_update"),
               });
-              show("Agent has been updated failed", { isError: true });
+              show(t("messages:error.agent_update"), { isError: true });
               return of(err);
             })
           )
@@ -164,22 +166,26 @@ const DetailAgent = (props: CreateAgentProps) => {
                 initCountdown(agentSaved?._id ?? id ?? "");
                 showBanner("success", {
                   title: `Resend invitation ${payload.email}`,
-                  message: "Resend invitation mail success",
+                  message: t("messages:success.resend_invitation_email"),
                 });
-                show("Resend mail success");
+                show(t("messages:success.resend_invitation_email"));
               } else {
                 showBanner("critical", {
-                  message: "Resend invitation email failed",
+                  message: t("messages:error.resend_invitation_email"),
                 });
-                show("Resend mail failed", { isError: true });
+                show(t("messages:error.resend_invitation_email"), {
+                  isError: true,
+                });
               }
             },
 
             catchError((err) => {
               showBanner("critical", {
-                message: "Resend invitation email failed",
+                message: t("messages:error.resend_invitation_email"),
               });
-              show("Resend mail failed", { isError: true });
+              show(t("messages:error.resend_invitation_email"), {
+                isError: true,
+              });
               return of(err);
             })
           )
@@ -199,20 +205,20 @@ const DetailAgent = (props: CreateAgentProps) => {
                 showBanner("success", {
                   message: "Agent has been activated successfully.",
                 });
-                show("Active agent success");
+                show(t("messages:success.active_agent"));
                 getDetailAgentApi(id);
               } else {
                 showBanner("critical", {
-                  message: "Active agent failed",
+                  message: t("messages:error.active_agent"),
                 });
-                show("Active agent failed", { isError: true });
+                show(t("messages:error.active_agent"), { isError: true });
               }
             },
             catchError((err) => {
               showBanner("critical", {
-                message: "Active agent failed",
+                message: t("messages:error.active_agent"),
               });
-              show("Active agent failed", { isError: true });
+              show(t("messages:error.active_agent"), { isError: true });
               return of(err);
             })
           )
@@ -230,22 +236,22 @@ const DetailAgent = (props: CreateAgentProps) => {
             ({ data }) => {
               if (data.statusCode === 200) {
                 showBanner("success", {
-                  message: "Agent has been deactivated successfully.",
+                  message: t("messages:success.deactivate_agent"),
                 });
-                show("Deactivate agent success");
+                show(t("messages:success.deactivate_agent"));
                 getDetailAgentApi(id);
               } else {
                 showBanner("critical", {
-                  message: "Deactivate agent failed",
+                  message: t("messages:error.deactivate_agent"),
                 });
-                show("Deactivate agent failed", { isError: true });
+                show(t("messages:error.deactivate_agent"), { isError: true });
               }
             },
             catchError((err) => {
               showBanner("critical", {
-                message: "Deactivate agent failed",
+                message: t("messages:error.deactivate_agent"),
               });
-              show("Deactivate agent failed", { isError: true });
+              show(t("messages:error.deactivate_agent"), { isError: true });
               return of(err);
             })
           )
@@ -261,7 +267,7 @@ const DetailAgent = (props: CreateAgentProps) => {
         .pipe(
           map(({ data }) => {
             if (data.statusCode === 200) {
-              show("Remove Agent Success");
+              show(t("messages:success.deleted_agent"));
               navigate(generatePath(AgentRoutePaths.Index), {
                 state: {
                   banner: {
@@ -273,18 +279,18 @@ const DetailAgent = (props: CreateAgentProps) => {
               });
             } else {
               showBanner("critical", {
-                title: "There is an error with remove agent",
+                title: t("messages:error.deleted_agent"),
                 message: "Remove agent failed",
               });
-              show("Remove Agent Failed", { isError: true });
+              show(t("messages:error.deleted_agent"), { isError: true });
             }
           }),
           catchError((err) => {
             showBanner("critical", {
-              title: "There is an error with remove agent",
+              title: t("messages:error.deleted_agent"),
               message: "Remove agent failed",
             });
-            show("Remove Agent Failed", { isError: true });
+            show(t("messages:error.deleted_agent"), { isError: true });
             return of(err);
           })
         );
@@ -313,7 +319,7 @@ const DetailAgent = (props: CreateAgentProps) => {
       deleteAgentApi(agentSaved?._id);
     } else {
       showBanner("critical", {
-        title: "There is an error with remove agent",
+        title: t("messages:error.deleted_agent"),
         message: "Remove agent failed",
       });
     }
@@ -328,7 +334,7 @@ const DetailAgent = (props: CreateAgentProps) => {
     } else {
       showBanner("critical", {
         title: "There is an error with resend invitation email",
-        message: "Resend invitation email failed",
+        message: t("messages:error.resend_invitation_email"),
       });
     }
   }, [agentSaved]);

@@ -4,6 +4,7 @@ import { useToast } from "@shopify/app-bridge-react";
 import { Banner, ContextualSaveBar, Layout, Page } from "@shopify/polaris";
 import { FormikProps } from "formik";
 import { useCallback, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import useAuth from "src/hooks/useAuth";
 import TagForm from "src/modules/setting/component/TagForm";
@@ -14,6 +15,8 @@ export default function CreateTag() {
   const navigate = useNavigate();
   const auth = useAuth();
   const { show } = useToast();
+  const { t, i18n } = useTranslation();
+
   const [messageError, setMessageError] = useState("");
   const { toggle: updateForm } = useToggle();
   const [banner, setBanner] = useState(false);
@@ -37,7 +40,7 @@ export default function CreateTag() {
         .pipe(
           map(({ data }) => {
             if (data.statusCode === 200) {
-              show("Tag has been created successfully.");
+              show(t("messages:success.create_tag"));
               navigateShowDetails(data.data._id, data.statusCode);
             } else {
               setBanner(true);
@@ -49,7 +52,7 @@ export default function CreateTag() {
                   isError: true,
                 });
               } else {
-                show("Create tag failed", {
+                show(t("messages:error.create_tag"), {
                   isError: true,
                 });
               }
@@ -63,7 +66,7 @@ export default function CreateTag() {
                 isError: true,
               });
             } else {
-              show("Create tag failed", {
+              show(t("messages:error.create_tag"), {
                 isError: true,
               });
             }

@@ -26,6 +26,7 @@ import {
   Text,
 } from "@shopify/polaris";
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import { ButtonDelete } from "src/components/Button/ButtonDelete";
 import { ButtonEdit } from "src/components/Button/ButtonEdit";
@@ -46,6 +47,8 @@ export const ChannelEmail = (props: ChannelEmailProps) => {
   const [sortValue, setSortValue] = useState<string[]>([]);
   const [emails, setEmails] = useState<EmailIntegration[]>([]);
   const { show } = useToast();
+  const { t, i18n } = useTranslation();
+
   const { getSubDomain, getDomainStandalone } = useSubdomain();
   const {
     state: btnSort,
@@ -85,7 +88,7 @@ export const ChannelEmail = (props: ChannelEmailProps) => {
               setEmails(listEmails);
               setMeta(data.metadata);
             } else {
-              show("Get data agent failed", {
+              show(t("messages:error.get_agent"), {
                 isError: true,
               });
             }
@@ -161,15 +164,15 @@ export const ChannelEmail = (props: ChannelEmailProps) => {
             closeModalDelete();
             if (data.statusCode === 200) {
               getListEmailApi(filterData);
-              show("Delete email success");
+              show(t("messages:success.delete_email"));
             } else {
-              show("Delete email failed", {
+              show(t("messages:error.delete_email"), {
                 isError: true,
               });
             }
           }),
           catchError((error) => {
-            show("Delete email failed", {
+            show(t("messages:error.delete_email"), {
               isError: true,
             });
             return of(error);

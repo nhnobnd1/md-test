@@ -9,6 +9,7 @@ import {
   Stack,
 } from "@shopify/polaris";
 import { memo, useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 interface Enable2FA {
   initialValues: {
@@ -34,6 +35,7 @@ const Enable2FA = ({
   setStep,
 }: Enable2FA) => {
   const [value, setValue] = useState("Disabled");
+  const { t, i18n } = useTranslation();
 
   const handleChange = useCallback(
     (_checked, newValue) => {
@@ -60,10 +62,10 @@ const Enable2FA = ({
               fetch2FAStatus();
               setBanner({
                 isShowBanner: true,
-                message: "Your Two-Factor Authentication has been disabled.",
+                message: t("messages:success.disable_two_factor"),
                 status: "success",
               });
-              show("Your Two-Factor Authentication has been disabled.");
+              show(t("messages:success.disable_two_factor"));
               break;
             case MethodOTP.Email:
               setStep(2);

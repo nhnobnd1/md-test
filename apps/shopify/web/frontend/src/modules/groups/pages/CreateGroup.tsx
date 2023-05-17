@@ -4,6 +4,7 @@ import { useToast } from "@shopify/app-bridge-react";
 import { Card, ContextualSaveBar, Layout, Page } from "@shopify/polaris";
 import { FormikProps } from "formik";
 import { useCallback, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { map } from "rxjs";
 import { Banner } from "src/components/Banner";
 import { useBanner } from "src/hooks/useBanner";
@@ -22,6 +23,8 @@ const CreateGroup = (props: CreateGroupProps) => {
   const { storeId } = useStore();
   const navigate = useNavigate();
   const { toggle } = useToggle();
+  const { t, i18n } = useTranslation();
+
   const formRef = useRef<FormikProps<any>>(null);
 
   const { run: createGroupApi, processing: loadingAddGroup } = useJob(
@@ -31,14 +34,14 @@ const CreateGroup = (props: CreateGroupProps) => {
         .pipe(
           map(({ data }) => {
             if (data.statusCode === 200) {
-              show("Create Group Success");
+              show(t("messages:success.create_group"));
               navigate(
                 generatePath(GroupsRoutePaths.Detail, { id: data.data._id }),
                 {
                   state: {
                     banner: {
                       status: "success",
-                      message: `Group has been added succcesfully.`,
+                      message: t("messages:success.create_group"),
                     },
                   },
                 }
@@ -46,7 +49,7 @@ const CreateGroup = (props: CreateGroupProps) => {
             } else {
               if (data.errorCode) {
                 showBanner("critical", {
-                  message: "Create group failed.",
+                  message: t("messages:error.create_group"),
                 });
               }
             }

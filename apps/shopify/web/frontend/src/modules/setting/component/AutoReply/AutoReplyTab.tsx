@@ -13,6 +13,7 @@ import {
 import { DeleteMajor, EditMajor } from "@shopify/polaris-icons";
 import dayjs from "dayjs";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ModalDelete } from "src/components/Modal/ModalDelete";
 import { Pagination } from "src/components/Pagination";
 import ModalAutoReply from "src/modules/setting/component/AutoReply/ModalAutoReply";
@@ -31,6 +32,8 @@ const AutoReplyTab = ({
   dataBusinessHoursAutoReplyCode,
 }: AutoReplyTabProps) => {
   const { show } = useToast();
+  const { t, i18n } = useTranslation();
+
   const [isDetail, setIsDetail] = useState<boolean>(false);
   const [valueListAutoReplys, setValueListAutoReplys] = useState<AutoReply[]>(
     []
@@ -123,7 +126,7 @@ const AutoReplyTab = ({
           return init;
         });
       } else {
-        show(`Auto Reply is being used in a holiday. Please check again!`, {
+        show(t("messages:error.delete_auto_reply"), {
           isError: true,
         });
       }

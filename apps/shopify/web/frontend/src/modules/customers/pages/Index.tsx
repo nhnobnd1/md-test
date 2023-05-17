@@ -27,6 +27,7 @@ import {
 } from "@shopify/polaris";
 import { SortMinor } from "@shopify/polaris-icons";
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import { ButtonDelete } from "src/components/Button/ButtonDelete";
 import { ButtonEdit } from "src/components/Button/ButtonEdit";
@@ -151,6 +152,7 @@ export default function CustomerIndexPage() {
   const resetFilterData = useCallback(() => {
     setFilterData(defaultFilter());
   }, []);
+  const { t, i18n } = useTranslation();
 
   const choices = [
     { label: "Sort by name A-Z", value: "0" },
@@ -182,17 +184,17 @@ export default function CustomerIndexPage() {
       .pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
-            show("Customer and his tickets have been removed successfully!");
+            show(t("messages:success.delete_customer"));
             fetchListCustomer();
             setDeleteCustomer("");
           } else {
-            show("Delete customer failed", {
+            show(t("messages:error.delete_customer"), {
               isError: true,
             });
           }
         }),
         catchError((error) => {
-          show("Delete customer failed", {
+          show(t("messages:error.delete_customer"), {
             isError: true,
           });
           return of(error);

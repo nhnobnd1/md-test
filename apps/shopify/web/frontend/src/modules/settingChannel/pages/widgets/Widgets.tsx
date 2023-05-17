@@ -17,6 +17,7 @@ import classNames from "classnames";
 import { FormikProps } from "formik";
 import { isEqual } from "lodash-es";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import { Banner } from "src/components/Banner";
 import Form from "src/components/Form";
@@ -62,6 +63,7 @@ const Widgets = (props: WidgetsProps) => {
   const updateSave = useUpdateSave((state) => state.changeUpdate);
   const [initialValues, setInitialValues] = useState(widgetSetting);
   const { show } = useToast();
+  const { t, i18n } = useTranslation();
 
   const defaultFilter: () => GetListHelpWidgetRequest = () => ({
     page: 1,
@@ -115,10 +117,10 @@ const Widgets = (props: WidgetsProps) => {
           map(
             ({ data }) => {
               if (data.statusCode === 200) {
-                show("Your changes have been updated successfully.");
+                show(t("messages:success.update_help_widget"));
                 showBanner("success", {
                   title: "",
-                  message: "Your changes have been updated successfully.",
+                  message: t("messages:success.update_help_widget"),
                 });
                 setInitialValues({
                   ...data.data.settings,
@@ -129,10 +131,10 @@ const Widgets = (props: WidgetsProps) => {
               } else {
                 showBanner("critical", {
                   title: "",
-                  message: "Widget has been updated failed.",
+                  message: t("messages:error.update_help_widget"),
                 });
                 if (data.statusCode === 409) {
-                  show("Error.", {
+                  show(t("messages:error.update_help_widget"), {
                     isError: true,
                   });
                 }
@@ -142,14 +144,14 @@ const Widgets = (props: WidgetsProps) => {
               const errorCode = err.response.status;
               showBanner("critical", {
                 title: "",
-                message: "Widget has been updated failed.",
+                message: t("messages:error.update_help_widget"),
               });
               if (errorCode === 409) {
-                show(`Error`, {
+                show(t("messages:error.update_help_widget"), {
                   isError: true,
                 });
               } else {
-                show("Widget has been updated failed.", {
+                show(t("messages:error.update_help_widget"), {
                   isError: true,
                 });
               }

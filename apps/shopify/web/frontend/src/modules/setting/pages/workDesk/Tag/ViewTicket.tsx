@@ -27,6 +27,7 @@ import { SortMinor } from "@shopify/polaris-icons";
 import dayjs from "dayjs";
 
 import { FC, useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import { ModalDelete } from "src/components/Modal/ModalDelete";
 import { Pagination } from "src/components/Pagination";
@@ -80,6 +81,7 @@ const ViewTicket: FC<ViewTicketProps> = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { show } = useToast();
+  const { t, i18n } = useTranslation();
 
   const [isOpen, setIsOpen] = useState(false);
   const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -144,15 +146,15 @@ const ViewTicket: FC<ViewTicketProps> = () => {
       .pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
-            show("Delete success");
+            show(t("messages:success.deleted"));
             getTicketByTagApi(id, filterData);
           } else {
-            show("Delete failed", {
+            show(t("messages:error.deleted"), {
               isError: true,
             });
           }
           catchError((error) => {
-            show("Delete failed", {
+            show(t("messages:error.deleted"), {
               isError: true,
             });
             return of(error);

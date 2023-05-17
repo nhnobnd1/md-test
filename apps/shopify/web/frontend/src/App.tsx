@@ -17,6 +17,7 @@ import { LoginResponse } from "src/models/Auth";
 import { useStore } from "src/providers/StoreProviders";
 import { AppRoutes } from "src/routes";
 import useFullScreen from "src/store/useFullScreen";
+import { useTranslation } from "react-i18next";
 
 export default function App() {
   const { routes } = useRoutes();
@@ -30,6 +31,8 @@ export default function App() {
   const { login, isLoggedIn, user } = useAuth();
   const { storeId } = useStore();
   const fullScreen = useFullScreen((state) => state.fullScreen);
+  const { t, i18n } = useTranslation();
+
   // useGlobalData(isLoggedIn);
   useEffect(() => {
     fullScreen
@@ -97,7 +100,7 @@ export default function App() {
               );
             },
             error() {
-              show("Login app failed !", {
+              show(t("messages:error.login"), {
                 isError: true,
               });
               TokenManager.setToken("refresh_token", "");

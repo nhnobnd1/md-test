@@ -1,6 +1,7 @@
 import { useToast } from "@shopify/app-bridge-react";
 import { Button, Icon, Text } from "@shopify/polaris";
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import useWidgetSetting from "src/modules/settingChannel/store/useSetting";
 import { useStore } from "src/providers/StoreProviders";
 import CodeIcon from "~icons/carbon/code";
@@ -15,6 +16,7 @@ const Integration = ({ idWidget }: IntegrationProps) => {
   const widgetSetting = useWidgetSetting((state) => state.widgetSetting);
   const [copied, setCopied] = useState<boolean>(false);
   const { show } = useToast();
+  const { t, i18n } = useTranslation();
 
   const scriptCode = useMemo(() => {
     if (!idWidget)
@@ -47,7 +49,7 @@ const Integration = ({ idWidget }: IntegrationProps) => {
   const handleClickCopy = () => {
     navigator.clipboard.writeText(scriptCode);
     setCopied(true);
-    show("Copied");
+    show(t("messages:success.copied"));
   };
 
   return (

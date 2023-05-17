@@ -12,6 +12,7 @@ import { Editor, IAllProps } from "@tinymce/tinymce-react";
 import { filesize } from "filesize";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import DeleteIcon from "~icons/ic/baseline-delete-outline";
 import UploadIcon from "~icons/ic/outline-cloud-upload";
@@ -47,6 +48,7 @@ export const TextEditorTicket = ({
   const [loading, setLoading] = useState(false);
   const [idAttachments, setIdAttachments] = useState<string[]>([]);
   const { show } = useToast();
+  const { t, i18n } = useTranslation();
 
   const [errorText, setErrorText] = useState("");
   const onDrop = useCallback(
@@ -102,7 +104,7 @@ export const TextEditorTicket = ({
             setIdAttachments((previousAttachs) => {
               return [...previousAttachs, ...data.data.ids];
             });
-            show("Upload file successfully");
+            show(t("messages:success.file_upload"));
 
             // message.success("Upload file successfully");
           }
@@ -110,7 +112,7 @@ export const TextEditorTicket = ({
         catchError((err) => {
           setLoadingButton(false);
           setLoading(false);
-          show("Upload file fail");
+          show(t("messages:error.file_upload"));
 
           return of(err);
         })

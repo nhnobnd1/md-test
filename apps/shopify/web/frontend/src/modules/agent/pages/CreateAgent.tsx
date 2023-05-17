@@ -15,6 +15,7 @@ import {
 } from "@shopify/polaris";
 import { FormikProps } from "formik";
 import { useCallback, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import { Banner } from "src/components/Banner";
 import useAuth from "src/hooks/useAuth";
@@ -34,6 +35,7 @@ const CreateAgent = (props: CreateAgentProps) => {
   const formRef = useRef<FormikProps<any>>(null);
   const { banner, show: showBanner, close: closeBanner } = useBanner();
   const { toggle } = useToggle();
+  const { t, i18n } = useTranslation();
 
   const { run: createAgentApi, processing: loadingCreate } = useJob(
     (payload: CreateAgentRequest) => {
@@ -42,7 +44,7 @@ const CreateAgent = (props: CreateAgentProps) => {
         .pipe(
           map(({ data }) => {
             if (data.statusCode === 200) {
-              show("Create Agent Success");
+              show(t("messages:success.inactive_email"));
               navigate(
                 generatePath(AgentRoutePaths.Detail, { id: data.data._id }),
                 {

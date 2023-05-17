@@ -15,6 +15,7 @@ import {
 } from "@shopify/polaris";
 import { FormikProps } from "formik";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
@@ -63,6 +64,8 @@ export default function IndexAccountManager({ props }: any) {
     </Tag>
   ));
   const { show } = useToast();
+  const { t, i18n } = useTranslation();
+
   const [banner, setBanner] = useState<BannerPropsAccessManager>({
     status: "success",
     message: "",
@@ -134,10 +137,10 @@ export default function IndexAccountManager({ props }: any) {
       .pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
-            show("Access manager updated successfully.");
+            show(t("messages:success.update_access_manager"));
             setBanner({
               isShowBanner: true,
-              message: "Access manager updated successfully.",
+              message: t("messages:success.update_access_manager"),
               status: "success",
             });
             fetchAccountManagerStatus();
@@ -145,16 +148,16 @@ export default function IndexAccountManager({ props }: any) {
             if (data.statusCode === 409) {
               setBanner({
                 isShowBanner: true,
-                message: "Update failed.",
+                message: t("messages:error.update_access_manager"),
                 status: "critical",
               });
             } else {
               setBanner({
                 isShowBanner: true,
-                message: "Update failed.",
+                message: t("messages:error.update_access_manager"),
                 status: "critical",
               });
-              show("Update failed", {
+              show(t("messages:error.update_access_manager"), {
                 isError: true,
               });
             }
@@ -164,7 +167,7 @@ export default function IndexAccountManager({ props }: any) {
           if (error.response.status === 409) {
             setBanner({
               isShowBanner: true,
-              message: "Update failed.",
+              message: t("messages:error.update_access_manager"),
               status: "critical",
             });
             show(`Domains cannot be the same.`, {
@@ -176,7 +179,7 @@ export default function IndexAccountManager({ props }: any) {
               message: "`Domains cannot be the same.`",
               status: "critical",
             });
-            show("Update failed.", {
+            show(t("messages:error.update_access_manager"), {
               isError: true,
             });
           }

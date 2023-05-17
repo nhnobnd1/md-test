@@ -2,6 +2,7 @@ import { useJob, useMount } from "@moose-desk/core";
 import { GetStoreIdRequest, StoreRepository } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import { ReactNode, createContext, useContext, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import StorageManager from "src/core/utilities/StorageManager";
 import { useSubdomain } from "src/hooks/useSubdomain";
@@ -22,6 +23,7 @@ export const StoreProviders = ({ children }: StoreProvidersProps) => {
   const [generalInfo, setGeneralInfo] = useState<StoreContextType>();
   const { getSubDomain } = useSubdomain();
   const { show } = useToast();
+  const { t, i18n } = useTranslation();
 
   const { run: fetchStoreId } = useJob(
     (payload: GetStoreIdRequest) => {
@@ -50,7 +52,7 @@ export const StoreProviders = ({ children }: StoreProvidersProps) => {
     if (subDomain) {
       fetchStoreId({ subdomain: subDomain.toLowerCase() });
     } else {
-      show("Get store failed", { isError: true });
+      show(t("messages:error.get_store"), { isError: true });
     }
   });
 

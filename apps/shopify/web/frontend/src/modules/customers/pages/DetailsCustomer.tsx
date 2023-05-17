@@ -18,6 +18,7 @@ import {
 } from "@shopify/polaris";
 import { FormikProps } from "formik";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import CustomerForm from "src/modules/customers/component/CustomerForm";
 import { ListTicketCustomer } from "src/modules/customers/component/ListTicketCustomer";
@@ -29,6 +30,8 @@ export default function DetailsCustomer() {
   const { state } = useLocation();
   const [title, setTitle] = useState("");
   const { toggle: updateForm } = useToggle();
+  const { t, i18n } = useTranslation();
+
   const initialValuesForm = useMemo<any>(() => {
     return {
       firstName: "",
@@ -81,7 +84,7 @@ export default function DetailsCustomer() {
               type: "success",
               message: "Customer Profile has been updated succcesfully.",
             });
-            show("Edit customer success");
+            show(t("messages:success.update_customer"));
             setDataCustomer(data.data);
           } else {
             if (data.statusCode === 409) {
@@ -97,9 +100,9 @@ export default function DetailsCustomer() {
               setBanner({
                 isShow: true,
                 type: "critical",
-                message: "Customer Profile has been updated failed.",
+                message: t("messages:error.update_customer"),
               });
-              show("Customer Profile has been updated failed.", {
+              show(t("messages:error.update_customer"), {
                 isError: true,
               });
             }
@@ -119,9 +122,9 @@ export default function DetailsCustomer() {
             setBanner({
               isShow: true,
               type: "critical",
-              message: "Customer Profile has been updated failed.",
+              message: t("messages:error.update_customer"),
             });
-            show("Customer Profile has been updated failed.", {
+            show(t("messages:error.update_customer"), {
               isError: true,
             });
           }

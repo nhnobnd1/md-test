@@ -15,6 +15,7 @@ import {
 } from "@shopify/polaris";
 import { FormikProps } from "formik";
 import { useCallback, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
@@ -32,6 +33,8 @@ export default function IndexAccountManager() {
   });
   const validateObject = validateSchemaObjectPassword;
   const { show } = useToast();
+  const { t, i18n } = useTranslation();
+
   const [banner, setBanner] = useState<BannerPropsAccessManager>({
     status: "success",
     message: "",
@@ -78,10 +81,10 @@ export default function IndexAccountManager() {
       .pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
-            show("Your password has been updated successfully.");
+            show(t("messages:success.change_password"));
             setBanner({
               isShowBanner: true,
-              message: "Your password has been updated successfully.",
+              message: t("messages:success.change_password"),
               status: "success",
             });
             handleResetForm();
@@ -89,10 +92,10 @@ export default function IndexAccountManager() {
             if (data.statusCode === 500) {
               setBanner({
                 isShowBanner: true,
-                message: "System error. Please try again later.",
+                message: t("messages:error.change_password"),
                 status: "critical",
               });
-              show(`System error. Please try again later.`, {
+              show(t("messages:error.change_password"), {
                 isError: true,
               });
             } else {
@@ -111,20 +114,20 @@ export default function IndexAccountManager() {
           if (error.response.status === 500) {
             setBanner({
               isShowBanner: true,
-              message: "System error. Please try again later.",
+              message: t("messages:error.change_password"),
               status: "critical",
             });
-            show(`System error. Please try again later.`, {
+            show(t("messages:error.change_password"), {
               isError: true,
             });
           } else {
             if (error.response.status === 500) {
               setBanner({
                 isShowBanner: true,
-                message: "System error. Please try again later.",
+                message: t("messages:error.change_password"),
                 status: "critical",
               });
-              show(`System error. Please try again later.`, {
+              show(t("messages:error.change_password"), {
                 isError: true,
               });
             } else {
