@@ -52,7 +52,7 @@ export async function registerUser(payload) {
 		);
 		console.log({ tourGuide });
 		// if dont' have tour guide
-		if (tourGuide.data.isOnboardingComplete) {
+		if (tourGuide.statusCode === 200) {
 			return;
 		}
 
