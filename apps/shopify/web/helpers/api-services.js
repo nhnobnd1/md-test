@@ -46,13 +46,6 @@ export function api() {
 // list function api
 export async function registerUser(payload) {
 	try {
-		const tourGuide = await api().get(
-			`/v1/general/info?subdomain=${payload.subdomain}`
-		);
-		if (tourGuide.data.isOnboardingComplete) {
-			return;
-		}
-
 		const response = await api().post('/v1/account/shopify/sign-up', {
 			body: payload,
 		});
@@ -63,9 +56,6 @@ export async function registerUser(payload) {
 		}
 		return response;
 	} catch (error) {
-		// const response = await api().post('/v1/account/shopify/sign-up', {
-		// 	body: payload,
-		// });
 		console.log(' register first', response);
 	}
 }

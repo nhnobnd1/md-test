@@ -264,7 +264,7 @@ const TextEditorTicket = ({
             content_style:
               "body { font-family:Helvetica,Arial,sans-serif; font-size:12pt }",
             toolbar:
-              "undo redo | bold italic underline align | blocks fontfamily fontsize | importfile | link code copy cut past blockquote backcolor forecolor indent newdocument lineheight selectall strikethrough",
+              "undo redo | bold italic underline align | importfile | blocks fontfamily fontsize  | link code copy cut past blockquote backcolor forecolor indent newdocument lineheight selectall strikethrough",
             plugins: [
               "advlist lists autolink charmap print preview anchor",
               "searchreplace visualblocks code fullscreen",
@@ -273,6 +273,7 @@ const TextEditorTicket = ({
               "link",
               "code",
             ],
+            menubar: false,
 
             setup: (editor) => {
               editor.ui.registry.addButton("importfile", {

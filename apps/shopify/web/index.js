@@ -66,7 +66,6 @@ app.get(
 				timezone: payloadTimeZone,
 			};
 
-			console.log({ payload });
 			await registerUser(payload);
 			res.cookie(
 				process.env.HOST ?? '',
