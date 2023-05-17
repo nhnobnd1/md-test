@@ -75,6 +75,7 @@ const SelectDateHolidays = ({
       <Stack alignment="trailing">
         <div className="w-[150px]">
           <TextField
+            disabled
             autoComplete="off"
             label={
               <div>
@@ -96,6 +97,7 @@ const SelectDateHolidays = ({
         </div>
         <div className="w-[150px]">
           <TextField
+            disabled
             autoComplete="off"
             label="Date:"
             labelHidden
