@@ -16,6 +16,7 @@ import {
   useState,
 } from "react";
 import { catchError, map, of } from "rxjs";
+import Images from "src/assets/images";
 import { Form } from "src/components/UI/Form";
 import useMessage from "src/hooks/useMessage";
 import { useSubdomain } from "src/hooks/useSubdomain";
@@ -52,7 +53,6 @@ export const CardSelectEmail = forwardRef(
     const signCallback = useAppSelector(
       (state) => state.channelEmail.signInCallback
     );
-    console.log({ signCallback });
 
     const { run: getEmailGoogleAuth } = useJob(
       (payload: GetEmailGoogleAuthRequest) => {
@@ -341,19 +341,21 @@ export const CardSelectEmail = forwardRef(
               loggedServer?.callBackName === "gmail" ? (
                 <SettingUpMail />
               ) : (
-                <div className="flex gap-2 items-center flex-wrap">
-                  <Button
+                <div className="flex gap-2 items-center flex-wrap hover:cursor-pointer">
+                  {/* <Button
                     className="flex items-center "
                     size="middle"
                     icon={
-                      <span className="flex items-center mr-2 text-[16px]">
-                        <LogosGoogleIcon />
-                      </span>
+                      <img src={Images.Logo.ButtonGoogle} width={240} alt="" />
                     }
                     onClick={() => handleSignInSocial("google")}
-                  >
-                    Sign In Gmail
-                  </Button>
+                  ></Button> */}
+                  <img
+                    src={Images.Logo.ButtonGoogle}
+                    width={180}
+                    onClick={() => handleSignInSocial("google")}
+                    alt=""
+                  />
                 </div>
               )}
             </>
