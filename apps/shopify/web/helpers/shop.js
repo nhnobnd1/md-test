@@ -2,11 +2,7 @@ import shopify from '../shopify.js';
 
 export async function getOfflineSession(shopDomain) {
 	const offlineSessionId = await shopify.api.session.getOfflineId(shopDomain);
-	console.log({ offlineSessionId });
-	const findSession = await shopify.config.sessionStorage.findSessionsByShop(
-		shopDomain
-	);
-	console.log({ findSession });
+
 	const offlineSession = await shopify.config.sessionStorage.loadSession(
 		offlineSessionId
 	);

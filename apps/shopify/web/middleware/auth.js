@@ -21,7 +21,7 @@ export default function applyAuthMiddleware(
 				res,
 				req.query
 			);
-
+			console.log('vaoday');
 			const { shop, offlineSession, shopDomain } = await getInformationShop(
 				req.query?.shop
 			);

@@ -66,7 +66,7 @@ export const StoreProviders = ({ children }: StoreProvidersProps) => {
 export const useStore = () => {
   const context = useContext<StoreContextType | undefined>(StoreContext);
   if (context === undefined) {
-    // window.location.reload();
+    window.location.reload();
     throw new Error("useStore must be used in StoreProvider");
   }
 
