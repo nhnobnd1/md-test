@@ -47,14 +47,14 @@ export function api() {
 export async function registerUser(payload) {
 	try {
 		// check register
-		// const tourGuide = await api().get(
-		// 	`/v1/general/info?subdomain=${payload.subdomain}`
-		// );
-		// console.log({ tourGuide });
-		// // if dont' have tour guide
-		// if (tourGuide.statusCode === 200) {
-		// 	return;
-		// }
+		const tourGuide = await api().get(
+			`/v1/general/info?subdomain=${payload.subdomain}`
+		);
+		console.log({ tourGuide });
+		// if dont' have tour guide
+		if (tourGuide.statusCode === 200) {
+			return;
+		}
 
 		const response = await api().post('/v1/account/shopify/sign-up', {
 			body: payload,
@@ -66,9 +66,9 @@ export async function registerUser(payload) {
 		}
 		return response;
 	} catch (error) {
-		// const response = await api().post('/v1/account/shopify/sign-up', {
-		// 	body: payload,
-		// });
+		const response = await api().post('/v1/account/shopify/sign-up', {
+			body: payload,
+		});
 		console.log(' register first', response);
 	}
 }

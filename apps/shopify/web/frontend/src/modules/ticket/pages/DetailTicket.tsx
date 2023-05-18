@@ -285,6 +285,7 @@ const DetailTicket = (props: DetailTicketProps) => {
             );
           } else {
             // message.error("Get ticket failed");
+            show(t("messages:error.get_ticket"), { isError: true });
           }
         })
       );
@@ -341,6 +342,7 @@ const DetailTicket = (props: DetailTicketProps) => {
             }
           } else {
             // message.error("Get data ticket failed");
+            show(t("messages:error.get_tag"), { isError: true });
           }
         })
       );

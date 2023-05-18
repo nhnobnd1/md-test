@@ -238,6 +238,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
               setMeta(data.metadata);
             } else {
               // message.error("Get data ticket failed");
+              show(t("messages:error.get_ticket"), { isError: true });
             }
           })
         );
@@ -284,6 +285,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
               setMeta(data.metadata);
             } else {
               // message.error("Get data ticket failed");
+              show(t("messages:error.get_ticket"), { isError: true });
             }
           })
         );
@@ -324,7 +326,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
               };
             });
           } else {
-            show(t("messages:error.delete_ticket"));
+            show(t("messages:error.delete_ticket"), { isError: true });
           }
         })
       );

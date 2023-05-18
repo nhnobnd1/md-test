@@ -166,7 +166,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
               generatePath(TicketRoutePaths.Detail, { id: data.data._id })
             );
           } else {
-            show(t("messages:error.create_ticket"));
+            show(t("messages:error.create_ticket"), { isError: true });
           }
         })
       );
