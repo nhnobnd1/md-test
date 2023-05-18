@@ -35,7 +35,12 @@ const RegisterSteps = (props: RegisterStepsProps) => {
   return (
     <>
       {steps === 1 && <RegisterStepsOne nextStep={handleNextStep} />}
-      {steps === 2 && <RegisterStepsTwo nextStep={handleNextStep} />}
+      {steps === 2 && (
+        <RegisterStepsTwo
+          preStep={handlePreviousStep}
+          nextStep={handleNextStep}
+        />
+      )}
       {steps === 3 && (
         <RegisterStepsThree
           previousStep={handlePreviousStep}

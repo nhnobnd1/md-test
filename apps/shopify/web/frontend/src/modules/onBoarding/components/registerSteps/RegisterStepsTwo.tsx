@@ -1,9 +1,11 @@
-import { Card, LegacyCard, Page, Text } from "@shopify/polaris";
+import { Button, Card, LegacyCard, Page, Text } from "@shopify/polaris";
+import classNames from "classnames";
 import { useCallback } from "react";
 import { useSubdomain } from "src/hooks/useSubdomain";
-
+import styles from "./styles.module.scss";
 interface RegisterStepsTwoProps {
   nextStep: () => void;
+  preStep: () => void;
 }
 
 enum RadioButtonValue {
@@ -11,7 +13,7 @@ enum RadioButtonValue {
   AccountEmail = "accountEmail",
 }
 
-const RegisterStepsTwo = ({ nextStep }: RegisterStepsTwoProps) => {
+const RegisterStepsTwo = ({ nextStep, preStep }: RegisterStepsTwoProps) => {
   const { getSubDomain, getDomainStandalone } = useSubdomain();
   const TitleCard = () => {
     return (
@@ -29,10 +31,10 @@ const RegisterStepsTwo = ({ nextStep }: RegisterStepsTwoProps) => {
     <Page>
       <Card
         title={<TitleCard />}
-        primaryFooterAction={{
-          content: "Next",
-          onAction: handleActionStep,
-        }}
+        // primaryFooterAction={{
+        //   content: "Next",
+        //   onAction: handleActionStep,
+        // }}
         sectioned
       >
         <LegacyCard
@@ -59,6 +61,14 @@ const RegisterStepsTwo = ({ nextStep }: RegisterStepsTwoProps) => {
             onboarding process. To do this, please go to Settings {`->`} General
             Settings for email configuration.
           </Text>
+        </div>
+        <div className={classNames(styles.groupButtonStep2, "mt-4")}>
+          <Button onClick={preStep} destructive>
+            Back
+          </Button>
+          <Button onClick={handleActionStep} primary>
+            Next
+          </Button>
         </div>
       </Card>
     </Page>
