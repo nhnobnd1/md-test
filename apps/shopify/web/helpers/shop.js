@@ -35,12 +35,7 @@ export async function getInformationShop(reqQueryShop) {
 		const data = await client.get({
 			path: 'shop',
 		});
-		console.log({
-			reqQueryShop,
-			shop: data?.body?.shop,
-			shopDomain: reqQueryShop,
-			offlineSession,
-		});
+	
 		return {
 			shop: data?.body?.shop,
 			shopDomain: reqQueryShop,

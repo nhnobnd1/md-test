@@ -32,9 +32,6 @@ app.get(
 	async (req, res, next) => {
 		const { shop, offlineSession } = await getInformationShop(req.query.shop);
 
-		console.log('Offline session 11', offlineSession);
-		console.log('shop11', shop);
-
 		if (shop && offlineSession) {
 			// const timezone = shop.timezone
 			//   .replace("(", "")
@@ -99,8 +96,6 @@ app.use(async (req, res, next) => {
 	const { shop, offlineSession, shopDomain } = await getInformationShop(
 		req.query?.shop
 	);
-	console.log('shop22', shop);
-	console.log('offlineSession22', offlineSession);
 
 	// signup insall app -> offlineSession null
 	if (shop && offlineSession) {

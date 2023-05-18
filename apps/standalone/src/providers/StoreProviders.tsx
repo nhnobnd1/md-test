@@ -1,3 +1,4 @@
+import { useNavigate } from "@moose-desk/core";
 import {
   GetStoreIdRequest,
   GetStoreIdResponse,
@@ -33,6 +34,7 @@ export const StoreProviders = ({ children }: StoreProvidersProps) => {
   const { getSubDomain } = useSubdomain();
   const notification = useNotification();
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
 
   useQuery({
     queryKey: ["getStoreId"],
@@ -40,14 +42,24 @@ export const StoreProviders = ({ children }: StoreProvidersProps) => {
       getStoreApi({
         subdomain: (getSubDomain() as string).toLowerCase(),
       }),
-    retry: 3,
+
     onSuccess: (data: GetStoreIdResponse) => {
       setStoreId(data.data.storeId);
     },
-    onError: () => {
+    onError: (error) => {
+      console.log({ error });
       notification.error(t("messages:error.get_store"));
     },
     enabled: !getStoreId(),
+    retry: (failureCount, error: any) => {
+      console.log({ failureCount, error });
+      if (error.response?.status === 400) {
+        navigate("/404");
+        return false;
+      }
+
+      return true;
+    },
   });
   return (
     <StoreContext.Provider value={{ storeId: storeId }}>
