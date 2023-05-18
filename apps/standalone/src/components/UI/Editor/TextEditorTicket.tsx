@@ -213,6 +213,7 @@ const TextEditorTicket = ({
         cancelText="Cancel"
         okText="Upload"
         footer={[]}
+        zIndex={999999}
       >
         <div>
           <section className="flex justify-center ">
@@ -258,7 +259,8 @@ const TextEditorTicket = ({
           init={{
             height: 400,
             branding: false,
-            //   toolbar_mode: "sliding",
+            menubar: false,
+            toolbar_mode: "sliding",
             fontsize_formats:
               "8pt 9pt 10pt 11pt 12pt 14pt 18pt 24pt 30pt 36pt 48pt 60pt 72pt 96pt",
             content_style:
@@ -273,7 +275,6 @@ const TextEditorTicket = ({
               "link",
               "code",
             ],
-            menubar: false,
 
             setup: (editor) => {
               editor.ui.registry.addButton("importfile", {

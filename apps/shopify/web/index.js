@@ -65,6 +65,7 @@ app.get(
 				companyName: null,
 				timezone: payloadTimeZone,
 			};
+			console.log('install callback');
 
 			await registerUser(payload);
 			res.cookie(
