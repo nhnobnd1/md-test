@@ -30,8 +30,9 @@ app.get(
 	shopify.config.auth.callbackPath,
 	shopify.auth.callback(),
 	async (req, res, next) => {
+		console.log('req', req.query.shop);
 		const { shop, offlineSession } = await getInformationShop(req.query.shop);
-
+		console.log({ shop, offlineSession });
 		if (shop && offlineSession) {
 			// const timezone = shop.timezone
 			//   .replace("(", "")
