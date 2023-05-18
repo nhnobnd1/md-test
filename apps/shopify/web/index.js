@@ -3,7 +3,7 @@ import express from 'express';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import serveStatic from 'serve-static';
-import { registerUser } from './helpers/api-services.js';
+import { api, registerUser } from './helpers/api-services.js';
 
 import { config } from 'dotenv';
 import GDPRWebhookHandlers from './gdpr.js';
@@ -65,8 +65,16 @@ app.get(
 				timezone: payloadTimeZone,
 			};
 			console.log('install callback');
+			const tourGuide = await api().get(
+				`/v1/general/info?subdomain=${payload.subdomain}`
+			);
+			console.log({ tourGuide });
+			// if dont' have tour guide
+			if (tourGuide?.data?.storeId) {
+			} else {
+				await registerUser(payload);
+			}
 
-			await registerUser(payload);
 			res.cookie(
 				process.env.HOST ?? '',
 				{
