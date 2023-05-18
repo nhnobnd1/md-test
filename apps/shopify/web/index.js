@@ -135,6 +135,9 @@ app.use('/*', addSessionShopToReqParams);
 
 app.use('/*', shopify.ensureInstalledOnShop(), async (_req, res, _next) => {
 	console.log('request', _req.query);
+	if (!_req.query?.shop) {
+		return;
+	}
 	const { shop, offlineSession, shopDomain } = await getInformationShop(
 		_req.query?.shop
 	);
