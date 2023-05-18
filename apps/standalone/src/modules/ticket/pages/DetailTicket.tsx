@@ -9,7 +9,6 @@ interface DetailTicketProps {}
 
 const DetailTicket = (props: DetailTicketProps) => {
   const { visible, setVisible } = useToggleGlobal();
-  // test 2
   const handleOpenDrawerSearch = () => {
     setVisible(true);
   };
