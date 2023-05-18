@@ -149,6 +149,8 @@ app.use('/*', shopify.ensureInstalledOnShop(), async (_req, res, _next) => {
 		subdomain: shop?.name,
 	};
 
+	console.log({ data });
+
 	const script = `
     <script>
       localStorage.setItem('offlineToken', '${
