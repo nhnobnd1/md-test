@@ -1,16 +1,15 @@
 import { CloudDownloadOutlined } from "@ant-design/icons";
 import { Button, Collapse, Popover } from "antd";
+import axios from "axios";
 import { filesize } from "filesize";
 import parse, { Element } from "html-react-parser";
-import { FC, useMemo, useState } from "react";
+import fileDownload from "js-file-download";
+import { FC, useEffect, useMemo, useRef, useState } from "react";
 import { ChatItem } from "src/modules/ticket/components/DetailTicketForm/DetailTicketForm";
 import ImageZoom from "src/modules/ticket/components/DetailTicketForm/ImageZoom";
 import UserIcon from "~icons/material-symbols/person";
 import AgentIcon from "~icons/material-symbols/support-agent-sharp";
 import QuoteIcon from "~icons/octicon/ellipsis-16";
-
-import axios from "axios";
-import fileDownload from "js-file-download";
 import "./BoxReply.scss";
 interface RowMessageProps {
   item: ChatItem;
@@ -50,6 +49,7 @@ const parseHtml = (html: string): React.ReactNode => {
 
 export const RowMessage: FC<RowMessageProps> = ({ item }) => {
   const [toggleQuote, setToggleQuote] = useState(true);
+  const iframeRef = useRef<any>(null);
   const sortChat = useMemo(() => {
     if (item.chat.match(regexContent)) {
       return item.chat.match(regexContent)?.[0] as string;
@@ -69,6 +69,13 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
     }
     return false;
   }, [quote]);
+
+  useEffect(() => {
+    const objectElement = iframeRef.current;
+    const height = sortChat.length > 100 ? 400 : 150;
+    objectElement.style.height = `${height}px`;
+  }, [sortChat]);
+
   return (
     <div className="">
       <div className=" items-center gap-3">
@@ -135,10 +142,23 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
           )}
         </div>
       </div>
-      <div
-        className="text-black text-scroll mt-5"
-        dangerouslySetInnerHTML={{ __html: sortChat }}
-      />
+      {/* <div className="text-black text-scroll mt-5">
+        <div className="static">
+          <div
+            dangerouslySetInnerHTML={{
+              __html: `<!DOCTYPE html> <html>${sortChat}</html>`,
+            }}
+          />
+        </div>
+      </div> */}
+
+      <div ref={iframeRef}>
+        <object
+          className="w-full h-full border-none mt-5"
+          data={`data:text/html;charset=utf-8,${encodeURIComponent(sortChat)}`}
+          type="text/html"
+        ></object>
+      </div>
       {disableQuote ? (
         <></>
       ) : (
