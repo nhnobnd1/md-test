@@ -1,19 +1,24 @@
 import { useJob, useNavigate } from "@moose-desk/core";
-import { formatTimeDDMMYY } from "@moose-desk/core/helper/format";
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import { CustomerRepository } from "@moose-desk/repo";
 import { EmptySearchResult, IndexTable } from "@shopify/polaris";
 import classNames from "classnames";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import { useEffect, useMemo, useState } from "react";
 import { map } from "rxjs";
 import { MDTextField } from "src/components/Input/TextFieldPassword/MDTextField";
 import Pagination from "src/components/Pagination/Pagination";
-
+import useGlobalData from "src/hooks/useGlobalData";
+import { useSubdomain } from "src/hooks/useSubdomain";
 import {
   ListTicketCustomerFilter,
   TicketCustomerResponse,
 } from "src/modules/customers/helper/interface";
 import styles from "./styles.module.scss";
+dayjs.extend(timezone);
+dayjs.extend(utc);
 const limit = 10;
 const resourceName = {
   singular: "customerTicket",
@@ -24,6 +29,8 @@ interface IProps {
 }
 export const ListTicketCustomer = ({ customerId }: IProps) => {
   const navigate = useNavigate();
+  const { subDomain } = useSubdomain();
+  const { timezone } = useGlobalData(false, subDomain || "");
   const [querySearch, setQuerySearch] = useState<string>("");
   const debounceValue: string = useDebounce(querySearch, 500);
   const [filter, setFilter] = useState<ListTicketCustomerFilter>({
@@ -128,12 +135,19 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
         </IndexTable.Cell>
         <IndexTable.Cell>
           <div onClick={() => handleClickRow(_id)}>
-            {formatTimeDDMMYY(createdDatetime)}
+            {!!timezone &&
+              dayjs
+                .utc(createdDatetime)
+                .tz(timezone ?? "America/New_York")
+                .format("MM/DD/YYYY")}
           </div>
         </IndexTable.Cell>
         <IndexTable.Cell>
           <div onClick={() => handleClickRow(_id)}>
-            {formatTimeDDMMYY(updatedDatetime || createdDatetime)}
+            {dayjs
+              .utc(updatedDatetime ?? createdDatetime)
+              .tz(timezone ?? "America/New_York")
+              .format("MM/DD/YYYY")}
           </div>
         </IndexTable.Cell>
         <IndexTable.Cell>
