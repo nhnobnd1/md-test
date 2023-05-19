@@ -78,7 +78,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const [conversations, setConversations] = useState<ItemConversation[]>([]);
   const { subDomain } = useSubdomain();
   const { timezone } = useGlobalData(false, subDomain || "");
-
   const [statistic, setStatistic] = useState<TicketStatistic>({
     statusCode: 200,
     data: {
@@ -568,6 +567,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                         agents={agents}
                         tickets={tickets}
                         selectedRowKeys={selectedRowKeys}
+                        timezone={timezone}
                       />
                     }
                     fileName="Tickets.pdf"

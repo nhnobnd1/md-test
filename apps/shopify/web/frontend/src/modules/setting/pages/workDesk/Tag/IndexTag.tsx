@@ -1,4 +1,5 @@
 import {
+  createdDatetimeFormat,
   generatePath,
   useDebounceFn,
   useJob,
@@ -22,13 +23,14 @@ import {
   Text,
 } from "@shopify/polaris";
 import { DeleteMajor, EditMajor, SortMinor } from "@shopify/polaris-icons";
-import dayjs from "dayjs";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import { ModalDelete } from "src/components/Modal/ModalDelete";
 import Pagination from "src/components/Pagination/Pagination";
 import env from "src/core/env";
+import useGlobalData from "src/hooks/useGlobalData";
+import { useSubdomain } from "src/hooks/useSubdomain";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
 
 export default function TagIndexPage() {
@@ -39,7 +41,8 @@ export default function TagIndexPage() {
   const [tags, setTags] = useState<Tag[]>([]);
   const [popoverSort, setPopoverSort] = useState(false);
   const [deleteTag, setDeleteTag] = useState<string>("");
-
+  const { subDomain } = useSubdomain();
+  const { timezone } = useGlobalData(false, subDomain || "");
   const togglePopoverSort = useCallback(
     () => setPopoverSort((popoverSort) => !popoverSort),
     []
@@ -71,9 +74,7 @@ export default function TagIndexPage() {
           </div>
         </IndexTable.Cell>
         <IndexTable.Cell className="py-3">
-          {updatedDatetime
-            ? dayjs(updatedDatetime).format("MM/DD/YYYY")
-            : dayjs(createdDatetime).format("MM/DD/YYYY")}
+          {createdDatetimeFormat(updatedDatetime, timezone)}
         </IndexTable.Cell>
         <IndexTable.Cell className="py-3">
           <ButtonGroup>

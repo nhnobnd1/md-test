@@ -32,6 +32,8 @@ import { map } from "rxjs";
 import { ButtonSort } from "src/components/Button/ButtonSort";
 import { Pagination } from "src/components/Pagination";
 import env from "src/core/env";
+import useGlobalData from "src/hooks/useGlobalData";
+import { useSubdomain } from "src/hooks/useSubdomain";
 import { SortOrderOptions } from "src/models/Form";
 import { ButtonTrashTicket } from "src/modules/ticket/components/ButtonTrashTicket";
 import CardStatistic from "src/modules/ticket/components/CardStatistic/CardStatistic";
@@ -58,6 +60,8 @@ const TrashTicket: FC<TrashTicketProps> = () => {
   const [filterData, setFilterData] = useState<GetListTicketRequest>(
     defaultFilter()
   );
+  const { subDomain } = useSubdomain();
+  const { timezone }: any = useGlobalData(false, subDomain || "");
   const handleSort = useCallback(
     (selected: string[]) => {
       const arraySort = selected[0].split(":");
@@ -252,7 +256,7 @@ const TrashTicket: FC<TrashTicketProps> = () => {
         </IndexTable.Cell>
         <IndexTable.Cell>{upperCaseFirst(priority)}</IndexTable.Cell>
         <IndexTable.Cell>
-          {createdDatetimeFormat(updatedDatetime)}
+          {createdDatetimeFormat(updatedDatetime, timezone)}
         </IndexTable.Cell>
         <IndexTable.Cell>
           <ButtonGroup>

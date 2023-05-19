@@ -63,6 +63,8 @@ import UilImport from "~icons/uil/import";
 import { useTranslation } from "react-i18next";
 import { ExportTicketPdf } from "src/modules/ticket/components/ExportTicketPdf";
 import "./ListTicket.scss";
+import { useSubdomain } from "src/hooks/useSubdomain";
+import useGlobalData from "src/hooks/useGlobalData";
 
 interface TicketIndexPageProps {}
 export interface FilterObject {
@@ -116,7 +118,8 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     removeSelectedResources,
   } = useIndexResourceState(tickets);
   const [filterObject, setFilterObject] = useState<FilterObject | null>(null);
-
+  const { subDomain } = useSubdomain();
+  const { timezone }: any = useGlobalData(false, subDomain || "");
   const [meta, setMeta] = useState<any>();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
@@ -547,7 +550,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         </IndexTable.Cell>
         <IndexTable.Cell>{upperCaseFirst(priority)}</IndexTable.Cell>
         <IndexTable.Cell>
-          {createdDatetimeFormat(updatedDatetime)}
+          {createdDatetimeFormat(updatedDatetime, timezone)}
         </IndexTable.Cell>
         <IndexTable.Cell>
           <ButtonGroup>
@@ -669,6 +672,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                       agents={agents}
                       tickets={tickets}
                       selectedRowKeys={selectedResources}
+                      timezone={timezone}
                     />
                   }
                   fileName="Tickets.pdf"
