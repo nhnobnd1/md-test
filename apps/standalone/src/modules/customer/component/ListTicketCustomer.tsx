@@ -1,10 +1,13 @@
 import { useNavigate } from "@moose-desk/core";
-import { formatTimeDDMMYY } from "@moose-desk/core/helper/format";
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
+import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import { Customer } from "@moose-desk/repo";
 import { message } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import classNames from "classnames";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
@@ -12,6 +15,7 @@ import { MDSearchInput } from "src/components/UI/MDSearchInput";
 import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
 import env from "src/core/env";
+import { useSubdomain } from "src/hooks/useSubdomain";
 import { getListTicketCustomer } from "src/modules/customer/api/api";
 import { QUERY_KEY } from "src/modules/customer/helper/constant";
 import {
@@ -19,15 +23,19 @@ import {
   TicketCustomerResponse,
 } from "src/modules/customer/helper/interface";
 import styles from "./styles.module.scss";
+dayjs.extend(timezone);
+dayjs.extend(utc);
+
 const limit = 10;
 
 interface IProps {
   customerId: string;
 }
 export const ListTicketCustomer = ({ customerId }: IProps) => {
+  const { subDomain } = useSubdomain();
+  const { timezone } = useGlobalData(false, subDomain || "");
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
-
   const [querySearch, setQuerySearch] = useState<string>("");
   const [filter, setFilter] = useState<ListTicketCustomerFilter>({
     limit,
@@ -63,7 +71,15 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
           return a.createdDatetime - b.createdDatetime;
         },
       },
-      render: (data: string) => <div>{formatTimeDDMMYY(data)}</div>,
+      render: (data: string, record: any) => (
+        <div>
+          {!!timezone &&
+            dayjs
+              .utc(data)
+              .tz(timezone ?? "America/New_York")
+              .format("MM/DD/YYYY")}
+        </div>
+      ),
       width: "11%",
     },
     {
@@ -74,9 +90,15 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
       },
       render: (data: string, record: TicketCustomerResponse) => (
         <div>
-          {data
-            ? formatTimeDDMMYY(data)
-            : formatTimeDDMMYY(record?.createdDatetime)}
+          {!!timezone && data
+            ? dayjs
+                .utc(record?.updatedDatetime)
+                .tz(timezone ?? "America/New_York")
+                .format("MM/DD/YYYY")
+            : dayjs
+                .utc(record?.createdDatetime)
+                .tz(timezone ?? "America/New_York")
+                .format("MM/DD/YYYY")}
         </div>
       ),
       width: "11%",
