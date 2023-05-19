@@ -11,12 +11,13 @@ import {
   EmailIntegration,
   EmailIntegrationRepository,
   GetListEmailRequest,
+  MailBoxType,
 } from "@moose-desk/repo";
 import { Button, Input, Space, TableProps, Tooltip } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { catchError, map, of } from "rxjs";
+import { catchError, forkJoin, map, of } from "rxjs";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
 import { Header } from "src/components/UI/Header";
 import Pagination from "src/components/UI/Pagination/Pagination";
@@ -41,6 +42,7 @@ const ChannelEmail = (props: ChannelEmailProps) => {
   });
 
   const [emails, setEmails] = useState<EmailIntegration[]>([]);
+  const [listEmailOtherFail, setListEmailOtherFail] = useState<string[]>([]);
 
   const [filterData, setFilterData] =
     useState<GetListEmailRequest>(defaultFilter);
@@ -48,6 +50,35 @@ const ChannelEmail = (props: ChannelEmailProps) => {
   const [meta, setMeta] = useState<BaseMetaDataListResponse>();
 
   const prevFilter = usePrevious<any>(filterData);
+  const { run: sendVerifyEmail } = useJob((payload: string) => {
+    return EmailIntegrationRepository()
+      .checkVerifyEmailSes(payload)
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            if (data.data.isVerified !== true) {
+              setListEmailOtherFail((prev) => [...prev, payload]);
+            }
+          }
+        }),
+        catchError((err) => {
+          message.error(t("messages:error.something_went_wrong"));
+
+          return of(err);
+        })
+      );
+  });
+  useEffect(() => {
+    const findOtherEmail = emails.filter(
+      (item) => item.mailboxType === MailBoxType.OTHER
+    );
+    if (findOtherEmail.length > 0) {
+      const listRequest = findOtherEmail.map((item) =>
+        sendVerifyEmail(item.supportEmail)
+      );
+      forkJoin(listRequest).pipe(map(() => {}));
+    }
+  }, [emails]);
 
   const { run: getListEmailApi, processing: loadingList } = useJob(
     (payload: any) => {
@@ -60,6 +91,7 @@ const ChannelEmail = (props: ChannelEmailProps) => {
                 ...item,
                 id: item._id,
               }));
+
               setEmails(listEmails);
               setMeta(data.metadata);
             } else {
@@ -209,6 +241,27 @@ const ChannelEmail = (props: ChannelEmailProps) => {
               sorter={{
                 compare: (a: any, b: any) => a.supportEmail - b.supportEmail,
               }}
+              render={(_, record: EmailIntegration) => (
+                <div className="flex flex-col">
+                  <span>{record.supportEmail}</span>
+                  <span
+                    style={{ color: "red" }}
+                    className={record?.isLive === false ? "block" : "hidden"}
+                  >
+                    Unable to access your mailbox
+                  </span>
+                  <span
+                    style={{ color: "red" }}
+                    className={
+                      listEmailOtherFail.includes(record.supportEmail)
+                        ? "block"
+                        : "hidden"
+                    }
+                  >
+                    The sender is not verified.
+                  </span>
+                </div>
+              )}
             ></Table.Column>
 
             <Table.Column

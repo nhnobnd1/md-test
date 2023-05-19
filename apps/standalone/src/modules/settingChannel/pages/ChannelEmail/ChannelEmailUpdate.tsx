@@ -134,6 +134,7 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
         .pipe(
           map(({ data }) => {
             if (data.statusCode === 200) {
+              console.log("hehe", data.data.isLive);
               setEmail(data.data);
             } else {
               message.error(t("messages:error.get_email"));
