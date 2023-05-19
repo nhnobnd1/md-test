@@ -98,6 +98,7 @@ const DetailTicket = (props: DetailTicketProps) => {
   const [emailIntegrationOptions, setEmailIntegrationOptions] = useState<any>(
     []
   );
+  // detail ticket
   const [agents, setAgents] = useState<Agent[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const { visible, setVisible } = useToggleGlobal();
