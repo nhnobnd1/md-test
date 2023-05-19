@@ -1,4 +1,5 @@
 import {
+  createdDatetimeFormat,
   upperCaseFirst,
   useJob,
   useNavigate,
@@ -31,6 +32,8 @@ import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import { ModalDelete } from "src/components/Modal/ModalDelete";
 import { Pagination } from "src/components/Pagination";
+import useGlobalData from "src/hooks/useGlobalData";
+import { useSubdomain } from "src/hooks/useSubdomain";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
 
 interface ViewTicketProps {}
@@ -86,7 +89,8 @@ const ViewTicket: FC<ViewTicketProps> = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [meta, setMeta] = useState<BaseMetaDataListResponse>();
-
+  const { subDomain } = useSubdomain();
+  const { timezone } = useGlobalData(false, subDomain || "");
   const togglePopoverSort = useCallback(
     () => setPopoverSort((popoverSort) => !popoverSort),
     []
@@ -263,14 +267,10 @@ const ViewTicket: FC<ViewTicketProps> = () => {
                     {item.subject}
                   </IndexTable.Cell>
                   <IndexTable.Cell className="py-3">
-                    {item.createdDatetime
-                      ? dayjs(item.createdDatetime).format("MM/DD/YYYY")
-                      : ""}
+                    {createdDatetimeFormat(item.createdDatetime, timezone)}
                   </IndexTable.Cell>
                   <IndexTable.Cell className="py-3">
-                    {item.updatedDatetime
-                      ? dayjs(item.updatedDatetime).format("MM/DD/YYYY")
-                      : ""}
+                    {createdDatetimeFormat(item.updatedDatetime, timezone)}
                   </IndexTable.Cell>
                   <IndexTable.Cell className="py-3">
                     {upperCaseFirst(item.status)}

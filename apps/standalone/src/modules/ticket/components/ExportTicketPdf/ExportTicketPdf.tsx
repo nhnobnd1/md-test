@@ -23,6 +23,7 @@ interface ExportTicketPdfProps {
   selectedRowKeys: React.Key[];
   agents: Agent[];
   conversations: ItemConversation[];
+  timezone: string;
 }
 Font.register({
   family: "Roboto",
@@ -65,6 +66,7 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
   selectedRowKeys,
   agents,
   conversations,
+  timezone,
 }) => {
   const user: any = useUser();
 
@@ -312,7 +314,7 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
         </View>
         <View style={{ ...firstTableColStyle, flexBasis: 80 }}>
           <Text style={tableCellStyle}>
-            {createdDatetimeFormat(item.updatedDatetime)}
+            {createdDatetimeFormat(item.updatedDatetime, timezone)}
           </Text>
         </View>
       </View>
