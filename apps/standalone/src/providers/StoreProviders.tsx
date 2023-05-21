@@ -44,6 +44,10 @@ export const StoreProviders = ({ children }: StoreProvidersProps) => {
       }),
 
     onSuccess: (data: GetStoreIdResponse) => {
+      if (!data.data.storeId) {
+        navigate("/404");
+        return;
+      }
       setStoreId(data.data.storeId);
     },
     onError: (error) => {
