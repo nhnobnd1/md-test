@@ -9,7 +9,7 @@ COPY turbo.json ./
 COPY apps/standalone/package.json ./apps/standalone/
 RUN cd apps/standalone && yarn install
 COPY apps/standalone/ ./apps/standalone/
-RUN yarn build --mode development
+RUN yarn build-dev
 
 FROM nginx:1.17.8-alpine
 COPY --from=build /app/apps/standalone/dist /usr/share/nginx/html
