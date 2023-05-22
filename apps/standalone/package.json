@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --mode=development",
     "build": "tsc && vite build",
-    "build-dev": "tsc && vite build --mode development",
+    "test": "tsc && vite build --mode development",
     "preview": "vite preview",
     "gen": "npx node generator/index.js",
     "gen-module": "yarn gen module src/modules",
