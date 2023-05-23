@@ -1,4 +1,7 @@
 {
+  "layout": {
+    "logout": "Logout"
+  },
   "table": {
     "empty": "Sorry!, There is no records matched with your search criteria.",
     "action": "Action",
@@ -7,20 +10,26 @@
     "records_per_page": "Records per page",
     "click_sort_asc": "Click to sort ascending",
     "click_sort_desc": "Click to sort descending",
-    "click_cancel_sort": "Click to cancel sort"
+    "click_cancel_sort": "Click to cancel sort",
+    "delete_question": "Are you sure to delete {name}"
   },
   "button": {
     "login": "Login",
     "add": "Add {name}",
     "cancel": "Cancel",
+    "delete": "Delete",
     "save": "Save",
-    "submit": "Submit"
+    "submit": "Submit",
+    "remove": "Remove",
+    "send_invitation_email": "Send Invitation Email",
+    "deactivate": "Deactivate",
+    "close": "Close {name}"
   },
   "placeholder": {
     "from": "Form",
     "to": "To",
     "default": "Enter {name}",
-    "search": "search",
+    "search": "search {name}",
     "date": "Select date"
   },
   "regex": {
@@ -28,6 +37,11 @@
     "email": "The email address is not valid",
     "phone": "The input phone number is not valid",
     "password_rules": "The password must be 8 characters long and must be a combination of uppercase letters, lowercase letters, numbers, and symbols"
+  },
+  "roles": {
+    "super_admin": "Super Admin",
+    "agent_leader": "Agent Leader",
+    "basic_leader": "Basic Leader"
   },
   "login": {
     "our_solutions": "Our Solutions",
@@ -66,7 +80,9 @@
     "status": "Status",
     "priority": "Priority",
     "assignee": "Assignee",
-    "add_popup_title": "New customer profile"
+    "add_popup_title": "New customer profile",
+    "delete_popup_title": "Are you sure that you want to remove this customer?",
+    "delete_popup_warning": "This customer will be removed permanently. All customer's tickets and his profile will no longer accessible."
   },
   "reporting": {
     "overview": "Overview",
@@ -93,5 +109,40 @@
     "percentage_closed": "Percentage Closed",
     "tag": "Tag",
     "total_ticket": "Total Tickets"
+  },
+  "people": {
+    "agent": "Agent",
+    "agents": "Agents",
+    "group": "Group",
+    "groups": "Groups",
+    "account": "Account",
+    "email": "Email",
+    "roles": "Roles",
+    "status": "Status",
+    "availability": "2FA Availability",
+    "add_agent_title": "Create new agent",
+    "user_role": "User role",
+    "group_name": "Group name",
+    "agent_count": "Number of Agents",
+    "new_group": "New Group",
+    "name": "Name",
+    "description": "Description",
+    "group_member": "Group members",
+    "add_group_member": "add group member",
+    "add_member": "Add members",
+    "delete_group_title": "Are you sure that you want to permanently remove this group?",
+    "delete_group_warning": "This group will be removed permanently. This action cannot be undone"
+  },
+  "work_desk": {
+    "work_desk": "Workdesk",
+    "manage_tags": "Manage tags",
+    "name": "Name",
+    "of_ticket": "# of tickets",
+    "last_updated": "Last updated",
+    "tag_name": "Tag name",
+    "description": "Description",
+    "add_tag_title": "Add tag profile",
+    "delete_tag_question": "Are you sure that you want to premanently remove this Tag?",
+    "delete_tag_warning": "This Tag will be removed permanently. This actions can not be undone. All tickets which are using this tag will get affected too."
   }
 }
