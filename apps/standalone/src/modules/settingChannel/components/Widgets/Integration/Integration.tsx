@@ -9,13 +9,29 @@ import CopyIcon from "~icons/material-symbols/content-copy-outline";
 interface IntegrationProps {
   idWidget: string | null;
 }
+const commonStyles = {
+  card: {
+    maxWidth: 700,
+    // marginTop: 16,
+    backgroundColor: "#27313A",
+    color: "white",
+  },
+  wrapTitle: { display: "flex" },
+  title: { marginLeft: 10 },
+  divider: { backgroundColor: "white" },
+  row: { display: "flex", justifyContent: "flex-end" },
+  copyButton: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  copyText: { marginLeft: 5 },
+};
 export default function Integration({ idWidget }: IntegrationProps) {
   const data = useWidgetSetting((state) => state.widgetSetting);
   const { storeId } = useStore();
   const message = useMessage();
   const { t, i18n } = useTranslation();
-
-  console.log({ storeId });
 
   const scriptCode = useMemo(() => {
     if (!idWidget)
@@ -60,19 +76,12 @@ export default function Integration({ idWidget }: IntegrationProps) {
 
   return (
     <>
-      <Card
-        style={{
-          maxWidth: 700,
-          // marginTop: 16,
-          backgroundColor: "#27313A",
-          color: "white",
-        }}
-      >
-        <div style={{ display: "flex" }}>
+      <Card style={commonStyles.card}>
+        <div style={commonStyles.wrapTitle}>
           <CodeIcon fontSize={28} />
-          <h2 style={{ marginLeft: 10 }}>Embed HTML Code</h2>
+          <h2 style={commonStyles.title}>Embed HTML Code</h2>
         </div>
-        <Divider style={{ backgroundColor: "white" }} />
+        <Divider style={commonStyles.divider} />
         <div>
           <Row>
             <h4
@@ -83,17 +92,10 @@ export default function Integration({ idWidget }: IntegrationProps) {
               {scriptCode}
             </h4>
           </Row>
-          <Row style={{ display: "flex", justifyContent: "flex-end" }}>
-            <Button
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-              onClick={handleClickCopy}
-            >
+          <Row style={commonStyles.row}>
+            <Button style={commonStyles.copyButton} onClick={handleClickCopy}>
               <CopyIcon />
-              <span style={{ marginLeft: 5 }}>
+              <span style={commonStyles.copyText}>
                 {copied ? `Copied` : `Copy`}
               </span>
             </Button>

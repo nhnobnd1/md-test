@@ -29,18 +29,15 @@ import useNotification from "src/hooks/useNotification";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
 
 interface ChannelEmailProps {}
-
+const defaultFilter: () => any = () => ({
+  page: 1,
+  limit: env.DEFAULT_PAGE_SIZE,
+});
 const ChannelEmail = (props: ChannelEmailProps) => {
   const navigate = useNavigate();
   const message = useMessage();
   const notification = useNotification();
   const { t, i18n } = useTranslation();
-
-  const defaultFilter: () => any = () => ({
-    page: 1,
-    limit: env.DEFAULT_PAGE_SIZE,
-  });
-
   const [emails, setEmails] = useState<EmailIntegration[]>([]);
   const [listEmailOtherFail, setListEmailOtherFail] = useState<string[]>([]);
 
@@ -108,9 +105,9 @@ const ChannelEmail = (props: ChannelEmailProps) => {
     },
     { wait: 300 }
   );
-  const resetFilterData = useCallback(() => {
-    setFilterData(defaultFilter());
-  }, []);
+  // const resetFilterData = useCallback(() => {
+  //   setFilterData(defaultFilter());
+  // }, []);
 
   const onPagination = useCallback(
     ({ page, limit }: { page: number; limit: number }) => {
@@ -185,18 +182,23 @@ const ChannelEmail = (props: ChannelEmailProps) => {
   const handleDeleteEmail = useCallback((id: string) => {
     deleteEmailApi(id);
   }, []);
-
+  const handleRedirectToCreate = () => {
+    navigate(generatePath(SettingChannelRoutePaths.ChannelEmail.Create));
+  };
+  const handleSearch = (searchText: string) => {
+    setFilterData((value: any) => {
+      return {
+        ...value,
+        query: searchText,
+        page: 1,
+      };
+    });
+  };
   return (
     <>
       <Header title="Email Configuration">
         <div className="flex-1 flex justify-end">
-          <ButtonAdd
-            onClick={() => {
-              navigate(
-                generatePath(SettingChannelRoutePaths.ChannelEmail.Create)
-              );
-            }}
-          >
+          <ButtonAdd onClick={handleRedirectToCreate}>
             Add new Email Address
           </ButtonAdd>
         </div>
@@ -206,15 +208,7 @@ const ChannelEmail = (props: ChannelEmailProps) => {
           placeholder="Search"
           enterButton
           allowClear
-          onSearch={(searchText: string) => {
-            setFilterData((value: any) => {
-              return {
-                ...value,
-                query: searchText,
-                page: 1,
-              };
-            });
-          }}
+          onSearch={handleSearch}
         />
       </div>
       <div>

@@ -71,18 +71,35 @@ const ChannelEmailCreate = (props: ChannelEmailCreateProps) => {
 
   const handleFinishForm = useCallback(
     (values: ValuesForm) => {
-      if (values.mailSettingType === MailSettingType.CUSTOM) {
-        if (values.mailboxType === MailBoxType.GMAIL) {
-          createMail(values);
-        } else if (values.mailboxType === MailBoxType.OUTLOOK) {
-          createMail(values);
-        } else {
-          createMailExternal(values);
-        }
-      } else if (values.mailSettingType === MailSettingType.FORWARD) {
-        createMailOther(values);
-      } else {
-        createMailMooseDesk(values);
+      // if (values.mailSettingType === MailSettingType.CUSTOM) {
+      //   if (values.mailboxType === MailBoxType.GMAIL) {
+      //     createMail(values);
+      //   }
+      //   // else if (values.mailboxType === MailBoxType.OUTLOOK) {
+      //   //   createMail(values);
+      //   // }
+      //   else {
+      //     createMailExternal(values);
+      //   }
+      // } else if (values.mailSettingType === MailSettingType.FORWARD) {
+      //   createMailOther(values);
+      // } else {
+      //   createMailMooseDesk(values);
+      // }
+      switch (values.mailSettingType) {
+        case MailSettingType.CUSTOM:
+          if (values.mailboxType === MailBoxType.GMAIL) {
+            createMail(values);
+          } else {
+            createMailExternal(values);
+          }
+          break;
+        case MailSettingType.FORWARD:
+          createMailOther(values);
+          break;
+        default:
+          createMailMooseDesk(values);
+          break;
       }
     },
     [signCallback]
@@ -117,19 +134,19 @@ const ChannelEmailCreate = (props: ChannelEmailCreateProps) => {
   const createMailOther = useCallback((values: ValuesForm) => {
     createMailAPI(payloadMailOther(values));
   }, []);
-
+  const handleSubmit = () => form.submit();
+  const handleBack = () =>
+    navigate(generatePath(SettingChannelRoutePaths.ChannelEmail.Index));
   return (
     <>
       <Header
         className="mb-[40px]"
         title="Email Configuration"
         back
-        backAction={() =>
-          navigate(generatePath(SettingChannelRoutePaths.ChannelEmail.Index))
-        }
+        backAction={handleBack}
       >
         <div className="flex-1 flex justify-end">
-          <Button type="primary" onClick={() => form.submit()}>
+          <Button type="primary" onClick={handleSubmit}>
             Save
           </Button>
         </div>

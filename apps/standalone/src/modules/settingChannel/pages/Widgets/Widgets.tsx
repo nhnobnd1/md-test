@@ -1,4 +1,4 @@
-import { useJob, useNavigate } from "@moose-desk/core";
+import { useJob } from "@moose-desk/core";
 import {
   BaseListHelpWidgetRequest,
   GetListHelpWidgetRequest,
@@ -14,9 +14,14 @@ import useMessage from "src/hooks/useMessage";
 import WidgetDetail from "src/modules/settingChannel/pages/Widgets/WidgetDetail";
 import useWidgetSetting from "src/modules/settingChannel/store/useSetting";
 
+const defaultFilter: () => GetListHelpWidgetRequest = () => ({
+  page: 1,
+  limit: env.DEFAULT_PAGE_SIZE,
+  query: "",
+  sortBy: undefined,
+  sortOrder: undefined,
+});
 const Widgets = () => {
-  const ContainerHeight = 400;
-  const navigate = useNavigate();
   const [helpwidgets, setHelpWidgets] = useState<HelpWidget[]>([]);
   const message = useMessage();
 
@@ -24,13 +29,6 @@ const Widgets = () => {
     (state) => state.updateWidgetSetting
   );
 
-  const defaultFilter: () => GetListHelpWidgetRequest = () => ({
-    page: 1,
-    limit: env.DEFAULT_PAGE_SIZE,
-    query: "",
-    sortBy: undefined,
-    sortOrder: undefined,
-  });
   const { t, i18n } = useTranslation();
 
   const [filterData, setFilterData] =

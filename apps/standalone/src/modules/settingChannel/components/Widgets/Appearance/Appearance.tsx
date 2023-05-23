@@ -29,6 +29,15 @@ export default function Appearance() {
 
   const [form] = Form.useForm();
   const data = useWidgetSetting((state) => state.widgetSetting);
+  const initialFormValues = {
+    widgetBackgroundColor: data?.headerBackgroundColor,
+    widgetTextColor: data?.headerTextColor,
+    widgetPosition: data?.widgetPosition,
+    offsetBot: data?.offsetBottom,
+    offsetHorizontal: data?.offsetHorizontal,
+    buttonBackgroundColor: data?.buttonAppearanceColor,
+    textColor: data?.textButtonAppearanceColor,
+  };
   const [targetButton, setTargetButton] = useState<number>(
     data?.widgetPosition === "right" ? 2 : 1
   );
@@ -112,22 +121,39 @@ export default function Appearance() {
     setButtonColor(null);
     setTextColor(null);
   }, [data.id, cancelState]);
-
+  const handleUpdateButton = (e: any) => {
+    updateWidgetSetting({
+      ...data,
+      offsetBottom: e,
+    });
+  };
+  const handleUpdateSetting = () => {
+    handleChangeTargetButton(2);
+    updateWidgetSetting({
+      ...data,
+      widgetPosition: "right",
+    });
+  };
+  const handleUpdateWidgetPosition = () => {
+    handleChangeTargetButton(1);
+    updateWidgetSetting({
+      ...data,
+      widgetPosition: "left",
+    });
+  };
+  const handleUpdateOffset = (e: any) => {
+    updateWidgetSetting({
+      ...data,
+      offsetHorizontal: e,
+    });
+  };
   return (
     <>
       <Form
         labelCol={{ span: 14 }}
         wrapperCol={{ span: 16 }}
         style={{ marginTop: 20, position: "relative" }}
-        initialValues={{
-          widgetBackgroundColor: data?.headerBackgroundColor,
-          widgetTextColor: data?.headerTextColor,
-          widgetPosition: data?.widgetPosition,
-          offsetBot: data?.offsetBottom,
-          offsetHorizontal: data?.offsetHorizontal,
-          buttonBackgroundColor: data?.buttonAppearanceColor,
-          textColor: data?.textButtonAppearanceColor,
-        }}
+        initialValues={initialFormValues}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         form={form}
@@ -205,13 +231,7 @@ export default function Appearance() {
             >
               <span>Widget Position</span>
               <Button
-                onClick={() => {
-                  handleChangeTargetButton(1);
-                  updateWidgetSetting({
-                    ...data,
-                    widgetPosition: "left",
-                  });
-                }}
+                onClick={handleUpdateWidgetPosition}
                 type={targetButton === 1 ? "primary" : "default"}
                 style={{ marginLeft: 20, marginRight: 20 }}
                 size="large"
@@ -225,13 +245,7 @@ export default function Appearance() {
                 Bottom Left
               </Button>
               <Button
-                onClick={() => {
-                  handleChangeTargetButton(2);
-                  updateWidgetSetting({
-                    ...data,
-                    widgetPosition: "right",
-                  });
-                }}
+                onClick={handleUpdateSetting}
                 type={targetButton === 2 ? "primary" : "default"}
                 style={{ marginLeft: 20, marginRight: 20 }}
                 size="large"
@@ -252,14 +266,7 @@ export default function Appearance() {
                   label="Offset from bottom (pixels)"
                   name="offsetBot"
                 >
-                  <InputNumber
-                    onChange={(e: any) => {
-                      updateWidgetSetting({
-                        ...data,
-                        offsetBottom: e,
-                      });
-                    }}
-                  />
+                  <InputNumber onChange={handleUpdateButton} />
                 </Form.Item>
               </Col>
             </Row>
@@ -271,14 +278,7 @@ export default function Appearance() {
                   label="Offset from left/right (pixels)"
                   name="offsetHorizontal"
                 >
-                  <InputNumber
-                    onChange={(e: any) => {
-                      updateWidgetSetting({
-                        ...data,
-                        offsetHorizontal: e,
-                      });
-                    }}
-                  />
+                  <InputNumber onChange={handleUpdateOffset} />
                 </Form.Item>
               </Col>
             </Row>

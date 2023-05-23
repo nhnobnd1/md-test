@@ -6,7 +6,13 @@ import {
   MailSettingType,
 } from "@moose-desk/repo";
 import { Checkbox, Input, Radio } from "antd";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Form, FormProps } from "src/components/UI/Form";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { CardForwardEmail } from "src/modules/settingChannel/components/ChannelEmail/CardForwardEmail";
@@ -286,4 +292,4 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
   );
 };
 
-export default ChannelEmailForm;
+export default React.memo(ChannelEmailForm);
