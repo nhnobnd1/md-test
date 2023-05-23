@@ -1,5 +1,5 @@
 import { InputProps } from "antd";
-import { useCallback, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { InputTextNumber } from "src/components/UI/InputTextNumber";
 import Select from "src/components/UI/Select/Select";
 import constaint from "src/constaint";
@@ -11,7 +11,14 @@ interface InputPhoneProps
   disabled?: boolean;
   onChange?: (value: any) => void;
 }
-
+const optionSelectPhone = constaint.countryList.country.map((item: Country) => {
+  return {
+    countryName: item.name,
+    code: item.code,
+    phonePrefix: item.phoneNumberPrefix.toString(),
+    flagImage: `https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/${item.code}.svg`,
+  };
+});
 const InputPhone = ({
   value,
   disabled,
@@ -19,18 +26,6 @@ const InputPhone = ({
   ...props
 }: InputPhoneProps) => {
   // init data
-
-  const optionSelectPhone = constaint.countryList.country.map(
-    (item: Country) => {
-      return {
-        countryName: item.name,
-        code: item.code,
-        phonePrefix: item.phoneNumberPrefix.toString(),
-        flagImage: `https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/${item.code}.svg`,
-      };
-    }
-  );
-
   // filter
   const [dataSelect, setDataSelect] = useState(optionSelectPhone);
   const [filterValue, setFilterValue] = useState("");
@@ -51,54 +46,37 @@ const InputPhone = ({
   const [flagValue, setFlagValue] = useState<string>("84");
   const [valueSelect, setValueSelect] = useState("VN");
   const [valueField, setValueField] = useState("");
-  const handleChangeValueInput = useCallback(
-    (value: string) => {
-      setValueField(value);
-      if (onChange) {
-        value ? onChange(`${flagValue}-${value}`) : onChange("");
-      }
-    },
-    [flagValue]
-  );
-  const handleChangeValueSelect = useCallback(
-    (value: string) => {
-      setValueSelect(value);
-      if (valueField !== "") {
-        onChange &&
-          onChange(
-            `${
-              dataSelect.find((option) => option.code === value)?.phonePrefix
-            }-${valueField}`
-          );
-      }
-    },
-    [valueField]
-  );
+  const handleChangeValueInput = (value: string) => {
+    setValueField(value);
+    if (onChange) {
+      value ? onChange(`${flagValue}-${value}`) : onChange("");
+    }
+  };
 
+  console.log(flagValue, valueSelect);
+
+  const handleChangeValueSelect = (value: string) => {
+    const getPhonePrefix = dataSelect.find((option) => option.code === value);
+    setFlagValue(getPhonePrefix?.phonePrefix || "");
+    // console.log(getPhonePrefix, "getPhonePrefix");
+    setValueSelect(value);
+    if (valueField !== "") {
+      onChange && onChange(`${getPhonePrefix?.phonePrefix}-${valueField}`);
+    }
+    // console.log(flagValue, valueSelect);
+  };
   // handle Effect
   useEffect(() => {
-    setFlagValue(
-      dataSelect.find((option) => option.code === valueSelect)?.phonePrefix ||
-        "84"
+    if (!value) return;
+    const flag = value?.slice(0, value?.indexOf("-"));
+    const phoneValue = value?.slice(value?.indexOf("-") + 1);
+    const getDataByFlag = optionSelectPhone.find(
+      (country) => country.phonePrefix === flag
     );
-  }, [valueSelect]);
-
-  useEffect(() => {
-    setValueSelect(
-      dataSelect.find((option) => option.phonePrefix === flagValue)?.code ||
-        "VN"
-    );
-  }, [flagValue]);
-
-  useEffect(() => {
-    if (value) {
-      setFlagValue(value?.slice(0, value?.indexOf("-")));
-      setValueField(value?.slice(value?.indexOf("-") + 1));
-    } else {
-      setFlagValue("84");
-      setValueField("");
-    }
-  }, [props]);
+    setValueSelect(getDataByFlag?.code || "");
+    setFlagValue(flag);
+    setValueField(phoneValue);
+  }, [value]);
 
   return (
     <div className="flex flex-wrap gap-3">
@@ -143,4 +121,4 @@ const InputPhone = ({
   );
 };
 
-export default InputPhone;
+export default memo(InputPhone);
