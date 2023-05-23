@@ -28,7 +28,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import TextEditorTicket from "src/components/UI/Editor/TextEditorTicket";
-import { Form, FormProps } from "src/components/UI/Form";
+import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
 import Select, { LoadMoreValue } from "src/components/UI/Select/Select";
 import useMessage from "src/hooks/useMessage";
@@ -38,7 +38,6 @@ import FaMailReply from "~icons/fa/mail-reply";
 import BackIcon from "~icons/mingcute/back-2-fill";
 import "./BoxReply.scss";
 
-interface DetailTicketFormProps extends FormProps {}
 interface ValueForm {
   status: StatusTicket;
   assignee: string;
@@ -75,7 +74,7 @@ const validateCCEmail = (value: string[]): boolean => {
   return checked;
 };
 
-const DetailTicketForm = (props: DetailTicketFormProps) => {
+const DetailTicketForm = () => {
   const message = useMessage();
   const { id } = useParams();
   const navigate = useNavigate();
@@ -88,7 +87,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
   const [primaryEmail, setPrimaryEmail] = useState<EmailIntegration>();
   const [files, setFiles] = useState<any>([]);
   const [loadingButton, setLoadingButton] = useState(false);
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const [agents, setAgents] = useState<Agent[]>([]);
 
@@ -611,7 +610,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                                 name="CC"
                                 labelAlign="left"
                                 rules={[
-                                  ({ getFieldValue }) => ({
+                                  () => ({
                                     validator(_, value) {
                                       if (validateCCEmail(value)) {
                                         return Promise.resolve();
@@ -644,7 +643,7 @@ const DetailTicketForm = (props: DetailTicketFormProps) => {
                                 name="BCC"
                                 labelAlign="left"
                                 rules={[
-                                  ({ getFieldValue }) => ({
+                                  () => ({
                                     validator(_, value) {
                                       if (validateCCEmail(value)) {
                                         return Promise.resolve();

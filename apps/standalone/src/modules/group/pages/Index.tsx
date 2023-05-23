@@ -46,7 +46,7 @@ const GroupIndexPage: PageComponent<GroupIndexPageProps> = () => {
   const [filterData, setFilterData] =
     useState<GetListUserGroupRequest>(defaultFilter);
   const [meta, setMeta] = useState<BaseMetaDataListResponse>();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const prevFilter = usePrevious<GetListUserGroupRequest>(filterData);
 
@@ -114,10 +114,6 @@ const GroupIndexPage: PageComponent<GroupIndexPageProps> = () => {
     },
     { wait: 300 }
   );
-
-  const resetFilterData = useCallback(() => {
-    setFilterData(defaultFilter());
-  }, []);
 
   const onPagination = useCallback(
     ({ page, limit }: { page: number; limit: number }) => {

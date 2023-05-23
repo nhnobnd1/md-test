@@ -13,7 +13,6 @@ import { Header } from "src/components/UI/Header";
 import ContentShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ContentShopifySearch";
 import { TicketForm } from "src/modules/ticket/components/TicketForm";
 import styles from "./styles.module.scss";
-interface CreateTicketProps {}
 
 const CreateTicket = () => {
   const { visible, setVisible } = useToggleGlobal();

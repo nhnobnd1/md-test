@@ -1,4 +1,3 @@
-import { useToggle } from "@moose-desk/core";
 import { AutoReply, Holidays } from "@moose-desk/repo";
 import { Input, Modal, ModalProps } from "antd";
 import dayjs from "dayjs";
@@ -29,7 +28,6 @@ const ModalHoliday = ({
 }: ModalHolidayProps) => {
   const [form] = Form.useForm();
   const dateNow = new Date();
-  const { toggle: update } = useToggle();
   const [valueDate, setValueDate] = useState<
     | {
         startDate: Date;

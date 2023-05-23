@@ -39,7 +39,7 @@ export const CardForwardEmail: FC<CardForwardEmailProps> = ({ formEmail }) => {
   const [isGmail, setIsGmail] = useState(true);
   const [isVerifySender, setIsVerifySender] = useState<Status>("Pending");
   const [retrySenderCount, setRetrySenderCount] = useState(0);
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const { id } = useParams();
   const message = useMessage();
@@ -433,7 +433,6 @@ Please check your inbox and click on the link within to use this email for sendi
           {step === 3 && (
             <CompleteStep
               isVerified={isVerified}
-              setStep={setStep}
               handleVerifyFinish={handleVerifyFinish}
               email={form.getFieldValue("email")}
               formEmail={formEmail}

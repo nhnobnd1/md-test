@@ -30,16 +30,14 @@ import { useFormChannelEmail } from "src/modules/settingChannel/hook/useFormChan
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
 import { useAppSelector } from "src/redux/hook";
 
-interface ChannelEmailUpdateProps {}
-
-const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
+const ChannelEmailUpdate = () => {
   const [form] = Form.useForm(undefined);
   const [email, setEmail] = useState<EmailIntegration>();
   const navigate = useNavigate();
   const message = useMessage();
   const notification = useNotification();
   const { id } = useParams();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const { toggle: updateForm } = useToggle();
   const signCallback = useAppSelector(

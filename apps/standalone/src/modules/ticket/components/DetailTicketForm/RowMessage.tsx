@@ -2,11 +2,9 @@ import { CloudDownloadOutlined } from "@ant-design/icons";
 import { Button, Collapse, Popover } from "antd";
 import axios from "axios";
 import { filesize } from "filesize";
-import parse, { Element } from "html-react-parser";
 import fileDownload from "js-file-download";
 import { FC, useEffect, useMemo, useRef, useState } from "react";
 import { ChatItem } from "src/modules/ticket/components/DetailTicketForm/DetailTicketForm";
-import ImageZoom from "src/modules/ticket/components/DetailTicketForm/ImageZoom";
 import UserIcon from "~icons/material-symbols/person";
 import AgentIcon from "~icons/material-symbols/support-agent-sharp";
 import QuoteIcon from "~icons/octicon/ellipsis-16";
@@ -28,24 +26,6 @@ function splitText(fileName: string, maxLength: number) {
 const regexQuote = /<div class="md_quote">[\s\S]*?<\/blockquote>/;
 
 const regexContent = /^.*(?=<div class="md_quote">)/s;
-
-const parseHtml = (html: string): React.ReactNode => {
-  const options: any = {
-    replace: (domNode: Element): React.ReactNode => {
-      if (domNode.name === "img") {
-        return (
-          <ImageZoom
-            key={domNode.attribs.src}
-            src={domNode.attribs.src}
-            alt={domNode.attribs.alt}
-          />
-        );
-      }
-      return undefined; // Return undefined if we don't want to replace the node
-    },
-  };
-  return parse(html, options);
-};
 
 export const RowMessage: FC<RowMessageProps> = ({ item }) => {
   const [toggleQuote, setToggleQuote] = useState(true);

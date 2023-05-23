@@ -22,9 +22,8 @@ import AutoReplyTab from "src/modules/setting/component/AutoReply/AutoReplyTab";
 import BusinessHoursTab from "src/modules/setting/component/BusinessHours/BusinessHoursTab";
 import HolidayTab from "src/modules/setting/component/Holidays/HolidayTab";
 import SelectTimeZone from "src/modules/setting/component/SelectTimeZone/SelectTimeZone";
-interface BusinessHoursProps {}
 
-const BusinessHours = (props: BusinessHoursProps) => {
+const BusinessHours = () => {
   const message = useMessage();
   const notification = useNotification();
   const { subDomain } = useSubdomain();
@@ -37,16 +36,11 @@ const BusinessHours = (props: BusinessHoursProps) => {
   const [dataHolidays, setDataHolidays] = useState<Holidays[]>([]);
   const [dataBusinessHoursAutoReplyCode, setDataBusinessHoursAutoReplyCode] =
     useState("");
-  const [selected, setSelected] = useState(0);
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const [form] = Form.useForm();
   const role = useRole();
   // const [disabled, setDisabled] = useState(false);
-  const handleTabChange = useCallback(
-    (selectedTabIndex) => setSelected(selectedTabIndex),
-    []
-  );
 
   // handle Data in tabs
   const handleChangeValues = useCallback((value) => {
@@ -197,7 +191,6 @@ const BusinessHours = (props: BusinessHoursProps) => {
                 ),
               },
             ]}
-            onChange={handleTabChange}
           />
         </Card>
         <Form.Item name="_id" hidden />

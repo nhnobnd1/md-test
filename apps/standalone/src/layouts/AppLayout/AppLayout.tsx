@@ -40,16 +40,14 @@ import MdiSecurity from "~icons/mdi/security";
 import RiLogoutCircleRLine from "~icons/ri/logout-circle-r-line";
 import "./AppLayout.scss";
 
-interface AppLayoutProps {}
-
-export const AppLayout = (props: AppLayoutProps) => {
+export const AppLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { breadCrumb, setBreadCrumb } = useAppConfig();
   const { visible } = useToggleGlobal(); // lấy giá trị visible khi bấm vào nút mở search shopify customer
   const [collapsed, setCollapsed] = useState(false);
   const { logout } = useAuth();
-  const { isAdmin, isLead, isAgent } = usePermission();
+  const { isAdmin, isAgent } = usePermission();
   const user = useUser();
   const caseTopMenu = useMemo<any["items"]>(() => {
     return [

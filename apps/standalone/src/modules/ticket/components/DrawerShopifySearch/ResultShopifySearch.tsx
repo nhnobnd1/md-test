@@ -120,7 +120,7 @@ const ResultShopifySearch = React.forwardRef(({ id }: IProps, ref) => {
         columns={columns}
         dataSource={convertDataTable}
         rowKey={(record) => record.id}
-        onRow={(record, _) => {
+        onRow={(record) => {
           return {
             onClick: () => handleClickRow(record),
           };

@@ -6,7 +6,6 @@ import {
   useJob,
   useLocation,
   useNavigate,
-  usePrevious,
   useToggle,
 } from "@moose-desk/core";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
@@ -105,7 +104,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     on: openFilterModal,
     off: closeFilterModal,
   } = useToggle();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const message = useMessage();
   const notification = useNotification();
@@ -122,8 +121,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     useState<BaseListTicketRequest>(defaultFilter);
 
   const [meta, setMeta] = useState<BaseMetaDataListResponse>();
-
-  const prevFilter = usePrevious<GetListTicketRequest>(filterData);
 
   const { run: getListTicketApi, processing: loadingList } = useJob(
     (payload: GetListTicketRequest) => {
@@ -145,7 +142,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         );
     }
   );
-  const { run: getListTicketFilter } = useJob(
+  const { run: getListTicketFilter, processing: loadingFilter } = useJob(
     (payload: BaseListTicketFilterRequest) => {
       return TicketRepository()
         .getListFilter(payload)
@@ -226,38 +223,36 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       );
   });
 
-  const { run: getListTagApi, processing: loadingTags } = useJob(
-    (payload: GetListTagRequest) => {
-      return TagRepository()
-        .getList(payload)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              // let current: any = [];
-              const tags = data.data.map((item) => ({
-                ...item,
-                id: item._id,
-              }));
-              setTags((prevTags) => {
-                // current = [...prevTags, ...tags];
-                return [...prevTags, ...tags];
-              });
+  const { run: getListTagApi } = useJob((payload: GetListTagRequest) => {
+    return TagRepository()
+      .getList(payload)
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            // let current: any = [];
+            const tags = data.data.map((item) => ({
+              ...item,
+              id: item._id,
+            }));
+            setTags((prevTags) => {
+              // current = [...prevTags, ...tags];
+              return [...prevTags, ...tags];
+            });
 
-              if (data.metadata.totalPage > (payload.page as number)) {
-                getListTagApi({
-                  page: (payload.page as number) + 1,
-                  limit: payload.limit,
-                });
-                // return;
-              }
-              // console.log("asdasd", current);
-            } else {
-              message.error(t("messages:error.get_tag"));
+            if (data.metadata.totalPage > (payload.page as number)) {
+              getListTagApi({
+                page: (payload.page as number) + 1,
+                limit: payload.limit,
+              });
+              // return;
             }
-          })
-        );
-    }
-  );
+            // console.log("asdasd", current);
+          } else {
+            message.error(t("messages:error.get_tag"));
+          }
+        })
+      );
+  });
   const { run: getListCustomerApi } = useJob(
     (payload: GetListCustomerRequest) => {
       return CustomerRepository()
@@ -573,7 +568,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                     fileName="Tickets.pdf"
                     style={{ textDecoration: "none" }}
                   >
-                    {({ blob, url, loading, error }) =>
+                    {({ loading }) =>
                       loading ? (
                         <Spin />
                       ) : (
@@ -623,7 +618,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                   rowSelection={rowSelection}
                   dataSource={tickets}
                   scroll={{ x: 1024 }}
-                  loading={loadingList}
+                  loading={loadingList || loadingFilter}
                   onChange={onChangeTable}
                 >
                   <Table.Column

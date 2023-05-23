@@ -14,14 +14,9 @@ interface HolidayTabProps {
   dataAutoReply: AutoReply[];
 }
 
-const HolidayTab = ({
-  value,
-  onChange,
-  dataAutoReply,
-  ...props
-}: HolidayTabProps) => {
+const HolidayTab = ({ value, onChange, dataAutoReply }: HolidayTabProps) => {
   const notification = useNotification();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const [valueListHolidays, setValueListHolidays] = useState<Holidays[]>([]);
   const [valueTableHolidays, setValueTableHolidays] = useState<Holidays[]>([]);
@@ -47,7 +42,6 @@ const HolidayTab = ({
     index: number;
   }>();
   // 01/13/2023
-  const day = new Date();
   // details
   const handleDetails = useCallback(
     (index: number) => {

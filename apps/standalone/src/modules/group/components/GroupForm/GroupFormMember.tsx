@@ -6,7 +6,6 @@ import {
 } from "@moose-desk/core";
 import {
   AgentRepository,
-  BaseMetaDataListResponse,
   GetMembersGroupRequest,
   GroupMembers,
   UserGroupRepository,
@@ -49,11 +48,6 @@ const GroupFormMember = memo(
       defaultFilter()
     );
     const prevFilter = usePrevious<GetMembersGroupRequest>(filterData);
-    const [meta, setMeta] = useState<BaseMetaDataListResponse>();
-
-    const resetFilterData = useCallback(() => {
-      setFilterData(defaultFilter());
-    }, []);
 
     const isDetail = useMemo(() => {
       return !!groupId;
@@ -141,8 +135,6 @@ const GroupFormMember = memo(
                   uniqBy([...groupMembers, ...dataMember], "_id")
                 );
               }
-
-              setMeta(data.metadata);
             })
           );
       }
@@ -318,16 +310,6 @@ const GroupFormMember = memo(
               )}
             />
           </Table>
-          {/* {meta && isDetail && groupMembersTable.length > 0 && (
-            <Pagination
-              className="mt-4 flex justify-end"
-              currentPage={filterData.page ?? 1}
-              total={meta?.totalCount}
-              showTotal={undefined}
-              pageSize={filterData.limit ?? env.DEFAULT_PAGE_SIZE}
-              onChange={onPagination}
-            />
-          )} */}
         </div>
       </div>
     );

@@ -27,7 +27,7 @@ export const channelEmailSlice = createSlice({
   name: "channelEmail",
   initialState,
   reducers: {
-    setSignInCallback(state, { type, payload }) {
+    setSignInCallback(state, { payload }) {
       state.signInCallback = payload;
     },
     setExternalMailConnection(

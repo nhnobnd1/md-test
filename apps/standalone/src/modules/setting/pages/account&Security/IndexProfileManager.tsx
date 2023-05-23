@@ -13,7 +13,7 @@ import { regexPhoneValidate } from "src/regex";
 
 export default function IndexProfileManager() {
   const token = jose.decodeJwt(TokenManager.getToken("base_token") || "");
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const message = useMessage();
   const notification = useNotification();

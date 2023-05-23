@@ -4,7 +4,6 @@ import { FormInstance } from "antd/lib/form/Form";
 import React, { Dispatch, FC, SetStateAction, useEffect } from "react";
 import { SenderVerifyStep } from "src/modules/settingChannel/components/ChannelEmail/CardForwardEmail/SenderVerifyStep";
 interface ContentWaitProps {
-  setStep: Dispatch<SetStateAction<number>>;
   handleVerifyFinish: () => void;
   isVerified: Status;
   email: string;
@@ -17,8 +16,6 @@ type Status = "Pending" | "Success" | "Fail";
 
 export const CompleteStep: FC<ContentWaitProps> = React.memo(
   ({
-    children,
-    setStep,
     handleVerifyFinish,
     isVerified,
     email,
@@ -49,13 +46,7 @@ export const CompleteStep: FC<ContentWaitProps> = React.memo(
       );
     }
     if (isVerified === "Success") {
-      return (
-        <SenderVerifyStep
-          setStep={setStep}
-          email={email}
-          formEmail={formEmail}
-        />
-      );
+      return <SenderVerifyStep email={email} formEmail={formEmail} />;
     }
     return (
       <div className="flex flex-col items-center">

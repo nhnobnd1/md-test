@@ -18,11 +18,7 @@ export interface GroupFormValues {
   groupMembers: string[];
 }
 
-export const GroupForm = ({
-  disableForm = false,
-  id,
-  ...props
-}: GroupFormProps) => {
+export const GroupForm = ({ id, ...props }: GroupFormProps) => {
   const [form] = Form.useForm(props.form);
   const { toggle: updateForm } = useToggle();
   const { state: viewAddMember, toggle: toggleViewAddMember } = useToggle(!!id);

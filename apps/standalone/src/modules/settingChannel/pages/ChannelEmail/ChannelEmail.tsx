@@ -28,16 +28,15 @@ import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
 
-interface ChannelEmailProps {}
 const defaultFilter: () => any = () => ({
   page: 1,
   limit: env.DEFAULT_PAGE_SIZE,
 });
-const ChannelEmail = (props: ChannelEmailProps) => {
+const ChannelEmail = () => {
   const navigate = useNavigate();
   const message = useMessage();
   const notification = useNotification();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [emails, setEmails] = useState<EmailIntegration[]>([]);
   const [listEmailOtherFail, setListEmailOtherFail] = useState<string[]>([]);
 

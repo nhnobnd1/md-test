@@ -118,8 +118,7 @@ Select.Ajax = ({
   renderOption,
   dependencies = [],
   dependenciesWait = 500,
-  extra,
-  onFetched,
+
   mode,
   onDependenciesChanged,
   ...props
@@ -278,9 +277,7 @@ Select.Assignee = ({
   renderOption,
   dependencies = [],
   dependenciesWait = 500,
-  extra,
   onChange,
-  onFetched,
   onDependenciesChanged,
   ...props
 }: AjaxSelectProps) => {
@@ -430,9 +427,7 @@ Select.Tags = ({
   renderOption,
   dependencies = [],
   dependenciesWait = 500,
-  extra,
   onChange,
-  onFetched,
   onDependenciesChanged,
   ...props
 }: AjaxSelectProps) => {
@@ -575,8 +570,6 @@ Select.Auto = ({
   renderOption,
   dependencies = [],
   dependenciesWait = 500,
-  extra,
-  onFetched,
   onDependenciesChanged,
   ...props
 }: AjaxSelectProps) => {

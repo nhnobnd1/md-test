@@ -1,4 +1,6 @@
 import { Component, ReactNode } from "react";
+import Images from "src/assets/images";
+import { ErrorPage } from "src/components/ErrorPage";
 
 interface ErrorBoundaryProps {
   children?: ReactNode;
@@ -16,7 +18,7 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, any> {
 
   render() {
     if (this.state.hasError) {
-      return <h4>Error page</h4>;
+      return <ErrorPage image={Images.NotFound} />;
     }
 
     return <>{this.props.children}</>;

@@ -58,7 +58,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
   const [files, setFiles] = useState<any>([]);
   const [loadingButton, setLoadingButton] = useState(false);
   const { dataSaved }: any = useSaveDataGlobal();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const fetchAgents = useCallback(
     (params: LoadMoreValue) => {
@@ -162,11 +162,11 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
 
   const fetchCustomer = useCallback(
     (params: LoadMoreValue) => {
-      const limit = env.DEFAULT_PAGE_SIZE;
+      const limit = 500;
       return CustomerRepository()
         .getList({
           page: params.page,
-          limit: 500,
+          limit: limit,
           query: params.searchText,
         })
         .pipe(
@@ -216,7 +216,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
       );
   });
 
-  const handleChangeForm = useCallback((changedValue) => {
+  const handleChangeForm = useCallback(() => {
     // console.log('asdasd',changedValue.);
   }, []);
   const onFinish = (values: any) => {
@@ -257,9 +257,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
     });
     // setFromEmail(options.obj);
   };
-  const onChangeAssignee = (value: string, options: any) => {
-    console.log({ value, options });
-  };
+
   useEffect(() => {
     if (form) {
       form.setFieldsValue({ to: dataSaved?.email });
@@ -311,7 +309,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
                     label="CC"
                     name="CC"
                     rules={[
-                      ({ getFieldValue }) => ({
+                      () => ({
                         validator(_, value) {
                           if (validateCCEmail(value)) {
                             return Promise.resolve();
@@ -338,7 +336,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
                     label="BCC"
                     name="BCC"
                     rules={[
-                      ({ getFieldValue }) => ({
+                      () => ({
                         validator(_, value) {
                           if (validateCCEmail(value)) {
                             return Promise.resolve();
@@ -379,7 +377,6 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
               placeholder="Search agents"
               virtual
               loadMore={fetchAgents}
-              // onChange={onChangeAssignee}
             />
           </Form.Item>
           <Form.Item
