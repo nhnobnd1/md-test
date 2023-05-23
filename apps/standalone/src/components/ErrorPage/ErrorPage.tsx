@@ -12,6 +12,7 @@ export const ErrorPage = ({
   height = "100vh",
 }: ErrorPageProps) => {
   useEffect(() => {
+    console.log("test");
     window.location.reload();
   }, []);
   return (
