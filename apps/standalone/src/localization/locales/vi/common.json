@@ -1,1 +1,220 @@
-{}
+{
+  "table": {
+    "empty": "Sorry!, There is no records matched with your search criteria.",
+    "action": "Action",
+    "results": "Results",
+    "result": "Result",
+    "records_per_page": "Records per page",
+    "click_sort_asc": "Click to sort ascending",
+    "click_sort_desc": "Click to sort descending",
+    "click_cancel_sort": "Click to cancel sort"
+  },
+  "button": {
+    "login": "Login",
+    "add": "Add {name}",
+    "cancel": "Cancel",
+    "save": "Save",
+    "submit": "Submit",
+    "reopen": "Reopen",
+    "reply": "Reply",
+    "reply_close": "Reply & Close Ticket"
+  },
+  "placeholder": {
+    "from": "Form",
+    "to": "To",
+    "default": "Enter {name}",
+    "search": "search",
+    "date": "Select date",
+    "search_ticket": "Search ticket",
+    "assign_to": "Assign to",
+    "set_status": "Set Status",
+    "cc_email": "Type CC email...",
+    "bcc_email": "Type BCC email...",
+    "search_agent": "Search agents",
+    "search_email_integration": "Search email integration",
+    "add_tags": "Add tags",
+    "subject": "Subject",
+    "input_message": "Please input your message here......"
+  },
+  "regex": {
+    "required": "{name} is required!",
+    "email": "The email address is not valid",
+    "phone": "The input phone number is not valid",
+    "message_ticket": "Please input your message!",
+    "password_rules": "The password must be 8 characters long and must be a combination of uppercase letters, lowercase letters, numbers, and symbols"
+  },
+  "login": {
+    "our_solutions": "Our Solutions",
+    "pricing": "Pricing",
+    "product_demo": "Product Demo",
+    "resource": "Resource",
+    "company": "Company",
+    "login": "Login",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "forgot_password": "Forgot Password",
+    "note": "Want to get started with MooseDesk? Create a {free_account} here.",
+    "free_account": "free account",
+    "reset_password_title": "Reset your password",
+    "enter_password": "Please enter your email address and we will send the instructions to reset your password",
+    "notify_reset_one": "We have sent the instructions to your email address.",
+    "notify_reset_two": "Please follow the instructions in order to reset your password.",
+    "reset_back": "Back to login page"
+  },
+  "customers": {
+    "page_header": "Customer",
+    "add_customer": "Add customer",
+    "name": "Customer name",
+    "email_address": "Email address",
+    "ticket_count": "Number of tickets",
+    "profile": "Customer profile",
+    "ticket_list": "List ticket",
+    "first_name": "First name",
+    "last_name": "Last name",
+    "email": "Email",
+    "phone_number": "Phone number",
+    "ticket_title": "Ticket title",
+    "date_request": "Date request",
+    "last_update": "Last updated",
+    "status": "Status",
+    "priority": "Priority",
+    "assignee": "Assignee",
+    "add_popup_title": "New customer profile"
+  },
+  "reporting": {
+    "overview": "Overview",
+    "by_agent": "By Agents",
+    "by_tag": "By Tags",
+    "page_header": "Reporting",
+    "ticket_assigned": "Ticket Assigned",
+    "ticket_created": "Ticket Created",
+    "tickets_created": "Tickets Created",
+    "tickets_replied": "Tickets Replied",
+    "ticket_closed": "Ticket Closed",
+    "tickets_closed": "Tickets Closed",
+    "ticket_responded": "Ticket Responded",
+    "first_response_time": "First Response Time",
+    "resolution_time": "Resolution Time",
+    "support_volume": "Support Volume",
+    "resolution_time_title": "Resolution Time (Median)",
+    "first_response_time_title": "First Response Time (Median)",
+    "ticket_close_by_agent": "Ticket closed per agent per day (Top 5 Agents)",
+    "ticket_by_agent": "Tickets by Agents",
+    "agent_name": "Agent Name",
+    "percentage": "Percentage",
+    "percentage_resolved": "Percentage (Resolved)",
+    "percentage_closed": "Percentage Closed",
+    "tag": "Tag",
+    "total_ticket": "Total Tickets"
+  },
+  "settings": {
+    "general": {
+      "business_hours": {
+        "business_hours": "Business Hours",
+        "timezone": "Time zone:",
+        "holidays": "Holidays",
+        "auto_reply": "Auto-reply",
+        "fulltime_support": "Fulltime support",
+        "24x7": "24hrs x7 days",
+        "custom": "Custom Business hours",
+        "custom_detail": "Setup custom working hours for your agents",
+        "working_hours": "Working Hours",
+        "sunday": "Sunday",
+        "monday": "Monday",
+        "tuesday": "Tuesday",
+        "wednesday": "Wednesday",
+        "thursday": "Thursday",
+        "friday": "Friday",
+        "saturday": "Saturday"
+      },
+      "holidays": {
+        "name": "Name",
+        "date": "Date",
+        "auto_reply": "Auto-Reply",
+        "action": "Action",
+        "add_holiday": "Add a holiday..."
+      },
+      "auto_reply": {
+        "name": "Name",
+        "date_create": "Date Create",
+        "action": "Action",
+        "add_auto_reply": "Add an auto-reply..."
+      }
+    }
+  },
+  "ticket": {
+    "index": {
+      "reset": "Reset",
+      "apply": "Apply",
+      "ticket": "Ticket",
+      "create_new_ticket": "Create New Ticket",
+      "filters": "Filters",
+      "pending": "Pending",
+      "open": "Open",
+      "resolved": "Resolved",
+      "highest": "Highest",
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low",
+      "lowest": "Lowest",
+      "export": "Export",
+      "public_view": "Public Views",
+      "new": "New",
+      "trash": "Trash",
+      "ticket_title": "Ticket title",
+      "customer": "Customer",
+      "tags": "Tags",
+      "priority": "Priority",
+      "last_update": "Last Update",
+      "action_delete_title": "Are you sure that you want to remove this ticket?",
+      "action_delete_description": "This Ticket will be removed to Trash. You can no longer access to this ticket.",
+      "action_delete_text": "Remove"
+    },
+    "create": {
+      "new_ticket": "New Ticket",
+      "email": "Email",
+      "cc": "CC",
+      "bcc": "BCC",
+      "cc_bcc": "CC/BCC",
+      "assignee": "Assignee",
+      "from": "From",
+      "priority": "Priority",
+      "tags": "Tags",
+      "subject": "Subject"
+    },
+    "detail": {
+      "reported_via_email": "reported via email",
+      "reported_via_widget": "reported via widget",
+      "agent_created": "agent created",
+      "title": "Ticket {ticketId}: {subject}",
+      "status": "Status",
+      "priority": "Priority",
+      "tags": "Tags",
+      "from": "From",
+      "to": "To"
+    },
+    "trash": {
+      "multiple": {
+        "restore_title": "Are you sure that you want to restore these tickets",
+        "restore_content": "These tickets will be moved back to the Ticket list. You can continue working with them.",
+        "restore_text_icon": "Restore Selected",
+        "restore_text_action": "Restore",
+
+        "delete_title": "Are you sure that you want to permanently remove these tickets?",
+        "delete_content": "These tickets will be remove permanently. This action cannot be undone.",
+        "delete_text_icon": "Deleted Selected",
+        "delete_text_action": "Remove"
+      },
+      "single": {
+        "restore_title": "Are you sure that you want to restore this ticket",
+        "restore_content": "This ticket will be moved back to the Ticket list. You can continue working with it.",
+        "restore_text_action": "Restore",
+
+        "delete_title": "Are you sure that you want to permanently remove this ticket?",
+        "delete_content": "This ticket will be remove permanently. This action cannot be undone.",
+        "delete_text_action": "Remove "
+      }
+    }
+  }
+}
