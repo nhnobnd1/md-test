@@ -1,6 +1,26 @@
 {
   "layout": {
-    "logout": "Logout"
+    "home": "Home",
+    "tickets": "Tickets",
+    "customers": "Customers",
+    "reporting": "Reporting",
+    "overview": "Overview",
+    "by_agent": "By Agents",
+    "by_tag": "By Tags",
+    "settings": "Settings",
+    "logout": "Logout",
+    "people": "People",
+    "agents": "Agents",
+    "groups": "Groups",
+    "account_security": "Account & Security",
+    "profile": "Profile",
+    "Security": "Security",
+    "access_manage": "Access Manage",
+    "work_desk": "Workdesk",
+    "tags": "Tags",
+    "general_settings": "General Settings",
+    "channels": "Channels",
+    "business_hours": "Business Hours"
   },
   "table": {
     "empty": "Sorry!, There is no records matched with your search criteria.",
@@ -11,7 +31,8 @@
     "click_sort_asc": "Click to sort ascending",
     "click_sort_desc": "Click to sort descending",
     "click_cancel_sort": "Click to cancel sort",
-    "delete_question": "Are you sure to delete {name}"
+    "delete_question": "Are you sure to delete {name}",
+    "no_data": "No data"
   },
   "button": {
     "login": "Login",
@@ -21,6 +42,7 @@
     "save": "Save",
     "submit": "Submit",
     "remove": "Remove",
+    "update": "Update {name}",
     "send_invitation_email": "Send Invitation Email",
     "deactivate": "Deactivate",
     "close": "Close {name}"
@@ -62,8 +84,30 @@
     "notify_reset_two": "Please follow the instructions in order to reset your password.",
     "reset_back": "Back to login page"
   },
+  "tickets": {
+    "customer_name": "Customer Name",
+    "email_address": "Email Address",
+    "phone_number": "Phone Numbers",
+    "amount_spent": "Amount spent",
+    "total_orders": "Total Orders",
+    "back": "Back",
+    "order": "Order #",
+    "order_status": "Order Status",
+    "date": "Date",
+    "tax": "Tax",
+    "shipping": "Shipping",
+    "total": "Total",
+    "paid": "paid",
+    "address": "Address",
+    "tracking_url": "Tracking Url",
+    "tracking_number": "Tracking Number",
+    "empty": "empty",
+    "refund": "Refund",
+    "refunded": "Refunded",
+    "reason": "Reason"
+  },
   "customers": {
-    "page_header": "Customer",
+    "customer": "Customer",
     "add_customer": "Add customer",
     "name": "Customer name",
     "email_address": "Email address",
@@ -85,9 +129,6 @@
     "delete_popup_warning": "This customer will be removed permanently. All customer's tickets and his profile will no longer accessible."
   },
   "reporting": {
-    "overview": "Overview",
-    "by_agent": "By Agents",
-    "by_tag": "By Tags",
     "page_header": "Reporting",
     "ticket_assigned": "Ticket Assigned",
     "ticket_created": "Ticket Created",
@@ -112,9 +153,7 @@
   },
   "people": {
     "agent": "Agent",
-    "agents": "Agents",
     "group": "Group",
-    "groups": "Groups",
     "account": "Account",
     "email": "Email",
     "roles": "Roles",
@@ -144,5 +183,29 @@
     "add_tag_title": "Add tag profile",
     "delete_tag_question": "Are you sure that you want to premanently remove this Tag?",
     "delete_tag_warning": "This Tag will be removed permanently. This actions can not be undone. All tickets which are using this tag will get affected too."
+  },
+  "account_security": {
+    "account_security": "Account & Security",
+    "profile": "Profile",
+    "phone": "Phone No.",
+    "change_password": "Change Password",
+    "current_password": "Current Password",
+    "new_password": "New Password",
+    "confirm_password": "Confirm New Password",
+    "2fa_auth": "Two-Factor Authentication",
+    "active": "Active",
+    "inactive": "InActive",
+    "enable": "Enable 2FA",
+    "change_2fa": "Change 2FA Method",
+    "auto_join": "Auto-Join Settings",
+    "allow_with_email": "Allow users with email addresses from an approved email domain to use the sign up link.",
+    "email_domain": "Email domain",
+    "2fa_toggle": "Toggle 2FA for all users.",
+    "enable_2fa_title": "Enable Two-Factor Authentication",
+    "off": "Off",
+    "off_note": "You will login normally with your email and password without any additional verifycation steps. This method will have higher risks for any security breach.",
+    "use_email": "Use Email Address",
+    "use_email_note": "When you login from a new computer or browser, system will send an OTP code to your email to verify your identity.",
+    "use_external_app":"Use external authenticator application."
   }
 }
