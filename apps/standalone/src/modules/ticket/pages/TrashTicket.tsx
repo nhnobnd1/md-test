@@ -50,7 +50,7 @@ const TrashTicket = () => {
     useState<BaseListTicketRequest>(defaultFilter);
   const { subDomain } = useSubdomain();
   const { timezone } = useGlobalData(false, subDomain || "");
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const [statistic, setStatistic] = useState<TicketStatistic>({
     statusCode: 200,

@@ -7,7 +7,6 @@ import {
 import LazyComponent from "@moose-desk/core/components/LazyComponent";
 import { AccountRepository, Env } from "@moose-desk/repo";
 import { Suspense, lazy } from "react";
-import { CookiesProvider } from "react-cookie";
 import ReactDOM from "react-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import ErrorBoundary from "src/ErrorBoundary";
@@ -29,7 +28,6 @@ const queryClient = new QueryClient({
       refetchOnWindowFocus: false,
       cacheTime: 24 * 3600 * 1000, // cache for 1 day
       retry: false,
-      // enabled: import.meta.env.VITE_USER_NODE_ENV === "development",
     },
   },
 });
@@ -53,33 +51,31 @@ ReactDOM.render(
           )}
         >
           <ApiLoadingHandlerProvider>
-            <CookiesProvider>
-              <InitApp>
-                <AuthProvider
-                  defaultTokens={() => ({
-                    base_token: getBaseToken(),
-                    refresh_token: getRefreshToken(),
-                  })}
-                  fetchRefreshToken={(refreshToken: string) =>
-                    AccountRepository().refreshToken({
-                      refreshToken,
-                    })
-                  }
-                >
-                  <ErrorBoundary>
-                    <StoreProviders>
-                      <AppConfigProviders>
-                        <ModuleLoader>
-                          <LazyComponent
-                            component={lazy(() => import("src/App"))}
-                          />
-                        </ModuleLoader>
-                      </AppConfigProviders>
-                    </StoreProviders>
-                  </ErrorBoundary>
-                </AuthProvider>
-              </InitApp>
-            </CookiesProvider>
+            <InitApp>
+              <AuthProvider
+                defaultTokens={() => ({
+                  base_token: getBaseToken(),
+                  refresh_token: getRefreshToken(),
+                })}
+                fetchRefreshToken={(refreshToken: string) =>
+                  AccountRepository().refreshToken({
+                    refreshToken,
+                  })
+                }
+              >
+                <ErrorBoundary>
+                  <StoreProviders>
+                    <AppConfigProviders>
+                      <ModuleLoader>
+                        <LazyComponent
+                          component={lazy(() => import("src/App"))}
+                        />
+                      </ModuleLoader>
+                    </AppConfigProviders>
+                  </StoreProviders>
+                </ErrorBoundary>
+              </AuthProvider>
+            </InitApp>
           </ApiLoadingHandlerProvider>
         </LoadingProvider>
       </Suspense>

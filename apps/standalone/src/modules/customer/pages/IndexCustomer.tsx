@@ -63,7 +63,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
 
   const [filterData, setFilterData] =
     useState<BaseListCustomerRequest>(defaultFilter);
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const {
     data: listCustomer,
@@ -77,7 +77,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
       message.error(t("messages:error.get_customer"));
     },
   });
-  const { mutate: deleteCustomerMutate, isLoading: deleting } = useMutation({
+  const { mutate: deleteCustomerMutate } = useMutation({
     mutationFn: (payload: { ids: string[] }) => deleteCustomer(payload),
     onSuccess: () => {
       refetchListCustomer();

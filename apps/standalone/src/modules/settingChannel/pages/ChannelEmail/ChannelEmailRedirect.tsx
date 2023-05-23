@@ -8,10 +8,8 @@ import {
 import { useCallback, useEffect } from "react";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
 
-interface ChannelEmailRedirectProps {}
-
-const ChannelEmailRedirect = (props: ChannelEmailRedirectProps) => {
-  const [searchParams, setSearchParams] = useSearchParams();
+const ChannelEmailRedirect = () => {
+  const [searchParams] = useSearchParams();
   const { login, isLoggedIn } = useAuthContext();
   const navigate = useNavigate();
 

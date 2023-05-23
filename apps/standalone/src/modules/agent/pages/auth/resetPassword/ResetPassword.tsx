@@ -22,17 +22,15 @@ import { rulesValidatePassword } from "src/regex";
 import RoutePaths from "src/routes/paths";
 import "./ResetPassword.scss";
 
-interface ResetPasswordProps {}
-
-const ResetPassword = (props: ResetPasswordProps) => {
-  const [searchParams, setSearchParams] = useSearchParams();
+const ResetPassword = () => {
+  const [searchParams] = useSearchParams();
   const [finalPage, setFinalPage] = useState(false);
   const navigate = useNavigate();
   const message = useMessage();
   const [isValid, setIsValid] = useState<boolean | null>(null);
   const { storeId } = useStore();
   const notification = useNotification();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const [account, setAccount] = useState({
     userId: "",

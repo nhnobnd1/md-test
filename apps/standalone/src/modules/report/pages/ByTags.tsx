@@ -1,4 +1,4 @@
-import { PageComponent, useNavigate } from "@moose-desk/core";
+import { PageComponent } from "@moose-desk/core";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
@@ -31,7 +31,6 @@ interface ITableFilter {
   endTime: string;
 }
 export const ByTags: PageComponent<ByTagsProps> = () => {
-  const navigate = useNavigate();
   const { subDomain } = useSubdomain();
 
   const { timezone } = useGlobalData(false, subDomain || "");

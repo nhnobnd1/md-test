@@ -12,7 +12,7 @@ export const initialCancel = new Date();
 const useUpdateSave = create<SettingState>()((set) => ({
   update: initialSave,
   cancel: initialCancel,
-  changeUpdate: (object: Date) => set((state) => ({ update: object })),
-  changeCancel: (object: Date) => set((state) => ({ cancel: object })),
+  changeUpdate: (object: Date) => set(() => ({ update: object })),
+  changeCancel: (object: Date) => set(() => ({ cancel: object })),
 }));
 export default useUpdateSave;

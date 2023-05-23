@@ -17,20 +17,18 @@ import DashboardRoutePaths from "src/modules/dashboard/routes/paths";
 import RoutePaths from "src/routes/paths";
 import "./MainLayout.scss";
 
-interface MainLayoutProps {}
-
-export const MainLayout = (props: MainLayoutProps) => {
+export const MainLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { isLoggedIn, logout } = useAuth();
   const notification = useNotification();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const { run: signOut } = useJob(() => {
     return AccountRepository()
       .signOut()
       .pipe(
-        map(({ data }) => {
+        map(() => {
           logout();
           navigate(generatePath(RoutePaths.Login));
           notification.success(t("messages:success.logout"));

@@ -28,13 +28,11 @@ import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
 
-interface ChannelEmailProps {}
-
-const ChannelEmail = (props: ChannelEmailProps) => {
+const ChannelEmail = () => {
   const navigate = useNavigate();
   const message = useMessage();
   const notification = useNotification();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const defaultFilter: () => any = () => ({
     page: 1,
@@ -108,9 +106,6 @@ const ChannelEmail = (props: ChannelEmailProps) => {
     },
     { wait: 300 }
   );
-  const resetFilterData = useCallback(() => {
-    setFilterData(defaultFilter());
-  }, []);
 
   const onPagination = useCallback(
     ({ page, limit }: { page: number; limit: number }) => {

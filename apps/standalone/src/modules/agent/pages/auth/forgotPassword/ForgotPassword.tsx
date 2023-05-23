@@ -11,9 +11,8 @@ import useNotification from "src/hooks/useNotification";
 import { useStore } from "src/providers/StoreProviders";
 import RoutePaths from "src/routes/paths";
 import "./ForgotPassword.scss";
-interface ForgotPasswordProps {}
 
-export const ForgotPassword = (props: ForgotPasswordProps) => {
+export const ForgotPassword = () => {
   const [form] = Form.useForm();
   const [finalPage, setFinalPage] = useState({
     status: false,
@@ -23,7 +22,7 @@ export const ForgotPassword = (props: ForgotPasswordProps) => {
   const { storeId } = useStore();
   const navigate = useNavigate();
   const notification = useNotification();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const { run: sendForgotPassword } = useJob(
     (payload: { email: string; storeId: string }) => {

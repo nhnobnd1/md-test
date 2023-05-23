@@ -37,7 +37,6 @@ export const PopupAgent = ({
   data,
   onChange,
   onCancel,
-  loading = false,
   ...props
 }: PopupAgentProps) => {
   const [form] = Form.useForm();
@@ -46,11 +45,10 @@ export const PopupAgent = ({
   const notification = useNotification();
   const [dataForm, setDataForm] = useState<Agent>();
   const { isAdmin } = usePermission();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const {
     state: countDown,
-    clearCountDown,
     initCountdown,
     checkTimerProcess,
   } = useCountDown({
@@ -169,13 +167,6 @@ export const PopupAgent = ({
         );
     }
   );
-
-  const [listSending, setListSending] = useState<
-    Array<{
-      id: string;
-      sending: boolean;
-    }>
-  >([]);
 
   const { run: resendMailApi, processing: loadingSentMail } = useJob(
     (payload: ResendEmailInvitationRequest) => {

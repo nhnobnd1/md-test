@@ -25,9 +25,7 @@ import { rulesValidatePassword } from "src/regex";
 import RoutePaths from "src/routes/paths";
 import "./SignIn.scss";
 
-interface SignInProps {}
-
-export const SignIn = (props: SignInProps) => {
+export const SignIn = () => {
   const { login } = useAuthContext();
   const message = useMessage();
   const [view, setView] = useState<"login" | "lock" | "factor2Auth">("login");
@@ -57,7 +55,7 @@ export const SignIn = (props: SignInProps) => {
       password: "",
     };
   }, []);
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const { run: signInApi } = useJob(
     (payload: SignInAccountAgentRequest, resend?: boolean) => {

@@ -8,7 +8,7 @@ interface SelectTimeZoneProps
   form?: any;
 }
 
-const SelectTimeZone = ({ value, onChange, ...props }: SelectTimeZoneProps) => {
+const SelectTimeZone = ({ value, onChange }: SelectTimeZoneProps) => {
   // init data
   const optionSelectTimeZone = timeZoneList.timeZone;
 
@@ -21,7 +21,7 @@ const SelectTimeZone = ({ value, onChange, ...props }: SelectTimeZoneProps) => {
 
   //
   const [selectedOption, setSelectedOption] = useState();
-  const [options, setOptions] = useState(deselectedOptions);
+  const [options] = useState(deselectedOptions);
 
   const updateSelection = useCallback(
     (selected) => {

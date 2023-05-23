@@ -21,19 +21,16 @@ import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { GroupForm } from "src/modules/group/components/GroupForm";
 import GroupRoutePaths from "src/modules/group/routes/paths";
-import { useStore } from "src/providers/StoreProviders";
-interface DetailGroupProps {}
 
-const DetailGroup = (props: DetailGroupProps) => {
+const DetailGroup = () => {
   const [form] = Form.useForm();
-  const { storeId } = useStore();
   const message = useMessage();
   const notification = useNotification();
   const { toggle: updateForm } = useToggle();
   const navigate = useNavigate();
   const [group, setGroup] = useState<UserGroup>();
   const { id } = useParams();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const { run: getGroupApi } = useJob(() => {
     return UserGroupRepository()

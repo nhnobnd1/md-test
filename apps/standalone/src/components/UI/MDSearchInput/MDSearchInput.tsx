@@ -12,8 +12,6 @@ export const MDSearchInput = ({
   value,
   ...props
 }: IMDSearchInput) => {
-  const { Search } = Input;
-
   return (
     <Input
       placeholder={placeholder}

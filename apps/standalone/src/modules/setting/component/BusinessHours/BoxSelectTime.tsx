@@ -30,7 +30,6 @@ const BoxSelectTime = ({
   value,
   initialValue,
   disabled,
-  ...props
 }: BoxSelectTimeProps) => {
   const [timeWorking, setTimeWorking] = useState(0);
   const [disabledTextField, setDisabledTextField] = useState<boolean>();
@@ -38,7 +37,7 @@ const BoxSelectTime = ({
   const [selectedOptionEnd, setSelectedOptionEnd] = useState();
   // value start
   const [inputValueStart, setInputValueStart] = useState("");
-  const [optionsStart, setOptionsStart] = useState(optionSelectTime);
+  const [optionsStart] = useState(optionSelectTime);
   const updateSelectionStart = useCallback(
     (selected) => {
       const matchedOption = optionsStart.find((option) => {

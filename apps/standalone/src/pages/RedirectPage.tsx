@@ -3,9 +3,7 @@ import useAuth from "src/hooks/useAuth";
 import DashboardRoutePaths from "src/modules/dashboard/routes/paths";
 import RoutePaths from "src/routes/paths";
 
-interface RedirectPageProps {}
-
-const RedirectPage = (props: RedirectPageProps) => {
+const RedirectPage = () => {
   const { isLoggedIn } = useAuth();
 
   return (

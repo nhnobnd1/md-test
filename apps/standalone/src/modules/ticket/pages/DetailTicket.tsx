@@ -5,9 +5,8 @@ import { useEffect } from "react";
 import DetailTicketForm from "src/modules/ticket/components/DetailTicketForm/DetailTicketForm";
 import ContentShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ContentShopifySearch";
 import styles from "./styles.module.scss";
-interface DetailTicketProps {}
 
-const DetailTicket = (props: DetailTicketProps) => {
+const DetailTicket = () => {
   const { visible, setVisible } = useToggleGlobal();
   const handleOpenDrawerSearch = () => {
     setVisible(true);

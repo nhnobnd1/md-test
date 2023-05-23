@@ -28,7 +28,7 @@ const GroupChildPage: PageComponent<GroupChildPageProps> = () => {
   const message = useMessage();
   const notification = useNotification();
   const navigate = useNavigate();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const { run: createGroupApi, processing: loadingAddGroup } = useJob(
     (payload: CreateUserGroupRequest) => {

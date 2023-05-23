@@ -12,7 +12,6 @@ interface BusinessHoursTabProps {
 const BusinessHoursTab = ({
   disabled,
   dataAutoReply,
-  ...props
 }: BusinessHoursTabProps) => {
   return (
     <div className="p-2">

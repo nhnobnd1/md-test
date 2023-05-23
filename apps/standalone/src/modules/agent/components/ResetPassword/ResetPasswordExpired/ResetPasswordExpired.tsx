@@ -3,9 +3,7 @@ import { useNavigate } from "@moose-desk/core";
 import DashboardRoutePaths from "src/modules/dashboard/routes/paths";
 import "./ResetPasswordExpired.scss";
 
-interface ResetPasswordExpiredProps {}
-
-const ResetPasswordExpired = (props: ResetPasswordExpiredProps) => {
+const ResetPasswordExpired = () => {
   const navigate = useNavigate();
   return (
     <div className="ResetPasswordExpired">

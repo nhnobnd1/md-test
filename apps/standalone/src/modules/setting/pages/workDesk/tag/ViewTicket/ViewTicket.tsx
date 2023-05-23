@@ -2,7 +2,6 @@ import {
   createdDatetimeFormat,
   upperCaseFirst,
   useJob,
-  useNavigate,
   useParams,
 } from "@moose-desk/core";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
@@ -39,11 +38,10 @@ const ViewTicket: FC<ViewTicketProps> = () => {
   const message = useMessage();
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [meta, setMeta] = useState<BaseMetaDataListResponse>();
-  const navigate = useNavigate();
   const { isAgent } = usePermission();
   const { subDomain } = useSubdomain();
   const { timezone } = useGlobalData(false, subDomain || "");
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const [filterData, setFilterData] =
     useState<BaseListTagRequest>(defaultFilter);
@@ -78,7 +76,7 @@ const ViewTicket: FC<ViewTicketProps> = () => {
     },
     [setFilterData]
   ) as TableProps<any>["onChange"];
-  const { run: getTicketByTagApi, processing } = useJob(
+  const { run: getTicketByTagApi } = useJob(
     (id: string, params: BaseListTagRequest) => {
       return TagRepository()
         .getListTicket(id, params)

@@ -16,7 +16,7 @@ export default function IndexAccountManager({ props }: any) {
   const [valueInput, setValueInput] = useState("");
   const message = useMessage();
   const { subDomain } = useSubdomain();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const { isAdmin } = usePermission();
   const getLinkSignUp = useCallback(

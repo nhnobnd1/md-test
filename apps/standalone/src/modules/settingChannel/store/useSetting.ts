@@ -43,6 +43,6 @@ export const initialDefaultWidget: WidgetSetting = {
 
 const useWidgetSetting = create<SettingState>()((set) => ({
   widgetSetting: initialDefaultWidget,
-  updateWidgetSetting: (object) => set((state) => ({ widgetSetting: object })),
+  updateWidgetSetting: (object) => set(() => ({ widgetSetting: object })),
 }));
 export default useWidgetSetting;

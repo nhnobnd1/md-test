@@ -36,7 +36,7 @@ export default function Enable2FAModal({
   const [step, setStep] = useState(1);
   const [errorMessage, setErrorMessage] = useState<string>();
   const message = useMessage();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const notification = useNotification();
   const [status2FA, setStatus2FA] = useState<{

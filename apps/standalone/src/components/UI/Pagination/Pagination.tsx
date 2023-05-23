@@ -85,7 +85,7 @@ const Pagination = ({
 
   return (
     <APagination
-      showTotal={(total, range) => (
+      showTotal={(total) => (
         <ShowSize total={total} options={pageSizeOptions} />
       )}
       {...props}

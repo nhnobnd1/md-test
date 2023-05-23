@@ -32,7 +32,7 @@ const WidgetDetail = () => {
   const message = useMessage();
   const notification = useNotification();
   const [widget, setWidget] = useState<HelpWidget>();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const widgetSetting = useWidgetSetting((state) => state.widgetSetting);
   const updateSave = useUpdateSave((state) => state.changeUpdate);
@@ -40,8 +40,7 @@ const WidgetDetail = () => {
   const updateWidgetSetting = useWidgetSetting(
     (state) => state.updateWidgetSetting
   );
-  const [filterData, setFilterData] =
-    useState<BaseListHelpWidgetRequest>(defaultFilter);
+  const [filterData] = useState<BaseListHelpWidgetRequest>(defaultFilter);
   const { run: getListHelpWidgetApi, processing: loadingList } = useJob(
     (payload: GetListHelpWidgetRequest) => {
       return HelpWidgetRepository()
@@ -88,7 +87,6 @@ const WidgetDetail = () => {
             },
             catchError((err) => {
               message.loading.hide().then(() => {
-                const errorCode = err.response.status;
                 notification.error(t("messages:error.update_help_widget"));
               });
               return of(err);

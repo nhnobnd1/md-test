@@ -29,7 +29,7 @@ export const PopupCustomer = ({
   const { storeId } = useStore();
   const message = useMessage();
   const notification = useNotification();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const { mutate: createCustomerMutate } = useMutation({
     mutationFn: (payload: any) => createCustomer(payload),
