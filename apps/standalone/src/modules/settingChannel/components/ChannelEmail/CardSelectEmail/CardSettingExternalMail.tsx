@@ -1,5 +1,6 @@
 import { AuthenticationSMTP } from "@moose-desk/repo";
 import { Card, Checkbox, Input, InputNumber } from "antd";
+import React from "react";
 import { Loading } from "src/components/Loading";
 import { Form } from "src/components/UI/Form";
 import Select, { OptionType } from "src/components/UI/Select/Select";
@@ -165,4 +166,4 @@ export const CardSettingExternalMail = ({
   );
 };
 
-export default CardSettingExternalMail;
+export default React.memo(CardSettingExternalMail);

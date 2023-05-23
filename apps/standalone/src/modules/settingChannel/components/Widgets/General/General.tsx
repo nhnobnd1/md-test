@@ -1,6 +1,6 @@
 import { Card, Checkbox, Col, Divider, Form, Input, Row } from "antd";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { UIWidget } from "src/modules/settingChannel/components/Widgets/UIWidget";
 import useUpdateSave from "src/modules/settingChannel/store/saveUpdateWidget";
 import useWidgetSetting from "src/modules/settingChannel/store/useSetting";
@@ -8,6 +8,13 @@ import useWidgetSetting from "src/modules/settingChannel/store/useSetting";
 export default function General({ data: dataProps }: any) {
   const [form] = Form.useForm();
   const data = useWidgetSetting((state) => state.widgetSetting);
+  const initialFormValues = {
+    title: data.titleText,
+    header: data.widgetHeader,
+    form_title: data.formTitle,
+    button_text: data.buttonText,
+    confirm_message: data.confirmMessage,
+  };
   const updateWidgetSetting = useWidgetSetting(
     (state) => state.updateWidgetSetting
   );
@@ -38,7 +45,36 @@ export default function General({ data: dataProps }: any) {
       allowAttach: checked.target.checked,
     });
   };
-
+  const handleChangeTitleText = (e: ChangeEvent<HTMLInputElement>) => {
+    updateWidgetSetting({
+      ...data,
+      titleText: e.target.value,
+    });
+  };
+  const handleChangeFormTitle = (e: ChangeEvent<HTMLInputElement>) => {
+    updateWidgetSetting({
+      ...data,
+      formTitle: e.target.value,
+    });
+  };
+  const handleUpdateButton = (e: ChangeEvent<HTMLInputElement>) => {
+    updateWidgetSetting({
+      ...data,
+      buttonText: e.target.value,
+    });
+  };
+  const handleUpdateSetting = (e: ChangeEvent<HTMLInputElement>) => {
+    updateWidgetSetting({
+      ...data,
+      widgetHeader: e.target.value,
+    });
+  };
+  const handleChangeMessage = (e: ChangeEvent<HTMLInputElement>) => {
+    updateWidgetSetting({
+      ...data,
+      confirmMessage: e.target.value,
+    });
+  };
   useEffect(() => {
     form.resetFields();
     setAllowCaptcha(data.allowCaptcha);
@@ -51,13 +87,7 @@ export default function General({ data: dataProps }: any) {
         labelCol={{ span: 10 }}
         wrapperCol={{ span: 16 }}
         style={{ marginTop: 20 }}
-        initialValues={{
-          title: data.titleText,
-          header: data.widgetHeader,
-          form_title: data.formTitle,
-          button_text: data.buttonText,
-          confirm_message: data.confirmMessage,
-        }}
+        initialValues={initialFormValues}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         form={form}
@@ -68,14 +98,7 @@ export default function General({ data: dataProps }: any) {
             <Row gutter={16} justify="space-between" align="bottom">
               <Col span={22}>
                 <Form.Item label="Title Text: " name="title" labelAlign="left">
-                  <Input
-                    onChange={(e) => {
-                      updateWidgetSetting({
-                        ...data,
-                        titleText: e.target.value,
-                      });
-                    }}
-                  />
+                  <Input onChange={handleChangeTitleText} />
                 </Form.Item>
               </Col>
             </Row>
@@ -86,14 +109,7 @@ export default function General({ data: dataProps }: any) {
                   name="header"
                   labelAlign="left"
                 >
-                  <Input
-                    onChange={(e) => {
-                      updateWidgetSetting({
-                        ...data,
-                        widgetHeader: e.target.value,
-                      });
-                    }}
-                  />
+                  <Input onChange={handleUpdateSetting} />
                 </Form.Item>
               </Col>
             </Row>
@@ -118,14 +134,7 @@ export default function General({ data: dataProps }: any) {
                       name="form_title"
                       labelAlign="left"
                     >
-                      <Input
-                        onChange={(e) => {
-                          updateWidgetSetting({
-                            ...data,
-                            formTitle: e.target.value,
-                          });
-                        }}
-                      />
+                      <Input onChange={handleChangeFormTitle} />
                     </Form.Item>
                   </Col>
                 </Row>
@@ -136,14 +145,7 @@ export default function General({ data: dataProps }: any) {
                       name="button_text"
                       labelAlign="left"
                     >
-                      <Input
-                        onChange={(e) => {
-                          updateWidgetSetting({
-                            ...data,
-                            buttonText: e.target.value,
-                          });
-                        }}
-                      />
+                      <Input onChange={handleUpdateButton} />
                     </Form.Item>
                   </Col>
                 </Row>
@@ -154,14 +156,7 @@ export default function General({ data: dataProps }: any) {
                       name="confirm_message"
                       labelAlign="left"
                     >
-                      <Input
-                        onChange={(e) => {
-                          updateWidgetSetting({
-                            ...data,
-                            confirmMessage: e.target.value,
-                          });
-                        }}
-                      />
+                      <Input onChange={handleChangeMessage} />
                     </Form.Item>
                   </Col>
                 </Row>

@@ -241,23 +241,19 @@ const ChannelEmailUpdate = (props: ChannelEmailUpdateProps) => {
   const createMailOther = useCallback((values: ValuesForm) => {
     updateEmailIntegration(payloadMailOther(values));
   }, []);
-
+  const handleSubmit = () => form.submit();
+  const handleBack = () =>
+    navigate(generatePath(SettingChannelRoutePaths.ChannelEmail.Index));
   return (
     <>
       <Header
         className="mb-[40px]"
         title="Email Configuration"
         back
-        backAction={() =>
-          navigate(generatePath(SettingChannelRoutePaths.ChannelEmail.Index))
-        }
+        backAction={handleBack}
       >
         <div className="flex-1 flex justify-end">
-          <Button
-            type="primary"
-            disabled={!activeSave}
-            onClick={() => form.submit()}
-          >
+          <Button type="primary" disabled={!activeSave} onClick={handleSubmit}>
             Save
           </Button>
         </div>

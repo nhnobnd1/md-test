@@ -20,9 +20,55 @@ export const UIWidget: FC<UIWidgetProps> = () => {
     background-color: ${data?.buttonAppearanceColor} !important;
 
   }
- 
     `;
-
+  const commonStyles = {
+    wrap: {
+      // padding: 20,
+      backgroundColor: "#EFF2F5",
+      borderRadius: 20,
+      width: 400,
+      maxHeight: 800,
+    },
+    header: {
+      height: 200,
+      backgroundColor: data?.headerBackgroundColor,
+      borderRadius: 8,
+    },
+    mainTitle: {
+      color: `${data?.headerTextColor}`,
+      paddingTop: 20,
+      paddingBottom: 10,
+      maxWidth: 350,
+      paddingLeft: 20,
+      fontSize: "28px",
+    },
+    card: { maxWidth: 350, top: -110, margin: 20 },
+    formCaptcha: {
+      display: "flex",
+      justifyContent: "flex-end",
+      marginTop: 20,
+    },
+    buttonCaptcha: {
+      color: data?.textButtonAppearanceColor,
+      backgroundColor: data?.buttonAppearanceColor,
+      borderRadius: 20,
+    },
+    description: {
+      display: "flex",
+      alignItems: "center",
+      padding: 2,
+      backgroundColor: data?.buttonAppearanceColor,
+    },
+    iconQuestion: {
+      fontSize: 20,
+      color: `${data?.textButtonAppearanceColor}`,
+    },
+    widgetHeader: {
+      fontSize: 20,
+      marginLeft: 10,
+      color: `${data?.textButtonAppearanceColor}`,
+    },
+  };
   const flexWithButton = useMemo(() => {
     if (data.widgetHeader.length < 5) {
       return 150;
@@ -41,40 +87,18 @@ export const UIWidget: FC<UIWidgetProps> = () => {
   return (
     <div style={{ position: "absolute", top: 0, left: 0, zIndex: 2 }}>
       <style scoped>{css}</style>
-      <div
-        style={{
-          // padding: 20,
-          backgroundColor: "#EFF2F5",
-          borderRadius: 20,
-          width: 400,
-          maxHeight: 800,
-        }}
-      >
-        <div
-          className="header-bg"
-          style={{
-            height: 200,
-            backgroundColor: data?.headerBackgroundColor,
-            borderRadius: 8,
-          }}
-        >
+      <div style={commonStyles.wrap}>
+        <div className="header-bg" style={commonStyles.header}>
           <h1
             className="whitespace-nowrap overflow-hidden truncate "
-            style={{
-              color: `${data?.headerTextColor}`,
-              paddingTop: 20,
-              paddingBottom: 10,
-              maxWidth: 350,
-              paddingLeft: 20,
-              fontSize: "28px",
-            }}
+            style={commonStyles.mainTitle}
           >
             {data?.titleText}
           </h1>{" "}
         </div>
         {data.isFormContact ? (
           <Card
-            style={{ maxWidth: 350, top: -110, margin: 20 }}
+            style={commonStyles.card}
             title={data?.formTitle}
             bordered={false}
             className="card"
@@ -147,13 +171,7 @@ export const UIWidget: FC<UIWidgetProps> = () => {
                 <></>
               )}
               {data?.allowCaptcha ? (
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    marginTop: 20,
-                  }}
-                >
+                <div style={commonStyles.formCaptcha}>
                   <Form.Item
                     name="captcha"
                     // rules={[{ required: true, message: "Please enter captcha" }]}
@@ -170,14 +188,7 @@ export const UIWidget: FC<UIWidgetProps> = () => {
             </Form>
 
             <div className="flex justify-end">
-              <Button
-                style={{
-                  color: data?.textButtonAppearanceColor,
-                  backgroundColor: data?.buttonAppearanceColor,
-                  borderRadius: 20,
-                }}
-                type="primary"
-              >
+              <Button style={commonStyles.buttonCaptcha} type="primary">
                 {data.buttonText}
               </Button>
             </div>
@@ -202,27 +213,9 @@ export const UIWidget: FC<UIWidgetProps> = () => {
               // ...positionWidget,
             }}
             description={
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  padding: 2,
-                  backgroundColor: data?.buttonAppearanceColor,
-                }}
-              >
-                <QuestionCircleOutlined
-                  style={{
-                    fontSize: 20,
-                    color: `${data?.textButtonAppearanceColor}`,
-                  }}
-                />
-                <span
-                  style={{
-                    fontSize: 20,
-                    marginLeft: 10,
-                    color: `${data?.textButtonAppearanceColor}`,
-                  }}
-                >
+              <div style={commonStyles.description}>
+                <QuestionCircleOutlined style={commonStyles.iconQuestion} />
+                <span style={commonStyles.widgetHeader}>
                   {data?.widgetHeader}
                 </span>
               </div>

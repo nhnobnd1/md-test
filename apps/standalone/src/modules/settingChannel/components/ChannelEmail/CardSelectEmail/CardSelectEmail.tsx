@@ -7,7 +7,7 @@ import {
 } from "@moose-desk/repo";
 import EmailIntegrationRepository from "@moose-desk/repo/emailIntegration/EmailIntegrationRepository";
 import { Alert, Button, Card, FormInstance, Radio } from "antd";
-import {
+import React, {
   ForwardedRef,
   forwardRef,
   useCallback,
@@ -420,4 +420,4 @@ export const CardSelectEmail = forwardRef(
   }
 );
 
-export default CardSelectEmail;
+export default React.memo(CardSelectEmail);

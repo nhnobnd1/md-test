@@ -275,6 +275,20 @@ export const CardForwardEmail: FC<CardForwardEmailProps> = ({ formEmail }) => {
       checkVerifyEmail(formEmail.getFieldValue("supportEmail"));
     }
   }, [retrySenderCount, isVerifySender]);
+  const handlePressKey = (e: React.KeyboardEvent<HTMLFormElement>) => {
+    if (e.key === "Enter") {
+      form.submit();
+    }
+  };
+  const handleSend = () => {
+    sendVerifyEmail(formEmail.getFieldValue("supportEmail"));
+    setIsVerifySender("Pending");
+    setRetrySenderCount(2);
+    notification.success(`We have sent a verification email to the address ${formEmail.getFieldValue(
+      "supportEmail"
+    )}. 
+Please check your inbox and click on the link within to use this email for sending tickets`);
+  };
   return (
     <>
       {id ? (
@@ -310,15 +324,7 @@ export const CardForwardEmail: FC<CardForwardEmailProps> = ({ formEmail }) => {
                 <div className="flex gap-5 justify-center mt-2">
                   <Button
                     loading={isVerifySender === "Pending"}
-                    onClick={() => {
-                      sendVerifyEmail(formEmail.getFieldValue("supportEmail"));
-                      setIsVerifySender("Pending");
-                      setRetrySenderCount(2);
-                      notification.success(`We have sent a verification email to the address ${formEmail.getFieldValue(
-                        "supportEmail"
-                      )}. 
-Please check your inbox and click on the link within to use this email for sending tickets`);
-                    }}
+                    onClick={handleSend}
                     type="primary"
                   >
                     {isVerifySender === "Pending"
@@ -357,11 +363,7 @@ Please check your inbox and click on the link within to use this email for sendi
             onFinish={onFinish}
             scrollToFirstError
             initialValues={{ email: "" }}
-            onKeyPress={(e) => {
-              if (e.key === "Enter") {
-                form.submit();
-              }
-            }}
+            onKeyPress={handlePressKey}
           >
             {step === 0 && (
               <div className="flex flex-col items-center">
