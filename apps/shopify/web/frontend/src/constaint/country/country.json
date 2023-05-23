@@ -39,13 +39,13 @@
     "name": "Anguilla",
     "code": "AI",
     "continent": "Central America",
-    "phoneNumberPrefix": 1
+    "phoneNumberPrefix": 1264
   },
   {
     "name": "Antigua & Barbuda",
     "code": "AG",
     "continent": "Central America",
-    "phoneNumberPrefix": 1
+    "phoneNumberPrefix": 1268
   },
   {
     "name": "Argentina",
@@ -93,7 +93,7 @@
     "name": "Bahamas",
     "code": "BS",
     "continent": "Central America",
-    "phoneNumberPrefix": 1
+    "phoneNumberPrefix": 1242
   },
   {
     "name": "Bahrain",
@@ -111,7 +111,7 @@
     "name": "Barbados",
     "code": "BB",
     "continent": "Central America",
-    "phoneNumberPrefix": 1
+    "phoneNumberPrefix": 1246
   },
   {
     "name": "Belarus",
@@ -141,7 +141,7 @@
     "name": "Bermuda",
     "code": "BM",
     "continent": "Central America",
-    "phoneNumberPrefix": 1
+    "phoneNumberPrefix": 1441
   },
   {
     "name": "Bhutan",
@@ -183,7 +183,7 @@
     "name": "British Virgin Islands",
     "code": "VG",
     "continent": "Central America",
-    "phoneNumberPrefix": 1
+    "phoneNumberPrefix": 1284
   },
   {
     "name": "Brunei",
@@ -243,7 +243,7 @@
     "name": "Cayman Islands",
     "code": "KY",
     "continent": "Central America",
-    "phoneNumberPrefix": 1
+    "phoneNumberPrefix": 1345
   },
   {
     "name": "Central African Republic",
@@ -363,13 +363,13 @@
     "name": "Dominica",
     "code": "DM",
     "continent": "Central America",
-    "phoneNumberPrefix": 1
+    "phoneNumberPrefix": 1767
   },
   {
     "name": "Dominican Republic",
     "code": "DO",
     "continent": "Central America",
-    "phoneNumberPrefix": 1
+    "phoneNumberPrefix": 1809
   },
   {
     "name": "Ecuador",
@@ -519,7 +519,7 @@
     "name": "Grenada",
     "code": "GD",
     "continent": "Central America",
-    "phoneNumberPrefix": 1
+    "phoneNumberPrefix": 1473
   },
   {
     "name": "Guadeloupe",
@@ -537,7 +537,7 @@
     "name": "Guernsey",
     "code": "GG",
     "continent": "Europe",
-    "phoneNumberPrefix": 44
+    "phoneNumberPrefix": 441481
   },
   {
     "name": "Guinea",
@@ -615,7 +615,7 @@
     "name": "Isle of Man",
     "code": "IM",
     "continent": "Europe",
-    "phoneNumberPrefix": 44
+    "phoneNumberPrefix": 441624
   },
   {
     "name": "Israel",
@@ -633,7 +633,7 @@
     "name": "Jamaica",
     "code": "JM",
     "continent": "Central America",
-    "phoneNumberPrefix": 1
+    "phoneNumberPrefix": 1876
   },
   {
     "name": "Japan",
@@ -645,7 +645,7 @@
     "name": "Jersey",
     "code": "JE",
     "continent": "Europe",
-    "phoneNumberPrefix": 44
+    "phoneNumberPrefix": 441534
   },
   {
     "name": "Jordan",
@@ -757,7 +757,6 @@
   },
   {
     "name": "Malawi",
-    "code": "MW",
     "continent": "Africa",
     "phoneNumberPrefix": 265
   },
@@ -843,7 +842,7 @@
     "name": "Montserrat",
     "code": "MS",
     "continent": "Central America",
-    "phoneNumberPrefix": 1
+    "phoneNumberPrefix": 1664
   },
   {
     "name": "Morocco",
@@ -1095,7 +1094,7 @@
     "name": "Sint Maarten",
     "code": "SX",
     "continent": "Central America",
-    "phoneNumberPrefix": 1
+    "phoneNumberPrefix": 1721
   },
   {
     "name": "Slovakia",
@@ -1173,13 +1172,13 @@
     "name": "St. Kitts & Nevis",
     "code": "KN",
     "continent": "Central America",
-    "phoneNumberPrefix": 1
+    "phoneNumberPrefix": 1869
   },
   {
     "name": "St. Lucia",
     "code": "LC",
     "continent": "Central America",
-    "phoneNumberPrefix": 1
+    "phoneNumberPrefix": 1758
   },
   {
     "name": "St. Martin",
@@ -1197,7 +1196,7 @@
     "name": "St. Vincent & Grenadines",
     "code": "VC",
     "continent": "Central America",
-    "phoneNumberPrefix": 1
+    "phoneNumberPrefix": 1784
   },
   {
     "name": "Sudan",
@@ -1281,7 +1280,7 @@
     "name": "Trinidad & Tobago",
     "code": "TT",
     "continent": "Central America",
-    "phoneNumberPrefix": 1
+    "phoneNumberPrefix": 1868
   },
   {
     "name": "Tristan da Cunha",
@@ -1311,7 +1310,7 @@
     "name": "Turks & Caicos Islands",
     "code": "TC",
     "continent": "Central America",
-    "phoneNumberPrefix": 1
+    "phoneNumberPrefix": 1649
   },
   {
     "name": "Tuvalu",
@@ -1323,7 +1322,7 @@
     "name": "U.S. Outlying Islands",
     "code": "UM",
     "continent": "Central America",
-    "phoneNumberPrefix": 1
+    "phoneNumberPrefix": 1340
   },
   {
     "name": "Uganda",
