@@ -48,7 +48,7 @@ const BusinessHoursTab = ({
       </Card>
       <Form.Item
         name="businessHoursAutoReplyCode"
-        label=" Auto-Reply"
+        label="Auto-Reply"
         className="mb-0 mt-4"
         hidden={!!disabled}
       >
