@@ -36,16 +36,11 @@ const BusinessHours = () => {
   const [dataHolidays, setDataHolidays] = useState<Holidays[]>([]);
   const [dataBusinessHoursAutoReplyCode, setDataBusinessHoursAutoReplyCode] =
     useState("");
-  const [selected, setSelected] = useState(0);
   const { t } = useTranslation();
 
   const [form] = Form.useForm();
   const role = useRole();
   // const [disabled, setDisabled] = useState(false);
-  const handleTabChange = useCallback(
-    (selectedTabIndex) => setSelected(selectedTabIndex),
-    []
-  );
 
   // handle Data in tabs
   const handleChangeValues = useCallback((value) => {
@@ -196,7 +191,6 @@ const BusinessHours = () => {
                 ),
               },
             ]}
-            onChange={handleTabChange}
           />
         </Card>
         <Form.Item name="_id" hidden />

@@ -90,14 +90,6 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
     }
   }, [props.initialValues]);
 
-  const mailBoxType = useMemo(() => {
-    return form.getFieldValue("mailboxType");
-  }, [form.getFieldValue("mailboxType")]);
-
-  const mailSettingType = useMemo(() => {
-    return form.getFieldValue("mailSettingType");
-  }, [form.getFieldValue("mailSettingType")]);
-
   const initialValues = useMemo(() => {
     return props.initialValues
       ? {
