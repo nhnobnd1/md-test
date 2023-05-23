@@ -25,7 +25,7 @@ interface TextEditorProps extends Omit<IAllProps, "onChange" | "value"> {
 
 const TextEditorTicket = ({
   value,
-
+  onChange,
   form,
   files,
   setIsChanged,

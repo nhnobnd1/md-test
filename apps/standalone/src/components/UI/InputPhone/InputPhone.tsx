@@ -53,17 +53,13 @@ const InputPhone = ({
     }
   };
 
-  console.log(flagValue, valueSelect);
-
   const handleChangeValueSelect = (value: string) => {
     const getPhonePrefix = dataSelect.find((option) => option.code === value);
     setFlagValue(getPhonePrefix?.phonePrefix || "");
-    // console.log(getPhonePrefix, "getPhonePrefix");
     setValueSelect(value);
     if (valueField !== "") {
       onChange && onChange(`${getPhonePrefix?.phonePrefix}-${valueField}`);
     }
-    // console.log(flagValue, valueSelect);
   };
   // handle Effect
   useEffect(() => {
