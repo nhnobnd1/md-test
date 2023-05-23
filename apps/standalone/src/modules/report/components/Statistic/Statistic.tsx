@@ -14,7 +14,7 @@ export const Statistic = ({ data }: StatisticProps) => {
     { title: "Tickets Replied", value: data?.ticketRepliedCount },
     { title: "Tickets Closed", value: data?.ticketClosedCount },
     {
-      title: "First ResponseTime",
+      title: "First Response Time",
       value: convertSecondsToHoursMinutes(data?.avgFirstResponseTime || 0),
     },
     {
