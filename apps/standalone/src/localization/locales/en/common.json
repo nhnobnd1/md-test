@@ -82,7 +82,8 @@
     "enter_password": "Please enter your email address and we will send the instructions to reset your password",
     "notify_reset_one": "We have sent the instructions to your email address.",
     "notify_reset_two": "Please follow the instructions in order to reset your password.",
-    "reset_back": "Back to login page"
+    "reset_back": "Back to login page",
+    "email_not_exist": "We're sorry, the email address you entered does not exist in our system. Please double-check your email address"
   },
   "tickets": {
     "customer_name": "Customer Name",
