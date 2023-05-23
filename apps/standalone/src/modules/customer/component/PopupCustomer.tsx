@@ -31,7 +31,7 @@ export const PopupCustomer = ({
   const notification = useNotification();
   const { t } = useTranslation();
 
-  const { mutate: createCustomerMutate } = useMutation({
+  const { mutate: createCustomerMutate, isLoading: isCreating } = useMutation({
     mutationFn: (payload: any) => createCustomer(payload),
     onSuccess: async () => {
       await queryClient.invalidateQueries(QUERY_KEY.LIST_CUSTOMER);
@@ -44,7 +44,7 @@ export const PopupCustomer = ({
       notification.error(t("messages:error.create_customer"));
     },
   });
-  const { mutate: updateCustomerMutate } = useMutation({
+  const { mutate: updateCustomerMutate, isLoading: isUpdating } = useMutation({
     mutationFn: (payload: any) => updateCustomer(dataForm?._id || "", payload),
     onSuccess: async () => {
       await queryClient.invalidateQueries(QUERY_KEY.LIST_CUSTOMER);
@@ -129,7 +129,11 @@ export const PopupCustomer = ({
       footer={
         <Space>
           <Button onClick={onCancel}>Cancel</Button>
-          <Button type="primary" onClick={handleSubmit}>
+          <Button
+            type="primary"
+            onClick={handleSubmit}
+            loading={isUpdating || isCreating}
+          >
             Save
           </Button>
         </Space>
