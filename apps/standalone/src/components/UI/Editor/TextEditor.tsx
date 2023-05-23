@@ -12,6 +12,7 @@ interface TextEditorProps extends Omit<IAllProps, "onChange" | "value"> {
 const TextEditor = ({
   value,
   form,
+  onChange,
   setIsChanged,
   ...props
 }: TextEditorProps) => {
