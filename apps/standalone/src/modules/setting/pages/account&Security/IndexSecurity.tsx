@@ -11,7 +11,7 @@ import Enable2FAModal from "src/modules/setting/component/Security/Enable2FAModa
 import { rulesValidatePassword } from "src/regex";
 export default function IndexAccountManager() {
   const [status, setStatus] = useState(false);
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const message = useMessage();
   const notification = useNotification();

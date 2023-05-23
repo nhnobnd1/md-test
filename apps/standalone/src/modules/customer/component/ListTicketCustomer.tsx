@@ -35,7 +35,7 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
   const { subDomain } = useSubdomain();
   const { timezone } = useGlobalData(false, subDomain || "");
   const navigate = useNavigate();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [querySearch, setQuerySearch] = useState<string>("");
   const [filter, setFilter] = useState<ListTicketCustomerFilter>({
     limit,
@@ -71,7 +71,7 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
           return a.createdDatetime - b.createdDatetime;
         },
       },
-      render: (data: string, record: any) => (
+      render: (data: string) => (
         <div>
           {!!timezone &&
             dayjs
@@ -173,7 +173,7 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
           pagination={false}
           loading={isFetchingListTicket}
           onChange={handleChangeTable}
-          onRow={(record, _) => {
+          onRow={(record) => {
             return {
               onClick: () => handleClickRow(record),
             };

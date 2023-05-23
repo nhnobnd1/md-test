@@ -9,10 +9,8 @@ import { setSignInCallback } from "src/modules/settingChannel/redux/channelEmail
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
 import { useAppDispatch, useAppSelector } from "src/redux/hook";
 
-interface ChannelOutlookIntegrationProps {}
-
-const ChannelOutlookIntegration = (props: ChannelOutlookIntegrationProps) => {
-  const [searchParams, setSearchParams] = useSearchParams();
+const ChannelOutlookIntegration = () => {
+  const [searchParams] = useSearchParams();
   const [error, setError] = useState<{
     message: string;
   } | null>(null);

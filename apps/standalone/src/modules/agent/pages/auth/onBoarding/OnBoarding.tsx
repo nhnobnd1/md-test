@@ -21,10 +21,8 @@ import { SetPassword } from "src/modules/agent/components/SetPassword";
 import RoutePaths from "src/routes/paths";
 import "./OnBoarding.scss";
 
-interface OnBoardingProps {}
-
-export const OnBoarding = (props: OnBoardingProps) => {
-  const [searchParams, setSearchParams] = useSearchParams();
+export const OnBoarding = () => {
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [pageError, setIsPageErr] = useState({
     status: false,

@@ -33,7 +33,7 @@ export const StoreProviders = ({ children }: StoreProvidersProps) => {
   const [storeId, setStoreId] = useState<string>(getStoreId());
   const { getSubDomain } = useSubdomain();
   const notification = useNotification();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   useQuery({

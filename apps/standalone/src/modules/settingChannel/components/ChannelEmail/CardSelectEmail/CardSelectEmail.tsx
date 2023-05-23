@@ -20,7 +20,6 @@ import { catchError, map, of } from "rxjs";
 import Images from "src/assets/images";
 import { Form } from "src/components/UI/Form";
 import useMessage from "src/hooks/useMessage";
-import { useSubdomain } from "src/hooks/useSubdomain";
 import CardSettingExternalMail, {
   TypePort,
 } from "src/modules/settingChannel/components/ChannelEmail/CardSelectEmail/CardSettingExternalMail";
@@ -47,7 +46,6 @@ export const CardSelectEmail = forwardRef(
     { form, className, loggedServer, type }: CardSelectEmailProps,
     ref: ForwardedRef<CardSelectMailRefProperties>
   ) => {
-    const { getSubDomain } = useSubdomain();
     const dispatch = useAppDispatch();
     const message = useMessage();
     const { id } = useParams();
@@ -55,7 +53,7 @@ export const CardSelectEmail = forwardRef(
     const signCallback = useAppSelector(
       (state) => state.channelEmail.signInCallback
     );
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
 
     const { run: getEmailGoogleAuth } = useJob(
       (payload: GetEmailGoogleAuthRequest) => {
@@ -266,7 +264,7 @@ export const CardSelectEmail = forwardRef(
       resetConnectionSmtp,
     }));
 
-    const SettingUpMail = (props: any) => {
+    const SettingUpMail = () => {
       return (
         <>
           <div className="pb-6">

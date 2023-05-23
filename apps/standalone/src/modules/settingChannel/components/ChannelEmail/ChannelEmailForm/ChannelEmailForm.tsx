@@ -1,4 +1,4 @@
-import { useLocation, useMount, useParams, useToggle } from "@moose-desk/core";
+import { useMount, useParams, useToggle } from "@moose-desk/core";
 import {
   AccessType,
   MailBoxType,
@@ -52,7 +52,6 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
   const { toggle: updateForm } = useToggle();
   const { getSubDomain } = useSubdomain();
   const cardSelectMail = useRef<CardSelectMailRefProperties>(null);
-  const { state } = useLocation();
   const { id } = useParams();
   const [isLoggedServer, setIsLoggedServer] = useState<IsLoggedServer | null>(
     null
@@ -119,22 +118,6 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
   useMount(() => {
     updateForm();
   });
-
-  const isDisabledInput = useCallback(() => {
-    const signedEmailState =
-      mailBoxType === MailBoxType.GMAIL &&
-      isLoggedServer?.callBackName === "gmail";
-
-    const signedMicrosoftState =
-      mailBoxType === MailBoxType.OUTLOOK &&
-      isLoggedServer?.callBackName === "microsoft";
-
-    if (mailSettingType === MailBoxType.MOOSEDESK) {
-      return false;
-    } else {
-      return signedEmailState || signedMicrosoftState;
-    }
-  }, [mailBoxType, mailSettingType, signInCallback]);
 
   const handleFormChange = useCallback(
     (changedValue: any, values: any) => {

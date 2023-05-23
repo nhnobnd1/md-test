@@ -16,12 +16,8 @@ import {
   getTwoWeeksAfter,
   getTwoWeeksBefore,
 } from "src/modules/report/helper/convert";
-interface ByAgentPageProps {}
-enum DataAgent {
-  TOP_FIVE = 0,
-  LIST_AGENT = 1,
-}
-const ByAgentPage = (props: ByAgentPageProps) => {
+
+const ByAgentPage = () => {
   const [form] = Form.useForm();
   const { subDomain } = useSubdomain();
 

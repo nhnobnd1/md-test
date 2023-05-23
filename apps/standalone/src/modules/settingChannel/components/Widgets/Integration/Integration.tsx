@@ -31,7 +31,7 @@ export default function Integration({ idWidget }: IntegrationProps) {
   const data = useWidgetSetting((state) => state.widgetSetting);
   const { storeId } = useStore();
   const message = useMessage();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const scriptCode = useMemo(() => {
     if (!idWidget)

@@ -22,7 +22,6 @@ const AutoReplyTab = ({
   onChange,
   dataHolidays,
   dataBusinessHoursAutoReplyCode,
-  ...props
 }: AutoReplyTabProps) => {
   const notification = useNotification();
   const [isDetail, setIsDetail] = useState<boolean>(false);
@@ -32,7 +31,7 @@ const AutoReplyTab = ({
   const [valueTableAutoReply, setValueTableAutoReply] = useState<AutoReply[]>(
     []
   );
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const defaultFilter = () => ({
     page: 1,

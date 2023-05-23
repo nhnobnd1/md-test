@@ -3,13 +3,7 @@ import { useJob } from "@moose-desk/core";
 import { EmailIntegrationRepository } from "@moose-desk/repo";
 import { Button, Result, Spin, Typography } from "antd";
 import { FormInstance } from "antd/lib/form/Form";
-import React, {
-  Dispatch,
-  FC,
-  SetStateAction,
-  useEffect,
-  useState,
-} from "react";
+import React, { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import useMessage from "src/hooks/useMessage";
@@ -17,16 +11,14 @@ import useMessage from "src/hooks/useMessage";
 interface ContentWaitProps {
   email: string;
   formEmail: FormInstance<any>;
-  setStep: Dispatch<SetStateAction<number>>;
 }
-type Status = "Pending" | "Success" | "Fail";
 
 export const SenderVerifyStep: FC<ContentWaitProps> = React.memo(
-  ({ email, formEmail, setStep }) => {
+  ({ email, formEmail }) => {
     const [isVerifySender, setIsVerifySender] = useState("Pending");
     const [retrySenderCount, setRetrySenderCount] = useState(0);
     const message = useMessage();
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
 
     const { run: verifyFinish } = useJob((payload: string) => {
       return EmailIntegrationRepository()

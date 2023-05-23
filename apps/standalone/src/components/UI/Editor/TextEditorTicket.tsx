@@ -1,5 +1,5 @@
 import { CloudUploadOutlined, DeleteOutlined } from "@ant-design/icons";
-import { useJob, useLocation, useNavigate, useToggle } from "@moose-desk/core";
+import { useJob, useLocation, useToggle } from "@moose-desk/core";
 import { TicketRepository } from "@moose-desk/repo";
 import { Editor, IAllProps } from "@tinymce/tinymce-react";
 import { Button, FormInstance, Modal, Popover } from "antd";
@@ -25,8 +25,7 @@ interface TextEditorProps extends Omit<IAllProps, "onChange" | "value"> {
 
 const TextEditorTicket = ({
   value,
-  onChange,
-  error,
+
   form,
   files,
   setIsChanged,
@@ -45,18 +44,17 @@ const TextEditorTicket = ({
   const { state: modal, on: openModal, off: closeModal } = useToggle();
   const message = useMessage();
 
-  const handleEditorChange = (content: string, editor: any) => {
+  const handleEditorChange = (content: string) => {
     form?.setFieldValue("content", content);
 
     if (setIsChanged) {
       setIsChanged(content);
     }
   };
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const [myFiles, setMyFiles] = useState<any>([]);
   const location = useLocation();
-  const navigate = useNavigate();
 
   const [errorText, setErrorText] = useState("");
 

@@ -71,7 +71,7 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
     }));
   }, []);
   const [meta, setMeta] = useState<BaseMetaDataListResponse>();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const prevFilter = usePrevious<GetListTagRequest>(filterData);
 

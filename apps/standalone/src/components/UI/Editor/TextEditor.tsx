@@ -11,8 +11,6 @@ interface TextEditorProps extends Omit<IAllProps, "onChange" | "value"> {
 
 const TextEditor = ({
   value,
-  onChange,
-  error,
   form,
   setIsChanged,
   ...props
@@ -23,11 +21,7 @@ const TextEditor = ({
     editorRef.current = editor;
   }, []);
 
-  const handleChange = useCallback(() => {
-    onChange && onChange(editorRef.current?.getContent());
-  }, []);
-
-  const handleEditorChange = (content: string, editor: any) => {
+  const handleEditorChange = (content: string) => {
     // onChange && onChange(content);
     form?.setFieldValue("content", content);
 
@@ -77,7 +71,7 @@ const TextEditor = ({
                 if (input.files?.length) {
                   const file = input.files[0];
                   const reader = new FileReader();
-                  reader.onload = function (e) {
+                  reader.onload = function () {
                     const id = "blobid" + new Date().getTime();
                     const blobCache = editorRef.current?.editorUpload.blobCache;
 

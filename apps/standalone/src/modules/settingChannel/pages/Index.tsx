@@ -4,14 +4,10 @@ import { Header } from "src/components/UI/Header";
 import { ChannelTitle } from "src/constaint/SettingChannel";
 import CategoryChannel from "src/modules/settingChannel/components/CategoryChannel/CategoryChannel";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
-import EntypoSocialFacebook from "~icons/entypo-social/facebook";
-import MaterialSymbolsChat from "~icons/material-symbols/chat";
 import MdiEmailOpenOutline from "~icons/mdi/email-open-outline";
 import TablerCheckupList from "~icons/tabler/checkup-list";
 
-interface ChannelIndexPageProps {}
-
-const ChannelIndexPage = (props: ChannelIndexPageProps) => {
+const ChannelIndexPage = () => {
   const listCategory = useMemo<
     Array<{
       title: string;

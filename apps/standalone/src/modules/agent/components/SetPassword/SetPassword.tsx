@@ -24,7 +24,7 @@ export const SetPassword = ({
   const navigate = useNavigate();
   const message = useMessage();
   const notification = useNotification();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const { run: activeNewAgent } = useJob(
     (payload: ActiveNewAgentRequest) => {

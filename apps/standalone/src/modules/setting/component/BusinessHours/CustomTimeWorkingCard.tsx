@@ -18,7 +18,6 @@ const CustomTimeWorkingCard = ({
   value,
   onChange,
   disabled,
-  ...props
 }: RowCheckboxProps) => {
   const initialData = initialValueCustomHours.map((item) => ({
     day: item.day,

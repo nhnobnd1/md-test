@@ -5,7 +5,7 @@ import { defineConfig } from "vite";
 import eslintPlugin from "vite-plugin-eslint";
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
     eslintPlugin({
@@ -29,4 +29,7 @@ export default defineConfig({
     strictPort: true,
     port: 3580, // you can replace this port with any port
   },
-});
+  esbuild: {
+    drop: mode === "production" ? ["console", "debugger"] : [],
+  },
+}));

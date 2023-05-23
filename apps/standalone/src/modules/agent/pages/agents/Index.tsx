@@ -1,7 +1,6 @@
 import {
   useDebounceFn,
   useJob,
-  useNavigate,
   usePrevious,
   useToggle,
 } from "@moose-desk/core";
@@ -29,11 +28,8 @@ import { AgentFormValues } from "src/modules/agent/components/AgentForm";
 import { PopupAgent } from "src/modules/agent/components/PopupAgent";
 import { getStatusAgent } from "src/modules/agent/constant";
 
-interface AgentsIndexProps {}
-
-const AgentsIndex = (props: AgentsIndexProps) => {
+const AgentsIndex = () => {
   const [agents, setAgents] = useState<Agent[]>([]);
-  const navigate = useNavigate();
   const message = useMessage();
   const {
     state: popupAgent,
@@ -48,7 +44,7 @@ const AgentsIndex = (props: AgentsIndexProps) => {
     phoneNumber: "",
     role: Role.BasicAgent,
   });
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const defaultFilter: () => GetListAgentRequest = () => ({
     page: 1,
@@ -89,10 +85,6 @@ const AgentsIndex = (props: AgentsIndexProps) => {
     },
     { wait: 300 }
   );
-
-  const resetFilterData = useCallback(() => {
-    setFilterData(defaultFilter());
-  }, []);
 
   const getLabelRole = useCallback(
     (role: Role) => {

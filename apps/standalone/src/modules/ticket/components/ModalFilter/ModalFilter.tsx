@@ -23,7 +23,6 @@ interface ModalFilterProps extends ModalProps {
 const ModalFilter = ({
   tags,
   customers,
-  setTickets,
   closeFilterModal,
   handleResetModal,
   handleApply,

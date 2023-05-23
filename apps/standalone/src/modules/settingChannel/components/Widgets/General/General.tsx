@@ -5,7 +5,7 @@ import { UIWidget } from "src/modules/settingChannel/components/Widgets/UIWidget
 import useUpdateSave from "src/modules/settingChannel/store/saveUpdateWidget";
 import useWidgetSetting from "src/modules/settingChannel/store/useSetting";
 
-export default function General({ data: dataProps }: any) {
+export default function General() {
   const [form] = Form.useForm();
   const data = useWidgetSetting((state) => state.widgetSetting);
   const initialFormValues = {
@@ -20,7 +20,7 @@ export default function General({ data: dataProps }: any) {
   );
   const [allowCaptcha, setAllowCaptcha] = useState(data.allowCaptcha);
   const [allowAttach, setAllowAttach] = useState(data.allowAttach);
-  const [loading, setLoading] = useState(data.isFormContact);
+  const [loading] = useState(data.isFormContact);
   const cancelState = useUpdateSave((state) => state.cancel);
 
   const onFinish = (values: any) => {

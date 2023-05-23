@@ -28,7 +28,7 @@ export const PopupTag = ({
   const message = useMessage();
   const notification = useNotification();
   const [isUpdate, setIsUpdate] = useState(false);
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const { run: createTag } = useJob(
     (dataSubmit: any) => {
