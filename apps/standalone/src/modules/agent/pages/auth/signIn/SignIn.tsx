@@ -201,7 +201,7 @@ export const SignIn = () => {
                       ...rulesValidatePassword,
                     ]}
                   >
-                    <Input.Password />
+                    <Input.Password autoComplete="on" />
                   </Form.Item>
 
                   <div className="text-center">
