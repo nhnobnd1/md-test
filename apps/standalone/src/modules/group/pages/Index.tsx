@@ -236,7 +236,7 @@ const GroupIndexPage: PageComponent<GroupIndexPageProps> = () => {
                     isAdmin
                       ? {
                           title:
-                            "Are you sure that you want to permanently remove this group",
+                            "Are you sure that you want to permanently remove this group?",
                           description:
                             "This group will be removed permanently. This action cannot be undone",
                         }

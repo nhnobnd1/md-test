@@ -196,7 +196,7 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
           closeModalDelete();
         }}
         closePopupAction={false}
-        title="Are you sure that you want to permanently remove this group."
+        title="Are you sure that you want to permanently remove this group?"
         content="This group will be removed permanently. This action cannot be undone."
         loadingConfirm={loadingDelete}
         deleteAction={() => idDelete && deleteGroup(idDelete)}
