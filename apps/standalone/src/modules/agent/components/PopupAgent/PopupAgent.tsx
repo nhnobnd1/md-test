@@ -55,7 +55,6 @@ export const PopupAgent = ({
     initValue: 300,
     key: dataForm?._id ?? "",
   });
-
   const agentStatus = useMemo<{
     label: string;
     color: string;
@@ -93,7 +92,8 @@ export const PopupAgent = ({
 
   useEffect(() => {
     if (data?._id) {
-      getDetailAgentApi(data._id);
+      // getDetailAgentApi(data._id);
+      setDataForm(data);
     } else {
       setDataForm(undefined);
     }
