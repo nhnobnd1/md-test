@@ -20,11 +20,19 @@ import {
   priorityOptions,
   statusOptions,
 } from "@moose-desk/repo";
-import { Select as AntSelect, Button, Card, Divider, List } from "antd";
+import {
+  Select as AntSelect,
+  Button,
+  Card,
+  Divider,
+  FloatButton,
+  List,
+} from "antd";
 import moment from "moment";
 import VirtualList from "rc-virtual-list";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { ArrowDownOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import TextEditorTicket from "src/components/UI/Editor/TextEditorTicket";
@@ -80,6 +88,7 @@ const DetailTicketForm = () => {
   const navigate = useNavigate();
   const [ticket, setTicket] = useState<Ticket>();
   const [form] = Form.useForm();
+  const endPage = useRef<any>(null);
   const [conversationList, setConversationList] = useState<Conversation[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [enableCC, setEnableCC] = useState(false);
@@ -706,7 +715,7 @@ const DetailTicketForm = () => {
                           }}
                         />
                       </Form.Item>
-                      <div className="flex justify-end">
+                      <div ref={endPage} className="flex justify-end">
                         {form.getFieldValue("status") ===
                         StatusTicket.RESOLVED ? (
                           <>
@@ -752,6 +761,13 @@ const DetailTicketForm = () => {
                 <></>
               )}
             </Card>
+            <FloatButton
+              icon={<ArrowDownOutlined />}
+              type="primary"
+              onClick={() => {
+                endPage.current.scrollIntoView({ behavior: "smooth" });
+              }}
+            />
           </Form>
         </div>
       )}
