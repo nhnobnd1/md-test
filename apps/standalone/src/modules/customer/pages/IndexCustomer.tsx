@@ -26,6 +26,13 @@ import { QUERY_KEY } from "src/modules/customer/helper/constant";
 
 interface CustomerIndexPageProps {}
 
+const defaultFilter: () => GetListCustomerRequest = () => ({
+  page: 1,
+  limit: env.DEFAULT_PAGE_SIZE,
+  query: "",
+  sortBy: undefined,
+  sortOrder: undefined,
+});
 const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
   const message = useMessage();
   const notification = useNotification();
@@ -53,14 +60,6 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
   const [querySearch, setQuerySearch] = useState<string>("");
   const debounceValue: string = useDebounce(querySearch, 500);
 
-  const defaultFilter: () => GetListCustomerRequest = () => ({
-    page: 1,
-    limit: env.DEFAULT_PAGE_SIZE,
-    query: "",
-    sortBy: undefined,
-    sortOrder: undefined,
-  });
-
   const [filterData, setFilterData] =
     useState<BaseListCustomerRequest>(defaultFilter);
   const { t } = useTranslation();
@@ -68,11 +67,11 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
   const {
     data: listCustomer,
     refetch: refetchListCustomer,
-    isFetching: isFetchingListCustomer,
+    isLoading: isFetchingListCustomer,
   } = useQuery({
     queryKey: [QUERY_KEY.LIST_CUSTOMER, filterData, debounceValue],
     queryFn: () => getListCustomer({ ...filterData, query: debounceValue }),
-    keepPreviousData: true,
+    // keepPreviousData: true,
     onError: () => {
       message.error(t("messages:error.get_customer"));
     },
