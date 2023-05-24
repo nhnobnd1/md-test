@@ -66,9 +66,11 @@ const InputPhone = ({
     if (!value) return;
     const flag = value?.slice(0, value?.indexOf("-"));
     const phoneValue = value?.slice(value?.indexOf("-") + 1);
-    const getDataByFlag = optionSelectPhone.find(
-      (country) => country.phonePrefix === flag
-    );
+    const getDataByFlag = optionSelectPhone.find((country) => {
+      return valueSelect
+        ? country.phonePrefix === flag && country.code === valueSelect
+        : country.phonePrefix === flag;
+    });
     setValueSelect(getDataByFlag?.code || "");
     setFlagValue(flag);
     setValueField(phoneValue);
@@ -112,7 +114,7 @@ const InputPhone = ({
         autoComplete="tel"
         value={valueField}
         disabled={disabled}
-        onChange={(value) => handleChangeValueInput(value)}
+        onChange={handleChangeValueInput}
       />
     </div>
   );
