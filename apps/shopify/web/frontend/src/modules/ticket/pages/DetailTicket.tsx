@@ -52,6 +52,8 @@ import { RowMessage } from "src/modules/ticket/components/RowMessage/RowMessage"
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import * as Yup from "yup";
 import FaMailReply from "~icons/fa/mail-reply";
+import DownIcon from "~icons/material-symbols/arrow-downward";
+import UpIcon from "~icons/material-symbols/arrow-upward";
 import BackIcon from "~icons/mingcute/back-2-fill";
 import styles from "./style.module.scss";
 
@@ -98,6 +100,10 @@ const DetailTicket = (props: DetailTicketProps) => {
   const [emailIntegrationOptions, setEmailIntegrationOptions] = useState<any>(
     []
   );
+  const endPageRef = useRef<any>(null);
+  const topPageRef = useRef<any>(null);
+  const [isEndPage, setIsEndPage] = useState(false);
+
   // detail ticket
   const [agents, setAgents] = useState<Agent[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
@@ -545,7 +551,7 @@ const DetailTicket = (props: DetailTicketProps) => {
         <Layout>
           <Layout.Section>
             <LegacyCard sectioned>
-              <div className={visible ? "d-flex" : ""}>
+              <div ref={topPageRef} className={visible ? "d-flex" : ""}>
                 <div className={visible ? styles.wrapContent : ""}>
                   <div className={styles.wrapSearchToggle}>
                     {_renderButtonToggle()}
@@ -697,7 +703,7 @@ const DetailTicket = (props: DetailTicketProps) => {
                         />
                       </FormItem>
                     </div>
-                    <div className="flex justify-end mt-5">
+                    <div ref={endPageRef} className="flex justify-end mt-5">
                       {formRef.current?.values.status ===
                       StatusTicket.RESOLVED ? (
                         <>
@@ -749,6 +755,33 @@ const DetailTicket = (props: DetailTicketProps) => {
             </LegacyCard>
           </Layout.Section>
         </Layout>
+        <div className="flex justify-end  sticky bottom-10 right-10  ">
+          <Button
+            primary
+            icon={
+              <div className="flex ">
+                <span className="">
+                  {isEndPage ? (
+                    <UpIcon fontSize={14} />
+                  ) : (
+                    <DownIcon fontSize={14} />
+                  )}
+                </span>
+              </div>
+            }
+            // onClick={handleReopenTicket}
+            onClick={() => {
+              if (!isEndPage) {
+                endPageRef.current.scrollIntoView({ behavior: "smooth" });
+                setIsEndPage(true);
+              } else {
+                topPageRef.current.scrollIntoView({ behavior: "smooth" });
+                setIsEndPage(false);
+              }
+            }}
+            disabled={false}
+          ></Button>
+        </div>
       </Page>
     </>
   );

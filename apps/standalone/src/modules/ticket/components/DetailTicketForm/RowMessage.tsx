@@ -52,6 +52,7 @@ const parseHtml = (html: string): React.ReactNode => {
 export const RowMessage: FC<RowMessageProps> = ({ item }) => {
   const [toggleQuote, setToggleQuote] = useState(true);
   const iframeRef = useRef<any>(null);
+  const iframeRefQuote = useRef<any>(null);
 
   const sortChat = useMemo(() => {
     if (item.chat.match(regexContent)) {
@@ -67,6 +68,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
     return "";
   }, [item.chat]);
   const checkHeight = useHtmlStringHeight(sortChat);
+  const checkHeightQuote = useHtmlStringHeight(quote);
 
   const disableQuote = useMemo(() => {
     if (quote === "") {
@@ -74,12 +76,18 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
     }
     return false;
   }, [quote]);
-
   useEffect(() => {
     const objectElement = iframeRef.current;
 
     objectElement.style.height = `${checkHeight}px`;
   }, [sortChat, checkHeight]);
+  useEffect(() => {
+    if (!toggleQuote) {
+      const objectElement = iframeRefQuote.current;
+
+      objectElement.style.height = `${checkHeightQuote}px`;
+    }
+  }, [quote, checkHeightQuote, toggleQuote]);
   return (
     <div className="">
       <div className=" items-center gap-3">
@@ -178,10 +186,17 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
         <></>
       ) : (
         <div>
-          <div
+          {/* <div
             className="text-black mb-2 text-scroll mt-3"
             dangerouslySetInnerHTML={{ __html: quote }}
-          />
+          /> */}
+          <div ref={iframeRefQuote}>
+            <object
+              className="w-full h-full border-none mt-5"
+              data={`data:text/html;charset=utf-8,${encodeURIComponent(quote)}`}
+              type="text/html"
+            ></object>
+          </div>
         </div>
       )}
 
