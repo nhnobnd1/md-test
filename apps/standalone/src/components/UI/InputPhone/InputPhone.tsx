@@ -89,7 +89,7 @@ const InputPhone = ({
         {optionSelectPhone.map((item) => (
           <Select.Option
             value={item.code}
-            label={`${item.phonePrefix}${item.countryName}`}
+            label={`+${item.phonePrefix}${item.countryName}`}
             key={item.code}
           >
             <div>

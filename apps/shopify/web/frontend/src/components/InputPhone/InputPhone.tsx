@@ -124,13 +124,13 @@ const InputPhone = (props: InputPhoneProps) => {
   // handle Effect
 
   useEffect(() => {
-    const listFilter = optionSelectPhone.filter(
-      (option) =>
-        option.countryName
-          .toLocaleLowerCase()
-          .match(filterValue.toLocaleLowerCase()) ||
-        option.phonePrefix.match(filterValue)
-    );
+    const listFilter = optionSelectPhone.filter((option) => {
+      const phone = "+" + option.phonePrefix;
+      return (
+        option.countryName.toLowerCase().includes(filterValue.toLowerCase()) ||
+        phone.includes(filterValue)
+      );
+    });
     setDataSelect(listFilter);
   }, [filterValue]);
 
