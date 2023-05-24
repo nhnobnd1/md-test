@@ -1,5 +1,5 @@
 import { InputProps } from "antd";
-import { memo, useCallback, useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { InputTextNumber } from "src/components/UI/InputTextNumber";
 import Select from "src/components/UI/Select/Select";
 import constaint from "src/constaint";
@@ -27,20 +27,17 @@ const InputPhone = ({
 }: InputPhoneProps) => {
   // init data
   // filter
-  const [dataSelect, setDataSelect] = useState(optionSelectPhone);
-  const [filterValue, setFilterValue] = useState("");
+  // const [dataSelect, setDataSelect] = useState(optionSelectPhone);
+  // const [filterValue, setFilterValue] = useState("");
 
-  const handleSearchChange = useCallback(
-    (value: string) => {
-      setFilterValue(value);
-      const filterRegex = new RegExp(value.toLowerCase(), "g");
-      const optionFilter = optionSelectPhone.filter((option) =>
-        option.countryName.toLowerCase().match(filterRegex)
-      );
-      setDataSelect(optionFilter);
-    },
-    [optionSelectPhone]
-  );
+  // const handleSearchChange = useCallback(
+  //   (value: string) => {
+  //     // setFilterValue(value);
+  //     // const filterRegex = new RegExp(value.toLowerCase(), "g");
+  //     // setDataSelect(optionFilter);
+  //   },
+  //   [optionSelectPhone]
+  // );
 
   // set flag and value
   const [flagValue, setFlagValue] = useState<string>("84");
@@ -54,7 +51,9 @@ const InputPhone = ({
   };
 
   const handleChangeValueSelect = (value: string) => {
-    const getPhonePrefix = dataSelect.find((option) => option.code === value);
+    const getPhonePrefix = optionSelectPhone.find(
+      (option) => option.code === value
+    );
     setFlagValue(getPhonePrefix?.phonePrefix || "");
     setValueSelect(value);
     if (valueField !== "") {
@@ -78,18 +77,19 @@ const InputPhone = ({
     <div className="flex flex-wrap gap-3">
       <Select
         showSearch
-        searchValue={filterValue}
-        onSearch={(value) => handleSearchChange(value)}
+        // searchValue={filterValue}
+        // onSearch={handleSearchChange}
         value={valueSelect}
-        onChange={(value) => handleChangeValueSelect(value)}
+        onChange={handleChangeValueSelect}
         disabled={disabled}
         style={{ maxWidth: "300px", maxHeight: "330px" }}
         className="flex"
+        optionFilterProp="children"
       >
-        {dataSelect.map((item) => (
+        {optionSelectPhone.map((item) => (
           <Select.Option
             value={item.code}
-            label={item.countryName}
+            label={`${item.phonePrefix}${item.countryName}`}
             key={item.code}
           >
             <div>
