@@ -12,6 +12,7 @@ import parse, { Element } from "html-react-parser";
 import fileDownload from "js-file-download";
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ImageZoom from "src/components/TextEditorTicket/ImageZoom";
+import useHtmlStringHeight from "src/hooks/useHtmlStringHeight";
 import { ChatItem } from "src/modules/ticket/pages/DetailTicket";
 import CollapseIcon from "~icons/material-symbols/arrow-right";
 import DownloadIcon from "~icons/material-symbols/cloud-download-outline-rounded";
@@ -64,6 +65,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
     }
     return item.chat;
   }, [item.chat]);
+  const checkHeight = useHtmlStringHeight(sortChat);
   const quote = useMemo(() => {
     if (item.chat.match(regexQuote)) {
       return item.chat.match(regexQuote)?.[0] as string;
@@ -93,9 +95,9 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
 
   useEffect(() => {
     const objectElement = iframeRef.current;
-    const height = sortChat.length > 100 ? 400 : 150;
-    objectElement.style.height = `${height}px`;
-  }, [sortChat]);
+
+    objectElement.style.height = `${checkHeight}px`;
+  }, [sortChat, checkHeight]);
 
   return (
     <div className="">
