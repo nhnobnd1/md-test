@@ -227,13 +227,14 @@ export default function Appearance() {
                 alignItems: "center",
                 marginTop: 20,
                 marginBottom: 10,
+                gap: 20,
               }}
             >
               <span>Widget Position</span>
               <Button
                 onClick={handleUpdateWidgetPosition}
                 type={targetButton === 1 ? "primary" : "default"}
-                style={{ marginLeft: 20, marginRight: 20 }}
+                // style={{ marginLeft: 20, marginRight: 20 }}
                 size="large"
                 icon={
                   <ArrowDownLeft
@@ -247,7 +248,7 @@ export default function Appearance() {
               <Button
                 onClick={handleUpdateSetting}
                 type={targetButton === 2 ? "primary" : "default"}
-                style={{ marginLeft: 20, marginRight: 20 }}
+                // style={{ marginLeft: 20, marginRight: 20 }}
                 size="large"
                 icon={
                   <ArrowDownRight
