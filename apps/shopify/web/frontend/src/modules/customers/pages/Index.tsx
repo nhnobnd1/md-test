@@ -20,6 +20,7 @@ import {
   Icon,
   IndexTable,
   Link,
+  Loading,
   Page,
   Popover,
   Stack,
@@ -291,6 +292,7 @@ export default function CustomerIndexPage() {
               </Stack.Item>
             </Stack>
           </div>
+          {loadCustomer && <Loading />}
           <IndexTable
             resourceName={resourceName}
             itemCount={customers.length}
