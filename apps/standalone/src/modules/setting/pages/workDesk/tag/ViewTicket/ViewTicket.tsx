@@ -76,7 +76,7 @@ const ViewTicket: FC<ViewTicketProps> = () => {
     },
     [setFilterData]
   ) as TableProps<any>["onChange"];
-  const { run: getTicketByTagApi } = useJob(
+  const { run: getTicketByTagApi, processing } = useJob(
     (id: string, params: BaseListTagRequest) => {
       return TagRepository()
         .getListTicket(id, params)
@@ -91,9 +91,6 @@ const ViewTicket: FC<ViewTicketProps> = () => {
             }
           })
         );
-    },
-    {
-      showLoading: true,
     }
   );
   const { run: deleteForceApi } = useJob((id: string) => {
@@ -121,8 +118,6 @@ const ViewTicket: FC<ViewTicketProps> = () => {
     }
   }, [filterData, id]);
 
-  console.log({ tickets });
-
   return (
     <>
       <Header back title={`Tickets tagged with "${id}"`}>
@@ -140,7 +135,12 @@ const ViewTicket: FC<ViewTicketProps> = () => {
           <></>
         )}
       </div>
-      <Table className="mt-10" dataSource={tickets} onChange={onChangeTable}>
+      <Table
+        className="mt-10"
+        dataSource={tickets}
+        onChange={onChangeTable}
+        loading={processing}
+      >
         <Table.Column
           key="subject"
           title="Title"

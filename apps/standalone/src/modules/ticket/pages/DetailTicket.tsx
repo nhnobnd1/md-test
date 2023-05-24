@@ -34,7 +34,11 @@ const DetailTicket = () => {
   }, []);
   return (
     <section className={classNames(styles.container, { "d-flex": visible })}>
-      <div className={styles.wrapContent}>
+      <div
+        className={classNames(styles.wrapContent, {
+          [styles.maxWidthContent]: visible,
+        })}
+      >
         <div className={styles.wrapSearchToggle}>{_renderButtonToggle()}</div>
         <DetailTicketForm />
       </div>
