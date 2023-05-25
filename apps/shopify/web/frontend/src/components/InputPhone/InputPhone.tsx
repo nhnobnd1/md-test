@@ -27,7 +27,7 @@ const InputPhone = (props: InputPhoneProps) => {
   // init data
 
   const optionSelectPhone = constaint.countryList.country.map(
-    (item: Country) => {
+    (item: Country | any) => {
       return {
         countryName: item.name,
         code: item.code,
@@ -66,42 +66,43 @@ const InputPhone = (props: InputPhoneProps) => {
     code: string;
     phonePrefix: string;
     flagImage: string;
-  }>();
+  }>({
+    countryName: "Vietnam",
+    code: "VN",
+    phonePrefix: "84",
+    flagImage: `https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/VN.svg`,
+  });
   const [valueSelect, setValueSelect] = useState(["VN"]);
   const [valueField, setValueField] = useState("");
-  const handleChangeValueInput = useCallback(
-    (value: string) => {
-      setValueField(value);
-      if (value === "") {
-        props.onChange && props.onChange("");
-      } else {
-        props.onChange && props.onChange(`${flagValue}-${value}`);
-      }
-    },
-    [flagValue]
-  );
-
-  const handleChangeValueSelect = useCallback(
-    (value: string[]) => {
-      setValueSelect([...value]);
-
-      if (valueField !== "") {
-        props.onChange &&
-          props.onChange(
-            `${
-              dataSelect.find((option) => option.code === value[0])?.phonePrefix
-            }-${valueField}`
-          );
-      } else {
-        props.onChange && props.onChange("");
-      }
-      togglePopoverSelect();
-    },
-    [valueField]
-  );
-
+  const handleChangeValueInput = (value: string) => {
+    setValueField(value);
+    if (value === "") {
+      props.onChange && props.onChange("");
+    } else {
+      props.onChange && props.onChange(`${flagValue}-${value}`);
+    }
+  };
+  const handleChangeValueSelect = (value: string[]) => {
+    setValueSelect([...value]);
+    setValueInput(
+      (dataSelect as any).find((option: any) => option.code === value[0])
+    );
+    setFlagValue(
+      dataSelect.find((option) => option.code === value[0])?.phonePrefix || "84"
+    );
+    if (valueField !== "") {
+      props.onChange &&
+        props.onChange(
+          `${
+            dataSelect.find((option) => option.code === value[0])?.phonePrefix
+          }-${valueField}`
+        );
+    } else {
+      props.onChange && props.onChange("");
+    }
+    togglePopoverSelect();
+  };
   // popup modal select
-
   const [popoverSelect, setPopoverSelect] = useState(false);
   const togglePopoverSelect = useCallback(
     () => setPopoverSelect((popoverSelect) => !popoverSelect),
@@ -134,29 +135,30 @@ const InputPhone = (props: InputPhoneProps) => {
     setDataSelect(listFilter);
   }, [filterValue]);
 
-  useEffect(() => {
-    setValueInput(dataSelect.find((option) => option.code === valueSelect[0]));
-    setFlagValue(
-      dataSelect.find((option) => option.code === valueSelect[0])
-        ?.phonePrefix || "84"
-    );
-  }, [valueSelect]);
+  // useEffect(() => {
+  //   const x = dataSelect.find((option) => option.code === valueSelect[0]);
+  //   console.log(x, "x");
+  //   setValueInput(x);
+  //   setFlagValue(
+  //     dataSelect.find((option) => option.code === valueSelect[0])
+  //       ?.phonePrefix || "84"
+  //   );
+  // }, [valueSelect]);
 
   useEffect(() => {
-    if (props.value) {
-      const flag = props.value?.slice(0, props.value?.indexOf("-")) || "84";
-      setFlagValue(flag);
-      setValueSelect([
-        dataSelect.find((option) => option.phonePrefix === flag)?.code || "VN",
-      ]);
-      setValueField(props.value?.slice(props.value?.indexOf("-") + 1) || "");
-    } else {
-      setFlagValue("84");
-      setValueSelect(["VN"]);
-      setValueField("");
-    }
-  }, [props.value]);
-
+    if (!props.value) return;
+    const flag = props.value?.slice(0, props.value?.indexOf("-"));
+    const getDataByFlag: any = optionSelectPhone.find((country) => {
+      return valueSelect[0]
+        ? country.phonePrefix === flag && country.code === valueSelect[0]
+        : country.phonePrefix === flag;
+    });
+    setValueInput(getDataByFlag);
+    setValueSelect([getDataByFlag?.code]);
+    setFlagValue(flag);
+    setValueField(props.value?.slice(props.value?.indexOf("-") + 1) || "");
+  }, [props.value, valueField]);
+  // dep valueField for re render one more time
   useEffect(() => {
     if (props.label) {
       setLabelHidden(false);
