@@ -1,5 +1,5 @@
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
-import { DataTable, EmptySearchResult } from "@shopify/polaris";
+import { DataTable, EmptySearchResult, Loading } from "@shopify/polaris";
 import { memo, useMemo, useState } from "react";
 import { MDTextField } from "src/components/Input/TextFieldPassword/MDTextField";
 import { Pagination } from "src/components/Pagination";
@@ -94,6 +94,7 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
           onChange={handleSearchInput}
         />
       </div>
+      {isFetching && <Loading />}
       {!memoChartData?.length ? (
         <div className="mt-3">
           <EmptySearchResult

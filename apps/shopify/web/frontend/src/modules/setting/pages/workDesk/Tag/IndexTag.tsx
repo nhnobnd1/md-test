@@ -17,6 +17,7 @@ import {
   Icon,
   IndexTable,
   Link,
+  Loading,
   Page,
   Popover,
   Stack,
@@ -308,6 +309,7 @@ export default function TagIndexPage() {
               </Stack.Item>
             </Stack>
           </div>
+          {loadTag && <Loading />}
           <IndexTable
             resourceName={resourceName}
             itemCount={tags.length}

@@ -1,7 +1,7 @@
 import { useJob, useNavigate } from "@moose-desk/core";
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import { CustomerRepository } from "@moose-desk/repo";
-import { EmptySearchResult, IndexTable } from "@shopify/polaris";
+import { EmptySearchResult, IndexTable, Loading } from "@shopify/polaris";
 import classNames from "classnames";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
@@ -172,6 +172,7 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
         />
       </div>
       <section className={styles.wrapTable}>
+        {processing && <Loading />}
         <IndexTable
           selectable={false}
           resourceName={resourceName}

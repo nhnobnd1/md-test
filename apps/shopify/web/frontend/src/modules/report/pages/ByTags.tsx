@@ -1,7 +1,13 @@
 import { PageComponent } from "@moose-desk/core";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
-import { Card, DataTable, EmptySearchResult, Page } from "@shopify/polaris";
+import {
+  Card,
+  DataTable,
+  EmptySearchResult,
+  Loading,
+  Page,
+} from "@shopify/polaris";
 import dayjs from "dayjs";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "react-query";
@@ -202,6 +208,7 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
             </div>
           </div>
           <div>
+            {isFetching && <Loading />}
             {!memoChartData?.length ? (
               <div className="mt-3">
                 <EmptySearchResult

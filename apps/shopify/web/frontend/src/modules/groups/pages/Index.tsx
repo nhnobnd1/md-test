@@ -22,6 +22,7 @@ import {
   Filters,
   IndexTable,
   Link,
+  Loading,
   Page,
   Text,
 } from "@shopify/polaris";
@@ -223,6 +224,7 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
             </div>
           </Filters>
         </div>
+        {loadingList && <Loading />}
         <IndexTable
           resourceName={{ singular: "group", plural: "groups" }}
           itemCount={groups.length}

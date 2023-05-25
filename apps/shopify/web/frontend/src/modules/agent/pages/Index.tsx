@@ -16,6 +16,7 @@ import {
   Filters,
   IndexTable,
   Link,
+  Loading,
   Page,
   Text,
   useIndexResourceState,
@@ -198,6 +199,7 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
             </div>
           </Filters>
         </div>
+        {loadingList && <Loading />}
         <IndexTable
           resourceName={{ singular: "agent", plural: "agents" }}
           itemCount={agents.length}
