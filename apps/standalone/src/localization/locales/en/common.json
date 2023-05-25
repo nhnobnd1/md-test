@@ -45,19 +45,37 @@
     "update": "Update {name}",
     "send_invitation_email": "Send Invitation Email",
     "deactivate": "Deactivate",
-    "close": "Close {name}"
+    "close": "Close {name}",
+    "reopen": "Reopen",
+    "reply": "Reply",
+    "reply_close": "Reply & Close Ticket",
+    "next": "Next",
+    "back": "Back",
+    "go": "Go"
   },
   "placeholder": {
     "from": "Form",
     "to": "To",
     "default": "Enter {name}",
     "search": "search {name}",
-    "date": "Select date"
+    "date": "Select date",
+    "search_ticket": "Search ticket",
+    "assign_to": "Assign to",
+    "set_status": "Set Status",
+    "cc_email": "Type CC email...",
+    "bcc_email": "Type BCC email...",
+    "search_agent": "Search agents",
+    "search_email_integration": "Search email integration",
+    "add_tags": "Add tags",
+    "subject": "Subject",
+    "input_message": "Please input your message here......"
   },
   "regex": {
     "required": "{name} is required!",
     "email": "The email address is not valid",
     "phone": "The input phone number is not valid",
+    "message_ticket": "Please input your message!",
+
     "password_rules": "The password must be 8 characters long and must be a combination of uppercase letters, lowercase letters, numbers, and symbols"
   },
   "roles": {
@@ -207,6 +225,175 @@
     "off_note": "You will login normally with your email and password without any additional verifycation steps. This method will have higher risks for any security breach.",
     "use_email": "Use Email Address",
     "use_email_note": "When you login from a new computer or browser, system will send an OTP code to your email to verify your identity.",
-    "use_external_app":"Use external authenticator application."
+    "use_external_app": "Use external authenticator application."
+  },
+  "settings": {
+    "general": {
+      "business_hours": {
+        "business_hours": {
+          "business_hours": "Business Hours",
+          "timezone": "Time zone:",
+          "holidays": "Holidays",
+          "auto_reply": "Auto-reply",
+          "fulltime_support": "Fulltime support",
+          "24x7": "24hrs x7 days",
+          "custom": "Custom Business hours",
+          "custom_detail": "Setup custom working hours for your agents",
+          "working_hours": "Working Hours",
+          "sunday": "Sunday",
+          "monday": "Monday",
+          "tuesday": "Tuesday",
+          "wednesday": "Wednesday",
+          "thursday": "Thursday",
+          "friday": "Friday",
+          "saturday": "Saturday"
+        },
+        "holidays": {
+          "name": "Name",
+          "date": "Date",
+          "auto_reply": "Auto-Reply",
+          "action": "Action",
+          "add_holiday": "Add a holiday..."
+        },
+        "auto_reply": {
+          "name": "Name",
+          "date_create": "Date Create",
+          "action": "Action",
+          "add_auto_reply": "Add an auto-reply..."
+        }
+      },
+      "channels": {
+        "configure": "Configure",
+        "email_configuration": {
+          "index": {
+            "email_configuration": "Email Configuration",
+            "email_configuration_description": "Configure the email addresses used for communication with your customers in MooseDesk",
+            "add_new_email_address": "Add new Email Address",
+            "name": "Name",
+            "email_address": "Email address",
+            "action": "Action",
+            "delete_email_configuration_title": "Are you sure that you want to permanently remove this email connection.",
+            "delete_email_configuration_description": "This email will be removed permanently. You can no longer use this email for sending or receiving emails for MooseDesk's support tickets"
+          },
+          "create": {
+            "use_your_email": "Use your email",
+            "use_moosedesk_email_address": "User Moosedesk email address",
+            "email_forwarding": "Email Forwarding",
+            "mail_server": "Mail Server",
+            "forwarding_details": "Forwarding_details",
+            "mask_as_primary_email": "Mask as Primary Email",
+            "enter_current_support_address": "Enter current support address",
+            "setup_email_forwarding": "Setup email forwarding"
+          }
+        },
+        "web_form": {
+          "web_form_description": "Configure the web form widget that can be added to your website",
+          "web_form": "Web form",
+          "general": "General",
+          "appearance": "Appearance",
+          "integration": "Integration",
+          "title_text": "Title text",
+          "widget_header": "Widget header",
+          "contact_form": "Contact form",
+          "form_title": "Form title",
+          "button_text": "Button text",
+          "confirmation_message": "Confirmation message",
+          "allow_attachments": "Allow Attachments",
+          "enable_captcha_verification": "Enable captcha verification",
+          "your_name": "Your name",
+          "email_address": "Email address",
+          "subject": "Subject",
+          "description": "Description",
+          "attachment": "Attachment",
+          "drag_drop_file": "Drag&drop or Click to add your files",
+          "widget_appearance": "Widget Appearance",
+          "header_background_color": "Header Background Color",
+          "text_color": "Text Color",
+          "widget_position": "Widget Position",
+          "bottom_left": "Bottom Left",
+          "bottom_right": "Bottom Right",
+          "offset_from_bottom": "Offset from bottom (pixels)",
+          "offset_from_left_right": "Offset from left/right (pixels)",
+          "button_appearance": "Button Appearance",
+          "background_color": "Background Color",
+          "embed_html_code": "Embed HTML Code",
+          "copy": "Copy"
+        }
+      }
+    }
+  },
+  "ticket": {
+    "index": {
+      "reset": "Reset",
+      "apply": "Apply",
+      "ticket": "Ticket",
+      "create_new_ticket": "Create New Ticket",
+      "filters": "Filters",
+      "pending": "Pending",
+      "open": "Open",
+      "resolved": "Resolved",
+      "highest": "Highest",
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low",
+      "lowest": "Lowest",
+      "export": "Export",
+      "public_view": "Public Views",
+      "new": "New",
+      "trash": "Trash",
+      "ticket_title": "Ticket title",
+      "customer": "Customer",
+      "tags": "Tags",
+      "priority": "Priority",
+      "last_update": "Last Update",
+      "action_delete_title": "Are you sure that you want to remove this ticket?",
+      "action_delete_description": "This Ticket will be removed to Trash. You can no longer access to this ticket.",
+      "action_delete_text": "Remove"
+    },
+    "create": {
+      "new_ticket": "New Ticket",
+      "email": "Email",
+      "cc": "CC",
+      "bcc": "BCC",
+      "cc_bcc": "CC/BCC",
+      "assignee": "Assignee",
+      "from": "From",
+      "priority": "Priority",
+      "tags": "Tags",
+      "subject": "Subject"
+    },
+    "detail": {
+      "reported_via_email": "reported via email",
+      "reported_via_widget": "reported via widget",
+      "agent_created": "agent created",
+      "title": "Ticket {ticketId}: {subject}",
+      "status": "Status",
+      "priority": "Priority",
+      "tags": "Tags",
+      "from": "From",
+      "to": "To"
+    },
+    "trash": {
+      "multiple": {
+        "restore_title": "Are you sure that you want to restore these tickets",
+        "restore_content": "These tickets will be moved back to the Ticket list. You can continue working with them.",
+        "restore_text_icon": "Restore Selected",
+        "restore_text_action": "Restore",
+
+        "delete_title": "Are you sure that you want to permanently remove these tickets?",
+        "delete_content": "These tickets will be remove permanently. This action cannot be undone.",
+        "delete_text_icon": "Deleted Selected",
+        "delete_text_action": "Remove"
+      },
+      "single": {
+        "restore_title": "Are you sure that you want to restore this ticket",
+        "restore_content": "This ticket will be moved back to the Ticket list. You can continue working with it.",
+        "restore_text_action": "Restore",
+
+        "delete_title": "Are you sure that you want to permanently remove this ticket?",
+        "delete_content": "This ticket will be remove permanently. This action cannot be undone.",
+        "delete_text_action": "Remove "
+      }
+    }
   }
 }

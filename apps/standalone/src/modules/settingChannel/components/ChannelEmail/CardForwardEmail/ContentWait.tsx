@@ -21,7 +21,7 @@ export const ContentWait: FC<ContentWaitProps> = ({
       : `${getSubDomain()}@email.moosedesk.net`;
   return (
     <div className="flex flex-col items-center">
-      <Typography.Title level={3}>Set up email forwarding</Typography.Title>
+      <Typography.Title level={3}>Setup email forwarding</Typography.Title>
       <div className="flex justify-start items-start gap-2 w-[340px]">
         <div>
           <Step1Icon fontSize={20} />

@@ -1,4 +1,27 @@
 {
+  "layout": {
+    "home": "Home",
+    "tickets": "Tickets",
+    "customers": "Customers",
+    "reporting": "Reporting",
+    "overview": "Overview",
+    "by_agent": "By Agents",
+    "by_tag": "By Tags",
+    "settings": "Settings",
+    "logout": "Logout",
+    "people": "People",
+    "agents": "Agents",
+    "groups": "Groups",
+    "account_security": "Account & Security",
+    "profile": "Profile",
+    "Security": "Security",
+    "access_manage": "Access Manage",
+    "work_desk": "Workdesk",
+    "tags": "Tags",
+    "general_settings": "General Settings",
+    "channels": "Channels",
+    "business_hours": "Business Hours"
+  },
   "table": {
     "empty": "Sorry!, There is no records matched with your search criteria.",
     "action": "Action",
@@ -7,23 +30,34 @@
     "records_per_page": "Records per page",
     "click_sort_asc": "Click to sort ascending",
     "click_sort_desc": "Click to sort descending",
-    "click_cancel_sort": "Click to cancel sort"
+    "click_cancel_sort": "Click to cancel sort",
+    "delete_question": "Are you sure to delete {name}",
+    "no_data": "No data"
   },
   "button": {
     "login": "Login",
     "add": "Add {name}",
     "cancel": "Cancel",
+    "delete": "Delete",
     "save": "Save",
     "submit": "Submit",
+    "remove": "Remove",
+    "update": "Update {name}",
+    "send_invitation_email": "Send Invitation Email",
+    "deactivate": "Deactivate",
+    "close": "Close {name}",
     "reopen": "Reopen",
     "reply": "Reply",
-    "reply_close": "Reply & Close Ticket"
+    "reply_close": "Reply & Close Ticket",
+    "next": "Next",
+    "back": "Back",
+    "go": "Go"
   },
   "placeholder": {
     "from": "Form",
     "to": "To",
     "default": "Enter {name}",
-    "search": "search",
+    "search": "search {name}",
     "date": "Select date",
     "search_ticket": "Search ticket",
     "assign_to": "Assign to",
@@ -41,7 +75,13 @@
     "email": "The email address is not valid",
     "phone": "The input phone number is not valid",
     "message_ticket": "Please input your message!",
+
     "password_rules": "The password must be 8 characters long and must be a combination of uppercase letters, lowercase letters, numbers, and symbols"
+  },
+  "roles": {
+    "super_admin": "Super Admin",
+    "agent_leader": "Agent Leader",
+    "basic_leader": "Basic Leader"
   },
   "login": {
     "our_solutions": "Our Solutions",
@@ -60,10 +100,33 @@
     "enter_password": "Please enter your email address and we will send the instructions to reset your password",
     "notify_reset_one": "We have sent the instructions to your email address.",
     "notify_reset_two": "Please follow the instructions in order to reset your password.",
-    "reset_back": "Back to login page"
+    "reset_back": "Back to login page",
+    "email_not_exist": "We're sorry, the email address you entered does not exist in our system. Please double-check your email address"
+  },
+  "tickets": {
+    "customer_name": "Customer Name",
+    "email_address": "Email Address",
+    "phone_number": "Phone Numbers",
+    "amount_spent": "Amount spent",
+    "total_orders": "Total Orders",
+    "back": "Back",
+    "order": "Order #",
+    "order_status": "Order Status",
+    "date": "Date",
+    "tax": "Tax",
+    "shipping": "Shipping",
+    "total": "Total",
+    "paid": "paid",
+    "address": "Address",
+    "tracking_url": "Tracking Url",
+    "tracking_number": "Tracking Number",
+    "empty": "empty",
+    "refund": "Refund",
+    "refunded": "Refunded",
+    "reason": "Reason"
   },
   "customers": {
-    "page_header": "Customer",
+    "customer": "Customer",
     "add_customer": "Add customer",
     "name": "Customer name",
     "email_address": "Email address",
@@ -80,12 +143,11 @@
     "status": "Status",
     "priority": "Priority",
     "assignee": "Assignee",
-    "add_popup_title": "New customer profile"
+    "add_popup_title": "New customer profile",
+    "delete_popup_title": "Are you sure that you want to remove this customer?",
+    "delete_popup_warning": "This customer will be removed permanently. All customer's tickets and his profile will no longer accessible."
   },
   "reporting": {
-    "overview": "Overview",
-    "by_agent": "By Agents",
-    "by_tag": "By Tags",
     "page_header": "Reporting",
     "ticket_assigned": "Ticket Assigned",
     "ticket_created": "Ticket Created",
@@ -108,38 +170,155 @@
     "tag": "Tag",
     "total_ticket": "Total Tickets"
   },
+  "people": {
+    "agent": "Agent",
+    "group": "Group",
+    "account": "Account",
+    "email": "Email",
+    "roles": "Roles",
+    "status": "Status",
+    "availability": "2FA Availability",
+    "add_agent_title": "Create new agent",
+    "user_role": "User role",
+    "group_name": "Group name",
+    "agent_count": "Number of Agents",
+    "new_group": "New Group",
+    "name": "Name",
+    "description": "Description",
+    "group_member": "Group members",
+    "add_group_member": "add group member",
+    "add_member": "Add members",
+    "delete_group_title": "Are you sure that you want to permanently remove this group?",
+    "delete_group_warning": "This group will be removed permanently. This action cannot be undone"
+  },
+  "work_desk": {
+    "work_desk": "Workdesk",
+    "manage_tags": "Manage tags",
+    "name": "Name",
+    "of_ticket": "# of tickets",
+    "last_updated": "Last updated",
+    "tag_name": "Tag name",
+    "description": "Description",
+    "add_tag_title": "Add tag profile",
+    "delete_tag_question": "Are you sure that you want to premanently remove this Tag?",
+    "delete_tag_warning": "This Tag will be removed permanently. This actions can not be undone. All tickets which are using this tag will get affected too."
+  },
+  "account_security": {
+    "account_security": "Account & Security",
+    "profile": "Profile",
+    "phone": "Phone No.",
+    "change_password": "Change Password",
+    "current_password": "Current Password",
+    "new_password": "New Password",
+    "confirm_password": "Confirm New Password",
+    "2fa_auth": "Two-Factor Authentication",
+    "active": "Active",
+    "inactive": "InActive",
+    "enable": "Enable 2FA",
+    "change_2fa": "Change 2FA Method",
+    "auto_join": "Auto-Join Settings",
+    "allow_with_email": "Allow users with email addresses from an approved email domain to use the sign up link.",
+    "email_domain": "Email domain",
+    "2fa_toggle": "Toggle 2FA for all users.",
+    "enable_2fa_title": "Enable Two-Factor Authentication",
+    "off": "Off",
+    "off_note": "You will login normally with your email and password without any additional verifycation steps. This method will have higher risks for any security breach.",
+    "use_email": "Use Email Address",
+    "use_email_note": "When you login from a new computer or browser, system will send an OTP code to your email to verify your identity.",
+    "use_external_app": "Use external authenticator application."
+  },
   "settings": {
     "general": {
       "business_hours": {
-        "business_hours": "Business Hours",
-        "timezone": "Time zone:",
-        "holidays": "Holidays",
-        "auto_reply": "Auto-reply",
-        "fulltime_support": "Fulltime support",
-        "24x7": "24hrs x7 days",
-        "custom": "Custom Business hours",
-        "custom_detail": "Setup custom working hours for your agents",
-        "working_hours": "Working Hours",
-        "sunday": "Sunday",
-        "monday": "Monday",
-        "tuesday": "Tuesday",
-        "wednesday": "Wednesday",
-        "thursday": "Thursday",
-        "friday": "Friday",
-        "saturday": "Saturday"
+        "business_hours": {
+          "business_hours": "Business Hours",
+          "timezone": "Time zone:",
+          "holidays": "Holidays",
+          "auto_reply": "Auto-reply",
+          "fulltime_support": "Fulltime support",
+          "24x7": "24hrs x7 days",
+          "custom": "Custom Business hours",
+          "custom_detail": "Setup custom working hours for your agents",
+          "working_hours": "Working Hours",
+          "sunday": "Sunday",
+          "monday": "Monday",
+          "tuesday": "Tuesday",
+          "wednesday": "Wednesday",
+          "thursday": "Thursday",
+          "friday": "Friday",
+          "saturday": "Saturday"
+        },
+        "holidays": {
+          "name": "Name",
+          "date": "Date",
+          "auto_reply": "Auto-Reply",
+          "action": "Action",
+          "add_holiday": "Add a holiday..."
+        },
+        "auto_reply": {
+          "name": "Name",
+          "date_create": "Date Create",
+          "action": "Action",
+          "add_auto_reply": "Add an auto-reply..."
+        }
       },
-      "holidays": {
-        "name": "Name",
-        "date": "Date",
-        "auto_reply": "Auto-Reply",
-        "action": "Action",
-        "add_holiday": "Add a holiday..."
-      },
-      "auto_reply": {
-        "name": "Name",
-        "date_create": "Date Create",
-        "action": "Action",
-        "add_auto_reply": "Add an auto-reply..."
+      "channels": {
+        "configure": "Configure",
+        "email_configuration": {
+          "index": {
+            "email_configuration": "Email Configuration",
+            "email_configuration_description": "Configure the email addresses used for communication with your customers in MooseDesk",
+            "add_new_email_address": "Add new Email Address",
+            "name": "Name",
+            "email_address": "Email address",
+            "action": "Action",
+            "delete_email_configuration_title": "Are you sure that you want to permanently remove this email connection.",
+            "delete_email_configuration_description": "This email will be removed permanently. You can no longer use this email for sending or receiving emails for MooseDesk's support tickets"
+          },
+          "create": {
+            "use_your_email": "Use your email",
+            "use_moosedesk_email_address": "User Moosedesk email address",
+            "email_forwarding": "Email Forwarding",
+            "mail_server": "Mail Server",
+            "forwarding_details": "Forwarding_details",
+            "mask_as_primary_email": "Mask as Primary Email",
+            "enter_current_support_address": "Enter current support address",
+            "setup_email_forwarding": "Setup email forwarding"
+          }
+        },
+        "web_form": {
+          "web_form_description": "Configure the web form widget that can be added to your website",
+          "web_form": "Web form",
+          "general": "General",
+          "appearance": "Appearance",
+          "integration": "Integration",
+          "title_text": "Title text",
+          "widget_header": "Widget header",
+          "contact_form": "Contact form",
+          "form_title": "Form title",
+          "button_text": "Button text",
+          "confirmation_message": "Confirmation message",
+          "allow_attachments": "Allow Attachments",
+          "enable_captcha_verification": "Enable captcha verification",
+          "your_name": "Your name",
+          "email_address": "Email address",
+          "subject": "Subject",
+          "description": "Description",
+          "attachment": "Attachment",
+          "drag_drop_file": "Drag&drop or Click to add your files",
+          "widget_appearance": "Widget Appearance",
+          "header_background_color": "Header Background Color",
+          "text_color": "Text Color",
+          "widget_position": "Widget Position",
+          "bottom_left": "Bottom Left",
+          "bottom_right": "Bottom Right",
+          "offset_from_bottom": "Offset from bottom (pixels)",
+          "offset_from_left_right": "Offset from left/right (pixels)",
+          "button_appearance": "Button Appearance",
+          "background_color": "Background Color",
+          "embed_html_code": "Embed HTML Code",
+          "copy": "Copy"
+        }
       }
     }
   },

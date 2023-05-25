@@ -67,7 +67,7 @@ export const StepGoogleCode: FC<ContentWaitProps> = React.memo(
         ) : (
           <>
             <Typography.Title level={3}>
-              Set up email forwarding
+              Setup email forwarding
             </Typography.Title>
             <div className="flex justify-start items-start gap-2 w-[340px]">
               <div>
