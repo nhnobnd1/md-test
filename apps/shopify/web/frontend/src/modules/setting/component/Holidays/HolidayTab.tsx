@@ -56,7 +56,6 @@ const HolidayTab = ({
     index: number;
   }>();
   const day = new Date();
-  console.log({ valueTableHolidays });
   const rowMarkup = useMemo(() => {
     return valueTableHolidays.map((value, index) => (
       <IndexTable.Row id={value.name} key={value.name} position={index}>

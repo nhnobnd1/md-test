@@ -11,7 +11,13 @@ import {
   GroupMembers,
   UserGroupRepository,
 } from "@moose-desk/repo";
-import { EmptySearchResult, Filters, IndexTable, Text } from "@shopify/polaris";
+import {
+  EmptySearchResult,
+  Filters,
+  IndexTable,
+  Loading,
+  Text,
+} from "@shopify/polaris";
 import { uniqBy } from "lodash-es";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { map } from "rxjs";
@@ -308,6 +314,7 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
           </div>
         </Filters>
       </div>
+      {loadingGetList && <Loading />}
       <IndexTable
         loading={loadingGetList}
         itemCount={groupMembersTable.length}

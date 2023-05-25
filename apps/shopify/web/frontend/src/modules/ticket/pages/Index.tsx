@@ -37,6 +37,7 @@ import {
   Filters,
   IndexTable,
   LegacyCard,
+  Loading,
   Page,
   Text,
   useIndexResourceState,
@@ -61,10 +62,10 @@ import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import UilImport from "~icons/uil/import";
 
 import { useTranslation } from "react-i18next";
+import useGlobalData from "src/hooks/useGlobalData";
+import { useSubdomain } from "src/hooks/useSubdomain";
 import { ExportTicketPdf } from "src/modules/ticket/components/ExportTicketPdf";
 import "./ListTicket.scss";
-import { useSubdomain } from "src/hooks/useSubdomain";
-import useGlobalData from "src/hooks/useGlobalData";
 
 interface TicketIndexPageProps {}
 export interface FilterObject {
@@ -710,6 +711,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
             />
           </div>
           <div className="col-span-4">
+            {loadingList && <Loading />}
             <IndexTable
               resourceName={{ singular: "ticket", plural: "tickets" }}
               itemCount={tickets?.length}
