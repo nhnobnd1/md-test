@@ -103,7 +103,7 @@ const ModalAutoReply = ({
                 init={{
                   toolbar:
                     "undo redo blocks fontfamily fontsize bold italic underline strikethrough link image media table mergetags addcomment showcomments spellcheckdialog a11ycheck typography align lineheight ",
-                  setup: () => {},
+                  // setup: () => {},
                 }}
               />
             </Form.Item>

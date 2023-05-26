@@ -15,7 +15,6 @@ import { map } from "rxjs";
 import Images from "src/assets/images";
 import { Loading } from "src/components/Loading";
 import Breadcrumb from "src/components/UI/Breadcrums/Breadcrumb";
-import TextEditor from "src/components/UI/Editor/TextEditor";
 import useAuth from "src/hooks/useAuth";
 import { usePermission } from "src/hooks/usePerrmisson";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
@@ -422,9 +421,6 @@ export const AppLayout = () => {
           </Layout.Content>
         </div>
       </Layout>
-      <div className="hidden">
-        <TextEditor />
-      </div>
     </Layout>
   );
 };

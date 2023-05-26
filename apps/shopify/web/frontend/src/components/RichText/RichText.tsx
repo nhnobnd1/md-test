@@ -95,6 +95,15 @@ export const RichText = ({
             }
           },
           statusbar: false,
+          setup: (editor) => {
+            editor.on("init", (ed) => {
+              ed.target.editorCommands.execCommand(
+                "fontName",
+                false,
+                "Helvetica"
+              );
+            });
+          },
 
           paste_data_images: true,
           ...props.init,

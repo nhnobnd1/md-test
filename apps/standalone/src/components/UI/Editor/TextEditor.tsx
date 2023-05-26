@@ -90,6 +90,15 @@ const TextEditor = ({
               input.click();
             }
           },
+          setup: (editor) => {
+            editor.on("init", (ed) => {
+              ed.target.editorCommands.execCommand(
+                "fontName",
+                false,
+                "Helvetica"
+              );
+            });
+          },
           statusbar: false,
           paste_data_images: true,
           ...props.init,

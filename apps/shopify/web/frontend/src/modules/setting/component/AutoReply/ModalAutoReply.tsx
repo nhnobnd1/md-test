@@ -101,47 +101,6 @@ const ModalAutoReply = ({
                   init={{
                     toolbar:
                       "undo redo blocks fontfamily fontsize bold italic underline strikethrough link image media table mergetags addcomment showcomments spellcheckdialog a11ycheck typography align lineheight",
-                    setup: function (editor) {
-                      /* Helper functions */
-                      const toDateHtml = (date: string) => {
-                        return date;
-                      };
-                      // editor.ui.registry.addMenuButton("selectTypeAutoReply", {
-                      //   text: "Holiday name",
-                      //   fetch: (callback: any) => {
-                      //     const items = [
-                      //       {
-                      //         type: "menuitem",
-                      //         text: "Holiday Date",
-                      //         onAction: () => {
-                      //           editor.insertContent(
-                      //             toDateHtml("{{holiday.date}}")
-                      //           );
-                      //         },
-                      //       },
-                      //       {
-                      //         type: "menuitem",
-                      //         text: "Business Hours",
-                      //         onAction: () => {
-                      //           editor.insertContent(
-                      //             toDateHtml("{{businesscalendar.hours}}")
-                      //           );
-                      //         },
-                      //       },
-                      //       {
-                      //         type: "menuitem",
-                      //         text: "Business Date",
-                      //         onAction: () => {
-                      //           editor.insertContent(
-                      //             toDateHtml("{{businesscalendar.date}}")
-                      //           );
-                      //         },
-                      //       },
-                      //     ];
-                      //     callback(items);
-                      //   },
-                      // });
-                    },
                   }}
                 />
               </FormItem>

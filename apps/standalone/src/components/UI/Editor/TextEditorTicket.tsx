@@ -282,6 +282,13 @@ const TextEditorTicket = ({
                   openModal();
                 },
               });
+              editor.on("init", (ed) => {
+                ed.target.editorCommands.execCommand(
+                  "fontName",
+                  false,
+                  "Helvetica"
+                );
+              });
             },
             statusbar: false,
             paste_data_images: true,
