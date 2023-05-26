@@ -9,6 +9,7 @@ import { AccountRepository, Env } from "@moose-desk/repo";
 import * as Sentry from "@sentry/react";
 import { Suspense, lazy } from "react";
 import ReactDOM from "react-dom";
+import ReactGA from "react-ga4";
 import { QueryClient, QueryClientProvider } from "react-query";
 import ErrorBoundary from "src/ErrorBoundary";
 import { Loading } from "src/components/Loading";
@@ -31,6 +32,7 @@ const queryClient = new QueryClient({
     },
   },
 });
+ReactGA.initialize(env.TRACKING_ID);
 Sentry.init({
   dsn: "https://583717573a5a4876bbe73c53b1ba80ed@o4505248145670144.ingest.sentry.io/4505248146718720",
   integrations: [new Sentry.BrowserTracing(), new Sentry.Replay()],
