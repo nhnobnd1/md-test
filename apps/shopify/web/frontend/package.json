@@ -21,6 +21,7 @@
   "dependencies": {
     "@react-pdf/renderer": "^3.1.9",
     "@reduxjs/toolkit": "^1.9.3",
+    "@sentry/react": "^7.53.1",
     "@shopify/app-bridge": "^3.1.0",
     "@shopify/app-bridge-react": "^3.1.0",
     "@shopify/app-bridge-utils": "^3.1.0",

@@ -17,6 +17,7 @@
     "@moose-desk/repo": "*",
     "@react-pdf/renderer": "^3.1.8",
     "@reduxjs/toolkit": "^1.9.2",
+    "@sentry/react": "^7.53.1",
     "@svgr/core": "^6.5.1",
     "@tinymce/tinymce-react": "^4.3.0",
     "@types/react-google-recaptcha": "^2.1.5",
