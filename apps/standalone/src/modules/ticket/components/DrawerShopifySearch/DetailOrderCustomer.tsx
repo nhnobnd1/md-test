@@ -1,8 +1,4 @@
-import {
-  ArrowLeftOutlined,
-  RocketOutlined,
-  UndoOutlined,
-} from "@ant-design/icons";
+import { RocketOutlined, UndoOutlined } from "@ant-design/icons";
 import { formatTimeDDMMYY } from "@moose-desk/core/helper/format";
 import Link from "antd/es/typography/Link";
 import classNames from "classnames";
@@ -11,10 +7,10 @@ import { Table } from "src/components/UI/Table";
 import styles from "./styles.module.scss";
 
 interface IProps {
-  onBack: () => void;
+  // onBack: () => void;
   dataOrder: any;
 }
-export const DetailOrderCustomer = memo(({ onBack, dataOrder }: IProps) => {
+export const DetailOrderCustomer = memo(({ dataOrder }: IProps) => {
   const unit = dataOrder?.currency;
   const countShippingPrice = () => {
     return (
@@ -236,9 +232,9 @@ export const DetailOrderCustomer = memo(({ onBack, dataOrder }: IProps) => {
   };
   return (
     <section className={styles.detailContainer}>
-      <div className={styles.back} onClick={onBack}>
+      {/* <div className={styles.back} onClick={onBack}>
         <ArrowLeftOutlined /> <span className={styles.backTitle}>Back</span>
-      </div>
+      </div> */}
       <div className={styles.content}>
         <div className={styles.overview}>{_renderListBlock()}</div>
         <div className={styles.tableItemOrder}>
