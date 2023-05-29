@@ -1,11 +1,10 @@
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
-import { IndexTable } from "@shopify/polaris";
-import React, { useCallback, useImperativeHandle, useState } from "react";
+import React, { useImperativeHandle, useState } from "react";
 import { useQuery } from "react-query";
 import useSaveDataGlobal from "src/hooks/useSaveDataGlobal";
 // import { Table } from "src/components/UI/Table";
 import { getDetailShopifyCustomer } from "src/modules/ticket/api/api";
-import { DetailOrderCustomer } from "src/modules/ticket/components/DrawerShopifySearch/DetailOrderCustomer";
+import CollapseDetailOrder from "src/modules/ticket/components/DrawerShopifySearch/CollapseDetailOrder";
 // import ListShopifyCustomerRes from "src/modules/ticket/helper/interface";
 import styles from "./styles.module.scss";
 interface IProps {
@@ -13,7 +12,7 @@ interface IProps {
 }
 const ResultShopifySearch = React.forwardRef(({ id }: IProps, ref) => {
   const { setDataSaved } = useSaveDataGlobal();
-  const [dataOrder, setDataOrder] = useState<any>();
+  const [activePanel, setActivePanel] = useState<number>(999);
   const { data: resultData, isLoading } = useQuery({
     queryKey: [QUERY_KEY.CUSTOMER_SHOPIFY, id],
     queryFn: () => getDetailShopifyCustomer(String(id)),
@@ -59,19 +58,21 @@ const ResultShopifySearch = React.forwardRef(({ id }: IProps, ref) => {
     () => {
       return {
         clearDataOrder() {
-          setDataOrder(undefined);
+          // setDataOrder(undefined);
         },
       };
     },
     []
   );
-
-  const handleClickRow = (record: any) => {
-    setDataOrder(record);
+  const handleClickPanel = (panelIndex: number) => {
+    setActivePanel(panelIndex);
   };
-  const handleBack = useCallback(() => {
-    setDataOrder(undefined);
-  }, []);
+  // const handleClickRow = (record: any) => {
+  //   setDataOrder(record);
+  // };
+  // const handleBack = useCallback(() => {
+  //   setDataOrder(undefined);
+  // }, []);
   const _renderInfoCustomer = () => {
     return isLoading ? (
       <div>Loading Customer ...</div>
@@ -88,37 +89,44 @@ const ResultShopifySearch = React.forwardRef(({ id }: IProps, ref) => {
       </div>
     );
   };
-  const rowMarkup = convertDataTable?.map((item: any, index: number) => (
-    <IndexTable.Row id={item?.id} key={index} position={index}>
-      <IndexTable.Cell>
-        <div className="pointer" onClick={() => handleClickRow(item)}>
-          Order{item?.name}
-        </div>
-      </IndexTable.Cell>
-      <IndexTable.Cell>
-        <div className="pointer" onClick={() => handleClickRow(item)}>
-          {item?.total}
-          {item?.currency}
-        </div>
-      </IndexTable.Cell>
-    </IndexTable.Row>
-  ));
+  // const rowMarkup = convertDataTable?.map((item: any, index: number) => (
+  //   <IndexTable.Row id={item?.id} key={index} position={index}>
+  //     <IndexTable.Cell>
+  //       <div className="pointer" onClick={() => handleClickRow(item)}>
+  //         Order{item?.name}
+  //       </div>
+  //     </IndexTable.Cell>
+  //     <IndexTable.Cell>
+  //       <div className="pointer" onClick={() => handleClickRow(item)}>
+  //         {item?.total}
+  //         {item?.currency}
+  //       </div>
+  //     </IndexTable.Cell>
+  //   </IndexTable.Row>
+  // ));
   const _renderTableOrDetailOrder = () => {
-    return dataOrder?.name ? (
-      <DetailOrderCustomer onBack={handleBack} dataOrder={dataOrder} />
-    ) : (
-      <IndexTable
-        selectable={false}
-        //       resourceName={const resourceName = {
-        //   singular: 'order',
-        //   plural: 'orders',
-        // };}
-        headings={[{ title: "" }, { title: "" }]}
-        itemCount={convertDataTable?.length || 10}
-      >
-        {rowMarkup}
-      </IndexTable>
+    return (
+      <div>
+        {convertDataTable?.map((order: any, index: number) => (
+          <CollapseDetailOrder key={index} order={order} uniqueIndex={index} />
+        ))}
+      </div>
     );
+    // return dataOrder?.name ? (
+    //   <DetailOrderCustomer onBack={handleBack} dataOrder={dataOrder} />
+    // ) : (
+    //   <IndexTable
+    //     selectable={false}
+    //     //       resourceName={const resourceName = {
+    //     //   singular: 'order',
+    //     //   plural: 'orders',
+    //     // };}
+    //     headings={[{ title: "" }, { title: "" }]}
+    //     itemCount={convertDataTable?.length || 10}
+    //   >
+    //     {rowMarkup}
+    //   </IndexTable>
+    // );
   };
   const _renderListOrder = () => {
     return isLoading ? (
