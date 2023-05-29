@@ -1,13 +1,9 @@
+import { CaretRightOutlined } from "@ant-design/icons";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import useSaveDataGlobal from "@moose-desk/core/hooks/useSaveDataGlobal";
-import React, {
-  useCallback,
-  useImperativeHandle,
-  useMemo,
-  useState,
-} from "react";
+import { Collapse } from "antd";
+import React, { useImperativeHandle, useMemo } from "react";
 import { useQuery } from "react-query";
-import { Table } from "src/components/UI/Table";
 import { getDetailShopifyCustomer } from "src/modules/ticket/api/api";
 import { DetailOrderCustomer } from "src/modules/ticket/components/DrawerShopifySearch/DetailOrderCustomer";
 import ListShopifyCustomerRes from "src/modules/ticket/helper/interface";
@@ -15,9 +11,9 @@ import styles from "./styles.module.scss";
 interface IProps {
   id: number;
 }
+const { Panel } = Collapse;
 const ResultShopifySearch = React.forwardRef(({ id }: IProps, ref) => {
   const { setDataSaved } = useSaveDataGlobal();
-  const [dataOrder, setDataOrder] = useState<any>();
   const { data: resultData, isLoading } = useQuery({
     queryKey: [QUERY_KEY.CUSTOMER_SHOPIFY, id],
     queryFn: () => getDetailShopifyCustomer(String(id)),
@@ -65,38 +61,11 @@ const ResultShopifySearch = React.forwardRef(({ id }: IProps, ref) => {
     ref,
     () => {
       return {
-        clearDataOrder() {
-          setDataOrder(undefined);
-        },
+        clearDataOrder() {},
       };
     },
     []
   );
-  const handleClickRow = (record: any) => {
-    setDataOrder(record);
-  };
-  const handleBack = useCallback(() => {
-    setDataOrder(undefined);
-  }, []);
-  const columns = [
-    {
-      title: "",
-      dataIndex: "name",
-      width: "50%",
-      render: (nameOrder: string) => <div>Order{nameOrder}</div>,
-    },
-    {
-      title: "",
-      dataIndex: "total",
-      width: "50%",
-      render: (price: string, record: any) => (
-        <div>
-          {price}
-          {record?.currency}
-        </div>
-      ),
-    },
-  ];
   const _renderInfoCustomer = () => {
     return isLoading ? (
       <div>Loading Customer ...</div>
@@ -112,22 +81,51 @@ const ResultShopifySearch = React.forwardRef(({ id }: IProps, ref) => {
     );
   };
   const _renderTableOrDetailOrder = () => {
-    return dataOrder?.name ? (
-      <DetailOrderCustomer onBack={handleBack} dataOrder={dataOrder} />
-    ) : (
-      <Table
-        className={styles.tableListOrder}
-        columns={columns}
-        dataSource={convertDataTable}
-        rowKey={(record) => record.id}
-        onRow={(record) => {
-          return {
-            onClick: () => handleClickRow(record),
-          };
-        }}
-        scroll={{ y: 500 }}
-      />
+    return (
+      <Collapse
+        expandIcon={({ isActive }) => (
+          <CaretRightOutlined
+            style={{ color: "orange" }}
+            rotate={isActive ? 90 : 0}
+          />
+        )}
+        accordion
+      >
+        {convertDataTable?.map((order: any, index: number) => (
+          <Panel
+            header={
+              <div className="d-flex justify-between">
+                <p className={styles.orderName}>{order?.name}</p>
+                <p className={styles.total}>
+                  {order?.currency}
+                  {order?.total}
+                </p>
+              </div>
+            }
+            key={index}
+          >
+            <DetailOrderCustomer dataOrder={order} />
+          </Panel>
+        ))}
+      </Collapse>
     );
+    // return dataOrder?.name ? (
+    //   <DetailOrderCustomer onBack={handleBack} dataOrder={dataOrder} />
+    // ) : (
+    // <Table
+    //   className={styles.tableListOrder}
+    //   columns={columns}
+    //   dataSource={convertDataTable}
+    //   rowKey={(record) => record.id}
+    //   onRow={(record) => {
+    //     return {
+    //       onClick: () => handleClickRow(record),
+    //     };
+    //   }}
+    //   scroll={{ y: 500 }}
+    // />
+
+    // );
   };
   const _renderListOrder = () => {
     return isLoading ? (
