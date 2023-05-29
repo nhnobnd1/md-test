@@ -4,10 +4,10 @@ import classNames from "classnames";
 import { memo, useMemo } from "react";
 import styles from "./styles.module.scss";
 interface IProps {
-  onBack: () => void;
+  // onBack: () => void;
   dataOrder: any;
 }
-export const DetailOrderCustomer = memo(({ onBack, dataOrder }: IProps) => {
+export const DetailOrderCustomer = memo(({ dataOrder }: IProps) => {
   const unit = dataOrder?.currency;
   const countShippingPrice = () => {
     return (
@@ -237,9 +237,9 @@ export const DetailOrderCustomer = memo(({ onBack, dataOrder }: IProps) => {
   ));
   return (
     <section className={styles.detailContainer}>
-      <div className={styles.back} onClick={onBack}>
+      {/* <div className={styles.back} onClick={onBack}>
         <span className={styles.backTitle}>Back</span>
-      </div>
+      </div> */}
       <div className={styles.content}>
         <div className={styles.overview}>
           {LIST_OVERVIEW.map((block, index) => (
