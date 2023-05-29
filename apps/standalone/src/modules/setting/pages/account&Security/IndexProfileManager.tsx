@@ -72,7 +72,6 @@ export default function IndexProfileManager() {
           initialValues={result}
           enableReinitialize
         >
-          <Form.Item name="_id" hidden />
           <Form.Item
             label="First name"
             name="firstName"

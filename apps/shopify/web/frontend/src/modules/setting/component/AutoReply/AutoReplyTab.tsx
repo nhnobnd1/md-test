@@ -222,11 +222,11 @@ const AutoReplyTab = ({
       {valueListAutoReplys.length ? (
         <div>
           <ModalDelete
-            title="Are you sure that you want to remove this autoReply?"
+            title="Are you sure that you want to remove this auto reply?"
             open={isOpen}
             onClose={() => setIsOpen(false)}
             content={
-              "This auto-reply will be removed permanently. This action cannot be undone. All tickets and business hours which are using this autoReply will get affected too."
+              "This auto-reply will be removed permanently. This action cannot be undone. All tickets and business hours which are using this auto reply will get affected too."
             }
             deleteAction={() => handleRemoveAutoReply(deleteAutoReply)}
           />

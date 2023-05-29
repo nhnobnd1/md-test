@@ -271,7 +271,7 @@ export default function TagIndexPage() {
           open={isOpen}
           onClose={() => setIsOpen(false)}
           content={
-            "This Tag will be removed permanently. This actions can not be undone. All tickets which are using this tag will get affected too."
+            "This Tag will be removed permanently. This action can not be undone. All tickets which are using this tag will get affected too."
           }
           deleteAction={() => handleRemoveTag([deleteTag])}
           textConfirm="Remove"
