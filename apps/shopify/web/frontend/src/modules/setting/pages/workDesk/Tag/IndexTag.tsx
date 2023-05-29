@@ -267,7 +267,7 @@ export default function TagIndexPage() {
         fullWidth
       >
         <ModalDelete
-          title="Are you sure that you want to premanently remove this Tag?"
+          title="Are you sure that you want to permanently remove this Tag?"
           open={isOpen}
           onClose={() => setIsOpen(false)}
           content={

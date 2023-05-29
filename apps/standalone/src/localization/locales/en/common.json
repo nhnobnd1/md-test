@@ -200,8 +200,8 @@
     "tag_name": "Tag name",
     "description": "Description",
     "add_tag_title": "Add tag profile",
-    "delete_tag_question": "Are you sure that you want to premanently remove this Tag?",
-    "delete_tag_warning": "This Tag will be removed permanently. This actions can not be undone. All tickets which are using this tag will get affected too."
+    "delete_tag_question": "Are you sure that you want to permanently remove this Tag?",
+    "delete_tag_warning": "This Tag will be removed permanently. This action can not be undone. All tickets which are using this tag will get affected too."
   },
   "account_security": {
     "account_security": "Account & Security",

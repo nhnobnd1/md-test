@@ -301,9 +301,9 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
                       !isAgent
                         ? {
                             title:
-                              "Are you sure that you want to premanently remove this Tag?",
+                              "Are you sure that you want to permanently remove this Tag?",
                             description:
-                              "This Tag will be removed permanently. This actions can not be undone. All tickets which are using this tag will get affected too.",
+                              "This Tag will be removed permanently. This action can not be undone. All tickets which are using this tag will get affected too.",
                             textDelete: "Remove",
                           }
                         : null
