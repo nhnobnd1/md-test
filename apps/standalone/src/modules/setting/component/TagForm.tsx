@@ -26,7 +26,9 @@ export const TagForm = ({ ...props }: TagFormProps) => {
 
   return (
     <Form {...props} layout="vertical" initialValues={initialValues}>
-      <Form.Item name="_id" hidden />
+      <Form.Item name="_id" hidden>
+        <Input placeholder="" />
+      </Form.Item>
       <Form.Item
         label="Tag name"
         name="name"

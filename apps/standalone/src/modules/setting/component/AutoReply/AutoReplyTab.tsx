@@ -186,7 +186,7 @@ const AutoReplyTab = ({
       />
       {valueListAutoReplys.length ? (
         <div>
-          <Table dataSource={valueTableAutoReply}>
+          <Table dataSource={valueTableAutoReply} rowKey={"code"}>
             <Table.Column
               key="name"
               title="Name"

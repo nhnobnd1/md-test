@@ -142,7 +142,7 @@ const HolidayTab = ({ value, onChange, dataAutoReply }: HolidayTabProps) => {
       />
       {valueListHolidays.length ? (
         <div>
-          <Table dataSource={valueListHolidays}>
+          <Table dataSource={valueListHolidays} rowKey={"name"}>
             <Table.Column
               key="nameHoliday"
               title="Name"

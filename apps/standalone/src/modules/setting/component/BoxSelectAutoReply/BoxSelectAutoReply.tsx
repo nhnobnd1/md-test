@@ -94,6 +94,7 @@ const BoxSelectAutoReply = (props: BoxSelectAutoReplyProps) => {
         options={optionsMarkup || []}
         onChange={updateSelection}
         placeholder="Select Auto-Reply"
+        showSearch
       ></Select>
     </div>
   );
