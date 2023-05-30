@@ -65,6 +65,7 @@ export const RichText = ({
             "link",
             "code",
           ],
+          menubar: false,
           file_picker_types: "image",
           file_picker_callback: function (cb, value, meta) {
             if (meta.filetype === "image") {
