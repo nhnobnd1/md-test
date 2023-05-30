@@ -131,7 +131,12 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
     ) => (
       <IndexTable.Row id={_id} key={_id} position={index}>
         <IndexTable.Cell>
-          <div onClick={() => handleClickRow(_id)}>{subject}</div>
+          <div
+            style={{ width: 300, whiteSpace: "pre-line" }}
+            onClick={() => handleClickRow(_id)}
+          >
+            {subject}
+          </div>
         </IndexTable.Cell>
         <IndexTable.Cell>
           <div onClick={() => handleClickRow(_id)}>
