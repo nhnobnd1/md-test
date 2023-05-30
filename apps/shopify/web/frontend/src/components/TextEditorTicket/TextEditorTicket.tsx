@@ -272,12 +272,10 @@ export const TextEditorTicket = ({
                 console.log("open modal");
               },
             });
-            editor.on("init", (ed) => {
-              ed.target.editorCommands.execCommand(
-                "fontName",
-                false,
-                "Helvetica"
-              );
+          },
+          init_instance_callback: (ed) => {
+            ed.on("click", function (e) {
+              ed.editorCommands.execCommand("fontName", false, "Helvetica");
             });
           },
           statusbar: false,
