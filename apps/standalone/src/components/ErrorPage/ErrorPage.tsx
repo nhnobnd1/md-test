@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-
 interface ErrorPageProps {
   image: any;
   width?: string | number;
@@ -11,10 +9,10 @@ export const ErrorPage = ({
   width = "100vw",
   height = "100vh",
 }: ErrorPageProps) => {
-  useEffect(() => {
-    console.log("test");
-    window.location.reload();
-  }, []);
+  // useEffect(() => {
+  //   console.log("test");
+  //   window.location.reload();
+  // }, []);
   return (
     <div
       id="error-boundary-page"
