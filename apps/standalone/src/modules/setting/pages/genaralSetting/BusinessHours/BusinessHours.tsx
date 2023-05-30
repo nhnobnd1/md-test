@@ -7,7 +7,7 @@ import {
   Holidays,
 } from "@moose-desk/repo";
 import BusinessCalendarRepository from "@moose-desk/repo/businessCalendar/BusinessCalendarRepository";
-import { Button, Card, Space, Tabs } from "antd";
+import { Button, Card, Input, Space, Tabs } from "antd";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
@@ -193,7 +193,9 @@ const BusinessHours = () => {
             ]}
           />
         </Card>
-        <Form.Item name="_id" hidden />
+        <Form.Item name="_id" hidden>
+          <Input placeholder="" />
+        </Form.Item>
       </Form>
       <div className="flex-1 text-right mt-4">
         <Space>
