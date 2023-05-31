@@ -161,7 +161,7 @@ export const UIWidget: FC<UIWidgetProps> = () => {
 
                         <p className="text">Upload files (max 3)</p>
                         <span style={{ textAlign: "center" }}>
-                          Drag&drop or Click to add your files
+                          Drag & Drop or Click to add your file(s)
                         </span>
                       </div>
                     </section>

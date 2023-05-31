@@ -44,6 +44,9 @@ export const StoreProviders = ({ children }: StoreProvidersProps) => {
       }),
 
     onSuccess: (data: GetStoreIdResponse) => {
+      if ((getSubDomain() as string).toLowerCase() === "sender-verification") {
+        return;
+      }
       if (!data.data.storeId) {
         navigate("/404");
         return;

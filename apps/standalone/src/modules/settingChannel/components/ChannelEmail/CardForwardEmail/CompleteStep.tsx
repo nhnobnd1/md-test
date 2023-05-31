@@ -32,12 +32,12 @@ export const CompleteStep: FC<ContentWaitProps> = React.memo(
       return (
         <div className="flex flex-col items-center">
           <Typography.Title level={3}>Checking your setup</Typography.Title>
-          <div className="flex justify-start items-start gap-2 w-[340px] mt-5">
+          <div className="flex justify-center items-start gap-2 w-[340px] mt-5">
             <div className="flex flex-col">
-              <p className="text-center">
+              {/* <p className="text-center">
                 We are verifying that your email account is connected to your
                 MooseDesk.
-              </p>
+              </p> */}
               <p className="text-center">This may take up to a minute</p>
             </div>
           </div>

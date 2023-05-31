@@ -93,7 +93,7 @@ const BoxSelectAutoReply = (props: BoxSelectAutoReplyProps) => {
         onSearch={updateText}
         options={optionsMarkup || []}
         onChange={updateSelection}
-        placeholder="Select Auto-Reply"
+        placeholder="Choose your auto-reply outside of business hours. You can set up new message in the “Auto-Reply” Tab"
         showSearch
       ></Select>
     </div>

@@ -14,12 +14,12 @@ const BusinessHoursTab = ({ disabled, ...props }: BusinessHoursTabProps) => {
           <RadioGroup
             options={[
               {
-                label: "24hrs x7 days",
-                helpText: "Fulltime support",
+                label: "Full-Time Support",
+                helpText: "Your agents can respond 24/7",
                 id: "24/7",
               },
               {
-                label: "Custom Business hours",
+                label: "Set Custom Hours",
                 helpText: "Setup custom working hours for your agents",
                 id: "CUSTOM",
               },

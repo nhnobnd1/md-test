@@ -210,7 +210,7 @@ export const TextEditorTicket = ({
                 <UploadIcon style={{ fontSize: "3em" }} />
                 <input {...getInputProps()} />
                 {/* <p className="text">Upload files (max 3)</p> */}
-                <span>Drag&drop or Click to add your files</span>
+                <span>Drag & Drop or Click to add your file(s)</span>
               </div>
             </section>
             <div
@@ -230,8 +230,7 @@ export const TextEditorTicket = ({
 
             <div className="mt-10  flex justify-center items-center">
               <p className="w-[350px] ">
-                We only accept Images, Videos files which size is smaller than
-                50MB
+                You can add Images & Video with each file size under 50MB
               </p>
             </div>
           </TextContainer>

@@ -111,7 +111,7 @@ const BoxSelectAutoReply = (props: BoxSelectAutoReplyProps) => {
           }
           labelHidden={!props.label}
           value={inputValue}
-          placeholder="Search"
+          placeholder={props.placeholder || "Search"}
           autoComplete="off"
           suffix={
             <Icon
