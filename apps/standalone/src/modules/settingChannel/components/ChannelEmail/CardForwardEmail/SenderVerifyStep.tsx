@@ -117,12 +117,11 @@ export const SenderVerifyStep: FC<ContentWaitProps> = React.memo(
         <div className="flex justify-start items-start gap-2  mt-5">
           <div className="flex flex-col">
             <p className="text-center">
-              To use your email for sending tickets, we have sent a verification
-              email to the address {email}
+              We have sent a verification email to the address {email}
             </p>
             <p className="text-center">
-              Please check your inbox and click on the link within to use this
-              email for sending tickets
+              Please check your inbox and click on the verification link to
+              complete the verification process
             </p>
             <p className="text-center"></p>
           </div>

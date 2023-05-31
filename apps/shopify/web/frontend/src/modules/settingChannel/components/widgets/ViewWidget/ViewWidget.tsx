@@ -103,7 +103,7 @@ export const ViewWidget = (props: ViewWidgetProps) => {
                               Upload files (max 3)
                             </Text>
                             <div className="mt-2">
-                              Drag&drop or Click to add your files
+                              Drag & Drop or Click to add your file(s)
                             </div>
                           </div>
                         </div>

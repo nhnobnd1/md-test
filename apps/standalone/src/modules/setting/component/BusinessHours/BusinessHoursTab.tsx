@@ -22,9 +22,9 @@ const BusinessHoursTab = ({
               <Radio value="24/7">
                 <div className="flex flex-col-reverse">
                   <Typography.Text type="secondary">
-                    Fulltime support
+                    Your agents can respond 24/7
                   </Typography.Text>
-                  <Typography.Text>24hrs x7 days</Typography.Text>
+                  <Typography.Text> Full-Time Support</Typography.Text>
                 </div>
               </Radio>
             </div>
@@ -34,7 +34,7 @@ const BusinessHoursTab = ({
                   <Typography.Text type="secondary">
                     Setup custom working hours for your agents
                   </Typography.Text>
-                  <Typography.Text>Custom Business hours</Typography.Text>
+                  <Typography.Text>Set Custom Hours</Typography.Text>
                 </div>
               </Radio>
             </div>
@@ -51,6 +51,7 @@ const BusinessHoursTab = ({
         label="Auto-Reply"
         className="mb-0 mt-4"
         hidden={!!disabled}
+        help="Choose your auto-reply outside of business hours. You can set up new message in the “Auto-Reply” Tab"
       >
         <BoxSelectAutoReply dataAutoReply={dataAutoReply} />
       </Form.Item>

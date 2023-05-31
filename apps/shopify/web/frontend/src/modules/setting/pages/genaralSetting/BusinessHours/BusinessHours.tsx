@@ -241,16 +241,24 @@ const BusinessHours = (props: BusinessHoursProps) => {
                         className={!disabled && selected === 0 ? "" : "hidden"}
                       >
                         <Card.Section>
-                          <div className="flex items-center content-between">
-                            <div className="mr-4">
+                          <div className="flex items-start content-between">
+                            <div className="mr-4 w-[100px] mt-2">
                               <Text as="span" variant="bodyMd">
                                 Auto-Reply
                               </Text>
                             </div>
                             <FormItem name="businessHoursAutoReplyCode">
-                              <BoxSelectAutoReply
-                                dataAutoReply={dataAutoReply}
-                              />
+                              <div className="w-full">
+                                <BoxSelectAutoReply
+                                  placeholder=""
+                                  dataAutoReply={dataAutoReply}
+                                />
+                                <span>
+                                  Choose your auto-reply outside of business
+                                  hours. You can set up new message in the
+                                  “Auto-Reply” Tab
+                                </span>
+                              </div>
                             </FormItem>
                           </div>
                         </Card.Section>
