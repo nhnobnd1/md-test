@@ -1,7 +1,7 @@
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { Card, Page } from "@shopify/polaris";
 import dayjs from "dayjs";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import MDDatePicker from "src/components/DatePicker/MDDatePicker";
 import useGlobalData from "src/hooks/useGlobalData";
@@ -9,11 +9,7 @@ import { useSubdomain } from "src/hooks/useSubdomain";
 import { getReportTopFive } from "src/modules/report/api/api";
 import ChartAgentsTicket from "src/modules/report/components/ChartAgentsTicket/ChartAgentsTicket";
 import { ReportAgentTable } from "src/modules/report/components/ReportAgentTable";
-import {
-  getTimeFilterDefault,
-  getTwoWeeksAfter,
-  getTwoWeeksBefore,
-} from "src/modules/report/helper/convert";
+import { formatDefaultTimeRangePicker } from "src/modules/report/helper/format";
 import styles from "./styles.module.scss";
 
 interface ByAgentPageProps {}
@@ -26,18 +22,11 @@ interface ITableFilter {
   endTime: string;
 }
 const ByAgentPage = (props: ByAgentPageProps) => {
-  const dateRef: any = useRef(null);
   const { subDomain } = useSubdomain();
   const { timezone }: any = useGlobalData(false, subDomain || "");
-  const { current, twoWeekAgo } = getTimeFilterDefault();
-
   const [filterData, setFilterData] = useState<ITableFilter | any>({
     startTime: "",
     endTime: "",
-  });
-  const [timeDisable, setTimeDisable] = useState<any>({
-    start: dayjs().subtract(2, "weeks").startOf("day"),
-    end: dayjs().endOf("day"),
   });
   useEffect(() => {
     if (!timezone) return;
@@ -58,51 +47,22 @@ const ByAgentPage = (props: ByAgentPageProps) => {
     const convertData = (reportTopFiveData as any)?.data?.data;
     return convertData;
   }, [reportTopFiveData]);
-  const disabledStartDate = useCallback((current) => {
-    // return form.getFieldValue("to")
-    //   ? current > form.getFieldValue("to")
-    //   : false;
-  }, []);
 
-  const disabledEndDate = useCallback((current) => {
-    // return form.getFieldValue("from")
-    //   ? current < form.getFieldValue("from")
-    //   : false;
-  }, []);
-
-  const handleChangeStartDate = (value: string) => {
-    const date = dayjs(value, "MM/DD/YYYY")
-      .startOf("days")
-      .format("YYYY-MM-DD HH:mm:ss");
-
-    if (dayjs(date) > timeDisable.end) {
-      dateRef?.current?.clearValue();
-      setTimeDisable((pre: any) => ({
-        end: undefined,
-        start: dayjs(date),
-      }));
-      setFilterData((pre: any) => ({
-        endTime: "",
-        startTime: String(dayjs.tz(date, timezone).unix()),
-      }));
-      return;
-    }
-    setFilterData((pre: any) => ({
-      ...pre,
-      startTime: String(dayjs.tz(date, timezone).unix()),
-    }));
-    setTimeDisable((pre: any) => ({ ...pre, start: dayjs(date) }));
-  };
-  const handleChangeEndDate = useCallback((value: string) => {
-    const date = dayjs(value, "MM/DD/YYYY")
-      .endOf("days")
-      .format("YYYY-MM-DD HH:mm:ss");
-    setFilterData((pre: any) => ({
-      ...pre,
-      endTime: String(dayjs.tz(date, timezone).unix()),
-    }));
-    setTimeDisable((pre: any) => ({ ...pre, end: dayjs(date) }));
-  }, []);
+  const handleSubmitDate = useCallback(
+    (date: { start: Date; end: Date }) => {
+      const startDate = dayjs(date.start, "MM/DD/YYYY")
+        .startOf("days")
+        .format("YYYY-MM-DD HH:mm:ss");
+      const endDate = dayjs(date.end, "MM/DD/YYYY")
+        .endOf("days")
+        .format("YYYY-MM-DD HH:mm:ss");
+      setFilterData({
+        startTime: String(dayjs.tz(startDate, timezone).unix()),
+        endTime: String(dayjs.tz(endDate, timezone).unix()),
+      });
+    },
+    [timezone]
+  );
   return (
     <Page title="By Agent" compactTitle fullWidth>
       <Card>
@@ -110,24 +70,19 @@ const ByAgentPage = (props: ByAgentPageProps) => {
           <div className={styles.groupFilter}>
             <div className={styles.dateTime}>
               <MDDatePicker
-                type="start"
-                onDateChange={handleChangeStartDate}
+                defaultRangeTime={{
+                  start: formatDefaultTimeRangePicker(
+                    filterData.startTime,
+                    timezone
+                  ),
+
+                  end: formatDefaultTimeRangePicker(
+                    filterData.endTime,
+                    timezone
+                  ),
+                }}
+                onSubmitTime={handleSubmitDate}
                 datePickerClassName={styles.datePickerCustomer}
-                disableDatesBefore={getTwoWeeksBefore(
-                  timeDisable.end?.toDate()
-                ).toDate()}
-                // disableDatesAfter={timeDisable.end.toDate()}
-              />
-              <MDDatePicker
-                ref={dateRef}
-                type="end"
-                onDateChange={handleChangeEndDate}
-                datePickerClassName={styles.datePickerCustomer}
-                containerClassName={styles.endDateBlock}
-                disableDatesBefore={timeDisable.start.toDate()}
-                disableDatesAfter={getTwoWeeksAfter(
-                  timeDisable.start.toDate()
-                ).toDate()}
               />
             </div>
           </div>

@@ -1,10 +1,6 @@
 .container {
   display: flex;
   align-items: center;
-  span {
-    margin-right: 10px;
-    color: #000;
-  }
   .block {
     height: 36px;
     width: 100px;
@@ -32,4 +28,30 @@
 }
 .value {
     color: #000;
+}
+.groupActionButton {
+  padding: 20px 20px 0;
+  display: flex;
+  justify-content: flex-end;
+  .clearBtn {
+    margin-right: 10px;
+  }
+  .clearBtn, .submitBtn {
+    width: 75px;
+    button {
+      width: 100%;
+    }
+  }
+  .submitBtn {
+    :global {
+      .Polaris-Button {
+          background-color: #FA7D00;
+          color: #fff;
+        }
+        .Polaris-Button--disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+    }
+  }
 }
