@@ -18,7 +18,10 @@ import ChartFirstResponseTime from "src/modules/report/components/ChartFirstResp
 import ChartResolutionTime from "src/modules/report/components/ChartResolutionTime/ChartResolutionTime";
 import ChartSupportVolume from "src/modules/report/components/ChartSupportVolume/ChartSupportVolume";
 import Statistic from "src/modules/report/components/Statistic/Statistic";
-import { formatDefaultTimeRangePicker } from "src/modules/report/helper/format";
+import {
+  formatDefaultTimeRangePicker,
+  formatDefaultTimeRangePickerForRender,
+} from "src/modules/report/helper/format";
 import styles from "./styles.module.scss";
 dayjs.extend(timezone);
 interface ReportIndexPageProps {}
@@ -113,6 +116,10 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
                 datePickerClassName={styles.datePickerCustomer}
               />
             </div>
+          </div>
+          <div className={styles.groupRangeTimeRender}>
+            {formatDefaultTimeRangePickerForRender(filter.startTime, timezone)}{" "}
+            - {formatDefaultTimeRangePickerForRender(filter.endTime, timezone)}
           </div>
           <div className="card-statistic mb-8">
             <Statistic data={memoData[ChartReportData.SUMMARY]} />

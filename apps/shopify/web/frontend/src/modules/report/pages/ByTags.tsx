@@ -18,7 +18,10 @@ import env from "src/core/env";
 import useGlobalData from "src/hooks/useGlobalData";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { getReportByTags } from "src/modules/report/api/api";
-import { formatDefaultTimeRangePicker } from "src/modules/report/helper/format";
+import {
+  formatDefaultTimeRangePicker,
+  formatDefaultTimeRangePickerForRender,
+} from "src/modules/report/helper/format";
 import styles from "./styles.module.scss";
 interface ByTagsProps {}
 interface ITableFilter {
@@ -168,6 +171,17 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
                 onChange={handleSearchInput}
               />
             </div>
+          </div>
+          <div className={styles.groupRangeTimeRender}>
+            {formatDefaultTimeRangePickerForRender(
+              filterData.startTime,
+              timezone
+            )}{" "}
+            -{" "}
+            {formatDefaultTimeRangePickerForRender(
+              filterData.endTime,
+              timezone
+            )}
           </div>
           <div>
             {isFetching && <Loading />}

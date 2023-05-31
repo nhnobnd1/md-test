@@ -9,7 +9,10 @@ import { useSubdomain } from "src/hooks/useSubdomain";
 import { getReportTopFive } from "src/modules/report/api/api";
 import ChartAgentsTicket from "src/modules/report/components/ChartAgentsTicket/ChartAgentsTicket";
 import { ReportAgentTable } from "src/modules/report/components/ReportAgentTable";
-import { formatDefaultTimeRangePicker } from "src/modules/report/helper/format";
+import {
+  formatDefaultTimeRangePicker,
+  formatDefaultTimeRangePickerForRender,
+} from "src/modules/report/helper/format";
 import styles from "./styles.module.scss";
 
 interface ByAgentPageProps {}
@@ -85,6 +88,17 @@ const ByAgentPage = (props: ByAgentPageProps) => {
                 datePickerClassName={styles.datePickerCustomer}
               />
             </div>
+          </div>
+          <div className={styles.groupRangeTimeRender}>
+            {formatDefaultTimeRangePickerForRender(
+              filterData.startTime,
+              timezone
+            )}{" "}
+            -{" "}
+            {formatDefaultTimeRangePickerForRender(
+              filterData.endTime,
+              timezone
+            )}
           </div>
           <div className="wrap-chart mb-[40px] mt-6">
             <div className="title text-lg font-semibold mb-6">

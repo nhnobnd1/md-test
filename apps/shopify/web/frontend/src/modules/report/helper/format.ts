@@ -31,3 +31,10 @@ export const formatDefaultTimeRangePicker = (
   if (!timezone) return dayjs.unix(Number(time)).format("MM-DD-YYYY");
   return dayjs.unix(Number(time)).tz(timezone).format("MM-DD-YYYY");
 };
+export const formatDefaultTimeRangePickerForRender = (
+  time: string,
+  timezone: string | undefined
+) => {
+  if (!timezone) return dayjs.unix(Number(time)).format("MM/DD/YYYY");
+  return dayjs.unix(Number(time)).tz(timezone).format("MM/DD/YYYY");
+};
