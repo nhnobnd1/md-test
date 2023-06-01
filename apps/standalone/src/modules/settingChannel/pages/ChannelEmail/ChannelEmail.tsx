@@ -54,7 +54,6 @@ const ChannelEmail = () => {
       { isPrimaryEmail: true },
       newSelectedRowKeys[0] as string
     );
-    getListEmailApi(filterData);
   };
   const rowSelection = {
     selectedRowKeys,
@@ -73,6 +72,7 @@ const ChannelEmail = () => {
               message.loading.hide().then(() => {
                 notification.success(t("messages:success.update_email"));
               });
+              getListEmailApi(filterData);
             } else {
               message.loading.hide().then(() => {
                 message.loading.hide().then(() => {
