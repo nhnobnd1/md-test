@@ -75,7 +75,8 @@
     "email": "The email address is not valid",
     "phone": "The input phone number is not valid",
     "message_ticket": "Please input your message!",
-
+    "length_255": "{name} up to 255 characters",
+    "confirm_password": "The confirmation password is not match!",
     "password_rules": "The password must be 8 characters long and must be a combination of uppercase letters, lowercase letters, numbers, and symbols"
   },
   "roles": {
@@ -188,8 +189,18 @@
     "group_member": "Group members",
     "add_group_member": "add group member",
     "add_member": "Add members",
+    "create_password": "Create Password",
+    "resend_email":"Re-send Invitation Email",
     "delete_group_title": "Are you sure that you want to permanently remove this group?",
-    "delete_group_warning": "This group will be removed permanently. This action cannot be undone"
+    "delete_group_warning": "This group will be removed permanently. This action cannot be undone",
+    "2FA_title": "2-Factor Authentication",
+    "otp_suggest":"Please enter the OTP which we sent to your email.",
+    "otp_enter":"Please enter the OTP which was displayed in your authenticator application.",
+    "resend_otp": "Re-send OTP",
+    "reset_password_expired": "The reset password link has expired. If you still want to reset your password. Please start over again.",
+    "return_homepage": "Return to home page",
+    "create_account_question": "Want to get started with MooseDesk? Create a free account here.",
+    "welcome_support_portal": "Welcome {agentName} to the support portal. Before starting to use the support portal, please create a password which will be used for your authentications."
   },
   "work_desk": {
     "work_desk": "Workdesk",
