@@ -6,7 +6,11 @@ import {
   TokenManager,
 } from "@moose-desk/core";
 import LazyComponent from "@moose-desk/core/components/LazyComponent";
-import { AccountRepository, Env } from "@moose-desk/repo";
+import {
+  AccountRepository,
+  Env,
+  SignInAccountShopifyRequest,
+} from "@moose-desk/repo";
 import * as Sentry from "@sentry/react";
 import { Loading } from "@shopify/polaris";
 import { Suspense, lazy } from "react";
@@ -75,6 +79,13 @@ ReactDOM.render(
                       fetchRefreshToken={(refreshToken: string) =>
                         AccountRepository().refreshToken({
                           refreshToken,
+                        })
+                      }
+                      reLogin={(payload: SignInAccountShopifyRequest) =>
+                        AccountRepository().shopifySignIn({
+                          email: payload.email,
+                          password: payload.password,
+                          storeId: payload.storeId,
                         })
                       }
                     >

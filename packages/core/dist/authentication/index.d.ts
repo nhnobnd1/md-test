@@ -13,7 +13,8 @@ interface AuthProviderProps {
     defaultTokens?: () => Tokens;
     fetchUserOnLogin?: (tokens: Tokens) => Observable<any>;
     fetchRefreshToken?: (refreshToken: string) => Observable<any>;
+    reLogin?: (payload: any) => Observable<any>;
 }
-export declare const AuthProvider: ({ children, defaultTokens, fetchUserOnLogin, fetchRefreshToken, }: AuthProviderProps) => JSX.Element;
+export declare const AuthProvider: ({ children, defaultTokens, fetchUserOnLogin, fetchRefreshToken, reLogin, }: AuthProviderProps) => JSX.Element;
 export declare function useAuthContext<AccountType>(): AuthContextType<AccountType>;
 export {};

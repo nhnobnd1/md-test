@@ -1,13 +1,13 @@
 import { AxiosError } from "axios";
 import {
-  createContext,
   ReactNode,
+  createContext,
   useCallback,
   useContext,
   useEffect,
   useState,
 } from "react";
-import { lastValueFrom, Observable } from "rxjs";
+import { Observable, lastValueFrom } from "rxjs";
 import { Api } from "../api";
 import config from "../config";
 import { useJob, useMount } from "../hooks";
@@ -30,6 +30,7 @@ interface AuthProviderProps {
   defaultTokens?: () => Tokens;
   fetchUserOnLogin?: (tokens: Tokens) => Observable<any>;
   fetchRefreshToken?: (refreshToken: string) => Observable<any>;
+  reLogin?: (payload: any) => Observable<any>;
 }
 
 export const AuthProvider = ({
@@ -38,6 +39,7 @@ export const AuthProvider = ({
   fetchUserOnLogin = () =>
     new Observable((observable) => observable.next(undefined)),
   fetchRefreshToken,
+  reLogin,
 }: AuthProviderProps) => {
   const [user, setUser] = useState<any>();
   const [tokens, setTokens] = useState<Tokens>(defaultTokens);
@@ -147,11 +149,40 @@ export const AuthProvider = ({
           setIsRefreshing(true);
 
           const token = TokenManager.getToken("refresh_token");
+          if (localStorage.getItem("offlineToken")) {
+            const payload = {
+              email: localStorage.getItem("email") as string,
+              password: localStorage.getItem("offlineToken") as string,
+              storeId:
+                JSON.parse(localStorage.getItem("shop") as string).id + "",
+            };
+            console.log({ payload });
+            if (reLogin) {
+              return new Promise((resolve, reject) => {
+                lastValueFrom(reLogin(payload as any))
+                  .then(({ data }) => {
+                    setIsRefreshing(false);
+                    processQueue(null, data.data.accessToken);
+                    login({
+                      base_token: data.data.accessToken,
+                      refresh_token: data.data.refreshToken,
+                    });
+                    resolve(lastValueFrom(axios.request(config)));
+                  })
+                  .catch((error) => {
+                    setIsRefreshing(true);
+                    // logout();
+                    // processQueue(error);
+                    reject(error);
+                  });
+              });
+            }
+          }
           if (!token) {
             console.log("Not found refresh token app");
+
             return Promise.reject(error);
           }
-
           if (fetchRefreshToken) {
             return new Promise((resolve, reject) => {
               lastValueFrom(fetchRefreshToken(token))
@@ -166,8 +197,8 @@ export const AuthProvider = ({
                 })
                 .catch((error) => {
                   setIsRefreshing(true);
-                  logout();
-                  processQueue(error);
+                  // logout();
+                  // processQueue(error);
                   reject(error);
                 });
             });
