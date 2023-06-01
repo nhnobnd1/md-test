@@ -6,7 +6,7 @@ import {
   MailBoxType,
 } from "@moose-desk/repo";
 import EmailIntegrationRepository from "@moose-desk/repo/emailIntegration/EmailIntegrationRepository";
-import { Alert, Button, Card, FormInstance, Radio } from "antd";
+import { Alert, Button, Card, Checkbox, FormInstance, Radio } from "antd";
 import React, {
   ForwardedRef,
   forwardRef,
@@ -309,22 +309,10 @@ export const CardSelectEmail = forwardRef(
           ) : (
             <></>
           )}
-          {/* <Form.Item name="accessType">
-            <Radio.Group>
-              <Radio className="mr-4" value={AccessType.Both}>
-                Both
-              </Radio>
-              <Radio className="mr-4" value={AccessType.Outgoing}>
-                Outgoing mails
-              </Radio>
-              <Radio className="mr-4" value={AccessType.Incoming}>
-                Incoming mails
-              </Radio>
-            </Radio.Group>
-          </Form.Item>
+
           <Form.Item name="deleteFromServer" valuePropName="checked">
             <Checkbox>Delete from server after fetching</Checkbox>
-          </Form.Item> */}
+          </Form.Item>
         </>
       );
     };
