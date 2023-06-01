@@ -6,13 +6,14 @@ import {
   MailSettingType,
 } from "@moose-desk/repo";
 import { Button } from "antd";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map } from "rxjs";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
+import { useSubdomain } from "src/hooks/useSubdomain";
 import {
   ChannelEmailForm,
   ValuesForm,
@@ -27,6 +28,7 @@ const ChannelEmailCreate = () => {
   const message = useMessage();
   const notification = useNotification();
   const { t } = useTranslation();
+  const { getSubDomain } = useSubdomain();
 
   const signCallback = useAppSelector(
     (state) => state.channelEmail.signInCallback
@@ -41,11 +43,9 @@ const ChannelEmailCreate = () => {
         .pipe(
           map(({ data }) => {
             if (data.statusCode === 200) {
+              sessionStorage.setItem("gmail_id", data.data._id);
               message.loading.hide().then(() => {
                 notification.success(t("messages:success.create_email"));
-                navigate(
-                  generatePath(SettingChannelRoutePaths.ChannelEmail.Index)
-                );
               });
             } else {
               message.loading.hide().then(() => {
@@ -67,8 +67,55 @@ const ChannelEmailCreate = () => {
     }
   );
 
+  const { run: updateEmailIntegration } = useJob(
+    (payload: CreateEmailIntegrationRequest) => {
+      message.loading.show(t("messages:loading.updating_email"));
+      return EmailIntegrationRepository()
+        .updateEmailIntegration(sessionStorage.getItem("gmail_id"), payload)
+        .pipe(
+          map(({ data }) => {
+            if (data.statusCode === 200) {
+              message.loading.hide().then(() => {
+                notification.success(t("messages:success.update_email"));
+                navigate(
+                  generatePath(SettingChannelRoutePaths.ChannelEmail.Index)
+                );
+              });
+            } else {
+              message.loading.hide().then(() => {
+                message.loading.hide().then(() => {
+                  notification.error(t("messages:error.update_email"));
+                });
+              });
+            }
+          }),
+          catchError((err) => {
+            if (err.response.data.statusCode === 409) {
+              message.loading.hide().then(() => {
+                notification.error(`${payload.supportEmail} is exist`);
+              });
+            }
+            return err;
+          })
+        );
+    },
+    {
+      showLoading: true,
+    }
+  );
+  const updateMailGoogle = useCallback(
+    (values: ValuesForm) => {
+      updateEmailIntegration(payloadEmailGoogle(values));
+    },
+    [signCallback]
+  );
+
   const handleFinishForm = useCallback(
     (values: ValuesForm) => {
+      if (values.name === "") {
+        console.log("vaoday", getSubDomain());
+        values.name = getSubDomain();
+      }
       // if (values.mailSettingType === MailSettingType.CUSTOM) {
       //   if (values.mailboxType === MailBoxType.GMAIL) {
       //     createMail(values);
@@ -87,7 +134,7 @@ const ChannelEmailCreate = () => {
       switch (values.mailSettingType) {
         case MailSettingType.CUSTOM:
           if (values.mailboxType === MailBoxType.GMAIL) {
-            createMail(values);
+            updateMailGoogle(values);
           } else {
             createMailExternal(values);
           }
@@ -125,6 +172,13 @@ const ChannelEmailCreate = () => {
     },
     [signCallback]
   );
+  useEffect(() => {
+    if (signCallback?.refKey) {
+      setTimeout(() => {
+        createMail(form.getFieldsValue());
+      }, 100);
+    }
+  }, [signCallback]);
 
   const createMailMooseDesk = useCallback((values: ValuesForm) => {
     createMailAPI(payloadMailMooseDesk(values));

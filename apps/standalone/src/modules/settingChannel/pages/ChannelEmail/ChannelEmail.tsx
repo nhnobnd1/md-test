@@ -46,6 +46,55 @@ const ChannelEmail = () => {
   const [meta, setMeta] = useState<BaseMetaDataListResponse>();
 
   const prevFilter = usePrevious<any>(filterData);
+
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    setSelectedRowKeys(newSelectedRowKeys);
+    updateEmailIntegration(
+      { isPrimaryEmail: true },
+      newSelectedRowKeys[0] as string
+    );
+  };
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+    preserveSelectedRowKeys: true,
+  };
+  const { run: updateEmailIntegration } = useJob(
+    (payload: any, id: string) => {
+      message.loading.show(t("messages:loading.updating_email"));
+
+      return EmailIntegrationRepository()
+        .primaryEmail(id, payload)
+        .pipe(
+          map(({ data }) => {
+            if (data.statusCode === 200) {
+              message.loading.hide().then(() => {
+                notification.success(t("messages:success.update_email"));
+              });
+              getListEmailApi(filterData);
+            } else {
+              message.loading.hide().then(() => {
+                message.loading.hide().then(() => {
+                  notification.error(t("messages:error.update_email"));
+                });
+              });
+            }
+          }),
+          catchError((err) => {
+            if (err.response.data.statusCode === 409) {
+              message.loading.hide().then(() => {
+                notification.error(`${payload.supportEmail} is exist`);
+              });
+            }
+            return err;
+          })
+        );
+    },
+    {
+      showLoading: true,
+    }
+  );
   const { run: sendVerifyEmail } = useJob((payload: string) => {
     return EmailIntegrationRepository()
       .checkVerifyEmailSes(payload)
@@ -87,6 +136,10 @@ const ChannelEmail = () => {
                 ...item,
                 id: item._id,
               }));
+              const findPrimaryEmail = listEmails.find(
+                (item) => item.isPrimaryEmail === true
+              );
+              setSelectedRowKeys([findPrimaryEmail?._id as React.Key]);
 
               setEmails(listEmails);
               setMeta(data.metadata);
@@ -213,6 +266,12 @@ const ChannelEmail = () => {
       <div>
         <>
           <Table
+            rowSelection={{
+              type: "radio",
+              columnTitle: "Primary",
+              columnWidth: 70,
+              ...rowSelection,
+            }}
             dataSource={emails}
             loading={loadingList}
             onChange={onChangeTable}
