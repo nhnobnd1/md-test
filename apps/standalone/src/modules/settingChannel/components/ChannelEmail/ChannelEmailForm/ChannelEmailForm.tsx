@@ -58,6 +58,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
     null
   );
   const handleChangeMailSetting = useMailSetting((state) => state.changeUpdate);
+  const mailSettingType = useMailSetting((state) => state.mailSettingType);
 
   const signInCallback = useAppSelector(
     (state) => state.channelEmail.signInCallback
@@ -188,13 +189,15 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
 
   const isHidden = useMemo(() => {
     if (type === "new") {
-      if (form.getFieldValue("mailSettingType") !== MailSettingType.MOOSEDESK)
+      if (mailSettingType !== MailSettingType.MOOSEDESK) {
         return true;
-      else return false;
+      }
+      return false;
     } else {
       return false;
     }
-  }, [form, type]);
+  }, [mailSettingType, type]);
+  console.log({ isHidden });
 
   useEffect(() => {
     if (form.getFieldValue("mailSettingType") === MailSettingType.CUSTOM) {
