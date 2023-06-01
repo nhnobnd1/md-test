@@ -6,7 +6,7 @@ import {
   MailSettingType,
 } from "@moose-desk/repo";
 import { Button } from "antd";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map } from "rxjs";
 import { Form } from "src/components/UI/Form";
@@ -125,6 +125,12 @@ const ChannelEmailCreate = () => {
     },
     [signCallback]
   );
+  useEffect(() => {
+    console.log("useEffect", signCallback);
+    if (signCallback) {
+      handleSubmit();
+    }
+  }, [signCallback]);
 
   const createMailMooseDesk = useCallback((values: ValuesForm) => {
     createMailAPI(payloadMailMooseDesk(values));
