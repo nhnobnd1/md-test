@@ -1,4 +1,4 @@
-import { AutoComplete, InputProps } from "antd";
+import { InputProps, Select } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import timeZoneList from "src/constaint/timeZone";
 interface SelectTimeZoneProps
@@ -18,7 +18,6 @@ const SelectTimeZone = ({ value, onChange }: SelectTimeZoneProps) => {
       value: item.description,
     }));
   }, []);
-
   //
   const [selectedOption, setSelectedOption] = useState();
   const [options] = useState(deselectedOptions);
@@ -45,7 +44,7 @@ const SelectTimeZone = ({ value, onChange }: SelectTimeZoneProps) => {
   }, [value]);
 
   return (
-    <AutoComplete
+    <Select
       showSearch
       value={selectedOption}
       onChange={onChange}
