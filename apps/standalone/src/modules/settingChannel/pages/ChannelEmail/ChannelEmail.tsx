@@ -27,7 +27,6 @@ import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
-
 const defaultFilter: () => any = () => ({
   page: 1,
   limit: env.DEFAULT_PAGE_SIZE,
@@ -60,41 +59,36 @@ const ChannelEmail = () => {
     onChange: onSelectChange,
     preserveSelectedRowKeys: true,
   };
-  const { run: updateEmailIntegration } = useJob(
-    (payload: any, id: string) => {
-      message.loading.show(t("messages:loading.updating_email"));
+  const { run: updateEmailIntegration } = useJob((payload: any, id: string) => {
+    message.loading.show(t("messages:loading.updating_email"));
 
-      return EmailIntegrationRepository()
-        .primaryEmail(id, payload)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
+    return EmailIntegrationRepository()
+      .primaryEmail(id, payload)
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            message.loading.hide().then(() => {
+              notification.success(t("messages:success.update_email"));
+            });
+            getListEmailApi(filterData);
+          } else {
+            message.loading.hide().then(() => {
               message.loading.hide().then(() => {
-                notification.success(t("messages:success.update_email"));
+                notification.error(t("messages:error.update_email"));
               });
-              getListEmailApi(filterData);
-            } else {
-              message.loading.hide().then(() => {
-                message.loading.hide().then(() => {
-                  notification.error(t("messages:error.update_email"));
-                });
-              });
-            }
-          }),
-          catchError((err) => {
-            if (err.response.data.statusCode === 409) {
-              message.loading.hide().then(() => {
-                notification.error(`${payload.supportEmail} is exist`);
-              });
-            }
-            return err;
-          })
-        );
-    },
-    {
-      showLoading: true,
-    }
-  );
+            });
+          }
+        }),
+        catchError((err) => {
+          if (err.response.data.statusCode === 409) {
+            message.loading.hide().then(() => {
+              notification.error(`${payload.supportEmail} is exist`);
+            });
+          }
+          return err;
+        })
+      );
+  });
   const { run: sendVerifyEmail } = useJob((payload: string) => {
     return EmailIntegrationRepository()
       .checkVerifyEmailSes(payload)
@@ -246,8 +240,14 @@ const ChannelEmail = () => {
       };
     });
   };
+  const css = `.ant-table-selection-column,
+.ant-table-cell {
+  background-color: white !important;
+}
+`;
   return (
     <>
+      <style scoped>{css}</style>
       <Header title="Email Configuration">
         <div className="flex-1 flex justify-end">
           <ButtonAdd onClick={handleRedirectToCreate}>
@@ -270,6 +270,7 @@ const ChannelEmail = () => {
               type: "radio",
               columnTitle: "Primary",
               columnWidth: 70,
+
               ...rowSelection,
             }}
             dataSource={emails}
