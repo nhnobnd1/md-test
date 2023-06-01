@@ -20,6 +20,7 @@ import {
 } from "src/modules/settingChannel/components/ChannelEmail/ChannelEmailForm";
 import { useFormChannelEmail } from "src/modules/settingChannel/hook/useFormChannelEmail";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
+import useMailSetting from "src/modules/settingChannel/store/useMailSetting";
 import { useAppSelector } from "src/redux/hook";
 
 const ChannelEmailCreate = () => {
@@ -29,6 +30,10 @@ const ChannelEmailCreate = () => {
   const notification = useNotification();
   const { t } = useTranslation();
   const { getSubDomain } = useSubdomain();
+  const mailSettingType = useMailSetting((state) => state.mailSettingType);
+  const isForwardEmailCreated = useMailSetting(
+    (state) => state.isForwardEmailCreated
+  );
 
   const signCallback = useAppSelector(
     (state) => state.channelEmail.signInCallback
@@ -113,7 +118,6 @@ const ChannelEmailCreate = () => {
   const handleFinishForm = useCallback(
     (values: ValuesForm) => {
       if (values.name === "") {
-        console.log("vaoday", getSubDomain());
         values.name = getSubDomain();
       }
       // if (values.mailSettingType === MailSettingType.CUSTOM) {
@@ -180,6 +184,17 @@ const ChannelEmailCreate = () => {
     }
   }, [signCallback]);
 
+  useEffect(() => {
+    if (isForwardEmailCreated) {
+      form.setFieldValue(
+        "name",
+        sessionStorage.getItem("forward_email_name") || getSubDomain()
+      );
+
+      createMailOther(form.getFieldsValue());
+    }
+  }, [isForwardEmailCreated]);
+
   const createMailMooseDesk = useCallback((values: ValuesForm) => {
     createMailAPI(payloadMailMooseDesk(values));
   }, []);
@@ -198,7 +213,17 @@ const ChannelEmailCreate = () => {
         backAction={handleBack}
       >
         <div className="flex-1 flex justify-end">
-          <Button type="primary" onClick={handleSubmit}>
+          <Button
+            className={
+              mailSettingType === MailSettingType.FORWARD ? "hidden" : ""
+            }
+            type="primary"
+            onClick={handleSubmit}
+            disabled={
+              mailSettingType === MailSettingType.CUSTOM &&
+              signCallback?.refKey === ""
+            }
+          >
             Save
           </Button>
         </div>

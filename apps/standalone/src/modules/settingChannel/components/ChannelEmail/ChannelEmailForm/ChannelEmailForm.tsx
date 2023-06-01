@@ -5,7 +5,7 @@ import {
   MailSetting,
   MailSettingType,
 } from "@moose-desk/repo";
-import { Checkbox, Input, Radio } from "antd";
+import { Checkbox, Input, Radio, RadioChangeEvent } from "antd";
 import React, {
   useCallback,
   useEffect,
@@ -24,6 +24,7 @@ import {
   initialState,
   setSignInCallback,
 } from "src/modules/settingChannel/redux/channelEmail";
+import useMailSetting from "src/modules/settingChannel/store/useMailSetting";
 import { useAppDispatch, useAppSelector } from "src/redux/hook";
 
 interface ChannelEmailFormProps extends FormProps {
@@ -56,6 +57,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
   const [isLoggedServer, setIsLoggedServer] = useState<IsLoggedServer | null>(
     null
   );
+  const handleChangeMailSetting = useMailSetting((state) => state.changeUpdate);
 
   const signInCallback = useAppSelector(
     (state) => state.channelEmail.signInCallback
@@ -183,6 +185,17 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
 
     [signInCallback, props.initialValues]
   );
+
+  const isHidden = useMemo(() => {
+    if (type === "new") {
+      if (form.getFieldValue("mailSettingType") !== MailSettingType.MOOSEDESK)
+        return true;
+      else return false;
+    } else {
+      return false;
+    }
+  }, [form, type]);
+
   useEffect(() => {
     if (form.getFieldValue("mailSettingType") === MailSettingType.CUSTOM) {
       form.setFieldValue("mailboxType", MailBoxType.GMAIL);
@@ -200,7 +213,12 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
     >
       <div className="md:w-[90%] lg:w-[80%]">
         <Form.Item name="mailSettingType">
-          <Radio.Group disabled={!!id}>
+          <Radio.Group
+            onChange={(e: RadioChangeEvent) => {
+              handleChangeMailSetting(e.target.value);
+            }}
+            disabled={!!id}
+          >
             <Radio value={MailSettingType.CUSTOM}>Use your Gmail</Radio>
             <Radio value={MailSettingType.MOOSEDESK}>
               Use Moosedesk email address
@@ -208,30 +226,8 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
             <Radio value={MailSettingType.FORWARD}>Email Forwarding</Radio>
           </Radio.Group>
         </Form.Item>
-        <div
-          className={`${
-            form.getFieldValue("mailSettingType") === MailSettingType.CUSTOM &&
-            form.getFieldValue("supportEmail") === ""
-              ? "hidden"
-              : ""
-          }`}
-        >
-          <Form.Item
-            name="name"
-            label="Name"
-            // rules={[
-            //   {
-            //     required: true,
-            //     whitespace: true,
-            //     message: "Name is required",
-            //   },
-            //   {
-            //     max: 255,
-            //     type: "string",
-            //     message: "Name up to 255 characters",
-            //   },
-            // ]}
-          >
+        <div className={`${isHidden ? "hidden" : ""}`}>
+          <Form.Item name="name" label="Name">
             <Input />
           </Form.Item>
           <Form.Item

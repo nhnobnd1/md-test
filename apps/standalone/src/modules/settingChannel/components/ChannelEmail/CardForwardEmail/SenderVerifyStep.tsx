@@ -7,6 +7,7 @@ import React, { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import useMessage from "src/hooks/useMessage";
+import useMailSetting from "src/modules/settingChannel/store/useMailSetting";
 
 interface ContentWaitProps {
   email: string;
@@ -19,6 +20,9 @@ export const SenderVerifyStep: FC<ContentWaitProps> = React.memo(
     const [retrySenderCount, setRetrySenderCount] = useState(0);
     const message = useMessage();
     const { t } = useTranslation();
+    const createForwardEmail = useMailSetting(
+      (state) => state.createForwardEmail
+    );
 
     const { run: verifyFinish } = useJob((payload: string) => {
       return EmailIntegrationRepository()
@@ -27,6 +31,29 @@ export const SenderVerifyStep: FC<ContentWaitProps> = React.memo(
           map(({ data }) => {
             if (data.statusCode === 200) {
               setRetrySenderCount(1);
+            }
+          }),
+          catchError((err) => {
+            message.error(t("messages:error.something_went_wrong"));
+
+            return of(err);
+          })
+        );
+    });
+
+    const { run: checkVerifyEmailFirstTime } = useJob((payload: string) => {
+      return EmailIntegrationRepository()
+        .checkVerifyEmailSes(payload)
+        .pipe(
+          map(({ data }) => {
+            if (data.statusCode === 200) {
+              if (data.data.isVerified) {
+                formEmail.setFieldValue("supportEmail", email);
+                setIsVerifySender("Success");
+                createForwardEmail();
+              } else {
+                verifyFinish(payload);
+              }
             }
           }),
           catchError((err) => {
@@ -46,6 +73,7 @@ export const SenderVerifyStep: FC<ContentWaitProps> = React.memo(
               if (data.data.isVerified) {
                 formEmail.setFieldValue("supportEmail", email);
                 setIsVerifySender("Success");
+                createForwardEmail();
               } else {
                 setTimeout(() => {
                   setRetrySenderCount(retrySenderCount + 1);
@@ -77,7 +105,7 @@ export const SenderVerifyStep: FC<ContentWaitProps> = React.memo(
 
     useEffect(() => {
       if (retrySenderCount === 0) {
-        verifyFinish(email);
+        checkVerifyEmailFirstTime(email);
       }
     }, []);
 

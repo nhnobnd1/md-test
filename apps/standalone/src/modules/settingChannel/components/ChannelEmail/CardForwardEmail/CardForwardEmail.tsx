@@ -119,6 +119,7 @@ export const CardForwardEmail: FC<CardForwardEmailProps> = ({ formEmail }) => {
       ]);
       return;
     }
+    sessionStorage.setItem("forward_email_name", form.getFieldValue("name"));
     lookUpTypeEmail(values.email);
   };
   const handleVerifyCodeGoogle = () => {
@@ -371,7 +372,17 @@ Please check your inbox and click on the link within to use this email for sendi
                   Enter current support address
                 </Typography.Title>
                 <div className="flex gap-3 flex-col items-center mt-1">
+                  <Form.Item name="name">
+                    <Input
+                      onKeyPress={(e) => {
+                        e.key === "Enter" && e.preventDefault();
+                      }}
+                      className="w-[300px]"
+                      placeholder="Name"
+                    />
+                  </Form.Item>
                   <Form.Item
+                    className="mt-3"
                     name="email"
                     rules={[
                       { required: true, message: "You must enter your email!" },
