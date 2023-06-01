@@ -54,6 +54,7 @@ const ChannelEmail = () => {
       { isPrimaryEmail: true },
       newSelectedRowKeys[0] as string
     );
+    getListEmailApi(filterData);
   };
   const rowSelection = {
     selectedRowKeys,
