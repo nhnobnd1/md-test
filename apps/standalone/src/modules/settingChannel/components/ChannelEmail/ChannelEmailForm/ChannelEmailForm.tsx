@@ -187,6 +187,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
       form.setFieldValue("mailboxType", MailBoxType.GMAIL);
     }
   }, [form.getFieldValue("mailSettingType")]);
+  console.log("hehe", form.getFieldsValue());
 
   return (
     <Form
@@ -198,40 +199,49 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
       layout="vertical"
     >
       <div className="md:w-[90%] lg:w-[80%]">
-        <Form.Item
-          name="name"
-          label="Name"
-          rules={[
-            {
-              required: true,
-              whitespace: true,
-              message: "Name is required",
-            },
-            {
-              max: 255,
-              type: "string",
-              message: "Name up to 255 characters",
-            },
-          ]}
+        <div
+          className={`${
+            form.getFieldValue("mailboxType") === MailBoxType.GMAIL &&
+            form.getFieldValue("supportEmail") === ""
+              ? "hidden"
+              : ""
+          }`}
         >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          name="supportEmail"
-          label="Email Address"
-          rules={[
-            {
-              required: true,
-              message: "Email address is required",
-            },
-            {
-              type: "email",
-              message: "The email address is not valid",
-            },
-          ]}
-        >
-          <Input disabled={true} />
-        </Form.Item>
+          <Form.Item
+            name="name"
+            label="Name"
+            rules={[
+              {
+                required: true,
+                whitespace: true,
+                message: "Name is required",
+              },
+              {
+                max: 255,
+                type: "string",
+                message: "Name up to 255 characters",
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="supportEmail"
+            label="Email Address"
+            rules={[
+              {
+                required: true,
+                message: "Email address is required",
+              },
+              {
+                type: "email",
+                message: "The email address is not valid",
+              },
+            ]}
+          >
+            <Input disabled={true} />
+          </Form.Item>
+        </div>
         <Form.Item name="mailSettingType">
           <Radio.Group disabled={!!id}>
             <Radio value={MailSettingType.CUSTOM}>Use your Gmail</Radio>
