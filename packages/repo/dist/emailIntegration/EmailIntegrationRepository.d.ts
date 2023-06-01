@@ -29,6 +29,7 @@ export declare const EmailIntegrationRepository: () => {
         isVerified: boolean;
     }>, any>>;
     checkVerifyEmailSes: (email: string) => import("rxjs").Observable<import("axios").AxiosResponse<BaseResponse<any>, any>>;
+    primaryEmail: (id: string, payload: any) => import("rxjs").Observable<import("axios").AxiosResponse<any, any>>;
 };
 export default EmailIntegrationRepository;
 //# sourceMappingURL=EmailIntegrationRepository.d.ts.map

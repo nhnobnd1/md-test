@@ -56,6 +56,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
   const [isLoggedServer, setIsLoggedServer] = useState<IsLoggedServer | null>(
     null
   );
+
   const signInCallback = useAppSelector(
     (state) => state.channelEmail.signInCallback
   );
@@ -96,7 +97,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
           ...props.initialValues,
         }
       : {
-          name: signInCallback.name || "",
+          name: signInCallback.name || getSubDomain(),
           mailSettingType: MailSettingType.CUSTOM,
           mailboxType: MailBoxType.GMAIL,
           accessType: AccessType.Both,
@@ -218,18 +219,18 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
           <Form.Item
             name="name"
             label="Name"
-            rules={[
-              {
-                required: true,
-                whitespace: true,
-                message: "Name is required",
-              },
-              {
-                max: 255,
-                type: "string",
-                message: "Name up to 255 characters",
-              },
-            ]}
+            // rules={[
+            //   {
+            //     required: true,
+            //     whitespace: true,
+            //     message: "Name is required",
+            //   },
+            //   {
+            //     max: 255,
+            //     type: "string",
+            //     message: "Name up to 255 characters",
+            //   },
+            // ]}
           >
             <Input />
           </Form.Item>

@@ -13,6 +13,7 @@ import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
+import { useSubdomain } from "src/hooks/useSubdomain";
 import {
   ChannelEmailForm,
   ValuesForm,
@@ -27,6 +28,7 @@ const ChannelEmailCreate = () => {
   const message = useMessage();
   const notification = useNotification();
   const { t } = useTranslation();
+  const { getSubDomain } = useSubdomain();
 
   const signCallback = useAppSelector(
     (state) => state.channelEmail.signInCallback
@@ -110,6 +112,10 @@ const ChannelEmailCreate = () => {
 
   const handleFinishForm = useCallback(
     (values: ValuesForm) => {
+      if (values.name === "") {
+        console.log("vaoday", getSubDomain());
+        values.name = getSubDomain();
+      }
       // if (values.mailSettingType === MailSettingType.CUSTOM) {
       //   if (values.mailboxType === MailBoxType.GMAIL) {
       //     createMail(values);

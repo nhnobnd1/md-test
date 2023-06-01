@@ -88,6 +88,9 @@ export const EmailIntegrationRepository = createRepository(
 				`/check-verification-email-ses?email=${email}`
 			);
 		},
+		primaryEmail(api, id: string, payload: any) {
+			return api.post<any>(`/primary-email/${id}`, payload);
+		},
 	}
 );
 
