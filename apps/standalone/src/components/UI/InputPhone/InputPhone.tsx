@@ -41,8 +41,8 @@ const InputPhone = ({
   // const { subDomain } = useSubdomain();
   // const { timezone } = useGlobalData(false, subDomain || "");
 
-  const [flagValue, setFlagValue] = useState<string>("84");
-  const [valueSelect, setValueSelect] = useState("VN");
+  const [flagValue, setFlagValue] = useState<string>("1");
+  const [valueSelect, setValueSelect] = useState("CA");
   const [valueField, setValueField] = useState("");
   const handleChangeValueInput = (value: string) => {
     setValueField(value);

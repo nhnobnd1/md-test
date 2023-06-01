@@ -60,7 +60,7 @@ const InputPhone = (props: InputPhoneProps) => {
 
   // set flag and value
 
-  const [flagValue, setFlagValue] = useState<string>("84");
+  const [flagValue, setFlagValue] = useState<string>("1");
   const [valueInput, setValueInput] = useState<{
     countryName: string;
     code: string;
@@ -68,11 +68,11 @@ const InputPhone = (props: InputPhoneProps) => {
     flagImage: string;
   }>({
     countryName: "Vietnam",
-    code: "VN",
-    phonePrefix: "84",
-    flagImage: `https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/VN.svg`,
+    code: "CA",
+    phonePrefix: "1",
+    flagImage: `https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/CA.svg`,
   });
-  const [valueSelect, setValueSelect] = useState(["VN"]);
+  const [valueSelect, setValueSelect] = useState(["CA"]);
   const [valueField, setValueField] = useState("");
   const handleChangeValueInput = (value: string) => {
     setValueField(value);
@@ -88,7 +88,7 @@ const InputPhone = (props: InputPhoneProps) => {
       (dataSelect as any).find((option: any) => option.code === value[0])
     );
     setFlagValue(
-      dataSelect.find((option) => option.code === value[0])?.phonePrefix || "84"
+      dataSelect.find((option) => option.code === value[0])?.phonePrefix || "1"
     );
     if (valueField !== "") {
       props.onChange &&
