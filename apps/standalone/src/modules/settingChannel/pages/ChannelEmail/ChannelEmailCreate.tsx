@@ -41,11 +41,9 @@ const ChannelEmailCreate = () => {
         .pipe(
           map(({ data }) => {
             if (data.statusCode === 200) {
+              sessionStorage.setItem("gmail_id", data.data._id);
               message.loading.hide().then(() => {
                 notification.success(t("messages:success.create_email"));
-                navigate(
-                  generatePath(SettingChannelRoutePaths.ChannelEmail.Index)
-                );
               });
             } else {
               message.loading.hide().then(() => {
@@ -65,6 +63,49 @@ const ChannelEmailCreate = () => {
           })
         );
     }
+  );
+
+  const { run: updateEmailIntegration } = useJob(
+    (payload: CreateEmailIntegrationRequest) => {
+      message.loading.show(t("messages:loading.updating_email"));
+      return EmailIntegrationRepository()
+        .updateEmailIntegration(sessionStorage.getItem("gmail_id"), payload)
+        .pipe(
+          map(({ data }) => {
+            if (data.statusCode === 200) {
+              message.loading.hide().then(() => {
+                notification.success(t("messages:success.update_email"));
+                navigate(
+                  generatePath(SettingChannelRoutePaths.ChannelEmail.Index)
+                );
+              });
+            } else {
+              message.loading.hide().then(() => {
+                message.loading.hide().then(() => {
+                  notification.error(t("messages:error.update_email"));
+                });
+              });
+            }
+          }),
+          catchError((err) => {
+            if (err.response.data.statusCode === 409) {
+              message.loading.hide().then(() => {
+                notification.error(`${payload.supportEmail} is exist`);
+              });
+            }
+            return err;
+          })
+        );
+    },
+    {
+      showLoading: true,
+    }
+  );
+  const updateMailGoogle = useCallback(
+    (values: ValuesForm) => {
+      updateEmailIntegration(payloadEmailGoogle(values));
+    },
+    [signCallback]
   );
 
   const handleFinishForm = useCallback(
@@ -87,7 +128,7 @@ const ChannelEmailCreate = () => {
       switch (values.mailSettingType) {
         case MailSettingType.CUSTOM:
           if (values.mailboxType === MailBoxType.GMAIL) {
-            createMail(values);
+            updateMailGoogle(values);
           } else {
             createMailExternal(values);
           }
@@ -126,9 +167,10 @@ const ChannelEmailCreate = () => {
     [signCallback]
   );
   useEffect(() => {
-    console.log("useEffect", signCallback);
-    if (signCallback) {
-      handleSubmit();
+    if (signCallback?.refKey) {
+      setTimeout(() => {
+        createMail(form.getFieldsValue());
+      }, 100);
     }
   }, [signCallback]);
 
