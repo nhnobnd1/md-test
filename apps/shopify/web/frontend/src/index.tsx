@@ -29,7 +29,7 @@ import("src/styles/index.scss").then(() => {
   import("@shopify/polaris/build/esm/styles.css");
 });
 Sentry.init({
-  dsn: "https://f10e0ee929fb4a0fbc957037811e7359@o4505248145670144.ingest.sentry.io/4505248164413440",
+  dsn: env.DSN_SENTRY,
   integrations: [new Sentry.BrowserTracing(), new Sentry.Replay()],
   // Performance Monitoring
   tracesSampleRate: 1.0, // Capture 100% of the transactions, reduce in production!
