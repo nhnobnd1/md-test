@@ -16,6 +16,7 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, any> {
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     const numberRetry = sessionStorage.getItem("retry_error");
+    console.log({ numberRetry });
     if (!numberRetry) {
       console.log(error, errorInfo);
       window.location.reload();
