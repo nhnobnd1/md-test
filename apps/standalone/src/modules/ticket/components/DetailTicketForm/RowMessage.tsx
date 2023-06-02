@@ -161,7 +161,9 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
       <div ref={iframeRef}>
         <object
           className="w-full h-full border-none mt-5"
-          data={`data:text/html;charset=utf-8,${encodeURIComponent(sortChat)}`}
+          data={`data:text/html;charset=utf-8,${encodeURIComponent(
+            `<div style="font-family:Helvetica;font-size:14px">${sortChat}</div>`
+          )}`}
           type="text/html"
         ></object>
       </div>
@@ -193,7 +195,9 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
           <div ref={iframeRefQuote}>
             <object
               className="w-full h-full border-none mt-5"
-              data={`data:text/html;charset=utf-8,${encodeURIComponent(quote)}`}
+              data={`data:text/html;charset=utf-8,${encodeURIComponent(
+                `<div style="font-family:Helvetica;font-size:14px">${quote}</div>`
+              )}`}
               type="text/html"
             ></object>
           </div>

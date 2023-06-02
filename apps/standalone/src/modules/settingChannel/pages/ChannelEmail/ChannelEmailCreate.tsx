@@ -118,7 +118,7 @@ const ChannelEmailCreate = () => {
   const handleFinishForm = useCallback(
     (values: ValuesForm) => {
       if (values.name === "") {
-        values.name = getSubDomain();
+        values.name = (getSubDomain() as string).toLowerCase();
       }
       // if (values.mailSettingType === MailSettingType.CUSTOM) {
       //   if (values.mailboxType === MailBoxType.GMAIL) {

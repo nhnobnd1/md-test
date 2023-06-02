@@ -112,7 +112,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
           ...props.initialValues,
         }
       : {
-          name: signInCallback.name || getSubDomain(),
+          name: signInCallback.name || (getSubDomain() as string).toLowerCase(),
           mailSettingType: MailSettingType.CUSTOM,
           mailboxType: MailBoxType.GMAIL,
           accessType: AccessType.Both,
