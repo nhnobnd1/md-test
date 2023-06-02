@@ -119,7 +119,11 @@ export const CardForwardEmail: FC<CardForwardEmailProps> = ({ formEmail }) => {
       ]);
       return;
     }
-    sessionStorage.setItem("forward_email_name", form.getFieldValue("name"));
+    if (form.getFieldValue("name")) {
+      sessionStorage.setItem("forward_email_name", form.getFieldValue("name"));
+    } else {
+      sessionStorage.setItem("forward_email_name", "");
+    }
     lookUpTypeEmail(values.email);
   };
   const handleVerifyCodeGoogle = () => {

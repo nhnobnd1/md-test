@@ -186,12 +186,12 @@ const ChannelEmailCreate = () => {
 
   useEffect(() => {
     if (isForwardEmailCreated) {
-      form.setFieldValue(
-        "name",
-        sessionStorage.getItem("forward_email_name") || getSubDomain()
-      );
-
-      createMailOther(form.getFieldsValue());
+      createMailOther({
+        ...form.getFieldsValue(),
+        name:
+          sessionStorage.getItem("forward_email_name") ||
+          (getSubDomain() as string).toLowerCase(),
+      });
     }
   }, [isForwardEmailCreated]);
 
