@@ -6,6 +6,7 @@ import {
   EmailIntegrationRepository,
   Priority,
 } from "@moose-desk/repo";
+import { Skeleton } from "antd";
 import classNames from "classnames";
 import { useEffect, useMemo, useState } from "react";
 import { catchError, map, of } from "rxjs";
@@ -25,14 +26,30 @@ const CreateTicket = () => {
       to: "",
     };
   }, [primaryEmail?._id]);
-
+  const { run: getListEmailApi, processing: loadingList } = useJob(
+    (payload: any) => {
+      return EmailIntegrationRepository()
+        .getListEmail(payload)
+        .pipe(
+          map(({ data }) => {
+            if (data.statusCode === 200) {
+              setPrimaryEmail(data.data[0]);
+            }
+          })
+        );
+    }
+  );
   const { run: getPrimaryEmail, processing } = useJob(() => {
     return EmailIntegrationRepository()
       .getPrimaryEmail()
       .pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
-            setPrimaryEmail(data.data);
+            if (Object.keys(data.data).length) {
+              setPrimaryEmail(data.data);
+            } else {
+              getListEmailApi({ page: 1, limit: 10 });
+            }
           }
         }),
         catchError((err) => {
@@ -72,8 +89,10 @@ const CreateTicket = () => {
         <div className={styles.wrapSearchToggle}>{_renderButtonToggle()}</div>
         <Header className="mb-[40px]" title="New Ticket" back></Header>
 
-        {processing ? (
-          <></>
+        {processing || loadingList ? (
+          <>
+            <Skeleton />
+          </>
         ) : (
           <TicketForm
             primaryEmail={primaryEmail}

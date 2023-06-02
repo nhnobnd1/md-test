@@ -197,9 +197,9 @@ Select.Ajax = ({
     } else {
       // setValue(options[0]);
       // eslint-disable-next-line no-unused-expressions
-      props.placeholder === "Search email integration"
-        ? setValue(options[0])
-        : "";
+      // props.placeholder === "Search email integration"
+      //   ? setValue(options[0])
+      //   : "";
     }
   }, [options, props.value]);
 

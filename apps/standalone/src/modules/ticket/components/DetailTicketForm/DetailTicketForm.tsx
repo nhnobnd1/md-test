@@ -594,6 +594,12 @@ const DetailTicketForm = () => {
                               label={<div style={{ width: 35 }}>From</div>}
                               name="from"
                               labelAlign="left"
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Please input your email!",
+                                },
+                              ]}
                             >
                               <Select
                                 placeholder="Search email integration"

@@ -43,14 +43,30 @@ const CreateTicket = (props: CreateTicketProps) => {
       subject: "",
     };
   }, [primaryEmail?._id]);
-  console.log({ primaryEmail });
+  const { run: getListEmailApi, processing: loadingList } = useJob(
+    (payload: any) => {
+      return EmailIntegrationRepository()
+        .getListEmail(payload)
+        .pipe(
+          map(({ data }) => {
+            if (data.statusCode === 200) {
+              setPrimaryEmail(data.data[0]);
+            }
+          })
+        );
+    }
+  );
   const { run: getPrimaryEmail } = useJob(() => {
     return EmailIntegrationRepository()
       .getPrimaryEmail()
       .pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
-            setPrimaryEmail(data.data);
+            if (Object.keys(data.data).length) {
+              setPrimaryEmail(data.data);
+            } else {
+              getListEmailApi({ page: 1, limit: 10 });
+            }
           }
         }),
         catchError((err) => {

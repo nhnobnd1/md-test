@@ -404,6 +404,10 @@ const DetailTicket = (props: DetailTicketProps) => {
     to: Yup.string()
       .required("Email address is required")
       .email("The email address is not valid"),
+    from: Yup.string()
+      .required("Email address is required")
+      // .email("The email address is not valid")
+      .nullable(),
   });
 
   // useMount(() => {
