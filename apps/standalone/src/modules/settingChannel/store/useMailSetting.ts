@@ -7,7 +7,7 @@ interface SettingState {
   haveMooseDeskEmail: boolean;
   changeUpdate: (updateType: string) => void;
   changeUpdateMooseDeskEmail: (updateType: boolean) => void;
-  createForwardEmail: () => void;
+  createForwardEmail: (type: boolean) => void;
 }
 export const initialSave = MailSettingType.CUSTOM;
 
@@ -16,7 +16,8 @@ const useMailSetting = create<SettingState>()((set) => ({
   isForwardEmailCreated: false,
   haveMooseDeskEmail: false,
 
-  createForwardEmail: () => set(() => ({ isForwardEmailCreated: true })),
+  createForwardEmail: (type: boolean) =>
+    set(() => ({ isForwardEmailCreated: type })),
   changeUpdate: (updateType: string) =>
     set(() => ({ mailSettingType: updateType })),
   changeUpdateMooseDeskEmail: (updateType: boolean) =>
