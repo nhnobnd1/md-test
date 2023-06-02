@@ -110,7 +110,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
   }, [quote, checkHeightQuote, toggleQuote]);
   return (
     <div className="">
-      <div className=" items-center gap-3">
+      <div className=" items-center gap-3 mx-2">
         <div className="flex items-end gap-3 ">
           <Text variant="headingXl" as="h4">
             {item.name}
