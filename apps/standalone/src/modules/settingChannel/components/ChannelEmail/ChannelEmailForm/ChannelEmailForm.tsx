@@ -265,7 +265,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
                 Use Moosedesk email address
               </Radio>
             </Tooltip>
-            <Radio value={MailSettingType.FORWARD}>Email Forwarding</Radio>
+            <Radio value={MailSettingType.FORWARD}>Other</Radio>
           </Radio.Group>
         </Form.Item>
         <div className={`${isHidden ? "hidden" : ""}`}>

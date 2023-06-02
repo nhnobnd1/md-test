@@ -342,7 +342,7 @@ Please check your inbox and click on the link within to use this email for sendi
           </Card>
         )
       ) : (
-        <Card className="mb-5 " title="Forwarding details" type="inner">
+        <Card className="mb-5 " title=" " type="inner">
           <Steps
             className="mb-5"
             current={step}
