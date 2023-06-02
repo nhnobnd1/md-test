@@ -15,7 +15,20 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, any> {
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.log(error, errorInfo);
+    const numberRetry = sessionStorage.getItem("retry_error");
+    if (!numberRetry) {
+      console.log(error, errorInfo);
+      window.location.reload();
+      sessionStorage.setItem("retry_error", "1");
+    } else {
+      if (Number(numberRetry) > 3) {
+        return;
+      }
+      setTimeout(() => {
+        window.location.reload();
+        sessionStorage.setItem("retry_error", `${Number(numberRetry) + 1}`);
+      }, 1000);
+    }
   }
 
   render() {
