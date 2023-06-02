@@ -102,7 +102,7 @@ const ModalAutoReply = ({
                 // value={dataForm?.value.content}
                 init={{
                   toolbar:
-                    "undo redo blocks fontfamily fontsize bold italic underline strikethrough link image media table mergetags addcomment showcomments spellcheckdialog a11ycheck typography align lineheight ",
+                    "undo redo blocks fontfamily fontsizeinput bold italic underline strikethrough link image media table mergetags addcomment showcomments spellcheckdialog a11ycheck typography align lineheight ",
                   // setup: () => {},
                 }}
               />

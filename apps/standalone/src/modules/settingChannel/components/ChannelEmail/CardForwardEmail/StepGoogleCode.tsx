@@ -76,7 +76,7 @@ export const StepGoogleCode: FC<ContentWaitProps> = React.memo(
               <div className="flex flex-col">
                 <span>
                   Sign in to your email account, and go to your email forwarding
-                  settings (done outside of Zendesk Support).
+                  settings (done outside of MooseDesk Support).
                 </span>
               </div>
             </div>

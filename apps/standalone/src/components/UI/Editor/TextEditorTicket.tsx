@@ -125,6 +125,31 @@ const TextEditorTicket = ({
         })
       );
   });
+
+  const { run: postImage } = useJob((dataSubmit: any, callback: any) => {
+    setLoadingButton(true);
+    setLoading(true);
+    return TicketRepository()
+      .postAttachment(dataSubmit)
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            setLoadingButton(false);
+            setLoading(false);
+            callback(data.data);
+            message.success(t("messages:success.file_upload"));
+          }
+        }),
+        catchError((err) => {
+          setLoadingButton(false);
+          setLoading(false);
+
+          message.error(t("messages:error.file_upload"));
+
+          return of(err);
+        })
+      );
+  });
   const removeFile = (file: any, index: number) => () => {
     const newFiles = [...myFiles];
     const newIdAttachments = [...idAttachments];
@@ -261,9 +286,9 @@ const TextEditorTicket = ({
             fontsize_formats:
               "8pt 9pt 10pt 11pt 12pt 14pt 18pt 24pt 30pt 36pt 48pt 60pt 72pt 96pt",
             content_style:
-              "body { font-family:Helvetica,Arial,sans-serif; font-size:12pt }",
+              "body { font-family:Helvetica,Arial,sans-serif; font-size:14px}",
             toolbar:
-              "undo redo | bold italic underline align | importfile | blocks fontfamily fontsize  | link code copy cut past blockquote backcolor forecolor indent newdocument lineheight selectall strikethrough",
+              "undo redo | bold italic underline align | importfile | blocks fontfamily fontsizeinput image media | link code copy cut past blockquote backcolor forecolor indent newdocument lineheight selectall strikethrough",
             plugins: [
               "advlist lists autolink charmap print preview anchor",
               "searchreplace visualblocks code fullscreen",
@@ -272,7 +297,25 @@ const TextEditorTicket = ({
               "link",
               "code",
             ],
+            file_picker_types: "image",
+            file_picker_callback: function (cb, value, meta) {
+              if (meta.filetype === "image") {
+                const input = document.createElement("input");
+                input.setAttribute("type", "file");
+                input.setAttribute("accept", "image/*");
 
+                input.onchange = function () {
+                  if (input.files?.length) {
+                    const file = input.files[0];
+                    postImage(file, (data: any) => {
+                      cb(data.urls[0], { title: file.name });
+                    });
+                  }
+                };
+
+                input.click();
+              }
+            },
             setup: (editor) => {
               editor.ui.registry.addButton("importfile", {
                 text: "Upload file",
@@ -282,11 +325,7 @@ const TextEditorTicket = ({
                 },
               });
             },
-            // init_instance_callback: (ed) => {
-            //   ed.on("click", function (e) {
-            //     ed.editorCommands.execCommand("fontName", false, "Helvetica");
-            //   });
-            // },
+
             statusbar: false,
             paste_data_images: true,
             ...props.init,
