@@ -3,12 +3,13 @@ import { memo, useMemo } from "react";
 import {
   Area,
   AreaChart,
-  CartesianGrid,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
+import { CustomXAxisTick } from "src/modules/report/components/Customize/CustomXAxisTick";
+import { CustomYAxisTickTime } from "src/modules/report/components/Customize/CustomYAxisTickTime";
 import { convertSecondsToHoursMinutes } from "src/modules/report/helper/convert";
 import ChartResolutionTimeRes from "src/modules/report/helper/interface";
 interface ChartResolutionTimeProps {
@@ -55,24 +56,39 @@ export const ChartResolutionTime = ({ data }: ChartResolutionTimeProps) => {
   return (
     <ResponsiveContainer width="100%" height="100%">
       <AreaChart
-        width={500}
-        height={400}
+        // width={500}
+        // height={400}
         data={chartData}
-        margin={{
-          top: 10,
-          right: 30,
-          left: 0,
-          bottom: 0,
-        }}
+        // margin={{
+        //   top: 10,
+        //   right: 30,
+        //   left: 0,
+        //   bottom: 0,
+        // }}
       >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
+        {/* <CartesianGrid strokeDasharray="3 3" /> */}
+        <XAxis
+          dataKey="name"
+          axisLine={false}
+          tickLine={false}
+          tick={<CustomXAxisTick />}
+        />
         <YAxis
-          tickFormatter={formatYAxis}
           domain={maxYValue ? [0, maxYValue] : undefined}
+          axisLine={false}
+          tickLine={false}
+          tick={<CustomYAxisTickTime />}
+          // tickFormatter={formatYAxis}
         />
         <Tooltip content={<CustomTooltip />} />
-        <Area type="monotone" dataKey="time" stroke="#4DD0E1" fill="#4DD0E1" />
+        <Area
+          type="monotone"
+          dataKey="time"
+          stroke="#FA7D00"
+          fill="none"
+          strokeWidth={2}
+          dot={{ r: 4, fill: "#FA7D00" }}
+        />
       </AreaChart>
     </ResponsiveContainer>
   );
