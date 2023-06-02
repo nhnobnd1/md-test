@@ -14,10 +14,15 @@ import {
   ButtonGroup,
   Card,
   Layout,
+  LegacyCard,
   Page,
+  SkeletonBodyText,
+  SkeletonDisplayText,
+  SkeletonPage,
   Stack,
   Tabs,
   Text,
+  TextContainer,
 } from "@shopify/polaris";
 import { FormikProps } from "formik";
 import { useCallback, useRef, useState } from "react";
@@ -90,7 +95,7 @@ const BusinessHours = (props: BusinessHoursProps) => {
     }
   }, []);
   // fetch business calendar
-  const { run: fetchListBusinessCalendar } = useJob(
+  const { run: fetchListBusinessCalendar, processing } = useJob(
     () => {
       return BusinessCalendarRepository()
         .getListBusinessCalendar({
@@ -170,122 +175,140 @@ const BusinessHours = (props: BusinessHoursProps) => {
   useMount(() => fetchListBusinessCalendar());
   return (
     <>
-      <Page title="Business Hours" fullWidth>
-        <Layout>
-          {banner.isShow ? (
+      {processing ? (
+        <>
+          <SkeletonPage />
+          <Layout>
             <Layout.Section>
-              <Banner
-                title={undefined}
-                status={banner.type}
-                onDismiss={() => setBanner({ ...banner, isShow: false })}
-              >
-                {banner.message}
-              </Banner>
+              <LegacyCard sectioned>
+                <TextContainer>
+                  <SkeletonDisplayText size="extraLarge" />
+                  <SkeletonBodyText />
+                </TextContainer>
+              </LegacyCard>
             </Layout.Section>
-          ) : null}
-          <Layout.Section>
-            <Form
-              initialValues={dataBusinessCalendar || {}}
-              ref={formRef}
-              onSubmit={handleSubmit}
-              onValuesChange={handleChangeValues}
-              enableReinitialize
-            >
-              <Card sectioned>
-                <Layout>
-                  <Layout.Section>
-                    <div className="flex items-center content-between">
-                      <Text as="span" variant="bodyMd">
-                        Time zone:
-                      </Text>
-                      <div className="w-3/6 ml-4">
-                        <FormItem name="timezone">
-                          <SelectTimeZone />
-                        </FormItem>
-                      </div>
-                    </div>
-                  </Layout.Section>
-                  <Layout.Section>
-                    <Card>
-                      <Tabs
-                        tabs={tabs}
-                        selected={selected}
-                        onSelect={handleTabChange}
-                      >
-                        <div className="tabs">
-                          {selected === 0 ? (
-                            <BusinessHoursTab disabled={disabled} />
-                          ) : null}
-                          <div
-                            className={selected === 1 ? undefined : "hidden"}
-                          >
-                            <FormItem name="holidays">
-                              <HolidayTab dataAutoReply={dataAutoReply} />
-                            </FormItem>
-                          </div>
-                          <div
-                            className={selected === 2 ? undefined : "hidden"}
-                          >
-                            <FormItem name="autoReply">
-                              <AutoReplyTab
-                                dataHolidays={dataHolidays}
-                                dataBusinessHoursAutoReplyCode={
-                                  dataBusinessHoursAutoReplyCode
-                                }
-                              />
-                            </FormItem>
-                          </div>
+          </Layout>
+        </>
+      ) : (
+        <Page title="Business Hours" fullWidth>
+          <Layout>
+            {banner.isShow ? (
+              <Layout.Section>
+                <Banner
+                  title={undefined}
+                  status={banner.type}
+                  onDismiss={() => setBanner({ ...banner, isShow: false })}
+                >
+                  {banner.message}
+                </Banner>
+              </Layout.Section>
+            ) : null}
+            <Layout.Section>
+              <Form
+                initialValues={dataBusinessCalendar || {}}
+                ref={formRef}
+                onSubmit={handleSubmit}
+                onValuesChange={handleChangeValues}
+                enableReinitialize
+              >
+                <Card sectioned>
+                  <Layout>
+                    <Layout.Section>
+                      <div className="flex items-center content-between">
+                        <Text as="span" variant="bodyMd">
+                          Time zone:
+                        </Text>
+                        <div className="w-3/6 ml-4">
+                          <FormItem name="timezone">
+                            <SelectTimeZone />
+                          </FormItem>
                         </div>
-                      </Tabs>
-                      <div
-                        className={!disabled && selected === 0 ? "" : "hidden"}
-                      >
-                        <Card.Section>
-                          <div className="flex items-start content-between">
-                            <div className="mr-4 w-[100px] mt-2">
-                              <Text as="span" variant="bodyMd">
-                                Auto-Reply
-                              </Text>
-                            </div>
-                            <FormItem name="businessHoursAutoReplyCode">
-                              <div className="w-full">
-                                <BoxSelectAutoReply
-                                  placeholder=""
-                                  dataAutoReply={dataAutoReply}
-                                />
-                                <span>
-                                  Choose your auto-reply outside of business
-                                  hours. You can set up new message in the
-                                  “Auto-Reply” Tab
-                                </span>
-                              </div>
-                            </FormItem>
-                          </div>
-                        </Card.Section>
                       </div>
-                    </Card>
-                  </Layout.Section>
-                  <Layout.Section>
-                    <Stack distribution="trailing">
-                      <ButtonGroup>
-                        <Button onClick={() => formRef.current?.resetForm()}>
-                          Cancel
-                        </Button>
-                        <Button
-                          onClick={() => formRef.current?.submitForm()}
-                          primary
+                    </Layout.Section>
+                    <Layout.Section>
+                      <Card>
+                        <Tabs
+                          tabs={tabs}
+                          selected={selected}
+                          onSelect={handleTabChange}
                         >
-                          Save
-                        </Button>
-                      </ButtonGroup>
-                    </Stack>
-                  </Layout.Section>
-                </Layout>
-              </Card>
-            </Form>
-          </Layout.Section>
-        </Layout>
-      </Page>
+                          <div className="tabs">
+                            {selected === 0 ? (
+                              <BusinessHoursTab disabled={disabled} />
+                            ) : null}
+                            <div
+                              className={selected === 1 ? undefined : "hidden"}
+                            >
+                              <FormItem name="holidays">
+                                <HolidayTab dataAutoReply={dataAutoReply} />
+                              </FormItem>
+                            </div>
+                            <div
+                              className={selected === 2 ? undefined : "hidden"}
+                            >
+                              <FormItem name="autoReply">
+                                <AutoReplyTab
+                                  dataHolidays={dataHolidays}
+                                  dataBusinessHoursAutoReplyCode={
+                                    dataBusinessHoursAutoReplyCode
+                                  }
+                                />
+                              </FormItem>
+                            </div>
+                          </div>
+                        </Tabs>
+                        <div
+                          className={
+                            !disabled && selected === 0 ? "" : "hidden"
+                          }
+                        >
+                          <Card.Section>
+                            <div className="flex items-start content-between">
+                              <div className="mr-4 w-[100px] mt-2">
+                                <Text as="span" variant="bodyMd">
+                                  Auto-Reply
+                                </Text>
+                              </div>
+                              <FormItem name="businessHoursAutoReplyCode">
+                                <div className="w-full">
+                                  <BoxSelectAutoReply
+                                    placeholder=""
+                                    dataAutoReply={dataAutoReply}
+                                  />
+                                  <span>
+                                    Choose your auto-reply outside of business
+                                    hours. You can set up new message in the
+                                    “Auto-Reply” Tab
+                                  </span>
+                                </div>
+                              </FormItem>
+                            </div>
+                          </Card.Section>
+                        </div>
+                      </Card>
+                    </Layout.Section>
+                    <Layout.Section>
+                      <Stack distribution="trailing">
+                        <ButtonGroup>
+                          <Button onClick={() => formRef.current?.resetForm()}>
+                            Cancel
+                          </Button>
+                          <Button
+                            onClick={() => formRef.current?.submitForm()}
+                            primary
+                          >
+                            Save
+                          </Button>
+                        </ButtonGroup>
+                      </Stack>
+                    </Layout.Section>
+                  </Layout>
+                </Card>
+              </Form>
+            </Layout.Section>
+          </Layout>
+        </Page>
+      )}
     </>
   );
 };

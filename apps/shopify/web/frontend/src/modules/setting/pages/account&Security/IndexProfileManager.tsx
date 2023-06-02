@@ -7,7 +7,11 @@ import {
   Card,
   ContextualSaveBar,
   Layout,
+  LegacyCard,
   Page,
+  SkeletonBodyText,
+  SkeletonDisplayText,
+  TextContainer,
 } from "@shopify/polaris";
 import { FormikProps } from "formik";
 import * as jose from "jose";
@@ -42,7 +46,7 @@ export default function IndexProfileManager() {
   const { show } = useToast();
   const { t, i18n } = useTranslation();
 
-  const { run: fetDetailsProfile } = useJob(
+  const { run: fetDetailsProfile, processing } = useJob(
     (payload: string) => {
       return AgentRepository()
         .getOne(payload)
@@ -128,23 +132,40 @@ export default function IndexProfileManager() {
           }}
         />
       )}
-      <Page fullWidth>
-        <Layout>
-          <Layout.Section>
-            {banner.isShow ? (
-              <Banner
-                status={banner.type}
-                onDismiss={() => setBanner({ ...banner, isShow: false })}
-              >
-                {banner.message}
-              </Banner>
-            ) : null}
-          </Layout.Section>
-          <Layout.Section>
-            <Card sectioned>{profileProfile}</Card>
-          </Layout.Section>
-        </Layout>
-      </Page>
+      {processing ? (
+        <>
+          <Page fullWidth>
+            <Layout>
+              <Layout.Section>
+                <LegacyCard sectioned>
+                  <TextContainer>
+                    <SkeletonDisplayText size="extraLarge" />
+                    <SkeletonBodyText />
+                  </TextContainer>
+                </LegacyCard>
+              </Layout.Section>
+            </Layout>
+          </Page>
+        </>
+      ) : (
+        <Page fullWidth>
+          <Layout>
+            <Layout.Section>
+              {banner.isShow ? (
+                <Banner
+                  status={banner.type}
+                  onDismiss={() => setBanner({ ...banner, isShow: false })}
+                >
+                  {banner.message}
+                </Banner>
+              ) : null}
+            </Layout.Section>
+            <Layout.Section>
+              <Card sectioned>{profileProfile}</Card>
+            </Layout.Section>
+          </Layout>
+        </Page>
+      )}
     </>
   );
 }

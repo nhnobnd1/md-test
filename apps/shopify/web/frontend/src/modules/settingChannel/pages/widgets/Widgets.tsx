@@ -11,7 +11,11 @@ import {
   Layout,
   LegacyCard,
   Page,
+  SkeletonBodyText,
+  SkeletonDisplayText,
+  SkeletonPage,
   Tabs,
+  TextContainer,
 } from "@shopify/polaris";
 import classNames from "classnames";
 import { FormikProps } from "formik";
@@ -78,7 +82,7 @@ const Widgets = (props: WidgetsProps) => {
 
   const [widget, setWidget] = useState<HelpWidget>();
 
-  const { run: getListHelpWidgetApi } = useJob(
+  const { run: getListHelpWidgetApi, processing } = useJob(
     (payload: GetListHelpWidgetRequest) => {
       return HelpWidgetRepository()
         .getList(payload)
@@ -216,56 +220,76 @@ const Widgets = (props: WidgetsProps) => {
           }}
         />
       )}
-      <Page title="Web Form" fullWidth>
-        <Layout>
-          {banner.visible && (
+      {processing ? (
+        <>
+          <SkeletonPage />
+          <Layout>
             <Layout.Section>
-              <Banner banner={banner} onDismiss={closeBanner}></Banner>
+              <LegacyCard sectioned>
+                <TextContainer>
+                  <SkeletonDisplayText size="extraLarge" />
+                  <SkeletonBodyText />
+                </TextContainer>
+              </LegacyCard>
             </Layout.Section>
-          )}
-          <Layout.Section>
-            <LegacyCard>
-              <Tabs tabs={tabs} selected={selected} onSelect={handleTabChange}>
-                <LegacyCard.Section>
-                  <div className={classNames({ hidden: selected === 2 })}>
-                    <div className="flex gap-[24px]">
-                      <div className="view-widgets mr-[24px]">
-                        <LegacyCard sectioned>
-                          <ViewWidget />
-                        </LegacyCard>
-                      </div>
+          </Layout>
+        </>
+      ) : (
+        <Page title="Web Form" fullWidth>
+          <Layout>
+            {banner.visible && (
+              <Layout.Section>
+                <Banner banner={banner} onDismiss={closeBanner}></Banner>
+              </Layout.Section>
+            )}
+            <Layout.Section>
+              <LegacyCard>
+                <Tabs
+                  tabs={tabs}
+                  selected={selected}
+                  onSelect={handleTabChange}
+                >
+                  <LegacyCard.Section>
+                    <div className={classNames({ hidden: selected === 2 })}>
+                      <div className="flex gap-[24px]">
+                        <div className="view-widgets mr-[24px]">
+                          <LegacyCard sectioned>
+                            <ViewWidget />
+                          </LegacyCard>
+                        </div>
 
-                      <div className="tab-widgets max-w-[500px] flex-1">
-                        <Form
-                          innerRef={formRef}
-                          initialValues={widgetSetting}
-                          enableReinitialize
-                          onSubmit={handleSaveWidget}
-                          onValuesChange={handleChangeForm}
-                        >
-                          <div
-                            className={classNames({ hidden: selected !== 0 })}
+                        <div className="tab-widgets max-w-[500px] flex-1">
+                          <Form
+                            innerRef={formRef}
+                            initialValues={widgetSetting}
+                            enableReinitialize
+                            onSubmit={handleSaveWidget}
+                            onValuesChange={handleChangeForm}
                           >
-                            <General />
-                          </div>
-                          <div
-                            className={classNames({ hidden: selected !== 1 })}
-                          >
-                            <Appearance />
-                          </div>
-                        </Form>
+                            <div
+                              className={classNames({ hidden: selected !== 0 })}
+                            >
+                              <General />
+                            </div>
+                            <div
+                              className={classNames({ hidden: selected !== 1 })}
+                            >
+                              <Appearance />
+                            </div>
+                          </Form>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className={classNames({ hidden: selected !== 2 })}>
-                    <Integration idWidget={widget?._id}></Integration>
-                  </div>
-                </LegacyCard.Section>
-              </Tabs>
-            </LegacyCard>
-          </Layout.Section>
-        </Layout>
-      </Page>
+                    <div className={classNames({ hidden: selected !== 2 })}>
+                      <Integration idWidget={widget?._id}></Integration>
+                    </div>
+                  </LegacyCard.Section>
+                </Tabs>
+              </LegacyCard>
+            </Layout.Section>
+          </Layout>
+        </Page>
+      )}
     </>
   );
 };

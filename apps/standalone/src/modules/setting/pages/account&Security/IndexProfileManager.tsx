@@ -1,6 +1,6 @@
 import { TokenManager, useJob, useMount } from "@moose-desk/core";
 import { AgentRepository } from "@moose-desk/repo";
-import { Button, Card, Input } from "antd";
+import { Button, Card, Input, Skeleton } from "antd";
 import * as jose from "jose";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
@@ -18,7 +18,11 @@ export default function IndexProfileManager() {
   const message = useMessage();
   const notification = useNotification();
   const [form] = Form.useForm();
-  const { run: fetDetailsProfile, result } = useJob(
+  const {
+    run: fetDetailsProfile,
+    result,
+    processing,
+  } = useJob(
     (payload: string) => {
       return AgentRepository()
         .getOne(payload)
@@ -66,79 +70,85 @@ export default function IndexProfileManager() {
   return (
     <div>
       <Card title="Profile">
-        <Form
-          onFinish={handleSubmitForm}
-          layout="vertical"
-          initialValues={result}
-          enableReinitialize
-        >
-          <Form.Item name="_id" hidden>
-            <Input placeholder="" />
-          </Form.Item>
-          <Form.Item
-            label="First name"
-            name="firstName"
-            rules={[
-              { required: true, message: "First name is required!" },
-              {
-                max: 255,
-                message: "First name up to 255 characters",
-              },
-              {
-                pattern: /[^\s]/,
-                message: "First name is required!",
-              },
-            ]}
+        {processing ? (
+          <>
+            <Skeleton />
+          </>
+        ) : (
+          <Form
+            onFinish={handleSubmitForm}
+            layout="vertical"
+            initialValues={result}
+            enableReinitialize
           >
-            <Input placeholder="Enter first name" />
-          </Form.Item>
-          <Form.Item
-            label="Last name"
-            name="lastName"
-            rules={[
-              { required: true, message: "Last name is required!" },
-              {
-                max: 255,
-                message: "Last name up to 255 characters",
-              },
-              {
-                pattern: /[^\s]/,
-                message: "Last name is required!",
-              },
-            ]}
-          >
-            <Input placeholder="Enter last name" />
-          </Form.Item>
-          <Form.Item
-            label="Email"
-            name="email"
-            rules={[
-              { required: true, message: "You must enter your email!" },
-              { type: "email", message: "Email is invalid!" },
-            ]}
-          >
-            <Input disabled={true} placeholder="Enter email" />
-          </Form.Item>
+            <Form.Item name="_id" hidden>
+              <Input placeholder="" />
+            </Form.Item>
+            <Form.Item
+              label="First name"
+              name="firstName"
+              rules={[
+                { required: true, message: "First name is required!" },
+                {
+                  max: 255,
+                  message: "First name up to 255 characters",
+                },
+                {
+                  pattern: /[^\s]/,
+                  message: "First name is required!",
+                },
+              ]}
+            >
+              <Input placeholder="Enter first name" />
+            </Form.Item>
+            <Form.Item
+              label="Last name"
+              name="lastName"
+              rules={[
+                { required: true, message: "Last name is required!" },
+                {
+                  max: 255,
+                  message: "Last name up to 255 characters",
+                },
+                {
+                  pattern: /[^\s]/,
+                  message: "Last name is required!",
+                },
+              ]}
+            >
+              <Input placeholder="Enter last name" />
+            </Form.Item>
+            <Form.Item
+              label="Email"
+              name="email"
+              rules={[
+                { required: true, message: "You must enter your email!" },
+                { type: "email", message: "Email is invalid!" },
+              ]}
+            >
+              <Input disabled={true} placeholder="Enter email" />
+            </Form.Item>
 
-          <Form.Item
-            label="Phone No."
-            name="phoneNumber"
-            rules={[
-              {
-                pattern: regexPhoneValidate,
-                message: "The input phone number is not valid",
-              },
-            ]}
-          >
-            <InputPhone placeholder="Enter phone number" />
-          </Form.Item>
-          <div className="flex-1 text-right mt-4">
-            <Button onClick={handleResetForm}>Cancel</Button>
-            <Button htmlType="submit" type="primary" className="ml-4">
-              Save
-            </Button>
-          </div>
-        </Form>
+            <Form.Item
+              label="Phone No."
+              name="phoneNumber"
+              rules={[
+                {
+                  pattern: regexPhoneValidate,
+                  message: "The input phone number is not valid",
+                },
+              ]}
+            >
+              <InputPhone placeholder="Enter phone number" />
+            </Form.Item>
+            <div className="flex-1 text-right mt-4">
+              <Button onClick={handleResetForm}>Cancel</Button>
+              <Button htmlType="submit" type="primary" className="ml-4">
+                Save
+              </Button>
+            </div>
+          </Form>
+        )}
       </Card>
     </div>
   );

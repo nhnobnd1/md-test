@@ -7,7 +7,7 @@ import {
   Holidays,
 } from "@moose-desk/repo";
 import BusinessCalendarRepository from "@moose-desk/repo/businessCalendar/BusinessCalendarRepository";
-import { Button, Card, Input, Space, Tabs } from "antd";
+import { Button, Card, Input, Skeleton, Space, Tabs } from "antd";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
@@ -58,7 +58,7 @@ const BusinessHours = () => {
   }, [form.getFieldValue("businessHoursType")]);
 
   // fetch business calendar
-  const { run: fetchListBusinessCalendar } = useJob(
+  const { run: fetchListBusinessCalendar, processing } = useJob(
     () => {
       return BusinessCalendarRepository()
         .getListBusinessCalendar({
@@ -143,68 +143,76 @@ const BusinessHours = () => {
   return (
     <>
       <Header title="Business Hours"></Header>
-      <Form
-        initialValues={dataBusinessCalendar || {}}
-        form={form}
-        enableReinitialize
-        onFinish={handleSubmit}
-        onValuesChange={handleChangeValues}
-      >
-        <Form.Item name="timezone" label="Time zone:">
-          <SelectTimeZone />
-        </Form.Item>
-        <Card>
-          <Tabs
-            defaultActiveKey="1"
-            items={[
-              {
-                key: "1",
-                label: `Business Hours`,
-                children: (
-                  <BusinessHoursTab
-                    dataAutoReply={dataAutoReply}
-                    disabled={disabled}
-                  />
-                ),
-              },
-              {
-                key: "2",
-                label: `Holidays`,
-                children: (
-                  <Form.Item name="holidays">
-                    <HolidayTab dataAutoReply={dataAutoReply} />
-                  </Form.Item>
-                ),
-              },
-              {
-                key: "3",
-                label: `Auto-reply`,
-                children: (
-                  <Form.Item name="autoReply">
-                    <AutoReplyTab
-                      dataHolidays={dataHolidays}
-                      dataBusinessHoursAutoReplyCode={
-                        dataBusinessHoursAutoReplyCode
-                      }
-                    />
-                  </Form.Item>
-                ),
-              },
-            ]}
-          />
-        </Card>
-        <Form.Item name="_id" hidden>
-          <Input placeholder="" />
-        </Form.Item>
-      </Form>
-      <div className="flex-1 text-right mt-4">
-        <Space>
-          <Button onClick={() => form.resetFields()}>Cancel</Button>
-          <Button type="primary" onClick={() => form.submit()}>
-            Save
-          </Button>
-        </Space>
-      </div>
+      {processing ? (
+        <>
+          <Skeleton />
+        </>
+      ) : (
+        <>
+          <Form
+            initialValues={dataBusinessCalendar || {}}
+            form={form}
+            enableReinitialize
+            onFinish={handleSubmit}
+            onValuesChange={handleChangeValues}
+          >
+            <Form.Item name="timezone" label="Time zone:">
+              <SelectTimeZone />
+            </Form.Item>
+            <Card>
+              <Tabs
+                defaultActiveKey="1"
+                items={[
+                  {
+                    key: "1",
+                    label: `Business Hours`,
+                    children: (
+                      <BusinessHoursTab
+                        dataAutoReply={dataAutoReply}
+                        disabled={disabled}
+                      />
+                    ),
+                  },
+                  {
+                    key: "2",
+                    label: `Holidays`,
+                    children: (
+                      <Form.Item name="holidays">
+                        <HolidayTab dataAutoReply={dataAutoReply} />
+                      </Form.Item>
+                    ),
+                  },
+                  {
+                    key: "3",
+                    label: `Auto-reply`,
+                    children: (
+                      <Form.Item name="autoReply">
+                        <AutoReplyTab
+                          dataHolidays={dataHolidays}
+                          dataBusinessHoursAutoReplyCode={
+                            dataBusinessHoursAutoReplyCode
+                          }
+                        />
+                      </Form.Item>
+                    ),
+                  },
+                ]}
+              />
+            </Card>
+            <Form.Item name="_id" hidden>
+              <Input placeholder="" />
+            </Form.Item>
+          </Form>
+          <div className="flex-1 text-right mt-4">
+            <Space>
+              <Button onClick={() => form.resetFields()}>Cancel</Button>
+              <Button type="primary" onClick={() => form.submit()}>
+                Save
+              </Button>
+            </Space>
+          </div>
+        </>
+      )}
     </>
   );
 };

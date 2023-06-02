@@ -27,6 +27,7 @@ import {
   Divider,
   FloatButton,
   List,
+  Skeleton,
 } from "antd";
 import moment from "moment";
 import VirtualList from "rc-virtual-list";
@@ -484,7 +485,9 @@ const DetailTicketForm = () => {
   return (
     <>
       {processing ? (
-        <></>
+        <>
+          <Skeleton />
+        </>
       ) : (
         <div className="wrapContainer" ref={topPageRef}>
           {/* <div className="searchToggle">
@@ -766,7 +769,9 @@ const DetailTicketForm = () => {
                   </div>
                 </div>
               ) : (
-                <></>
+                <>
+                  <Skeleton />
+                </>
               )}
             </Card>
             <FloatButton

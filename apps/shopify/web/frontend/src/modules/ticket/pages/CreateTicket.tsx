@@ -10,7 +10,15 @@ import {
   EmailIntegrationRepository,
   Priority,
 } from "@moose-desk/repo";
-import { Layout, LegacyCard, Page } from "@shopify/polaris";
+import {
+  Layout,
+  LegacyCard,
+  Page,
+  SkeletonBodyText,
+  SkeletonDisplayText,
+  SkeletonPage,
+  TextContainer,
+} from "@shopify/polaris";
 import { CircleLeftMajor, CircleRightMajor } from "@shopify/polaris-icons";
 import classNames from "classnames";
 import { FormikProps } from "formik";
@@ -56,7 +64,7 @@ const CreateTicket = (props: CreateTicketProps) => {
         );
     }
   );
-  const { run: getPrimaryEmail } = useJob(() => {
+  const { run: getPrimaryEmail, processing } = useJob(() => {
     return EmailIntegrationRepository()
       .getPrimaryEmail()
       .pipe(
@@ -106,43 +114,65 @@ const CreateTicket = (props: CreateTicketProps) => {
   };
   return (
     <>
-      <Page
-        breadcrumbs={[
-          { content: "Ticket", url: generatePath(TicketRoutePaths.Index) },
-        ]}
-        title="New Ticket"
-        fullWidth
-      >
-        <Layout>
-          {banner.visible && (
+      {processing || loadingList ? (
+        <>
+          <SkeletonPage primaryAction />
+          <Layout>
             <Layout.Section>
-              <Banner banner={banner} onDismiss={closeBanner}></Banner>
+              <LegacyCard sectioned>
+                <TextContainer>
+                  <SkeletonDisplayText size="extraLarge" />
+                  <SkeletonBodyText />
+                </TextContainer>
+              </LegacyCard>
+              <LegacyCard sectioned>
+                <TextContainer>
+                  <SkeletonDisplayText size="extraLarge" />
+                  <SkeletonBodyText />
+                </TextContainer>
+              </LegacyCard>
             </Layout.Section>
-          )}
+          </Layout>
+        </>
+      ) : (
+        <Page
+          breadcrumbs={[
+            { content: "Ticket", url: generatePath(TicketRoutePaths.Index) },
+          ]}
+          title="New Ticket"
+          fullWidth
+        >
+          <Layout>
+            {banner.visible && (
+              <Layout.Section>
+                <Banner banner={banner} onDismiss={closeBanner}></Banner>
+              </Layout.Section>
+            )}
 
-          <Layout.Section>
-            <LegacyCard sectioned>
-              <div className={visible ? "d-flex" : ""}>
-                <div className={visible ? styles.wrapContent : ""}>
-                  <div className={styles.wrapSearchToggle}>
-                    {_renderButtonToggle()}
+            <Layout.Section>
+              <LegacyCard sectioned>
+                <div className={visible ? "d-flex" : ""}>
+                  <div className={visible ? styles.wrapContent : ""}>
+                    <div className={styles.wrapSearchToggle}>
+                      {_renderButtonToggle()}
+                    </div>
+                    <TicketForm
+                      innerRef={formRef}
+                      initialValues={initialValuesForm}
+                      enableReinitialize
+                      onValuesChange={updateForm}
+                      primaryEmail={primaryEmail}
+                    />
                   </div>
-                  <TicketForm
-                    innerRef={formRef}
-                    initialValues={initialValuesForm}
-                    enableReinitialize
-                    onValuesChange={updateForm}
-                    primaryEmail={primaryEmail}
-                  />
+                  <div className={visible ? styles.wrapSearch : "d-none"}>
+                    <ContentShopifySearch />
+                  </div>
                 </div>
-                <div className={visible ? styles.wrapSearch : "d-none"}>
-                  <ContentShopifySearch />
-                </div>
-              </div>
-            </LegacyCard>
-          </Layout.Section>
-        </Layout>
-      </Page>
+              </LegacyCard>
+            </Layout.Section>
+          </Layout>
+        </Page>
+      )}
     </>
   );
 };

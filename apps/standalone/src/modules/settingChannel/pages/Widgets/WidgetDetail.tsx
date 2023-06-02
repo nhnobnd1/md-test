@@ -5,7 +5,7 @@ import {
   HelpWidget,
   HelpWidgetRepository,
 } from "@moose-desk/repo";
-import { Button, Tabs } from "antd";
+import { Button, Skeleton, Tabs } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
@@ -190,7 +190,9 @@ const WidgetDetail = () => {
         <div className="flex-1 flex justify-end"></div>
       </Header>
       {loadingList ? (
-        <></>
+        <>
+          <Skeleton />
+        </>
       ) : (
         <Tabs
           onChange={onChange}
