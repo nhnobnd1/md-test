@@ -34,7 +34,7 @@ const queryClient = new QueryClient({
 });
 ReactGA.initialize(env.TRACKING_ID);
 Sentry.init({
-  dsn: "https://583717573a5a4876bbe73c53b1ba80ed@o4505248145670144.ingest.sentry.io/4505248146718720",
+  dsn: env.DSN_SENTRY,
   integrations: [new Sentry.BrowserTracing(), new Sentry.Replay()],
   // Performance Monitoring
   tracesSampleRate: 1.0, // Capture 100% of the transactions, reduce in production!
