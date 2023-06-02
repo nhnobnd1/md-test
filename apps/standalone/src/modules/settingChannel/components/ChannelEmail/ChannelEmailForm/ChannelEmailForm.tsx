@@ -1,11 +1,12 @@
-import { useMount, useParams, useToggle } from "@moose-desk/core";
+import { useJob, useMount, useParams, useToggle } from "@moose-desk/core";
 import {
   AccessType,
+  EmailIntegrationRepository,
   MailBoxType,
   MailSetting,
   MailSettingType,
 } from "@moose-desk/repo";
-import { Checkbox, Input, Radio, RadioChangeEvent } from "antd";
+import { Checkbox, Input, Radio, RadioChangeEvent, Tooltip } from "antd";
 import React, {
   useCallback,
   useEffect,
@@ -13,6 +14,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { map } from "rxjs";
 import { Form, FormProps } from "src/components/UI/Form";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { CardForwardEmail } from "src/modules/settingChannel/components/ChannelEmail/CardForwardEmail";
@@ -59,9 +61,19 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
   );
   const handleChangeMailSetting = useMailSetting((state) => state.changeUpdate);
   const mailSettingType = useMailSetting((state) => state.mailSettingType);
+  const isForwardEmailCreated = useMailSetting(
+    (state) => state.isForwardEmailCreated
+  );
+  const changeUpdateMooseDeskEmail = useMailSetting(
+    (state) => state.changeUpdateMooseDeskEmail
+  );
 
   const signInCallback = useAppSelector(
     (state) => state.channelEmail.signInCallback
+  );
+
+  const haveMooseDeskEmail = useMailSetting(
+    (state) => state.haveMooseDeskEmail
   );
 
   const dispatch = useAppDispatch();
@@ -197,7 +209,25 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
       return false;
     }
   }, [mailSettingType, type]);
-  console.log({ isHidden });
+  const { run: getListEmailApi } = useJob((payload: any) => {
+    return EmailIntegrationRepository()
+      .getListEmail(payload)
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            changeUpdateMooseDeskEmail(
+              (data.metadata as any)?.moosedeskEmailExists
+            );
+          }
+        })
+      );
+  });
+
+  useEffect(() => {
+    if (!haveMooseDeskEmail) {
+      getListEmailApi({ page: 1, limit: 10 });
+    }
+  }, [haveMooseDeskEmail]);
 
   useEffect(() => {
     if (form.getFieldValue("mailSettingType") === MailSettingType.CUSTOM) {
@@ -220,12 +250,21 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
             onChange={(e: RadioChangeEvent) => {
               handleChangeMailSetting(e.target.value);
             }}
-            disabled={!!id}
+            disabled={!!id || !!signInCallback.refKey || isForwardEmailCreated}
           >
             <Radio value={MailSettingType.CUSTOM}>Use your Gmail</Radio>
-            <Radio value={MailSettingType.MOOSEDESK}>
-              Use Moosedesk email address
-            </Radio>
+            <Tooltip
+              title={`${
+                haveMooseDeskEmail ? "Email has been set up in the system" : ""
+              }`}
+            >
+              <Radio
+                disabled={haveMooseDeskEmail}
+                value={MailSettingType.MOOSEDESK}
+              >
+                Use Moosedesk email address
+              </Radio>
+            </Tooltip>
             <Radio value={MailSettingType.FORWARD}>Email Forwarding</Radio>
           </Radio.Group>
         </Form.Item>

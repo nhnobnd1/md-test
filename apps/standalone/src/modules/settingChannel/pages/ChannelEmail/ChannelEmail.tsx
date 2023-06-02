@@ -27,6 +27,7 @@ import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
+import useMailSetting from "src/modules/settingChannel/store/useMailSetting";
 const defaultFilter: () => any = () => ({
   page: 1,
   limit: env.DEFAULT_PAGE_SIZE,
@@ -38,7 +39,9 @@ const ChannelEmail = () => {
   const { t } = useTranslation();
   const [emails, setEmails] = useState<EmailIntegration[]>([]);
   const [listEmailOtherFail, setListEmailOtherFail] = useState<string[]>([]);
-
+  const changeUpdateMooseDeskEmail = useMailSetting(
+    (state) => state.changeUpdateMooseDeskEmail
+  );
   const [filterData, setFilterData] =
     useState<GetListEmailRequest>(defaultFilter);
 
@@ -133,10 +136,14 @@ const ChannelEmail = () => {
               const findPrimaryEmail = listEmails.find(
                 (item) => item.isPrimaryEmail === true
               );
+
               setSelectedRowKeys([findPrimaryEmail?._id as React.Key]);
 
               setEmails(listEmails);
               setMeta(data.metadata);
+              changeUpdateMooseDeskEmail(
+                (data.metadata as any)?.moosedeskEmailExists
+              );
             } else {
               message.error(t("messages:error.get_agent"));
             }
