@@ -187,7 +187,6 @@ Select.Ajax = ({
     }, [fetchData]),
     { wait: dependenciesWait }
   );
-
   useEffect(() => {
     if (props.value) {
       if (!options.filter((option) => option.value === props.value).length) {
@@ -195,6 +194,12 @@ Select.Ajax = ({
       } else {
         setValue(props.value);
       }
+    } else {
+      // setValue(options[0]);
+      // eslint-disable-next-line no-unused-expressions
+      props.placeholder === "Search email integration"
+        ? setValue(options[0])
+        : "";
     }
   }, [options, props.value]);
 

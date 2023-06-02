@@ -50,7 +50,7 @@ export const SenderVerifyStep: FC<ContentWaitProps> = React.memo(
               if (data.data.isVerified) {
                 formEmail.setFieldValue("supportEmail", email);
                 setIsVerifySender("Success");
-                createForwardEmail();
+                createForwardEmail(true);
               } else {
                 verifyFinish(payload);
               }
@@ -73,7 +73,7 @@ export const SenderVerifyStep: FC<ContentWaitProps> = React.memo(
               if (data.data.isVerified) {
                 formEmail.setFieldValue("supportEmail", email);
                 setIsVerifySender("Success");
-                createForwardEmail();
+                createForwardEmail(true);
               } else {
                 setTimeout(() => {
                   setRetrySenderCount(retrySenderCount + 1);
@@ -107,6 +107,9 @@ export const SenderVerifyStep: FC<ContentWaitProps> = React.memo(
       if (retrySenderCount === 0) {
         checkVerifyEmailFirstTime(email);
       }
+      return () => {
+        createForwardEmail(false);
+      };
     }, []);
 
     if (isVerifySender === "Success") {

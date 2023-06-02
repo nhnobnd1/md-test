@@ -365,24 +365,16 @@ Please check your inbox and click on the link within to use this email for sendi
             scrollToFirstError
             initialValues={{ email: "" }}
             onKeyPress={handlePressKey}
+            layout="vertical"
           >
             {step === 0 && (
               <div className="flex flex-col items-center">
                 <Typography.Title className="font-medium text-md" level={3}>
-                  Enter current support address
+                  Enter current support info
                 </Typography.Title>
-                <div className="flex gap-3 flex-col items-center mt-1">
-                  <Form.Item name="name">
-                    <Input
-                      onKeyPress={(e) => {
-                        e.key === "Enter" && e.preventDefault();
-                      }}
-                      className="w-[300px]"
-                      placeholder="Name"
-                    />
-                  </Form.Item>
+                <div className="flex  flex-col items-center mt-1">
                   <Form.Item
-                    className="mt-3"
+                    label="Email Address"
                     name="email"
                     rules={[
                       { required: true, message: "You must enter your email!" },
@@ -397,12 +389,22 @@ Please check your inbox and click on the link within to use this email for sendi
                       placeholder="e.g. support@company.com"
                     />
                   </Form.Item>
+                  <Form.Item name="name" label="Name">
+                    <Input
+                      onKeyPress={(e) => {
+                        e.key === "Enter" && e.preventDefault();
+                      }}
+                      className="w-[300px]"
+                      placeholder="Name"
+                    />
+                  </Form.Item>
+
                   <Button
                     type="primary"
                     onClick={() => {
                       form.submit();
                     }}
-                    className="w-[100px] mt-5"
+                    className="w-[100px] "
                   >
                     Go
                   </Button>

@@ -246,7 +246,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
     CreateTicket(dataCreate);
   };
 
-  const onChangeEmailItegration = (value: string, options: any) => {
+  const onChangeEmailIntegration = (value: string, options: any) => {
     setFromEmail(options.obj);
   };
 
@@ -388,7 +388,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
               placeholder="Search email integration"
               virtual
               loadMore={fetchEmailIntegration}
-              onChange={onChangeEmailItegration}
+              onChange={onChangeEmailIntegration}
             />
           </Form.Item>
           <Form.Item label="Priority" name="priority">
