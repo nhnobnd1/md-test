@@ -2,13 +2,15 @@ import { memo, useMemo } from "react";
 import {
   Bar,
   BarChart,
-  CartesianGrid,
   Legend,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
+import { CustomTooltip } from "src/modules/report/components/Customize/CustomTooltip";
+import { CustomXAxisTick } from "src/modules/report/components/Customize/CustomXAxisTick";
+import { CustomYAxisTick } from "src/modules/report/components/Customize/CustomYAxisTick";
 import ChartTopFiveRes from "src/modules/report/helper/interface";
 interface ChartAgentsTicketProps {
   data?: ChartTopFiveRes[];
@@ -23,17 +25,17 @@ const defaultEmptyAgent: any = [
   },
 ];
 const LIST_CHART_ITEM_COLOR = [
-  "#FF5252",
-  "#7E57C2",
-  "#00BCD4",
-  "#4CAF50",
-  "#FFEB3B",
+  "#FA7D00",
+  "#2C6ECB",
+  "#00A0AC",
+  "#458FFF",
+  "#D72C0D",
 ];
 const ChartAgentsTicket = ({
   data = defaultEmptyAgent,
 }: ChartAgentsTicketProps) => {
   const convertTopFiveAgents =
-    data?.map((item: ChartTopFiveRes) => item?.agentClosed) || [];
+    data?.map((item: ChartTopFiveRes | any) => item?.agentClosed) || []; // fix eslint report
   const memoChartData = useMemo(() => {
     const convertList = data?.map((item: any) => {
       const formatItemInList = item?.agentClosed?.map((agent: any) => {
@@ -60,27 +62,25 @@ const ChartAgentsTicket = ({
         name={`${agent.agentFirstName} ${agent.agentLastName}`}
         dataKey={agent.agentObjectId}
         fill={LIST_CHART_ITEM_COLOR[index]}
+        radius={[2, 2, 0, 0]}
+        barSize={16}
       />
     ));
   };
 
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <BarChart
-        width={500}
-        height={400}
-        data={memoChartData}
-        margin={{
-          top: 5,
-          right: 30,
-          left: 20,
-          bottom: 5,
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
-        <YAxis />
-        <Tooltip />
+      <BarChart data={memoChartData}>
+        {/* <CartesianGrid strokeDasharray="3 3" /> */}
+        <XAxis
+          dataKey="name"
+          color="black"
+          axisLine={false}
+          tickLine={false}
+          tick={<CustomXAxisTick />}
+        />
+        <YAxis axisLine={false} tickLine={false} tick={<CustomYAxisTick />} />
+        <Tooltip content={<CustomTooltip />} />
         <Legend />
         {_renderListBarChart()}
       </BarChart>

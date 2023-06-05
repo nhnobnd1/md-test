@@ -1,0 +1,80 @@
+@import "./variables.scss";
+
+/*
+ * @function inexplicit
+ * @description: return value if has key in a list or value
+ */
+@function inexplicit($list, $keyable) {
+  @if (map-has-key($list, $keyable)) {
+    @return map-get($list, $keyable);
+  }
+
+  @return $keyable;
+}
+
+/*
+ * @mixin mq
+ * @description: media screen query min or max of width
+ */
+@mixin mq($breakpoint, $media: "min") {
+  @if $media == "min" {
+    $getBr: inexplicit($breakpointsUp, $breakpoint);
+
+    @media screen and (min-width: $getBr) {
+      @content;
+    }
+  }
+
+  @if $media == "max" {
+    $getBr: inexplicit($breakpointsDown, $breakpoint);
+
+    @media screen and (max-width: $getBr) {
+      @content;
+    }
+  }
+}
+
+/*
+ * @mixin breakpoints
+ * @description: media query screen and viewport for breakpoint up
+ */
+@mixin breakpoints($from, $to) {
+  $getFrom: inexplicit($breakpointsUp, $from);
+  $getTo: inexplicit($breakpointsUp, $to);
+
+  @media screen and (min-width: $getFrom) and (max-width: $getTo) {
+    @content;
+  }
+}
+
+/*
+ * @include mq(md, 'max') {
+   font-size: 10px
+  }
+   bằng với
+
+   @media screen and (max-width: '767px') {
+    font-size: 10px
+  }
+///----------------///
+  @include mq(xs, 'min') {
+    font-size: 20px
+  }
+  
+    bằng với 
+
+  @media screen and (min-width: '321px') {
+    font-size: 20px
+  }
+
+///----------------///
+  @include breakpoints(md, lg) {
+    font-size: 20px
+  }
+  
+    bằng với 
+
+  @media screen and (min-width: '768px') and (max-width: '1024px') {
+    font-size: 20px
+  }
+ */
