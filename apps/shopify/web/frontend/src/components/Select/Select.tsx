@@ -190,6 +190,10 @@ export const Select = ({
           <Combobox.TextField
             // prefix={<Icon source={() => <CustomerPlusMajor />} />}
             onChange={updateText}
+            onFocus={() => {
+              setInputValue("");
+              onSearch && onSearch("");
+            }}
             onBlur={() => {
               if (optionsData.length === 0) {
                 setInputValue("");

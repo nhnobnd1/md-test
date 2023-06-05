@@ -158,13 +158,17 @@ const CreateTicket = (props: CreateTicketProps) => {
                     <div className={styles.wrapSearchToggle}>
                       {_renderButtonToggle()}
                     </div>
-                    <TicketForm
-                      innerRef={formRef}
-                      initialValues={initialValuesForm}
-                      enableReinitialize
-                      onValuesChange={updateForm}
-                      primaryEmail={primaryEmail}
-                    />
+                    {primaryEmail ? (
+                      <TicketForm
+                        innerRef={formRef}
+                        initialValues={initialValuesForm}
+                        enableReinitialize
+                        onValuesChange={updateForm}
+                        primaryEmail={primaryEmail}
+                      />
+                    ) : (
+                      <></>
+                    )}
                   </div>
                   <div className={visible ? styles.wrapSearch : "d-none"}>
                     <ContentShopifySearch />

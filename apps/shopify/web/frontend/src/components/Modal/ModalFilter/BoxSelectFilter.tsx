@@ -99,6 +99,9 @@ const BoxSelectFilter = (props: BoxSelectAutoReplyProps) => {
           onChange={updateText}
           label={props.label}
           labelHidden={!props.label}
+          onFocus={() => {
+            setOptions(props.data);
+          }}
           onBlur={() => {
             if (options.length === 0) {
               setInputValue("");
