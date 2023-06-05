@@ -23,7 +23,6 @@ import { Select as ComboSelect, LoadMoreValue } from "src/components/Select";
 import SelectAddEmail from "src/components/SelectAddEmail/SelectAddEmail";
 import SelectAddTag from "src/components/SelectAddTag/SelectAddTag";
 import { TextEditorTicket } from "src/components/TextEditorTicket";
-import env from "src/core/env";
 import useSaveDataGlobal from "src/hooks/useSaveDataGlobal";
 import BoxSelectCustomer from "src/modules/ticket/components/BoxSelectCustomer/BoxSelectCustomer";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
@@ -97,7 +96,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
 
   const fetchAgents = useCallback(
     (params: LoadMoreValue) => {
-      const limit = env.DEFAULT_PAGE_SIZE;
+      const limit = 500;
 
       return AgentRepository()
         .getList({
