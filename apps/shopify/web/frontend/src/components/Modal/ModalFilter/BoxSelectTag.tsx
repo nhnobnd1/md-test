@@ -69,7 +69,7 @@ const BoxSelectTag = (props: BoxSelectAutoReplyProps) => {
       if (selected?.length) {
         setSelectedTags((previousTags) => {
           if (previousTags.includes(selected)) return previousTags;
-          return [...previousTags, selected];
+          return [...previousTags, ...selected.split(",")];
         });
       }
 
@@ -99,7 +99,6 @@ const BoxSelectTag = (props: BoxSelectAutoReplyProps) => {
   useEffect(() => {
     props.onChange && props.onChange(selectedTags);
   }, [selectedTags?.length]);
-
   useEffect(() => {
     setOptions(props.data);
     updateSelection(props.value);
@@ -124,9 +123,13 @@ const BoxSelectTag = (props: BoxSelectAutoReplyProps) => {
           <Listbox onSelect={updateSelection}>{optionsMarkup}</Listbox>
         </>
       </Combobox>
-      <div className="mt-5">
-        <LegacyStack spacing="tight">{tagMarkup}</LegacyStack>
-      </div>
+      {props.value?.length ? (
+        <div className="mt-5">
+          <LegacyStack spacing="tight">{tagMarkup}</LegacyStack>
+        </div>
+      ) : (
+        <></>
+      )}
     </>
   );
 };

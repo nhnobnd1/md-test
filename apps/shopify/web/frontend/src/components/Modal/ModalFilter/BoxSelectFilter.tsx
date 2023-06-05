@@ -94,6 +94,7 @@ const BoxSelectFilter = (props: BoxSelectAutoReplyProps) => {
   }, [props.data, props.value, props.onChange]);
   return (
     <Combobox
+      height={props.disabled ? "0" : ""}
       activator={
         <Combobox.TextField
           onChange={updateText}

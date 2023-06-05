@@ -36,10 +36,14 @@ import {
   EmptySearchResult,
   Filters,
   IndexTable,
+  Layout,
   LegacyCard,
   Loading,
   Page,
+  SkeletonBodyText,
+  SkeletonDisplayText,
   Text,
+  TextContainer,
   useIndexResourceState,
 } from "@shopify/polaris";
 import { forkJoin, map } from "rxjs";
@@ -274,7 +278,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         })
       );
   });
-  const { run: getListTicketFilter } = useJob(
+  const { run: getListTicketFilter, processing: loadingFilter } = useJob(
     (payload: BaseListTicketFilterRequest) => {
       return TicketRepository()
         .getListFilter(payload)
@@ -711,37 +715,59 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
             />
           </div>
           <div className="col-span-4">
-            {loadingList && <Loading />}
-            <IndexTable
-              resourceName={{ singular: "ticket", plural: "tickets" }}
-              itemCount={tickets?.length}
-              selectedItemsCount={
-                allResourcesSelected ? "All" : selectedResources?.length
-              }
-              // lastColumnSticky
-              onSelectionChange={handleSelectionChange}
-              loading={loadingList}
-              emptyState={
-                <EmptySearchResult
-                  title={
-                    "Sorry! There is no records matched with your search criteria"
-                  }
-                  description={"Try changing the filters or search term"}
-                  withIllustration
-                />
-              }
-              headings={[
-                { title: "#" },
-                { title: "Ticket Title" },
-                { title: "Customer" },
-                { title: "Tags" },
-                { title: "Priority" },
-                { title: "Last Update" },
-                { title: "Action" },
-              ]}
-            >
-              {rowMarkup}
-            </IndexTable>
+            {(loadingList || loadingFilter) && <Loading />}
+            {loadingList || loadingFilter ? (
+              <>
+                {" "}
+                <Layout>
+                  <Layout.Section>
+                    <LegacyCard sectioned>
+                      <TextContainer>
+                        <SkeletonDisplayText size="small" />
+                        <SkeletonBodyText />
+                      </TextContainer>
+                    </LegacyCard>
+                    <LegacyCard sectioned>
+                      <TextContainer>
+                        <SkeletonDisplayText size="small" />
+                        <SkeletonBodyText />
+                      </TextContainer>
+                    </LegacyCard>
+                  </Layout.Section>
+                </Layout>
+              </>
+            ) : (
+              <IndexTable
+                resourceName={{ singular: "ticket", plural: "tickets" }}
+                itemCount={tickets?.length}
+                selectedItemsCount={
+                  allResourcesSelected ? "All" : selectedResources?.length
+                }
+                // lastColumnSticky
+                onSelectionChange={handleSelectionChange}
+                loading={loadingList || loadingFilter}
+                emptyState={
+                  <EmptySearchResult
+                    title={
+                      "Sorry! There is no records matched with your search criteria"
+                    }
+                    description={"Try changing the filters or search term"}
+                    withIllustration
+                  />
+                }
+                headings={[
+                  { title: "#" },
+                  { title: "Ticket Title" },
+                  { title: "Customer" },
+                  { title: "Tags" },
+                  { title: "Priority" },
+                  { title: "Last Update" },
+                  { title: "Action" },
+                ]}
+              >
+                {rowMarkup}
+              </IndexTable>
+            )}
             <div>
               {meta?.totalCount ? (
                 <div className="grid grid-cols-3 py-8 relative">
