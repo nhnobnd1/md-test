@@ -116,23 +116,25 @@ const CreateTicket = (props: CreateTicketProps) => {
     <>
       {processing || loadingList ? (
         <>
-          <SkeletonPage primaryAction />
-          <Layout>
-            <Layout.Section>
-              <LegacyCard sectioned>
-                <TextContainer>
-                  <SkeletonDisplayText size="extraLarge" />
-                  <SkeletonBodyText />
-                </TextContainer>
-              </LegacyCard>
-              <LegacyCard sectioned>
-                <TextContainer>
-                  <SkeletonDisplayText size="extraLarge" />
-                  <SkeletonBodyText />
-                </TextContainer>
-              </LegacyCard>
-            </Layout.Section>
-          </Layout>
+          <Page fullWidth>
+            <SkeletonPage primaryAction />
+            <Layout>
+              <Layout.Section>
+                <LegacyCard sectioned>
+                  <TextContainer>
+                    <SkeletonDisplayText size="extraLarge" />
+                    <SkeletonBodyText />
+                  </TextContainer>
+                </LegacyCard>
+                <LegacyCard sectioned>
+                  <TextContainer>
+                    <SkeletonDisplayText size="extraLarge" />
+                    <SkeletonBodyText />
+                  </TextContainer>
+                </LegacyCard>
+              </Layout.Section>
+            </Layout>
+          </Page>
         </>
       ) : (
         <Page

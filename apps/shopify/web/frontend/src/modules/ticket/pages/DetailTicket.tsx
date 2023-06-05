@@ -550,7 +550,7 @@ const DetailTicket = (props: DetailTicketProps) => {
   return (
     <>
       {processing ? (
-        <>
+        <Page fullWidth>
           <SkeletonPage primaryAction />
           <Layout>
             <Layout.Section>
@@ -568,7 +568,7 @@ const DetailTicket = (props: DetailTicketProps) => {
               </LegacyCard>
             </Layout.Section>
           </Layout>
-        </>
+        </Page>
       ) : (
         <Page
           breadcrumbs={[

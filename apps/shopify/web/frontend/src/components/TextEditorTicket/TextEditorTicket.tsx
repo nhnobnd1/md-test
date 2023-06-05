@@ -253,7 +253,7 @@ export const TextEditorTicket = ({
             </div>
 
             <div className="mt-10  flex justify-center items-center">
-              <p className="w-[350px] ">
+              <p className="w-[400px] text-center ">
                 You can add Images & Video with each file size under 50MB
               </p>
             </div>
@@ -277,7 +277,7 @@ export const TextEditorTicket = ({
           content_style:
             "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
           toolbar:
-            "undo redo | bold italic underline align | importfile | blocks fontfamily fontsizeinput image media link code copy cut past blockquote backcolor forecolor indent newdocument lineheight selectall strikethrough",
+            "undo redo | bold italic underline align | importfile | blocks fontfamily fontsizeinput | image media link code copy cut past blockquote backcolor forecolor indent newdocument lineheight selectall strikethrough",
           plugins: [
             "advlist lists autolink charmap print preview anchor",
             "searchreplace visualblocks code fullscreen",
@@ -296,6 +296,7 @@ export const TextEditorTicket = ({
               input.onchange = function () {
                 if (input.files?.length) {
                   const file = input.files[0];
+                  show("Loading...");
                   postImage(file, (data: any) => {
                     cb(data.urls[0], { title: file.name });
                   });
