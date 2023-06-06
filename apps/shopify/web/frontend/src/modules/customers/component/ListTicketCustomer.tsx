@@ -59,6 +59,7 @@ export const ListTicketCustomer = memo(({ customerId }: IProps) => {
   const { data: dataSource, isFetching }: any = useQuery({
     queryKey: [QUERY_KEY.LIST_TICKET_CUSTOMER, filter],
     queryFn: () => getListTicketCustomer(customerId, filter),
+    keepPreviousData: true,
     onError: () => {
       show(t("messages:error.get_ticket_customer"), {
         isError: true,
@@ -179,25 +180,22 @@ export const ListTicketCustomer = memo(({ customerId }: IProps) => {
         >
           {rowMarkup}
         </IndexTable>
+        <div className="flex items-center justify-center mt-4 pb-4">
+          <Pagination
+            total={
+              memoDataSource?.metadata
+                ? memoDataSource?.metadata?.totalCount
+                : 1
+            }
+            pageSize={filter.limit ?? 0}
+            currentPage={filter.page ?? 1}
+            onChangePage={handleChangePage}
+            previousTooltip={"Previous"}
+            nextTooltip={"Next"}
+          />
+        </div>
       </section>
 
-      <div className="flex items-center justify-center mt-4">
-        {/* <section className={styles.totalResult}>
-          {totalResult} Result{totalResult > 1 && "s"}
-        </section> */}
-        <Pagination
-          total={
-            memoDataSource?.data?.metadata
-              ? memoDataSource?.data?.metadata?.totalCount
-              : 1
-          }
-          pageSize={filter.limit ?? 0}
-          currentPage={filter.page ?? 1}
-          onChangePage={handleChangePage}
-          previousTooltip={"Previous"}
-          nextTooltip={"Next"}
-        />
-      </div>
       {/* </section> */}
     </div>
   );

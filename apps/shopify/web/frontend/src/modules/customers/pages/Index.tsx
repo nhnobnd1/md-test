@@ -57,10 +57,11 @@ export default function CustomerIndexPage() {
   const {
     data: listCustomers,
     refetch: refetchListCustomer,
-    isLoading: loadingCustomer,
+    isFetching: loadingCustomer,
   }: any = useQuery({
     queryKey: [QUERY_KEY.LIST_CUSTOMER, filterData],
     queryFn: () => getListCustomer(filterData),
+    keepPreviousData: true,
   });
   const { mutate: deleteCustomerMutate, isLoading: deleting } = useMutation({
     mutationFn: (payload: { ids: string[] }) => deleteCustomer(payload),
@@ -220,25 +221,25 @@ export default function CustomerIndexPage() {
           >
             {rowMarkup}
           </IndexTable>
+          {convertCustomerData && convertCustomerData?.metadata?.totalCount ? (
+            <div className="flex items-center justify-center mt-4 pb-4">
+              <Pagination
+                total={
+                  convertCustomerData?.metadata
+                    ? convertCustomerData?.metadata?.totalCount
+                    : 1
+                }
+                pageSize={filterData.limit ?? 0}
+                currentPage={filterData.page ?? 1}
+                onChangePage={(page) =>
+                  setFilterData((val) => ({ ...val, page }))
+                }
+                previousTooltip={"Previous"}
+                nextTooltip={"Next"}
+              />
+            </div>
+          ) : null}
         </Card>
-        {convertCustomerData && convertCustomerData?.metadata?.totalCount ? (
-          <div className="flex items-center justify-center mt-4">
-            <Pagination
-              total={
-                convertCustomerData?.metadata
-                  ? convertCustomerData?.metadata?.totalCount
-                  : 1
-              }
-              pageSize={filterData.limit ?? 0}
-              currentPage={filterData.page ?? 1}
-              onChangePage={(page) =>
-                setFilterData((val) => ({ ...val, page }))
-              }
-              previousTooltip={"Previous"}
-              nextTooltip={"Next"}
-            />
-          </div>
-        ) : null}
       </section>
     </>
   );
