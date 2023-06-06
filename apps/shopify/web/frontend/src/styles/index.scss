@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import "./variables.scss";
 
 .unstyle-link a {
   text-decoration: none;
@@ -53,3 +54,44 @@
 .justify-between {
   justify-content: space-between;
 }
+
+// Title
+
+
+// Button
+.md-btn {
+  button {
+    border: none;
+    outline: none;
+    border-radius: 4px;
+    height: 36px;
+  }
+}
+.md-btn-primary {
+  button {
+    background-color: $primary;
+    color: $white-color;
+    font-size: 15px;
+    font-weight: 500;
+    &:hover {
+    background-color: $primary-hover;
+    }
+  }
+}
+
+// Input
+
+
+
+// Select
+
+
+
+
+// Table
+
+
+
+// Pagination
+
+

@@ -1,80 +1,109 @@
-import {
-  generatePath,
-  useDebounceFn,
-  useJob,
-  useNavigate,
-} from "@moose-desk/core";
-import {
-  BaseListCustomerRequest,
-  Customer,
-  CustomerRepository,
-} from "@moose-desk/repo";
+import { generatePath, useNavigate, useToggle } from "@moose-desk/core";
+import { QUERY_KEY } from "@moose-desk/core/helper/constant";
+import { BaseListCustomerRequest } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Button,
   ButtonGroup,
   Card,
-  ChoiceList,
   EmptySearchResult,
-  Filters,
-  Icon,
   IndexTable,
   Link,
   Loading,
   Page,
-  Popover,
-  Stack,
   Text,
 } from "@shopify/polaris";
-import { SortMinor } from "@shopify/polaris-icons";
-import { useCallback, useEffect, useState } from "react";
+import classNames from "classnames";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { catchError, map, of } from "rxjs";
+import { useMutation, useQuery } from "react-query";
 import { ButtonDelete } from "src/components/Button/ButtonDelete";
 import { ButtonEdit } from "src/components/Button/ButtonEdit";
 import { ModalDelete } from "src/components/Modal/ModalDelete";
-import Pagination from "src/components/Pagination/Pagination";
+import { Pagination } from "src/components/Pagination";
+import { Search } from "src/components/Search/Search";
 import env from "src/core/env";
+import { deleteCustomer, getListCustomer } from "src/modules/customers/api/api";
+import { CustomModal } from "src/modules/customers/component/Modal";
 import CustomersRoutePaths from "src/modules/customers/routes/paths";
-
+import styles from "./styles.module.scss";
+const resourceName = {
+  singular: "customer",
+  plural: "customers",
+};
+const defaultFilter = () => ({
+  page: 1,
+  limit: env.DEFAULT_PAGE_SIZE,
+  query: "",
+});
 export default function CustomerIndexPage() {
   const navigate = useNavigate();
+
+  const { t } = useTranslation();
+  const { state: visible, on: openPopup, off: closePopup } = useToggle();
   const { show } = useToast();
-  const [customers, setCustomers] = useState<Customer[]>([]);
-  const [deleteCustomer, setDeleteCustomer] = useState<string>("");
-  const [popoverSort, setPopoverSort] = useState(false);
-
-  const togglePopoverSort = useCallback(
-    () => setPopoverSort((popoverSort) => !popoverSort),
-    []
+  const [customerData, setCustomerData] = useState<any>();
+  const [indexSort, setIndexSort] = useState<number | undefined>(undefined);
+  const [direction, setDirection] = useState<"descending" | "ascending">(
+    "descending"
   );
+  // const [modalType, setModalType] = useState("create");
+  const navigateShowDetails = useCallback((id: string) => {
+    navigate(generatePath(CustomersRoutePaths.Details, { id }));
+  }, []);
 
-  const resourceName = {
-    singular: "customer",
-    plural: "customers",
-  };
-  const rowMarkup = customers.map(
-    ({ id, firstName, lastName, email, storeId, ticketsCount }, index) => (
-      <IndexTable.Row id={id} key={id} position={index}>
+  const [filterData, setFilterData] =
+    useState<BaseListCustomerRequest>(defaultFilter);
+  const [isOpen, setIsOpen] = useState(false);
+  const {
+    data: listCustomers,
+    refetch: refetchListCustomer,
+    isLoading: loadingCustomer,
+  }: any = useQuery({
+    queryKey: [QUERY_KEY.LIST_CUSTOMER, filterData],
+    queryFn: () => getListCustomer(filterData),
+  });
+  const { mutate: deleteCustomerMutate, isLoading: deleting } = useMutation({
+    mutationFn: (payload: { ids: string[] }) => deleteCustomer(payload),
+    onSuccess: () => {
+      refetchListCustomer();
+      customerData();
+      show(t("messages:success.delete_customer"));
+    },
+    onError: () => {
+      show(t("messages:error.delete_customer"), {
+        isError: true,
+      });
+    },
+  });
+  const convertCustomerData = useMemo(() => {
+    return listCustomers?.data;
+  }, [listCustomers]);
+
+  const rowMarkup = convertCustomerData?.data?.map(
+    (records: any, index: number) => (
+      <IndexTable.Row id={records?._id} key={records?._id} position={index}>
         <IndexTable.Cell className="py-3">
           <Link
             monochrome
-            onClick={() => navigateShowDetails(id)}
+            onClick={() => navigateShowDetails(records?._id)}
             removeUnderline
           >
             <Text variant="bodyMd" fontWeight="bold" as="span">
-              {`${firstName} ${lastName}`}
+              {`${records?.firstName} ${records?.lastName}`}
             </Text>
           </Link>
         </IndexTable.Cell>
-        <IndexTable.Cell className="py-3">{email}</IndexTable.Cell>
-        <IndexTable.Cell className="py-3">{ticketsCount}</IndexTable.Cell>
+        <IndexTable.Cell className="py-3">{records?.email}</IndexTable.Cell>
+        <IndexTable.Cell className="py-3">
+          {records?.ticketsCount}
+        </IndexTable.Cell>
         <IndexTable.Cell className="py-3">
           <ButtonGroup>
             <div className="flex gap-2">
-              <ButtonEdit onClick={() => navigateShowDetails(id)}></ButtonEdit>
+              <ButtonEdit onClick={() => handleOpenPopup(records)}></ButtonEdit>
               <ButtonDelete
-                onClick={() => handleOpenModalDelete(id)}
+                onClick={() => handleOpenModalDelete(records)}
                 destructive
               >
                 Remove
@@ -85,226 +114,97 @@ export default function CustomerIndexPage() {
       </IndexTable.Row>
     )
   );
-
-  const navigateCreate = () => {
-    return navigate(CustomersRoutePaths.Create);
-  };
-  const navigateShowDetails = useCallback((id: string) => {
-    navigate(generatePath(CustomersRoutePaths.Details, { id }));
-  }, []);
-  const sortTemplate = [
-    {
-      sortBy: "lastName",
-      sortOrder: 1,
-    },
-    {
-      sortBy: "lastName",
-      sortOrder: -1,
-    },
-    {
-      sortBy: "email",
-      sortOrder: 1,
-    },
-    {
-      sortBy: "email",
-      sortOrder: -1,
-    },
-    {
-      sortBy: "numberOfTicket",
-      sortOrder: 1,
-    },
-    {
-      sortBy: "numberOfTicket",
-      sortOrder: -1,
-    },
-    {
-      sortBy: undefined,
-      sortOrder: undefined,
-    },
-  ];
-  const [sortCustomer, setSortCustomer] = useState(6);
-  const [valueSortCustomer, setValueSortCustomer] = useState(
-    sortTemplate[Number(sortCustomer)]
-  );
-
-  const defaultFilter = () => ({
-    page: 1,
-    limit: env.DEFAULT_PAGE_SIZE,
-    query: "",
-    ...valueSortCustomer,
-  });
-  const [filterData, setFilterData] =
-    useState<BaseListCustomerRequest>(defaultFilter);
-  const handleSearchChange = useCallback((value: string) => {
-    setFilterData(() => ({
-      page: 1,
-      ...filterData,
-      query: value,
-    }));
-  }, []);
-  const handleQueryValueRemove = useCallback(() => {
-    setFilterData((old) => {
-      return {
-        ...old,
-        query: "",
-      };
-    });
-  }, []);
-  const resetFilterData = useCallback(() => {
-    setFilterData(defaultFilter());
-  }, []);
-  const { t, i18n } = useTranslation();
-
-  const choices = [
-    { label: "Sort by name A-Z", value: "0" },
-    { label: "Sort by name Z-A", value: "1" },
-    { label: "Sort by email A-Z", value: "2" },
-    { label: "Sort by email Z-A", value: "3" },
-    { label: "Sort by number of Tickets A-Z", value: "4" },
-    { label: "Sort by number of Tickets Z-A", value: "5" },
-  ];
-  const handleSortChange = useCallback((value) => {
-    setSortCustomer(parseInt(value[0]));
-  }, []);
-  const sortButton = (
-    <Button
-      onClick={togglePopoverSort}
-      icon={<Icon source={() => <SortMinor />} color="base" />}
-    >
-      Sort
-    </Button>
-  );
-  const [isOpen, setIsOpen] = useState(false);
-  const handleOpenModalDelete = (id: string) => {
+  const handleOpenModalDelete = (records: any) => {
     setIsOpen(true);
-    setDeleteCustomer(id);
+    setCustomerData(records);
   };
-  const { run: handleRemoveCustomer } = useJob((dataDelete: string[]) => {
-    return CustomerRepository()
-      .delete({ ids: dataDelete })
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            show(t("messages:success.delete_customer"));
-            fetchListCustomer();
-            setDeleteCustomer("");
-          } else {
-            show(t("messages:error.delete_customer"), {
-              isError: true,
-            });
-          }
-        }),
-        catchError((error) => {
-          show(t("messages:error.delete_customer"), {
-            isError: true,
-          });
-          return of(error);
-        })
-      );
-  });
-  const {
-    run: fetchListCustomer,
-    result,
-    processing: loadCustomer,
-  } = useJob(
-    () => {
-      return CustomerRepository()
-        .getList(filterData)
-        .pipe(
-          map(({ data }) => {
-            setCustomers(
-              data.data.map((item) => ({
-                ...item,
-                id: item._id,
-              }))
-            );
-            return data;
-          })
-        );
-    },
-    { showLoading: false }
-  );
-  const { run: callAPI } = useDebounceFn(() => fetchListCustomer(), {
-    wait: 300,
-  });
-  useEffect(() => {
-    setValueSortCustomer(sortTemplate[sortCustomer]);
-  }, [sortCustomer]);
-  useEffect(() => {
-    setFilterData({
-      ...filterData,
-      ...valueSortCustomer,
-    });
-  }, [valueSortCustomer]);
-  useEffect(() => {
-    callAPI();
-  }, [filterData]);
+  const listSort = ["firstName", "email", "ticketsCount"];
+  const handleSort = (
+    headingIndex: number,
+    direction: "descending" | "ascending"
+  ) => {
+    setIndexSort(Number(headingIndex));
+    setDirection(direction);
+    setFilterData((pre) => ({
+      ...pre,
+      sortBy: listSort[Number(headingIndex)],
+      sortOrder: direction === "ascending" ? 1 : -1,
+    }));
+  };
+  const handleSearch = (keyword: string) => {
+    setFilterData((pre) => ({ ...pre, query: keyword }));
+  };
+  const handleOpenPopup = (records: any) => {
+    setCustomerData(records);
+    openPopup();
+  };
+  const handleClosePopup = () => {
+    closePopup();
+    setCustomerData(undefined);
+  };
+
   return (
     <>
-      <Page
-        title="Customer"
-        primaryAction={{
-          content: "Add customer",
-          onAction: navigateCreate,
-        }}
-        compactTitle
-        fullWidth
-      >
+      <Page title="Customer" compactTitle fullWidth>
+        <div className={classNames(styles.groupTopPage, "d-flex")}>
+          <div className="md-input">
+            <Search onTypeSearch={handleSearch} />
+          </div>
+          <div
+            className={classNames(styles.buttonAdd, "md-btn md-btn-primary")}
+          >
+            <Button onClick={openPopup}>Add new</Button>
+          </div>
+        </div>
         <ModalDelete
           title="Are you sure that you want to remove this customer?"
           open={isOpen}
-          onClose={() => setIsOpen(false)}
+          onClose={() => {
+            setIsOpen(false);
+            setCustomerData(undefined);
+          }}
           content={
             "This customer will be removed permanently. All customer's tickets and his profile will no longer accessible."
           }
-          deleteAction={() => handleRemoveCustomer([deleteCustomer])}
+          deleteAction={() => {
+            deleteCustomerMutate({ ids: [customerData?._id] });
+          }}
         />
+        <CustomModal
+          title={
+            customerData?._id
+              ? `${customerData?.firstName} ${customerData?.lastName}`
+              : "New Customer"
+          }
+          visible={visible}
+          onClose={handleClosePopup}
+          customerData={customerData}
+          primaryButtonLabel="Save"
+          secondaryButtonAction={handleClosePopup}
+          secondaryButtonLabel="Discard"
+        />
+
         <Card>
-          <div className="flex-1 px-4 pt-4 pb-2">
-            <Stack distribution="trailing" spacing="loose">
-              <Stack.Item fill={true}>
-                <Filters
-                  queryValue={filterData.query}
-                  onQueryChange={handleSearchChange}
-                  onQueryClear={handleQueryValueRemove}
-                  queryPlaceholder="Search"
-                  filters={[]}
-                  onClearAll={resetFilterData}
-                />
-              </Stack.Item>
-              <Stack.Item>
-                <Popover
-                  active={popoverSort}
-                  activator={sortButton}
-                  autofocusTarget="first-node"
-                  onClose={togglePopoverSort}
-                  preferredAlignment={"left"}
-                  sectioned
-                >
-                  <ChoiceList
-                    title="Sort customer"
-                    titleHidden
-                    choices={choices}
-                    selected={[sortCustomer.toString()] || []}
-                    onChange={handleSortChange}
-                  />
-                </Popover>
-              </Stack.Item>
-            </Stack>
-          </div>
-          {loadCustomer && <Loading />}
+          {(loadingCustomer || deleting) && <Loading />}
           <IndexTable
             resourceName={resourceName}
-            itemCount={customers.length}
+            itemCount={convertCustomerData?.data?.length || 0}
             selectable={false}
+            // selectedItemsCount={
+            //   allResourcesSelected ? "All" : selectedResources.length
+            // }
+            // onSelectionChange={handleSelectionChange}
             headings={[
               { title: "Customer name" },
               { title: "Email address" },
               { title: "Number of tickets" },
               { title: "Action" },
             ]}
-            hasMoreItems
-            loading={loadCustomer}
+            sortDirection={direction}
+            sortColumnIndex={indexSort}
+            onSort={handleSort}
+            sortable={[true, true, true, false]}
+            loading={loadingCustomer}
             emptyState={
               <EmptySearchResult
                 title={
@@ -318,10 +218,14 @@ export default function CustomerIndexPage() {
             {rowMarkup}
           </IndexTable>
         </Card>
-        {result && result.metadata.totalCount ? (
+        {convertCustomerData && convertCustomerData?.metadata?.totalCount ? (
           <div className="flex items-center justify-center mt-4">
             <Pagination
-              total={result?.metadata ? result.metadata.totalCount : 1}
+              total={
+                convertCustomerData?.metadata
+                  ? convertCustomerData?.metadata?.totalCount
+                  : 1
+              }
               pageSize={filterData.limit ?? 0}
               currentPage={filterData.page ?? 1}
               onChangePage={(page) =>

@@ -1,0 +1,58 @@
+$breakpointsUp: (
+    xxl: 1536px,
+    // for viewport big size
+    dt: 1366px,
+    // dt: desktop
+    xl: 1280px,
+    // for viewport less than laptop
+    lg: 1024px,
+    // for tablet landscape and laptop small
+    md: 768px,
+    // for tablet portrait
+    sm: 640px,
+    // for mobile has viewport like: iphone 7, 8, 9..
+    mb: 375px,
+    // mb: mobile
+    xs: 320px,
+    // for mobile has viewport small like iphone 5, 6,,,,,,,,,,,,,,,,,,
+    //
+    zero: 0px,
+);
+
+// Breakpoints down (from PC to Mobile)
+$breakpointsDown: (
+    xxl: 1535px,
+    // for viewport big size
+    dt: 1365px,
+    // dt: desktop
+    xl: 1279px,
+    // for viewport less than laptop
+    lg: 1023px,
+    // for tablet landscape and laptop small
+    md: 767px,
+    // for tablet portrait
+    sm: 639px,
+    // for mobile has viewport like: iphone 7, 8, 9..
+    mb: 374px,
+    // mb: mobile
+    xs: 319px,
+    // for mobile has viewport small like iphone 5, 6,,,,,,,,,,,,,,,,,,
+    zero: 0px,
+);
+
+
+// Color
+$white-color: #FFFFFF;
+$surface: #F0F0F0;
+$on-surface: #111213;
+$primary: #FA7D00;
+$secondary: #CCCCCC;
+$interactive: #2E72D2;
+$critical: #D82C0D;
+$warning: #FFC453;
+$success: #FA7500;
+$hight-light: #5BCDDA;
+
+// Hover
+
+$primary-hover: #E87400;

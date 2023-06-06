@@ -68,27 +68,6 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
   const totalResult = dataSource?.metadata.totalCount;
   const memoDataSource = useMemo(() => {
     const cloneListData = dataSource?.data;
-    // const convertListData = cloneListData?.map((item: any) => {
-    //   const {
-    //     subject,
-    //     createdDatetime,
-    //     updatedDatetime,
-    //     status,
-    //     priority,
-    //     agentEmail,
-    //   } = item;
-    //   return [
-    //     subject,
-    //     createdDatetime,
-    //     updatedDatetime,
-    //     status,
-    //     priority,
-    //     agentEmail,
-    //   ];
-    // });
-    // const resultConverted = convertListData?.map((item: any) => {
-    //   return <div key={item?._id}>{Object.values(item)}</div>;
-    // });
     return cloneListData;
   }, [dataSource]);
 
