@@ -2,7 +2,7 @@ import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { useToast } from "@shopify/app-bridge-react";
 import { Card, Modal, Tabs } from "@shopify/polaris";
 import { FormikProps } from "formik";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQueryClient } from "react-query";
 import useAuth from "src/hooks/useAuth";
@@ -86,7 +86,12 @@ IModal) => {
       });
     },
   });
-
+  useEffect(() => {
+    if (!visible) {
+      queryClient.removeQueries(QUERY_KEY.LIST_TICKET_CUSTOMER);
+      setSelectedTabs(0);
+    }
+  }, [visible]);
   const handleSubmitForm = useCallback(() => {
     formRef.current?.submitForm();
     // createCustomerMutate(value);
@@ -118,6 +123,7 @@ IModal) => {
       open={visible}
       onClose={onClose}
       title={title}
+      large
       primaryAction={{
         content: primaryButtonLabel,
         onAction: handleSubmitForm,

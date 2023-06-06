@@ -56,7 +56,7 @@ export const ListTicketCustomer = memo(({ customerId }: IProps) => {
     sortBy: undefined,
     sortOrder: undefined,
   });
-  const { data: dataSource, isLoading }: any = useQuery({
+  const { data: dataSource, isFetching }: any = useQuery({
     queryKey: [QUERY_KEY.LIST_TICKET_CUSTOMER, filter],
     queryFn: () => getListTicketCustomer(customerId, filter),
     onError: () => {
@@ -149,7 +149,7 @@ export const ListTicketCustomer = memo(({ customerId }: IProps) => {
         <Search onTypeSearch={handleSearch} />
       </div>
       <section className={styles.wrapTable}>
-        {isLoading && <Loading />}
+        {isFetching && <Loading />}
         <IndexTable
           resourceName={resourceName}
           itemCount={memoDataSource?.data?.length || 0}
