@@ -6,8 +6,8 @@ interface ButtonEditProps extends ButtonProps {}
 export const ButtonEdit = ({ children, ...props }: ButtonEditProps) => {
   return (
     <Button
-      icon={() => <Icon source={() => <EditMinor />} color="base" />}
-      size="medium"
+      icon={<Icon source={EditMinor} color="base" />}
+      plain
       {...props}
     ></Button>
   );

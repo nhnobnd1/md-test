@@ -10,7 +10,6 @@ import {
   IndexTable,
   Link,
   Loading,
-  Page,
   Text,
 } from "@shopify/polaris";
 import classNames from "classnames";
@@ -71,9 +70,9 @@ export default function CustomerIndexPage() {
       show(t("messages:success.delete_customer"));
     },
     onError: () => {
-      show(t("messages:error.delete_customer"), {
-        isError: true,
-      });
+      // show(t("messages:error.delete_customer"), {
+      //   isError: true,
+      // });
     },
   });
   const convertCustomerData = useMemo(() => {
@@ -86,7 +85,7 @@ export default function CustomerIndexPage() {
         <IndexTable.Cell className="py-3">
           <Link
             monochrome
-            onClick={() => navigateShowDetails(records?._id)}
+            onClick={() => handleOpenPopup(records)}
             removeUnderline
           >
             <Text variant="bodyMd" fontWeight="bold" as="span">
@@ -104,10 +103,8 @@ export default function CustomerIndexPage() {
               <ButtonEdit onClick={() => handleOpenPopup(records)}></ButtonEdit>
               <ButtonDelete
                 onClick={() => handleOpenModalDelete(records)}
-                destructive
-              >
-                Remove
-              </ButtonDelete>
+                // destructive
+              ></ButtonDelete>
             </div>
           </ButtonGroup>
         </IndexTable.Cell>
@@ -145,15 +142,20 @@ export default function CustomerIndexPage() {
 
   return (
     <>
-      <Page title="Customer" compactTitle fullWidth>
-        <div className={classNames(styles.groupTopPage, "d-flex")}>
-          <div className="md-input">
-            <Search onTypeSearch={handleSearch} />
-          </div>
-          <div
-            className={classNames(styles.buttonAdd, "md-btn md-btn-primary")}
-          >
-            <Button onClick={openPopup}>Add new</Button>
+      <section className="page-wrap">
+        <div className="d-flex justify-between">
+          <Text variant="headingLg" as="h1">
+            Customers
+          </Text>
+          <div className={classNames(styles.groupTopPage, "d-flex")}>
+            <div style={{ width: 448 }} className="md-input">
+              <Search onTypeSearch={handleSearch} />
+            </div>
+            <div
+              className={classNames(styles.buttonAdd, "md-btn md-btn-primary")}
+            >
+              <Button onClick={openPopup}>Add new</Button>
+            </div>
           </div>
         </div>
         <ModalDelete
@@ -169,6 +171,7 @@ export default function CustomerIndexPage() {
           deleteAction={() => {
             deleteCustomerMutate({ ids: [customerData?._id] });
           }}
+          loading={deleting}
         />
         <CustomModal
           title={
@@ -236,7 +239,7 @@ export default function CustomerIndexPage() {
             />
           </div>
         ) : null}
-      </Page>
+      </section>
     </>
   );
 }
