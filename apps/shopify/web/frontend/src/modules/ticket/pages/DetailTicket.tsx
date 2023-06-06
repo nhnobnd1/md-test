@@ -576,7 +576,11 @@ const DetailTicket = (props: DetailTicketProps) => {
           breadcrumbs={[
             { content: "Ticket", url: generatePath(TicketRoutePaths.Index) },
           ]}
-          title={`Ticket ${ticket?.ticketId}: ${ticket?.subject}`}
+          title={
+            (
+              <span className="truncate w-full  inline-block">{`Ticket ${ticket?.ticketId}: ${ticket?.subject}`}</span>
+            ) as unknown as string
+          }
           fullWidth
         >
           <Layout>

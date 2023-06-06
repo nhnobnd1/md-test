@@ -520,7 +520,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         position={index}
         onClick={() => {}}
       >
-        <IndexTable.Cell>
+        {/* <IndexTable.Cell>
           <div
             className="hover:underline"
             onClick={() => {
@@ -531,7 +531,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
               {ticketId}
             </Text>
           </div>
-        </IndexTable.Cell>
+        </IndexTable.Cell> */}
         <IndexTable.Cell>
           {
             <div
@@ -540,7 +540,10 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                 navigate(generatePath(TicketRoutePaths.Detail, { id: _id }));
               }}
             >
-              {subject}
+              <Text variant="bodyMd" fontWeight="bold" as="span">
+                {subject}
+              </Text>
+              &nbsp; <span className="text-gray-500">[#{ticketId}]</span>
             </div>
           }
         </IndexTable.Cell>
@@ -746,7 +749,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
               </>
             ) : (
               <>
-                <div className="flex mb-2">
+                <div className="flex mb-2 ticket-statistic">
                   <ButtonGroup segmented spacing="loose">
                     <Button
                       pressed={activeButtonIndex === "ALL"}
@@ -840,7 +843,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                     />
                   }
                   headings={[
-                    { title: "#" },
+                    // { title: "#" },
                     { title: "Ticket Title" },
                     { title: "Customer" },
                     { title: "Tags" },

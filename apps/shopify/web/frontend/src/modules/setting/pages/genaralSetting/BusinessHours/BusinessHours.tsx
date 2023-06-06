@@ -25,7 +25,7 @@ import {
   TextContainer,
 } from "@shopify/polaris";
 import { FormikProps } from "formik";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import Form from "src/components/Form";
@@ -94,6 +94,11 @@ const BusinessHours = (props: BusinessHoursProps) => {
       setDataHolidays([...value.holidays]);
     }
   }, []);
+  useEffect(() => {
+    dataBusinessCalendar?.businessHoursType === BusinessHoursType.Full
+      ? setDisabled(true)
+      : setDisabled(false);
+  }, [dataBusinessCalendar]);
   // fetch business calendar
   const { run: fetchListBusinessCalendar, processing } = useJob(
     () => {
