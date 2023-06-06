@@ -11,6 +11,7 @@ import { filesize } from "filesize";
 import parse, { Element } from "html-react-parser";
 import fileDownload from "js-file-download";
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { isMobile } from "react-device-detect";
 import ImageZoom from "src/components/TextEditorTicket/ImageZoom";
 import useHtmlStringHeight from "src/hooks/useHtmlStringHeight";
 import { ChatItem } from "src/modules/ticket/pages/DetailTicket";
@@ -176,19 +177,23 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
           )}
         </div>
       </div>
-      {/* <div
-        className="text-black text-scroll mt-5"
-        dangerouslySetInnerHTML={{ __html: sortChat }}
-      /> */}
-      <div ref={iframeRef}>
-        <object
-          className="w-full h-full border-none mt-5"
-          data={`data:text/html;charset=utf-8,${encodeURIComponent(
-            `<div style="font-family:Helvetica;font-size:14px">${sortChat}</div>`
-          )}`}
-          type="text/html"
-        ></object>
-      </div>
+      {isMobile ? (
+        <div
+          className="text-black text-scroll mt-5"
+          dangerouslySetInnerHTML={{ __html: sortChat }}
+        />
+      ) : (
+        <div ref={iframeRef}>
+          <object
+            className="w-full h-full border-none mt-5"
+            data={`data:text/html;charset=utf-8,${encodeURIComponent(
+              `<div style="font-family:Helvetica;font-size:14px">${sortChat}</div>`
+            )}`}
+            type="text/html"
+          ></object>
+        </div>
+      )}
+
       {disableQuote ? (
         <></>
       ) : (
@@ -207,19 +212,22 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
         <></>
       ) : (
         <div>
-          {/* <div
-            className="text-black mb-2 text-scroll mt-3"
-            dangerouslySetInnerHTML={{ __html: quote }}
-          /> */}
-          <div ref={iframeRefQuote}>
-            <object
-              className="w-full h-full border-none mt-5"
-              data={`data:text/html;charset=utf-8,${encodeURIComponent(
-                `<div style="font-family:Helvetica;font-size:14px">${quote}</div>`
-              )}`}
-              type="text/html"
-            ></object>
-          </div>
+          {isMobile ? (
+            <div
+              className="text-black mb-2 text-scroll mt-3"
+              dangerouslySetInnerHTML={{ __html: quote }}
+            />
+          ) : (
+            <div ref={iframeRefQuote}>
+              <object
+                className="w-full h-full border-none mt-5"
+                data={`data:text/html;charset=utf-8,${encodeURIComponent(
+                  `<div style="font-family:Helvetica;font-size:14px">${quote}</div>`
+                )}`}
+                type="text/html"
+              ></object>
+            </div>
+          )}
         </div>
       )}
 
