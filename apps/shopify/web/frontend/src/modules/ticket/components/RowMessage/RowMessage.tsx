@@ -98,17 +98,21 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
   const handleToggle = useCallback(() => setOpen((open) => !open), []);
 
   useEffect(() => {
+    if (isMobile) return;
+
     const objectElement = iframeRef.current;
 
     objectElement.style.height = `${checkHeight}px`;
-  }, [sortChat, checkHeight]);
+  }, [sortChat, checkHeight, isMobile]);
   useEffect(() => {
+    if (isMobile) return;
     if (!toggleQuote) {
       const objectElement = iframeRefQuote.current;
 
       objectElement.style.height = `${checkHeightQuote}px`;
     }
-  }, [quote, checkHeightQuote, toggleQuote]);
+  }, [quote, checkHeightQuote, toggleQuote, isMobile]);
+  console.log({ isMobile });
   return (
     <div className="">
       <div className=" items-center gap-3 mx-2">
@@ -212,7 +216,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
         <></>
       ) : (
         <div>
-          {isMobile ? (
+          {!isMobile ? (
             <div
               className="text-black mb-2 text-scroll mt-3"
               dangerouslySetInnerHTML={{ __html: quote }}
