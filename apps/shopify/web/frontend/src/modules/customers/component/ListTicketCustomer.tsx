@@ -1,17 +1,19 @@
-import { useJob, useNavigate } from "@moose-desk/core";
-import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
-import { CustomerRepository } from "@moose-desk/repo";
+import { useNavigate } from "@moose-desk/core";
+import { QUERY_KEY } from "@moose-desk/core/helper/constant";
+import { useToast } from "@shopify/app-bridge-react";
 import { EmptySearchResult, IndexTable, Loading } from "@shopify/polaris";
 import classNames from "classnames";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
-import { useEffect, useMemo, useState } from "react";
-import { map } from "rxjs";
-import { MDTextField } from "src/components/Input/TextFieldPassword/MDTextField";
+import { memo, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useQuery } from "react-query";
 import Pagination from "src/components/Pagination/Pagination";
+import { Search } from "src/components/Search/Search";
 import useGlobalData from "src/hooks/useGlobalData";
 import { useSubdomain } from "src/hooks/useSubdomain";
+import { getListTicketCustomer } from "src/modules/customers/api/api";
 import {
   ListTicketCustomerFilter,
   TicketCustomerResponse,
@@ -24,15 +26,29 @@ const resourceName = {
   singular: "customerTicket",
   plural: "customersTicket",
 };
+
+const listSort = [
+  "subject",
+  "createdDatetime",
+  "updatedDatetime",
+  "status",
+  "priority",
+  "agentEmail",
+];
+
 interface IProps {
   customerId: string;
 }
-export const ListTicketCustomer = ({ customerId }: IProps) => {
+export const ListTicketCustomer = memo(({ customerId }: IProps) => {
   const navigate = useNavigate();
   const { subDomain } = useSubdomain();
+  const { t } = useTranslation();
+  const { show } = useToast();
   const { timezone } = useGlobalData(false, subDomain || "");
-  const [querySearch, setQuerySearch] = useState<string>("");
-  const debounceValue: string = useDebounce(querySearch, 500);
+  const [indexSort, setIndexSort] = useState<number | undefined>(undefined);
+  const [direction, setDirection] = useState<"descending" | "ascending">(
+    "descending"
+  );
   const [filter, setFilter] = useState<ListTicketCustomerFilter>({
     limit,
     page: 1,
@@ -40,53 +56,34 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
     sortBy: undefined,
     sortOrder: undefined,
   });
-  const [dataSource, setDataSource]: any = useState();
-
-  const {
-    run: fetListTicketCustomer,
-    processing,
-    cancel,
-  } = useJob((customerId: string, filter: ListTicketCustomerFilter) => {
-    return CustomerRepository()
-      .getListTicket(customerId, filter)
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            setDataSource(data);
-          } else {
-            // message.error("Get data ticket customer failed");
-          }
-        })
-      );
+  const { data: dataSource, isLoading }: any = useQuery({
+    queryKey: [QUERY_KEY.LIST_TICKET_CUSTOMER, filter],
+    queryFn: () => getListTicketCustomer(customerId, filter),
+    onError: () => {
+      show(t("messages:error.get_ticket_customer"), {
+        isError: true,
+      });
+    },
   });
-  useEffect(() => {
-    fetListTicketCustomer(customerId, { ...filter, query: debounceValue });
-    return () => {
-      cancel();
-    };
-  }, [customerId, filter, debounceValue]);
-  const totalResult = dataSource?.metadata.totalCount;
+
+  // const totalResult = dataSource?.data?.metadata.totalCount;
   const memoDataSource = useMemo(() => {
     const cloneListData = dataSource?.data;
     return cloneListData;
   }, [dataSource]);
-
-  const handleSearchInput = (value: string) => {
-    const newQuery = value;
-    setQuerySearch(newQuery);
+  const handleSearch = (value: string) => {
+    setFilter((pre) => ({ ...pre, query: value }));
   };
-  const handleSortTable = (headingIndex: number, direction: string) => {
-    const listSort = [
-      "subject",
-      "createdDatetime",
-      "updatedDatetime",
-      "status",
-      "priority",
-      "agentEmail",
-    ];
+
+  const handleSort = (
+    headingIndex: number,
+    direction: "descending" | "ascending"
+  ) => {
+    setIndexSort(Number(headingIndex));
+    setDirection(direction);
     setFilter((pre) => ({
       ...pre,
-      sortBy: listSort[headingIndex],
+      sortBy: listSort[Number(headingIndex)],
       sortOrder: direction === "ascending" ? 1 : -1,
     }));
   };
@@ -95,7 +92,7 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
   const handleClickRow = (id: string) => {
     navigate(`/ticket/${id}`);
   };
-  const rowMarkup = memoDataSource?.map(
+  const rowMarkup = memoDataSource?.data?.map(
     (
       {
         _id,
@@ -149,17 +146,14 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
   return (
     <div className={styles.wrapTableTicketCustomer}>
       <div className={classNames(styles.searchWrap, "mb-10")}>
-        <MDTextField
-          value={querySearch}
-          type="search"
-          onChange={handleSearchInput}
-        />
+        <Search onTypeSearch={handleSearch} />
       </div>
       <section className={styles.wrapTable}>
-        {processing && <Loading />}
+        {isLoading && <Loading />}
         <IndexTable
-          selectable={false}
           resourceName={resourceName}
+          itemCount={memoDataSource?.data?.length || 0}
+          selectable={false}
           headings={[
             { title: "Ticket Title" },
             { title: "Date Requested" },
@@ -168,10 +162,11 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
             { title: "Priority" },
             { title: "Assignee" },
           ]}
-          itemCount={memoDataSource?.length || 10}
+          sortDirection={direction}
+          sortColumnIndex={indexSort}
+          onSort={handleSort}
           sortable={[true, true, true, true, true, true]}
-          onSort={handleSortTable}
-          loading={processing}
+          // loading={loadingCustomer}
           emptyState={
             <EmptySearchResult
               title={
@@ -187,11 +182,15 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
       </section>
 
       <div className="flex items-center justify-center mt-4">
-        <section className={styles.totalResult}>
+        {/* <section className={styles.totalResult}>
           {totalResult} Result{totalResult > 1 && "s"}
-        </section>
+        </section> */}
         <Pagination
-          total={dataSource?.metadata ? dataSource.metadata.totalCount : 1}
+          total={
+            memoDataSource?.data?.metadata
+              ? memoDataSource?.data?.metadata?.totalCount
+              : 1
+          }
           pageSize={filter.limit ?? 0}
           currentPage={filter.page ?? 1}
           onChangePage={handleChangePage}
@@ -202,4 +201,4 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
       {/* </section> */}
     </div>
   );
-};
+});

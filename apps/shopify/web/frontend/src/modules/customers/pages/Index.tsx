@@ -40,8 +40,8 @@ export default function CustomerIndexPage() {
   const navigate = useNavigate();
 
   const { t } = useTranslation();
-  const { state: visible, on: openPopup, off: closePopup } = useToggle();
   const { show } = useToast();
+  const { state: visible, on: openPopup, off: closePopup } = useToggle();
   const [customerData, setCustomerData] = useState<any>();
   const [indexSort, setIndexSort] = useState<number | undefined>(undefined);
   const [direction, setDirection] = useState<"descending" | "ascending">(

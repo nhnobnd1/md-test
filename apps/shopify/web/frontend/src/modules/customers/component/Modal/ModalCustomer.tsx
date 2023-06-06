@@ -77,6 +77,7 @@ IModal) => {
       updateCustomer(customerData?._id || "", payload),
     onSuccess: async () => {
       await queryClient.invalidateQueries(QUERY_KEY.LIST_CUSTOMER);
+      onClose();
       show(t("messages:success.update_customer"));
     },
     onError: () => {
@@ -120,6 +121,7 @@ IModal) => {
       primaryAction={{
         content: primaryButtonLabel,
         onAction: handleSubmitForm,
+        loading: isUpdating || isCreating,
       }}
       secondaryActions={[
         {
