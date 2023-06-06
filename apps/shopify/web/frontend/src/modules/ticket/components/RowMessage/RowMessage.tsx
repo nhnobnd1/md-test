@@ -112,7 +112,6 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
       objectElement.style.height = `${checkHeightQuote}px`;
     }
   }, [quote, checkHeightQuote, toggleQuote, isMobile]);
-  console.log({ isMobile });
   return (
     <div className="">
       <div className=" items-center gap-3 mx-2">

@@ -243,14 +243,19 @@ const TrashTicket: FC<TrashTicketProps> = () => {
         position={index}
         onClick={() => {}}
       >
-        <IndexTable.Cell>
+        {/* <IndexTable.Cell>
           <div className="">
             <Text variant="bodyMd" fontWeight="bold" as="span">
               {ticketId}
             </Text>
           </div>
+        </IndexTable.Cell> */}
+        <IndexTable.Cell>
+          <Text variant="bodyMd" fontWeight="bold" as="span">
+            {subject}
+          </Text>
+          &nbsp; <span className="text-gray-500">[#{ticketId}]</span>
         </IndexTable.Cell>
-        <IndexTable.Cell>{subject}</IndexTable.Cell>
         <IndexTable.Cell>
           {createdViaWidget || incoming ? (
             <span className="subject">{`${fromEmail.email}`}</span>
@@ -501,7 +506,7 @@ const TrashTicket: FC<TrashTicketProps> = () => {
                     />
                   }
                   headings={[
-                    { title: "#" },
+                    // { title: "#" },
                     { title: "Ticket Title" },
                     { title: "Customer" },
                     { title: "Tags" },

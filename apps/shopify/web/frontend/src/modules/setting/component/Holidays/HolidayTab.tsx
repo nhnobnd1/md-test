@@ -67,21 +67,13 @@ const HolidayTab = ({
           </Link>
         </IndexTable.Cell>
         <IndexTable.Cell className="py-3">
-          {value.startDate === value.endDate
-            ? `${dayjs(
-                `${value.startDate.slice(3)}-${value.startDate.slice(
-                  0,
-                  2
-                )}-${day.getFullYear()}`,
-                "MM/DD/YYYY"
-              ).format("MM/DD")}`
-            : `${dayjs(
-                `${value.startDate}-${day.getFullYear()}`,
-                "MM/DD/YYYY"
-              ).format("MM/DD")} to ${dayjs(
-                `${value.endDate}-${day.getFullYear()}`,
-                "MM/DD/YYYY"
-              ).format("MM/DD")}`}
+          {`${dayjs(
+            `${value.startDate}-${day.getFullYear()}`,
+            "MM/DD/YYYY"
+          ).format("MM/DD")} to ${dayjs(
+            `${value.endDate}-${day.getFullYear()}`,
+            "MM/DD/YYYY"
+          ).format("MM/DD")}`}
         </IndexTable.Cell>
         <IndexTable.Cell className="py-3">
           {getAutoReplyName(value.autoReplyCode)}
@@ -143,6 +135,7 @@ const HolidayTab = ({
 
   const handleUpdateValue = useCallback(
     (value: any) => {
+      console.log({ value });
       if (isDetail && dataForm?.value.name) {
         setValueListHolidays((init: Holidays[]) => {
           init.splice(dataForm.index, 1, value);

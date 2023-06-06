@@ -57,7 +57,6 @@
 
 // Title
 
-
 // Button
 .md-btn {
   button {
@@ -74,28 +73,37 @@
     font-size: 15px;
     font-weight: 500;
     &:hover {
-    background-color: $primary-hover;
+      background-color: $primary-hover;
     }
   }
 }
 
 // Input
 
-
-
 // Select
-
-
-
 
 // Table
 
-
-
 // Pagination
 
-
-.Polaris-Button--pressed {
-  background-color: rgba(242, 117, 34, 1) !important;
-  border-color: rgba(242, 117, 34, 1) !important;
+.ticket-statistic {
+  .Polaris-Button--pressed {
+    background-color: $primary !important;
+    border-color: $primary !important;
+  }
+  .Polaris-Button__Text {
+    font-size: 12px !important;
+  }
+}
+.Polaris-Button--primary {
+  background-color: $primary !important;
+  &:hover {
+    background-color: $primary-hover !important;
+  }
+  &:active {
+    background-color: $primary-active !important;
+  }
+}
+.Polaris-Page-Header__TitleWrapper {
+  width: 90% !important;
 }
