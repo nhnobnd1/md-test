@@ -47,9 +47,13 @@
   margin-bottom: 9px;
 }
 .flex-center {
- display: flex;
- align-items: center;
-} 
+  display: flex;
+  align-items: center;
+}
 .justify-between {
   justify-content: space-between;
+}
+.Polaris-Button--pressed {
+  background-color: rgba(242, 117, 34, 1) !important;
+  border-color: rgba(242, 117, 34, 1) !important;
 }

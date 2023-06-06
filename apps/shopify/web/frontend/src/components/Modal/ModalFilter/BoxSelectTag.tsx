@@ -110,7 +110,7 @@ const BoxSelectTag = (props: BoxSelectAutoReplyProps) => {
         activator={
           <Combobox.TextField
             onChange={updateText}
-            label={<div className="mb-3">{props.label}</div>}
+            label={<div>{props.label}</div>}
             labelHidden={!props.label}
             value={inputValue}
             autoComplete="off"
@@ -119,7 +119,6 @@ const BoxSelectTag = (props: BoxSelectAutoReplyProps) => {
         }
       >
         <>
-          {" "}
           <Listbox onSelect={updateSelection}>{optionsMarkup}</Listbox>
         </>
       </Combobox>

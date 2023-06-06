@@ -1,6 +1,6 @@
-import { Button, Modal, TextContainer } from "@shopify/polaris";
+import { Button, Icon, Modal, TextContainer } from "@shopify/polaris";
 import { useCallback, useState } from "react";
-import RemoveIcon from "~icons/material-symbols/delete-outline";
+import { DeleteMajor } from "@shopify/polaris-icons";
 
 export interface ModalDelete {
   handleDeleteSelected: () => void;
@@ -9,13 +9,13 @@ export const ModalDeleteTicket = ({ handleDeleteSelected }: ModalDelete) => {
   const [active, setActive] = useState(false);
   const activator = (
     <Button
+      size="medium"
+      destructive
       onClick={() => {
         setActive(true);
       }}
-      icon={<RemoveIcon fontSize={20} />}
-    >
-      Remove Selected
-    </Button>
+      icon={<Icon source={DeleteMajor} color="base" />}
+    ></Button>
   );
   const handleChange = useCallback(() => setActive(!active), [active]);
   return (

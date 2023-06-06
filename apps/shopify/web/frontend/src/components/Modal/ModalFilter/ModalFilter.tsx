@@ -5,7 +5,14 @@ import {
   priorityOptions,
   statusOptions,
 } from "@moose-desk/repo";
-import { Button, FormLayout, Modal, TextContainer } from "@shopify/polaris";
+import {
+  Button,
+  FormLayout,
+  Icon,
+  Modal,
+  TextContainer,
+} from "@shopify/polaris";
+import { FilterMajor } from "@shopify/polaris-icons";
 import { FormikProps, FormikValues } from "formik";
 import { FC, useCallback, useMemo, useRef, useState } from "react";
 import Form from "src/components/Form";
@@ -13,8 +20,6 @@ import FormItem from "src/components/Form/Item";
 import BoxSelectFilter from "src/components/Modal/ModalFilter/BoxSelectFilter";
 import BoxSelectTag from "src/components/Modal/ModalFilter/BoxSelectTag";
 import { FilterObject } from "src/modules/ticket/pages/Index";
-import IcRoundFilterAlt from "~icons/ic/round-filter-alt";
-
 interface ModalFilterProps {
   customers: Customer[];
   tags: Tag[];
@@ -59,9 +64,7 @@ export const ModalFilter: FC<ModalFilterProps> = ({
       }}
       icon={
         <div className="flex gap-2">
-          <IcRoundFilterAlt />
-
-          <span>Filters</span>
+          <Icon source={FilterMajor} color="base" />
         </div>
       }
     />
