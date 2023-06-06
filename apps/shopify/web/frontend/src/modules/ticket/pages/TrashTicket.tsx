@@ -417,7 +417,7 @@ const TrashTicket: FC<TrashTicketProps> = () => {
             ) : (
               <>
                 {" "}
-                <div className="flex mb-2">
+                <div className="flex mb-2  ticket-statistic">
                   <ButtonGroup segmented spacing="loose">
                     <Button
                       pressed={activeButtonIndex === "ALL"}

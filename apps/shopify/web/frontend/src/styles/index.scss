@@ -109,6 +109,9 @@
     background-color: $primary-active !important;
   }
 }
+.Polaris-Button--disabled {
+  color: black !important;
+}
 .Polaris-Page-Header__TitleWrapper {
   width: 90% !important;
 }
