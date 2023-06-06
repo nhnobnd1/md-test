@@ -37,30 +37,7 @@ export default function App() {
       ? fullscreen.dispatch(Fullscreen.Action.ENTER)
       : fullscreen.dispatch(Fullscreen.Action.EXIT);
   }, [fullscreen, fullScreen]);
-  // const getEventUninstallApp = () => {
-  //   const shopOrigin = window.location.origin;
-  //   axios
-  //     .post("/your-webhook-url", {
-  //       // địa chỉ webhook
-  //       headers: {
-  //         "X-Shopify-Topic": "app/uninstalled",
-  //         "X-Shopify-Hmac-Sha256": "webhook-hmac",
-  //         "X-Shopify-Shop-Domain": shopOrigin, // domain của shopify
-  //       },
-  //       data: {
-  //         // webhook data: thông tin về id shop, email, domain, ...
-  //       },
-  //     })
-  //     .then((response) => {
-  //       console.log(response.data);
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //     });
-  // };
-  // useEffect(() => {
-  //   getEventUninstallApp();
-  // }, [window]);
+
   useEffect(() => {
     console.log({ shop, isLoggedIn, user, storeId });
     if ((shop && !isLoggedIn) || (!user && shop)) {

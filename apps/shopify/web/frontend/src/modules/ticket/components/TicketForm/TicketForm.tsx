@@ -19,11 +19,11 @@ import { useTranslation } from "react-i18next";
 import { map } from "rxjs";
 import Form, { FormProps } from "src/components/Form";
 import FormItem from "src/components/Form/Item";
+import BoxSelectFilter from "src/components/Modal/ModalFilter/BoxSelectFilter";
 import { Select as ComboSelect, LoadMoreValue } from "src/components/Select";
 import SelectAddEmail from "src/components/SelectAddEmail/SelectAddEmail";
 import SelectAddTag from "src/components/SelectAddTag/SelectAddTag";
 import { TextEditorTicket } from "src/components/TextEditorTicket";
-import env from "src/core/env";
 import useSaveDataGlobal from "src/hooks/useSaveDataGlobal";
 import BoxSelectCustomer from "src/modules/ticket/components/BoxSelectCustomer/BoxSelectCustomer";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
@@ -97,7 +97,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
 
   const fetchAgents = useCallback(
     (params: LoadMoreValue) => {
-      const limit = env.DEFAULT_PAGE_SIZE;
+      const limit = 500;
 
       return AgentRepository()
         .getList({
@@ -297,6 +297,11 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
     };
     CreateTicket(dataCreate);
   };
+  const css = `
+  .Polaris-Label{
+    width: 100%;
+  }
+  `;
 
   return (
     <Form
@@ -308,78 +313,89 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
         onFinish();
       }}
     >
+      <style scoped>{css}</style>
       <FormLayout>
         <div className="grid grid-cols-2 gap-x-[7%]">
           <div className="flex items-center gap-2 justify-start">
             <div className="flex-1">
               <div className="flex-1">
-                <FormItem name="to">
-                  <BoxSelectCustomer
-                    form={props.innerRef}
-                    label={
+                <FormItem name="from">
+                  {/* <Select
+                    label="From"
+                    // placeholder="Defined Email address"
+                    options={emailIntegrationsOptions}
+                  /> */}
+                  <BoxSelectFilter
+                    // disabled={disabled}
+                    label="From"
+                    data={emailIntegrationsOptions}
+                    placeholder="Defined Email address"
+                  />
+                </FormItem>
+              </div>
+            </div>
+          </div>
+          <div>
+            <FormItem name="to">
+              <FormItem name="to">
+                <BoxSelectCustomer
+                  form={props.innerRef}
+                  label={
+                    <div className="flex justify-between w-full">
                       <div>
                         <span className="mr-1 text-red-500">*</span>
                         <span>To</span>
                       </div>
-                    }
-                    data={customersOptions}
-                    placeholder="Email"
-                  />
-                </FormItem>
-              </div>
-              {enableCC ? (
-                <div className="flex-1 mt-3">
-                  <FormItem name="CC">
-                    <SelectAddEmail
-                      label="CC"
-                      data={customersOptions}
-                      defaultTag={[]}
-                    />
-                  </FormItem>
-                </div>
-              ) : (
-                <></>
-              )}
-              {enableCC ? (
-                <div className="flex-1 mt-3">
-                  <FormItem name="BCC">
-                    <SelectAddEmail
-                      label="BCC"
-                      data={customersOptions}
-                      defaultTag={[]}
-                    />
-                  </FormItem>
-                </div>
-              ) : (
-                <></>
-              )}
-            </div>
-            <div className="flex justify-start items-start h-full mt-8">
-              <Link
-                onClick={() => {
-                  setEnableCC(!enableCC);
-                }}
-              >
-                CC/BCC
-              </Link>
-            </div>
+                      <div className="">
+                        <Link
+                          onClick={() => {
+                            setEnableCC(!enableCC);
+                          }}
+                        >
+                          CC/BCC
+                        </Link>
+                      </div>
+                    </div>
+                  }
+                  data={customersOptions}
+                  placeholder="Email"
+                />
+              </FormItem>
+            </FormItem>
           </div>
-          <div>
+          {enableCC ? (
+            <div className="flex-1 mt-3">
+              <FormItem name="CC">
+                <SelectAddEmail
+                  label="CC"
+                  data={customersOptions}
+                  defaultTag={[]}
+                />
+              </FormItem>
+            </div>
+          ) : (
+            <></>
+          )}
+          {enableCC ? (
+            <div className="flex-1 mt-3">
+              <FormItem name="BCC">
+                <SelectAddEmail
+                  label="BCC"
+                  data={customersOptions}
+                  defaultTag={[]}
+                />
+              </FormItem>
+            </div>
+          ) : (
+            <></>
+          )}
+          <div className="mt-4">
             <FormItem name="assignee">
               <ComboSelect.Ajax
                 label="Assignee"
                 placeholder="Search agents"
                 height=""
                 loadMore={fetchAgents}
-              />
-            </FormItem>
-          </div>
-          <div className="mt-4">
-            <FormItem name="from">
-              <Select
-                label="From"
-                // placeholder="Defined Email address"
-                options={emailIntegrationsOptions}
               />
             </FormItem>
           </div>
@@ -393,7 +409,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
               <SelectAddTag
                 label="Tags"
                 data={tagsOptions}
-                placeholder="Add Tags"
+                placeholder="+ Add Tags"
               />
             </FormItem>
           </div>

@@ -1,4 +1,4 @@
-import { Combobox, Listbox } from "@shopify/polaris";
+import { Combobox, EmptySearchResult, Listbox } from "@shopify/polaris";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 interface Data {
   value: string;
@@ -94,11 +94,20 @@ const BoxSelectFilter = (props: BoxSelectAutoReplyProps) => {
   }, [props.data, props.value, props.onChange]);
   return (
     <Combobox
+      height={props.disabled ? "0" : ""}
       activator={
         <Combobox.TextField
           onChange={updateText}
           label={props.label}
           labelHidden={!props.label}
+          onFocus={() => {
+            setOptions(props.data);
+          }}
+          onBlur={() => {
+            if (options.length === 0) {
+              setInputValue("");
+            }
+          }}
           value={inputValue}
           autoComplete="off"
           error={props.error}
@@ -109,7 +118,16 @@ const BoxSelectFilter = (props: BoxSelectAutoReplyProps) => {
     >
       {options.length > 0 && !props.disabled ? (
         <Listbox onSelect={updateSelection}>{optionsMarkup}</Listbox>
-      ) : null}
+      ) : (
+        <div className="p-3 h-[100px]">
+          <EmptySearchResult
+            title={
+              "Sorry! There is no records matched with your search criteria"
+            }
+            description={"Try changing the filters or search term"}
+          />
+        </div>
+      )}
     </Combobox>
   );
 };

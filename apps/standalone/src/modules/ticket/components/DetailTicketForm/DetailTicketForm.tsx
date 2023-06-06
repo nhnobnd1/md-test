@@ -263,10 +263,12 @@ const DetailTicketForm = () => {
       .pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
-            const tags = data.data.map((item) => ({
-              ...item,
-              id: item._id,
-            }));
+            const tags = data.data
+              .filter((item) => item.isActive && item.emailConfirmed)
+              .map((item) => ({
+                ...item,
+                id: item._id,
+              }));
             setAgents((prevTags) => {
               return [...prevTags, ...tags];
             });

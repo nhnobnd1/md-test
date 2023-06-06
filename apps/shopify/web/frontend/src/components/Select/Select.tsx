@@ -7,6 +7,7 @@ import {
 import {
   Combobox,
   ComboboxProps,
+  EmptySearchResult,
   Listbox,
   Stack,
   Tag,
@@ -181,7 +182,6 @@ export const Select = ({
     },
     { wait: 100 }
   );
-
   return (
     <div>
       <Combobox
@@ -190,6 +190,15 @@ export const Select = ({
           <Combobox.TextField
             // prefix={<Icon source={() => <CustomerPlusMajor />} />}
             onChange={updateText}
+            onFocus={() => {
+              setInputValue("");
+              onSearch && onSearch("");
+            }}
+            onBlur={() => {
+              if (optionsData.length === 0) {
+                setInputValue("");
+              }
+            }}
             autoComplete="Combobox"
             label={label}
             labelHidden={labelHidden}
@@ -221,7 +230,16 @@ export const Select = ({
             ))}
             {loadingMarkup}
           </Listbox>
-        ) : null}
+        ) : (
+          <div className="p-3 h-[100px]">
+            <EmptySearchResult
+              title={
+                "Sorry! There is no records matched with your search criteria"
+              }
+              description={"Try changing the filters or search term"}
+            />
+          </div>
+        )}
       </Combobox>
     </div>
   );

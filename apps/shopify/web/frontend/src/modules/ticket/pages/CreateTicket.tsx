@@ -116,23 +116,25 @@ const CreateTicket = (props: CreateTicketProps) => {
     <>
       {processing || loadingList ? (
         <>
-          <SkeletonPage primaryAction />
-          <Layout>
-            <Layout.Section>
-              <LegacyCard sectioned>
-                <TextContainer>
-                  <SkeletonDisplayText size="extraLarge" />
-                  <SkeletonBodyText />
-                </TextContainer>
-              </LegacyCard>
-              <LegacyCard sectioned>
-                <TextContainer>
-                  <SkeletonDisplayText size="extraLarge" />
-                  <SkeletonBodyText />
-                </TextContainer>
-              </LegacyCard>
-            </Layout.Section>
-          </Layout>
+          <Page fullWidth>
+            <SkeletonPage primaryAction />
+            <Layout>
+              <Layout.Section>
+                <LegacyCard sectioned>
+                  <TextContainer>
+                    <SkeletonDisplayText size="extraLarge" />
+                    <SkeletonBodyText />
+                  </TextContainer>
+                </LegacyCard>
+                <LegacyCard sectioned>
+                  <TextContainer>
+                    <SkeletonDisplayText size="extraLarge" />
+                    <SkeletonBodyText />
+                  </TextContainer>
+                </LegacyCard>
+              </Layout.Section>
+            </Layout>
+          </Page>
         </>
       ) : (
         <Page
@@ -156,13 +158,17 @@ const CreateTicket = (props: CreateTicketProps) => {
                     <div className={styles.wrapSearchToggle}>
                       {_renderButtonToggle()}
                     </div>
-                    <TicketForm
-                      innerRef={formRef}
-                      initialValues={initialValuesForm}
-                      enableReinitialize
-                      onValuesChange={updateForm}
-                      primaryEmail={primaryEmail}
-                    />
+                    {primaryEmail ? (
+                      <TicketForm
+                        innerRef={formRef}
+                        initialValues={initialValuesForm}
+                        enableReinitialize
+                        onValuesChange={updateForm}
+                        primaryEmail={primaryEmail}
+                      />
+                    ) : (
+                      <></>
+                    )}
                   </div>
                   <div className={visible ? styles.wrapSearch : "d-none"}>
                     <ContentShopifySearch />

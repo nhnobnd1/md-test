@@ -31,7 +31,7 @@ import {
   UpdateTicket,
 } from "@moose-desk/repo";
 import { PDFDownloadLink } from "@react-pdf/renderer";
-import { Button, Input, Spin, TableProps } from "antd";
+import { Button, Input, Skeleton, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -570,7 +570,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                   >
                     {({ loading }) =>
                       loading ? (
-                        <Spin />
+                        <Skeleton.Input />
                       ) : (
                         <div className="flex justify-center items-center">
                           <Button

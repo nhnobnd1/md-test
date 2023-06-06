@@ -176,7 +176,7 @@ const BusinessHours = (props: BusinessHoursProps) => {
   return (
     <>
       {processing ? (
-        <>
+        <Page fullWidth>
           <SkeletonPage />
           <Layout>
             <Layout.Section>
@@ -188,7 +188,7 @@ const BusinessHours = (props: BusinessHoursProps) => {
               </LegacyCard>
             </Layout.Section>
           </Layout>
-        </>
+        </Page>
       ) : (
         <Page title="Business Hours" fullWidth>
           <Layout>

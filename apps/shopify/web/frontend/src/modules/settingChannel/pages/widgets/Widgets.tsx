@@ -221,7 +221,7 @@ const Widgets = (props: WidgetsProps) => {
         />
       )}
       {processing ? (
-        <>
+        <Page fullWidth>
           <SkeletonPage />
           <Layout>
             <Layout.Section>
@@ -233,7 +233,7 @@ const Widgets = (props: WidgetsProps) => {
               </LegacyCard>
             </Layout.Section>
           </Layout>
-        </>
+        </Page>
       ) : (
         <Page title="Web Form" fullWidth>
           <Layout>

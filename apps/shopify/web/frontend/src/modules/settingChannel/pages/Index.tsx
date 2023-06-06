@@ -1,12 +1,11 @@
-import { PageComponent, useNavigate } from "@moose-desk/core";
+import { PageComponent, TokenManager, useNavigate } from "@moose-desk/core";
 import { Button, Card, Icon, Layout, Page } from "@shopify/polaris";
 import {
-  ChatMajor,
   ChecklistAlternateMajor,
   EmailNewsletterMajor,
-  SocialPostMajor,
 } from "@shopify/polaris-icons";
-import { FunctionComponent, SVGProps, useMemo } from "react";
+import { FunctionComponent, SVGProps, useCallback, useMemo } from "react";
+import { useSubdomain } from "src/hooks/useSubdomain";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
 
 interface SettingChannelIndexPageProps {}
@@ -15,6 +14,19 @@ const SettingChannelIndexPage: PageComponent<
   SettingChannelIndexPageProps
 > = () => {
   const navigate = useNavigate();
+  const { getSubDomain, getDomainStandalone } = useSubdomain();
+
+  const getDomain = useCallback(() => {
+    return `https://${getSubDomain()}${getDomainStandalone()}`;
+  }, [import.meta.env.MODE, getSubDomain, getDomainStandalone]);
+
+  const handleRedirectStandaloneCreate = useCallback(() => {
+    const baseToken = TokenManager.getToken("base_token");
+    const refreshToken = TokenManager.getToken("refresh_token");
+    window.open(
+      `${getDomain()}/setting-channel/channel-email/redirect?baseToken=${baseToken}&refreshToken=${refreshToken}&type=create`
+    );
+  }, [window.location.href, import.meta.env.MODE]);
   const listCategory = useMemo<
     Array<{
       title: string;
@@ -28,11 +40,11 @@ const SettingChannelIndexPage: PageComponent<
       {
         title: "Email Configuration",
         description:
-          "Configure the web form widget that can be added to your website",
+          "Configure the email addresses used for communication with your customers in MooseDesk",
         link: SettingChannelRoutePaths.ChannelEmail.Index,
         icon: () => <EmailNewsletterMajor />,
         onConfigure: () => {
-          navigate(SettingChannelRoutePaths.ChannelEmail.Index);
+          handleRedirectStandaloneCreate();
         },
       },
       {
@@ -45,18 +57,6 @@ const SettingChannelIndexPage: PageComponent<
           navigate(SettingChannelRoutePaths.Widgets.Index);
         },
       },
-      // {
-      //   title: "Live Chat Configuration",
-      //   link: "",
-      //   icon: () => <ChatMajor />,
-      //   onConfigure: () => {},
-      // },
-      // {
-      //   title: "Facebook, Instagram and Messenger Configuration",
-      //   link: "",
-      //   icon: () => <SocialPostMajor />,
-      //   onConfigure: () => {},
-      // },
     ],
     []
   );

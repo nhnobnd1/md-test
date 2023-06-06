@@ -252,10 +252,12 @@ const DetailTicket = (props: DetailTicketProps) => {
       .pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
-            const tags = data.data.map((item) => ({
-              ...item,
-              id: item._id,
-            }));
+            const tags = data.data
+              .filter((item) => item.isActive && item.emailConfirmed)
+              .map((item) => ({
+                ...item,
+                id: item._id,
+              }));
             setAgents((prevTags) => {
               return [...prevTags, ...tags];
             });
@@ -550,7 +552,7 @@ const DetailTicket = (props: DetailTicketProps) => {
   return (
     <>
       {processing ? (
-        <>
+        <Page fullWidth>
           <SkeletonPage primaryAction />
           <Layout>
             <Layout.Section>
@@ -568,7 +570,7 @@ const DetailTicket = (props: DetailTicketProps) => {
               </LegacyCard>
             </Layout.Section>
           </Layout>
-        </>
+        </Page>
       ) : (
         <Page
           breadcrumbs={[

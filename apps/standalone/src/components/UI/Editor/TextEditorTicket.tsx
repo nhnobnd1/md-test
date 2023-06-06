@@ -2,7 +2,7 @@ import { CloudUploadOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useJob, useLocation, useToggle } from "@moose-desk/core";
 import { TicketRepository } from "@moose-desk/repo";
 import { Editor, IAllProps } from "@tinymce/tinymce-react";
-import { Button, FormInstance, Modal, Popover } from "antd";
+import { Button, FormInstance, Modal, Popover, Spin } from "antd";
 import { filesize } from "filesize";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
@@ -42,6 +42,7 @@ const TextEditorTicket = ({
     editorRef.current = editor;
   }, []);
   const { state: modal, on: openModal, off: closeModal } = useToggle();
+
   const message = useMessage();
 
   const handleEditorChange = (content: string) => {
@@ -265,10 +266,22 @@ const TextEditorTicket = ({
           </div>
 
           <div className="mt-10  flex justify-center items-center">
-            <p className="w-[350px] ">
+            <p className="w-[400px] text-center">
               You can add Images & Video with each file size under 50MB
             </p>
           </div>
+        </div>
+      </Modal>
+      <Modal
+        closable={false}
+        open={loading}
+        width={100}
+        centered
+        footer={[]}
+        zIndex={999999}
+      >
+        <div className="flex justify-center items-center ">
+          <Spin size="large" className="mt-3" />
         </div>
       </Modal>
       <div id="my-editor">
@@ -288,7 +301,7 @@ const TextEditorTicket = ({
             content_style:
               "body { font-family:Helvetica,Arial,sans-serif; font-size:14px}",
             toolbar:
-              "undo redo | bold italic underline align | importfile | blocks fontfamily fontsizeinput image media link code copy cut past blockquote backcolor forecolor indent newdocument lineheight selectall strikethrough",
+              "undo redo | bold italic underline align | importfile | blocks fontfamily fontsizeinput | image media link code copy cut past blockquote backcolor forecolor indent newdocument lineheight selectall strikethrough",
             plugins: [
               "advlist lists autolink charmap print preview anchor",
               "searchreplace visualblocks code fullscreen",

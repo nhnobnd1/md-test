@@ -1,4 +1,5 @@
 import { Combobox, LegacyStack, Listbox, Tag } from "@shopify/polaris";
+import { isEqual } from "lodash-es";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 interface Data {
   value: string;
@@ -119,6 +120,7 @@ const SelectAddTag = (props: BoxSelectAutoReplyProps) => {
   );
 
   useEffect(() => {
+    if (isEqual(selectedTags, props.value)) return;
     setOptions(props.data);
     updateSelection(props.value, true);
   }, [props.data]);

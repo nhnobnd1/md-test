@@ -6,7 +6,7 @@ interface SettingState {
 }
 
 const useFullScreen = create<SettingState>()((set) => ({
-  fullScreen: false,
+  fullScreen: true,
   changeUpdateScreen: (boolean: boolean) =>
     set((state) => ({ fullScreen: boolean })),
 }));

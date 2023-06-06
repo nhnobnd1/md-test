@@ -1,5 +1,6 @@
 import {
   createdDatetimeFormat,
+  generatePath,
   upperCaseFirst,
   useJob,
   useNavigate,
@@ -9,6 +10,7 @@ import {
   BaseDeleteList,
   GetListTagRequest,
   GetListTicketRequest,
+  StatusTicket,
   Tag,
   TagRepository,
   Ticket,
@@ -16,14 +18,19 @@ import {
   TicketStatistic,
 } from "@moose-desk/repo";
 import {
+  Button,
   ButtonGroup,
   EmptySearchResult,
   Filters,
   IndexTable,
+  Layout,
   LegacyCard,
-  Link,
+  Loading,
   Page,
+  SkeletonBodyText,
+  SkeletonDisplayText,
   Text,
+  TextContainer,
   useIndexResourceState,
 } from "@shopify/polaris";
 import { FC, useCallback, useEffect, useState } from "react";
@@ -36,7 +43,6 @@ import useGlobalData from "src/hooks/useGlobalData";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { SortOrderOptions } from "src/models/Form";
 import { ButtonTrashTicket } from "src/modules/ticket/components/ButtonTrashTicket";
-import CardStatistic from "src/modules/ticket/components/CardStatistic/CardStatistic";
 import { optionsSort } from "src/modules/ticket/constant";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import CancelIcon from "~icons/mdi/cancel";
@@ -93,7 +99,14 @@ const TrashTicket: FC<TrashTicketProps> = () => {
     },
   });
   const [meta, setMeta] = useState<any>();
-
+  const [activeButtonIndex, setActiveButtonIndex] = useState("TRASH");
+  const handleButtonClick = useCallback(
+    (index: string) => {
+      if (activeButtonIndex === index) return;
+      setActiveButtonIndex(index);
+    },
+    [activeButtonIndex]
+  );
   const handleFiltersQueryChange = useCallback((queryValue: string) => {
     setFilterData((old: any) => {
       return {
@@ -231,11 +244,11 @@ const TrashTicket: FC<TrashTicketProps> = () => {
         onClick={() => {}}
       >
         <IndexTable.Cell>
-          <Link removeUnderline dataPrimaryLink onClick={() => {}}>
+          <div className="">
             <Text variant="bodyMd" fontWeight="bold" as="span">
               {ticketId}
             </Text>
-          </Link>
+          </div>
         </IndexTable.Cell>
         <IndexTable.Cell>{subject}</IndexTable.Cell>
         <IndexTable.Cell>
@@ -310,16 +323,27 @@ const TrashTicket: FC<TrashTicketProps> = () => {
               queryValue={filterData.query}
               onQueryChange={handleFiltersQueryChange}
               onQueryClear={handleQueryValueRemove}
-              queryPlaceholder="Search ticket"
+              queryPlaceholder="Search"
               filters={[]}
               onClearAll={resetFilterData}
-            ></Filters>
+            >
+              <div className="pl-2 col-span-1 col-start-5 flex justify-end">
+                <ButtonSort
+                  active={btnSort}
+                  sortValue={sortValue}
+                  onSort={handleSort}
+                  onShow={toggleBtnSort}
+                  onClose={closeBtnSort}
+                  options={optionsSort}
+                />
+              </div>
+            </Filters>
           </div>
         </div>
       }
     >
       <LegacyCard sectioned>
-        <div className="grid grid-cols-5 gap-6 mb-6">
+        <div className="grid grid-cols-5 gap-6 ">
           <div className="flex justify-end"></div>
           <div
             className={`col-span-3 col-start-2 flex gap-3 ${
@@ -347,20 +371,9 @@ const TrashTicket: FC<TrashTicketProps> = () => {
               icon={<CancelIcon fontSize={16} />}
             />
           </div>
-
-          <div className="pl-2 col-span-1 col-start-5 flex justify-end">
-            <ButtonSort
-              active={btnSort}
-              sortValue={sortValue}
-              onSort={handleSort}
-              onShow={toggleBtnSort}
-              onClose={closeBtnSort}
-              options={optionsSort}
-            />
-          </div>
         </div>
         <div className="grid grid-cols-5 gap-6">
-          <div className="col-span-1">
+          {/* <div className="col-span-1">
             <CardStatistic
               className="mb-4"
               // handleApply={handleApply}
@@ -374,62 +387,160 @@ const TrashTicket: FC<TrashTicketProps> = () => {
                 { label: "Trash", value: `${statistic?.data.TRASH}` },
               ]}
             />
-          </div>
-          <div className="col-span-4">
-            <IndexTable
-              resourceName={{ singular: "ticket", plural: "tickets" }}
-              itemCount={tickets?.length}
-              selectedItemsCount={
-                allResourcesSelected ? "All" : selectedResources?.length
-              }
-              onSelectionChange={handleSelectionChange}
-              loading={loadingList}
-              emptyState={
-                <EmptySearchResult
-                  title={
-                    "Sorry! There is no records matched with your search criteria"
-                  }
-                  description={"Try changing the filters or search term"}
-                  withIllustration
-                />
-              }
-              headings={[
-                { title: "#" },
-                { title: "Ticket Title" },
-                { title: "Customer" },
-                { title: "Tags" },
-                { title: "Priority" },
-                { title: "Last Update" },
-                { title: "Action" },
-              ]}
-            >
-              {rowMarkup}
-            </IndexTable>
-            <div>
-              {meta?.totalCount ? (
-                <div className="flex items-center justify-center py-8">
-                  {filterData.page && filterData.limit && meta?.totalCount && (
-                    <>
-                      <div className="col-span-1 flex justify-center">
-                        <Pagination
-                          total={meta.totalCount}
-                          pageSize={filterData.limit ?? 0}
-                          currentPage={filterData.page}
-                          onChangePage={(page) =>
-                            setFilterData((val) => {
-                              return { ...val, page };
-                            })
-                          }
-                        />
-                      </div>
-                      <div className="col-span-1 ">
-                        <p></p>
-                      </div>
-                    </>
-                  )}
+          </div> */}
+          <div className="col-span-5">
+            {loadingList && <Loading />}
+            {loadingList ? (
+              <>
+                <Layout>
+                  <Layout.Section>
+                    <LegacyCard sectioned>
+                      <TextContainer>
+                        <SkeletonDisplayText size="small" />
+                        <SkeletonBodyText />
+                      </TextContainer>
+                    </LegacyCard>
+                    <LegacyCard sectioned>
+                      <TextContainer>
+                        <SkeletonDisplayText size="small" />
+                        <SkeletonBodyText />
+                      </TextContainer>
+                    </LegacyCard>
+                  </Layout.Section>
+                </Layout>
+              </>
+            ) : (
+              <>
+                {" "}
+                <div className="flex mb-2">
+                  <ButtonGroup segmented spacing="loose">
+                    <Button
+                      pressed={activeButtonIndex === "ALL"}
+                      onClick={() => {
+                        handleButtonClick("ALL");
+                        navigate(generatePath(TicketRoutePaths.Index));
+                      }}
+                    >
+                      All (
+                      {`${
+                        statistic?.data.OPEN +
+                        statistic?.data.PENDING +
+                        statistic?.data.RESOLVED
+                      }`}
+                      )
+                    </Button>
+                    <Button
+                      pressed={activeButtonIndex === StatusTicket.NEW}
+                      onClick={() => {
+                        handleButtonClick(StatusTicket.NEW);
+                        navigate(TicketRoutePaths.Index, {
+                          state: StatusTicket.NEW,
+                        });
+                      }}
+                    >
+                      New ({`${statistic?.data.NEW}`})
+                    </Button>
+                    <Button
+                      pressed={activeButtonIndex === StatusTicket.OPEN}
+                      onClick={() => {
+                        handleButtonClick(StatusTicket.OPEN);
+                        navigate(TicketRoutePaths.Index, {
+                          state: StatusTicket.OPEN,
+                        });
+                      }}
+                    >
+                      Open ({`${statistic?.data.OPEN}`})
+                    </Button>
+                    <Button
+                      pressed={activeButtonIndex === StatusTicket.PENDING}
+                      onClick={() => {
+                        handleButtonClick(StatusTicket.PENDING);
+                        navigate(TicketRoutePaths.Index, {
+                          state: StatusTicket.PENDING,
+                        });
+                      }}
+                    >
+                      Pending ({`${statistic?.data.PENDING}`})
+                    </Button>
+                    <Button
+                      pressed={activeButtonIndex === StatusTicket.RESOLVED}
+                      onClick={() => {
+                        handleButtonClick(StatusTicket.RESOLVED);
+                        navigate(TicketRoutePaths.Index, {
+                          state: StatusTicket.RESOLVED,
+                        });
+                      }}
+                    >
+                      Resolve ({`${statistic?.data.RESOLVED}`})
+                    </Button>
+                    <Button
+                      pressed={activeButtonIndex === "TRASH"}
+                      onClick={() => {
+                        handleButtonClick("TRASH");
+                      }}
+                    >
+                      Trash ({`${statistic?.data.TRASH}`})
+                    </Button>
+                  </ButtonGroup>
                 </div>
-              ) : null}
-            </div>
+                <IndexTable
+                  resourceName={{ singular: "ticket", plural: "tickets" }}
+                  itemCount={tickets?.length}
+                  selectedItemsCount={
+                    allResourcesSelected ? "All" : selectedResources?.length
+                  }
+                  onSelectionChange={handleSelectionChange}
+                  loading={loadingList}
+                  emptyState={
+                    <EmptySearchResult
+                      title={
+                        "Sorry! There is no records matched with your search criteria"
+                      }
+                      description={"Try changing the filters or search term"}
+                      withIllustration
+                    />
+                  }
+                  headings={[
+                    { title: "#" },
+                    { title: "Ticket Title" },
+                    { title: "Customer" },
+                    { title: "Tags" },
+                    { title: "Priority" },
+                    { title: "Last Update" },
+                    { title: "Action" },
+                  ]}
+                >
+                  {rowMarkup}
+                </IndexTable>
+                <div>
+                  {meta?.totalCount ? (
+                    <div className="flex items-center justify-center py-8">
+                      {filterData.page &&
+                        filterData.limit &&
+                        meta?.totalCount && (
+                          <>
+                            <div className="col-span-1 flex justify-center">
+                              <Pagination
+                                total={meta.totalCount}
+                                pageSize={filterData.limit ?? 0}
+                                currentPage={filterData.page}
+                                onChangePage={(page) =>
+                                  setFilterData((val) => {
+                                    return { ...val, page };
+                                  })
+                                }
+                              />
+                            </div>
+                            <div className="col-span-1 ">
+                              <p></p>
+                            </div>
+                          </>
+                        )}
+                    </div>
+                  ) : null}
+                </div>
+              </>
+            )}
           </div>
         </div>
       </LegacyCard>
