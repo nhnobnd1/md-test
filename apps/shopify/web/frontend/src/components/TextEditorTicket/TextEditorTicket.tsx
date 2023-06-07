@@ -277,7 +277,7 @@ export const TextEditorTicket = ({
           content_style:
             "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
           toolbar:
-            "undo redo | bold italic underline align | importfile | blocks fontfamily fontsizeinput | image media link code copy cut past blockquote backcolor forecolor indent newdocument lineheight selectall strikethrough",
+            "undo redo | bold italic underline align | importfile | blocks fontfamily fontsizeinput | image media link code  past blockquote backcolor forecolor indent lineheight strikethrough",
           plugins: [
             "advlist lists autolink charmap print preview anchor",
             "searchreplace visualblocks code fullscreen",
