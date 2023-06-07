@@ -99,9 +99,6 @@ const SelectAddTag = (props: BoxSelectAutoReplyProps) => {
 
   const optionsMarkup = (
     <>
-      {/* <Listbox.Option key="add" value={inputValue}>
-        Add tags
-      </Listbox.Option> */}
       {options.map((option) => {
         const { label, value } = option;
 
@@ -142,13 +139,9 @@ const SelectAddTag = (props: BoxSelectAutoReplyProps) => {
           </div>
         }
       >
-        <>
-          {props.disabled ? (
-            <></>
-          ) : (
-            <Listbox onSelect={updateSelection}>{optionsMarkup}</Listbox>
-          )}
-        </>
+        {props.disabled || options.length === 0 ? null : (
+          <Listbox onSelect={updateSelection}>{optionsMarkup}</Listbox>
+        )}
       </Combobox>
       <div className="mt-2">
         <LegacyStack spacing="tight">{tagMarkup}</LegacyStack>

@@ -102,6 +102,7 @@ const TrashTicket: FC<TrashTicketProps> = () => {
   const [meta, setMeta] = useState<any>();
   const [activeButtonIndex, setActiveButtonIndex] = useState("TRASH");
   const listSort = [
+    "ticketId",
     "subject",
     "customer",
     "tags",
@@ -264,19 +265,18 @@ const TrashTicket: FC<TrashTicketProps> = () => {
         position={index}
         onClick={() => {}}
       >
-        {/* <IndexTable.Cell>
+        <IndexTable.Cell>
           <div className="">
             <Text variant="bodyMd" fontWeight="bold" as="span">
               {ticketId}
             </Text>
           </div>
-        </IndexTable.Cell> */}
+        </IndexTable.Cell>
         <IndexTable.Cell>
           <div className="max-w-lg truncate">
             <Text variant="bodyMd" fontWeight="bold" as="span">
               {subject}
             </Text>
-            &nbsp; <span className="text-gray-500">[#{ticketId}]</span>
           </div>
         </IndexTable.Cell>
         <IndexTable.Cell>
@@ -531,7 +531,7 @@ const TrashTicket: FC<TrashTicketProps> = () => {
                     { title: "Last Update" },
                     { title: "Action" },
                   ]}
-                  sortable={[true, true, true, true, true, false]}
+                  sortable={[true, true, true, true, true, true, false]}
                   sortDirection={direction}
                   sortColumnIndex={indexSort}
                   onSort={handleSort}

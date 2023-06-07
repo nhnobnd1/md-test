@@ -450,6 +450,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     });
   }, []);
   const listSort = [
+    "ticketId",
     "subject",
     "customer",
     "tags",
@@ -533,7 +534,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         position={index}
         onClick={() => {}}
       >
-        {/* <IndexTable.Cell>
+        <IndexTable.Cell>
           <div
             className="hover:underline"
             onClick={() => {
@@ -544,7 +545,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
               {ticketId}
             </Text>
           </div>
-        </IndexTable.Cell> */}
+        </IndexTable.Cell>
         <IndexTable.Cell>
           {
             <div
@@ -556,7 +557,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
               <Text variant="bodyMd" fontWeight="bold" as="span">
                 {subject}
               </Text>
-              &nbsp; <span className="text-gray-500">[#{ticketId}]</span>
             </div>
           }
         </IndexTable.Cell>
@@ -865,7 +865,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                     { title: "Last Update" },
                     { title: "Action" },
                   ]}
-                  sortable={[true, true, true, true, true, false]}
+                  sortable={[true, true, true, true, true, true, false]}
                   sortDirection={direction}
                   sortColumnIndex={indexSort}
                   onSort={handleSort}
