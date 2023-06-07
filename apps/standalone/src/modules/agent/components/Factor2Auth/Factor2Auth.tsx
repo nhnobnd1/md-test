@@ -99,16 +99,18 @@ export const Factor2Auth = ({
           </Button>
         </Form>
 
-        <div>
-          <span
-            className={classNames(["link text-base"], {
-              disabled: !activeResend,
-            })}
-            onClick={() => activeResend && handleResend()}
-          >
-            Re-send OTP {!activeResend && `(${countDown})`}
-          </span>
-        </div>
+        {type === "email" && (
+          <div>
+            <span
+              className={classNames(["link text-base"], {
+                disabled: !activeResend,
+              })}
+              onClick={() => activeResend && handleResend()}
+            >
+              Re-send OTP {!activeResend && `(${countDown})`}
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );
