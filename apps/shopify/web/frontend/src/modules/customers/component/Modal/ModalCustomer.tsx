@@ -1,6 +1,6 @@
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { useToast } from "@shopify/app-bridge-react";
-import { Card, Modal, Tabs } from "@shopify/polaris";
+import { Modal, Tabs } from "@shopify/polaris";
 import { FormikProps } from "formik";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -9,6 +9,7 @@ import useAuth from "src/hooks/useAuth";
 import { createCustomer, updateCustomer } from "src/modules/customers/api/api";
 import CustomerForm from "src/modules/customers/component/CustomerForm";
 import { ListTicketCustomer } from "src/modules/customers/component/ListTicketCustomer";
+import styles from "../styles.module.scss";
 interface IModal {
   visible: boolean;
   onClose: () => void;
@@ -97,12 +98,14 @@ IModal) => {
     // createCustomerMutate(value);
   }, [formRef.current]);
   const profileCustomer = (
-    <CustomerForm
-      ref={formRef}
-      initialValues={customerData || initialValuesForm}
-      submit={updateCustomerMutate}
-      // change={updateForm}
-    />
+    <div className={styles.wrapTab}>
+      <CustomerForm
+        ref={formRef}
+        initialValues={customerData || initialValuesForm}
+        submit={updateCustomerMutate}
+        // change={updateForm}
+      />
+    </div>
   );
   const tabs = [
     {
@@ -114,7 +117,11 @@ IModal) => {
     {
       id: "list-ticket-of-customer",
       content: "List ticket",
-      value: <ListTicketCustomer customerId={customerData?._id || ""} />,
+      value: (
+        <div className={styles.wrapTab}>
+          <ListTicketCustomer customerId={customerData?._id || ""} />
+        </div>
+      ),
       panelID: "list-ticket-of-customer",
     },
   ];
@@ -136,19 +143,21 @@ IModal) => {
         },
       ]}
     >
-      <Modal.Section>
-        {!customerData?._id ? (
+      {/* <Modal.Section> */}
+      {!customerData?._id ? (
+        <div className={styles.wrapTab}>
           <CustomerForm
             ref={formRef}
             submit={createCustomerMutate}
             initialValues={initialValuesForm}
           />
-        ) : (
-          <Tabs tabs={tabs} selected={selectedTabs} onSelect={handleTabChange}>
-            <Card.Section>{tabs[selectedTabs].value}</Card.Section>
-          </Tabs>
-        )}
-      </Modal.Section>
+        </div>
+      ) : (
+        <Tabs tabs={tabs} selected={selectedTabs} onSelect={handleTabChange}>
+          {tabs[selectedTabs].value}
+        </Tabs>
+      )}
+      {/* </Modal.Section> */}
     </Modal>
   );
 };

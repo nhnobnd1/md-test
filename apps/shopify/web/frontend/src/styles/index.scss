@@ -54,7 +54,14 @@
 .justify-between {
   justify-content: space-between;
 }
-
+// Margin
+.mt-12px {
+  margin-top: 12px;
+}
+// Padding
+.pb-12px {
+  padding-bottom: 12px;
+}
 // Page
 
 .page-wrap {
@@ -77,7 +84,9 @@
     color: $white-color;
     font-size: 15px;
     font-weight: 500;
+    transition: all 0.25s;
     &:hover {
+      transition: all 0.25s;
       background-color: $primary-hover;
     }
   }
@@ -116,3 +125,10 @@
 .Polaris-Page-Header__TitleWrapper {
   max-width: 95% !important;
 }
+.Polaris-Tabs__Tab--selected .Polaris-Tabs__Title::before {
+  background: $primary !important;
+}
+
+// .Polaris-TextField--focus {
+//   outline: $primary !important;
+// }

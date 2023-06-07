@@ -735,7 +735,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                           title:
                             "Are you sure that you want to remove this ticket?",
                           description:
-                            "This Ticket will be removed to Trash. You can no longer access to this ticket.",
+                            "This Ticket will be removed to Trash. You can check removed tickets in the Trash",
                           textDelete: "Remove",
                         }}
                         onSpecialDelete={handleDelete}

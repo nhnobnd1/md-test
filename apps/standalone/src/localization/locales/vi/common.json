@@ -347,7 +347,7 @@
       "priority": "Priority",
       "last_update": "Last Update",
       "action_delete_title": "Are you sure that you want to remove this ticket?",
-      "action_delete_description": "This Ticket will be removed to Trash. You can no longer access to this ticket.",
+      "action_delete_description": "This Ticket will be removed to Trash. You can check removed tickets in the Trash",
       "action_delete_text": "Remove"
     },
     "create": {

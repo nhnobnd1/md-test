@@ -1,7 +1,7 @@
 import { useNavigate } from "@moose-desk/core";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { useToast } from "@shopify/app-bridge-react";
-import { EmptySearchResult, IndexTable, Loading } from "@shopify/polaris";
+import { Card, EmptySearchResult, IndexTable, Loading } from "@shopify/polaris";
 import classNames from "classnames";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
@@ -146,54 +146,56 @@ export const ListTicketCustomer = memo(({ customerId }: IProps) => {
   );
   return (
     <div className={styles.wrapTableTicketCustomer}>
-      <div className={classNames(styles.searchWrap, "mb-10")}>
+      <div className={classNames(styles.searchWrap)}>
         <Search onTypeSearch={handleSearch} />
       </div>
       <section className={styles.wrapTable}>
         {isFetching && <Loading />}
-        <IndexTable
-          resourceName={resourceName}
-          itemCount={memoDataSource?.data?.length || 0}
-          selectable={false}
-          headings={[
-            { title: "Ticket Title" },
-            { title: "Date Requested" },
-            { title: "Last Updated" },
-            { title: "Status" },
-            { title: "Priority" },
-            { title: "Assignee" },
-          ]}
-          sortDirection={direction}
-          sortColumnIndex={indexSort}
-          onSort={handleSort}
-          sortable={[true, true, true, true, true, true]}
-          // loading={loadingCustomer}
-          emptyState={
-            <EmptySearchResult
-              title={
-                "Sorry! There is no records matched with your search criteria"
-              }
-              description={"Try changing the filters or search term"}
-              withIllustration
-            />
-          }
-        >
-          {rowMarkup}
-        </IndexTable>
-        <div className="flex items-center justify-center mt-4 pb-4">
-          <Pagination
-            total={
-              memoDataSource?.metadata
-                ? memoDataSource?.metadata?.totalCount
-                : 1
+        <Card>
+          <IndexTable
+            resourceName={resourceName}
+            itemCount={memoDataSource?.data?.length || 0}
+            selectable={false}
+            headings={[
+              { title: "Ticket Title" },
+              { title: "Date Requested" },
+              { title: "Last Updated" },
+              { title: "Status" },
+              { title: "Priority" },
+              { title: "Assignee" },
+            ]}
+            sortDirection={direction}
+            sortColumnIndex={indexSort}
+            onSort={handleSort}
+            sortable={[true, true, true, true, true, true]}
+            // loading={loadingCustomer}
+            emptyState={
+              <EmptySearchResult
+                title={
+                  "Sorry! There is no records matched with your search criteria"
+                }
+                description={"Try changing the filters or search term"}
+                withIllustration
+              />
             }
-            pageSize={filter.limit ?? 0}
-            currentPage={filter.page ?? 1}
-            onChangePage={handleChangePage}
-            previousTooltip={"Previous"}
-            nextTooltip={"Next"}
-          />
-        </div>
+          >
+            {rowMarkup}
+          </IndexTable>
+          <div className="flex items-center justify-center mt-4 pb-4">
+            <Pagination
+              total={
+                memoDataSource?.metadata
+                  ? memoDataSource?.metadata?.totalCount
+                  : 1
+              }
+              pageSize={filter.limit ?? 0}
+              currentPage={filter.page ?? 1}
+              onChangePage={handleChangePage}
+              previousTooltip={"Previous"}
+              nextTooltip={"Next"}
+            />
+          </div>
+        </Card>
       </section>
 
       {/* </section> */}

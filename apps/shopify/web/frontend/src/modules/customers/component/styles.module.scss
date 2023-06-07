@@ -2,9 +2,16 @@
     margin-right: 20px;
 }
 .wrapTable {
+    margin-bottom: 20px;
     :global {
         .Polaris-IndexTable__TableRow {
             cursor: pointer !important;
         }
     }
+}
+.wrapTab {
+    padding: 20px 20px 0;
+}
+.searchWrap {
+    margin-bottom: 20px;
 }

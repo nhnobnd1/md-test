@@ -174,7 +174,7 @@ const InputPhone = (props: InputPhoneProps) => {
       label={props.label ?? "Label"}
       autoComplete="tel"
       labelHidden={labelHidden}
-      connectedLeft={
+      connectedRight={
         <Popover
           active={popoverSelect}
           activator={selectButton}
