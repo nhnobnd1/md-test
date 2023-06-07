@@ -96,6 +96,9 @@ export default function CustomerIndexPage() {
         </IndexTable.Cell>
         <IndexTable.Cell className="py-3">{records?.email}</IndexTable.Cell>
         <IndexTable.Cell className="py-3">
+          {/* <Text variant="bodyMd" alignment="center" as="span">
+            {records?.ticketsCount}
+          </Text> */}
           {records?.ticketsCount}
         </IndexTable.Cell>
         <IndexTable.Cell className="py-3">
@@ -222,7 +225,7 @@ export default function CustomerIndexPage() {
             {rowMarkup}
           </IndexTable>
           {convertCustomerData && convertCustomerData?.metadata?.totalCount ? (
-            <div className="flex items-center justify-center mt-4 pb-4">
+            <div className="flex items-center justify-center mt-12px pb-12px">
               <Pagination
                 total={
                   convertCustomerData?.metadata

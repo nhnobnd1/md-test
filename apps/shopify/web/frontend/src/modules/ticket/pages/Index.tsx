@@ -708,7 +708,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         }}
         closePopupAction={false}
         title="Are you sure that you want to remove this ticket?"
-        content="This Ticket will be removed to Trash. You can no longer access to this ticket."
+        content="This Ticket will be removed to Trash. You can check removed tickets in the Trash"
         // loadingConfirm={loadingDelete}
         deleteAction={() => {
           if (idDelete) {
