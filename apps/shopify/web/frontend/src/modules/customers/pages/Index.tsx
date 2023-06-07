@@ -163,18 +163,19 @@ export default function CustomerIndexPage() {
           </div>
         </div>
         <ModalDelete
-          title="Are you sure that you want to remove this customer?"
+          title="Remove this customer?"
           open={isOpen}
           onClose={() => {
             setIsOpen(false);
             setCustomerData(undefined);
           }}
           content={
-            "This customer will be removed permanently. All customer's tickets and his profile will no longer accessible."
+            "This customer will be permanently deleted. All tickets and customer records will no longer be accessible."
           }
           deleteAction={() => {
             deleteCustomerMutate({ ids: [customerData?._id] });
           }}
+          textConfirm="Remove"
           loading={deleting}
         />
         <CustomModal
