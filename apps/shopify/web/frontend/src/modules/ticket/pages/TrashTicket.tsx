@@ -360,8 +360,10 @@ const TrashTicket: FC<TrashTicketProps> = () => {
               <div
                 className={`col-span-3 col-start-2 flex gap-3 ${
                   selectedResources?.length ? "block" : "hidden"
-                }`}
+                } items-center`}
               >
+                <span>{selectedResources?.length} Selected</span>
+
                 <ButtonTrashTicket
                   title="Are you sure that you want to restore this ticket"
                   content="This ticket will be moved back to the Ticket list. You can continue working with it."
@@ -529,7 +531,7 @@ const TrashTicket: FC<TrashTicketProps> = () => {
                     { title: "Last Update" },
                     { title: "Action" },
                   ]}
-                  sortable={[true, true, true, true, false]}
+                  sortable={[true, true, true, true, true, false]}
                   sortDirection={direction}
                   sortColumnIndex={indexSort}
                   onSort={handleSort}

@@ -487,19 +487,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     removeSelectedResources(selectedResources);
     deleteTicketApi(selectedResources);
   }, [selectedResources]);
-  // const handleSort = useCallback(
-  //   (selected: string[]) => {
-  //     const arraySort = selected[0].split(":");
-  //     const sortBy = arraySort[0];
-  //     const sortOrder = arraySort[1] === SortOrderOptions.ACS ? 1 : -1;
-  //     setSortValue(selected);
 
-  //     setFilterData((value: any) => {
-  //       return { ...value, sortBy, sortOrder };
-  //     });
-  //   },
-  //   [filterData]
-  // );
   const onChangeAssignTo = useCallback(
     (value: string) => {
       if (value) {
@@ -649,7 +637,8 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
             </Button>
           </div>
         ) : (
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-2 flex-wrap items-center ">
+            <span>{selectedResources?.length} Selected</span>
             <div
               className={`${
                 selectedResources?.length ? "block" : "hidden"
@@ -876,7 +865,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                     { title: "Last Update" },
                     { title: "Action" },
                   ]}
-                  sortable={[true, true, true, true, false]}
+                  sortable={[true, true, true, true, true, false]}
                   sortDirection={direction}
                   sortColumnIndex={indexSort}
                   onSort={handleSort}
