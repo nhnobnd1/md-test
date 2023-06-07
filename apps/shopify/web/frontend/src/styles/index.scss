@@ -118,6 +118,14 @@
     background-color: $primary-active !important;
   }
 }
+.Polaris-Button--destructive {
+  background: $critical !important;
+  transition: all 0.25s;
+  &:hover {
+    transition: all 0.25s;
+    background: $critical-hover !important;
+  }
+}
 .Polaris-Button--disabled {
   // color: gray !important;
   background-color: #f1f1f1 !important;
