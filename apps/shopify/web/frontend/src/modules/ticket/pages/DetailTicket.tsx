@@ -56,6 +56,8 @@ import { RowMessage } from "src/modules/ticket/components/RowMessage/RowMessage"
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import * as Yup from "yup";
 import FaMailReply from "~icons/fa/mail-reply";
+import InfoIcon from "~icons/material-symbols/info";
+import SearchIcon from "~icons/material-symbols/search";
 import BackIcon from "~icons/mingcute/back-2-fill";
 import styles from "./style.module.scss";
 
@@ -545,7 +547,7 @@ const DetailTicket = (props: DetailTicketProps) => {
     );
   };
   return (
-    <>
+    <div className="relative">
       {processing ? (
         <Page fullWidth>
           <SkeletonPage primaryAction />
@@ -578,6 +580,22 @@ const DetailTicket = (props: DetailTicketProps) => {
           }
           fullWidth
         >
+          <div className={styles.fixedICon}>
+            <div className="xs:flex flex-col gap-2 md:hidden">
+              <Button
+                onClick={() => {}}
+                icon={<FaMailReply style={{ fontSize: 16 }} />}
+              ></Button>
+              <Button
+                onClick={() => {}}
+                icon={<InfoIcon style={{ fontSize: 16 }} />}
+              ></Button>
+              <Button
+                onClick={() => {}}
+                icon={<SearchIcon style={{ fontSize: 16 }} />}
+              ></Button>
+            </div>
+          </div>
           <Layout>
             <Layout.Section>
               <LegacyCard sectioned>
@@ -593,8 +611,13 @@ const DetailTicket = (props: DetailTicketProps) => {
                       validationSchema={DetailTicketFormSchema}
                       onSubmit={() => {}}
                     >
-                      <div className="flex md:flex-row-reverse xs:flex-col justify-between">
-                        <div className={classNames(styles.borderLeft)}>
+                      <div className="flex  md:flex-row-reverse xs:flex-col justify-between">
+                        <div
+                          className={classNames(
+                            styles.borderLeft,
+                            "xs:hidden md:block"
+                          )}
+                        >
                           <FormLayout.Group condensed>
                             <div className="flex flex-col gap-3 w-[250px] ">
                               <FormItem name="status">
@@ -653,7 +676,7 @@ const DetailTicket = (props: DetailTicketProps) => {
                           </div>
                           <div className="w-full flex justify-between gap-4 flex-wrap">
                             <div className="flex flex-1 flex-col">
-                              <div className="w-[400px]">
+                              <div className="md:w-[400px] xs:w-[300px]">
                                 <FormItem name="from">
                                   <BoxSelectFilter
                                     label="From"
@@ -662,7 +685,7 @@ const DetailTicket = (props: DetailTicketProps) => {
                                   />
                                 </FormItem>
                               </div>
-                              <div className="w-[400px] mt-5">
+                              <div className="md:w-[400px] xs:w-[300px] mt-5">
                                 <FormItem name="to">
                                   <TextField
                                     label="To"
@@ -793,7 +816,7 @@ const DetailTicket = (props: DetailTicketProps) => {
           </Layout>
         </Page>
       )}
-    </>
+    </div>
   );
 };
 

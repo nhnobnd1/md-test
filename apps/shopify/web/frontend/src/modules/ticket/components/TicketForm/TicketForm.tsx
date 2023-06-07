@@ -315,10 +315,10 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
     >
       <style scoped>{css}</style>
       <FormLayout>
-        <div className="grid grid-cols-2 gap-x-[7%]">
+        <div className="grid md:grid-cols-2 xs:grid-cols-1 gap-x-[7%]">
           <div className="flex items-center gap-2 justify-start">
             <div className="flex-1">
-              <div className="flex-1">
+              <div className="flex-1 xs:mt-4 md:mt-0">
                 <FormItem name="from">
                   {/* <Select
                     label="From"
@@ -335,7 +335,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
               </div>
             </div>
           </div>
-          <div>
+          <div className="xs:order-first md:order-none">
             <FormItem name="to">
               <FormItem name="to">
                 <BoxSelectCustomer
@@ -364,7 +364,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
             </FormItem>
           </div>
           {enableCC ? (
-            <div className="flex-1 mt-3">
+            <div className="flex-1 mt-3 xs:-order-2 md:order-none">
               <FormItem name="CC">
                 <SelectAddEmail
                   label="CC"
@@ -377,7 +377,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
             <></>
           )}
           {enableCC ? (
-            <div className="flex-1 mt-3">
+            <div className="flex-1 mt-3 xs:-order-1 md:order-none">
               <FormItem name="BCC">
                 <SelectAddEmail
                   label="BCC"

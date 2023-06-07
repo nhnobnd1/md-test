@@ -57,6 +57,12 @@
   }
 }
 
+.fixedICon {
+  position: fixed;
+  right: 10px;
+  z-index: 1000;
+}
+
 .toggleButtonClose {
   &::after {
     content: "Close";
