@@ -3,6 +3,9 @@
 @tailwind utilities;
 @import "./variables.scss";
 
+body{
+  overflow: hidden;
+}
 .unstyle-link a {
   text-decoration: none;
   color: #202223;
@@ -113,5 +116,5 @@
   color: black !important;
 }
 .Polaris-Page-Header__TitleWrapper {
-  width: 90% !important;
+  max-width: 90% !important;
 }

@@ -36,14 +36,11 @@ import {
 import { FC, useCallback, useEffect, useState } from "react";
 import { map } from "rxjs";
 
-import { ButtonSort } from "src/components/Button/ButtonSort";
 import { Pagination } from "src/components/Pagination";
 import env from "src/core/env";
 import useGlobalData from "src/hooks/useGlobalData";
 import { useSubdomain } from "src/hooks/useSubdomain";
-import { SortOrderOptions } from "src/models/Form";
 import { ButtonTrashTicket } from "src/modules/ticket/components/ButtonTrashTicket";
-import { optionsSort } from "src/modules/ticket/constant";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import CancelIcon from "~icons/mdi/cancel";
 import RestoreIcon from "~icons/mdi/restore";
@@ -63,24 +60,28 @@ const TrashTicket: FC<TrashTicketProps> = () => {
     page: 1,
     limit: env.DEFAULT_PAGE_SIZE,
   });
+  const [direction, setDirection] = useState<"descending" | "ascending">(
+    "descending"
+  );
+  const [indexSort, setIndexSort] = useState<number | undefined>(undefined);
   const [filterData, setFilterData] = useState<GetListTicketRequest>(
     defaultFilter()
   );
   const { subDomain } = useSubdomain();
   const { timezone }: any = useGlobalData(false, subDomain || "");
-  const handleSort = useCallback(
-    (selected: string[]) => {
-      const arraySort = selected[0].split(":");
-      const sortBy = arraySort[0];
-      const sortOrder = arraySort[1] === SortOrderOptions.ACS ? 1 : -1;
-      setSortValue(selected);
+  // const handleSort = useCallback(
+  //   (selected: string[]) => {
+  //     const arraySort = selected[0].split(":");
+  //     const sortBy = arraySort[0];
+  //     const sortOrder = arraySort[1] === SortOrderOptions.ACS ? 1 : -1;
+  //     setSortValue(selected);
 
-      setFilterData((value: any) => {
-        return { ...value, sortBy, sortOrder };
-      });
-    },
-    [filterData]
-  );
+  //     setFilterData((value: any) => {
+  //       return { ...value, sortBy, sortOrder };
+  //     });
+  //   },
+  //   [filterData]
+  // );
 
   const {
     selectedResources,
@@ -100,6 +101,26 @@ const TrashTicket: FC<TrashTicketProps> = () => {
   });
   const [meta, setMeta] = useState<any>();
   const [activeButtonIndex, setActiveButtonIndex] = useState("TRASH");
+  const listSort = [
+    "subject",
+    "customer",
+    "tags",
+    "priority",
+    "updatedTimestamp",
+  ];
+
+  const handleSort = (
+    headingIndex: number,
+    direction: "descending" | "ascending"
+  ) => {
+    setIndexSort(Number(headingIndex));
+    setDirection(direction);
+    setFilterData((pre) => ({
+      ...pre,
+      sortBy: listSort[Number(headingIndex)],
+      sortOrder: direction === "ascending" ? 1 : -1,
+    }));
+  };
   const handleButtonClick = useCallback(
     (index: string) => {
       if (activeButtonIndex === index) return;
@@ -251,16 +272,18 @@ const TrashTicket: FC<TrashTicketProps> = () => {
           </div>
         </IndexTable.Cell> */}
         <IndexTable.Cell>
-          <Text variant="bodyMd" fontWeight="bold" as="span">
-            {subject}
-          </Text>
-          &nbsp; <span className="text-gray-500">[#{ticketId}]</span>
+          <div className="max-w-lg truncate">
+            <Text variant="bodyMd" fontWeight="bold" as="span">
+              {subject}
+            </Text>
+            &nbsp; <span className="text-gray-500">[#{ticketId}]</span>
+          </div>
         </IndexTable.Cell>
         <IndexTable.Cell>
           {createdViaWidget || incoming ? (
-            <span className="subject">{`${fromEmail.email}`}</span>
+            <span className="subject max-w-lg truncate">{`${fromEmail.email}`}</span>
           ) : (
-            <span className="subject">{`${toEmails[0]?.email}`}</span>
+            <span className="subject max-w-lg truncate">{`${toEmails[0]?.email}`}</span>
           )}
         </IndexTable.Cell>
         <IndexTable.Cell>
@@ -324,25 +347,43 @@ const TrashTicket: FC<TrashTicketProps> = () => {
       primaryAction={
         <div className="flex gap-2">
           <div className="min-w-[300px] flex-1">
-            <Filters
-              queryValue={filterData.query}
-              onQueryChange={handleFiltersQueryChange}
-              onQueryClear={handleQueryValueRemove}
-              queryPlaceholder="Search"
-              filters={[]}
-              onClearAll={resetFilterData}
-            >
-              <div className="pl-2 col-span-1 col-start-5 flex justify-end">
-                <ButtonSort
-                  active={btnSort}
-                  sortValue={sortValue}
-                  onSort={handleSort}
-                  onShow={toggleBtnSort}
-                  onClose={closeBtnSort}
-                  options={optionsSort}
+            {selectedResources.length === 0 ? (
+              <Filters
+                queryValue={filterData.query}
+                onQueryChange={handleFiltersQueryChange}
+                onQueryClear={handleQueryValueRemove}
+                queryPlaceholder="Search"
+                filters={[]}
+                onClearAll={resetFilterData}
+              ></Filters>
+            ) : (
+              <div
+                className={`col-span-3 col-start-2 flex gap-3 ${
+                  selectedResources?.length ? "block" : "hidden"
+                }`}
+              >
+                <ButtonTrashTicket
+                  title="Are you sure that you want to restore this ticket"
+                  content="This ticket will be moved back to the Ticket list. You can continue working with it."
+                  action={() => {
+                    handleRestore(selectedResources);
+                  }}
+                  primaryContent="Restore"
+                  text="Restore Selected"
+                  icon={<RestoreIcon fontSize={16} />}
+                />
+                <ButtonTrashTicket
+                  title="Are you sure that you want to restore this ticket"
+                  content="This ticket will be moved back to the Ticket list. You can continue working with it."
+                  action={() => {
+                    handleRestore(selectedResources);
+                  }}
+                  primaryContent="Remove"
+                  text="Deleted Selected"
+                  icon={<CancelIcon fontSize={16} />}
                 />
               </div>
-            </Filters>
+            )}
           </div>
         </div>
       }
@@ -350,32 +391,6 @@ const TrashTicket: FC<TrashTicketProps> = () => {
       <LegacyCard sectioned>
         <div className="grid grid-cols-5 gap-6 ">
           <div className="flex justify-end"></div>
-          <div
-            className={`col-span-3 col-start-2 flex gap-3 ${
-              selectedResources?.length ? "block" : "hidden"
-            }`}
-          >
-            <ButtonTrashTicket
-              title="Are you sure that you want to restore this ticket"
-              content="This ticket will be moved back to the Ticket list. You can continue working with it."
-              action={() => {
-                handleRestore(selectedResources);
-              }}
-              primaryContent="Restore"
-              text="Restore Selected"
-              icon={<RestoreIcon fontSize={16} />}
-            />
-            <ButtonTrashTicket
-              title="Are you sure that you want to restore this ticket"
-              content="This ticket will be moved back to the Ticket list. You can continue working with it."
-              action={() => {
-                handleRestore(selectedResources);
-              }}
-              primaryContent="Remove"
-              text="Deleted Selected"
-              icon={<CancelIcon fontSize={16} />}
-            />
-          </div>
         </div>
         <div className="grid grid-cols-5 gap-6">
           {/* <div className="col-span-1">
@@ -514,6 +529,10 @@ const TrashTicket: FC<TrashTicketProps> = () => {
                     { title: "Last Update" },
                     { title: "Action" },
                   ]}
+                  sortable={[true, true, true, true, false]}
+                  sortDirection={direction}
+                  sortColumnIndex={indexSort}
+                  onSort={handleSort}
                 >
                   {rowMarkup}
                 </IndexTable>

@@ -56,7 +56,6 @@ import { ModalDelete } from "src/components/Modal/ModalDelete";
 import { ModalDeleteTicket } from "src/components/Modal/ModalDeleteTicket";
 import { Pagination } from "src/components/Pagination";
 import env from "src/core/env";
-import { SortOrderOptions } from "src/models/Form";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 
 import { PDFDownloadLink } from "@react-pdf/renderer";
@@ -91,6 +90,11 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     on: openModalDelete,
     off: closeModalDelete,
   } = useToggle(false);
+  const [direction, setDirection] = useState<"descending" | "ascending">(
+    "descending"
+  );
+  const [indexSort, setIndexSort] = useState<number | undefined>(undefined);
+
   const [conversations, setConversations] = useState<ItemConversation[]>([]);
   const location = useLocation();
   const [statusFromTrash, setStatusFromTrash] = useState(location.state);
@@ -101,6 +105,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const [activeButtonIndex, setActiveButtonIndex] = useState(
     statusFromTrash || "ALL"
   );
+
   const handleButtonClick = useCallback(
     (index: string) => {
       if (activeButtonIndex === index) return;
@@ -444,6 +449,26 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       };
     });
   }, []);
+  const listSort = [
+    "subject",
+    "customer",
+    "tags",
+    "priority",
+    "updatedTimestamp",
+  ];
+
+  const handleSort = (
+    headingIndex: number,
+    direction: "descending" | "ascending"
+  ) => {
+    setIndexSort(Number(headingIndex));
+    setDirection(direction);
+    setFilterData((pre) => ({
+      ...pre,
+      sortBy: listSort[Number(headingIndex)],
+      sortOrder: direction === "ascending" ? 1 : -1,
+    }));
+  };
 
   const handleQueryValueRemove = useCallback(() => {
     setFilterData((old: any) => {
@@ -462,19 +487,19 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     removeSelectedResources(selectedResources);
     deleteTicketApi(selectedResources);
   }, [selectedResources]);
-  const handleSort = useCallback(
-    (selected: string[]) => {
-      const arraySort = selected[0].split(":");
-      const sortBy = arraySort[0];
-      const sortOrder = arraySort[1] === SortOrderOptions.ACS ? 1 : -1;
-      setSortValue(selected);
+  // const handleSort = useCallback(
+  //   (selected: string[]) => {
+  //     const arraySort = selected[0].split(":");
+  //     const sortBy = arraySort[0];
+  //     const sortOrder = arraySort[1] === SortOrderOptions.ACS ? 1 : -1;
+  //     setSortValue(selected);
 
-      setFilterData((value: any) => {
-        return { ...value, sortBy, sortOrder };
-      });
-    },
-    [filterData]
-  );
+  //     setFilterData((value: any) => {
+  //       return { ...value, sortBy, sortOrder };
+  //     });
+  //   },
+  //   [filterData]
+  // );
   const onChangeAssignTo = useCallback(
     (value: string) => {
       if (value) {
@@ -535,7 +560,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         <IndexTable.Cell>
           {
             <div
-              className="hover:underline "
+              className="hover:underline max-w-lg truncate"
               onClick={() => {
                 navigate(generatePath(TicketRoutePaths.Detail, { id: _id }));
               }}
@@ -549,9 +574,9 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         </IndexTable.Cell>
         <IndexTable.Cell>
           {createdViaWidget || incoming ? (
-            <span className="subject">{`${fromEmail.email}`}</span>
+            <span className="subject max-w-lg truncate">{`${fromEmail.email}`}</span>
           ) : (
-            <span className="subject">{`${toEmails[0]?.email}`}</span>
+            <span className="subject max-w-lg truncate">{`${toEmails[0]?.email}`}</span>
           )}
         </IndexTable.Cell>
         <IndexTable.Cell>
@@ -851,6 +876,10 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                     { title: "Last Update" },
                     { title: "Action" },
                   ]}
+                  sortable={[true, true, true, true, false]}
+                  sortDirection={direction}
+                  sortColumnIndex={indexSort}
+                  onSort={handleSort}
                 >
                   {rowMarkup}
                 </IndexTable>
