@@ -19,7 +19,6 @@ const SelectAddTag = (props: BoxSelectAutoReplyProps) => {
   const deselectedOptions = useMemo(() => {
     return props.data;
   }, [props.data]);
-
   const [selectedOption, setSelectedOption] = useState<any>();
   const [inputValue, setInputValue] = useState("");
   const [options, setOptions] = useState<
@@ -68,17 +67,19 @@ const SelectAddTag = (props: BoxSelectAutoReplyProps) => {
     const enterKeyPressed = event.keyCode === 13;
 
     if (enterKeyPressed && inputValue) {
+      if (options.length > 0) return;
       setSelectedTags((previousTags) => {
         if (previousTags.includes(inputValue)) return previousTags;
         return [...previousTags, inputValue];
       });
+      setInputValue("");
       event.preventDefault();
     }
   };
 
   const updateSelection = useCallback(
     (selected, init = false) => {
-      if (selected?.length && inputValue === "") {
+      if (selected?.length) {
         setSelectedTags((previousTags) => {
           if (previousTags.includes(selected)) return previousTags;
           if (init) {
@@ -117,8 +118,10 @@ const SelectAddTag = (props: BoxSelectAutoReplyProps) => {
   );
 
   useEffect(() => {
-    if (isEqual(selectedTags, props.value)) return;
     setOptions(props.data);
+
+    if (isEqual(selectedTags, props.value)) return;
+
     updateSelection(props.value, true);
   }, [props.data]);
 
