@@ -25,15 +25,13 @@ import {
   Button,
   Card,
   Divider,
-  FloatButton,
   List,
   Skeleton,
 } from "antd";
 import moment from "moment";
 import VirtualList from "rc-virtual-list";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import TextEditorTicket from "src/components/UI/Editor/TextEditorTicket";
@@ -89,8 +87,7 @@ const DetailTicketForm = () => {
   const navigate = useNavigate();
   const [ticket, setTicket] = useState<Ticket>();
   const [form] = Form.useForm();
-  const endPageRef = useRef<any>(null);
-  const topPageRef = useRef<any>(null);
+
   const [conversationList, setConversationList] = useState<Conversation[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [enableCC, setEnableCC] = useState(false);
@@ -99,7 +96,6 @@ const DetailTicketForm = () => {
   const [files, setFiles] = useState<any>([]);
   const [loadingButton, setLoadingButton] = useState(false);
   const { t } = useTranslation();
-  const [isEndPage, setIsEndPage] = useState(false);
 
   const [agents, setAgents] = useState<Agent[]>([]);
 
@@ -491,7 +487,7 @@ const DetailTicketForm = () => {
           <Skeleton />
         </>
       ) : (
-        <div className="wrapContainer" ref={topPageRef}>
+        <div className="wrapContainer">
           {/* <div className="searchToggle">
             <LeftCircleOutlined />
           </div> */}
@@ -728,7 +724,7 @@ const DetailTicketForm = () => {
                           }}
                         />
                       </Form.Item>
-                      <div ref={endPageRef} className="flex justify-end">
+                      <div className="flex justify-end">
                         {form.getFieldValue("status") ===
                         StatusTicket.RESOLVED ? (
                           <>
@@ -776,19 +772,6 @@ const DetailTicketForm = () => {
                 </>
               )}
             </Card>
-            <FloatButton
-              icon={isEndPage ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
-              type="primary"
-              onClick={() => {
-                if (!isEndPage) {
-                  endPageRef.current.scrollIntoView({ behavior: "smooth" });
-                  setIsEndPage(true);
-                } else {
-                  topPageRef.current.scrollIntoView({ behavior: "smooth" });
-                  setIsEndPage(false);
-                }
-              }}
-            />
           </Form>
         </div>
       )}

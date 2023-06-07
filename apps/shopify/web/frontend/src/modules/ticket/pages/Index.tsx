@@ -724,22 +724,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
           <div className="col-span-4 col-start-2 flex relative items-center "></div>
         </div>
         <div className="grid grid-cols-5 gap-6">
-          {/* <div className="col-span-1">
-            <CardStatistic
-              status={filterObject?.status || location.state}
-              className="mb-4"
-              handleApply={handleApply}
-              screen="ListTicket"
-              title="Public Views"
-              options={[
-                { label: "New", value: `${statistic?.data.NEW}` },
-                { label: "Open", value: `${statistic?.data.OPEN}` },
-                { label: "Pending", value: `${statistic?.data.PENDING}` },
-                { label: "Resolved", value: `${statistic?.data.RESOLVED}` },
-                { label: "Trash", value: `${statistic?.data.TRASH}` },
-              ]}
-            />
-          </div> */}
           <div className="col-span-5">
             {(loadingList || loadingFilter) && <Loading />}
             {loadingList || loadingFilter ? (
@@ -857,7 +841,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                     />
                   }
                   headings={[
-                    // { title: "#" },
+                    { title: "#" },
                     { title: "Ticket Title" },
                     { title: "Customer" },
                     { title: "Tags" },
