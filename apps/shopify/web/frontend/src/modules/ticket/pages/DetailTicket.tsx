@@ -49,6 +49,7 @@ import BoxSelectFilter from "src/components/Modal/ModalFilter/BoxSelectFilter";
 import SelectAddEmail from "src/components/SelectAddEmail/SelectAddEmail";
 import SelectAddTag from "src/components/SelectAddTag/SelectAddTag";
 import { TextEditorTicket } from "src/components/TextEditorTicket";
+import usePreventNav from "src/hooks/usePreventNav";
 import useToggleGlobal from "src/hooks/useToggleGlobal";
 import ContentShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ContentShopifySearch";
 import { RowMessage } from "src/modules/ticket/components/RowMessage/RowMessage";
@@ -108,7 +109,7 @@ const DetailTicket = (props: DetailTicketProps) => {
   const { visible, setVisible } = useToggleGlobal();
   const [ccDefault, setCCDefault] = useState<string[]>([]);
   const [bccDefault, setBCCDefault] = useState<string[]>([]);
-
+  usePreventNav();
   const listChat = useMemo<ChatItem[]>(() => {
     const conversationMapping: any = conversationList?.map(
       (item: Conversation) => {
@@ -595,7 +596,7 @@ const DetailTicket = (props: DetailTicketProps) => {
                       <div className="flex md:flex-row-reverse xs:flex-col justify-between">
                         <div className={classNames(styles.borderLeft)}>
                           <FormLayout.Group condensed>
-                            <div className="flex flex-col gap-3 w-[300px] ">
+                            <div className="flex flex-col gap-3 w-[250px] ">
                               <FormItem name="status">
                                 <Select
                                   disabled={disabled}

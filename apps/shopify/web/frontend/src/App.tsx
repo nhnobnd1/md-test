@@ -39,7 +39,6 @@ export default function App() {
   }, [fullscreen, fullScreen]);
 
   useEffect(() => {
-    console.log({ shop, isLoggedIn, user, storeId });
     if ((shop && !isLoggedIn) || (!user && shop)) {
       console.log("Start login with token...");
       const payload = {
@@ -48,8 +47,6 @@ export default function App() {
         shop: JSON.parse(localStorage.getItem("shop") as string),
       };
       if (payload && payload.email && payload.offlineToken && storeId) {
-        console.log("Processing login");
-
         api
           .request<LoginResponse>({
             url: "/v1/account/shopify/sign-in",
@@ -63,7 +60,6 @@ export default function App() {
           })
           .subscribe({
             next({ data }) {
-              console.log({ data });
               TokenManager.setToken("base_token", data.data.accessToken);
               TokenManager.setToken("refresh_token", data.data.refreshToken);
               login(
@@ -102,8 +98,5 @@ export default function App() {
       <NavigationMenu navigationLinks={navigationLinks} />
       <AppRoutes />
     </>
-    // <QueryProvider>
-
-    // </QueryProvider>
   );
 }
