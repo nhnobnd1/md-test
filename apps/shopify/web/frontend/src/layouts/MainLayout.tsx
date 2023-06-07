@@ -9,6 +9,7 @@ import caseNavigation, {
   SubNavigation,
 } from "src/layouts/caseNavigation";
 import MainLayoutTopBar from "src/layouts/components/MainLayoutTopBar";
+import useFullScreen from "src/store/useFullScreen";
 
 interface MainLayoutProps {
   children?: ReactNode;
@@ -21,6 +22,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   const location = useLocation();
   const [mobileNavigationActive, setMobileNavigationActive] = useState(false);
   const [showMainLayout, setShowMainLayout] = useState(true);
+  const showNav = useFullScreen((state) => state.showNav);
   const { visible } = useToggleGlobal(); // lấy giá trị visible khi bấm vào nút mở search shopify customer
   useEffect(() => {
     setShowMainLayout(!visible); // set lại khi bấm nút show/hide shopify customer
@@ -148,7 +150,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
           />
         }
         navigation={
-          showMainLayout || mobileNavigationActive ? (
+          (showMainLayout || mobileNavigationActive) && showNav ? (
             <MainLayoutNavigation />
           ) : null
         }

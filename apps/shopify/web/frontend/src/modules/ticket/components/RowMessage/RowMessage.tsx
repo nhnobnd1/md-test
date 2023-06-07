@@ -215,7 +215,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
         <></>
       ) : (
         <div>
-          {!isMobile ? (
+          {isMobile ? (
             <div
               className="text-black mb-2 text-scroll mt-3"
               dangerouslySetInnerHTML={{ __html: quote }}
