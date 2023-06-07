@@ -7,7 +7,7 @@ export const ButtonEdit = ({ children, ...props }: ButtonEditProps) => {
   return (
     <Button
       icon={<Icon source={EditMinor} color="base" />}
-      plain
+      // plain
       {...props}
     ></Button>
   );

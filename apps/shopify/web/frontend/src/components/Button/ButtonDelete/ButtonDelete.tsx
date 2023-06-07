@@ -7,7 +7,7 @@ export const ButtonDelete = ({ children, ...props }: ButtonDeleteProps) => {
   return (
     <Button
       icon={<Icon source={DeleteMinor} color="base" />}
-      plain
+      // plain
       {...props}
     ></Button>
   );

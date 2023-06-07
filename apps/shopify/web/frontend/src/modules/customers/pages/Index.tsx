@@ -107,7 +107,7 @@ export default function CustomerIndexPage() {
               <ButtonEdit onClick={() => handleOpenPopup(records)}></ButtonEdit>
               <ButtonDelete
                 onClick={() => handleOpenModalDelete(records)}
-                // destructive
+                destructive
               ></ButtonDelete>
             </div>
           </ButtonGroup>
