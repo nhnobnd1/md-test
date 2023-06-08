@@ -1,19 +1,20 @@
+import { ScreenType } from "@moose-desk/repo/global/Global";
 import { useEffect } from "react";
+import useScreenType from "src/hooks/useScreenType";
 import useFullScreen from "src/store/useFullScreen";
 
 export default function usePreventNav() {
-  //   const [matches, setMatches] = useState(
-  //     window.matchMedia("(min-width: 768px)").matches
-  //   );
   const changeShowNav = useFullScreen((state) => state.changeShowNav);
+  const screenType = useScreenType();
 
   useEffect(() => {
+    if (screenType === ScreenType.SM) {
+      return;
+    }
     changeShowNav(false);
-    // window
-    //   .matchMedia("(min-width: 768px)")
-    //   .addEventListener("change", (e) => setMatches(e.matches));
+
     return () => {
       changeShowNav(true);
     };
-  }, []);
+  }, [screenType]);
 }

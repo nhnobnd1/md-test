@@ -17,6 +17,7 @@ import {
   TicketRepository,
   TicketStatistic,
 } from "@moose-desk/repo";
+import { ScreenType } from "@moose-desk/repo/global/Global";
 import {
   Button,
   ButtonGroup,
@@ -39,6 +40,7 @@ import { map } from "rxjs";
 import { Pagination } from "src/components/Pagination";
 import env from "src/core/env";
 import useGlobalData from "src/hooks/useGlobalData";
+import useScreenType from "src/hooks/useScreenType";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { ButtonTrashTicket } from "src/modules/ticket/components/ButtonTrashTicket";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
@@ -63,25 +65,13 @@ const TrashTicket: FC<TrashTicketProps> = () => {
   const [direction, setDirection] = useState<"descending" | "ascending">(
     "descending"
   );
+  const screenType = useScreenType();
   const [indexSort, setIndexSort] = useState<number | undefined>(undefined);
   const [filterData, setFilterData] = useState<GetListTicketRequest>(
     defaultFilter()
   );
   const { subDomain } = useSubdomain();
   const { timezone }: any = useGlobalData(false, subDomain || "");
-  // const handleSort = useCallback(
-  //   (selected: string[]) => {
-  //     const arraySort = selected[0].split(":");
-  //     const sortBy = arraySort[0];
-  //     const sortOrder = arraySort[1] === SortOrderOptions.ACS ? 1 : -1;
-  //     setSortValue(selected);
-
-  //     setFilterData((value: any) => {
-  //       return { ...value, sortBy, sortOrder };
-  //     });
-  //   },
-  //   [filterData]
-  // );
 
   const {
     selectedResources,
@@ -358,7 +348,7 @@ const TrashTicket: FC<TrashTicketProps> = () => {
               ></Filters>
             ) : (
               <div
-                className={`col-span-3 col-start-2 flex gap-3 ${
+                className={`col-span-3 col-start-2 justify-end flex gap-3 ${
                   selectedResources?.length ? "block" : "hidden"
                 } items-center`}
               >
@@ -371,7 +361,11 @@ const TrashTicket: FC<TrashTicketProps> = () => {
                     handleRestore(selectedResources);
                   }}
                   primaryContent="Restore"
-                  text="Restore Selected"
+                  text={
+                    screenType === ScreenType.SM
+                      ? undefined
+                      : "Restore Selected"
+                  }
                   icon={<RestoreIcon fontSize={16} />}
                 />
                 <ButtonTrashTicket
@@ -381,7 +375,11 @@ const TrashTicket: FC<TrashTicketProps> = () => {
                     handleRestore(selectedResources);
                   }}
                   primaryContent="Remove"
-                  text="Deleted Selected"
+                  text={
+                    screenType === ScreenType.SM
+                      ? undefined
+                      : "Deleted Selected"
+                  }
                   icon={<CancelIcon fontSize={16} />}
                 />
               </div>

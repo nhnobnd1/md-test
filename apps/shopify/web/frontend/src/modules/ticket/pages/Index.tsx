@@ -58,11 +58,13 @@ import { Pagination } from "src/components/Pagination";
 import env from "src/core/env";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 
+import { ScreenType } from "@moose-desk/repo/global/Global";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { useTranslation } from "react-i18next";
 import { ModalFilter } from "src/components/Modal/ModalFilter";
 import BoxSelectFilter from "src/components/Modal/ModalFilter/BoxSelectFilter";
 import useGlobalData from "src/hooks/useGlobalData";
+import useScreenType from "src/hooks/useScreenType";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { ExportTicketPdf } from "src/modules/ticket/components/ExportTicketPdf";
 import UilImport from "~icons/uil/import";
@@ -124,6 +126,8 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const [filterData, setFilterData] = useState<GetListTicketRequest>(
     defaultFilter()
   );
+  const screenType = useScreenType();
+
   const [agents, setAgents] = useState<Agent[]>([]);
 
   const prevFilter = usePrevious<any>(filterData);
@@ -602,7 +606,15 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   );
   return (
     <Page
-      title="Tickets"
+      title={
+        screenType !== ScreenType.SM
+          ? ((
+              <div className="min-w-[70px] inline-block">
+                <span>Tickets</span>
+              </div>
+            ) as unknown as string)
+          : "Tickets"
+      }
       primaryAction={
         selectedResources.length === 0 ? (
           <div className="flex gap-2">
@@ -637,63 +649,69 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
             </Button>
           </div>
         ) : (
-          <div className="flex gap-2 flex-wrap items-center ">
-            <span>{selectedResources?.length} Selected</span>
-            <div
-              className={`${
-                selectedResources?.length ? "block" : "hidden"
-              }  w-[250px]`}
-            >
-              <BoxSelectFilter
-                onChange={onChangeAssignTo}
-                data={agentsOptions}
-                placeholder="Assign to"
-              />
-            </div>
-            <div
-              className={`${selectedResources?.length ? "block" : "hidden"}`}
-            >
-              <BoxSelectFilter
-                onChange={onChangeStatus}
-                data={statusOptions}
-                placeholder="Set Status"
-              />
-            </div>
-            <div
-              className={`${selectedResources?.length ? "block" : "hidden"}`}
-            >
-              <PDFDownloadLink
-                document={
-                  <ExportTicketPdf
-                    conversations={conversations}
-                    agents={agents}
-                    tickets={tickets}
-                    selectedRowKeys={selectedResources}
-                    timezone={timezone}
-                  />
-                }
-                fileName="Tickets.pdf"
-                style={{ textDecoration: "none" }}
+          <div className="flex gap-2 flex-wrap items-center justify-end ">
+            <div className="flex gap-2 items-center">
+              <span>{selectedResources?.length} Selected</span>
+              <div
+                className={`${
+                  selectedResources?.length ? "block" : "hidden"
+                }  w-[250px]`}
               >
-                {({ blob, url, loading, error }) =>
-                  loading ? (
-                    <Button icon={<UilImport />}>Export</Button>
-                  ) : (
-                    <div className="flex justify-center items-center">
-                      <Button icon={<UilImport />}>Export</Button>
-                    </div>
-                  )
-                }
-              </PDFDownloadLink>
+                <BoxSelectFilter
+                  onChange={onChangeAssignTo}
+                  data={agentsOptions}
+                  placeholder="Assign to"
+                />
+              </div>
             </div>
-            <div
-              className={`col-span-1 ${
-                selectedResources.length
-                  ? "opacity-100"
-                  : "opacity-0 pointer-events-none"
-              }`}
-            >
-              <ModalDeleteTicket handleDeleteSelected={handleDeleteSelected} />
+            <div className="flex gap-2">
+              <div
+                className={`${selectedResources?.length ? "block" : "hidden"}`}
+              >
+                <BoxSelectFilter
+                  onChange={onChangeStatus}
+                  data={statusOptions}
+                  placeholder="Set Status"
+                />
+              </div>
+              <div
+                className={`${selectedResources?.length ? "block" : "hidden"}`}
+              >
+                <PDFDownloadLink
+                  document={
+                    <ExportTicketPdf
+                      conversations={conversations}
+                      agents={agents}
+                      tickets={tickets}
+                      selectedRowKeys={selectedResources}
+                      timezone={timezone}
+                    />
+                  }
+                  fileName="Tickets.pdf"
+                  style={{ textDecoration: "none" }}
+                >
+                  {({ blob, url, loading, error }) =>
+                    loading ? (
+                      <Button icon={<UilImport />}>Export</Button>
+                    ) : (
+                      <div className="flex justify-center items-center">
+                        <Button icon={<UilImport />}>Export</Button>
+                      </div>
+                    )
+                  }
+                </PDFDownloadLink>
+              </div>
+              <div
+                className={`col-span-1 ${
+                  selectedResources.length
+                    ? "opacity-100"
+                    : "opacity-0 pointer-events-none"
+                }`}
+              >
+                <ModalDeleteTicket
+                  handleDeleteSelected={handleDeleteSelected}
+                />
+              </div>
             </div>
           </div>
         )
