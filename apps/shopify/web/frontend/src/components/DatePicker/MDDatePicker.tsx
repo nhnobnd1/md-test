@@ -17,7 +17,7 @@ interface MDDatePicker extends DatePickerProps {
   };
 }
 
-const formatRenderDate = (date?: Date) => {
+const formatRenderDate = (date?: Date | string) => {
   if (!date) return "";
   return dayjs(date).format("MM/DD/YYYY");
 };
@@ -85,8 +85,10 @@ const MDDatePicker = ({
               onClick={showDatePicker}
               // size={isMobile ? "slim" : "medium"}
             >
-              {formatRenderDate(selectedDates?.start || convertDefault?.start)}{" "}
-              - {formatRenderDate(selectedDates?.end || convertDefault?.end)}
+              {formatRenderDate(
+                selectedDates?.start || defaultRangeTime?.start
+              )}{" "}
+              - {formatRenderDate(selectedDates?.end || defaultRangeTime?.end)}
             </Button>
           }
           autofocusTarget="none"
