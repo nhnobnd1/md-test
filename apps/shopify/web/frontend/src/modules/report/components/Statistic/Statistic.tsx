@@ -1,9 +1,8 @@
-import { Card } from "@shopify/polaris";
+import { Grid, Page } from "@shopify/polaris";
 import { memo } from "react";
 import { convertSecondsToHoursMinutes } from "src/modules/report/helper/convert";
 import SummaryReportRes from "src/modules/report/helper/interface";
-
-import "./Statistic.scss";
+import styles from "./style.module.scss";
 
 export interface StatisticProps {
   data: SummaryReportRes;
@@ -23,19 +22,24 @@ export const Statistic = ({ data }: StatisticProps) => {
     },
   ];
   return (
-    <div className="Statistic">
-      {LIST_SUMMARY.map((block, index) => {
-        return (
-          <div key={index} className="block">
-            <Card
-              title={<div className="text-center">{block.title}</div>}
-              sectioned
-            >
-              <p>{block.value}</p>
-            </Card>
-          </div>
-        );
-      })}
+    <div className={styles.statisticContainer}>
+      <Page fullWidth>
+        <Grid columns={{ xs: 6, sm: 15, md: 15, lg: 15, xl: 15 }}>
+          {LIST_SUMMARY.map((block, index) => {
+            return (
+              <Grid.Cell
+                key={index}
+                columnSpan={{ xs: 6, sm: 3, md: 3, lg: 3, xl: 3 }}
+              >
+                <div className={styles.block}>
+                  <p className={styles.title}>{block.title}</p>
+                  <p className={styles.value}>{block.value}</p>
+                </div>
+              </Grid.Cell>
+            );
+          })}
+        </Grid>
+      </Page>
     </div>
   );
 };

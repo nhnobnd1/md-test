@@ -19,6 +19,9 @@
 .d-none {
   display: none;
 }
+.align-start {
+  align-items: flex-start !important;
+}
 .text-line-through {
   text-decoration: line-through;
 }
@@ -136,7 +139,14 @@
 .Polaris-Tabs__Tab--selected .Polaris-Tabs__Title::before {
   background: $primary !important;
 }
-
+.Polaris-DatePicker__Day--selected {
+  background: $primary !important;
+}
+.Polaris-DataTable__Heading {
+  color: $subdued !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
 // .Polaris-TextField--focus {
 //   outline: $primary !important;
 // }

@@ -59,12 +59,10 @@ export const ChartResolutionTime = ({ data }: ChartResolutionTimeProps) => {
         // width={500}
         // height={400}
         data={chartData}
-        // margin={{
-        //   top: 10,
-        //   right: 30,
-        //   left: 0,
-        //   bottom: 0,
-        // }}
+        margin={{
+          right: 20,
+          top: 20,
+        }}
       >
         {/* <CartesianGrid strokeDasharray="3 3" /> */}
         <XAxis

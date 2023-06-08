@@ -1,12 +1,17 @@
-import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
-import { DataTable, EmptySearchResult, Loading } from "@shopify/polaris";
+import {
+  Card,
+  EmptySearchResult,
+  IndexTable,
+  Loading,
+  Text,
+} from "@shopify/polaris";
 import { memo, useMemo, useState } from "react";
-import { MDTextField } from "src/components/Input/TextFieldPassword/MDTextField";
 import { Pagination } from "src/components/Pagination";
 import styles from "./styles.module.scss";
 
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { useQuery } from "react-query";
+import { Search } from "src/components/Search/Search";
 import env from "src/core/env";
 import { getListAgent } from "src/modules/report/api/api";
 interface ReportAgentTableProps {
@@ -21,7 +26,10 @@ const listSort = [
   "ticketClosed",
   "percentage",
 ];
-
+const resourceName = {
+  singular: "agentTable",
+  plural: "agentTable",
+};
 interface ITableFilter {
   page: number;
   limit: number;
@@ -41,92 +49,117 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
     endTime: "",
     query: "",
   });
-  const [querySearch, setQuerySearch] = useState<string>("");
-  const debounceValue: string = useDebounce(querySearch, 500);
-
-  const { data: listAgentData, isFetching } = useQuery({
-    queryKey: [QUERY_KEY.LIST_AGENT, filterData, rangeTime, debounceValue],
+  const [indexSort, setIndexSort] = useState<number | undefined>(undefined);
+  const [direction, setDirection] = useState<"descending" | "ascending">(
+    "descending"
+  );
+  const { data: listAgentData, isFetching }: any = useQuery({
+    queryKey: [QUERY_KEY.LIST_AGENT, filterData, rangeTime],
     queryFn: () =>
       getListAgent({
-        ...{ ...filterData, query: debounceValue },
+        ...filterData,
         ...rangeTime,
       }),
     // keepPreviousData: true,
     enabled: !!rangeTime.startTime && !!rangeTime.endTime,
   });
-  const memoChartData = useMemo(() => {
-    const convertData = (listAgentData as any)?.data?.data || [];
-    const rows = convertData?.map((item: any) => {
-      return [
-        item?.agentFirstName + item?.agentLastName,
-        item?.ticketAssigned,
-        item?.ticketClosed,
-        item?.percentage,
-      ];
-    });
-    return rows;
+  const memoData = useMemo(() => {
+    return listAgentData?.data;
   }, [listAgentData]);
 
   const handleSearchInput = (value: string) => {
-    setQuerySearch(value);
+    setFilterData((pre) => ({ ...pre, query: value }));
   };
   const handleChangePage = (page: number) =>
     setFilterData((val) => {
       return { ...val, page };
     });
 
-  const handleSortTable = (
+  const handleSort = (
     headingIndex: number,
-    direction: "ascending" | "descending" | "none"
+    direction: "descending" | "ascending"
   ) => {
-    setFilterData((pre) => ({
+    setIndexSort(Number(headingIndex));
+    setDirection(direction);
+    setFilterData((pre: any) => ({
       ...pre,
-      sortBy: listSort[headingIndex],
+      sortBy: listSort[Number(headingIndex)],
       sortOrder: direction === "ascending" ? 1 : -1,
     }));
   };
+  const rowMarkup = memoData?.data?.map((records: any, index: number) => (
+    <IndexTable.Row id={records?._id} key={records?._id} position={index}>
+      <IndexTable.Cell className="py-3">
+        {records?.agentFirstName} {records?.agentLastName}
+      </IndexTable.Cell>
+      <IndexTable.Cell className="py-3">
+        {records?.ticketAssigned}
+      </IndexTable.Cell>
+      <IndexTable.Cell className="py-3">
+        {records?.ticketClosed}
+      </IndexTable.Cell>
+      <IndexTable.Cell className="py-3">{records?.percentage}</IndexTable.Cell>
+    </IndexTable.Row>
+  ));
   return (
     <div>
-      <div className={styles.search}>
-        <MDTextField
-          value={querySearch}
-          type="search"
-          onChange={handleSearchInput}
-        />
+      <div className={styles.groupTopTable}>
+        <div>
+          <Text variant="headingMd" as="h2">
+            Tickets by Agents
+          </Text>
+        </div>
+        <div className={styles.search}>
+          <Search onTypeSearch={handleSearchInput} />
+        </div>
       </div>
       {isFetching && <Loading />}
-      {!memoChartData?.length ? (
-        <div className="mt-3">
-          <EmptySearchResult
-            title={
-              "Sorry! There is no records matched with your search criteria"
-            }
-            description={"Try changing the filters or search term"}
-            withIllustration
-          />
-        </div>
-      ) : (
-        <DataTable
-          columnContentTypes={["text", "numeric", "numeric", "numeric"]}
+
+      <Card>
+        <IndexTable
+          resourceName={resourceName}
+          itemCount={memoData?.data?.length || 0}
+          selectable={false}
+          // selectedItemsCount={
+          //   allResourcesSelected ? "All" : selectedResources.length
+          // }
+          // onSelectionChange={handleSelectionChange}
           headings={[
-            "Agent Name",
-            "Ticket Assigned",
-            "Tickets Closed",
-            "Percentage (Resolved)",
+            { title: "Tag" },
+            { title: "Total Tickets" },
+            { title: "Percentage" },
+            { title: "Percentage Closed" },
           ]}
-          rows={memoChartData}
+          sortDirection={direction}
+          sortColumnIndex={indexSort}
+          onSort={handleSort}
           sortable={[true, true, true, true]}
-          onSort={handleSortTable}
-        />
-      )}
-      <div className={styles.wrapPagination}>
-        <Pagination
-          total={10}
-          pageSize={filterData.limit || 10}
-          currentPage={filterData.page || 1}
-          onChangePage={handleChangePage}
-        />
-      </div>
+          // loading={isFetching}
+          emptyState={
+            <EmptySearchResult
+              title={
+                "Sorry! There is no records matched with your search criteria"
+              }
+              description={"Try changing the filters or search term"}
+              withIllustration
+            />
+          }
+        >
+          {rowMarkup}
+        </IndexTable>
+        {memoData && memoData?.metadata?.totalCount ? (
+          <div className="flex items-center justify-center mt-12px pb-12px">
+            <Pagination
+              total={memoData?.metadata ? memoData?.metadata?.totalCount : 1}
+              pageSize={filterData.limit ?? 0}
+              currentPage={filterData.page ?? 1}
+              onChangePage={handleChangePage}
+              previousTooltip={"Previous"}
+              nextTooltip={"Next"}
+            />
+          </div>
+        ) : null}
+      </Card>
     </div>
   );
 };

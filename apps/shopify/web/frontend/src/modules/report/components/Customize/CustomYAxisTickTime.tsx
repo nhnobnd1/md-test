@@ -5,7 +5,7 @@ export const CustomYAxisTickTime = ({ x, y, payload }: any) => {
     return `${convertSecondsToHoursMinutes(tickItem)}`;
   };
   return (
-    <text x={x} y={y} textAnchor="middle" dx={-16} fill="#141414">
+    <text x={x} y={y} textAnchor="start" dx={-52} fill="#141414">
       {formatYAxis(payload.value)}
     </text>
   );

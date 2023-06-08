@@ -67,9 +67,14 @@ export const ChartSupportVolume = ({ data }: ChartSupportVolumeProps) => {
     >
       <BarChart
         // width={500}
-        // height={400}
+        height={450}
         barGap={10}
         data={chartData}
+        margin={{
+          // left: -20,
+          // right: -20,
+          top: 20,
+        }}
       >
         <XAxis
           dataKey="name"
@@ -105,7 +110,7 @@ export const ChartSupportVolume = ({ data }: ChartSupportVolumeProps) => {
         <Legend
           align="left"
           formatter={(value) => (
-            <span style={{ color: "#141414", marginTop: 24 }}>{value}</span>
+            <span style={{ color: "#141414" }}>{value}</span>
           )}
           iconSize={16}
         />
