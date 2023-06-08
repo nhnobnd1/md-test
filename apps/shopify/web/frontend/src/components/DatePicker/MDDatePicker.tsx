@@ -2,6 +2,7 @@ import { Button, DatePicker, DatePickerProps, Popover } from "@shopify/polaris";
 import { CalendarMinor } from "@shopify/polaris-icons";
 import classNames from "classnames";
 import dayjs from "dayjs";
+import "dayjs/locale/en";
 import timezone from "dayjs/plugin/timezone";
 import { memo, useCallback, useEffect, useState } from "react";
 import { getTwoWeeksAfter } from "src/modules/report/helper/convert";
@@ -17,9 +18,14 @@ interface MDDatePicker extends DatePickerProps {
   };
 }
 
-const formatRenderDate = (date?: Date) => {
+const formatRenderDate = (date?: Date | string) => {
   if (!date) return "";
-  return dayjs(date).format("MM/DD/YYYY");
+  if (typeof date === "string") {
+    return dayjs(date, "MM/DD/YYYY").format("MM/DD/YYYY");
+  }
+  return dayjs(date, "ddd MMM DD YYYY HH:mm:ss [GMT]Z (zzz)").format(
+    "MM/DD/YYYY"
+  );
 };
 const MDDatePicker = ({
   datePickerClassName,
@@ -85,8 +91,10 @@ const MDDatePicker = ({
               onClick={showDatePicker}
               // size={isMobile ? "slim" : "medium"}
             >
-              {formatRenderDate(selectedDates?.start || convertDefault?.start)}{" "}
-              - {formatRenderDate(selectedDates?.end || convertDefault?.end)}
+              {formatRenderDate(
+                selectedDates?.start || defaultRangeTime?.start
+              )}{" "}
+              - {formatRenderDate(selectedDates?.end || defaultRangeTime?.end)}
             </Button>
           }
           autofocusTarget="none"

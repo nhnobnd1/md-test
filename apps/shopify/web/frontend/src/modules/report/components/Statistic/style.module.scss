@@ -21,6 +21,7 @@
     font-size: 15px;
     font-weight: 500;
     margin-bottom: 8px;
+    white-space: nowrap;
     @include breakpoints(md, lg) {
         font-size: 13px;
         font-weight: 400;
