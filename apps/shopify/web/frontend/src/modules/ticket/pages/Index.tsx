@@ -68,7 +68,6 @@ import useGlobalData from "src/hooks/useGlobalData";
 import useScreenType from "src/hooks/useScreenType";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { ExportTicketPdf } from "src/modules/ticket/components/ExportTicketPdf";
-import ChangeIcon from "~icons/material-symbols/change-circle";
 import UilImport from "~icons/uil/import";
 import "./ListTicket.scss";
 
@@ -610,16 +609,14 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     )
   );
   const activator = (
-    <div className="flex gap-2 items-center">
-      <span>{selectedResources?.length} Selected</span>
+    <div className="flex gap-2 items-center ">
       <Button
-        primary
+        plain
         onClick={() => {
           setActive(true);
         }}
-        icon={<ChangeIcon style={{ fontSize: 16 }} />}
       >
-        Action
+        More actions
       </Button>
     </div>
   );
@@ -667,86 +664,11 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
               Add new
             </Button>
           </div>
-        ) : screenWidth <= 1060 ? (
-          <Modal
-            activator={activator}
-            open={active}
-            onClose={handleChange}
-            title=""
-          >
-            <div className="flex flex-col gap-2  items-center justify-center p-5">
-              <div
-                className={`${
-                  selectedResources?.length ? "block" : "hidden"
-                }  w-[250px]`}
-              >
-                <BoxSelectFilter
-                  onChange={onChangeAssignTo}
-                  data={agentsOptions}
-                  placeholder="Assign to"
-                />
-              </div>
-              <div
-                className={`${
-                  selectedResources?.length ? "block" : "hidden"
-                } w-[250px]`}
-              >
-                <BoxSelectFilter
-                  onChange={onChangeStatus}
-                  data={statusOptions}
-                  placeholder="Set Status"
-                />
-              </div>
-              <div
-                className={`${
-                  selectedResources?.length ? "block" : "hidden"
-                } w-[250px] `}
-              >
-                <PDFDownloadLink
-                  document={
-                    <ExportTicketPdf
-                      conversations={conversations}
-                      agents={agents}
-                      tickets={tickets}
-                      selectedRowKeys={selectedResources}
-                      timezone={timezone}
-                    />
-                  }
-                  fileName="Tickets.pdf"
-                  style={{ textDecoration: "none" }}
-                >
-                  {({ blob, url, loading, error }) =>
-                    loading ? (
-                      <Button fullWidth icon={<UilImport />}>
-                        Export
-                      </Button>
-                    ) : (
-                      <div className="flex justify-center items-center">
-                        <Button fullWidth icon={<UilImport />}>
-                          Export
-                        </Button>
-                      </div>
-                    )
-                  }
-                </PDFDownloadLink>
-              </div>
-              <div
-                className={`col-span-1 ${
-                  selectedResources.length
-                    ? "opacity-100"
-                    : "opacity-0 pointer-events-none"
-                } w-[250px]`}
-              >
-                <ModalDeleteTicket
-                  handleDeleteSelected={handleDeleteSelected}
-                />
-              </div>
-            </div>
-          </Modal>
+        ) : screenWidth <= 992 ? (
+          <></>
         ) : (
           <div className="flex gap-2 flex-wrap items-center justify-end ">
             <div className="flex gap-2 items-center">
-              <span>{selectedResources?.length} Selected</span>
               <div
                 className={`${
                   selectedResources?.length ? "block" : "hidden"
@@ -953,15 +875,19 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                       withIllustration
                     />
                   }
-                  headings={[
-                    { title: "#" },
-                    { title: "Ticket Title" },
-                    { title: "Customer" },
-                    { title: "Tags" },
-                    { title: "Priority" },
-                    { title: "Last Update" },
-                    { title: "Action" },
-                  ]}
+                  headings={
+                    selectedResources?.length === 0
+                      ? [
+                          { title: "#" },
+                          { title: "Ticket Title" },
+                          { title: "Customer" },
+                          { title: "Tags" },
+                          { title: "Priority" },
+                          { title: "Last Update" },
+                          { title: "Action" },
+                        ]
+                      : [{ title: `${selectedResources?.length} Selected` }]
+                  }
                   sortable={[true, true, true, true, true, true, false]}
                   sortDirection={direction}
                   sortColumnIndex={indexSort}
@@ -995,6 +921,79 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
             </div>
           </div>
         </div>
+        {screenWidth <= 992 && selectedResources.length > 0 && (
+          <div
+            className={`sticky z-50 bottom-0 bg-white right-0 px-3 h-[56px] flex justify-between items-center w-full `}
+          >
+            <ModalDeleteTicket handleDeleteSelected={handleDeleteSelected} />
+            <div>
+              <Modal
+                activator={activator}
+                open={active}
+                onClose={handleChange}
+                title=""
+              >
+                <div className="flex flex-col gap-2  items-center justify-center p-5">
+                  <div
+                    className={`${
+                      selectedResources?.length ? "block" : "hidden"
+                    }  w-[250px]`}
+                  >
+                    <BoxSelectFilter
+                      onChange={onChangeAssignTo}
+                      data={agentsOptions}
+                      placeholder="Assign to"
+                    />
+                  </div>
+                  <div
+                    className={`${
+                      selectedResources?.length ? "block" : "hidden"
+                    } w-[250px]`}
+                  >
+                    <BoxSelectFilter
+                      onChange={onChangeStatus}
+                      data={statusOptions}
+                      placeholder="Set Status"
+                    />
+                  </div>
+                  <div
+                    className={`${
+                      selectedResources?.length ? "block" : "hidden"
+                    } w-[250px] `}
+                  >
+                    <PDFDownloadLink
+                      document={
+                        <ExportTicketPdf
+                          conversations={conversations}
+                          agents={agents}
+                          tickets={tickets}
+                          selectedRowKeys={selectedResources}
+                          timezone={timezone}
+                        />
+                      }
+                      fileName="Tickets.pdf"
+                      style={{ textDecoration: "none" }}
+                    >
+                      {({ blob, url, loading, error }) =>
+                        loading ? (
+                          <Button fullWidth icon={<UilImport />}>
+                            Export
+                          </Button>
+                        ) : (
+                          <div className="flex justify-center items-center">
+                            <Button fullWidth icon={<UilImport />}>
+                              Export
+                            </Button>
+                          </div>
+                        )
+                      }
+                    </PDFDownloadLink>
+                  </div>
+                </div>
+              </Modal>
+            </div>
+          </div>
+        )}
       </LegacyCard>
     </Page>
   );
