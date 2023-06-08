@@ -8433,6 +8433,11 @@ const Wa = K0(
     },
     primaryEmail(M, b, z) {
       return M.post(`/primary-email/${b}`, z);
+    },
+    checkCurrentEmail(M) {
+      return M.get(
+        "/current-emails"
+      );
     }
   }
 ), ra = K0(

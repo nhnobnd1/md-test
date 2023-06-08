@@ -1,5 +1,5 @@
 import { PageComponent, TokenManager, useNavigate } from "@moose-desk/core";
-import { Button, Card, Icon, Layout, Page } from "@shopify/polaris";
+import { Card, Icon, Layout, Page } from "@shopify/polaris";
 import {
   ChecklistAlternateMajor,
   EmailNewsletterMajor,
@@ -7,6 +7,7 @@ import {
 import { FunctionComponent, SVGProps, useCallback, useMemo } from "react";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
+import RightIcon from "~icons/material-symbols/arrow-right";
 
 interface SettingChannelIndexPageProps {}
 
@@ -65,23 +66,29 @@ const SettingChannelIndexPage: PageComponent<
       <Layout>
         <Layout.Section>
           {listCategory.map((card, index) => (
-            <div className="mb-6" key={`category-${index}`}>
-              <Card
-                title={
-                  <div className="flex gap-2 items-center">
-                    <div>
-                      <Icon source={card.icon}></Icon>
-                    </div>
-                    <div>{card.title}</div>
-                  </div>
-                }
-                sectioned
-              >
+            <div
+              onClick={() => {
+                card.onConfigure();
+              }}
+              className="mb-6 hover:cursor-pointer"
+              key={`category-${index}`}
+            >
+              <Card sectioned>
                 <div className="flex justify-between items-center">
-                  <div>{card.description}</div>
-                  <Button size="slim" onClick={() => card.onConfigure()}>
-                    Configure
-                  </Button>
+                  <div className="flex flex-col gap-6">
+                    <div className="flex gap-2 items-center">
+                      <div>
+                        <Icon source={card.icon}></Icon>
+                      </div>
+                      <div>{card.title}</div>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <div>{card.description}</div>
+                    </div>
+                  </div>
+                  <div className="">
+                    <RightIcon style={{ fontSize: 32 }} />
+                  </div>
                 </div>
               </Card>
             </div>

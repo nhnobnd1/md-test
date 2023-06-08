@@ -1,4 +1,4 @@
-import { useJob, useToggle } from "@moose-desk/core";
+import { generatePath, useJob, useToggle } from "@moose-desk/core";
 import {
   BaseListHelpWidgetRequest,
   GetListHelpWidgetRequest,
@@ -27,10 +27,12 @@ import { Banner } from "src/components/Banner";
 import Form from "src/components/Form";
 import env from "src/core/env";
 import { useBanner } from "src/hooks/useBanner";
+import usePreventNav from "src/hooks/usePreventNav";
 import Appearance from "src/modules/settingChannel/components/widgets/Appearance/Appearance";
 import General from "src/modules/settingChannel/components/widgets/General/General";
 import Integration from "src/modules/settingChannel/components/widgets/Integration/Integration";
 import { ViewWidget } from "src/modules/settingChannel/components/widgets/ViewWidget";
+import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
 import useUpdateSave from "src/modules/settingChannel/store/saveUpdateWidget";
 import useWidgetSetting from "src/modules/settingChannel/store/useSetting";
 
@@ -68,7 +70,7 @@ const Widgets = (props: WidgetsProps) => {
   const [initialValues, setInitialValues] = useState(widgetSetting);
   const { show } = useToast();
   const { t, i18n } = useTranslation();
-
+  usePreventNav(1200);
   const defaultFilter: () => GetListHelpWidgetRequest = () => ({
     page: 1,
     limit: env.DEFAULT_PAGE_SIZE,
@@ -235,7 +237,16 @@ const Widgets = (props: WidgetsProps) => {
           </Layout>
         </Page>
       ) : (
-        <Page title="Web Form" fullWidth>
+        <Page
+          breadcrumbs={[
+            {
+              content: "Channel-settings",
+              url: generatePath(SettingChannelRoutePaths.Index),
+            },
+          ]}
+          title="Web Form"
+          fullWidth
+        >
           <Layout>
             {banner.visible && (
               <Layout.Section>

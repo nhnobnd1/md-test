@@ -30,6 +30,9 @@ export declare const EmailIntegrationRepository: () => {
     }>, any>>;
     checkVerifyEmailSes: (email: string) => import("rxjs").Observable<import("axios").AxiosResponse<BaseResponse<any>, any>>;
     primaryEmail: (id: string, payload: any) => import("rxjs").Observable<import("axios").AxiosResponse<any, any>>;
+    checkCurrentEmail: () => import("rxjs").Observable<import("axios").AxiosResponse<BaseResponse<{
+        currentEmails: string[];
+    }>, any>>;
 };
 export default EmailIntegrationRepository;
 //# sourceMappingURL=EmailIntegrationRepository.d.ts.map

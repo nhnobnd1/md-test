@@ -352,8 +352,6 @@ const TrashTicket: FC<TrashTicketProps> = () => {
                   selectedResources?.length ? "block" : "hidden"
                 } items-center`}
               >
-                <span>{selectedResources?.length} Selected</span>
-
                 <ButtonTrashTicket
                   title="Are you sure that you want to restore this ticket"
                   content="This ticket will be moved back to the Ticket list. You can continue working with it."
@@ -505,15 +503,19 @@ const TrashTicket: FC<TrashTicketProps> = () => {
                       withIllustration
                     />
                   }
-                  headings={[
-                    { title: "#" },
-                    { title: "Ticket Title" },
-                    { title: "Customer" },
-                    { title: "Tags" },
-                    { title: "Priority" },
-                    { title: "Last Update" },
-                    { title: "Action" },
-                  ]}
+                  headings={
+                    selectedResources?.length === 0
+                      ? [
+                          { title: "#" },
+                          { title: "Ticket Title" },
+                          { title: "Customer" },
+                          { title: "Tags" },
+                          { title: "Priority" },
+                          { title: "Last Update" },
+                          { title: "Action" },
+                        ]
+                      : [{ title: `${selectedResources?.length} Selected` }]
+                  }
                   sortable={[true, true, true, true, true, true, false]}
                   sortDirection={direction}
                   sortColumnIndex={indexSort}

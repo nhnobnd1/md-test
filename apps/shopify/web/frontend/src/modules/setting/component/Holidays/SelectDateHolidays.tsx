@@ -45,7 +45,6 @@ const SelectDateHolidays = ({
 
   const handleMonthChange = useCallback((month) => setMonth(month), []);
   const handleChangeDate = useCallback((date: { start: Date; end: Date }) => {
-    alert(date?.start);
     onChange && onChange(`${date.start.getDate()}`);
     setSelectedDates(date);
     onChangeValueDate &&
