@@ -1,4 +1,4 @@
-import { Empty, Table as ATable, TableProps as ATableProps } from "antd";
+import { Table as ATable, TableProps as ATableProps, Empty } from "antd";
 import "./Table.scss";
 
 interface TableProps extends ATableProps<any> {}
@@ -9,6 +9,7 @@ export const Table = (props: TableProps) => {
       scroll={{ x: 512 }}
       className="Table"
       pagination={false}
+      sortDirections={["ascend", "descend", "ascend"]}
       locale={{
         emptyText: (
           <Empty

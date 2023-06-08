@@ -45,14 +45,13 @@ export const CardForwardEmail: FC<CardForwardEmailProps> = ({ formEmail }) => {
   const message = useMessage();
   const notification = useNotification();
 
-  const { run: getListEmailApi } = useJob((payload: any) => {
+  const { run: getListEmailApi } = useJob(() => {
     return EmailIntegrationRepository()
-      .getListEmail(payload)
+      .checkCurrentEmail()
       .pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
-            const listEmails = data.data.map((item) => item.supportEmail);
-            setEmails(listEmails);
+            setEmails(data.data.currentEmails);
           } else {
             message.error(t("messages:error.get_agent"));
           }
@@ -261,10 +260,7 @@ export const CardForwardEmail: FC<CardForwardEmailProps> = ({ formEmail }) => {
   }, [step]);
 
   useEffect(() => {
-    getListEmailApi({
-      limit: 1000,
-      page: 1,
-    });
+    getListEmailApi();
     if (id) {
       checkVerifyEmail(formEmail.getFieldValue("supportEmail"));
     }

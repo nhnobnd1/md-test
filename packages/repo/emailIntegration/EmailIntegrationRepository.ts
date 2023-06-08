@@ -91,6 +91,11 @@ export const EmailIntegrationRepository = createRepository(
 		primaryEmail(api, id: string, payload: any) {
 			return api.post<any>(`/primary-email/${id}`, payload);
 		},
+		checkCurrentEmail(api) {
+			return api.get<BaseResponse<{ currentEmails: string[] }>>(
+				`/current-emails`
+			);
+		},
 	}
 );
 

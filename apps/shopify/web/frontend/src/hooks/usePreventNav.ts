@@ -3,11 +3,17 @@ import { useEffect } from "react";
 import useScreenType from "src/hooks/useScreenType";
 import useFullScreen from "src/store/useFullScreen";
 
-export default function usePreventNav() {
+export default function usePreventNav(screen = 5000) {
   const changeShowNav = useFullScreen((state) => state.changeShowNav);
-  const [screenType] = useScreenType();
+  const [screenType, screenWidth] = useScreenType();
 
   useEffect(() => {
+    // default  using this hook will prevent nav, if you want to show nav, you can pass screen param
+    if (screenWidth >= screen) {
+      changeShowNav(true);
+      return;
+    }
+
     if (screenType === ScreenType.SM) {
       return;
     }
@@ -16,5 +22,5 @@ export default function usePreventNav() {
     return () => {
       changeShowNav(true);
     };
-  }, [screenType]);
+  }, [screenType, screenWidth]);
 }
