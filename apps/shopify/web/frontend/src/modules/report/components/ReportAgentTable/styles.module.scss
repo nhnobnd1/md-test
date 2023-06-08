@@ -20,6 +20,9 @@
       width: 100%;
       margin-bottom: 20px;
     }
+    @include breakpoints(md, lg) {
+        width: 250px;
+    }
   }
 }
 .cardTable {

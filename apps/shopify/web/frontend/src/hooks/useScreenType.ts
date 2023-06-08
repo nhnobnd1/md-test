@@ -18,8 +18,9 @@ const defaultBreakpoints: Breakpoints = {
 
 type ScreenType = "sm" | "md" | "lg" | "xl" | "xxl";
 
-function useScreenType(): ScreenType {
+function useScreenType(): [ScreenType, number] {
   const [screenType, setScreenType] = useState<ScreenType>("sm");
+  const [screenWidth, setScreenWidth] = useState<number>(0);
 
   useEffect(() => {
     const handleResize = () => {
@@ -32,6 +33,7 @@ function useScreenType(): ScreenType {
           );
         }) as ScreenType;
       setScreenType(currentScreenType);
+      setScreenWidth(currentWidth);
     };
 
     window.addEventListener("resize", handleResize);
@@ -39,7 +41,7 @@ function useScreenType(): ScreenType {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  return screenType;
+  return [screenType, screenWidth];
 }
 
 export default useScreenType;

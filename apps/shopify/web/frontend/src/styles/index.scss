@@ -108,6 +108,7 @@
 // Pagination
 
 .ticket-statistic {
+  overflow: scroll;
   .Polaris-Button--pressed {
     background-color: $primary !important;
     border-color: $primary !important;
@@ -139,6 +140,12 @@
 }
 .Polaris-Page-Header__TitleWrapper {
   max-width: 95% !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.Polaris-Modal-CloseButton {
+  margin: 0 !important;
 }
 .Polaris-Tabs__Tab--selected .Polaris-Tabs__Title::before {
   background: $primary !important;

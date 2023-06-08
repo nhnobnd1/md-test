@@ -106,7 +106,7 @@ const DetailTicket = (props: DetailTicketProps) => {
   const [emailIntegrationOptions, setEmailIntegrationOptions] = useState<any>(
     []
   );
-  const screenType = useScreenType();
+  const [screenType] = useScreenType();
 
   // detail ticket
   const [agents, setAgents] = useState<Agent[]>([]);
