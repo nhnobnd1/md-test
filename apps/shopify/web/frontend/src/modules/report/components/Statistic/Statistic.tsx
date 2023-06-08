@@ -24,12 +24,12 @@ export const Statistic = ({ data }: StatisticProps) => {
   return (
     <div className={styles.statisticContainer}>
       <Page fullWidth>
-        <Grid columns={{ xs: 6, sm: 15, md: 15, lg: 15, xl: 15 }}>
+        <Grid columns={{ xs: 6, sm: 9, md: 9, lg: 15, xl: 15 }}>
           {LIST_SUMMARY.map((block, index) => {
             return (
               <Grid.Cell
                 key={index}
-                columnSpan={{ xs: 6, sm: 3, md: 3, lg: 3, xl: 3 }}
+                columnSpan={{ xs: 3, sm: 3, md: 3, lg: 3, xl: 3 }}
               >
                 <div className={styles.block}>
                   <p className={styles.title}>{block.title}</p>

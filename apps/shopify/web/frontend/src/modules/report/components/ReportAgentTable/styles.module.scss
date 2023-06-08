@@ -1,14 +1,37 @@
+@import "../../../../styles/variables.scss";
+@import "../../../../styles/mixin.scss";
 .wrapPagination {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
 }
 .groupTopTable {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-    .search {
-        width: 385px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  @include mq(md, "max") {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+  }
+  .search {
+    width: 385px;
+    @include mq(md, "max") {
+      width: 100%;
+      margin-bottom: 20px;
     }
+    @include breakpoints(md, lg) {
+        width: 250px;
+    }
+  }
+}
+.cardTable {
+  @include mq(md, "max") {
+    :global {
+      .Polaris-Card {
+        box-shadow: unset !important;
+        margin: 0 -16px;
+      }
+    }
+  }
 }

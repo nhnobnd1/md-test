@@ -1,4 +1,4 @@
-import { generatePath, useNavigate, useToggle } from "@moose-desk/core";
+import { useNavigate, useToggle } from "@moose-desk/core";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { BaseListCustomerRequest } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
@@ -12,8 +12,10 @@ import {
   Loading,
   Text,
 } from "@shopify/polaris";
+import { MobileBackArrowMajor, SearchMinor } from "@shopify/polaris-icons";
 import classNames from "classnames";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import { isMobile } from "react-device-detect";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "react-query";
 import { ButtonDelete } from "src/components/Button/ButtonDelete";
@@ -24,7 +26,6 @@ import { Search } from "src/components/Search/Search";
 import env from "src/core/env";
 import { deleteCustomer, getListCustomer } from "src/modules/customers/api/api";
 import { CustomModal } from "src/modules/customers/component/Modal";
-import CustomersRoutePaths from "src/modules/customers/routes/paths";
 import styles from "./styles.module.scss";
 const resourceName = {
   singular: "customer",
@@ -41,15 +42,12 @@ export default function CustomerIndexPage() {
   const { t } = useTranslation();
   const { show } = useToast();
   const { state: visible, on: openPopup, off: closePopup } = useToggle();
+  const { state: isSearch, toggle: onToggleSearch } = useToggle(false);
   const [customerData, setCustomerData] = useState<any>();
   const [indexSort, setIndexSort] = useState<number | undefined>(undefined);
   const [direction, setDirection] = useState<"descending" | "ascending">(
     "descending"
   );
-  // const [modalType, setModalType] = useState("create");
-  const navigateShowDetails = useCallback((id: string) => {
-    navigate(generatePath(CustomersRoutePaths.Details, { id }));
-  }, []);
 
   const [filterData, setFilterData] =
     useState<BaseListCustomerRequest>(defaultFilter);
@@ -147,21 +145,40 @@ export default function CustomerIndexPage() {
   return (
     <>
       <section className="page-wrap">
-        <div className="d-flex justify-between">
-          <Text variant="headingLg" as="h1">
-            Customers
-          </Text>
-          <div className={classNames(styles.groupTopPage, "d-flex")}>
-            <div style={{ width: 448 }} className="md-input">
-              <Search onTypeSearch={handleSearch} />
-            </div>
-            <div
-              className={classNames(styles.buttonAdd, "md-btn md-btn-primary")}
-            >
-              <Button onClick={openPopup}>Add new</Button>
+        {!isSearch ? (
+          <div className={styles.topPage}>
+            <Text variant="headingLg" as="h1">
+              Customers
+            </Text>
+            <div className={classNames(styles.groupTopPage, "d-flex")}>
+              {isMobile ? (
+                <Button icon={SearchMinor} onClick={onToggleSearch}></Button>
+              ) : (
+                <div style={{ width: 448 }} className="md-input">
+                  <Search onTypeSearch={handleSearch} />
+                </div>
+              )}
+              <div
+                className={classNames(
+                  styles.buttonAdd,
+                  "md-btn md-btn-primary"
+                )}
+              >
+                <Button onClick={openPopup}>Add new</Button>
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className={styles.groupSearchOnMobile}>
+            <Button
+              icon={MobileBackArrowMajor}
+              onClick={onToggleSearch}
+            ></Button>
+            <div className={styles.searchOnMobile}>
+              <Search onTypeSearch={handleSearch} />
+            </div>
+          </div>
+        )}
         <ModalDelete
           title="Remove this customer?"
           open={isOpen}

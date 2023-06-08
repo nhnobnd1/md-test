@@ -65,25 +65,28 @@ const ByAgentPage = (props: ByAgentPageProps) => {
   );
   return (
     <section className="page-wrap">
-      <Text variant="headingLg" as="h1">
-        By Agent
-      </Text>
-      <div className={styles.groupFilter}>
-        <div className={styles.dateTime}>
-          <MDDatePicker
-            defaultRangeTime={{
-              start: formatDefaultTimeRangePicker(
-                filterData.startTime,
-                timezone
-              ),
+      <div className={styles.wrapTop}>
+        <Text variant="headingLg" as="h1">
+          By Agent
+        </Text>
+        <div className={styles.groupFilter}>
+          <div className={styles.dateTime}>
+            <MDDatePicker
+              defaultRangeTime={{
+                start: formatDefaultTimeRangePicker(
+                  filterData.startTime,
+                  timezone
+                ),
 
-              end: formatDefaultTimeRangePicker(filterData.endTime, timezone),
-            }}
-            onSubmitTime={handleSubmitDate}
-            datePickerClassName={styles.datePickerCustomer}
-          />
+                end: formatDefaultTimeRangePicker(filterData.endTime, timezone),
+              }}
+              onSubmitTime={handleSubmitDate}
+              datePickerClassName={styles.datePickerCustomer}
+            />
+          </div>
         </div>
       </div>
+
       {/* <Card> */}
       <div className={styles.chartBlock}>
         <LegacyCard
