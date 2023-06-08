@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 @import "./variables.scss";
+@import "./mixin.scss";
 
 .unstyle-link a {
   text-decoration: none;
@@ -69,6 +70,9 @@
 
 .page-wrap {
   padding: 24px 36px 154px;
+  @include mq(md, "max") {
+    padding: 20px 0 0;
+  }
 }
 // Title
 

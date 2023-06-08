@@ -80,7 +80,11 @@ const MDDatePicker = ({
         <Popover
           active={visible}
           activator={
-            <Button icon={CalendarMinor} onClick={showDatePicker}>
+            <Button
+              icon={CalendarMinor}
+              onClick={showDatePicker}
+              // size={isMobile ? "slim" : "medium"}
+            >
               {formatRenderDate(selectedDates?.start || convertDefault?.start)}{" "}
               - {formatRenderDate(selectedDates?.end || convertDefault?.end)}
             </Button>

@@ -96,23 +96,25 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
   );
   return (
     <section className="page-wrap">
-      <Text variant="headingLg" as="h1">
-        Reporting
-      </Text>
-      <div className={styles.groupFilter}>
-        <div className={styles.dateTime}>
-          <MDDatePicker
-            defaultRangeTime={{
-              start: formatDefaultTimeRangePicker(filter.startTime, timezone),
-              end: formatDefaultTimeRangePicker(filter.endTime, timezone),
-            }}
-            onSubmitTime={handleSubmitDate}
-            datePickerClassName={styles.datePickerCustomer}
-          />
+      <div className={styles.wrapTop}>
+        <Text variant="headingLg" as="h1">
+          Reporting
+        </Text>
+        <div className={styles.groupFilter}>
+          <div className={styles.dateTime}>
+            <MDDatePicker
+              defaultRangeTime={{
+                start: formatDefaultTimeRangePicker(filter.startTime, timezone),
+                end: formatDefaultTimeRangePicker(filter.endTime, timezone),
+              }}
+              onSubmitTime={handleSubmitDate}
+              datePickerClassName={styles.datePickerCustomer}
+            />
+          </div>
         </div>
-      </div>
-      <div className={styles.statistic}>
-        <Statistic data={memoData[ChartReportData.SUMMARY]} />
+        <div className={styles.statistic}>
+          <Statistic data={memoData[ChartReportData.SUMMARY]} />
+        </div>
       </div>
       <div className={styles.chartBlock}>
         <LegacyCard title="Support Volume" sectioned>

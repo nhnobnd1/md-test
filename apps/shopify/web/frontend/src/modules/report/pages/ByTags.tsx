@@ -1,15 +1,18 @@
-import { PageComponent } from "@moose-desk/core";
+import { PageComponent, useToggle } from "@moose-desk/core";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import {
+  Button,
   Card,
   EmptySearchResult,
   IndexTable,
   Loading,
   Text,
 } from "@shopify/polaris";
+import { MobileBackArrowMajor, SearchMinor } from "@shopify/polaris-icons";
 import classNames from "classnames";
 import dayjs from "dayjs";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { isMobile } from "react-device-detect";
 import { useQuery } from "react-query";
 import MDDatePicker from "src/components/DatePicker/MDDatePicker";
 import { Pagination } from "src/components/Pagination";
@@ -20,6 +23,7 @@ import { useSubdomain } from "src/hooks/useSubdomain";
 import { getReportByTags } from "src/modules/report/api/api";
 import { formatDefaultTimeRangePicker } from "src/modules/report/helper/format";
 import styles from "./styles.module.scss";
+
 interface ByTagsProps {}
 interface ITableFilter {
   page: number;
@@ -38,7 +42,7 @@ const listSort = ["tagName", "totalTicket", "percentage", "percentageClosed"];
 export const ByTags: PageComponent<ByTagsProps> = () => {
   const { subDomain } = useSubdomain();
   const { timezone }: any = useGlobalData(false, subDomain || "");
-
+  const { state: isSearch, toggle: onToggleSearch } = useToggle(false);
   const [filterData, setFilterData] = useState<ITableFilter | any>({
     page: 1,
     limit: env.DEFAULT_PAGE_SIZE,
@@ -87,35 +91,7 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
   const handleSearchInput = (value: string) => {
     setFilterData((pre: any) => ({ ...pre, query: value }));
   };
-  // const onPagination = useCallback(
-  //   ({ page, limit }: { page: number; limit: number }) => {
-  //     setFilterData((value: any) => {
-  //       return {
-  //         ...value,
-  //         page,
-  //         limit,
-  //       };
-  //     });
-  //   },
-  //   []
-  // );
-  // const disabledStartDate = useCallback(
-  //   (current) => {
-  //     return form.getFieldValue("to")
-  //       ? current > form.getFieldValue("to")
-  //       : false;
-  //   },
-  //   [form.getFieldValue("to")]
-  // );
 
-  // const disabledEndDate = useCallback(
-  //   (current) => {
-  //     return form.getFieldValue("from")
-  //       ? current < form.getFieldValue("from")
-  //       : false;
-  //   },
-  //   [form.getFieldValue("from")]
-  // );
   const handleChangePage = (page: number) =>
     setFilterData((val: any) => {
       return { ...val, page };
@@ -148,32 +124,54 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
   ));
   return (
     <section className="page-wrap">
-      <div className={classNames(styles.groupTopTable, "align-start")}>
-        <div>
-          <Text variant="headingLg" as="h1">
-            By Tags
-          </Text>
-        </div>
-        <div className="d-flex align-center">
-          <div className={styles.search}>
+      {isSearch ? (
+        <div className={styles.groupSearchOnMobile}>
+          <Button icon={MobileBackArrowMajor} onClick={onToggleSearch}></Button>
+          <div className={styles.searchOnMobile}>
             <Search onTypeSearch={handleSearchInput} />
           </div>
-          <div className={styles.dateTime}>
-            <MDDatePicker
-              defaultRangeTime={{
-                start: formatDefaultTimeRangePicker(
-                  filterData.startTime,
-                  timezone
-                ),
+        </div>
+      ) : (
+        <div
+          className={classNames(styles.groupTopTable, {
+            "align-start": !isMobile,
+          })}
+        >
+          <div>
+            <Text variant="headingLg" as="h1">
+              By Tags
+            </Text>
+          </div>
+          <div className="d-flex align-center">
+            {isMobile ? (
+              <div className={styles.buttonSearch}>
+                <Button icon={SearchMinor} onClick={onToggleSearch}></Button>
+              </div>
+            ) : (
+              <div className={styles.search}>
+                <Search onTypeSearch={handleSearchInput} />
+              </div>
+            )}
+            <div className={styles.dateTime}>
+              <MDDatePicker
+                defaultRangeTime={{
+                  start: formatDefaultTimeRangePicker(
+                    filterData.startTime,
+                    timezone
+                  ),
 
-                end: formatDefaultTimeRangePicker(filterData.endTime, timezone),
-              }}
-              onSubmitTime={handleSubmitDate}
-              datePickerClassName={styles.datePickerCustomer}
-            />
+                  end: formatDefaultTimeRangePicker(
+                    filterData.endTime,
+                    timezone
+                  ),
+                }}
+                onSubmitTime={handleSubmitDate}
+                datePickerClassName={styles.datePickerCustomer}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       <Card>
         {isFetching && <Loading />}
