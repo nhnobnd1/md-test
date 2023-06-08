@@ -5,7 +5,7 @@ import useFullScreen from "src/store/useFullScreen";
 
 export default function usePreventNav() {
   const changeShowNav = useFullScreen((state) => state.changeShowNav);
-  const screenType = useScreenType();
+  const [screenType] = useScreenType();
 
   useEffect(() => {
     if (screenType === ScreenType.SM) {

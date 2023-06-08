@@ -65,7 +65,7 @@ const TrashTicket: FC<TrashTicketProps> = () => {
   const [direction, setDirection] = useState<"descending" | "ascending">(
     "descending"
   );
-  const screenType = useScreenType();
+  const [screenType] = useScreenType();
   const [indexSort, setIndexSort] = useState<number | undefined>(undefined);
   const [filterData, setFilterData] = useState<GetListTicketRequest>(
     defaultFilter()

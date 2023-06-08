@@ -39,6 +39,7 @@ import {
   Layout,
   LegacyCard,
   Loading,
+  Modal,
   Page,
   SkeletonBodyText,
   SkeletonDisplayText,
@@ -67,6 +68,7 @@ import useGlobalData from "src/hooks/useGlobalData";
 import useScreenType from "src/hooks/useScreenType";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { ExportTicketPdf } from "src/modules/ticket/components/ExportTicketPdf";
+import ChangeIcon from "~icons/material-symbols/change-circle";
 import UilImport from "~icons/uil/import";
 import "./ListTicket.scss";
 
@@ -126,7 +128,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const [filterData, setFilterData] = useState<GetListTicketRequest>(
     defaultFilter()
   );
-  const screenType = useScreenType();
+  const [screenType, screenWidth] = useScreenType();
 
   const [agents, setAgents] = useState<Agent[]>([]);
 
@@ -154,6 +156,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       NEW: 0,
     },
   });
+  const [active, setActive] = useState(false);
 
   const [idDelete, setIdDelete] = useState<string | null>(null);
   const agentsOptions = useMemo(() => {
@@ -515,6 +518,8 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     },
     [selectedResources]
   );
+  const handleChange = useCallback(() => setActive(!active), [active]);
+
   const rowMarkup = tickets.map(
     (
       {
@@ -604,6 +609,20 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       </IndexTable.Row>
     )
   );
+  const activator = (
+    <div className="flex gap-2 items-center">
+      <span>{selectedResources?.length} Selected</span>
+      <Button
+        primary
+        onClick={() => {
+          setActive(true);
+        }}
+        icon={<ChangeIcon style={{ fontSize: 16 }} />}
+      >
+        Action
+      </Button>
+    </div>
+  );
   return (
     <Page
       title={
@@ -648,6 +667,82 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
               Add new
             </Button>
           </div>
+        ) : screenWidth <= 1060 ? (
+          <Modal
+            activator={activator}
+            open={active}
+            onClose={handleChange}
+            title=""
+          >
+            <div className="flex flex-col gap-2  items-center justify-center p-5">
+              <div
+                className={`${
+                  selectedResources?.length ? "block" : "hidden"
+                }  w-[250px]`}
+              >
+                <BoxSelectFilter
+                  onChange={onChangeAssignTo}
+                  data={agentsOptions}
+                  placeholder="Assign to"
+                />
+              </div>
+              <div
+                className={`${
+                  selectedResources?.length ? "block" : "hidden"
+                } w-[250px]`}
+              >
+                <BoxSelectFilter
+                  onChange={onChangeStatus}
+                  data={statusOptions}
+                  placeholder="Set Status"
+                />
+              </div>
+              <div
+                className={`${
+                  selectedResources?.length ? "block" : "hidden"
+                } w-[250px] `}
+              >
+                <PDFDownloadLink
+                  document={
+                    <ExportTicketPdf
+                      conversations={conversations}
+                      agents={agents}
+                      tickets={tickets}
+                      selectedRowKeys={selectedResources}
+                      timezone={timezone}
+                    />
+                  }
+                  fileName="Tickets.pdf"
+                  style={{ textDecoration: "none" }}
+                >
+                  {({ blob, url, loading, error }) =>
+                    loading ? (
+                      <Button fullWidth icon={<UilImport />}>
+                        Export
+                      </Button>
+                    ) : (
+                      <div className="flex justify-center items-center">
+                        <Button fullWidth icon={<UilImport />}>
+                          Export
+                        </Button>
+                      </div>
+                    )
+                  }
+                </PDFDownloadLink>
+              </div>
+              <div
+                className={`col-span-1 ${
+                  selectedResources.length
+                    ? "opacity-100"
+                    : "opacity-0 pointer-events-none"
+                } w-[250px]`}
+              >
+                <ModalDeleteTicket
+                  handleDeleteSelected={handleDeleteSelected}
+                />
+              </div>
+            </div>
+          </Modal>
         ) : (
           <div className="flex gap-2 flex-wrap items-center justify-end ">
             <div className="flex gap-2 items-center">
