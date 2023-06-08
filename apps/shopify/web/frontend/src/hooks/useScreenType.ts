@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 
 type Breakpoints = {
-  xs: string;
   sm: string;
   md: string;
   lg: string;
@@ -10,18 +9,17 @@ type Breakpoints = {
 };
 
 const defaultBreakpoints: Breakpoints = {
-  xs: "320px",
-  sm: "576px",
+  sm: "320px",
   md: "768px",
   lg: "992px",
   xl: "1200px",
   xxl: "1600px",
 };
 
-type ScreenType = "xs" | "sm" | "md" | "lg" | "xl" | "xxl";
+type ScreenType = "sm" | "md" | "lg" | "xl" | "xxl";
 
 function useScreenType(): ScreenType {
-  const [screenType, setScreenType] = useState<ScreenType>("xs");
+  const [screenType, setScreenType] = useState<ScreenType>("sm");
 
   useEffect(() => {
     const handleResize = () => {

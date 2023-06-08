@@ -22,6 +22,7 @@ import {
   priorityOptions,
   statusOptions,
 } from "@moose-desk/repo";
+import { ScreenType } from "@moose-desk/repo/global/Global";
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Button,
@@ -36,7 +37,6 @@ import {
   TextContainer,
   TextField,
 } from "@shopify/polaris";
-import { CircleLeftMajor, CircleRightMajor } from "@shopify/polaris-icons";
 import classNames from "classnames";
 import { FormikProps } from "formik";
 import moment from "moment";
@@ -50,13 +50,14 @@ import SelectAddEmail from "src/components/SelectAddEmail/SelectAddEmail";
 import SelectAddTag from "src/components/SelectAddTag/SelectAddTag";
 import { TextEditorTicket } from "src/components/TextEditorTicket";
 import usePreventNav from "src/hooks/usePreventNav";
+import useScreenType from "src/hooks/useScreenType";
 import useToggleGlobal from "src/hooks/useToggleGlobal";
 import ContentShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ContentShopifySearch";
+import { ModalInfoTicket } from "src/modules/ticket/components/ModalInfoTicket";
 import { RowMessage } from "src/modules/ticket/components/RowMessage/RowMessage";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import * as Yup from "yup";
 import FaMailReply from "~icons/fa/mail-reply";
-import InfoIcon from "~icons/material-symbols/info";
 import SearchIcon from "~icons/material-symbols/search";
 import BackIcon from "~icons/mingcute/back-2-fill";
 import styles from "./style.module.scss";
@@ -93,6 +94,7 @@ const DetailTicket = (props: DetailTicketProps) => {
   const [ticket, setTicket] = useState<Ticket>();
   const { show } = useToast();
   const { t, i18n } = useTranslation();
+  const endPageRef = useRef<any>(null);
 
   const [conversationList, setConversationList] = useState<Conversation[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
@@ -104,6 +106,7 @@ const DetailTicket = (props: DetailTicketProps) => {
   const [emailIntegrationOptions, setEmailIntegrationOptions] = useState<any>(
     []
   );
+  const screenType = useScreenType();
 
   // detail ticket
   const [agents, setAgents] = useState<Agent[]>([]);
@@ -300,20 +303,24 @@ const DetailTicket = (props: DetailTicketProps) => {
         })
       );
   });
-  const { run: updateTicketApi } = useJob((data: UpdateTicket) => {
-    return TicketRepository()
-      .update(data)
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            show(t("messages:success.update_ticket"));
-          }
-        }),
-        catchError((err) => {
-          return of(err);
-        })
-      );
-  });
+  const { run: updateTicketApi } = useJob(
+    (data: UpdateTicket, reload = false) => {
+      return TicketRepository()
+        .update(data)
+        .pipe(
+          map(({ data }) => {
+            if (data.statusCode === 200) {
+              show(t("messages:success.update_ticket"));
+              // eslint-disable-next-line no-unused-expressions
+              reload ? getTicketApi(id as string) : "";
+            }
+          }),
+          catchError((err) => {
+            return of(err);
+          })
+        );
+    }
+  );
   const { run: fetchConversation } = useJob((id: string) => {
     return TicketRepository()
       .getConversations(id)
@@ -470,18 +477,21 @@ const DetailTicket = (props: DetailTicketProps) => {
     formRef.current?.setFieldValue("status", "RESOLVED");
     onFinish(formRef.current?.values, true);
   };
-  const handleSaveTicket = () => {
+  const handleSaveTicket = (reload = false) => {
     const values = formRef.current?.values;
-    updateTicketApi({
-      priority: values.priority,
-      status: values.status,
-      tags: values.tags,
-      agentObjectId: values.assignee
-        ? values.assignee.split(",")[0]
-        : undefined,
-      agentEmail: values.assignee ? values.assignee.split(",")[1] : undefined,
-      ids: [ticket?._id as string],
-    });
+    updateTicketApi(
+      {
+        priority: values.priority,
+        status: values.status,
+        tags: values.tags,
+        agentObjectId: values.assignee
+          ? values.assignee.split(",")[0]
+          : undefined,
+        agentEmail: values.assignee ? values.assignee.split(",")[1] : undefined,
+        ids: [ticket?._id as string],
+      },
+      reload
+    );
   };
   const onFinish = (values: ValueForm, closeTicket = false) => {
     const findItemConfigEmail = emailIntegrationOptions.find(
@@ -535,15 +545,19 @@ const DetailTicket = (props: DetailTicketProps) => {
   };
   const _renderButtonToggle = () => {
     return !visible ? (
-      <CircleLeftMajor
-        className={classNames(styles.toggleButton, styles.toggleButtonOpen)}
-        onClick={handleOpenDrawerSearch}
-      />
+      <div className={screenType === ScreenType.SM ? "hidden" : "block"}>
+        <Button
+          onClick={handleOpenDrawerSearch}
+          icon={<SearchIcon style={{ fontSize: 16 }} />}
+        ></Button>
+      </div>
     ) : (
-      <CircleRightMajor
-        className={classNames(styles.toggleButton, styles.toggleButtonClose)}
-        onClick={handleCloseDrawerSearch}
-      />
+      <div className={screenType === ScreenType.SM ? "hidden" : "block"}>
+        <Button
+          onClick={handleCloseDrawerSearch}
+          icon={<SearchIcon style={{ fontSize: 16 }} />}
+        ></Button>
+      </div>
     );
   };
   return (
@@ -581,15 +595,20 @@ const DetailTicket = (props: DetailTicketProps) => {
           fullWidth
         >
           <div className={styles.fixedICon}>
-            <div className="xs:flex flex-col gap-2 md:hidden">
+            <div className="xs:flex flex-col gap-4 md:hidden">
               <Button
-                onClick={() => {}}
+                onClick={() => {
+                  endPageRef.current.scrollIntoView({ behavior: "smooth" });
+                }}
                 icon={<FaMailReply style={{ fontSize: 16 }} />}
               ></Button>
-              <Button
-                onClick={() => {}}
-                icon={<InfoIcon style={{ fontSize: 16 }} />}
-              ></Button>
+              <ModalInfoTicket
+                formRef={formRef}
+                initialValues={initialValues}
+                agentsOptions={agentsOptions}
+                tagsOptions={tagsOptions}
+                handleSaveTicket={handleSaveTicket}
+              />
               <Button
                 onClick={() => {}}
                 icon={<SearchIcon style={{ fontSize: 16 }} />}
@@ -674,7 +693,7 @@ const DetailTicket = (props: DetailTicketProps) => {
                               </div>
                             ))}
                           </div>
-                          <div className="w-full flex justify-between gap-4 flex-wrap">
+                          <div className="w-full flex justify-between gap-2 flex-wrap">
                             <div className="flex flex-1 flex-col">
                               <div className="md:w-[400px] xs:w-[300px]">
                                 <FormItem name="from">
@@ -685,10 +704,22 @@ const DetailTicket = (props: DetailTicketProps) => {
                                   />
                                 </FormItem>
                               </div>
-                              <div className="md:w-[400px] xs:w-[300px] mt-5">
+                              <div className="md:w-[400px] xs:w-[300px] mt-5 mb-5">
                                 <FormItem name="to">
                                   <TextField
-                                    label="To"
+                                    label={
+                                      <div className="flex justify-between md:w-[400px] xs:w-[300px] ">
+                                        <span>To</span>
+                                        <span
+                                          className="link  inline-block hover:underline hover:cursor-pointer text-blue-500"
+                                          onClick={() => {
+                                            setEnableCC(!enableCC);
+                                          }}
+                                        >
+                                          CC/BCC
+                                        </span>
+                                      </div>
+                                    }
                                     disabled
                                     autoComplete="off"
                                   />
@@ -697,7 +728,7 @@ const DetailTicket = (props: DetailTicketProps) => {
                             </div>
                             <div className="flex flex-1 flex-col">
                               {enableCC ? (
-                                <div className="min-w-[300px] max-w-[400px]">
+                                <div className="min-w-[300px] max-w-[400px] md:w-[400px] xs:w-[300px]">
                                   <FormItem name="CC">
                                     <SelectAddEmail
                                       defaultTag={ccDefault}
@@ -711,7 +742,7 @@ const DetailTicket = (props: DetailTicketProps) => {
                                 <></>
                               )}
                               {enableCC ? (
-                                <div className="min-w-[300px] max-w-[400px] mt-5">
+                                <div className="min-w-[300px] max-w-[400px] mt-6 mb-5 md:w-[400px] xs:w-[300px]">
                                   <FormItem name="BCC">
                                     <SelectAddEmail
                                       defaultTag={bccDefault}
@@ -727,14 +758,6 @@ const DetailTicket = (props: DetailTicketProps) => {
                             </div>
                           </div>
 
-                          <span
-                            className="link mt-5 mb-5 inline-block hover:underline hover:cursor-pointer hover:text-blue-500"
-                            onClick={() => {
-                              setEnableCC(!enableCC);
-                            }}
-                          >
-                            CC/BCC
-                          </span>
                           <div>
                             <FormItem name="content">
                               <TextEditorTicket
@@ -760,7 +783,10 @@ const DetailTicket = (props: DetailTicketProps) => {
                               />
                             </FormItem>
                           </div>
-                          <div className="flex justify-end mt-5">
+                          <div
+                            ref={endPageRef}
+                            className="flex justify-end mt-5"
+                          >
                             {formRef.current?.values.status ===
                             StatusTicket.RESOLVED ? (
                               <>

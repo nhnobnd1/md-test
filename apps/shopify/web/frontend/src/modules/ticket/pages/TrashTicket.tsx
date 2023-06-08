@@ -362,7 +362,7 @@ const TrashTicket: FC<TrashTicketProps> = () => {
                   }}
                   primaryContent="Restore"
                   text={
-                    screenType === ScreenType.XS || screenType === ScreenType.SM
+                    screenType === ScreenType.SM
                       ? undefined
                       : "Restore Selected"
                   }
@@ -376,7 +376,7 @@ const TrashTicket: FC<TrashTicketProps> = () => {
                   }}
                   primaryContent="Remove"
                   text={
-                    screenType === ScreenType.XS || screenType === ScreenType.SM
+                    screenType === ScreenType.SM
                       ? undefined
                       : "Deleted Selected"
                   }

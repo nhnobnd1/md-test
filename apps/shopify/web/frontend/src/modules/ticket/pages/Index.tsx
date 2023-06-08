@@ -58,11 +58,13 @@ import { Pagination } from "src/components/Pagination";
 import env from "src/core/env";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 
+import { ScreenType } from "@moose-desk/repo/global/Global";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { useTranslation } from "react-i18next";
 import { ModalFilter } from "src/components/Modal/ModalFilter";
 import BoxSelectFilter from "src/components/Modal/ModalFilter/BoxSelectFilter";
 import useGlobalData from "src/hooks/useGlobalData";
+import useScreenType from "src/hooks/useScreenType";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { ExportTicketPdf } from "src/modules/ticket/components/ExportTicketPdf";
 import UilImport from "~icons/uil/import";
@@ -124,6 +126,8 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const [filterData, setFilterData] = useState<GetListTicketRequest>(
     defaultFilter()
   );
+  const screenType = useScreenType();
+
   const [agents, setAgents] = useState<Agent[]>([]);
 
   const prevFilter = usePrevious<any>(filterData);
@@ -603,11 +607,13 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   return (
     <Page
       title={
-        (
-          <div className="min-w-[100px]">
-            <span>Tickets</span>
-          </div>
-        ) as unknown as string
+        screenType !== ScreenType.SM
+          ? ((
+              <div className="min-w-[70px] inline-block">
+                <span>Tickets</span>
+              </div>
+            ) as unknown as string)
+          : "Tickets"
       }
       primaryAction={
         selectedResources.length === 0 ? (

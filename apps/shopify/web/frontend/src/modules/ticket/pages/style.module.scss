@@ -1,7 +1,7 @@
 .wrapSearchToggle {
   position: absolute;
-  right: 20px;
-  top: 25px;
+  right: 30px;
+  top: 20px;
   z-index: 1;
   width: 30px;
   cursor: pointer;
@@ -59,8 +59,9 @@
 
 .fixedICon {
   position: fixed;
-  right: 10px;
+  right: 15px;
   z-index: 1000;
+  top: 70px;
 }
 
 .toggleButtonClose {
