@@ -19,6 +19,9 @@ interface MDDatePicker extends DatePickerProps {
 
 const formatRenderDate = (date?: Date | string) => {
   if (!date) return "";
+  if (typeof date === "string") {
+    return dayjs(date, "MM/DD/YYYY").format("MM/DD/YYYY");
+  }
   return dayjs(date).format("MM/DD/YYYY");
 };
 const MDDatePicker = ({
@@ -74,6 +77,7 @@ const MDDatePicker = ({
     setVisible(false);
     setSelectedDates(convertDefault);
   };
+  // console.log(selectedDates?.start, "defaultRangeTime?.start");
   return (
     <div className={classNames(styles.container, containerClassName)}>
       <div className={classNames(styles.wrapDatePicker)}>
