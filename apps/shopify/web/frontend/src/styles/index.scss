@@ -104,6 +104,7 @@
 // Pagination
 
 .ticket-statistic {
+  overflow: scroll;
   .Polaris-Button--pressed {
     background-color: $primary !important;
     border-color: $primary !important;
