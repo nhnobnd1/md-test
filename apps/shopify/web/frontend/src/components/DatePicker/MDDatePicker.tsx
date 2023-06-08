@@ -23,7 +23,9 @@ const formatRenderDate = (date?: Date | string) => {
   if (typeof date === "string") {
     return dayjs(date, "MM/DD/YYYY").format("MM/DD/YYYY");
   }
-  return dayjs(date).utcOffset("+07:00", true).format("MM/DD/YYYY");
+  return dayjs(date, "ddd MMM DD YYYY HH:mm:ss [GMT]Z (zzz)").format(
+    "MM/DD/YYYY"
+  );
 };
 const MDDatePicker = ({
   datePickerClassName,
