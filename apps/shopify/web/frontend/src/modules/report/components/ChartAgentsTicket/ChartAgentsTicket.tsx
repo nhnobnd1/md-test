@@ -12,6 +12,7 @@ import { CustomTooltip } from "src/modules/report/components/Customize/CustomToo
 import { CustomXAxisTick } from "src/modules/report/components/Customize/CustomXAxisTick";
 import { CustomYAxisTick } from "src/modules/report/components/Customize/CustomYAxisTick";
 import ChartTopFiveRes from "src/modules/report/helper/interface";
+
 interface ChartAgentsTicketProps {
   data?: ChartTopFiveRes[];
 }
@@ -59,7 +60,7 @@ const ChartAgentsTicket = ({
     return convertTopFiveAgents[0]?.map((agent: any, index: number) => (
       <Bar
         key={`bar-${index}`}
-        name={`${agent.agentFirstName} ${agent.agentLastName}`}
+        name={`${agent.agentEmail}`}
         dataKey={agent.agentObjectId}
         fill={LIST_CHART_ITEM_COLOR[index]}
         radius={[2, 2, 0, 0]}

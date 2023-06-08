@@ -22,6 +22,7 @@ interface ReportAgentTableProps {
 }
 const listSort = [
   "agentFirstName",
+  "agentEmail",
   "ticketAssigned",
   "ticketClosed",
   "percentage",
@@ -92,6 +93,7 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
       <IndexTable.Cell className="py-3">
         {records?.agentFirstName} {records?.agentLastName}
       </IndexTable.Cell>
+      <IndexTable.Cell className="py-3">{records?.agentEmail}</IndexTable.Cell>
       <IndexTable.Cell className="py-3">
         {records?.ticketAssigned}
       </IndexTable.Cell>
@@ -125,15 +127,17 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
           // }
           // onSelectionChange={handleSelectionChange}
           headings={[
-            { title: "Tag" },
-            { title: "Total Tickets" },
-            { title: "Percentage" },
-            { title: "Percentage Closed" },
+            { title: "Agent Name" },
+            { title: "Email" },
+
+            { title: "Tickets Assigned" },
+            { title: "Tickets Closed" },
+            { title: "Resolved" },
           ]}
           sortDirection={direction}
           sortColumnIndex={indexSort}
           onSort={handleSort}
-          sortable={[true, true, true, true]}
+          sortable={[true, true, true, true, true]}
           // loading={isFetching}
           emptyState={
             <EmptySearchResult
