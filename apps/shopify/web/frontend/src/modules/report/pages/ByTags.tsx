@@ -1,27 +1,24 @@
 import { PageComponent } from "@moose-desk/core";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
-import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import {
   Card,
-  DataTable,
   EmptySearchResult,
+  IndexTable,
   Loading,
-  Page,
+  Text,
 } from "@shopify/polaris";
+import classNames from "classnames";
 import dayjs from "dayjs";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import MDDatePicker from "src/components/DatePicker/MDDatePicker";
-import { MDTextField } from "src/components/Input/TextFieldPassword/MDTextField";
 import { Pagination } from "src/components/Pagination";
+import { Search } from "src/components/Search/Search";
 import env from "src/core/env";
 import useGlobalData from "src/hooks/useGlobalData";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { getReportByTags } from "src/modules/report/api/api";
-import {
-  formatDefaultTimeRangePicker,
-  formatDefaultTimeRangePickerForRender,
-} from "src/modules/report/helper/format";
+import { formatDefaultTimeRangePicker } from "src/modules/report/helper/format";
 import styles from "./styles.module.scss";
 interface ByTagsProps {}
 interface ITableFilter {
@@ -33,7 +30,10 @@ interface ITableFilter {
   startTime: string;
   endTime: string;
 }
-const headings = ["Tag", "Total Tickets", "Percentage", "Percentage Closed"];
+const resourceName = {
+  singular: "byTag",
+  plural: "byTag",
+};
 const listSort = ["tagName", "totalTicket", "percentage", "percentageClosed"];
 export const ByTags: PageComponent<ByTagsProps> = () => {
   const { subDomain } = useSubdomain();
@@ -58,30 +58,34 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
       endTime: String(dayjs().tz(timezone).endOf("day").unix()),
     }));
   }, [timezone]);
-  const [querySearch, setQuerySearch] = useState<string>("");
-  const debounceValue: string = useDebounce(querySearch, 500);
+  const [indexSort, setIndexSort] = useState<number | undefined>(undefined);
+  const [direction, setDirection] = useState<"descending" | "ascending">(
+    "descending"
+  );
 
-  const { data: listReportTags, isFetching } = useQuery({
-    queryKey: [QUERY_KEY.REPORT_BY_TAGS, filterData, debounceValue],
-    queryFn: () => getReportByTags({ ...filterData, query: debounceValue }),
+  const { data: listReportTags, isFetching }: any = useQuery({
+    queryKey: [QUERY_KEY.REPORT_BY_TAGS, filterData],
+    queryFn: () => getReportByTags(filterData),
     keepPreviousData: true,
     enabled: !!filterData.startTime && !!filterData.endTime,
   });
-  const memoChartData = useMemo(() => {
-    const convertData = (listReportTags as any)?.data?.data || [];
-    const rows = convertData?.map((item: any) => {
-      return [
-        item?.tagName,
-        item?.totalTicket,
-        item?.percentage,
-        item?.percentageClosed,
-      ];
-    });
-    return rows;
+  const memoData = useMemo(() => {
+    return listReportTags?.data;
   }, [listReportTags]);
-
+  const handleSort = (
+    headingIndex: number,
+    direction: "descending" | "ascending"
+  ) => {
+    setIndexSort(Number(headingIndex));
+    setDirection(direction);
+    setFilterData((pre: any) => ({
+      ...pre,
+      sortBy: listSort[Number(headingIndex)],
+      sortOrder: direction === "ascending" ? 1 : -1,
+    }));
+  };
   const handleSearchInput = (value: string) => {
-    setQuerySearch(value);
+    setFilterData((pre: any) => ({ ...pre, query: value }));
   };
   // const onPagination = useCallback(
   //   ({ page, limit }: { page: number; limit: number }) => {
@@ -117,16 +121,6 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
       return { ...val, page };
     });
 
-  const handleSortTable = (
-    headingIndex: number,
-    direction: "ascending" | "descending" | "none"
-  ) => {
-    setFilterData((pre: any) => ({
-      ...pre,
-      sortBy: listSort[headingIndex],
-      sortOrder: direction === "ascending" ? 1 : -1,
-    }));
-  };
   const handleSubmitDate = useCallback(
     (date: { start: Date; end: Date }) => {
       const startDate = dayjs(date.start, "MM/DD/YYYY")
@@ -142,80 +136,93 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
     },
     [timezone]
   );
+  const rowMarkup = memoData?.data?.map((records: any, index: number) => (
+    <IndexTable.Row id={records?._id} key={records?._id} position={index}>
+      <IndexTable.Cell className="py-3">{records?.tagName}</IndexTable.Cell>
+      <IndexTable.Cell className="py-3">{records?.totalTicket}</IndexTable.Cell>
+      <IndexTable.Cell className="py-3">{records?.percentage}</IndexTable.Cell>
+      <IndexTable.Cell className="py-3">
+        {records?.percentageClosed}
+      </IndexTable.Cell>
+    </IndexTable.Row>
+  ));
   return (
-    <Page title="By Tags" compactTitle fullWidth>
-      <Card>
-        <div className="px-4 pt-4 pb-2">
-          <div className={styles.groupFilter}>
-            <div className={styles.dateTime}>
-              <MDDatePicker
-                defaultRangeTime={{
-                  start: formatDefaultTimeRangePicker(
-                    filterData.startTime,
-                    timezone
-                  ),
+    <section className="page-wrap">
+      <div className={classNames(styles.groupTopTable, "align-start")}>
+        <div>
+          <Text variant="headingLg" as="h1">
+            By Tags
+          </Text>
+        </div>
+        <div className="d-flex align-center">
+          <div className={styles.search}>
+            <Search onTypeSearch={handleSearchInput} />
+          </div>
+          <div className={styles.dateTime}>
+            <MDDatePicker
+              defaultRangeTime={{
+                start: formatDefaultTimeRangePicker(
+                  filterData.startTime,
+                  timezone
+                ),
 
-                  end: formatDefaultTimeRangePicker(
-                    filterData.endTime,
-                    timezone
-                  ),
-                }}
-                onSubmitTime={handleSubmitDate}
-                datePickerClassName={styles.datePickerCustomer}
-              />
-            </div>
-            <div className={styles.search}>
-              <MDTextField
-                value={querySearch}
-                type="search"
-                onChange={handleSearchInput}
-              />
-            </div>
-          </div>
-          <div className={styles.groupRangeTimeRender}>
-            {formatDefaultTimeRangePickerForRender(
-              filterData.startTime,
-              timezone
-            )}{" "}
-            -{" "}
-            {formatDefaultTimeRangePickerForRender(
-              filterData.endTime,
-              timezone
-            )}
-          </div>
-          <div>
-            {isFetching && <Loading />}
-            {!memoChartData?.length ? (
-              <div className="mt-3">
-                <EmptySearchResult
-                  title={
-                    "Sorry! There is no records matched with your search criteria"
-                  }
-                  description={"Try changing the filters or search term"}
-                  withIllustration
-                />
-              </div>
-            ) : (
-              <DataTable
-                columnContentTypes={["text", "numeric", "numeric", "numeric"]}
-                headings={headings}
-                rows={memoChartData}
-                sortable={[true, true, true, true]}
-                onSort={handleSortTable}
-              />
-            )}
-            <div className={styles.wrapPagination}>
-              <Pagination
-                total={10}
-                pageSize={filterData.limit || 10}
-                currentPage={filterData.page || 1}
-                onChangePage={handleChangePage}
-              />
-            </div>
+                end: formatDefaultTimeRangePicker(filterData.endTime, timezone),
+              }}
+              onSubmitTime={handleSubmitDate}
+              datePickerClassName={styles.datePickerCustomer}
+            />
           </div>
         </div>
+      </div>
+
+      <Card>
+        {isFetching && <Loading />}
+
+        <IndexTable
+          resourceName={resourceName}
+          itemCount={memoData?.data?.length || 0}
+          selectable={false}
+          // selectedItemsCount={
+          //   allResourcesSelected ? "All" : selectedResources.length
+          // }
+          // onSelectionChange={handleSelectionChange}
+          headings={[
+            { title: "Tag" },
+            { title: "Total Tickets" },
+            { title: "Percentage" },
+            { title: "Percentage Closed" },
+          ]}
+          sortDirection={direction}
+          sortColumnIndex={indexSort}
+          onSort={handleSort}
+          sortable={[true, true, true, true]}
+          // loading={isFetching}
+          emptyState={
+            <EmptySearchResult
+              title={
+                "Sorry! There is no records matched with your search criteria"
+              }
+              description={"Try changing the filters or search term"}
+              withIllustration
+            />
+          }
+        >
+          {rowMarkup}
+        </IndexTable>
+        {memoData && memoData?.metadata?.totalCount ? (
+          <div className="flex items-center justify-center mt-12px pb-12px">
+            <Pagination
+              total={memoData?.metadata ? memoData?.metadata?.totalCount : 1}
+              pageSize={filterData.limit ?? 0}
+              currentPage={filterData.page ?? 1}
+              onChangePage={handleChangePage}
+              previousTooltip={"Previous"}
+              nextTooltip={"Next"}
+            />
+          </div>
+        ) : null}
       </Card>
-    </Page>
+    </section>
   );
 };
 
