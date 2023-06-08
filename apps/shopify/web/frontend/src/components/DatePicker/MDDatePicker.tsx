@@ -4,6 +4,7 @@ import classNames from "classnames";
 import dayjs from "dayjs";
 import "dayjs/locale/en";
 import timezone from "dayjs/plugin/timezone";
+import moment from "moment";
 import { memo, useCallback, useEffect, useState } from "react";
 import { getTwoWeeksAfter } from "src/modules/report/helper/convert";
 import styles from "./style.module.scss";
@@ -36,8 +37,8 @@ const MDDatePicker = ({
   const dateNow = new Date();
 
   const convertDefault = {
-    start: dayjs(defaultRangeTime?.start).toDate(),
-    end: dayjs(defaultRangeTime?.end).toDate(),
+    start: moment(defaultRangeTime?.start, "MM-DD-YYYY").toDate(),
+    end: moment(defaultRangeTime?.end, "MM-DD-YYYY").toDate(),
   };
   const [visible, setVisible] = useState(false);
   const [{ month, year }, setDate] = useState({
@@ -51,9 +52,9 @@ const MDDatePicker = ({
   useEffect(() => {
     setSelectedDates(convertDefault);
   }, [defaultRangeTime]);
-  const handleSelectDate = (dates: { start: Date; end: Date }) => {
-    setSelectedDates(dates);
-  };
+  const handleSelectDate = useCallback((date: { start: Date; end: Date }) => {
+    setSelectedDates(date);
+  }, []);
   const handleClearDatesSelected = () => {
     setSelectedDates(undefined);
   };
@@ -91,10 +92,8 @@ const MDDatePicker = ({
               onClick={showDatePicker}
               // size={isMobile ? "slim" : "medium"}
             >
-              {formatRenderDate(
-                selectedDates?.start || defaultRangeTime?.start
-              )}{" "}
-              - {formatRenderDate(selectedDates?.end || defaultRangeTime?.end)}
+              {formatRenderDate(selectedDates?.start)} -{" "}
+              {formatRenderDate(selectedDates?.end)}
             </Button>
           }
           autofocusTarget="none"
@@ -104,7 +103,7 @@ const MDDatePicker = ({
             <DatePicker
               month={month}
               year={year}
-              onChange={handleSelectDate}
+              onChange={(date) => handleSelectDate(date)}
               onMonthChange={handleMonthChange}
               selected={selectedDates as any}
               disableDatesBefore={
