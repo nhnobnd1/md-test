@@ -602,7 +602,13 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   );
   return (
     <Page
-      title="Tickets"
+      title={
+        (
+          <div className="min-w-[100px]">
+            <span>Tickets</span>
+          </div>
+        ) as unknown as string
+      }
       primaryAction={
         selectedResources.length === 0 ? (
           <div className="flex gap-2">
@@ -637,63 +643,69 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
             </Button>
           </div>
         ) : (
-          <div className="flex gap-2 flex-wrap items-center ">
-            <span>{selectedResources?.length} Selected</span>
-            <div
-              className={`${
-                selectedResources?.length ? "block" : "hidden"
-              }  w-[250px]`}
-            >
-              <BoxSelectFilter
-                onChange={onChangeAssignTo}
-                data={agentsOptions}
-                placeholder="Assign to"
-              />
-            </div>
-            <div
-              className={`${selectedResources?.length ? "block" : "hidden"}`}
-            >
-              <BoxSelectFilter
-                onChange={onChangeStatus}
-                data={statusOptions}
-                placeholder="Set Status"
-              />
-            </div>
-            <div
-              className={`${selectedResources?.length ? "block" : "hidden"}`}
-            >
-              <PDFDownloadLink
-                document={
-                  <ExportTicketPdf
-                    conversations={conversations}
-                    agents={agents}
-                    tickets={tickets}
-                    selectedRowKeys={selectedResources}
-                    timezone={timezone}
-                  />
-                }
-                fileName="Tickets.pdf"
-                style={{ textDecoration: "none" }}
+          <div className="flex gap-2 flex-wrap items-center justify-end ">
+            <div className="flex gap-2 items-center">
+              <span>{selectedResources?.length} Selected</span>
+              <div
+                className={`${
+                  selectedResources?.length ? "block" : "hidden"
+                }  w-[250px]`}
               >
-                {({ blob, url, loading, error }) =>
-                  loading ? (
-                    <Button icon={<UilImport />}>Export</Button>
-                  ) : (
-                    <div className="flex justify-center items-center">
-                      <Button icon={<UilImport />}>Export</Button>
-                    </div>
-                  )
-                }
-              </PDFDownloadLink>
+                <BoxSelectFilter
+                  onChange={onChangeAssignTo}
+                  data={agentsOptions}
+                  placeholder="Assign to"
+                />
+              </div>
             </div>
-            <div
-              className={`col-span-1 ${
-                selectedResources.length
-                  ? "opacity-100"
-                  : "opacity-0 pointer-events-none"
-              }`}
-            >
-              <ModalDeleteTicket handleDeleteSelected={handleDeleteSelected} />
+            <div className="flex gap-2">
+              <div
+                className={`${selectedResources?.length ? "block" : "hidden"}`}
+              >
+                <BoxSelectFilter
+                  onChange={onChangeStatus}
+                  data={statusOptions}
+                  placeholder="Set Status"
+                />
+              </div>
+              <div
+                className={`${selectedResources?.length ? "block" : "hidden"}`}
+              >
+                <PDFDownloadLink
+                  document={
+                    <ExportTicketPdf
+                      conversations={conversations}
+                      agents={agents}
+                      tickets={tickets}
+                      selectedRowKeys={selectedResources}
+                      timezone={timezone}
+                    />
+                  }
+                  fileName="Tickets.pdf"
+                  style={{ textDecoration: "none" }}
+                >
+                  {({ blob, url, loading, error }) =>
+                    loading ? (
+                      <Button icon={<UilImport />}>Export</Button>
+                    ) : (
+                      <div className="flex justify-center items-center">
+                        <Button icon={<UilImport />}>Export</Button>
+                      </div>
+                    )
+                  }
+                </PDFDownloadLink>
+              </div>
+              <div
+                className={`col-span-1 ${
+                  selectedResources.length
+                    ? "opacity-100"
+                    : "opacity-0 pointer-events-none"
+                }`}
+              >
+                <ModalDeleteTicket
+                  handleDeleteSelected={handleDeleteSelected}
+                />
+              </div>
             </div>
           </div>
         )

@@ -26,6 +26,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import { Banner } from "src/components/Banner";
 import { useBanner } from "src/hooks/useBanner";
+import usePreventNav from "src/hooks/usePreventNav";
 import useSaveDataGlobal from "src/hooks/useSaveDataGlobal";
 import useToggleGlobal from "src/hooks/useToggleGlobal";
 import ContentShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ContentShopifySearch";
@@ -39,6 +40,7 @@ const CreateTicket = (props: CreateTicketProps) => {
   const { toggle: updateForm } = useToggle();
   const { visible, setVisible } = useToggleGlobal();
   const { dataSaved, setDataSaved }: any = useSaveDataGlobal();
+  usePreventNav();
 
   const formRef = useRef<FormikProps<any>>(null);
   const [primaryEmail, setPrimaryEmail] = useState<EmailIntegration>();
