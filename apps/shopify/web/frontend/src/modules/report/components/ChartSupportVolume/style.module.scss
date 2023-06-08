@@ -1,18 +1,8 @@
 .supportVolumeChart {
   :global {
     .recharts-legend-wrapper {
-      //   top: 24px;
-      bottom: -10px !important;
-      left: 38px !important;
+      left: 0 !important;
+      padding-top: 20px;
     }
-//     .recharts-legend-item {
-// .recharts-surface {
-//     margin-top: -6px;
-//   }
-    // }
-   
-    // path {
-    //   d: path("M0,4h32v32h-32z");
-    // }
   }
 }

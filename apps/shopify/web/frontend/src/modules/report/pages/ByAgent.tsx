@@ -1,5 +1,5 @@
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
-import { Card, Page } from "@shopify/polaris";
+import { LegacyCard, Text } from "@shopify/polaris";
 import dayjs from "dayjs";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
@@ -9,10 +9,7 @@ import { useSubdomain } from "src/hooks/useSubdomain";
 import { getReportTopFive } from "src/modules/report/api/api";
 import ChartAgentsTicket from "src/modules/report/components/ChartAgentsTicket/ChartAgentsTicket";
 import { ReportAgentTable } from "src/modules/report/components/ReportAgentTable";
-import {
-  formatDefaultTimeRangePicker,
-  formatDefaultTimeRangePickerForRender,
-} from "src/modules/report/helper/format";
+import { formatDefaultTimeRangePicker } from "src/modules/report/helper/format";
 import styles from "./styles.module.scss";
 
 interface ByAgentPageProps {}
@@ -67,56 +64,49 @@ const ByAgentPage = (props: ByAgentPageProps) => {
     [timezone]
   );
   return (
-    <Page title="By Agent" compactTitle fullWidth>
-      <Card>
-        <div className="px-4 pt-4 pb-2">
-          <div className={styles.groupFilter}>
-            <div className={styles.dateTime}>
-              <MDDatePicker
-                defaultRangeTime={{
-                  start: formatDefaultTimeRangePicker(
-                    filterData.startTime,
-                    timezone
-                  ),
+    <section className="page-wrap">
+      <Text variant="headingLg" as="h1">
+        By Agent
+      </Text>
+      <div className={styles.groupFilter}>
+        <div className={styles.dateTime}>
+          <MDDatePicker
+            defaultRangeTime={{
+              start: formatDefaultTimeRangePicker(
+                filterData.startTime,
+                timezone
+              ),
 
-                  end: formatDefaultTimeRangePicker(
-                    filterData.endTime,
-                    timezone
-                  ),
-                }}
-                onSubmitTime={handleSubmitDate}
-                datePickerClassName={styles.datePickerCustomer}
-              />
-            </div>
-          </div>
-          <div className={styles.groupRangeTimeRender}>
-            {formatDefaultTimeRangePickerForRender(
-              filterData.startTime,
-              timezone
-            )}{" "}
-            -{" "}
-            {formatDefaultTimeRangePickerForRender(
-              filterData.endTime,
-              timezone
-            )}
-          </div>
-          <div className="wrap-chart mb-[40px] mt-6">
-            <div className="title text-lg font-semibold mb-6">
-              Ticket closed per agent per day (Top 5 Agents)
-            </div>
-            <div className="w-full h-[450px]">
-              <ChartAgentsTicket data={memoChartData} />
-            </div>
-          </div>
-          <div>
-            <div className="title text-lg font-semibold mb-6">
-              Tickets by Agents
-            </div>
-            <ReportAgentTable rangeTime={filterData} />
-          </div>
+              end: formatDefaultTimeRangePicker(filterData.endTime, timezone),
+            }}
+            onSubmitTime={handleSubmitDate}
+            datePickerClassName={styles.datePickerCustomer}
+          />
         </div>
-      </Card>
-    </Page>
+      </div>
+      {/* <Card> */}
+      <div className={styles.chartBlock}>
+        <LegacyCard
+          title="Ticket closed per agent per day (Top 5 Agents)"
+          sectioned
+        >
+          <div className={styles.wrapChart}>
+            <ChartAgentsTicket data={memoChartData} />
+          </div>
+        </LegacyCard>
+      </div>
+
+      <div>
+        <LegacyCard sectioned>
+          <ReportAgentTable rangeTime={filterData} />
+        </LegacyCard>
+        {/* <div className="title text-lg font-semibold mb-6">
+          Tickets by Agents
+        </div>
+        <ReportAgentTable rangeTime={filterData} /> */}
+      </div>
+      {/* </Card> */}
+    </section>
   );
 };
 

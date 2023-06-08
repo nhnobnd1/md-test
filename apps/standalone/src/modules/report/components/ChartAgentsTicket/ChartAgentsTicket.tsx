@@ -56,7 +56,7 @@ const ChartAgentsTicket = ({ data }: ChartAgentsTicketProps) => {
     return convertTopFiveAgents[0]?.map((agent: any, index: number) => (
       <Bar
         key={`bar-${index}`}
-        name={`${agent.agentFirstName} ${agent.agentLastName}`}
+        name={`${agent.agentEmail}`}
         dataKey={agent.agentObjectId}
         fill={LIST_CHART_ITEM_COLOR[index]}
       />

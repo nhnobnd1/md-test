@@ -16,6 +16,11 @@ interface MDDatePicker extends DatePickerProps {
     end: string;
   };
 }
+
+const formatRenderDate = (date?: Date) => {
+  if (!date) return "";
+  return dayjs(date).format("MM/DD/YYYY");
+};
 const MDDatePicker = ({
   datePickerClassName,
   containerClassName,
@@ -75,7 +80,10 @@ const MDDatePicker = ({
         <Popover
           active={visible}
           activator={
-            <Button icon={CalendarMinor} onClick={showDatePicker}></Button>
+            <Button icon={CalendarMinor} onClick={showDatePicker}>
+              {formatRenderDate(selectedDates?.start || convertDefault?.start)}{" "}
+              - {formatRenderDate(selectedDates?.end || convertDefault?.end)}
+            </Button>
           }
           autofocusTarget="none"
           onClose={closeDatePicker}

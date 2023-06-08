@@ -1,24 +1,41 @@
 .groupFilter {
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: flex-end;
-    margin-right: 5px;
+  display: flex;
+  justify-content: flex-start;
+  margin: 20px 0;
 }
 .wrapPagination {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
 }
 .datePickerCustomer {
-    width: 100px;
+  width: 100px;
 }
 .endDateBlock {
-    margin-left: 15px;
+  margin-left: 15px;
 }
-.search {
-    margin-left: 10px;
-}
+
 .groupRangeTimeRender {
+  margin-bottom: 20px;
+  margin-left: 5px;
+}
+.statistic {
     margin-bottom: 20px;
-    margin-left: 5px;
+}
+.chartBlock {
+    margin-bottom: 16px;
+.wrapChart {
+        height: 450px; // padding-bottom:10px;
+    }
+}
+.groupTopTable {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+
+    .search {
+        width: 385px;
+        margin-right: 8px;
+    }
 }

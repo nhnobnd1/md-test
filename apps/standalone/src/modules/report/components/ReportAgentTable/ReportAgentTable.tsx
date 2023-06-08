@@ -68,6 +68,16 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
       ),
     },
     {
+      title: "Email",
+      dataIndex: "agentEmail",
+      width: "30%",
+      sorter: {
+        compare: (a: any, b: any) => {
+          return a.agentEmail - b.agentEmail;
+        },
+      },
+    },
+    {
       title: "Ticket Assigned",
       dataIndex: "ticketAssigned",
       width: "20%",

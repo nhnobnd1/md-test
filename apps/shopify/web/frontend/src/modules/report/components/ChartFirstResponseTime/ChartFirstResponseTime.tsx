@@ -49,7 +49,13 @@ export const ChartFirstResponseTime = ({
   // const maxYValue = 0;
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <AreaChart data={chartData}>
+      <AreaChart
+        data={chartData}
+        margin={{
+          top: 20,
+          right: 20,
+        }}
+      >
         <XAxis
           dataKey="name"
           axisLine={false}
