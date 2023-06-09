@@ -22,16 +22,11 @@ import {
   Button,
   ButtonGroup,
   EmptySearchResult,
-  Filters,
   IndexTable,
-  Layout,
   LegacyCard,
   Loading,
   Page,
-  SkeletonBodyText,
-  SkeletonDisplayText,
   Text,
-  TextContainer,
   useIndexResourceState,
 } from "@shopify/polaris";
 import { FC, useCallback, useEffect, useState } from "react";
@@ -43,6 +38,7 @@ import useGlobalData from "src/hooks/useGlobalData";
 import useScreenType from "src/hooks/useScreenType";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { ButtonTrashTicket } from "src/modules/ticket/components/ButtonTrashTicket";
+import { HeaderListTicket } from "src/modules/ticket/components/HeaderListTicket";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import CancelIcon from "~icons/mdi/cancel";
 import RestoreIcon from "~icons/mdi/restore";
@@ -65,7 +61,7 @@ const TrashTicket: FC<TrashTicketProps> = () => {
   const [direction, setDirection] = useState<"descending" | "ascending">(
     "descending"
   );
-  const [screenType] = useScreenType();
+  const [screenType, screenWidth] = useScreenType();
   const [indexSort, setIndexSort] = useState<number | undefined>(undefined);
   const [filterData, setFilterData] = useState<GetListTicketRequest>(
     defaultFilter()
@@ -330,91 +326,40 @@ const TrashTicket: FC<TrashTicketProps> = () => {
   useEffect(() => {
     getListTrashApi(filterData);
   }, [filterData]);
+  const css = `
+  .Polaris-Page-Header__RightAlign ,.Polaris-Page-Header__PrimaryActionWrapper{
+    width:100%!important;
+  }
+  `;
   return (
-    <Page
-      breadcrumbs={[{ onAction: () => navigate(TicketRoutePaths.Index) }]}
-      fullWidth
-      primaryAction={
-        <div className="flex gap-2">
-          <div className="min-w-[300px] flex-1">
-            {selectedResources.length === 0 ? (
-              <Filters
-                queryValue={filterData.query}
-                onQueryChange={handleFiltersQueryChange}
-                onQueryClear={handleQueryValueRemove}
-                queryPlaceholder="Search"
-                filters={[]}
-                onClearAll={resetFilterData}
-              ></Filters>
-            ) : (
-              <div
-                className={`col-span-3 col-start-2 justify-end flex gap-3 ${
-                  selectedResources?.length ? "block" : "hidden"
-                } items-center`}
-              >
-                <ButtonTrashTicket
-                  title="Are you sure that you want to restore this ticket"
-                  content="This ticket will be moved back to the Ticket list. You can continue working with it."
-                  action={() => {
-                    handleRestore(selectedResources);
+    <>
+      <style scoped>{screenType === ScreenType.SM ? css : ""}</style>{" "}
+      <Page
+        // breadcrumbs={[{ onAction: () => navigate(TicketRoutePaths.Index) }]}
+        fullWidth
+        primaryAction={
+          <div className="flex gap-2">
+            <div className="w-full">
+              <div className="flex gap-2 items-center justify-end">
+                <HeaderListTicket
+                  handleSearch={handleFiltersQueryChange}
+                  handleAddNew={() => {
+                    navigate(generatePath(TicketRoutePaths.Create));
                   }}
-                  primaryContent="Restore"
-                  text={
-                    screenType === ScreenType.SM
-                      ? undefined
-                      : "Restore Selected"
-                  }
-                  icon={<RestoreIcon fontSize={16} />}
-                />
-                <ButtonTrashTicket
-                  title="Are you sure that you want to restore this ticket"
-                  content="This ticket will be moved back to the Ticket list. You can continue working with it."
-                  action={() => {
-                    handleRestore(selectedResources);
-                  }}
-                  primaryContent="Remove"
-                  text={
-                    screenType === ScreenType.SM
-                      ? undefined
-                      : "Deleted Selected"
-                  }
-                  icon={<CancelIcon fontSize={16} />}
-                />
+                ></HeaderListTicket>
               </div>
-            )}
+            </div>
           </div>
-        </div>
-      }
-    >
-      <LegacyCard sectioned>
-        <div className="grid grid-cols-5 gap-6 ">
-          <div className="flex justify-end"></div>
-        </div>
-        <div className="grid grid-cols-5 gap-6">
-          <div className="col-span-5">
-            {loadingList && <Loading />}
-            {loadingList ? (
+        }
+      >
+        <LegacyCard sectioned>
+          <div className="grid grid-cols-5 gap-6 ">
+            <div className="flex justify-end"></div>
+          </div>
+          <div className="grid grid-cols-5 gap-6">
+            <div className="col-span-5">
+              {loadingList && <Loading />}
               <>
-                <Layout>
-                  <Layout.Section>
-                    <LegacyCard sectioned>
-                      <TextContainer>
-                        <SkeletonDisplayText size="small" />
-                        <SkeletonBodyText />
-                      </TextContainer>
-                    </LegacyCard>
-                    <LegacyCard sectioned>
-                      <TextContainer>
-                        <SkeletonDisplayText size="small" />
-                        <SkeletonBodyText />
-                      </TextContainer>
-                    </LegacyCard>
-                  </Layout.Section>
-                </Layout>
-              </>
-            ) : (
-              <>
-                {" "}
                 <div className="flex mb-2  ticket-statistic">
                   <ButtonGroup segmented spacing="loose">
                     <Button
@@ -551,11 +496,42 @@ const TrashTicket: FC<TrashTicketProps> = () => {
                   ) : null}
                 </div>
               </>
-            )}
+            </div>
           </div>
-        </div>
-      </LegacyCard>
-    </Page>
+          {screenWidth <= 992 && selectedResources.length > 0 && (
+            <div
+              className={`sticky z-50 bottom-0 bg-white right-0 px-3 h-[56px] flex justify-between items-center w-full `}
+            >
+              <ButtonTrashTicket
+                title="Are you sure that you want to permanently remove these tickets?"
+                content="These tickets will be remove permanently. This action cannot be undone."
+                action={() => {
+                  handleDelete(selectedResources);
+                }}
+                primaryContent="Remove"
+                text={
+                  screenType === ScreenType.SM ? "Deleted" : "Deleted Selected"
+                }
+                destructive
+                icon={<CancelIcon fontSize={16} />}
+              />
+              <ButtonTrashTicket
+                title="Are you sure that you want to restore these tickets"
+                content="These tickets will be moved back to the Ticket list. You can continue working with them."
+                action={() => {
+                  handleRestore(selectedResources);
+                }}
+                primaryContent="Restore"
+                text={
+                  screenType === ScreenType.SM ? "Restore" : "Restore Selected"
+                }
+                icon={<RestoreIcon fontSize={16} />}
+              />
+            </div>
+          )}
+        </LegacyCard>
+      </Page>
+    </>
   );
 };
 export default TrashTicket;

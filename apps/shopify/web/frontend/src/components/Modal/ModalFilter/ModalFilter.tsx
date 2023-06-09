@@ -23,7 +23,7 @@ import { FilterObject } from "src/modules/ticket/pages/Index";
 interface ModalFilterProps {
   customers: Customer[];
   tags: Tag[];
-  handleApply: (values: any) => void;
+  handleApply: (values: any, check: boolean) => void;
   handleResetModal: () => void;
   filterObject: FilterObject | null;
 }
@@ -70,7 +70,7 @@ export const ModalFilter: FC<ModalFilterProps> = ({
     />
   );
   const handleSubmitValue = (values: FormikValues) => {
-    handleApply(values);
+    handleApply(values, true);
     setActive(false);
   };
   return (
@@ -83,7 +83,9 @@ export const ModalFilter: FC<ModalFilterProps> = ({
           title="FILTER"
           primaryAction={{
             content: "Apply",
-            onAction: () => formRef.current?.submitForm(),
+            onAction: () => {
+              formRef.current?.submitForm();
+            },
           }}
           secondaryActions={[
             {

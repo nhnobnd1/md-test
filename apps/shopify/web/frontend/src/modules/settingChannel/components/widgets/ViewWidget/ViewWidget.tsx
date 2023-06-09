@@ -37,7 +37,7 @@ export const ViewWidget = (props: ViewWidgetProps) => {
   }, [updateState]);
 
   return (
-    <div className="ViewWidget">
+    <div className="ViewWidget  xs:w-[300px] sm:w-[370px] md:w-[400px]">
       <div
         className="header h-[150px]"
         style={{ backgroundColor: data.headerBackgroundColor }}
@@ -102,7 +102,7 @@ export const ViewWidget = (props: ViewWidgetProps) => {
                             <Text as="p" variant="bodyMd">
                               Upload files (max 3)
                             </Text>
-                            <div className="mt-2">
+                            <div className="mt-2 text-center">
                               Drag & Drop or Click to add your file(s)
                             </div>
                           </div>
@@ -112,7 +112,7 @@ export const ViewWidget = (props: ViewWidgetProps) => {
                     {data.allowCaptcha && (
                       <FormItem name="captcha">
                         <ReCAPTCHA
-                          className="w-full"
+                          className="w-full overflow-scroll"
                           sitekey={env.RECAPTCHA_KEYS}
                         ></ReCAPTCHA>
                       </FormItem>

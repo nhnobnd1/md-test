@@ -301,7 +301,7 @@ const TextEditorTicket = ({
             content_style:
               "body { font-family:Helvetica,Arial,sans-serif; font-size:14px}",
             toolbar:
-              "undo redo | bold italic underline align | importfile | blocks fontfamily fontsizeinput | image media link code  past blockquote backcolor forecolor indent  lineheight  strikethrough",
+              "undo redo | bold italic underline align | blocks fontfamily fontsizeinput | importfile image media link code  past blockquote backcolor forecolor indent  lineheight  strikethrough",
             plugins: [
               "advlist lists autolink charmap print preview anchor",
               "searchreplace visualblocks code fullscreen",
@@ -322,7 +322,7 @@ const TextEditorTicket = ({
                   if (input.files?.length) {
                     const file = input.files[0];
                     postImage(file, (data: any) => {
-                      cb(data.urls[0], { title: file.name });
+                      cb(data.urls[0], { title: file.name, alt: file.name });
                     });
                   }
                 };

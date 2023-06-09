@@ -3,6 +3,7 @@ import { Button, Checkbox, Typography } from "antd";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import React, { FC, useState } from "react";
 import { useSubdomain } from "src/hooks/useSubdomain";
+import Step5Icon from "~icons/ph/number-circle-five-fill";
 import Step4Icon from "~icons/ph/number-circle-four-fill";
 import Step1Icon from "~icons/ph/number-circle-one-fill";
 import Step3Icon from "~icons/ph/number-circle-three-fill";
@@ -32,7 +33,7 @@ export const StepGoogleCode: FC<ContentWaitProps> = React.memo(
             <Typography.Title level={3}>Complete Set Up</Typography.Title>
             <div className="flex justify-start items-start gap-2 w-[340px]">
               <div>
-                <Step3Icon fontSize={20} />
+                <Step4Icon fontSize={20} />
               </div>
               <div className="flex flex-col">
                 <span>
@@ -50,7 +51,7 @@ export const StepGoogleCode: FC<ContentWaitProps> = React.memo(
             </div>
             <div className="flex justify-start items-start gap-2 w-[340px] mt-5">
               <div>
-                <Step4Icon fontSize={20} />
+                <Step5Icon fontSize={20} />
               </div>
               <div className=" ">
                 <span>Select option "Forward a copy of incoming</span>
@@ -69,7 +70,7 @@ export const StepGoogleCode: FC<ContentWaitProps> = React.memo(
             <Typography.Title level={3}>
               Setup email forwarding
             </Typography.Title>
-            <div className="flex justify-start items-start gap-2 w-[340px]">
+            <div className="flex justify-start items-start gap-2 w-[400px]">
               <div>
                 <Step1Icon fontSize={20} />
               </div>
@@ -80,7 +81,7 @@ export const StepGoogleCode: FC<ContentWaitProps> = React.memo(
                 </span>
               </div>
             </div>
-            <div className="flex justify-start items-start gap-2 w-[340px] mt-5">
+            <div className="flex justify-start items-start gap-2 w-[400px] mt-5">
               <div>
                 <Step2Icon fontSize={20} />
               </div>
@@ -94,6 +95,22 @@ export const StepGoogleCode: FC<ContentWaitProps> = React.memo(
                 </span>
               </div>
             </div>
+            <div className="flex justify-start items-start gap-2 w-[400px] mt-5">
+              <div>
+                <Step3Icon fontSize={20} />
+              </div>
+              <div className="inline-block">
+                <span>
+                  After receiving “Add a forwarding address” in your gmail
+                  notification as the forwarding email address.
+                </span>
+                <span className="inline-block">
+                  Please click the Next button to get confirmation code to
+                  verify permission.
+                </span>
+              </div>
+            </div>
+
             <Checkbox className="mt-3" onChange={onChange}>
               <span className="font-bold">Yes, I finished</span>
               <span> setting up email forwarding with my email provider</span>
