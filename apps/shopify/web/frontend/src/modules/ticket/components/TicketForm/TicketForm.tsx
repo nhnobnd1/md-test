@@ -35,8 +35,8 @@ interface TicketFormProps extends Partial<FormProps> {
 
 export const priorityOptions = [
   {
-    label: "Highest",
-    value: Priority.HIGHEST,
+    label: "Urgent",
+    value: Priority.URGENT,
   },
   {
     label: "High",
@@ -49,10 +49,6 @@ export const priorityOptions = [
   {
     label: "Low",
     value: Priority.LOW,
-  },
-  {
-    label: "Lowest",
-    value: Priority.LOWEST,
   },
 ];
 
@@ -441,7 +437,6 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
                 children: "Content",
               }}
               init={{
-                height: 400,
                 placeholder: "Please input your message here......",
               }}
             />

@@ -718,7 +718,6 @@ const DetailTicketForm = () => {
                           setIsChanged={setIsChanged}
                           setLoadingButton={setLoadingButton}
                           init={{
-                            height: 400,
                             menubar: false,
                             placeholder: "Please input your message here......",
                           }}

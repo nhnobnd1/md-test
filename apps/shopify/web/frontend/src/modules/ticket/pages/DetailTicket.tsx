@@ -1,4 +1,5 @@
 import {
+  MediaScreen,
   generatePath,
   useJob,
   useParams,
@@ -19,15 +20,16 @@ import {
   GetListCustomerRequest,
   GetListTagRequest,
   Priority,
-  priorityOptions,
-  statusOptions,
   StatusTicket,
   Tag,
   TagRepository,
   Ticket,
   TicketRepository,
   UpdateTicket,
+  priorityOptions,
+  statusOptions,
 } from "@moose-desk/repo";
+import { ScreenType } from "@moose-desk/repo/global/Global";
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Button,
@@ -112,7 +114,7 @@ const DetailTicket = (props: DetailTicketProps) => {
   const [emailIntegrationOptions, setEmailIntegrationOptions] = useState<any>(
     []
   );
-  const [screenType] = useScreenType();
+  const [screenType, screenWidth] = useScreenType();
 
   // detail ticket
   const [agents, setAgents] = useState<Agent[]>([]);
@@ -543,8 +545,11 @@ const DetailTicket = (props: DetailTicketProps) => {
     setFiles([]);
     formRef.current?.setFieldValue("content", "");
   };
+
   const handleToggleSearch = () => {
-    setVisible(!visible);
+    if (screenWidth >= MediaScreen.XL) {
+      setVisible(!visible);
+    }
   };
   useUnMount(() => {
     setVisible(false);
@@ -611,7 +616,12 @@ const DetailTicket = (props: DetailTicketProps) => {
               <LegacyCard sectioned>
                 <div className={visible ? "d-flex" : ""}>
                   <div className={visible ? styles.wrapContent : ""}>
-                    <div className={styles.wrapSearchToggle}>
+                    <div
+                      className={classNames(
+                        styles.wrapSearchToggle,
+                        `${screenType === ScreenType.SM && "hidden"}`
+                      )}
+                    >
                       <Button
                         icon={PriceLookupMinor}
                         onClick={handleToggleSearch}
@@ -770,7 +780,6 @@ const DetailTicket = (props: DetailTicketProps) => {
                                   children: "Content",
                                 }}
                                 init={{
-                                  height: 400,
                                   placeholder:
                                     "Please input your message here......",
                                 }}

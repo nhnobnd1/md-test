@@ -1,7 +1,6 @@
 import { AutoReply, Holidays } from "@moose-desk/repo";
 import {
   Button,
-  ButtonGroup,
   Card,
   EmptySearchResult,
   Icon,
@@ -79,7 +78,7 @@ const HolidayTab = ({
           {getAutoReplyName(value.autoReplyCode)}
         </IndexTable.Cell>
         <IndexTable.Cell className="py-3">
-          <ButtonGroup>
+          <div className="flex gap-2">
             <Button
               onClick={() => handleDetails(index)}
               icon={() => <Icon source={() => <EditMajor />} color="base" />}
@@ -94,7 +93,7 @@ const HolidayTab = ({
               onClick={() => handleOpenModalDelete(index)}
               destructive
             />
-          </ButtonGroup>
+          </div>
         </IndexTable.Cell>
       </IndexTable.Row>
     ));

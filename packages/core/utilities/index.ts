@@ -5,11 +5,11 @@ export {
   TokenManager,
 } from "./StorageManager";
 export * from "./VariableWatcher";
+export * from "./convertTime";
 export * from "./object";
 export * from "./regexes";
 export * from "./request";
 export * from "./useRole";
-export * from "./convertTime";
 
 export function makeId(length: number) {
   let result = "";
@@ -23,4 +23,13 @@ export function makeId(length: number) {
 }
 export function upperCaseFirst(str: string) {
   return str.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+export enum MediaScreen {
+  XS = 320,
+  SM = 576,
+  MD = 768,
+  LG = 992,
+  XL = 1200,
+  XXL = 1600,
 }

@@ -1,10 +1,9 @@
 import { BaseListRequest, BaseListResponse, BaseResponse } from '../unty';
 export declare enum Priority {
-    HIGHEST = "HIGHEST",
+    URGENT = "URGENT",
     HIGH = "HIGH",
     MEDIUM = "MEDIUM",
-    LOW = "LOW",
-    LOWEST = "LOWEST"
+    LOW = "LOW"
 }
 export declare enum StatusTicket {
     PENDING = "PENDING",

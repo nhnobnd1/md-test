@@ -1,6 +1,7 @@
 import {
   createdDatetimeFormat,
   generatePath,
+  MediaScreen,
   PageComponent,
   upperCaseFirst,
   useDidUpdate,
@@ -655,7 +656,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                 />
               </HeaderListTicket>
             </div>
-          ) : screenWidth <= 992 ? (
+          ) : screenWidth <= MediaScreen.LG ? (
             <div className="flex gap-2 items-center justify-end">
               <HeaderListTicket
                 handleSearch={handleFiltersQueryChange}
@@ -912,7 +913,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
               </div>
             </div>
           </div>
-          {screenWidth <= 992 && selectedResources.length > 0 && (
+          {screenWidth <= MediaScreen.LG && selectedResources.length > 0 && (
             <div
               className={`sticky z-50 bottom-0 bg-white right-0 px-3 h-[56px] flex justify-between items-center w-full `}
             >
