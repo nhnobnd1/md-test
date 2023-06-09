@@ -1,7 +1,13 @@
 import { useNavigate } from "@moose-desk/core";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { useToast } from "@shopify/app-bridge-react";
-import { Card, EmptySearchResult, IndexTable, Loading } from "@shopify/polaris";
+import {
+  Card,
+  EmptySearchResult,
+  IndexTable,
+  Loading,
+  SkeletonBodyText,
+} from "@shopify/polaris";
 import classNames from "classnames";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
@@ -11,6 +17,7 @@ import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import Pagination from "src/components/Pagination/Pagination";
 import { Search } from "src/components/Search/Search";
+import { SkeletonTable } from "src/components/Skelaton/SkeletonTable";
 import useGlobalData from "src/hooks/useGlobalData";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { getListTicketCustomer } from "src/modules/customers/api/api";
@@ -56,7 +63,11 @@ export const ListTicketCustomer = memo(({ customerId }: IProps) => {
     sortBy: undefined,
     sortOrder: undefined,
   });
-  const { data: dataSource, isFetching }: any = useQuery({
+  const {
+    data: dataSource,
+    isLoading,
+    isFetching,
+  }: any = useQuery({
     queryKey: [QUERY_KEY.LIST_TICKET_CUSTOMER, filter],
     queryFn: () => getListTicketCustomer(customerId, filter),
     keepPreviousData: true,
@@ -108,42 +119,67 @@ export const ListTicketCustomer = memo(({ customerId }: IProps) => {
     ) => (
       <IndexTable.Row id={_id} key={_id} position={index}>
         <IndexTable.Cell>
-          <div
-            style={{ width: 300, whiteSpace: "pre-line" }}
-            onClick={() => handleClickRow(_id)}
-          >
-            {subject}
-          </div>
+          {isLoading ? (
+            <SkeletonBodyText lines={1} />
+          ) : (
+            <div
+              style={{ width: 300, whiteSpace: "pre-line" }}
+              onClick={() => handleClickRow(_id)}
+            >
+              {subject}
+            </div>
+          )}
         </IndexTable.Cell>
         <IndexTable.Cell>
-          <div onClick={() => handleClickRow(_id)}>
-            {!!timezone &&
-              dayjs
-                .utc(createdDatetime)
+          {isLoading ? (
+            <SkeletonBodyText lines={1} />
+          ) : (
+            <div onClick={() => handleClickRow(_id)}>
+              {!!timezone &&
+                dayjs
+                  .utc(createdDatetime)
+                  .tz(timezone ?? "America/New_York")
+                  .format("MM/DD/YYYY")}
+            </div>
+          )}
+        </IndexTable.Cell>
+        <IndexTable.Cell>
+          {isLoading ? (
+            <SkeletonBodyText lines={1} />
+          ) : (
+            <div onClick={() => handleClickRow(_id)}>
+              {dayjs
+                .utc(updatedDatetime ?? createdDatetime)
                 .tz(timezone ?? "America/New_York")
                 .format("MM/DD/YYYY")}
-          </div>
+            </div>
+          )}
         </IndexTable.Cell>
         <IndexTable.Cell>
-          <div onClick={() => handleClickRow(_id)}>
-            {dayjs
-              .utc(updatedDatetime ?? createdDatetime)
-              .tz(timezone ?? "America/New_York")
-              .format("MM/DD/YYYY")}
-          </div>
+          {isLoading ? (
+            <SkeletonBodyText lines={1} />
+          ) : (
+            <div onClick={() => handleClickRow(_id)}>{status}</div>
+          )}
         </IndexTable.Cell>
         <IndexTable.Cell>
-          <div onClick={() => handleClickRow(_id)}>{status}</div>
+          {isLoading ? (
+            <SkeletonBodyText lines={1} />
+          ) : (
+            <div onClick={() => handleClickRow(_id)}>{priority}</div>
+          )}
         </IndexTable.Cell>
         <IndexTable.Cell>
-          <div onClick={() => handleClickRow(_id)}>{priority}</div>
-        </IndexTable.Cell>
-        <IndexTable.Cell>
-          <div onClick={() => handleClickRow(_id)}>{agentEmail}</div>
+          {isLoading ? (
+            <SkeletonBodyText lines={1} />
+          ) : (
+            <div onClick={() => handleClickRow(_id)}>{agentEmail}</div>
+          )}
         </IndexTable.Cell>
       </IndexTable.Row>
     )
   );
+  console.log(isLoading, "loading");
   return (
     <div className={styles.wrapTableTicketCustomer}>
       <div className={classNames(styles.searchWrap)}>
@@ -151,51 +187,56 @@ export const ListTicketCustomer = memo(({ customerId }: IProps) => {
       </div>
       <section className={styles.wrapTable}>
         {isFetching && <Loading />}
-        <Card>
-          <IndexTable
-            resourceName={resourceName}
-            itemCount={memoDataSource?.data?.length || 0}
-            selectable={false}
-            headings={[
-              { title: "Ticket Title" },
-              { title: "Date Requested" },
-              { title: "Last Updated" },
-              { title: "Status" },
-              { title: "Priority" },
-              { title: "Assignee" },
-            ]}
-            sortDirection={direction}
-            sortColumnIndex={indexSort}
-            onSort={handleSort}
-            sortable={[true, true, true, true, true, true]}
-            // loading={loadingCustomer}
-            emptyState={
-              <EmptySearchResult
-                title={
-                  "Sorry! There is no records matched with your search criteria"
+        {isLoading ? (
+          <SkeletonTable columnsCount={6} rowsCount={5} />
+        ) : (
+          <Card>
+            <>
+              <IndexTable
+                resourceName={resourceName}
+                itemCount={memoDataSource?.data?.length || 0}
+                selectable={false}
+                headings={[
+                  { title: "Ticket Title" },
+                  { title: "Date Requested" },
+                  { title: "Last Updated" },
+                  { title: "Status" },
+                  { title: "Priority" },
+                  { title: "Assignee" },
+                ]}
+                sortDirection={direction}
+                sortColumnIndex={indexSort}
+                onSort={handleSort}
+                sortable={[true, true, true, true, true, true]}
+                emptyState={
+                  <EmptySearchResult
+                    title={
+                      "Sorry! There is no records matched with your search criteria"
+                    }
+                    description={"Try changing the filters or search term"}
+                    withIllustration
+                  />
                 }
-                description={"Try changing the filters or search term"}
-                withIllustration
-              />
-            }
-          >
-            {rowMarkup}
-          </IndexTable>
-          <div className="flex items-center justify-center mt-4 pb-4">
-            <Pagination
-              total={
-                memoDataSource?.metadata
-                  ? memoDataSource?.metadata?.totalCount
-                  : 1
-              }
-              pageSize={filter.limit ?? 0}
-              currentPage={filter.page ?? 1}
-              onChangePage={handleChangePage}
-              previousTooltip={"Previous"}
-              nextTooltip={"Next"}
-            />
-          </div>
-        </Card>
+              >
+                {rowMarkup}
+              </IndexTable>
+              <div className="flex items-center justify-center mt-4 pb-4">
+                <Pagination
+                  total={
+                    memoDataSource?.metadata
+                      ? memoDataSource?.metadata?.totalCount
+                      : 1
+                  }
+                  pageSize={filter.limit ?? 0}
+                  currentPage={filter.page ?? 1}
+                  onChangePage={handleChangePage}
+                  previousTooltip={"Previous"}
+                  nextTooltip={"Next"}
+                />
+              </div>
+            </>
+          </Card>
+        )}
       </section>
 
       {/* </section> */}

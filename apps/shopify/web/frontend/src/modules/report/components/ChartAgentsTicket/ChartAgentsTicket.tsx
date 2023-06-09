@@ -15,6 +15,7 @@ import ChartTopFiveRes from "src/modules/report/helper/interface";
 
 interface ChartAgentsTicketProps {
   data?: ChartTopFiveRes[];
+  loading: boolean;
 }
 const defaultEmptyAgent: any = [
   {
@@ -34,6 +35,7 @@ const LIST_CHART_ITEM_COLOR = [
 ];
 const ChartAgentsTicket = ({
   data = defaultEmptyAgent,
+  loading,
 }: ChartAgentsTicketProps) => {
   const convertTopFiveAgents =
     data?.map((item: ChartTopFiveRes | any) => item?.agentClosed) || []; // fix eslint report
