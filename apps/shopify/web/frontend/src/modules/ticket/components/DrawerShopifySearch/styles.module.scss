@@ -1,75 +1,193 @@
+@import "../../../../styles/variables.scss";
+@import "../../../../styles/mixin.scss";
 .icon {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
 }
 .wrapSearchInput {
-    // width: 230px;
-    .customizeSelect {
-        width: 100%;
-    }
+  // width: 230px;
+  .customizeSelect {
+    width: 100%;
+  }
 }
-.itemSearched {
-    padding: 5px 0;
-    padding-left: 10px;
-    border-bottom: 1px solid #d9d9d9;
-    cursor: pointer;
+.itemSearched,
+.wrapResult {
+  margin: 16px 0;
+  :global {
+    .Polaris-Card {
+      background: $background-default !important;
+      transition: background 0.25s;
+      &:hover {
+        background: $background-default-hover !important;
+        transition: background 0.25s;
+      }
+    }
+    .Polaris-Card__Section {
+      padding: 8px !important;
+      cursor: pointer;
+    }
+  }
+  
+}
+.wrapResult {
+    @include mq(md, 'max') {
+            padding: 0 16px 50px;
+        }
 }
 .searchContainer {
-    padding-left: 20px;
-    // width: 400px;
-    // min-width: 400px;
-    width: 100%;
-    border-left: 1px solid #d9d9d9;
-    transition: all 0.5s;
-    height: 100%;
+  padding-left: 20px;
+  // width: 400px;
+  // min-width: 400px;
+  width: 100%;
+  border-left: 1px solid #d9d9d9;
+  transition: all 0.5s;
+  height: 100%;
 }
 .detailContainer {
-    border: 1px solid #d9d9d9;
-    border-radius: 5px;
-    padding: 10px;
-    .back {
-        width: fit-content;
-        cursor: pointer;
-        display: flex;
-        .backTitle {
-            color: #1677ff;
-            margin-left: 10px;
-            text-decoration: underline;
-        }
+  .content {
+    margin-top: 12px;
+    .dateTime {
+      display: flex;
+      justify-content: space-between;
+      cursor: default;
+      span {
+        font-size: 12px;
+      }
+      p {
+        font-size: 12px;
+        color: $subdued;
+      }
     }
-    .content {
-        .overview {
-            margin-top: 10px;
-            .blockItem {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-top: 5px;
-                .titleBlock {
-                    width: 40%;
-                }
-                .dataBlock {
-                    width: 60%;
-                }
-            }
+    .listStatus {
+      cursor: default;
+      padding: 12px 0;
+      border-bottom: 1px dashed $border-gray;
+    }
+
+    .tableItemOrder {
+      padding: 8px 0 4px;
+      border-bottom: 1px dashed $border-gray;
+      cursor: default;
+      .order {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 8px;
+        .orderName {
+          font-size: 12px;
         }
-        .tableItemOrder, .wrapShipping, .wrapRefund {
-            border: 1px solid #d9d9d9;
-            border-radius: 5px;
-            margin-top: 15px;
+        .orderPrice {
+          font-size: 13px;
         }
-        .wrapShipping, .wrapRefund {
-            padding-bottom: 20px;
-            padding-right: 20px;
-            position: relative;
-            .subTitle {
-                position: absolute;
-                top: -15px;
-                left: 10px;
-                padding: 5px;
-                background-color: #ffff;
-            }
+      }
+    }
+    .priceStatistic {
+      padding-bottom: 12px;
+      border-bottom: 1px dashed $border-gray;
+      cursor: default;
+      .tax,
+      .shipping {
+        padding-top: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: default;
+        span {
+          font-size: 12px;
         }
+        p {
+          font-size: 13px;
+          color: $text-default;
+        }
+      }
+      .total {
+        padding-top: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: default;
+        span {
+          font-size: 12px;
+          font-weight: 600 !important;
+        }
+        p {
+          font-size: 13px;
+          color: $text-default;
+          font-weight: 600;
+        }
+      }
+    }
+    .wrapShipping,
+    .wrapRefund {
+      padding-top: 8px;
+      padding-bottom: 12px;
+      border-bottom: 1px dashed $border-gray;
+      cursor: default;
+      .subTitle {
+        text-transform: uppercase;
+        font-weight: 600;
+        color: $text-disabled;
+      }
+      .contentBlock {
+        font-size: 12px;
+        display: flex;
+        justify-content: space-between;
+        color: $text-default;
+        padding-top: 8px;
+        .labels {
+          width: 40%;
+          margin-right: 10px;
+        }
+        .link {
+          width: 60%;
+          word-break: break-all;
+        }
+        .number {
+          color: $black-color;
+        }
+      }
+      // padding-bottom: 20px;
+      // padding-right: 20px;
+      // position: relative;
+    }
+    section:last-child {
+      border-bottom: none !important;
+    }
+  }
+}
+.listCollapse {
+  margin-top: 16px;
+  .heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background-color: $white-color;
+    border-radius: 12px 12px 0px 0px;
+    cursor: default;
+    span {
+      color: $subdued;
+      font-size: 12px;
+      font-weight: 600;
+    }
+  }
+}
+.groupSearchOnMobile {
+  display: flex;
+  justify-content: space-between;
+  margin: 16px;
+
+  @include mq(md, "max") {
+    // padding: 0 10px;
+  }
+
+  .searchOnMobile {
+    width: calc(100% - 50px);
+  }
+}
+.resultSearchContainer {
+    @include mq(md, 'max') {
+        padding: 0 16px;
     }
 }

@@ -1,18 +1,21 @@
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
-import React, { useImperativeHandle, useState } from "react";
+import { Card } from "@shopify/polaris";
+import React, { useImperativeHandle } from "react";
 import { useQuery } from "react-query";
+import SkeletonCard from "src/components/Skelaton/SkeletonCard";
 import useSaveDataGlobal from "src/hooks/useSaveDataGlobal";
 // import { Table } from "src/components/UI/Table";
 import { getDetailShopifyCustomer } from "src/modules/ticket/api/api";
-import CollapseDetailOrder from "src/modules/ticket/components/DrawerShopifySearch/CollapseDetailOrder";
-// import ListShopifyCustomerRes from "src/modules/ticket/helper/interface";
+import CollapseDetailOrder from "src/modules/ticket/components/DrawerShopifySearch/component/CollapseDetailOrder";
+import OrderOverview from "src/modules/ticket/components/DrawerShopifySearch/component/OrderOverview";
 import styles from "./styles.module.scss";
+// import ListShopifyCustomerRes from "src/modules/ticket/helper/interface";
 interface IProps {
   id: number;
 }
 const ResultShopifySearch = React.forwardRef(({ id }: IProps, ref) => {
   const { setDataSaved } = useSaveDataGlobal();
-  const [activePanel, setActivePanel] = useState<number>(999);
+  // const [activePanel, setActivePanel] = useState<number>(999);
   const { data: resultData, isLoading } = useQuery({
     queryKey: [QUERY_KEY.CUSTOMER_SHOPIFY, id],
     queryFn: () => getDetailShopifyCustomer(String(id)),
@@ -24,28 +27,6 @@ const ResultShopifySearch = React.forwardRef(({ id }: IProps, ref) => {
   });
   const convertResult: { customerInfo: any; orders: any } = (resultData as any)
     ?.data?.data;
-  const LIST_INFO = [
-    {
-      title: "Customer Name",
-      value: `${convertResult?.customerInfo.first_name} ${convertResult?.customerInfo.last_name}`,
-    },
-    {
-      title: "Email Address",
-      value: convertResult?.customerInfo.email,
-    },
-    {
-      title: "Phone Numbers",
-      value: convertResult?.customerInfo?.phone || "",
-    },
-    {
-      title: "Amount spent",
-      value: convertResult?.customerInfo.total_spent,
-    },
-    {
-      title: "Total Orders",
-      value: convertResult?.customerInfo.orders_count,
-    },
-  ];
   const convertDataTable = convertResult?.orders.map((item: any) => {
     return {
       ...item,
@@ -64,82 +45,41 @@ const ResultShopifySearch = React.forwardRef(({ id }: IProps, ref) => {
     },
     []
   );
-  const handleClickPanel = (panelIndex: number) => {
-    setActivePanel(panelIndex);
-  };
-  // const handleClickRow = (record: any) => {
-  //   setDataOrder(record);
+  // const handleClickPanel = (panelIndex: number) => {
+  //   setActivePanel(panelIndex);
   // };
-  // const handleBack = useCallback(() => {
-  //   setDataOrder(undefined);
-  // }, []);
   const _renderInfoCustomer = () => {
     return isLoading ? (
-      <div>Loading Customer ...</div>
+      <Card sectioned>
+        <SkeletonCard />
+        <SkeletonCard noHeading count={5} lines={1} />
+      </Card>
     ) : (
-      <div className={styles.customerInfo}>
-        {LIST_INFO.map((block, index) => (
-          <div key={index} className="flex-center justify-between">
-            <div className="">
-              <span style={{ fontWeight: 700 }}>{block.title}: </span>:{" "}
-              <span>{block.value}</span>
-            </div>
-          </div>
-        ))}
-      </div>
+      <Card sectioned>
+        <OrderOverview detail={convertResult?.customerInfo} />
+        {_renderTableOrDetailOrder()}
+      </Card>
     );
   };
-  // const rowMarkup = convertDataTable?.map((item: any, index: number) => (
-  //   <IndexTable.Row id={item?.id} key={index} position={index}>
-  //     <IndexTable.Cell>
-  //       <div className="pointer" onClick={() => handleClickRow(item)}>
-  //         Order{item?.name}
-  //       </div>
-  //     </IndexTable.Cell>
-  //     <IndexTable.Cell>
-  //       <div className="pointer" onClick={() => handleClickRow(item)}>
-  //         {item?.total}
-  //         {item?.currency}
-  //       </div>
-  //     </IndexTable.Cell>
-  //   </IndexTable.Row>
-  // ));
   const _renderTableOrDetailOrder = () => {
     return (
-      <div>
-        {convertDataTable?.map((order: any, index: number) => (
-          <CollapseDetailOrder key={index} order={order} uniqueIndex={index} />
-        ))}
+      <div className={styles.listCollapse}>
+        <div className={styles.heading}>
+          <span>#Order ID</span>
+          <span>Amount</span>
+        </div>
+        <div>
+          {convertDataTable?.map((order: any, index: number) => (
+            <CollapseDetailOrder
+              key={index}
+              order={order}
+              uniqueIndex={index}
+            />
+          ))}
+        </div>
       </div>
     );
-    // return dataOrder?.name ? (
-    //   <DetailOrderCustomer onBack={handleBack} dataOrder={dataOrder} />
-    // ) : (
-    //   <IndexTable
-    //     selectable={false}
-    //     //       resourceName={const resourceName = {
-    //     //   singular: 'order',
-    //     //   plural: 'orders',
-    //     // };}
-    //     headings={[{ title: "" }, { title: "" }]}
-    //     itemCount={convertDataTable?.length || 10}
-    //   >
-    //     {rowMarkup}
-    //   </IndexTable>
-    // );
   };
-  const _renderListOrder = () => {
-    return isLoading ? (
-      <div>Loading Orders...</div>
-    ) : (
-      <div className="mt-3">{_renderTableOrDetailOrder()}</div>
-    );
-  };
-  return (
-    <div className="mt-3">
-      {_renderInfoCustomer()}
-      {_renderListOrder()}
-    </div>
-  );
+  return <div className={styles.wrapResult}>{_renderInfoCustomer()}</div>;
 });
 export default React.memo(ResultShopifySearch);
