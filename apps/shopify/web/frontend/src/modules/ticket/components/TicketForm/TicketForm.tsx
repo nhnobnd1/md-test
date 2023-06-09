@@ -35,8 +35,8 @@ interface TicketFormProps extends Partial<FormProps> {
 
 export const priorityOptions = [
   {
-    label: "Highest",
-    value: Priority.HIGHEST,
+    label: "Urgent",
+    value: Priority.URGENT,
   },
   {
     label: "High",
@@ -49,10 +49,6 @@ export const priorityOptions = [
   {
     label: "Low",
     value: Priority.LOW,
-  },
-  {
-    label: "Lowest",
-    value: Priority.LOWEST,
   },
 ];
 

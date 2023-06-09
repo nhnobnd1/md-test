@@ -1,4 +1,5 @@
 import {
+  MediaScreen,
   createdDatetimeFormat,
   generatePath,
   upperCaseFirst,
@@ -498,7 +499,7 @@ const TrashTicket: FC<TrashTicketProps> = () => {
               </>
             </div>
           </div>
-          {screenWidth <= 992 && selectedResources.length > 0 && (
+          {screenWidth <= MediaScreen.LG && selectedResources.length > 0 && (
             <div
               className={`sticky z-50 bottom-0 bg-white right-0 px-3 h-[56px] flex justify-between items-center w-full `}
             >

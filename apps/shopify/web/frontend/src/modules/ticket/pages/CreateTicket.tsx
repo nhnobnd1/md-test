@@ -1,4 +1,5 @@
 import {
+  MediaScreen,
   generatePath,
   useJob,
   useMount,
@@ -99,7 +100,7 @@ const CreateTicket = (props: CreateTicketProps) => {
     getPrimaryEmail();
   }, []);
   const handleToggleSearch = () => {
-    if (screenWidth >= 768) {
+    if (screenWidth >= MediaScreen.MD) {
       setVisible(!visible);
     }
   };

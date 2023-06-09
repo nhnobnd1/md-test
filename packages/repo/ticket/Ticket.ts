@@ -1,11 +1,10 @@
 import { BaseListRequest, BaseListResponse, BaseResponse } from '../unty';
 
 export enum Priority {
-	HIGHEST = 'HIGHEST',
+	URGENT = 'URGENT',
 	HIGH = 'HIGH',
 	MEDIUM = 'MEDIUM',
 	LOW = 'LOW',
-	LOWEST = 'LOWEST',
 }
 
 export enum StatusTicket {
@@ -32,8 +31,8 @@ export const statusOptions = [
 
 export const priorityOptions = [
 	{
-		label: 'Highest',
-		value: Priority.HIGHEST,
+		label: 'Urgent',
+		value: Priority.URGENT,
 	},
 	{
 		label: 'High',
@@ -46,10 +45,6 @@ export const priorityOptions = [
 	{
 		label: 'Low',
 		value: Priority.LOW,
-	},
-	{
-		label: 'Lowest',
-		value: Priority.LOWEST,
 	},
 ];
 

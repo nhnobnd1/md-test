@@ -1,4 +1,5 @@
 import {
+  MediaScreen,
   generatePath,
   useJob,
   useParams,
@@ -546,7 +547,7 @@ const DetailTicket = (props: DetailTicketProps) => {
   };
 
   const handleToggleSearch = () => {
-    if (screenWidth >= 1200) {
+    if (screenWidth >= MediaScreen.XL) {
       setVisible(!visible);
     }
   };
