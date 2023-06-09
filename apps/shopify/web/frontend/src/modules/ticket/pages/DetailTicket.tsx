@@ -1,4 +1,10 @@
-import { generatePath, useJob, useParams, useToggle } from "@moose-desk/core";
+import {
+  generatePath,
+  useJob,
+  useParams,
+  useToggle,
+  useUnMount,
+} from "@moose-desk/core";
 import {
   Agent,
   AgentRepository,
@@ -13,16 +19,15 @@ import {
   GetListCustomerRequest,
   GetListTagRequest,
   Priority,
+  priorityOptions,
+  statusOptions,
   StatusTicket,
   Tag,
   TagRepository,
   Ticket,
   TicketRepository,
   UpdateTicket,
-  priorityOptions,
-  statusOptions,
 } from "@moose-desk/repo";
-import { ScreenType } from "@moose-desk/repo/global/Global";
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Button,
@@ -37,10 +42,12 @@ import {
   TextContainer,
   TextField,
 } from "@shopify/polaris";
+import { PriceLookupMinor } from "@shopify/polaris-icons";
 import classNames from "classnames";
 import { FormikProps } from "formik";
 import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { isMobile } from "react-device-detect";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import Form from "src/components/Form";
@@ -61,7 +68,6 @@ import FaMailReply from "~icons/fa/mail-reply";
 import SearchIcon from "~icons/material-symbols/search";
 import BackIcon from "~icons/mingcute/back-2-fill";
 import styles from "./style.module.scss";
-
 export interface ChatItem {
   id: string;
   name: string;
@@ -537,29 +543,12 @@ const DetailTicket = (props: DetailTicketProps) => {
     setFiles([]);
     formRef.current?.setFieldValue("content", "");
   };
-  const handleOpenDrawerSearch = () => {
-    setVisible(true);
+  const handleToggleSearch = () => {
+    setVisible(!visible);
   };
-  const handleCloseDrawerSearch = () => {
+  useUnMount(() => {
     setVisible(false);
-  };
-  const _renderButtonToggle = () => {
-    return !visible ? (
-      <div className={screenType === ScreenType.SM ? "hidden" : "block"}>
-        <Button
-          onClick={handleOpenDrawerSearch}
-          icon={<SearchIcon style={{ fontSize: 16 }} />}
-        ></Button>
-      </div>
-    ) : (
-      <div className={screenType === ScreenType.SM ? "hidden" : "block"}>
-        <Button
-          onClick={handleCloseDrawerSearch}
-          icon={<SearchIcon style={{ fontSize: 16 }} />}
-        ></Button>
-      </div>
-    );
-  };
+  });
   return (
     <div className="relative">
       {processing ? (
@@ -582,6 +571,8 @@ const DetailTicket = (props: DetailTicketProps) => {
             </Layout.Section>
           </Layout>
         </Page>
+      ) : isMobile && visible ? (
+        <ContentShopifySearch />
       ) : (
         <Page
           breadcrumbs={[
@@ -621,7 +612,10 @@ const DetailTicket = (props: DetailTicketProps) => {
                 <div className={visible ? "d-flex" : ""}>
                   <div className={visible ? styles.wrapContent : ""}>
                     <div className={styles.wrapSearchToggle}>
-                      {_renderButtonToggle()}
+                      <Button
+                        icon={PriceLookupMinor}
+                        onClick={handleToggleSearch}
+                      />
                     </div>
                     <Form
                       innerRef={formRef}

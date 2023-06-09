@@ -1,0 +1,50 @@
+@import "../../../../../styles/variables.scss";
+.cardDetail {
+    .item {
+        display: flex;
+        align-items: center;
+        margin-top: 8px;
+        :global {
+            .Polaris-Icon {
+                margin: 0 8px 0 0;
+            }
+        }
+        .email {
+            color: $text-interactive;
+        }
+        .phone {
+            color: $text-default
+        }
+    }
+    .groupBottomItem {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 8px;
+        .totalOrder, .totalPrice {
+            .labels {
+                color: $subdued;
+            }
+            .value {
+                color: $text-default;
+                font-weight: 500;
+            }
+        }
+    }
+}
+.toggleWrap {
+    background-color: $white-color;
+    padding: 8px;
+    border-top: 1px solid $border-gray;
+    &:last-child {
+        border-radius: 0px 0px 12px 12px;
+    }
+    .name {
+        font-size: 13px;
+        color: $icon-default;
+    }
+    .price {
+        font-weight: 600;
+        color: $text-default;
+    }
+}
