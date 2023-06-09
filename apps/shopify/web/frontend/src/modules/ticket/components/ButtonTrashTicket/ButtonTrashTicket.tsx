@@ -8,6 +8,7 @@ export interface ModalDelete {
   title: string;
   content: string;
   primaryContent: string;
+  destructive?: boolean;
 }
 export const ButtonTrashTicket = ({
   action,
@@ -16,10 +17,13 @@ export const ButtonTrashTicket = ({
   title,
   content,
   primaryContent,
+  destructive,
 }: ModalDelete) => {
   const [active, setActive] = useState(false);
   const activator = (
     <Button
+      primary
+      destructive={destructive}
       onClick={() => {
         setActive(true);
       }}

@@ -31,7 +31,7 @@ export const HeaderListTicket: FC<HeaderListTicketProps> = ({
             {screenType === ScreenType.SM ? (
               <Button icon={SearchMinor} onClick={onToggleSearch}></Button>
             ) : (
-              <div className="md-input">
+              <div className="lg:w-[300px] xl:w-[500px] ">
                 <Search onTypeSearch={handleSearch} />
               </div>
             )}
