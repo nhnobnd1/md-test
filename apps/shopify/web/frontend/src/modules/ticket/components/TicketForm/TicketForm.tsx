@@ -441,7 +441,6 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
                 children: "Content",
               }}
               init={{
-                height: 400,
                 placeholder: "Please input your message here......",
               }}
             />

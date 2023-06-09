@@ -776,7 +776,6 @@ const DetailTicket = (props: DetailTicketProps) => {
                                   children: "Content",
                                 }}
                                 init={{
-                                  height: 400,
                                   placeholder:
                                     "Please input your message here......",
                                 }}

@@ -431,7 +431,6 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
               setLoadingButton={setLoadingButton}
               // setIsChanged={setIsChanged}
               init={{
-                height: 400,
                 menubar: false,
                 placeholder: "Please input your message here......",
               }}

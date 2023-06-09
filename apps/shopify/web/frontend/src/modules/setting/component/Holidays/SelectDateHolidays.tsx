@@ -30,7 +30,7 @@ const SelectDateHolidays = ({
   onChange,
 }: SelectDateHolidaysProps) => {
   const [valueState, setValueState] = useState<string>();
-  const [popoverActive, setPopoverActive] = useState(true);
+  const [popoverActive, setPopoverActive] = useState(false);
 
   const togglePopoverActive = useCallback(
     () => setPopoverActive((popoverActive) => !popoverActive),
