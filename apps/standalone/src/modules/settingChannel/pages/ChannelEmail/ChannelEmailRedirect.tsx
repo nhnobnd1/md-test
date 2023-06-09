@@ -29,7 +29,7 @@ const ChannelEmailRedirect = () => {
     const payload = getDataSearchParams();
     if (isLoggedIn) {
       if (payload.type === "create") {
-        navigate(generatePath(SettingChannelRoutePaths.ChannelEmail.Create));
+        navigate(generatePath(SettingChannelRoutePaths.ChannelEmail.Index));
       } else if (payload.type === "update") {
         payload.id &&
           navigate(

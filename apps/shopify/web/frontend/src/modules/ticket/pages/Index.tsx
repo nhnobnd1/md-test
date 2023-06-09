@@ -34,17 +34,12 @@ import {
   Button,
   ButtonGroup,
   EmptySearchResult,
-  Filters,
   IndexTable,
-  Layout,
   LegacyCard,
   Loading,
   Modal,
   Page,
-  SkeletonBodyText,
-  SkeletonDisplayText,
   Text,
-  TextContainer,
   useIndexResourceState,
 } from "@shopify/polaris";
 import { forkJoin, map } from "rxjs";
@@ -68,6 +63,7 @@ import useGlobalData from "src/hooks/useGlobalData";
 import useScreenType from "src/hooks/useScreenType";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { ExportTicketPdf } from "src/modules/ticket/components/ExportTicketPdf";
+import { HeaderListTicket } from "src/modules/ticket/components/HeaderListTicket";
 import UilImport from "~icons/uil/import";
 import "./ListTicket.scss";
 
@@ -384,7 +380,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const handleOpenModalDelete = useCallback((id: string) => {
     setIdDelete(id);
   }, []);
-  const handleApply = (values: any) => {
+  const handleApply = (values: any, filter = false) => {
     getListTicketFilter({
       page: 1,
       limit: 10,
@@ -393,12 +389,15 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       customer: values.customer,
       tags: values.tags?.toString(),
     });
-    setFilterObject({
-      priority: values.priority,
-      status: values.status,
-      customer: values.customer,
-      tags: values.tags?.toString(),
-    });
+    if (filter) {
+      setFilterObject({
+        priority: values.priority,
+        status: values.status,
+        customer: values.customer,
+        tags: values.tags?.toString(),
+      });
+      setActiveButtonIndex(values.status || "ALL");
+    }
   };
 
   useDidUpdate(() => {
@@ -633,36 +632,21 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       }
       primaryAction={
         selectedResources.length === 0 ? (
-          <div className="flex gap-2">
-            <div className="flex-1">
-              <Filters
-                queryValue={filterData.query}
-                onQueryChange={handleFiltersQueryChange}
-                onQueryClear={handleQueryValueRemove}
-                queryPlaceholder="Search"
-                filters={[]}
-                onClearAll={resetFilterData}
-              >
-                <div className="pl-2">
-                  <ModalFilter
-                    handleResetModal={handleResetModal}
-                    customers={customers}
-                    tags={tags}
-                    handleApply={handleApply}
-                    filterObject={filterObject}
-                  />
-                </div>
-              </Filters>
-            </div>
-
-            <Button
-              primary
-              onClick={() => {
+          <div className="flex gap-2 items-center">
+            <HeaderListTicket
+              handleSearch={handleFiltersQueryChange}
+              handleAddNew={() => {
                 navigate(generatePath(TicketRoutePaths.Create));
               }}
             >
-              Add new
-            </Button>
+              <ModalFilter
+                handleResetModal={handleResetModal}
+                customers={customers}
+                tags={tags}
+                handleApply={handleApply}
+                filterObject={filterObject}
+              />
+            </HeaderListTicket>
           </div>
         ) : screenWidth <= 992 ? (
           <></>
@@ -761,142 +745,121 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         <div className="grid grid-cols-5 gap-6">
           <div className="col-span-5">
             {(loadingList || loadingFilter) && <Loading />}
-            {loadingList || loadingFilter ? (
-              <>
-                <Layout>
-                  <Layout.Section>
-                    <LegacyCard sectioned>
-                      <TextContainer>
-                        <SkeletonDisplayText size="small" />
-                        <SkeletonBodyText />
-                      </TextContainer>
-                    </LegacyCard>
-                    <LegacyCard sectioned>
-                      <TextContainer>
-                        <SkeletonDisplayText size="small" />
-                        <SkeletonBodyText />
-                      </TextContainer>
-                    </LegacyCard>
-                  </Layout.Section>
-                </Layout>
-              </>
-            ) : (
-              <>
-                <div className="flex mb-2 ticket-statistic">
-                  <ButtonGroup segmented spacing="loose">
-                    <Button
-                      pressed={activeButtonIndex === "ALL"}
-                      onClick={() => {
-                        handleButtonClick("ALL");
-                        handleApply({
-                          status: "",
-                        });
-                      }}
-                    >
-                      All (
-                      {`${
-                        statistic?.data.OPEN +
-                        statistic?.data.PENDING +
-                        statistic?.data.RESOLVED
-                      }`}
-                      )
-                    </Button>
-                    <Button
-                      pressed={activeButtonIndex === StatusTicket.NEW}
-                      onClick={() => {
-                        handleButtonClick(StatusTicket.NEW);
-                        handleApply({
-                          status: StatusTicket.NEW,
-                        });
-                      }}
-                    >
-                      New ({`${statistic?.data.NEW}`})
-                    </Button>
-                    <Button
-                      pressed={activeButtonIndex === StatusTicket.OPEN}
-                      onClick={() => {
-                        handleButtonClick(StatusTicket.OPEN);
-                        handleApply({
-                          status: StatusTicket.OPEN,
-                        });
-                      }}
-                    >
-                      Open ({`${statistic?.data.OPEN}`})
-                    </Button>
-                    <Button
-                      pressed={activeButtonIndex === StatusTicket.PENDING}
-                      onClick={() => {
-                        handleButtonClick(StatusTicket.PENDING);
-                        handleApply({
-                          status: StatusTicket.PENDING,
-                        });
-                      }}
-                    >
-                      Pending ({`${statistic?.data.PENDING}`})
-                    </Button>
-                    <Button
-                      pressed={activeButtonIndex === StatusTicket.RESOLVED}
-                      onClick={() => {
-                        handleButtonClick(StatusTicket.RESOLVED);
-                        handleApply({
-                          status: StatusTicket.RESOLVED,
-                        });
-                      }}
-                    >
-                      Resolve ({`${statistic?.data.RESOLVED}`})
-                    </Button>
-                    <Button
-                      pressed={activeButtonIndex === "TRASH"}
-                      onClick={() => {
-                        handleButtonClick("TRASH");
-                        navigate(generatePath(TicketRoutePaths.Trash));
-                      }}
-                    >
-                      Trash ({`${statistic?.data.TRASH}`})
-                    </Button>
-                  </ButtonGroup>
-                </div>
+            <>
+              <div className="flex mb-2 ticket-statistic">
+                <ButtonGroup segmented spacing="loose">
+                  <Button
+                    pressed={activeButtonIndex === "ALL"}
+                    onClick={() => {
+                      handleButtonClick("ALL");
+                      handleApply({
+                        status: "",
+                      });
+                    }}
+                  >
+                    All (
+                    {`${
+                      statistic?.data.OPEN +
+                      statistic?.data.PENDING +
+                      statistic?.data.RESOLVED
+                    }`}
+                    )
+                  </Button>
+                  <Button
+                    pressed={activeButtonIndex === StatusTicket.NEW}
+                    onClick={() => {
+                      handleButtonClick(StatusTicket.NEW);
+                      handleApply({
+                        status: StatusTicket.NEW,
+                      });
+                    }}
+                  >
+                    New ({`${statistic?.data.NEW}`})
+                  </Button>
+                  <Button
+                    pressed={activeButtonIndex === StatusTicket.OPEN}
+                    onClick={() => {
+                      handleButtonClick(StatusTicket.OPEN);
+                      handleApply({
+                        status: StatusTicket.OPEN,
+                      });
+                    }}
+                  >
+                    Open ({`${statistic?.data.OPEN}`})
+                  </Button>
+                  <Button
+                    pressed={activeButtonIndex === StatusTicket.PENDING}
+                    onClick={() => {
+                      handleButtonClick(StatusTicket.PENDING);
+                      handleApply({
+                        status: StatusTicket.PENDING,
+                      });
+                    }}
+                  >
+                    Pending ({`${statistic?.data.PENDING}`})
+                  </Button>
+                  <Button
+                    pressed={activeButtonIndex === StatusTicket.RESOLVED}
+                    onClick={() => {
+                      handleButtonClick(StatusTicket.RESOLVED);
+                      handleApply({
+                        status: StatusTicket.RESOLVED,
+                      });
+                    }}
+                  >
+                    Resolve ({`${statistic?.data.RESOLVED}`})
+                  </Button>
+                  <Button
+                    pressed={activeButtonIndex === "TRASH"}
+                    onClick={() => {
+                      handleButtonClick("TRASH");
+                      navigate(generatePath(TicketRoutePaths.Trash));
+                    }}
+                  >
+                    Trash ({`${statistic?.data.TRASH}`})
+                  </Button>
+                </ButtonGroup>
+              </div>
 
-                <IndexTable
-                  resourceName={{ singular: "ticket", plural: "tickets" }}
-                  itemCount={tickets?.length}
-                  selectedItemsCount={
-                    allResourcesSelected ? "All" : selectedResources?.length
-                  }
-                  // lastColumnSticky
-                  onSelectionChange={handleSelectionChange}
-                  loading={loadingList || loadingFilter}
-                  emptyState={
-                    <EmptySearchResult
-                      title={
-                        "Sorry! There is no records matched with your search criteria"
-                      }
-                      description={"Try changing the filters or search term"}
-                      withIllustration
-                    />
-                  }
-                  headings={
-                    selectedResources?.length === 0
-                      ? [
-                          { title: "#" },
-                          { title: "Ticket Title" },
-                          { title: "Customer" },
-                          { title: "Tags" },
-                          { title: "Priority" },
-                          { title: "Last Update" },
-                          { title: "Action" },
-                        ]
-                      : [{ title: `${selectedResources?.length} Selected` }]
-                  }
-                  sortable={[true, true, true, true, true, true, false]}
-                  sortDirection={direction}
-                  sortColumnIndex={indexSort}
-                  onSort={handleSort}
-                >
-                  {rowMarkup}
-                </IndexTable>
-              </>
-            )}
+              <IndexTable
+                resourceName={{ singular: "ticket", plural: "tickets" }}
+                itemCount={tickets?.length}
+                selectedItemsCount={
+                  allResourcesSelected ? "All" : selectedResources?.length
+                }
+                // lastColumnSticky
+                onSelectionChange={handleSelectionChange}
+                loading={loadingList || loadingFilter}
+                emptyState={
+                  <EmptySearchResult
+                    title={
+                      "Sorry! There is no records matched with your search criteria"
+                    }
+                    description={"Try changing the filters or search term"}
+                    withIllustration
+                  />
+                }
+                headings={
+                  selectedResources?.length === 0
+                    ? [
+                        { title: "#" },
+                        { title: "Ticket Title" },
+                        { title: "Customer" },
+                        { title: "Tags" },
+                        { title: "Priority" },
+                        { title: "Last Update" },
+                        { title: "Action" },
+                      ]
+                    : [{ title: `${selectedResources?.length} Selected` }]
+                }
+                sortable={[true, true, true, true, true, true, false]}
+                sortDirection={direction}
+                sortColumnIndex={indexSort}
+                onSort={handleSort}
+              >
+                {rowMarkup}
+              </IndexTable>
+            </>
             <div>
               {meta?.totalCount ? (
                 <div className="grid grid-cols-3 py-8 relative">
@@ -931,7 +894,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                 activator={activator}
                 open={active}
                 onClose={handleChange}
-                title=""
+                title="More actions"
               >
                 <div className="flex flex-col gap-2  items-center justify-center p-5">
                   <div
@@ -940,6 +903,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                     }  w-[250px]`}
                   >
                     <BoxSelectFilter
+                      label={"Assignee"}
                       onChange={onChangeAssignTo}
                       data={agentsOptions}
                       placeholder="Assign to"
@@ -951,6 +915,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                     } w-[250px]`}
                   >
                     <BoxSelectFilter
+                      label={"Status"}
                       onChange={onChangeStatus}
                       data={statusOptions}
                       placeholder="Set Status"
@@ -959,7 +924,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                   <div
                     className={`${
                       selectedResources?.length ? "block" : "hidden"
-                    } w-[250px] `}
+                    } w-[250px] mt-5`}
                   >
                     <PDFDownloadLink
                       document={
