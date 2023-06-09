@@ -1,4 +1,5 @@
-import { Collapsible, TextContainer } from "@shopify/polaris";
+import { Collapsible, Icon, TextContainer } from "@shopify/polaris";
+import { CaretDownMinor } from "@shopify/polaris-icons";
 import React, { useCallback, useState } from "react";
 import { DetailOrderCustomer } from "src/modules/ticket/components/DrawerShopifySearch/DetailOrderCustomer";
 import styles from "./style.module.scss";
@@ -14,6 +15,9 @@ const CollapseDetailOrder = ({ order, uniqueIndex }: IProps) => {
     <div className={styles.toggleWrap}>
       <div onClick={handleToggle}>
         <div className="d-flex align-center justify-between">
+          <div style={{ transform: "rotate(90)" }}>
+            <Icon source={CaretDownMinor} />
+          </div>
           <p className={styles.name}>{order?.name}</p>
           <p className={styles.price}>
             {order?.total}
