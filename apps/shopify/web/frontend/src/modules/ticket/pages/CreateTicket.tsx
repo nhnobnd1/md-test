@@ -29,6 +29,7 @@ import { Banner } from "src/components/Banner";
 import { useBanner } from "src/hooks/useBanner";
 import usePreventNav from "src/hooks/usePreventNav";
 import useSaveDataGlobal from "src/hooks/useSaveDataGlobal";
+import useScreenType from "src/hooks/useScreenType";
 import useToggleGlobal from "src/hooks/useToggleGlobal";
 import ContentShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ContentShopifySearch";
 import { TicketForm } from "src/modules/ticket/components/TicketForm";
@@ -42,6 +43,7 @@ const CreateTicket = (props: CreateTicketProps) => {
   const { visible, setVisible } = useToggleGlobal();
   const { dataSaved, setDataSaved }: any = useSaveDataGlobal();
   usePreventNav();
+  const [screenType, screenWidth] = useScreenType();
 
   const formRef = useRef<FormikProps<any>>(null);
   const [primaryEmail, setPrimaryEmail] = useState<EmailIntegration>();
@@ -97,7 +99,9 @@ const CreateTicket = (props: CreateTicketProps) => {
     getPrimaryEmail();
   }, []);
   const handleToggleSearch = () => {
-    setVisible(!visible);
+    if (screenWidth >= 768) {
+      setVisible(!visible);
+    }
   };
 
   return (
