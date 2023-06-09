@@ -244,7 +244,7 @@ const Widgets = (props: WidgetsProps) => {
               url: generatePath(SettingChannelRoutePaths.Index),
             },
           ]}
-          title="Web Form"
+          title={(<span>Web Form</span>) as unknown as string}
           fullWidth
         >
           <Layout>
@@ -262,7 +262,7 @@ const Widgets = (props: WidgetsProps) => {
                 >
                   <LegacyCard.Section>
                     <div className={classNames({ hidden: selected === 2 })}>
-                      <div className="flex gap-[24px]">
+                      <div className="flex gap-[24px] flex-wrap-reverse xs:justify-center md:justify-start">
                         <div className="view-widgets mr-[24px]">
                           <LegacyCard sectioned>
                             <ViewWidget />
