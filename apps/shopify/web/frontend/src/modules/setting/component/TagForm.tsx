@@ -1,4 +1,4 @@
-import { Card, FormLayout, TextField } from "@shopify/polaris";
+import { FormLayout, TextField } from "@shopify/polaris";
 import { FormikProps } from "formik";
 import { ForwardedRef, forwardRef, useCallback } from "react";
 import Form from "src/components/Form";
@@ -24,38 +24,36 @@ const TagForm = (
     description: string(),
   });
   return (
-    <Card sectioned>
-      <Form
-        innerRef={ref}
-        initialValues={initialValues}
-        onSubmit={handleSubmit}
-        validationSchema={validateObject}
-        onValuesChange={updateForm}
-        enableReinitialize
-      >
-        <FormLayout>
-          <FormItem name="_id" />
-          <FormItem name="name">
-            <TextField
-              type="text"
-              placeholder="Tag name"
-              label="Tag name"
-              autoComplete="off"
-            />
-          </FormItem>
-          <FormItem name="description">
-            <TextField
-              type="text"
-              placeholder="Enter description"
-              label="Description"
-              autoComplete="off"
-              multiline={10}
-            />
-          </FormItem>
-          <FormItem name="storeId" />
-        </FormLayout>
-      </Form>
-    </Card>
+    <Form
+      innerRef={ref}
+      initialValues={initialValues}
+      onSubmit={handleSubmit}
+      validationSchema={validateObject}
+      onValuesChange={updateForm}
+      enableReinitialize
+    >
+      <FormLayout>
+        <FormItem name="_id" />
+        <FormItem name="name">
+          <TextField
+            type="text"
+            placeholder="Tag name"
+            label="Tag name"
+            autoComplete="off"
+          />
+        </FormItem>
+        <FormItem name="description">
+          <TextField
+            type="text"
+            placeholder="Enter description"
+            label="Description"
+            autoComplete="off"
+            multiline={10}
+          />
+        </FormItem>
+        <FormItem name="storeId" />
+      </FormLayout>
+    </Form>
   );
 };
 export default forwardRef(TagForm);

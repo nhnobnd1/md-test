@@ -9,9 +9,7 @@ import { BaseListTagRequest, Tag, TagRepository } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Button,
-  ButtonGroup,
   Card,
-  ChoiceList,
   EmptySearchResult,
   Filters,
   Icon,
@@ -19,11 +17,10 @@ import {
   Link,
   Loading,
   Page,
-  Popover,
   Stack,
   Text,
 } from "@shopify/polaris";
-import { DeleteMajor, EditMajor, SortMinor } from "@shopify/polaris-icons";
+import { DeleteMajor } from "@shopify/polaris-icons";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
@@ -32,28 +29,51 @@ import Pagination from "src/components/Pagination/Pagination";
 import env from "src/core/env";
 import useGlobalData from "src/hooks/useGlobalData";
 import { useSubdomain } from "src/hooks/useSubdomain";
+import { ModalAddNewTag } from "src/modules/setting/modal/ModalAddNewTag";
+import { ModalDetailTag } from "src/modules/setting/modal/ModalDetailTag";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
 
 export default function TagIndexPage() {
   const navigate = useNavigate();
   const { show } = useToast();
-  const { t, i18n } = useTranslation();
-
+  const { t } = useTranslation();
+  const [direction, setDirection] = useState<"descending" | "ascending">(
+    "descending"
+  );
+  const [indexSort, setIndexSort] = useState<number | undefined>(undefined);
   const [tags, setTags] = useState<Tag[]>([]);
-  const [popoverSort, setPopoverSort] = useState(false);
   const [deleteTag, setDeleteTag] = useState<string>("");
   const { subDomain } = useSubdomain();
   const { timezone } = useGlobalData(false, subDomain || "");
-  const togglePopoverSort = useCallback(
-    () => setPopoverSort((popoverSort) => !popoverSort),
-    []
-  );
+
   const resourceName = {
     singular: "tag",
     plural: "tags",
   };
+  const {
+    run: fetchListTag,
+    result,
+    processing: loadTag,
+  } = useJob(
+    () => {
+      return TagRepository()
+        .getList(filterData)
+        .pipe(
+          map(({ data }) => {
+            setTags(
+              data.data.map((item) => ({
+                ...item,
+                id: item._id,
+              }))
+            );
+            return data;
+          })
+        );
+    },
+    { showLoading: false }
+  );
   const rowMarkup = tags.map(
-    ({ id, name, updatedDatetime, ticketsCount, createdDatetime }, index) => (
+    ({ id, name, updatedDatetime, ticketsCount }, index) => (
       <IndexTable.Row id={id} key={id} position={index}>
         <IndexTable.Cell className="py-3">
           <Link
@@ -68,7 +88,7 @@ export default function TagIndexPage() {
         </IndexTable.Cell>
         <IndexTable.Cell className="py-3">
           <div
-            className="hover:underline hover:cursor-pointer"
+            className="hover:underline hover:cursor-pointer text-center"
             onClick={() => navigateToViewTicket(name)}
           >
             {ticketsCount}
@@ -78,11 +98,8 @@ export default function TagIndexPage() {
           {createdDatetimeFormat(updatedDatetime, timezone)}
         </IndexTable.Cell>
         <IndexTable.Cell className="py-3">
-          <ButtonGroup>
-            <Button
-              onClick={() => navigateShowDetails(id)}
-              icon={() => <Icon source={() => <EditMajor />} color="base" />}
-            />
+          <div className="flex gap-2">
+            <ModalDetailTag fetchListTag={fetchListTag} dataTag={tags[index]} />
             <Button
               icon={() => (
                 <Icon
@@ -93,67 +110,27 @@ export default function TagIndexPage() {
               onClick={() => handleOpenModalDelete(name)}
               destructive
             />
-          </ButtonGroup>
+          </div>
         </IndexTable.Cell>
       </IndexTable.Row>
     )
   );
 
-  const navigateCreate = () => {
-    return navigate(SettingRoutePaths.Workdesk.Tag.Create);
-  };
   const navigateToViewTicket = (id: string) => {
     return navigate(
       generatePath(SettingRoutePaths.Workdesk.Tag.ViewTicket, { id })
     );
   };
-  const navigateShowDetails = useCallback((id: string) => {
-    navigate(generatePath(SettingRoutePaths.Workdesk.Tag.Edit, { id }));
-  }, []);
-  const sortTemplate = [
-    {
-      sortBy: "name",
-      sortOrder: 1,
-    },
-    {
-      sortBy: "name",
-      sortOrder: -1,
-    },
-    {
-      sortBy: "ticketsCount",
-      sortOrder: 1,
-    },
-    {
-      sortBy: "ticketsCount",
-      sortOrder: -1,
-    },
-    {
-      sortBy: "updatedDatetime",
-      sortOrder: -1,
-    },
-    {
-      sortBy: "updatedDatetime",
-      sortOrder: -1,
-    },
-    {
-      sortBy: undefined,
-      sortOrder: undefined,
-    },
-  ];
-  const [sortTag, setSortTag] = useState(6);
-  const [valueSortTag, setValueSortTag] = useState(
-    sortTemplate[Number(sortTag)]
-  );
 
   const defaultFilter = () => ({
     page: 1,
     limit: env.DEFAULT_PAGE_SIZE,
     query: "",
-    ...valueSortTag,
   });
   const [filterData, setFilterData] =
     useState<BaseListTagRequest>(defaultFilter);
   const handleSearchChange = useCallback((value: string) => {
+    console.log("change");
     setFilterData(() => ({
       page: 1,
       ...filterData,
@@ -171,25 +148,21 @@ export default function TagIndexPage() {
   const resetFilterData = useCallback(() => {
     setFilterData(defaultFilter());
   }, []);
-  const choices = [
-    { label: "Sort by name A-Z", value: "0" },
-    { label: "Sort by name Z-A", value: "1" },
-    { label: "Sort by # of Tickets A-Z", value: "2" },
-    { label: "Sort by # of Tickets Z-A", value: "3" },
-    { label: "Sort by Last Updated A-Z", value: "4" },
-    { label: "Sort by Last Updated Z-A", value: "5" },
-  ];
-  const handleSortChange = useCallback((value) => {
-    setSortTag(parseInt(value[0]));
-  }, []);
-  const sortButton = (
-    <Button
-      onClick={togglePopoverSort}
-      icon={<Icon source={() => <SortMinor />} color="base" />}
-    >
-      Sort
-    </Button>
-  );
+
+  const listSort = ["name", "ticketsCount", "updatedTimestamp"];
+
+  const handleSort = (
+    headingIndex: number,
+    direction: "descending" | "ascending"
+  ) => {
+    setIndexSort(Number(headingIndex));
+    setDirection(direction);
+    setFilterData((pre) => ({
+      ...pre,
+      sortBy: listSort[Number(headingIndex)],
+      sortOrder: direction === "ascending" ? 1 : -1,
+    }));
+  };
   const [isOpen, setIsOpen] = useState(false);
   const handleOpenModalDelete = (id: string) => {
     setIsOpen(true);
@@ -218,51 +191,23 @@ export default function TagIndexPage() {
         })
       );
   });
-  const {
-    run: fetchListTag,
-    result,
-    processing: loadTag,
-  } = useJob(
-    () => {
-      return TagRepository()
-        .getList(filterData)
-        .pipe(
-          map(({ data }) => {
-            setTags(
-              data.data.map((item) => ({
-                ...item,
-                id: item._id,
-              }))
-            );
-            return data;
-          })
-        );
-    },
-    { showLoading: false }
-  );
+
   const { run: callAPI } = useDebounceFn(() => fetchListTag(), {
     wait: 300,
   });
-  useEffect(() => {
-    setValueSortTag(sortTemplate[sortTag]);
-  }, [sortTag]);
-  useEffect(() => {
-    setFilterData({
-      ...filterData,
-      ...valueSortTag,
-    });
-  }, [valueSortTag]);
+
   useEffect(() => {
     callAPI();
   }, [filterData]);
   return (
     <>
       <Page
-        title="Manage tags"
-        primaryAction={{
-          content: "Add new tag",
-          onAction: navigateCreate,
-        }}
+        title="Tags"
+        primaryAction={
+          <div>
+            <ModalAddNewTag fetchListTag={fetchListTag} />
+          </div>
+        }
         compactTitle
         fullWidth
       >
@@ -289,24 +234,6 @@ export default function TagIndexPage() {
                   onClearAll={resetFilterData}
                 />
               </Stack.Item>
-              <Stack.Item>
-                <Popover
-                  active={popoverSort}
-                  activator={sortButton}
-                  autofocusTarget="first-node"
-                  onClose={togglePopoverSort}
-                  preferredAlignment={"left"}
-                  sectioned
-                >
-                  <ChoiceList
-                    title="Sort tag"
-                    titleHidden
-                    choices={choices}
-                    selected={[sortTag.toString()] || []}
-                    onChange={handleSortChange}
-                  />
-                </Popover>
-              </Stack.Item>
             </Stack>
           </div>
           {loadTag && <Loading />}
@@ -331,6 +258,10 @@ export default function TagIndexPage() {
                 withIllustration
               />
             }
+            sortable={[true, true, true, false]}
+            sortDirection={direction}
+            sortColumnIndex={indexSort}
+            onSort={handleSort}
           >
             {rowMarkup}
           </IndexTable>
