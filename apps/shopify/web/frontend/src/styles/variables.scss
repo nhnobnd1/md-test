@@ -42,17 +42,24 @@ $breakpointsDown: (
 
 // Color
 $white-color: #ffffff;
+$black-color: #000000;
 $surface: #f0f0f0;
 $on-surface: #111213;
 $primary: rgba(242, 117, 34, 1);
 $secondary: #cccccc;
 $interactive: #2e72d2;
+$text-interactive: #2C6ECB;
 $critical: #d82c0d;
 $warning: #ffc453;
 $success: #fa7500;
 $hight-light: #5bcdda;
 $subdued:#6D7175;
-
+$text-default: #202223;
+$icon-default:#5C5F62;
+$background-default: #F6F6F7;
+$background-default-hover: #F1F2F3;
+$border-gray: #E1E3E5;
+$text-disabled: #8C9196;
 // Hover
 
 $primary-hover: rgba(216, 101, 13, 1);

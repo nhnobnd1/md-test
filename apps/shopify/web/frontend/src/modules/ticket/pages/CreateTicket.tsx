@@ -11,6 +11,7 @@ import {
   Priority,
 } from "@moose-desk/repo";
 import {
+  Button,
   Layout,
   LegacyCard,
   Page,
@@ -19,10 +20,10 @@ import {
   SkeletonPage,
   TextContainer,
 } from "@shopify/polaris";
-import { CircleLeftMajor, CircleRightMajor } from "@shopify/polaris-icons";
-import classNames from "classnames";
+import { PriceLookupMinor } from "@shopify/polaris-icons";
 import { FormikProps } from "formik";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { isMobile } from "react-device-detect";
 import { catchError, map, of } from "rxjs";
 import { Banner } from "src/components/Banner";
 import { useBanner } from "src/hooks/useBanner";
@@ -95,25 +96,10 @@ const CreateTicket = (props: CreateTicketProps) => {
   useEffect(() => {
     getPrimaryEmail();
   }, []);
-  const handleOpenDrawerSearch = () => {
-    setVisible(true);
+  const handleToggleSearch = () => {
+    setVisible(!visible);
   };
-  const handleCloseDrawerSearch = () => {
-    setVisible(false);
-  };
-  const _renderButtonToggle = () => {
-    return !visible ? (
-      <CircleLeftMajor
-        className={classNames(styles.toggleButton, styles.toggleButtonOpen)}
-        onClick={handleOpenDrawerSearch}
-      />
-    ) : (
-      <CircleRightMajor
-        className={classNames(styles.toggleButton, styles.toggleButtonClose)}
-        onClick={handleCloseDrawerSearch}
-      />
-    );
-  };
+
   return (
     <>
       {processing || loadingList ? (
@@ -138,6 +124,8 @@ const CreateTicket = (props: CreateTicketProps) => {
             </Layout>
           </Page>
         </>
+      ) : isMobile && visible ? (
+        <ContentShopifySearch />
       ) : (
         <Page
           breadcrumbs={[
@@ -158,7 +146,10 @@ const CreateTicket = (props: CreateTicketProps) => {
                 <div className={visible ? "d-flex" : ""}>
                   <div className={visible ? styles.wrapContent : ""}>
                     <div className={styles.wrapSearchToggle}>
-                      {_renderButtonToggle()}
+                      <Button
+                        icon={PriceLookupMinor}
+                        onClick={handleToggleSearch}
+                      />
                     </div>
                     {primaryEmail ? (
                       <TicketForm
