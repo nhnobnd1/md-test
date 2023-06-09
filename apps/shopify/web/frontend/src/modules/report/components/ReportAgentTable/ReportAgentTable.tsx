@@ -66,7 +66,7 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
         ...filterData,
         ...rangeTime,
       }),
-    // keepPreviousData: true,
+    keepPreviousData: true,
     enabled: !!rangeTime.startTime && !!rangeTime.endTime,
   });
   const memoData = useMemo(() => {
