@@ -1,13 +1,15 @@
 import { Grid, Page } from "@shopify/polaris";
 import { memo } from "react";
+import SkeletonCard from "src/components/Skelaton/SkeletonCard";
 import { convertSecondsToHoursMinutes } from "src/modules/report/helper/convert";
 import SummaryReportRes from "src/modules/report/helper/interface";
 import styles from "./style.module.scss";
 
 export interface StatisticProps {
   data: SummaryReportRes;
+  loading: boolean;
 }
-export const Statistic = ({ data }: StatisticProps) => {
+export const Statistic = ({ data, loading }: StatisticProps) => {
   const LIST_SUMMARY = [
     { title: "Tickets Created", value: data?.ticketCreatedCount || 0 },
     { title: "Tickets Replied", value: data?.ticketRepliedCount || 0 },
@@ -31,10 +33,14 @@ export const Statistic = ({ data }: StatisticProps) => {
                 key={index}
                 columnSpan={{ xs: 3, sm: 3, md: 3, lg: 3, xl: 3 }}
               >
-                <div className={styles.block}>
-                  <p className={styles.title}>{block.title}</p>
-                  <p className={styles.value}>{block.value}</p>
-                </div>
+                {loading ? (
+                  <SkeletonCard lines={1} />
+                ) : (
+                  <div className={styles.block}>
+                    <p className={styles.title}>{block.title}</p>
+                    <p className={styles.value}>{block.value}</p>
+                  </div>
+                )}
               </Grid.Cell>
             );
           })}

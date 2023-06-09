@@ -1,5 +1,5 @@
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
-import { LegacyCard, Text } from "@shopify/polaris";
+import { LegacyCard, SkeletonBodyText, Text } from "@shopify/polaris";
 import dayjs from "dayjs";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
@@ -37,7 +37,7 @@ const ByAgentPage = (props: ByAgentPageProps) => {
       endTime: String(dayjs().tz(timezone).endOf("day").unix()),
     });
   }, [timezone]);
-  const { data: reportTopFiveData } = useQuery({
+  const { data: reportTopFiveData, isLoading } = useQuery({
     queryKey: [QUERY_KEY.REPORT_TOP_FIVE, filterData],
     queryFn: () => getReportTopFive(filterData),
     keepPreviousData: true,
@@ -93,9 +93,13 @@ const ByAgentPage = (props: ByAgentPageProps) => {
           title="Ticket closed per agent per day (Top 5 Agents)"
           sectioned
         >
-          <div className={styles.wrapChart}>
-            <ChartAgentsTicket data={memoChartData} />
-          </div>
+          {isLoading ? (
+            <SkeletonBodyText lines={5} />
+          ) : (
+            <div className={styles.wrapChart}>
+              <ChartAgentsTicket data={memoChartData} loading={isLoading} />
+            </div>
+          )}
         </LegacyCard>
       </div>
 
@@ -103,12 +107,7 @@ const ByAgentPage = (props: ByAgentPageProps) => {
         <LegacyCard sectioned>
           <ReportAgentTable rangeTime={filterData} />
         </LegacyCard>
-        {/* <div className="title text-lg font-semibold mb-6">
-          Tickets by Agents
-        </div>
-        <ReportAgentTable rangeTime={filterData} /> */}
       </div>
-      {/* </Card> */}
     </section>
   );
 };

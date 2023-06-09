@@ -23,6 +23,7 @@ import { ButtonEdit } from "src/components/Button/ButtonEdit";
 import { ModalDelete } from "src/components/Modal/ModalDelete";
 import { Pagination } from "src/components/Pagination";
 import { Search } from "src/components/Search/Search";
+import { SkeletonTable } from "src/components/Skelaton/SkeletonTable";
 import env from "src/core/env";
 import { deleteCustomer, getListCustomer } from "src/modules/customers/api/api";
 import { CustomModal } from "src/modules/customers/component/Modal";
@@ -56,6 +57,7 @@ export default function CustomerIndexPage() {
     data: listCustomers,
     refetch: refetchListCustomer,
     isFetching: loadingCustomer,
+    isLoading,
   }: any = useQuery({
     queryKey: [QUERY_KEY.LIST_CUSTOMER, filterData],
     queryFn: () => getListCustomer(filterData),
@@ -208,59 +210,63 @@ export default function CustomerIndexPage() {
           secondaryButtonAction={handleClosePopup}
           secondaryButtonLabel="Discard"
         />
-
-        <Card>
-          {(loadingCustomer || deleting) && <Loading />}
-          <IndexTable
-            resourceName={resourceName}
-            itemCount={convertCustomerData?.data?.length || 0}
-            selectable={false}
-            // selectedItemsCount={
-            //   allResourcesSelected ? "All" : selectedResources.length
-            // }
-            // onSelectionChange={handleSelectionChange}
-            headings={[
-              { title: "Customer name" },
-              { title: "Email address" },
-              { title: "Number of tickets" },
-              { title: "Action" },
-            ]}
-            sortDirection={direction}
-            sortColumnIndex={indexSort}
-            onSort={handleSort}
-            sortable={[true, true, true, false]}
-            loading={loadingCustomer}
-            emptyState={
-              <EmptySearchResult
-                title={
-                  "Sorry! There is no records matched with your search criteria"
-                }
-                description={"Try changing the filters or search term"}
-                withIllustration
-              />
-            }
-          >
-            {rowMarkup}
-          </IndexTable>
-          {convertCustomerData && convertCustomerData?.metadata?.totalCount ? (
-            <div className="flex items-center justify-center mt-12px pb-12px">
-              <Pagination
-                total={
-                  convertCustomerData?.metadata
-                    ? convertCustomerData?.metadata?.totalCount
-                    : 1
-                }
-                pageSize={filterData.limit ?? 0}
-                currentPage={filterData.page ?? 1}
-                onChangePage={(page) =>
-                  setFilterData((val) => ({ ...val, page }))
-                }
-                previousTooltip={"Previous"}
-                nextTooltip={"Next"}
-              />
-            </div>
-          ) : null}
-        </Card>
+        {isLoading ? (
+          <SkeletonTable columnsCount={4} rowsCount={5} />
+        ) : (
+          <Card>
+            {(loadingCustomer || deleting) && <Loading />}
+            <IndexTable
+              resourceName={resourceName}
+              itemCount={convertCustomerData?.data?.length || 0}
+              selectable={false}
+              // selectedItemsCount={
+              //   allResourcesSelected ? "All" : selectedResources.length
+              // }
+              // onSelectionChange={handleSelectionChange}
+              headings={[
+                { title: "Customer name" },
+                { title: "Email address" },
+                { title: "Number of tickets" },
+                { title: "Action" },
+              ]}
+              sortDirection={direction}
+              sortColumnIndex={indexSort}
+              onSort={handleSort}
+              sortable={[true, true, true, false]}
+              loading={loadingCustomer}
+              emptyState={
+                <EmptySearchResult
+                  title={
+                    "Sorry! There is no records matched with your search criteria"
+                  }
+                  description={"Try changing the filters or search term"}
+                  withIllustration
+                />
+              }
+            >
+              {rowMarkup}
+            </IndexTable>
+            {convertCustomerData &&
+            convertCustomerData?.metadata?.totalCount ? (
+              <div className="flex items-center justify-center mt-12px pb-12px">
+                <Pagination
+                  total={
+                    convertCustomerData?.metadata
+                      ? convertCustomerData?.metadata?.totalCount
+                      : 1
+                  }
+                  pageSize={filterData.limit ?? 0}
+                  currentPage={filterData.page ?? 1}
+                  onChangePage={(page) =>
+                    setFilterData((val) => ({ ...val, page }))
+                  }
+                  previousTooltip={"Previous"}
+                  nextTooltip={"Next"}
+                />
+              </div>
+            ) : null}
+          </Card>
+        )}
       </section>
     </>
   );

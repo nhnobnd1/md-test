@@ -1,0 +1,12 @@
+.heading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 8px;
+    :global {
+        .Polaris-SkeletonDisplayText__DisplayText {
+            margin-right: 0;
+            width: 80%;
+        }
+    }
+}

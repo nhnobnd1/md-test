@@ -17,6 +17,7 @@ import { useQuery } from "react-query";
 import MDDatePicker from "src/components/DatePicker/MDDatePicker";
 import { Pagination } from "src/components/Pagination";
 import { Search } from "src/components/Search/Search";
+import { SkeletonTable } from "src/components/Skelaton/SkeletonTable";
 import env from "src/core/env";
 import useGlobalData from "src/hooks/useGlobalData";
 import { useSubdomain } from "src/hooks/useSubdomain";
@@ -67,7 +68,11 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
     "descending"
   );
 
-  const { data: listReportTags, isFetching }: any = useQuery({
+  const {
+    data: listReportTags,
+    isFetching,
+    isLoading,
+  }: any = useQuery({
     queryKey: [QUERY_KEY.REPORT_BY_TAGS, filterData],
     queryFn: () => getReportByTags(filterData),
     keepPreviousData: true,
@@ -172,54 +177,57 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
           </div>
         </div>
       )}
+      {isFetching && <Loading />}
 
-      <Card>
-        {isFetching && <Loading />}
-
-        <IndexTable
-          resourceName={resourceName}
-          itemCount={memoData?.data?.length || 0}
-          selectable={false}
-          // selectedItemsCount={
-          //   allResourcesSelected ? "All" : selectedResources.length
-          // }
-          // onSelectionChange={handleSelectionChange}
-          headings={[
-            { title: "Tag" },
-            { title: "Total Tickets" },
-            { title: "Percentage" },
-            { title: "Percentage Closed" },
-          ]}
-          sortDirection={direction}
-          sortColumnIndex={indexSort}
-          onSort={handleSort}
-          sortable={[true, true, true, true]}
-          // loading={isFetching}
-          emptyState={
-            <EmptySearchResult
-              title={
-                "Sorry! There is no records matched with your search criteria"
-              }
-              description={"Try changing the filters or search term"}
-              withIllustration
-            />
-          }
-        >
-          {rowMarkup}
-        </IndexTable>
-        {memoData && memoData?.metadata?.totalCount ? (
-          <div className="flex items-center justify-center mt-12px pb-12px">
-            <Pagination
-              total={memoData?.metadata ? memoData?.metadata?.totalCount : 1}
-              pageSize={filterData.limit ?? 0}
-              currentPage={filterData.page ?? 1}
-              onChangePage={handleChangePage}
-              previousTooltip={"Previous"}
-              nextTooltip={"Next"}
-            />
-          </div>
-        ) : null}
-      </Card>
+      {isLoading ? (
+        <SkeletonTable rowsCount={5} columnsCount={5} />
+      ) : (
+        <Card>
+          <IndexTable
+            resourceName={resourceName}
+            itemCount={memoData?.data?.length || 0}
+            selectable={false}
+            // selectedItemsCount={
+            //   allResourcesSelected ? "All" : selectedResources.length
+            // }
+            // onSelectionChange={handleSelectionChange}
+            headings={[
+              { title: "Tag" },
+              { title: "Total Tickets" },
+              { title: "Percentage" },
+              { title: "Percentage Closed" },
+            ]}
+            sortDirection={direction}
+            sortColumnIndex={indexSort}
+            onSort={handleSort}
+            sortable={[true, true, true, true]}
+            // loading={isFetching}
+            emptyState={
+              <EmptySearchResult
+                title={
+                  "Sorry! There is no records matched with your search criteria"
+                }
+                description={"Try changing the filters or search term"}
+                withIllustration
+              />
+            }
+          >
+            {rowMarkup}
+          </IndexTable>
+          {memoData && memoData?.metadata?.totalCount ? (
+            <div className="flex items-center justify-center mt-12px pb-12px">
+              <Pagination
+                total={memoData?.metadata ? memoData?.metadata?.totalCount : 1}
+                pageSize={filterData.limit ?? 0}
+                currentPage={filterData.page ?? 1}
+                onChangePage={handleChangePage}
+                previousTooltip={"Previous"}
+                nextTooltip={"Next"}
+              />
+            </div>
+          ) : null}
+        </Card>
+      )}
     </section>
   );
 };

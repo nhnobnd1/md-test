@@ -1,6 +1,6 @@
 import { PageComponent } from "@moose-desk/core";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
-import { LegacyCard, Text } from "@shopify/polaris";
+import { LegacyCard, SkeletonBodyText, Text } from "@shopify/polaris";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -78,7 +78,12 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
     });
     return convertListDataQueries;
   }, [queries]);
-
+  const loadingStatus = useMemo(() => {
+    const loadingArray = queries?.map((dataItem: any) => {
+      return dataItem?.isLoading;
+    });
+    return loadingArray;
+  }, [queries]);
   const handleSubmitDate = useCallback(
     (date: { start: Date; end: Date }) => {
       const startDate = dayjs(date.start, "MM/DD/YYYY")
@@ -113,34 +118,49 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
           </div>
         </div>
         <div className={styles.statistic}>
-          <Statistic data={memoData[ChartReportData.SUMMARY]} />
+          <Statistic
+            data={memoData[ChartReportData.SUMMARY]}
+            loading={loadingStatus[ChartReportData.SUMMARY]}
+          />
         </div>
       </div>
       <div className={styles.chartBlock}>
         <LegacyCard title="Support Volume" sectioned>
-          <div className={styles.wrapChart}>
-            <ChartSupportVolume
-              data={memoData[ChartReportData.SUPPORT_VOLUME]}
-            />
-          </div>
+          {loadingStatus[ChartReportData.SUPPORT_VOLUME] ? (
+            <SkeletonBodyText lines={5} />
+          ) : (
+            <div className={styles.wrapChart}>
+              <ChartSupportVolume
+                data={memoData[ChartReportData.SUPPORT_VOLUME]}
+              />
+            </div>
+          )}
         </LegacyCard>
       </div>
       <div className={styles.chartBlock}>
         <LegacyCard title="Resolution Time (Median)" sectioned>
-          <div className={styles.wrapChart}>
-            <ChartResolutionTime
-              data={memoData[ChartReportData.RESOLUTION_TIME]}
-            />
-          </div>
+          {loadingStatus[ChartReportData.RESOLUTION_TIME] ? (
+            <SkeletonBodyText lines={5} />
+          ) : (
+            <div className={styles.wrapChart}>
+              <ChartResolutionTime
+                data={memoData[ChartReportData.RESOLUTION_TIME]}
+              />
+            </div>
+          )}
         </LegacyCard>
       </div>
       <div className={styles.chartBlock}>
         <LegacyCard title="First Response Time (Median)" sectioned>
-          <div className={styles.wrapChart}>
-            <ChartFirstResponseTime
-              data={memoData[ChartReportData.FIRST_RESPONSE_TIME]}
-            />
-          </div>
+          {loadingStatus[ChartReportData.FIRST_RESPONSE_TIME] ? (
+            <SkeletonBodyText lines={5} />
+          ) : (
+            <div className={styles.wrapChart}>
+              <ChartFirstResponseTime
+                data={memoData[ChartReportData.FIRST_RESPONSE_TIME]}
+              />
+            </div>
+          )}
         </LegacyCard>
       </div>
       {/* </div> */}

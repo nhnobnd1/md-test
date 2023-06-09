@@ -12,6 +12,7 @@ import styles from "./styles.module.scss";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { useQuery } from "react-query";
 import { Search } from "src/components/Search/Search";
+import { SkeletonTable } from "src/components/Skelaton/SkeletonTable";
 import env from "src/core/env";
 import { getListAgent } from "src/modules/report/api/api";
 interface ReportAgentTableProps {
@@ -54,7 +55,11 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
   const [direction, setDirection] = useState<"descending" | "ascending">(
     "descending"
   );
-  const { data: listAgentData, isFetching }: any = useQuery({
+  const {
+    data: listAgentData,
+    isFetching,
+    isLoading,
+  }: any = useQuery({
     queryKey: [QUERY_KEY.LIST_AGENT, filterData, rangeTime],
     queryFn: () =>
       getListAgent({
@@ -118,53 +123,59 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
       {isFetching && <Loading />}
 
       <div className={styles.cardTable}>
-        <Card>
-          <IndexTable
-            resourceName={resourceName}
-            itemCount={memoData?.data?.length || 0}
-            selectable={false}
-            // selectedItemsCount={
-            //   allResourcesSelected ? "All" : selectedResources.length
-            // }
-            // onSelectionChange={handleSelectionChange}
-            headings={[
-              { title: "Agent Name" },
-              { title: "Email" },
+        {isLoading ? (
+          <SkeletonTable rowsCount={4} columnsCount={5} />
+        ) : (
+          <Card>
+            <IndexTable
+              resourceName={resourceName}
+              itemCount={memoData?.data?.length || 0}
+              selectable={false}
+              // selectedItemsCount={
+              //   allResourcesSelected ? "All" : selectedResources.length
+              // }
+              // onSelectionChange={handleSelectionChange}
+              headings={[
+                { title: "Agent Name" },
+                { title: "Email" },
 
-              { title: "Tickets Assigned" },
-              { title: "Tickets Closed" },
-              { title: "Resolved" },
-            ]}
-            sortDirection={direction}
-            sortColumnIndex={indexSort}
-            onSort={handleSort}
-            sortable={[true, true, true, true, true]}
-            // loading={isFetching}
-            emptyState={
-              <EmptySearchResult
-                title={
-                  "Sorry! There is no records matched with your search criteria"
-                }
-                description={"Try changing the filters or search term"}
-                withIllustration
-              />
-            }
-          >
-            {rowMarkup}
-          </IndexTable>
-          {memoData && memoData?.metadata?.totalCount ? (
-            <div className="flex items-center justify-center mt-12px pb-12px">
-              <Pagination
-                total={memoData?.metadata ? memoData?.metadata?.totalCount : 1}
-                pageSize={filterData.limit ?? 0}
-                currentPage={filterData.page ?? 1}
-                onChangePage={handleChangePage}
-                previousTooltip={"Previous"}
-                nextTooltip={"Next"}
-              />
-            </div>
-          ) : null}
-        </Card>
+                { title: "Tickets Assigned" },
+                { title: "Tickets Closed" },
+                { title: "Resolved" },
+              ]}
+              sortDirection={direction}
+              sortColumnIndex={indexSort}
+              onSort={handleSort}
+              sortable={[true, true, true, true, true]}
+              // loading={isFetching}
+              emptyState={
+                <EmptySearchResult
+                  title={
+                    "Sorry! There is no records matched with your search criteria"
+                  }
+                  description={"Try changing the filters or search term"}
+                  withIllustration
+                />
+              }
+            >
+              {rowMarkup}
+            </IndexTable>
+            {memoData && memoData?.metadata?.totalCount ? (
+              <div className="flex items-center justify-center mt-12px pb-12px">
+                <Pagination
+                  total={
+                    memoData?.metadata ? memoData?.metadata?.totalCount : 1
+                  }
+                  pageSize={filterData.limit ?? 0}
+                  currentPage={filterData.page ?? 1}
+                  onChangePage={handleChangePage}
+                  previousTooltip={"Previous"}
+                  nextTooltip={"Next"}
+                />
+              </div>
+            ) : null}
+          </Card>
+        )}
       </div>
     </div>
   );
