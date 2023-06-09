@@ -1,4 +1,6 @@
-import { Collapsible, TextContainer } from "@shopify/polaris";
+import { Collapsible, Icon, TextContainer } from "@shopify/polaris";
+import { CaretDownMinor } from "@shopify/polaris-icons";
+import classNames from "classnames";
 import React, { useCallback, useState } from "react";
 import { DetailOrderCustomer } from "src/modules/ticket/components/DrawerShopifySearch/DetailOrderCustomer";
 import styles from "./style.module.scss";
@@ -14,7 +16,17 @@ const CollapseDetailOrder = ({ order, uniqueIndex }: IProps) => {
     <div className={styles.toggleWrap}>
       <div onClick={handleToggle}>
         <div className="d-flex align-center justify-between">
-          <p className={styles.name}>{order?.name}</p>
+          <div className={styles.name}>
+            <div
+              className={classNames(styles.collapseIcon, {
+                [styles.collapseIconActive]: open,
+              })}
+            >
+              <Icon source={CaretDownMinor} color="warning" />
+            </div>
+
+            {order?.name}
+          </div>
           <p className={styles.price}>
             {order?.total}
             {order?.currency}
@@ -24,7 +36,7 @@ const CollapseDetailOrder = ({ order, uniqueIndex }: IProps) => {
       <Collapsible
         open={open}
         id={`basic-collapsible-${uniqueIndex}`}
-        transition={{ duration: "300ms", timingFunction: "ease-in-out" }}
+        transition={{ duration: "200ms", timingFunction: "ease-in-out" }}
         expandOnPrint
       >
         <TextContainer>
