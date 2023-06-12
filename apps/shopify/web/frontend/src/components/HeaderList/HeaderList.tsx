@@ -7,30 +7,27 @@ import { Search } from "src/components/Search/Search";
 import useScreenType from "src/hooks/useScreenType";
 import styles from "./styles.module.scss";
 
-interface HeaderListTicketProps {
+interface HeaderListProps {
   handleSearch: any;
-  handleAddNew: any;
   setShowTitle: any;
 }
 
-export const HeaderListTicket: FC<HeaderListTicketProps> = ({
+export const HeaderList: FC<HeaderListProps> = ({
   handleSearch,
-  handleAddNew,
   setShowTitle,
   children,
 }) => {
   const { state: isSearch, toggle: onToggleSearch } = useToggle(false);
   const [screenType, screenWidth] = useScreenType();
+
   useEffect(() => {
     setShowTitle(!isSearch);
   }, [isSearch]);
+
   return (
     <>
       {!isSearch ? (
         <div className={styles.topPage}>
-          {/* <Text variant="headingLg" as="h1">
-            Tickets
-          </Text> */}
           <div className="flex gap-2">
             {screenType === ScreenType.SM ? (
               <Button icon={SearchMinor} onClick={onToggleSearch}></Button>
@@ -41,9 +38,6 @@ export const HeaderListTicket: FC<HeaderListTicketProps> = ({
             )}
 
             {children}
-            <Button primary onClick={handleAddNew}>
-              Add new
-            </Button>
           </div>
         </div>
       ) : (

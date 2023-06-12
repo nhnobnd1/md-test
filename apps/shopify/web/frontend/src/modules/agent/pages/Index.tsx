@@ -5,15 +5,14 @@ import {
   useJob,
   useNavigate,
   usePrevious,
-  useToggle,
 } from "@moose-desk/core";
 import { Agent, AgentRepository, GetListAgentRequest } from "@moose-desk/repo";
+import { ScreenType } from "@moose-desk/repo/global/Global";
 import {
   Badge,
   ButtonGroup,
   Card,
   EmptySearchResult,
-  Filters,
   IndexTable,
   Link,
   Loading,
@@ -25,9 +24,11 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { map } from "rxjs";
 import { Banner } from "src/components/Banner";
 import { useBannerState } from "src/components/Banner/useBannerState";
+import { HeaderList } from "src/components/HeaderList";
 import Pagination from "src/components/Pagination/Pagination";
 import env from "src/core/env";
 import { useBanner } from "src/hooks/useBanner";
+import useScreenType from "src/hooks/useScreenType";
 import { BaseMetaDataListResponse } from "src/models/Request";
 import { Role } from "src/models/Rule";
 import { ModalAddNewAgent } from "src/modules/agent/components/Modal/ModalAddNewAgent";
@@ -40,14 +41,10 @@ interface AgentIndexPageProps {}
 const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
   const [agents, setAgents] = useState<Agent[]>([]);
   const { banner, show: showBanner, close: closeBanner } = useBanner();
-  const [sortValue, setSortValue] = useState<string[]>([]);
   const navigate = useNavigate();
-  const {
-    state: btnSort,
-    toggle: toggleBtnSort,
-    off: closeBtnSort,
-  } = useToggle();
+
   useBannerState(showBanner);
+  const [screenType] = useScreenType();
 
   const defaultFilter: () => GetListAgentRequest = () => ({
     page: 1,
@@ -66,6 +63,7 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
 
   const { selectedResources, allResourcesSelected, handleSelectionChange } =
     useIndexResourceState<any>(agents);
+  const [showTitle, setShowTitle] = useState(true);
 
   const { run: getListAgentApi, processing: loadingList } = useJob(() => {
     return AgentRepository()
@@ -96,19 +94,6 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
         query: queryValue,
       };
     });
-  }, []);
-
-  const handleQueryValueRemove = useCallback(() => {
-    setFilterData((old) => {
-      return {
-        ...old,
-        query: "",
-      };
-    });
-  }, []);
-
-  const resetFilterData = useCallback(() => {
-    setFilterData(defaultFilter());
   }, []);
 
   const editAgent = useCallback(() => {
@@ -168,24 +153,46 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
       getListAgentApi();
     }
   }, [filterData]);
-
+  const css = `
+  .Polaris-Page-Header__RightAlign ,.Polaris-Page-Header__PrimaryActionWrapper{
+    width:100%!important;
+    margin:0
+  }
+  `;
   return (
-    <Page
-      title="Account"
-      primaryAction={
-        <div>
-          <ModalAddNewAgent getListAgentApi={getListAgentApi} />
-        </div>
-      }
-      fullWidth
-    >
-      {banner.visible && (
-        <div className="mb-4">
-          <Banner banner={banner} onDismiss={closeBanner}></Banner>
-        </div>
-      )}
-      <Card>
-        <div className="flex-1 px-4 pt-4 pb-2">
+    <>
+      <style scoped>{screenType === ScreenType.SM ? css : ""}</style>{" "}
+      <Page
+        title={
+          (
+            <div
+              className={`min-w-[100px]  ${
+                showTitle ? "inline-block" : "hidden"
+              }`}
+            >
+              <span>Account</span>
+            </div>
+          ) as any
+        }
+        primaryAction={
+          <div className="flex justify-end">
+            <HeaderList
+              setShowTitle={setShowTitle}
+              handleSearch={handleFiltersQueryChange}
+            >
+              <ModalAddNewAgent getListAgentApi={getListAgentApi} />
+            </HeaderList>
+          </div>
+        }
+        fullWidth
+      >
+        {banner.visible && (
+          <div className="mb-4">
+            <Banner banner={banner} onDismiss={closeBanner}></Banner>
+          </div>
+        )}
+        <Card>
+          {/* <div className="flex-1 px-4 pt-4 pb-2">
           <Filters
             queryValue={filterData.query}
             onQueryChange={handleFiltersQueryChange}
@@ -194,125 +201,126 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
             filters={[]}
             onClearAll={resetFilterData}
           ></Filters>
-        </div>
-        {loadingList && <Loading />}
-        <IndexTable
-          resourceName={{ singular: "agent", plural: "agents" }}
-          itemCount={agents.length}
-          selectable={false}
-          selectedItemsCount={
-            allResourcesSelected ? "All" : selectedResources.length
-          }
-          onSelectionChange={handleSelectionChange}
-          hasMoreItems
-          loading={loadingList}
-          promotedBulkActions={bulkActions}
-          lastColumnSticky
-          emptyState={
-            <EmptySearchResult
-              title={
-                "Sorry! There is no records matched with your search criteria"
-              }
-              description={"Try changing the filters or search term"}
-              withIllustration
-            />
-          }
-          headings={[
-            { title: "Agent" },
-            { title: "Email" },
-            { title: "Roles" },
-            { title: "Status" },
-            { title: "2FA Availability" },
-            { title: "Action" },
-          ]}
-          sortable={[true, true, true, true, true, false]}
-          sortDirection={direction}
-          sortColumnIndex={indexSort}
-          onSort={handleSort}
-        >
-          {agents.map((agentItem, index) => (
-            <IndexTable.Row
-              id={agentItem._id}
-              key={agentItem._id}
-              selected={selectedResources.includes(agentItem._id)}
-              position={index}
-            >
-              <IndexTable.Cell className="py-3">
-                <div className="unstyle-link">
-                  <Link
-                    data-polaris-unstyled
-                    url={generatePath(AgentRoutePaths.Detail, {
-                      id: agentItem._id,
-                    })}
-                    removeUnderline={true}
-                  >
-                    <Text variant="bodyMd" fontWeight="semibold" as="span">
-                      {agentItem.lastName === "admin"
-                        ? agentItem.firstName
-                        : agentItem.firstName + " " + agentItem.lastName}
-                    </Text>
-                  </Link>
-                </div>
-              </IndexTable.Cell>
-              <IndexTable.Cell>{agentItem.email}</IndexTable.Cell>
-              <IndexTable.Cell className="py-3">
-                {getLabelRole(agentItem.role)}
-              </IndexTable.Cell>
-              <IndexTable.Cell className="py-3">
-                <Text variant="bodyMd" as="span">
-                  <Badge
-                    status={
-                      getStatusAgent(
-                        agentItem.isActive,
-                        agentItem.emailConfirmed
-                      ).status
-                    }
-                  >
-                    {
-                      getStatusAgent(
-                        agentItem.isActive,
-                        agentItem.emailConfirmed
-                      ).label
-                    }
-                  </Badge>
-                </Text>
-              </IndexTable.Cell>
-              <IndexTable.Cell className="py-3">
-                <Text variant="bodyMd" as="span">
-                  {agentItem.twoFactorEnabled
-                    ? agentItem.twoFactorMethod
-                    : "Off"}
-                </Text>
-              </IndexTable.Cell>
-              <IndexTable.Cell className="py-3">
-                <ButtonGroup>
-                  <ModalDetailAgent
-                    getListAgentApi={getListAgentApi}
-                    agentSaved={agentItem}
-                  />
-                </ButtonGroup>
-              </IndexTable.Cell>
-            </IndexTable.Row>
-          ))}
-        </IndexTable>
-        {meta?.totalCount ? (
-          <div className="flex items-center justify-center py-8">
-            {filterData.page && filterData.limit && meta?.totalCount && (
-              <Pagination
-                total={meta.totalCount}
-                pageSize={filterData.limit ?? 0}
-                currentPage={filterData.page}
-                onChangePage={(page) =>
-                  setFilterData((val) => {
-                    return { ...val, page };
-                  })
+        </div> */}
+          {loadingList && <Loading />}
+          <IndexTable
+            resourceName={{ singular: "agent", plural: "agents" }}
+            itemCount={agents.length}
+            selectable={false}
+            selectedItemsCount={
+              allResourcesSelected ? "All" : selectedResources.length
+            }
+            onSelectionChange={handleSelectionChange}
+            hasMoreItems
+            loading={loadingList}
+            promotedBulkActions={bulkActions}
+            lastColumnSticky
+            emptyState={
+              <EmptySearchResult
+                title={
+                  "Sorry! There is no records matched with your search criteria"
                 }
+                description={"Try changing the filters or search term"}
+                withIllustration
               />
-            )}
-          </div>
-        ) : null}
-      </Card>
-    </Page>
+            }
+            headings={[
+              { title: "Agent" },
+              { title: "Email" },
+              { title: "Roles" },
+              { title: "Status" },
+              { title: "2FA Availability" },
+              { title: "Action" },
+            ]}
+            sortable={[true, true, true, true, true, false]}
+            sortDirection={direction}
+            sortColumnIndex={indexSort}
+            onSort={handleSort}
+          >
+            {agents.map((agentItem, index) => (
+              <IndexTable.Row
+                id={agentItem._id}
+                key={agentItem._id}
+                selected={selectedResources.includes(agentItem._id)}
+                position={index}
+              >
+                <IndexTable.Cell className="py-3">
+                  <div className="unstyle-link">
+                    <Link
+                      data-polaris-unstyled
+                      url={generatePath(AgentRoutePaths.Detail, {
+                        id: agentItem._id,
+                      })}
+                      removeUnderline={true}
+                    >
+                      <Text variant="bodyMd" fontWeight="semibold" as="span">
+                        {agentItem.lastName === "admin"
+                          ? agentItem.firstName
+                          : agentItem.firstName + " " + agentItem.lastName}
+                      </Text>
+                    </Link>
+                  </div>
+                </IndexTable.Cell>
+                <IndexTable.Cell>{agentItem.email}</IndexTable.Cell>
+                <IndexTable.Cell className="py-3">
+                  {getLabelRole(agentItem.role)}
+                </IndexTable.Cell>
+                <IndexTable.Cell className="py-3">
+                  <Text variant="bodyMd" as="span">
+                    <Badge
+                      status={
+                        getStatusAgent(
+                          agentItem.isActive,
+                          agentItem.emailConfirmed
+                        ).status
+                      }
+                    >
+                      {
+                        getStatusAgent(
+                          agentItem.isActive,
+                          agentItem.emailConfirmed
+                        ).label
+                      }
+                    </Badge>
+                  </Text>
+                </IndexTable.Cell>
+                <IndexTable.Cell className="py-3">
+                  <Text variant="bodyMd" as="span">
+                    {agentItem.twoFactorEnabled
+                      ? agentItem.twoFactorMethod
+                      : "Off"}
+                  </Text>
+                </IndexTable.Cell>
+                <IndexTable.Cell className="py-3">
+                  <ButtonGroup>
+                    <ModalDetailAgent
+                      getListAgentApi={getListAgentApi}
+                      agentSaved={agentItem}
+                    />
+                  </ButtonGroup>
+                </IndexTable.Cell>
+              </IndexTable.Row>
+            ))}
+          </IndexTable>
+          {meta?.totalCount ? (
+            <div className="flex items-center justify-center py-8">
+              {filterData.page && filterData.limit && meta?.totalCount && (
+                <Pagination
+                  total={meta.totalCount}
+                  pageSize={filterData.limit ?? 0}
+                  currentPage={filterData.page}
+                  onChangePage={(page) =>
+                    setFilterData((val) => {
+                      return { ...val, page };
+                    })
+                  }
+                />
+              )}
+            </div>
+          ) : null}
+        </Card>
+      </Page>
+    </>
   );
 };
 
