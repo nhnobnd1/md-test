@@ -2,7 +2,7 @@ import { useToggle } from "@moose-desk/core";
 import { ScreenType } from "@moose-desk/repo/global/Global";
 import { Button } from "@shopify/polaris";
 import { MobileBackArrowMajor, SearchMinor } from "@shopify/polaris-icons";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { Search } from "src/components/Search/Search";
 import useScreenType from "src/hooks/useScreenType";
 import styles from "./styles.module.scss";
@@ -10,16 +10,20 @@ import styles from "./styles.module.scss";
 interface HeaderListTicketProps {
   handleSearch: any;
   handleAddNew: any;
+  setShowTitle: any;
 }
 
 export const HeaderListTicket: FC<HeaderListTicketProps> = ({
   handleSearch,
   handleAddNew,
+  setShowTitle,
   children,
 }) => {
   const { state: isSearch, toggle: onToggleSearch } = useToggle(false);
   const [screenType, screenWidth] = useScreenType();
-
+  useEffect(() => {
+    setShowTitle(!isSearch);
+  }, [isSearch]);
   return (
     <>
       {!isSearch ? (

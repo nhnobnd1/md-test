@@ -142,6 +142,8 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const [meta, setMeta] = useState<any>();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
+  const [showTitle, setShowTitle] = useState(true);
+
   const [statistic, setStatistic] = useState<TicketStatistic>({
     statusCode: 200,
     data: {
@@ -618,18 +620,21 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       <style scoped>{screenType === ScreenType.SM ? css : ""}</style>{" "}
       <Page
         title={
-          screenType !== ScreenType.SM
-            ? ((
-                <div className="min-w-[70px] inline-block">
-                  <span>Tickets</span>
-                </div>
-              ) as unknown as string)
-            : ""
+          (
+            <div
+              className={`min-w-[100px]  ${
+                showTitle ? "inline-block" : "hidden"
+              }`}
+            >
+              <span>Tickets</span>
+            </div>
+          ) as any
         }
         primaryAction={
           selectedResources.length === 0 ? (
             <div className="flex gap-2 items-center justify-end">
               <HeaderListTicket
+                setShowTitle={setShowTitle}
                 handleSearch={handleFiltersQueryChange}
                 handleAddNew={() => {
                   navigate(generatePath(TicketRoutePaths.Create));
@@ -647,6 +652,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
           ) : screenWidth <= MediaScreen.LG ? (
             <div className="flex gap-2 items-center justify-end">
               <HeaderListTicket
+                setShowTitle={setShowTitle}
                 handleSearch={handleFiltersQueryChange}
                 handleAddNew={() => {
                   navigate(generatePath(TicketRoutePaths.Create));
