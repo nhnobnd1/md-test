@@ -26,14 +26,14 @@ import { map } from "rxjs";
 import { Banner } from "src/components/Banner";
 import { useBannerState } from "src/components/Banner/useBannerState";
 import { ButtonEdit } from "src/components/Button/ButtonEdit";
-import { ButtonSort } from "src/components/Button/ButtonSort";
 import Pagination from "src/components/Pagination/Pagination";
 import env from "src/core/env";
 import { useBanner } from "src/hooks/useBanner";
-import { SortOrderOptions } from "src/models/Form";
 import { BaseMetaDataListResponse } from "src/models/Request";
 import { Role } from "src/models/Rule";
-import { getStatusAgent, optionsSort } from "src/modules/agent/constant";
+import { ModalAddNewAgent } from "src/modules/agent/components/Modal/ModalAddNewAgent";
+import { ModalDetailAgent } from "src/modules/agent/components/Modal/ModalDetailAgent";
+import { getStatusAgent } from "src/modules/agent/constant";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
 
 interface AgentIndexPageProps {}
@@ -54,7 +54,10 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
     page: 1,
     limit: env.DEFAULT_PAGE_SIZE,
   });
-
+  const [direction, setDirection] = useState<"descending" | "ascending">(
+    "descending"
+  );
+  const [indexSort, setIndexSort] = useState<number | undefined>(undefined);
   const [filterData, setFilterData] =
     useState<GetListAgentRequest>(defaultFilter);
 
@@ -65,26 +68,24 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
   const { selectedResources, allResourcesSelected, handleSelectionChange } =
     useIndexResourceState<any>(agents);
 
-  const { run: getListAgentApi, processing: loadingList } = useJob(
-    (payload: GetListAgentRequest) => {
-      return AgentRepository()
-        .getList(payload)
-        .pipe(
-          map(({ data }) => {
-            const listAgent = data.data.map((item) => ({
-              ...item,
-              id: item._id,
-            }));
-            setAgents(listAgent);
-            setMeta(data.metadata);
-          })
-        );
-    }
-  );
+  const { run: getListAgentApi, processing: loadingList } = useJob(() => {
+    return AgentRepository()
+      .getList(filterData)
+      .pipe(
+        map(({ data }) => {
+          const listAgent = data.data.map((item) => ({
+            ...item,
+            id: item._id,
+          }));
+          setAgents(listAgent);
+          setMeta(data.metadata);
+        })
+      );
+  });
 
   const { run: getListDebounce } = useDebounceFn(
-    (payload: GetListAgentRequest) => {
-      getListAgentApi(payload);
+    () => {
+      getListAgentApi();
     },
     { wait: 300 }
   );
@@ -141,35 +142,42 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
     }
   }, [selectedResources, removeAgent, editAgent]);
 
-  const handleSort = useCallback(
-    (selected: string[]) => {
-      const arraySort = selected[0].split(":");
-      const sortBy = arraySort[0];
-      const sortOrder = arraySort[1] === SortOrderOptions.ACS ? 1 : -1;
-      setSortValue(selected);
+  const listSort = [
+    "lastName",
+    "email",
+    "role",
+    "isActive",
+    "twoFactorEnabled",
+  ];
 
-      setFilterData((value) => {
-        return { ...value, sortBy, sortOrder };
-      });
-    },
-    [filterData]
-  );
-
+  const handleSort = (
+    headingIndex: number,
+    direction: "descending" | "ascending"
+  ) => {
+    setIndexSort(Number(headingIndex));
+    setDirection(direction);
+    setFilterData((pre) => ({
+      ...pre,
+      sortBy: listSort[Number(headingIndex)],
+      sortOrder: direction === "ascending" ? 1 : -1,
+    }));
+  };
   useEffect(() => {
     if (prevFilter?.query !== filterData.query && filterData.query) {
-      getListDebounce(filterData);
+      getListDebounce();
     } else {
-      getListAgentApi(filterData);
+      getListAgentApi();
     }
   }, [filterData]);
 
   return (
     <Page
       title="Account"
-      primaryAction={{
-        content: "Add agent",
-        onAction: () => navigate(generatePath(AgentRoutePaths.Create)),
-      }}
+      primaryAction={
+        <div>
+          <ModalAddNewAgent getListAgentApi={getListAgentApi} />
+        </div>
+      }
       fullWidth
     >
       {banner.visible && (
@@ -186,18 +194,7 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
             queryPlaceholder="Search"
             filters={[]}
             onClearAll={resetFilterData}
-          >
-            <div className="pl-2">
-              <ButtonSort
-                active={btnSort}
-                sortValue={sortValue}
-                onSort={handleSort}
-                onShow={toggleBtnSort}
-                onClose={closeBtnSort}
-                options={optionsSort}
-              />
-            </div>
-          </Filters>
+          ></Filters>
         </div>
         {loadingList && <Loading />}
         <IndexTable
@@ -229,6 +226,10 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
             { title: "2FA Availability" },
             { title: "Action" },
           ]}
+          sortable={[true, true, true, true, true, false]}
+          sortDirection={direction}
+          sortColumnIndex={indexSort}
+          onSort={handleSort}
         >
           {agents.map((agentItem, index) => (
             <IndexTable.Row
@@ -286,7 +287,7 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
               </IndexTable.Cell>
               <IndexTable.Cell className="py-3">
                 <ButtonGroup>
-                  <ButtonEdit
+                  {/* <ButtonEdit
                     onClick={() =>
                       navigate(
                         generatePath(AgentRoutePaths.Detail, {
@@ -294,7 +295,11 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
                         })
                       )
                     }
-                  ></ButtonEdit>
+                  ></ButtonEdit> */}
+                  <ModalDetailAgent
+                    getListAgentApi={getListAgentApi}
+                    agentSaved={agentItem}
+                  />
                 </ButtonGroup>
               </IndexTable.Cell>
             </IndexTable.Row>

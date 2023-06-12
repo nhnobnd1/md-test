@@ -85,7 +85,11 @@ const ModalAutoReply = ({
                 <TextField
                   autoComplete="off"
                   placeholder="Enter name auto-reply"
-                  label="Name"
+                  label={
+                    <div>
+                      <span className="mr-1 text-red-500">*</span>Name
+                    </div>
+                  }
                 />
               </FormItem>
               <FormItem name="code"></FormItem>
@@ -96,7 +100,11 @@ const ModalAutoReply = ({
                   labelProps={{
                     as: "span",
                     variant: "bodyMd",
-                    children: "Content",
+                    children: (
+                      <>
+                        <span className="mr-1 text-red-500">*</span>Content
+                      </>
+                    ),
                   }}
                   init={{
                     menubar: false,
