@@ -14,11 +14,12 @@ import {
   UserGroup,
   UserGroupRepository,
 } from "@moose-desk/repo";
+import { ScreenType } from "@moose-desk/repo/global/Global";
 import { useToast } from "@shopify/app-bridge-react";
 import {
+  Button,
   Card,
   EmptySearchResult,
-  Filters,
   IndexTable,
   Link,
   Loading,
@@ -30,9 +31,11 @@ import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import { ButtonDelete } from "src/components/Button/ButtonDelete";
 import { ButtonEdit } from "src/components/Button/ButtonEdit";
+import { HeaderList } from "src/components/HeaderList";
 import { ModalDelete } from "src/components/Modal/ModalDelete";
 import { Pagination } from "src/components/Pagination";
 import env from "src/core/env";
+import useScreenType from "src/hooks/useScreenType";
 import GroupsRoutePaths from "src/modules/groups/routes/paths";
 
 interface GroupsIndexPageProps {}
@@ -60,6 +63,8 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
     page: 1,
     limit: env.DEFAULT_PAGE_SIZE,
   });
+  const [screenType] = useScreenType();
+  const [showTitle, setShowTitle] = useState(true);
 
   const [filterData, setFilterData] = useState<GetListUserGroupRequest>(
     defaultFilter()
@@ -137,20 +142,6 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
     { wait: 300 }
   );
 
-  // const handleSort = useCallback(
-  //   (selected: string[]) => {
-  //     const arraySort = selected[0].split(":");
-  //     const sortBy = arraySort[0];
-  //     const sortOrder = arraySort[1] === SortOrderOptions.ACS ? 1 : -1;
-  //     setSortValue(selected);
-
-  //     setFilterData((value) => {
-  //       return { ...value, sortBy, sortOrder };
-  //     });
-  //   },
-  //   [filterData]
-  // );
-
   const handleFiltersQueryChange = useCallback((queryValue: string) => {
     setFilterData((old) => {
       return {
@@ -194,132 +185,153 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
       getListGroupApi(filterData);
     }
   }, [filterData]);
-
+  const css = `
+  .Polaris-Page-Header__RightAlign ,.Polaris-Page-Header__PrimaryActionWrapper{
+    width:100%!important;
+    margin:0
+  }
+  `;
   return (
-    <Page
-      title="Group"
-      primaryAction={{
-        content: "Add new",
-        onAction: () => navigate(generatePath(GroupsRoutePaths.Create)),
-      }}
-      fullWidth
-    >
-      <ModalDelete
-        open={modalDelete}
-        onClose={() => {
-          setIdDelete(null);
-          closeModalDelete();
-        }}
-        closePopupAction={false}
-        title="Are you sure that you want to permanently remove this group?"
-        content="This group will be removed permanently. This action cannot be undone."
-        loadingConfirm={loadingDelete}
-        deleteAction={() => idDelete && deleteGroup(idDelete)}
-      />
-      <Card>
-        <div className="flex-1 px-4 pt-4 pb-2">
-          <Filters
-            queryValue={filterData.query}
-            onQueryChange={handleFiltersQueryChange}
-            onQueryClear={handleQueryValueRemove}
-            queryPlaceholder="Search"
-            filters={[]}
-            onClearAll={resetFilterData}
-          ></Filters>
-        </div>
-        {loadingList && <Loading />}
-        <IndexTable
-          resourceName={{ singular: "group", plural: "groups" }}
-          itemCount={groups.length}
-          selectable={false}
-          hasMoreItems
-          lastColumnSticky
-          loading={loadingList}
-          emptyState={
-            <EmptySearchResult
-              title={
-                "Sorry! There is no records matched with your search criteria"
-              }
-              description={"Try changing the filters or search term"}
-              withIllustration
-            />
-          }
-          headings={[
-            { title: "Group name" },
-            { title: "Number of Agents" },
-            { title: "Action" },
-          ]}
-          sortable={[true, true, false]}
-          sortDirection={direction}
-          sortColumnIndex={indexSort}
-          onSort={handleSort}
-        >
-          {groups.map((groupItem, index) => (
-            <IndexTable.Row
-              id={groupItem._id}
-              key={groupItem._id}
-              position={index}
+    <>
+      <style scoped>{screenType === ScreenType.SM ? css : ""}</style>{" "}
+      <Page
+        title={
+          (
+            <div
+              className={`min-w-[70px]  ${
+                showTitle ? "inline-block" : "hidden"
+              }`}
             >
-              <IndexTable.Cell className="py-3">
-                <div className="unstyle-link">
-                  <Link
-                    data-polaris-unstyled
-                    url={generatePath(GroupsRoutePaths.Detail, {
-                      id: groupItem._id,
-                    })}
-                    removeUnderline={true}
-                  >
-                    <Text variant="bodyMd" fontWeight="semibold" as="span">
-                      {groupItem.name}
-                    </Text>
-                  </Link>
-                </div>
-              </IndexTable.Cell>
-              <IndexTable.Cell className="py-3">
-                <Text variant="bodyMd" as="span">
-                  {groupItem.memberCount}
-                </Text>
-              </IndexTable.Cell>
-              <IndexTable.Cell className="py-3">
-                <div className="flex gap-2">
-                  <ButtonEdit
-                    onClick={() =>
-                      navigate(
-                        generatePath(GroupsRoutePaths.Detail, {
-                          id: groupItem._id,
-                        })
-                      )
-                    }
-                  ></ButtonEdit>
-                  <ButtonDelete
-                    onClick={() => handleOpenModalDelete(groupItem._id)}
-                    destructive
-                  >
-                    Remove
-                  </ButtonDelete>
-                </div>
-              </IndexTable.Cell>
-            </IndexTable.Row>
-          ))}
-        </IndexTable>
-        {meta?.totalCount ? (
-          <div className="flex items-center justify-center py-8">
-            {filterData.page && filterData.limit && meta?.totalCount && (
-              <Pagination
-                total={meta.totalCount}
-                pageSize={filterData.limit ?? 0}
-                currentPage={filterData.page}
-                onChangePage={(page) =>
-                  setFilterData((val) => {
-                    return { ...val, page };
-                  })
-                }
-              />
-            )}
+              <span>Group</span>
+            </div>
+          ) as any
+        }
+        primaryAction={
+          <div className="flex justify-end">
+            <HeaderList
+              setShowTitle={setShowTitle}
+              handleSearch={handleFiltersQueryChange}
+            >
+              <Button
+                primary
+                onClick={() => {
+                  navigate(generatePath(GroupsRoutePaths.Create));
+                }}
+              >
+                Add new
+              </Button>
+            </HeaderList>
           </div>
-        ) : null}
-      </Card>
-    </Page>
+        }
+        fullWidth
+      >
+        <ModalDelete
+          open={modalDelete}
+          onClose={() => {
+            setIdDelete(null);
+            closeModalDelete();
+          }}
+          closePopupAction={false}
+          title="Are you sure that you want to permanently remove this group?"
+          content="This group will be removed permanently. This action cannot be undone."
+          loadingConfirm={loadingDelete}
+          deleteAction={() => idDelete && deleteGroup(idDelete)}
+        />
+        <Card>
+          {loadingList && <Loading />}
+          <IndexTable
+            resourceName={{ singular: "group", plural: "groups" }}
+            itemCount={groups.length}
+            selectable={false}
+            hasMoreItems
+            lastColumnSticky
+            loading={loadingList}
+            emptyState={
+              <EmptySearchResult
+                title={
+                  "Sorry! There is no records matched with your search criteria"
+                }
+                description={"Try changing the filters or search term"}
+                withIllustration
+              />
+            }
+            headings={[
+              { title: "Group name" },
+              { title: "Number of Agents" },
+              { title: "Action" },
+            ]}
+            sortable={[true, true, false]}
+            sortDirection={direction}
+            sortColumnIndex={indexSort}
+            onSort={handleSort}
+          >
+            {groups.map((groupItem, index) => (
+              <IndexTable.Row
+                id={groupItem._id}
+                key={groupItem._id}
+                position={index}
+              >
+                <IndexTable.Cell className="py-3">
+                  <div className="unstyle-link">
+                    <Link
+                      data-polaris-unstyled
+                      url={generatePath(GroupsRoutePaths.Detail, {
+                        id: groupItem._id,
+                      })}
+                      removeUnderline={true}
+                    >
+                      <Text variant="bodyMd" fontWeight="semibold" as="span">
+                        {groupItem.name}
+                      </Text>
+                    </Link>
+                  </div>
+                </IndexTable.Cell>
+                <IndexTable.Cell className="py-3">
+                  <Text variant="bodyMd" as="span">
+                    {groupItem.memberCount}
+                  </Text>
+                </IndexTable.Cell>
+                <IndexTable.Cell className="py-3">
+                  <div className="flex gap-2">
+                    <ButtonEdit
+                      onClick={() =>
+                        navigate(
+                          generatePath(GroupsRoutePaths.Detail, {
+                            id: groupItem._id,
+                          })
+                        )
+                      }
+                    ></ButtonEdit>
+                    <ButtonDelete
+                      onClick={() => handleOpenModalDelete(groupItem._id)}
+                      destructive
+                    >
+                      Remove
+                    </ButtonDelete>
+                  </div>
+                </IndexTable.Cell>
+              </IndexTable.Row>
+            ))}
+          </IndexTable>
+          {meta?.totalCount ? (
+            <div className="flex items-center justify-center py-8">
+              {filterData.page && filterData.limit && meta?.totalCount && (
+                <Pagination
+                  total={meta.totalCount}
+                  pageSize={filterData.limit ?? 0}
+                  currentPage={filterData.page}
+                  onChangePage={(page) =>
+                    setFilterData((val) => {
+                      return { ...val, page };
+                    })
+                  }
+                />
+              )}
+            </div>
+          ) : null}
+        </Card>
+      </Page>
+    </>
   );
 };
 

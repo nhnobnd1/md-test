@@ -6,28 +6,29 @@ import {
   useNavigate,
 } from "@moose-desk/core";
 import { BaseListTagRequest, Tag, TagRepository } from "@moose-desk/repo";
+import { ScreenType } from "@moose-desk/repo/global/Global";
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Button,
   Card,
   EmptySearchResult,
-  Filters,
   Icon,
   IndexTable,
   Link,
   Loading,
   Page,
-  Stack,
   Text,
 } from "@shopify/polaris";
 import { DeleteMajor } from "@shopify/polaris-icons";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
+import { HeaderList } from "src/components/HeaderList";
 import { ModalDelete } from "src/components/Modal/ModalDelete";
 import Pagination from "src/components/Pagination/Pagination";
 import env from "src/core/env";
 import useGlobalData from "src/hooks/useGlobalData";
+import useScreenType from "src/hooks/useScreenType";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { ModalAddNewTag } from "src/modules/setting/modal/ModalAddNewTag";
 import { ModalDetailTag } from "src/modules/setting/modal/ModalDetailTag";
@@ -45,7 +46,7 @@ export default function TagIndexPage() {
   const [deleteTag, setDeleteTag] = useState<string>("");
   const { subDomain } = useSubdomain();
   const { timezone } = useGlobalData(false, subDomain || "");
-
+  const [showTitle, setShowTitle] = useState(true);
   const resourceName = {
     singular: "tag",
     plural: "tags",
@@ -130,24 +131,13 @@ export default function TagIndexPage() {
   const [filterData, setFilterData] =
     useState<BaseListTagRequest>(defaultFilter);
   const handleSearchChange = useCallback((value: string) => {
-    console.log("change");
     setFilterData(() => ({
       page: 1,
       ...filterData,
       query: value,
     }));
   }, []);
-  const handleQueryValueRemove = useCallback(() => {
-    setFilterData((old) => {
-      return {
-        ...old,
-        query: "",
-      };
-    });
-  }, []);
-  const resetFilterData = useCallback(() => {
-    setFilterData(defaultFilter());
-  }, []);
+  const [screenType] = useScreenType();
 
   const listSort = ["name", "ticketsCount", "updatedTimestamp"];
 
@@ -199,13 +189,35 @@ export default function TagIndexPage() {
   useEffect(() => {
     callAPI();
   }, [filterData]);
+  const css = `
+  .Polaris-Page-Header__RightAlign ,.Polaris-Page-Header__PrimaryActionWrapper{
+    width:100%!important;
+    margin:0
+  }
+  `;
   return (
     <>
+      <style scoped>{screenType === ScreenType.SM ? css : ""}</style>{" "}
       <Page
-        title="Tags"
+        title={
+          (
+            <div
+              className={`min-w-[70px]  ${
+                showTitle ? "inline-block" : "hidden"
+              }`}
+            >
+              <span>Tags</span>
+            </div>
+          ) as any
+        }
         primaryAction={
-          <div>
-            <ModalAddNewTag fetchListTag={fetchListTag} />
+          <div className="flex justify-end">
+            <HeaderList
+              setShowTitle={setShowTitle}
+              handleSearch={handleSearchChange}
+            >
+              <ModalAddNewTag fetchListTag={fetchListTag} />
+            </HeaderList>
           </div>
         }
         compactTitle
@@ -222,20 +234,6 @@ export default function TagIndexPage() {
           textConfirm="Remove"
         />
         <Card>
-          <div className="flex-1 px-4 pt-4 pb-2">
-            <Stack distribution="trailing" spacing="loose">
-              <Stack.Item fill={true}>
-                <Filters
-                  queryValue={filterData.query}
-                  onQueryChange={handleSearchChange}
-                  onQueryClear={handleQueryValueRemove}
-                  queryPlaceholder="Search"
-                  filters={[]}
-                  onClearAll={resetFilterData}
-                />
-              </Stack.Item>
-            </Stack>
-          </div>
           {loadTag && <Loading />}
           <IndexTable
             resourceName={resourceName}

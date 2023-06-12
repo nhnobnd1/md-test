@@ -1,0 +1,26 @@
+@import "../../styles/variables.scss";
+@import "../../styles/mixin.scss";
+.groupTopPage {
+  // margin-bottom: 16px;
+  .buttonAdd {
+    margin-left: 8px;
+  }
+}
+.topPage {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  @include mq(md, "max") {
+    padding: 0 16px;
+  }
+}
+.groupSearchOnMobile {
+  display: flex;
+  justify-content: space-between;
+  @include mq(md, "max") {
+    padding: 0 10px;
+  }
+  .searchOnMobile {
+    width: calc(100% - 50px);
+  }
+}

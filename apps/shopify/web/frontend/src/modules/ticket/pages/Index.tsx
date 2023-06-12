@@ -477,19 +477,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     }));
   };
 
-  const handleQueryValueRemove = useCallback(() => {
-    setFilterData((old: any) => {
-      return {
-        ...old,
-        query: "",
-      };
-    });
-  }, []);
-
-  const resetFilterData = useCallback(() => {
-    setFilterData(defaultFilter());
-  }, []);
-
   const handleDeleteSelected = useCallback(() => {
     removeSelectedResources(selectedResources);
     deleteTicketApi(selectedResources);
