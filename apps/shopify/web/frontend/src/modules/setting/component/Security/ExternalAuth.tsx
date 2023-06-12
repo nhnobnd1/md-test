@@ -44,7 +44,7 @@ const ExternalAuth = ({
   );
   const { t, i18n } = useTranslation();
 
-  const { run: submit } = useJob((dataSubmit: any) => {
+  const { run: submit, processing } = useJob((dataSubmit: any) => {
     return UserSettingRepository()
       .verifySetupOTP(dataSubmit)
       .pipe(
@@ -116,8 +116,8 @@ const ExternalAuth = ({
         </Layout.Section>
         <Layout.Section fullWidth>
           <Stack distribution="trailing">
-            <Button onClick={() => back(1)}>Cancle</Button>
-            <Button submit primary>
+            <Button onClick={() => back(1)}>Cancel</Button>
+            <Button submit primary loading={processing}>
               Confirm
             </Button>
           </Stack>

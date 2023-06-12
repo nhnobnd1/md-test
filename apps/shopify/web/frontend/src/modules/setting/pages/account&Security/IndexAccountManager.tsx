@@ -1,29 +1,40 @@
-import { useJob, useToggle } from "@moose-desk/core";
-import { AccessManger, UserSettingRepository } from "@moose-desk/repo";
+import { useToggle } from "@moose-desk/core";
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Banner,
+  Button,
   Card,
-  ContextualSaveBar,
   FormLayout,
-  Layout,
   Link,
-  Page,
+  SkeletonBodyText,
   Stack,
   Tag,
   Text,
 } from "@shopify/polaris";
+import classNames from "classnames";
 import { FormikProps } from "formik";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { catchError, map, of } from "rxjs";
+import { useMutation, useQuery } from "react-query";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
 import Switch from "src/components/Switch/Switch";
 import { useSubdomain } from "src/hooks/useSubdomain";
+import {
+  getSettingManager,
+  updateSettingManager,
+} from "src/modules/setting/api/api";
 import InputDisableSubmit from "src/modules/setting/component/InputDisableSubmit/InputDisableSubmit";
 import { BannerPropsAccessManager } from "src/modules/setting/modal/account&Security/AccountManager";
 import { object, string } from "yup";
+import styles from "./styles.module.scss";
+
+const initialValues = {
+  autoJoinEnabled: false,
+  whitelistDomains: [],
+  twoFactorAuthEnabled: false,
+  domain: "",
+};
 export default function IndexAccountManager({ props }: any) {
   const { getSubDomain } = useSubdomain();
   const { toggle } = useToggle();
@@ -71,15 +82,7 @@ export default function IndexAccountManager({ props }: any) {
     message: "",
     isShowBanner: false,
   });
-  const initialValues = useMemo(
-    () => ({
-      autoJoinEnabled: false,
-      whitelistDomains: [],
-      twoFactorAuthEnabled: false,
-      domain: "",
-    }),
-    [props]
-  );
+
   const formRef = useRef<FormikProps<any>>(null);
   const validateObject = useCallback(() => {
     if (formRef.current?.values.autoJoinEnabled) {
@@ -87,7 +90,7 @@ export default function IndexAccountManager({ props }: any) {
         return object().shape({
           domain: string()
             .matches(
-              /^(?=.{1,253}\.?$)(?:(?!-|[^.]+_)[A-Za-z0-9-_]{1,63}(?<!-)(?:\.|$)){2,}$/,
+              /^(?=.{1,253}\.?$)(?:(?!-|[^.]+_)[A-Za-z0-9-_]{1,63}(?:\.|$)){2,}$/,
               "The input email domain is not valid!"
             )
             .required("The email domain is required!"),
@@ -95,7 +98,7 @@ export default function IndexAccountManager({ props }: any) {
       } else {
         return object().shape({
           domain: string().matches(
-            /^(?=.{1,253}\.?$)(?:(?!-|[^.]+_)[A-Za-z0-9-_]{1,63}(?<!-)(?:\.|$)){2,}$/,
+            /^(?=.{1,253}\.?$)(?:(?!-|[^.]+_)[A-Za-z0-9-_]{1,63}(?:\.|$)){2,}$/,
             "The input email domain is not valid!"
           ),
         });
@@ -109,84 +112,51 @@ export default function IndexAccountManager({ props }: any) {
     setSelectedDomain,
   ]);
   // fetch init data
-  const { run: fetchAccountManagerStatus, result } = useJob(
-    () => {
-      return UserSettingRepository()
-        .getAccessManagerSetting()
-        .pipe(
-          map(({ data }) => {
-            setSelectedDomain(data.data.whitelistDomains);
-            setDisabled(!data.data.autoJoinEnabled);
-            return data.data;
-          })
-        );
+
+  const {
+    data: accountData,
+    isLoading,
+    isFetching,
+    refetch: refetchAccountData,
+  } = useQuery({
+    queryKey: ["accountManager"],
+    queryFn: () => getSettingManager(),
+    onSuccess: ({ data }) => {
+      setSelectedDomain(data.data.whitelistDomains);
+      setDisabled(!data.data.autoJoinEnabled);
     },
-    { showLoading: false }
-  );
+  });
+  const { mutate: updateAccountMutate, isLoading: updating } = useMutation({
+    mutationFn: (payload: any) => updateSettingManager(payload),
+    onSuccess: async () => {
+      await refetchAccountData();
+      show(t("messages:success.update_access_manager"));
+      setBanner({
+        isShowBanner: true,
+        message: t("messages:success.update_access_manager"),
+        status: "success",
+      });
+    },
+    onError: () => {
+      setBanner({
+        isShowBanner: true,
+        message: t("messages:error.update_access_manager"),
+        status: "critical",
+      });
+      show(`Domains cannot be the same.`, {
+        isError: true,
+      });
+    },
+  });
   // update data
   const handleSubmit = useCallback(
     (data: any) => {
       const dataSubmit = { ...data, whitelistDomains: selectedDomain };
-      submit(dataSubmit);
+      updateAccountMutate(dataSubmit);
     },
     [selectedDomain]
   );
-  const { run: submit } = useJob((dataSubmit: AccessManger) => {
-    return UserSettingRepository()
-      .updateAccessManagerSetting(dataSubmit)
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            show(t("messages:success.update_access_manager"));
-            setBanner({
-              isShowBanner: true,
-              message: t("messages:success.update_access_manager"),
-              status: "success",
-            });
-            fetchAccountManagerStatus();
-          } else {
-            if (data.statusCode === 409) {
-              setBanner({
-                isShowBanner: true,
-                message: t("messages:error.update_access_manager"),
-                status: "critical",
-              });
-            } else {
-              setBanner({
-                isShowBanner: true,
-                message: t("messages:error.update_access_manager"),
-                status: "critical",
-              });
-              show(t("messages:error.update_access_manager"), {
-                isError: true,
-              });
-            }
-          }
-        }),
-        catchError((error) => {
-          if (error.response.status === 409) {
-            setBanner({
-              isShowBanner: true,
-              message: t("messages:error.update_access_manager"),
-              status: "critical",
-            });
-            show(`Domains cannot be the same.`, {
-              isError: true,
-            });
-          } else {
-            setBanner({
-              isShowBanner: true,
-              message: "`Domains cannot be the same.`",
-              status: "critical",
-            });
-            show(t("messages:error.update_access_manager"), {
-              isError: true,
-            });
-          }
-          return of(error);
-        })
-      );
-  });
+
   // handle submit form
 
   const handleSubmitForm = useCallback(() => {
@@ -195,40 +165,35 @@ export default function IndexAccountManager({ props }: any) {
   // reset form
   const handleResetForm = () => {
     formRef.current?.resetForm();
-    fetchAccountManagerStatus();
+    refetchAccountData();
   };
   //
   useEffect(() => {
-    fetchAccountManagerStatus();
     getLinkSignUp(import.meta.env.MODE);
   }, []);
+  const accountFormValues = useMemo(() => {
+    return accountData?.data?.data;
+  }, [accountData]);
   return (
-    <>
-      {formRef.current?.dirty && (
-        <ContextualSaveBar
-          fullWidth
-          message="Unsaved changes"
-          saveAction={{
-            onAction: handleSubmitForm,
-          }}
-          discardAction={{
-            onAction: handleResetForm,
-          }}
-        />
-      )}
-      <Page fullWidth>
-        <Form
-          initialValues={result || initialValues}
-          ref={formRef}
-          validationSchema={validateObject}
-          onValuesChange={toggle}
-          onSubmit={handleSubmit}
-          enableReinitialize
-        >
-          <FormLayout>
-            <Layout>
-              {banner.isShowBanner ? (
-                <Layout.Section>
+    <section className="page-wrap">
+      <div className={styles.pageContent}>
+        <Text variant="headingLg" as="h1">
+          Access Manager
+        </Text>
+        <div className={styles.wrapForm}>
+          <Card sectioned>
+            <Form
+              initialValues={accountFormValues || initialValues}
+              ref={formRef}
+              validationSchema={validateObject}
+              onValuesChange={toggle}
+              onSubmit={handleSubmit}
+              enableReinitialize
+            >
+              <FormLayout>
+                {/* <Layout> */}
+                {banner.isShowBanner ? (
+                  // <Layout.Section>
                   <Banner
                     status={banner.status}
                     onDismiss={() =>
@@ -237,73 +202,110 @@ export default function IndexAccountManager({ props }: any) {
                   >
                     {banner.message}
                   </Banner>
-                </Layout.Section>
-              ) : null}
-              <Layout.Section>
-                <Card title="Auto-Join Settings" sectioned>
-                  <Stack spacing="baseTight" alignment="leading">
-                    <Stack.Item>
-                      <FormItem name="autoJoinEnabled">
-                        <Switch onClick={() => setDisabled(!disabled)} />
-                      </FormItem>
-                    </Stack.Item>
-                    <Stack.Item>
-                      <div>
-                        <Text variant="bodyMd" as="span">
-                          Allow users with email addresses from an approved
-                          email domain to use the sign up link.
-                        </Text>
-                      </div>
-                      <div className="mt-2">
-                        <Link> {getLinkSignUp(import.meta.env.MODE)}</Link>
-                      </div>
-                    </Stack.Item>
-                  </Stack>
-                  <br />
-                  <Stack spacing="baseTight" alignment="leading">
-                    <Stack.Item>
+                ) : // </Layout.Section>
+                null}
+                {/* <Layout.Section> */}
+                <Text as="h2" variant="headingMd">
+                  Auto-Join Settings
+                </Text>
+                {isLoading ? (
+                  <div>
+                    <br />
+                    <SkeletonBodyText lines={3} />
+                    <br />
+                  </div>
+                ) : (
+                  <div className={styles.wrapFormAndToggle}>
+                    <FormItem name="autoJoinEnabled">
+                      <Switch onClick={() => setDisabled(!disabled)} />
+                    </FormItem>
+
+                    <div className={styles.note}>
                       <Text variant="bodyMd" as="span">
-                        Email domain:
+                        Allow users with email addresses from an approved email
+                        domain to use the sign up link.
                       </Text>
-                    </Stack.Item>
-                    <Stack.Item fill>
-                      <FormItem name="domain">
-                        <InputDisableSubmit
-                          inititalValue={selectedDomain}
-                          setValue={setSelectedDomain}
-                          disabled={disabled}
-                        />
-                      </FormItem>
-                      <div className="mt-2">
-                        <FormItem name="whitelistDomains">
-                          <Stack spacing="tight">{selectedMarkup}</Stack>
-                        </FormItem>
-                      </div>
-                    </Stack.Item>
-                  </Stack>
-                </Card>
-              </Layout.Section>
-              <Layout.Section>
-                <Card title="Two-Factor Authentication (2FA)" sectioned>
-                  <Stack spacing="baseTight" alignment="leading">
-                    <Stack.Item>
-                      <FormItem name="twoFactorAuthEnabled">
-                        <Switch />
-                      </FormItem>
-                    </Stack.Item>
-                    <Stack.Item>
+                      <br />
+                      <Link> {getLinkSignUp(import.meta.env.MODE)}</Link>
+                    </div>
+                  </div>
+                )}
+
+                <div className={styles.domainForm}>
+                  <div className={styles.labels}>
+                    <Text variant="bodyMd" as="span">
+                      Email domain:
+                    </Text>
+                  </div>
+
+                  {isLoading ? (
+                    <div>
+                      <br />
+                      <SkeletonBodyText lines={1} />
+                    </div>
+                  ) : (
+                    <FormItem name="domain">
+                      <InputDisableSubmit
+                        inititalValue={selectedDomain}
+                        setValue={setSelectedDomain}
+                        disabled={disabled}
+                      />
+                    </FormItem>
+                  )}
+                </div>
+                <div className="mt-2">
+                  <FormItem name="whitelistDomains">
+                    <Stack spacing="tight">{selectedMarkup}</Stack>
+                  </FormItem>
+                </div>
+                {/* </Layout.Section> */}
+
+                {/* <Layout.Section> */}
+                <Text as="h2" variant="headingMd">
+                  Two-Factor Authentication (2FA)
+                </Text>
+                {isLoading ? (
+                  <div>
+                    <br />
+                    <SkeletonBodyText lines={1} />
+                  </div>
+                ) : (
+                  <div
+                    className={classNames(
+                      styles.wrapFormAndToggle,
+                      "align-center"
+                    )}
+                  >
+                    <FormItem name="twoFactorAuthEnabled">
+                      <Switch />
+                    </FormItem>
+
+                    <div className={styles.note}>
                       <Text variant="bodyMd" as="span">
                         Toggle 2FA for all users
                       </Text>
-                    </Stack.Item>
-                  </Stack>
-                </Card>
-              </Layout.Section>
-            </Layout>
-            <FormItem name="whitelistDomains"></FormItem>
-          </FormLayout>
-        </Form>
-      </Page>
-    </>
+                    </div>
+                  </div>
+                )}
+                {/* </Layout.Section> */}
+                {/* </Layout> */}
+                <FormItem name="whitelistDomains"></FormItem>
+              </FormLayout>
+            </Form>
+            <div className={styles.groupButton}>
+              <Button onClick={handleResetForm}>Cancel</Button>
+              <Button
+                primary
+                onClick={handleSubmitForm}
+                loading={updating}
+                disabled={!formRef.current?.dirty}
+              >
+                Save
+              </Button>
+            </div>
+          </Card>
+        </div>
+      </div>
+    </section>
   );
 }
