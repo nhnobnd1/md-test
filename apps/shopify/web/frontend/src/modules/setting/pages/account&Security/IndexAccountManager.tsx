@@ -1,5 +1,4 @@
-import { useJob, useToggle } from "@moose-desk/core";
-import { AccessManger, UserSettingRepository } from "@moose-desk/repo";
+import { useToggle } from "@moose-desk/core";
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Banner,
@@ -14,13 +13,17 @@ import {
 } from "@shopify/polaris";
 import classNames from "classnames";
 import { FormikProps } from "formik";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { catchError, map, of } from "rxjs";
+import { useMutation, useQuery } from "react-query";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
 import Switch from "src/components/Switch/Switch";
 import { useSubdomain } from "src/hooks/useSubdomain";
+import {
+  getSettingManager,
+  updateSettingManager,
+} from "src/modules/setting/api/api";
 import InputDisableSubmit from "src/modules/setting/component/InputDisableSubmit/InputDisableSubmit";
 import { BannerPropsAccessManager } from "src/modules/setting/modal/account&Security/AccountManager";
 import { object, string } from "yup";
@@ -87,7 +90,7 @@ export default function IndexAccountManager({ props }: any) {
         return object().shape({
           domain: string()
             .matches(
-              /^(?=.{1,253}\.?$)(?:(?!-|[^.]+_)[A-Za-z0-9-_]{1,63}(?<!-)(?:\.|$)){2,}$/,
+              /^(?=.{1,253}\.?$)(?:(?!-|[^.]+_)[A-Za-z0-9-_]{1,63}(?:\.|$)){2,}$/,
               "The input email domain is not valid!"
             )
             .required("The email domain is required!"),
@@ -95,7 +98,7 @@ export default function IndexAccountManager({ props }: any) {
       } else {
         return object().shape({
           domain: string().matches(
-            /^(?=.{1,253}\.?$)(?:(?!-|[^.]+_)[A-Za-z0-9-_]{1,63}(?<!-)(?:\.|$)){2,}$/,
+            /^(?=.{1,253}\.?$)(?:(?!-|[^.]+_)[A-Za-z0-9-_]{1,63}(?:\.|$)){2,}$/,
             "The input email domain is not valid!"
           ),
         });
@@ -109,90 +112,51 @@ export default function IndexAccountManager({ props }: any) {
     setSelectedDomain,
   ]);
   // fetch init data
+
   const {
-    run: fetchAccountManagerStatus,
-    result,
-    processing,
-  } = useJob(
-    () => {
-      return UserSettingRepository()
-        .getAccessManagerSetting()
-        .pipe(
-          map(({ data }) => {
-            setSelectedDomain(data.data.whitelistDomains);
-            setDisabled(!data.data.autoJoinEnabled);
-            return data.data;
-          })
-        );
+    data: accountData,
+    isLoading,
+    isFetching,
+    refetch: refetchAccountData,
+  } = useQuery({
+    queryKey: ["accountManager"],
+    queryFn: () => getSettingManager(),
+    onSuccess: ({ data }) => {
+      setSelectedDomain(data.data.whitelistDomains);
+      setDisabled(!data.data.autoJoinEnabled);
     },
-    { showLoading: false }
-  );
+  });
+  const { mutate: updateAccountMutate, isLoading: updating } = useMutation({
+    mutationFn: (payload: any) => updateSettingManager(payload),
+    onSuccess: async () => {
+      await refetchAccountData();
+      show(t("messages:success.update_access_manager"));
+      setBanner({
+        isShowBanner: true,
+        message: t("messages:success.update_access_manager"),
+        status: "success",
+      });
+    },
+    onError: () => {
+      setBanner({
+        isShowBanner: true,
+        message: t("messages:error.update_access_manager"),
+        status: "critical",
+      });
+      show(`Domains cannot be the same.`, {
+        isError: true,
+      });
+    },
+  });
   // update data
   const handleSubmit = useCallback(
     (data: any) => {
       const dataSubmit = { ...data, whitelistDomains: selectedDomain };
-      submit(dataSubmit);
+      updateAccountMutate(dataSubmit);
     },
     [selectedDomain]
   );
-  const { run: submit, processing: submitting } = useJob(
-    (dataSubmit: AccessManger) => {
-      return UserSettingRepository()
-        .updateAccessManagerSetting(dataSubmit)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              show(t("messages:success.update_access_manager"));
-              setBanner({
-                isShowBanner: true,
-                message: t("messages:success.update_access_manager"),
-                status: "success",
-              });
-              fetchAccountManagerStatus();
-            } else {
-              if (data.statusCode === 409) {
-                setBanner({
-                  isShowBanner: true,
-                  message: t("messages:error.update_access_manager"),
-                  status: "critical",
-                });
-              } else {
-                setBanner({
-                  isShowBanner: true,
-                  message: t("messages:error.update_access_manager"),
-                  status: "critical",
-                });
-                show(t("messages:error.update_access_manager"), {
-                  isError: true,
-                });
-              }
-            }
-          }),
-          catchError((error) => {
-            if (error.response.status === 409) {
-              setBanner({
-                isShowBanner: true,
-                message: t("messages:error.update_access_manager"),
-                status: "critical",
-              });
-              show(`Domains cannot be the same.`, {
-                isError: true,
-              });
-            } else {
-              setBanner({
-                isShowBanner: true,
-                message: "`Domains cannot be the same.`",
-                status: "critical",
-              });
-              show(t("messages:error.update_access_manager"), {
-                isError: true,
-              });
-            }
-            return of(error);
-          })
-        );
-    }
-  );
+
   // handle submit form
 
   const handleSubmitForm = useCallback(() => {
@@ -201,13 +165,15 @@ export default function IndexAccountManager({ props }: any) {
   // reset form
   const handleResetForm = () => {
     formRef.current?.resetForm();
-    fetchAccountManagerStatus();
+    refetchAccountData();
   };
   //
   useEffect(() => {
-    fetchAccountManagerStatus();
     getLinkSignUp(import.meta.env.MODE);
   }, []);
+  const accountFormValues = useMemo(() => {
+    return accountData?.data?.data;
+  }, [accountData]);
   return (
     <section className="page-wrap">
       <div className={styles.pageContent}>
@@ -217,7 +183,7 @@ export default function IndexAccountManager({ props }: any) {
         <div className={styles.wrapForm}>
           <Card sectioned>
             <Form
-              initialValues={result || initialValues}
+              initialValues={accountFormValues || initialValues}
               ref={formRef}
               validationSchema={validateObject}
               onValuesChange={toggle}
@@ -242,12 +208,12 @@ export default function IndexAccountManager({ props }: any) {
                 <Text as="h2" variant="headingMd">
                   Auto-Join Settings
                 </Text>
-                {processing ? (
-                  <>
+                {isLoading ? (
+                  <div>
                     <br />
                     <SkeletonBodyText lines={3} />
                     <br />
-                  </>
+                  </div>
                 ) : (
                   <div className={styles.wrapFormAndToggle}>
                     <FormItem name="autoJoinEnabled">
@@ -272,11 +238,11 @@ export default function IndexAccountManager({ props }: any) {
                     </Text>
                   </div>
 
-                  {processing ? (
-                    <>
+                  {isLoading ? (
+                    <div>
                       <br />
                       <SkeletonBodyText lines={1} />
-                    </>
+                    </div>
                   ) : (
                     <FormItem name="domain">
                       <InputDisableSubmit
@@ -298,11 +264,11 @@ export default function IndexAccountManager({ props }: any) {
                 <Text as="h2" variant="headingMd">
                   Two-Factor Authentication (2FA)
                 </Text>
-                {processing ? (
-                  <>
+                {isLoading ? (
+                  <div>
                     <br />
                     <SkeletonBodyText lines={1} />
-                  </>
+                  </div>
                 ) : (
                   <div
                     className={classNames(
@@ -331,7 +297,7 @@ export default function IndexAccountManager({ props }: any) {
               <Button
                 primary
                 onClick={handleSubmitForm}
-                loading={submitting}
+                loading={updating}
                 disabled={!formRef.current?.dirty}
               >
                 Save

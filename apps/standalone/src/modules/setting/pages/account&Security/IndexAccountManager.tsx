@@ -74,7 +74,8 @@ export default function IndexAccountManager({ props }: any) {
       return [
         {
           pattern:
-            /^(?=.{1,253}\.?$)(?:(?!-|[^.]+_)[A-Za-z0-9-_]{1,63}(?<!-)(?:\.|$)){2,}$/,
+            // /^(?=.{1,253}\.?$)(?:(?!-|[^.]+_)[A-Za-z0-9-_]{1,63}(?<!-)(?:\.|$)){2,}$/,
+            /^(?=.{1,253}\.?$)(?:(?!-|[^.]+_)[A-Za-z0-9-_]{1,63}(?:\.|$)){2,}$/,
           message: "The input email domain is not valid!",
         },
         { required: true, message: "The email domain is required!" },
@@ -83,7 +84,8 @@ export default function IndexAccountManager({ props }: any) {
       return [
         {
           pattern:
-            /^(?=.{1,253}\.?$)(?:(?!-|[^.]+_)[A-Za-z0-9-_]{1,63}(?<!-)(?:\.|$)){2,}$/,
+            // /^(?=.{1,253}\.?$)(?:(?!-|[^.]+_)[A-Za-z0-9-_]{1,63}(?<!-)(?:\.|$)){2,}$/,
+            /^(?=.{1,253}\.?$)(?:(?!-|[^.]+_)[A-Za-z0-9-_]{1,63}(?:\.|$)){2,}$/,
           message: "The input email domain is not valid!",
         },
       ];

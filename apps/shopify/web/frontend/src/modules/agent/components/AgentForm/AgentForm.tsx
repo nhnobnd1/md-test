@@ -48,10 +48,9 @@ const AgentForm = ({ disableForm = false, ...props }: AgentFormProps) => {
     lastName: Yup.string()
       .matches(/[^\s]/, "Last name is required!")
       .required("Last name is required!"),
-    phoneNumber: Yup.string().matches(
-      regexPhoneValidate,
-      "The input phone number is not valid"
-    ),
+    phoneNumber: Yup.string()
+      .matches(regexPhoneValidate, "The input phone number is not valid")
+      .nullable(),
     role: Yup.string().required("User role is required!"),
   });
 
@@ -64,7 +63,11 @@ const AgentForm = ({ disableForm = false, ...props }: AgentFormProps) => {
       <FormLayout>
         <FormItem name="email">
           <TextField
-            label="Email"
+            label={
+              <div>
+                <span className="mr-1 text-red-500">*</span>Email
+              </div>
+            }
             type="email"
             autoComplete="off"
             disabled={props.initialValues ?? false}
@@ -73,7 +76,11 @@ const AgentForm = ({ disableForm = false, ...props }: AgentFormProps) => {
         </FormItem>
         <FormItem name="firstName">
           <TextField
-            label="First name"
+            label={
+              <div>
+                <span className="mr-1 text-red-500">*</span>First name
+              </div>
+            }
             type="text"
             autoComplete="off"
             disabled={disableForm}
@@ -82,7 +89,11 @@ const AgentForm = ({ disableForm = false, ...props }: AgentFormProps) => {
         </FormItem>
         <FormItem name="lastName">
           <TextField
-            label="Last name"
+            label={
+              <div>
+                <span className="mr-1 text-red-500">*</span>Last name
+              </div>
+            }
             type="text"
             autoComplete="off"
             disabled={disableForm}

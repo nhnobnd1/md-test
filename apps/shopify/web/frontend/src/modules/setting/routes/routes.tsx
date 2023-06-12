@@ -21,11 +21,6 @@ const settingRoutes: IRoute = {
     icon: () => <SettingsMajor />,
   },
   routes: [
-    {
-      path: SettingRoutePaths.Index,
-      index: true,
-      component: lazy(() => import("src/modules/setting/pages/Index")),
-    },
     // genaral setting
     {
       path: SettingRoutePaths.GenaralSetting.BusinessHours.Index,

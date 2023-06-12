@@ -120,7 +120,6 @@ const BusinessHours = (props: BusinessHoursProps) => {
     },
     { showLoading: false }
   );
-
   // update business calendar
   const { run: updateBusinessCalendar } = useJob(
     (dataSubmit: any) => {
@@ -274,19 +273,19 @@ const BusinessHours = (props: BusinessHoursProps) => {
                                   Auto-Reply
                                 </Text>
                               </div>
-                              <FormItem name="businessHoursAutoReplyCode">
-                                <div className="w-full">
+                              <div className="w-full">
+                                <FormItem name="businessHoursAutoReplyCode">
                                   <BoxSelectAutoReply
                                     placeholder=""
                                     dataAutoReply={dataAutoReply}
                                   />
-                                  <span>
-                                    Choose your auto-reply outside of business
-                                    hours. You can set up new message in the
-                                    “Auto-Reply” Tab
-                                  </span>
-                                </div>
-                              </FormItem>
+                                </FormItem>
+                                <span>
+                                  Choose your auto-reply outside of business
+                                  hours. You can set up new message in the
+                                  “Auto-Reply” Tab
+                                </span>
+                              </div>
                             </div>
                           </Card.Section>
                         </div>

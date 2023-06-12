@@ -260,7 +260,7 @@ const AgentsIndex = () => {
               )}
             />
             <Table.Column
-              key="2Fa"
+              key="twoFactorEnabled"
               align="center"
               title="2FA Availability"
               render={(_, record: Agent) => (

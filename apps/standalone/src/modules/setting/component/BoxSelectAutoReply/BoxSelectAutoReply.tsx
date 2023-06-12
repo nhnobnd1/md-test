@@ -95,6 +95,7 @@ const BoxSelectAutoReply = (props: BoxSelectAutoReplyProps) => {
         onChange={updateSelection}
         placeholder="Choose your auto-reply outside of business hours. You can set up new message in the “Auto-Reply” Tab"
         showSearch
+        allowClear
       ></Select>
     </div>
   );

@@ -38,7 +38,11 @@ const TagForm = (
           <TextField
             type="text"
             placeholder="Tag name"
-            label="Tag name"
+            label={
+              <div>
+                <span className="mr-1 text-red-500">*</span>Tag name
+              </div>
+            }
             autoComplete="off"
           />
         </FormItem>

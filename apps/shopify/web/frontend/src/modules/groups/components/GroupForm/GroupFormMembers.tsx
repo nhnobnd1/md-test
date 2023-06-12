@@ -22,18 +22,15 @@ import { uniqBy } from "lodash-es";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { map } from "rxjs";
 import { ButtonDelete } from "src/components/Button/ButtonDelete";
-import { ButtonSort } from "src/components/Button/ButtonSort";
 import { ModalDelete } from "src/components/Modal/ModalDelete";
 import { Pagination } from "src/components/Pagination";
 import {
   LoadMoreValue,
   Select,
-  SelectedObj,
   SelectOptions,
+  SelectedObj,
 } from "src/components/Select";
 import env from "src/core/env";
-import { SortOrderOptions } from "src/models/Form";
-import { optionsSortMembers } from "src/modules/groups/constant";
 
 interface GroupFormMembersProps {
   id?: string;
@@ -70,11 +67,27 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
     on: openModalRemoveMember,
     off: closeModalRemoveMember,
   } = useToggle();
-
+  const [direction, setDirection] = useState<"descending" | "ascending">(
+    "descending"
+  );
+  const [indexSort, setIndexSort] = useState<number | undefined>(undefined);
   const isDetail = useMemo(() => {
     return !!id;
   }, [id]);
+  const listSort = ["name", "email"];
 
+  const handleSort = (
+    headingIndex: number,
+    direction: "descending" | "ascending"
+  ) => {
+    setIndexSort(Number(headingIndex));
+    setDirection(direction);
+    setFilterData((pre) => ({
+      ...pre,
+      sortBy: listSort[Number(headingIndex)],
+      sortOrder: direction === "ascending" ? 1 : -1,
+    }));
+  };
   const handleFiltersQueryChange = useCallback(
     (queryValue: string) => {
       setFilterData((old) => {
@@ -253,20 +266,6 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
     value && setGroupIds(value);
   }, [value]);
 
-  const handleSort = useCallback(
-    (selected: string[]) => {
-      const arraySort = selected[0].split(":");
-      const sortBy = arraySort[0];
-      const sortOrder = arraySort[1] === SortOrderOptions.ACS ? 1 : -1;
-      setSortValue(selected);
-
-      setFilterData((value) => {
-        return { ...value, sortBy, sortOrder };
-      });
-    },
-    [filterData]
-  );
-
   return (
     <>
       <ModalDelete
@@ -279,40 +278,31 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
           memberRemove?._id && removeMembersItem(memberRemove._id)
         }
       />
-      <div className="pb-6">
-        <Select.Ajax
-          label="Add members"
-          placeholder="Search agents"
-          disableValues={groupIds}
-          height="250px"
-          chooseRefresh
-          renderOption={(record: SelectOptions, index: number) =>
-            `${record.label} - ${record.obj.email}`
-          }
-          onChange={handleSelectAgent}
-          loadMore={fetchAgents}
-        />
-      </div>
-      <div className="pb-2">
-        <Filters
-          queryValue={filterData.query}
-          onQueryChange={handleFiltersQueryChange}
-          onQueryClear={handleQueryValueRemove}
-          queryPlaceholder="Search"
-          filters={[]}
-          onClearAll={resetFilterData}
-        >
-          <div className="pl-2">
-            <ButtonSort
-              active={btnSort}
-              sortValue={sortValue}
-              onSort={handleSort}
-              onShow={toggleBtnSort}
-              onClose={closeBtnSort}
-              options={optionsSortMembers}
-            />
-          </div>
-        </Filters>
+      <div className="xs:block md:flex gap-2">
+        <div className="pb-6 w-full">
+          <Select.Ajax
+            label=""
+            placeholder="+ Add member"
+            disableValues={groupIds}
+            height="250px"
+            chooseRefresh
+            renderOption={(record: SelectOptions, index: number) =>
+              `${record.label} - ${record.obj.email}`
+            }
+            onChange={handleSelectAgent}
+            loadMore={fetchAgents}
+          />
+        </div>
+        <div className="pb-2 w-full">
+          <Filters
+            queryValue={filterData.query}
+            onQueryChange={handleFiltersQueryChange}
+            onQueryClear={handleQueryValueRemove}
+            queryPlaceholder="Search member"
+            filters={[]}
+            onClearAll={resetFilterData}
+          ></Filters>
+        </div>
       </div>
       {loadingGetList && <Loading />}
       <IndexTable
@@ -331,6 +321,10 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
           />
         }
         headings={[{ title: "Name" }, { title: "Email" }, { title: "Action" }]}
+        sortable={[true, true, false]}
+        sortDirection={direction}
+        sortColumnIndex={indexSort}
+        onSort={handleSort}
       >
         {groupMembersTable.map((membersItem, index) => (
           <IndexTable.Row
@@ -352,6 +346,7 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
             </IndexTable.Cell>
             <IndexTable.Cell className="py-3">
               <ButtonDelete
+                destructive
                 onClick={() => handleOpenModalRemove(membersItem)}
               ></ButtonDelete>
             </IndexTable.Cell>

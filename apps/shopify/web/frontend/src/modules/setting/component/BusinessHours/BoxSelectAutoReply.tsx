@@ -40,6 +40,7 @@ const BoxSelectAutoReply = (props: BoxSelectAutoReplyProps) => {
 
       if (value === "") {
         setOptions(deselectedOptions);
+        props.onChange && props.onChange("");
         return;
       }
 
@@ -120,6 +121,7 @@ const BoxSelectAutoReply = (props: BoxSelectAutoReplyProps) => {
             />
           }
           error={props.error}
+
           // onBlur={handleResetValueText}
         />
       }

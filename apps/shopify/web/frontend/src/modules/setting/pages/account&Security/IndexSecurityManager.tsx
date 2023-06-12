@@ -1,4 +1,4 @@
-import { useJob, useMount } from "@moose-desk/core";
+import { useJob } from "@moose-desk/core";
 import { AccountRepository } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
@@ -13,13 +13,15 @@ import {
   TextField,
 } from "@shopify/polaris";
 import { FormikProps } from "formik";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useQuery } from "react-query";
 import { catchError, map, of } from "rxjs";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
 import SkeletonCard from "src/components/Skelaton/SkeletonCard";
 import { validateSchemaObjectPassword } from "src/constaint/regex";
+import { getStatus2FA } from "src/modules/setting/api/api";
 import Enable2FAModal from "src/modules/setting/component/Security/Enable2FAModal";
 import { BannerPropsAccessManager } from "src/modules/setting/modal/account&Security/AccountManager";
 import styles from "./styles.module.scss";
@@ -31,14 +33,6 @@ const initialValues = {
 };
 
 export default function IndexAccountManager() {
-  const [status, setStatus] = useState(false);
-  const [method, setMethod] = useState<{
-    show: boolean;
-    method: string;
-  }>({
-    show: false,
-    method: "Disabled",
-  });
   const validateObject = validateSchemaObjectPassword;
   const { show } = useToast();
   const { t, i18n } = useTranslation();
@@ -52,24 +46,41 @@ export default function IndexAccountManager() {
   const formRef = useRef<FormikProps<any>>(null);
   // fetch init data
   // const token = jose.decodeJwt(TokenManager.getToken("base_token"));
-  const { run: fetch2FAStatus, processing } = useJob(
-    () => {
-      return AccountRepository()
-        .userGet2FAStatus()
-        .pipe(
-          map(({ data }) => {
-            setMethod({
-              ...method,
-              show: data.data.twoFactorEnabled,
-              method: data.data.twoFactorMethod,
-            });
-            setStatus(data.data.twoFactorStoreEnabled);
-            return data.data;
-          })
-        );
-    },
-    { showLoading: false }
-  );
+  // const { run: fetch2FAStatus, processing } = useJob(
+  //   () => {
+  //     return AccountRepository()
+  //       .userGet2FAStatus()
+  //       .pipe(
+  //         map(({ data }) => {
+  //           setMethod({
+  //             ...method,
+  //             show: data.data.twoFactorEnabled,
+  //             method: data.data.twoFactorMethod,
+  //           });
+  //           setStatus(data.data.twoFactorStoreEnabled);
+  //           return data.data;
+  //         })
+  //       );
+  //   },
+  //   { showLoading: false }
+  // );
+  const {
+    data: statusSecurity,
+    isLoading,
+    refetch: fetchingStatus,
+  }: any = useQuery({
+    queryKey: ["2FAStatus"],
+    queryFn: () => getStatus2FA(),
+  });
+  const method = useMemo(() => {
+    return {
+      show: statusSecurity?.data?.data?.twoFactorEnabled,
+      method: statusSecurity?.data?.data?.twoFactorMethod || "Disabled",
+    };
+  }, [statusSecurity]);
+  const status = useMemo(() => {
+    return statusSecurity?.data?.data?.twoFactorStoreEnabled || false;
+  }, [statusSecurity]);
   // update password
   const handleSubmit = useCallback((data: any) => {
     const dataSubmit = { ...data };
@@ -153,9 +164,7 @@ export default function IndexAccountManager() {
   // modal
   const [open2FA, setOpen2FA] = useState(false);
   // effect
-  useMount(() => {
-    fetch2FAStatus();
-  });
+
   return (
     <section className="page-wrap">
       <div className={styles.pageContent}>
@@ -167,7 +176,7 @@ export default function IndexAccountManager() {
             open={open2FA}
             setOpen={setOpen2FA}
             initialValue={{ ...method, status }}
-            fetch2FAStatus={fetch2FAStatus}
+            fetch2FAStatus={fetchingStatus}
             show={show}
             setBanner={setBanner}
           />
@@ -245,7 +254,7 @@ export default function IndexAccountManager() {
               </div>
               <div className={styles.wrapSubForm}>
                 <Layout.Section>
-                  {processing ? (
+                  {isLoading ? (
                     <SkeletonCard lines={3} />
                   ) : (
                     <Card subdued={!status} sectioned>

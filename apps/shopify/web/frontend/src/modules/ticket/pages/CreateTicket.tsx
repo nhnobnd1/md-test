@@ -136,7 +136,7 @@ const CreateTicket = (props: CreateTicketProps) => {
           breadcrumbs={[
             { content: "Ticket", url: generatePath(TicketRoutePaths.Index) },
           ]}
-          title={(<span>New Tickets</span>) as unknown as string}
+          title={(<span>New Ticket</span>) as unknown as string}
           fullWidth
         >
           <Layout>
