@@ -46,7 +46,7 @@ const Enable2FA = ({
   const handleSubmit = useCallback(() => {
     submit({ method: value });
   }, [value, initialValues]);
-  const { run: submit } = useJob((dataSubmit: any) => {
+  const { run: submit, processing } = useJob((dataSubmit: any) => {
     return UserSettingRepository()
       .setupOtp(dataSubmit)
       .pipe(
@@ -131,7 +131,7 @@ const Enable2FA = ({
         </Layout.Section>
         <Layout.Section fullWidth>
           <Stack distribution="trailing">
-            <Button submit primary>
+            <Button submit primary loading={processing}>
               Save
             </Button>
           </Stack>
