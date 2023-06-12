@@ -32,7 +32,6 @@ const RowCheckbox = ({ value, onChange, disabled }: RowCheckboxProps) => {
       checked: boolean;
     }[]
   >(initialData);
-  console.log({ valueCustomHours, value });
 
   useEffect(() => {
     if (value) {
