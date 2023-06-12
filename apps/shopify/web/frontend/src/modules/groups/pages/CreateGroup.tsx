@@ -96,7 +96,7 @@ const CreateGroup = (props: CreateGroupProps) => {
         breadcrumbs={[
           { content: "Groups", url: generatePath(GroupsRoutePaths.Index) },
         ]}
-        title="Create new group"
+        title="New group"
         fullWidth
       >
         <Layout>

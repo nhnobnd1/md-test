@@ -16,7 +16,6 @@ import {
 } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
-  ButtonGroup,
   Card,
   EmptySearchResult,
   Filters,
@@ -31,12 +30,9 @@ import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import { ButtonDelete } from "src/components/Button/ButtonDelete";
 import { ButtonEdit } from "src/components/Button/ButtonEdit";
-import { ButtonSort } from "src/components/Button/ButtonSort";
 import { ModalDelete } from "src/components/Modal/ModalDelete";
 import { Pagination } from "src/components/Pagination";
 import env from "src/core/env";
-import { SortOrderOptions } from "src/models/Form";
-import { optionsSort } from "src/modules/groups/constant";
 import GroupsRoutePaths from "src/modules/groups/routes/paths";
 
 interface GroupsIndexPageProps {}
@@ -69,7 +65,10 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
     defaultFilter()
   );
   const prevFilter = usePrevious<GetListUserGroupRequest>(filterData);
-
+  const [direction, setDirection] = useState<"descending" | "ascending">(
+    "descending"
+  );
+  const [indexSort, setIndexSort] = useState<number | undefined>(undefined);
   const [meta, setMeta] = useState<BaseMetaDataListResponse>();
 
   const { run: getListGroupApi, processing: loadingList } = useJob(
@@ -116,6 +115,21 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
     }
   );
 
+  const listSort = ["name", "memberCount"];
+
+  const handleSort = (
+    headingIndex: number,
+    direction: "descending" | "ascending"
+  ) => {
+    setIndexSort(Number(headingIndex));
+    setDirection(direction);
+    setFilterData((pre) => ({
+      ...pre,
+      sortBy: listSort[Number(headingIndex)],
+      sortOrder: direction === "ascending" ? 1 : -1,
+    }));
+  };
+
   const { run: getListDebounce } = useDebounceFn(
     (payload: GetListUserGroupRequest) => {
       getListGroupApi(payload);
@@ -123,19 +137,19 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
     { wait: 300 }
   );
 
-  const handleSort = useCallback(
-    (selected: string[]) => {
-      const arraySort = selected[0].split(":");
-      const sortBy = arraySort[0];
-      const sortOrder = arraySort[1] === SortOrderOptions.ACS ? 1 : -1;
-      setSortValue(selected);
+  // const handleSort = useCallback(
+  //   (selected: string[]) => {
+  //     const arraySort = selected[0].split(":");
+  //     const sortBy = arraySort[0];
+  //     const sortOrder = arraySort[1] === SortOrderOptions.ACS ? 1 : -1;
+  //     setSortValue(selected);
 
-      setFilterData((value) => {
-        return { ...value, sortBy, sortOrder };
-      });
-    },
-    [filterData]
-  );
+  //     setFilterData((value) => {
+  //       return { ...value, sortBy, sortOrder };
+  //     });
+  //   },
+  //   [filterData]
+  // );
 
   const handleFiltersQueryChange = useCallback((queryValue: string) => {
     setFilterData((old) => {
@@ -185,7 +199,7 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
     <Page
       title="Group"
       primaryAction={{
-        content: "Add Group",
+        content: "Add new",
         onAction: () => navigate(generatePath(GroupsRoutePaths.Create)),
       }}
       fullWidth
@@ -211,18 +225,7 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
             queryPlaceholder="Search"
             filters={[]}
             onClearAll={resetFilterData}
-          >
-            <div className="pl-2">
-              <ButtonSort
-                active={btnSort}
-                sortValue={sortValue}
-                onSort={handleSort}
-                onShow={toggleBtnSort}
-                onClose={closeBtnSort}
-                options={optionsSort}
-              />
-            </div>
-          </Filters>
+          ></Filters>
         </div>
         {loadingList && <Loading />}
         <IndexTable
@@ -246,6 +249,10 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
             { title: "Number of Agents" },
             { title: "Action" },
           ]}
+          sortable={[true, true, false]}
+          sortDirection={direction}
+          sortColumnIndex={indexSort}
+          onSort={handleSort}
         >
           {groups.map((groupItem, index) => (
             <IndexTable.Row
@@ -274,7 +281,7 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
                 </Text>
               </IndexTable.Cell>
               <IndexTable.Cell className="py-3">
-                <ButtonGroup>
+                <div className="flex gap-2">
                   <ButtonEdit
                     onClick={() =>
                       navigate(
@@ -290,7 +297,7 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
                   >
                     Remove
                   </ButtonDelete>
-                </ButtonGroup>
+                </div>
               </IndexTable.Cell>
             </IndexTable.Row>
           ))}

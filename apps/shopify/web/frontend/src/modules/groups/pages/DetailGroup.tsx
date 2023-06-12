@@ -12,7 +12,17 @@ import {
   UserGroupRepository,
 } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
-import { Card, ContextualSaveBar, Layout, Page } from "@shopify/polaris";
+import {
+  Card,
+  ContextualSaveBar,
+  Layout,
+  LegacyCard,
+  Page,
+  SkeletonBodyText,
+  SkeletonDisplayText,
+  SkeletonPage,
+  TextContainer,
+} from "@shopify/polaris";
 import { FormikProps } from "formik";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -130,35 +140,53 @@ const DetailGroup = (props: DetailGroupProps) => {
           }}
         />
       )}
-      <Page
-        breadcrumbs={[
-          { content: "Groups", url: generatePath(GroupsRoutePaths.Index) },
-        ]}
-        title={group?.name || "Detail Group"}
-        fullWidth
-      >
-        <Layout>
-          {banner.visible && (
-            <Layout.Section>
-              <Banner banner={banner} onDismiss={closeBanner}></Banner>
-            </Layout.Section>
-          )}
-          <Layout.Section>
-            <Card>
-              <Card.Section>
-                <GroupForm
-                  initialValues={initialValues}
-                  enableReinitialize
-                  onValuesChange={updateForm}
-                  id={id}
-                  innerRef={formRef}
-                  onSubmit={handleSubmit}
-                />
-              </Card.Section>
-            </Card>
-          </Layout.Section>
-        </Layout>
-      </Page>
+      <>
+        {group ? (
+          <Page
+            breadcrumbs={[
+              { content: "Groups", url: generatePath(GroupsRoutePaths.Index) },
+            ]}
+            title={group?.name || "Detail Group"}
+            fullWidth
+          >
+            <Layout>
+              {banner.visible && (
+                <Layout.Section>
+                  <Banner banner={banner} onDismiss={closeBanner}></Banner>
+                </Layout.Section>
+              )}
+              <Layout.Section>
+                <Card>
+                  <Card.Section>
+                    <GroupForm
+                      initialValues={initialValues}
+                      enableReinitialize
+                      onValuesChange={updateForm}
+                      id={id}
+                      innerRef={formRef}
+                      onSubmit={handleSubmit}
+                    />
+                  </Card.Section>
+                </Card>
+              </Layout.Section>
+            </Layout>
+          </Page>
+        ) : (
+          <Page fullWidth>
+            <SkeletonPage />
+            <Layout>
+              <Layout.Section>
+                <LegacyCard sectioned>
+                  <TextContainer>
+                    <SkeletonDisplayText size="extraLarge" />
+                    <SkeletonBodyText />
+                  </TextContainer>
+                </LegacyCard>
+              </Layout.Section>
+            </Layout>
+          </Page>
+        )}
+      </>
     </>
   );
 };

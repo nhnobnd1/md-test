@@ -25,7 +25,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { map } from "rxjs";
 import { Banner } from "src/components/Banner";
 import { useBannerState } from "src/components/Banner/useBannerState";
-import { ButtonEdit } from "src/components/Button/ButtonEdit";
 import Pagination from "src/components/Pagination/Pagination";
 import env from "src/core/env";
 import { useBanner } from "src/hooks/useBanner";
@@ -287,15 +286,6 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
               </IndexTable.Cell>
               <IndexTable.Cell className="py-3">
                 <ButtonGroup>
-                  {/* <ButtonEdit
-                    onClick={() =>
-                      navigate(
-                        generatePath(AgentRoutePaths.Detail, {
-                          id: agentItem._id,
-                        })
-                      )
-                    }
-                  ></ButtonEdit> */}
                   <ModalDetailAgent
                     getListAgentApi={getListAgentApi}
                     agentSaved={agentItem}

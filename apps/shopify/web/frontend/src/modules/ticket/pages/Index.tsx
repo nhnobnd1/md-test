@@ -623,6 +623,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const css = `
   .Polaris-Page-Header__RightAlign ,.Polaris-Page-Header__PrimaryActionWrapper{
     width:100%!important;
+    margin:0
   }
   `;
   return (

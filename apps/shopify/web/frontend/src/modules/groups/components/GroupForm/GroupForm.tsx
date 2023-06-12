@@ -1,5 +1,5 @@
-import { Button, FormLayout, Text, TextField } from "@shopify/polaris";
-import { useMemo, useState } from "react";
+import { Checkbox, FormLayout, TextField } from "@shopify/polaris";
+import { useCallback, useMemo, useState } from "react";
 import Form, { FormProps } from "src/components/Form";
 import FormItem from "src/components/Form/Item";
 import GroupFormMembers from "src/modules/groups/components/GroupForm/GroupFormMembers";
@@ -40,7 +40,10 @@ export const GroupForm = ({
       .matches(/[^\s]/, "Group name is required!"),
     description: Yup.string().max(255, "Description up to 255 characters"),
   });
-
+  const handleChange = useCallback(
+    (newChecked: boolean) => setViewAddGroup(newChecked),
+    []
+  );
   return (
     <Form
       {...props}
@@ -50,7 +53,11 @@ export const GroupForm = ({
       <FormLayout>
         <FormItem name="name">
           <TextField
-            label="Name"
+            label={
+              <div>
+                <span className="mr-1 text-red-500">*</span>Group name
+              </div>
+            }
             type="text"
             autoComplete="off"
             disabled={disableForm}
@@ -68,26 +75,11 @@ export const GroupForm = ({
         </FormItem>
         <div className="pt-2">
           <div className="flex gap-2 items-center">
-            <Text variant="bodyMd" as="p">
-              Group members:
-            </Text>
-            {viewAddGroup ? (
-              <Button
-                size="slim"
-                destructive
-                onClick={() => setViewAddGroup(false)}
-              >
-                Close add group member
-              </Button>
-            ) : (
-              <Button
-                size="slim"
-                dataPrimaryLink
-                onClick={() => setViewAddGroup(true)}
-              >
-                Add group member
-              </Button>
-            )}
+            <Checkbox
+              label="Add group members"
+              checked={viewAddGroup}
+              onChange={handleChange}
+            />
           </div>
           {viewAddGroup && (
             <div className="pt-6">
