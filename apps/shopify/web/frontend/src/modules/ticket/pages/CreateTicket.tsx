@@ -1,6 +1,6 @@
 import {
-  MediaScreen,
   generatePath,
+  MediaScreen,
   useJob,
   useMount,
   useToggle,
@@ -24,7 +24,6 @@ import {
 import { PriceLookupMinor } from "@shopify/polaris-icons";
 import { FormikProps } from "formik";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { isMobile } from "react-device-detect";
 import { catchError, map, of } from "rxjs";
 import { Banner } from "src/components/Banner";
 import { useBanner } from "src/hooks/useBanner";
@@ -45,7 +44,7 @@ const CreateTicket = (props: CreateTicketProps) => {
   const { dataSaved, setDataSaved }: any = useSaveDataGlobal();
   usePreventNav();
   const [screenType, screenWidth] = useScreenType();
-
+  const isMobileOrTablet = Boolean(screenWidth <= MediaScreen.LG);
   const formRef = useRef<FormikProps<any>>(null);
   const [primaryEmail, setPrimaryEmail] = useState<EmailIntegration>();
   const initialValuesForm = useMemo(() => {
@@ -129,7 +128,7 @@ const CreateTicket = (props: CreateTicketProps) => {
             </Layout>
           </Page>
         </>
-      ) : isMobile && visible ? (
+      ) : isMobileOrTablet && visible ? (
         <ContentShopifySearch />
       ) : (
         <Page

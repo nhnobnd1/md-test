@@ -1,6 +1,6 @@
 import {
-  MediaScreen,
   generatePath,
+  MediaScreen,
   useJob,
   useParams,
   useToggle,
@@ -20,14 +20,14 @@ import {
   GetListCustomerRequest,
   GetListTagRequest,
   Priority,
+  priorityOptions,
+  statusOptions,
   StatusTicket,
   Tag,
   TagRepository,
   Ticket,
   TicketRepository,
   UpdateTicket,
-  priorityOptions,
-  statusOptions,
 } from "@moose-desk/repo";
 import { ScreenType } from "@moose-desk/repo/global/Global";
 import { useToast } from "@shopify/app-bridge-react";
@@ -49,7 +49,6 @@ import classNames from "classnames";
 import { FormikProps } from "formik";
 import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { isMobile } from "react-device-detect";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import Form from "src/components/Form";
@@ -115,6 +114,7 @@ const DetailTicket = (props: DetailTicketProps) => {
     []
   );
   const [screenType, screenWidth] = useScreenType();
+  const isMobileOrTablet = Boolean(screenWidth <= MediaScreen.LG);
 
   // detail ticket
   const [agents, setAgents] = useState<Agent[]>([]);
@@ -576,7 +576,7 @@ const DetailTicket = (props: DetailTicketProps) => {
             </Layout.Section>
           </Layout>
         </Page>
-      ) : isMobile && visible ? (
+      ) : isMobileOrTablet && visible ? (
         <ContentShopifySearch />
       ) : (
         <Page
