@@ -121,6 +121,7 @@ export default function IndexAccountManager({ props }: any) {
   } = useQuery({
     queryKey: ["accountManager"],
     queryFn: () => getSettingManager(),
+    keepPreviousData: true,
     onSuccess: ({ data }) => {
       setSelectedDomain(data.data.whitelistDomains);
       setDisabled(!data.data.autoJoinEnabled);
@@ -298,7 +299,7 @@ export default function IndexAccountManager({ props }: any) {
                 primary
                 onClick={handleSubmitForm}
                 loading={updating}
-                disabled={!formRef.current?.dirty}
+                // disabled={!formRef.current?.dirty}
               >
                 Save
               </Button>

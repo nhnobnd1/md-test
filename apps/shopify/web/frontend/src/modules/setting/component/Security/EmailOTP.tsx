@@ -2,8 +2,8 @@ import { useCountDown, useJob, useMount } from "@moose-desk/core";
 import { MethodOTP, UserSettingRepository } from "@moose-desk/repo";
 import {
   Button,
+  ButtonGroup,
   FormLayout,
-  Layout,
   Link,
   Spinner,
   Stack,
@@ -140,57 +140,56 @@ const EmailOPT = ({
       validationSchema={validateObject}
       onSubmit={handleSubmit}
     >
-      <Layout sectioned>
-        <Layout.Section>
-          <div className="main-content">
-            <FormLayout>
-              <Stack vertical>
-                <Text variant="bodyMd" as="p">
-                  Please enter the 6 digits OTP code that we send to your email
-                  address in order to enable 2FA with your email.
-                </Text>
-                <FormItem name="code">
-                  <InputOTP errorMessage={error} setErrorMessage={setError} />
-                </FormItem>
-                <div className="flex items-center">
-                  <Text variant="bodyMd" as="span">
-                    Did not receive the code yet?
-                  </Text>
-                  <div className="flex ml-2">
-                    <Link
-                      monochrome={!onResendEmail}
-                      onClick={handleResendEmail}
-                    >
-                      Re-send OTP Code
-                    </Link>
-                    {spin ? (
-                      <Spinner
-                        accessibilityLabel="Small spinner example"
-                        size="small"
-                      />
-                    ) : null}
-                    {state !== 0 && !onResendEmail && secondResend ? (
-                      <div className="ml-2">
-                        <Text as="span" variant="bodyMd">
-                          ({state} seconds)
-                        </Text>
-                      </div>
-                    ) : null}
+      {/* <Layout sectioned> */}
+      {/* <Layout.Section> */}
+      <div className="main-content">
+        <FormLayout>
+          <Stack vertical>
+            <Text variant="bodyMd" as="p">
+              Please enter the 6 digits OTP code that we send to your email
+              address in order to enable 2FA with your email.
+            </Text>
+            <FormItem name="code">
+              <InputOTP errorMessage={error} setErrorMessage={setError} />
+            </FormItem>
+            <div className="flex items-center">
+              <Text variant="bodyMd" as="span">
+                Did not receive the code yet?
+              </Text>
+              <div className="flex ml-2">
+                <Link monochrome={!onResendEmail} onClick={handleResendEmail}>
+                  Re-send OTP Code
+                </Link>
+                {spin ? (
+                  <Spinner
+                    accessibilityLabel="Small spinner example"
+                    size="small"
+                  />
+                ) : null}
+                {state !== 0 && !onResendEmail && secondResend ? (
+                  <div className="ml-2">
+                    <Text as="span" variant="bodyMd">
+                      ({state} seconds)
+                    </Text>
                   </div>
-                </div>
-              </Stack>
-            </FormLayout>
-          </div>
-        </Layout.Section>
-        <Layout.Section fullWidth>
-          <Stack distribution="trailing">
-            <Button onClick={() => back(1)}>Cancel</Button>
-            <Button submit primary loading={processing}>
-              Confirm
-            </Button>
+                ) : null}
+              </div>
+            </div>
           </Stack>
-        </Layout.Section>
-      </Layout>
+        </FormLayout>
+      </div>
+      {/* </Layout.Section> */}
+      {/* <Layout.Section fullWidth> */}
+      <div className="group-button-footer">
+        <ButtonGroup>
+          <Button onClick={() => back(1)}>Cancel</Button>
+          <Button submit primary loading={processing}>
+            Confirm
+          </Button>
+        </ButtonGroup>
+      </div>
+      {/* </Layout.Section> */}
+      {/* </Layout> */}
     </Form>
   );
 };

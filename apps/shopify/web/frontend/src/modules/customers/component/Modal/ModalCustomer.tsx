@@ -130,7 +130,7 @@ IModal) => {
       open={visible}
       onClose={onClose}
       title={title}
-      large
+      // large={selectedTabs === 1}
       primaryAction={{
         content: primaryButtonLabel,
         onAction: handleSubmitForm,
