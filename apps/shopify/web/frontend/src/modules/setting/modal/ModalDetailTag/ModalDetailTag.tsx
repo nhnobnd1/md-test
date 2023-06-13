@@ -24,7 +24,6 @@ export const ModalDetailTag: FC<ModalDetailTagProps> = ({
   const { show } = useToast();
   const { t, i18n } = useTranslation();
   const { toggle: updateForm } = useToggle();
-
   const handleSubmitForm = useCallback(() => {
     formRef.current?.submitForm();
   }, [formRef.current]);
@@ -88,9 +87,9 @@ export const ModalDetailTag: FC<ModalDetailTagProps> = ({
         activator={activator}
         open={active}
         onClose={handleChange}
-        title="Create Tag"
+        title="Edit Tag"
         primaryAction={{
-          content: "Apply",
+          content: "Save",
           onAction: handleSubmitForm,
         }}
         secondaryActions={[

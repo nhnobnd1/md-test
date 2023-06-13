@@ -19,9 +19,9 @@ const TagForm = (
 
   const validateObject = object().shape({
     name: string()
-      .matches(/[^\s]/, "The tag mane is required!")
-      .required("The tag mane is required!"),
-    description: string(),
+      .matches(/[^\s]/, "The tag name is required!")
+      .required("The tag name is required!"),
+    description: string().nullable(),
   });
   return (
     <Form

@@ -89,7 +89,7 @@ export default function TagIndexPage() {
         </IndexTable.Cell>
         <IndexTable.Cell className="py-3">
           <div
-            className="hover:underline hover:cursor-pointer text-center"
+            className="hover:underline hover:cursor-pointer max-w-[100px] text-right"
             onClick={() => navigateToViewTicket(name)}
           >
             {ticketsCount}

@@ -287,9 +287,10 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
                   </div>
                 </IndexTable.Cell>
                 <IndexTable.Cell className="py-3">
-                  <Text variant="bodyMd" as="span">
+                  <div className="text-right max-w-[100px]">
+                    {" "}
                     {groupItem.memberCount}
-                  </Text>
+                  </div>
                 </IndexTable.Cell>
                 <IndexTable.Cell className="py-3">
                   <div className="flex gap-2">

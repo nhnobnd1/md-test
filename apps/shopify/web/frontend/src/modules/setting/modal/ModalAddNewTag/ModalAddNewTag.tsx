@@ -93,7 +93,7 @@ export const ModalAddNewTag: FC<ModalAddNewTagProps> = ({ fetchListTag }) => {
         onClose={handleChange}
         title="Create Tag"
         primaryAction={{
-          content: "Apply",
+          content: "Save",
           onAction: handleSubmitForm,
         }}
         secondaryActions={[
