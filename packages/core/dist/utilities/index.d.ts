@@ -12,7 +12,7 @@ export declare enum MediaScreen {
     XS = 320,
     SM = 576,
     MD = 768,
-    LG = 992,
-    XL = 1200,
+    LG = 1024,
+    XL = 1280,
     XXL = 1600
 }

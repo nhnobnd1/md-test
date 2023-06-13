@@ -30,6 +30,27 @@
   }
   
 }
+.itemSearched {
+  @include breakpoints(md, lg) {
+    :global {
+      .Polaris-Card__Section {
+        padding: 20px !important;
+        background-color: $white-color !important;
+      }
+    }
+  }
+}
+.wrapResult {
+  @include breakpoints(md, lg) {
+    padding: 0 24px;
+    :global {
+        .Polaris-Card__Section {
+          padding: 20px !important;
+          // background-color: $white-color !important;
+        }
+      }
+   }
+}
 .wrapResult {
     @include mq(md, 'max') {
             padding: 0 16px 50px;
@@ -142,6 +163,7 @@
         .link {
           width: 60%;
           word-break: break-all;
+          text-align: right;
         }
         .number {
           color: $black-color;
@@ -189,5 +211,8 @@
 .resultSearchContainer {
     @include mq(md, 'max') {
         padding: 0 16px;
+    }
+    @include breakpoints(md, lg) {
+      padding: 0 24px;
     }
 }

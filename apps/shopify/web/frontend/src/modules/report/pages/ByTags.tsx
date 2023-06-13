@@ -1,4 +1,4 @@
-import { PageComponent, useToggle } from "@moose-desk/core";
+import { MediaScreen, PageComponent, useToggle } from "@moose-desk/core";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import {
   Button,
@@ -12,7 +12,6 @@ import { MobileBackArrowMajor, SearchMinor } from "@shopify/polaris-icons";
 import classNames from "classnames";
 import dayjs from "dayjs";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { isMobile } from "react-device-detect";
 import { useQuery } from "react-query";
 import MDDatePicker from "src/components/DatePicker/MDDatePicker";
 import { Pagination } from "src/components/Pagination";
@@ -20,6 +19,7 @@ import { Search } from "src/components/Search/Search";
 import { SkeletonTable } from "src/components/Skelaton/SkeletonTable";
 import env from "src/core/env";
 import useGlobalData from "src/hooks/useGlobalData";
+import useScreenType from "src/hooks/useScreenType";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { getReportByTags } from "src/modules/report/api/api";
 import { formatDefaultTimeRangePicker } from "src/modules/report/helper/format";
@@ -42,6 +42,8 @@ const resourceName = {
 const listSort = ["tagName", "totalTicket", "percentage", "percentageClosed"];
 export const ByTags: PageComponent<ByTagsProps> = () => {
   const { subDomain } = useSubdomain();
+  const [screenType, screenWidth] = useScreenType();
+  const isMobileOrTablet = Boolean(screenWidth <= MediaScreen.LG);
   const { timezone }: any = useGlobalData(false, subDomain || "");
   const { state: isSearch, toggle: onToggleSearch } = useToggle(false);
   const [filterData, setFilterData] = useState<ITableFilter | any>({
@@ -139,7 +141,7 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
       ) : (
         <div
           className={classNames(styles.groupTopTable, {
-            "align-start": !isMobile,
+            "align-start": !isMobileOrTablet,
           })}
         >
           <div>
@@ -148,7 +150,7 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
             </Text>
           </div>
           <div className="d-flex align-center">
-            {isMobile ? (
+            {isMobileOrTablet ? (
               <div className={styles.buttonSearch}>
                 <Button icon={SearchMinor} onClick={onToggleSearch}></Button>
               </div>

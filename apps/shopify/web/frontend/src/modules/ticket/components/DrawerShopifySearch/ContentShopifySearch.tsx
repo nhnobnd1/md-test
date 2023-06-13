@@ -2,7 +2,7 @@ import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { Button, Card } from "@shopify/polaris";
 // import { Select } from "antd";
 import { memo, useMemo, useRef, useState } from "react";
-import { useQuery, useQueryClient } from "react-query";
+import { useQuery } from "react-query";
 import { Search } from "src/components/Search/Search";
 import SkeletonCard from "src/components/Skelaton/SkeletonCard";
 import useSaveDataGlobal from "src/hooks/useSaveDataGlobal";
@@ -10,17 +10,19 @@ import { getListShopifyCustomer } from "src/modules/ticket/api/api";
 import OrderOverview from "src/modules/ticket/components/DrawerShopifySearch/component/OrderOverview";
 import ResultShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ResultShopifySearch";
 // import ListShopifyCustomerRes from "src/modules/ticket/helper/interface";
+import { MediaScreen } from "@moose-desk/core";
 import { MobileBackArrowMajor } from "@shopify/polaris-icons";
-import { isMobile } from "react-device-detect";
+import useScreenType from "src/hooks/useScreenType";
 import useToggleGlobal from "src/hooks/useToggleGlobal";
 import styles from "./styles.module.scss";
 const ContentShopifySearch = () => {
-  const { visible, setVisible } = useToggleGlobal();
-
-  const queryClient = useQueryClient();
+  const { setVisible } = useToggleGlobal();
+  const [screenType, screenWidth] = useScreenType();
+  const isMobileOrTablet = Boolean(screenWidth <= MediaScreen.LG);
   const parentRef: any = useRef(null);
   const { setDataSaved } = useSaveDataGlobal();
   const [querySearch, setQuerySearch] = useState<string>("");
+
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const { data: listCustomerOrdered, isFetching } = useQuery({
     queryKey: [QUERY_KEY.LIST_CUSTOMER_SHOPIFY, querySearch],
@@ -42,14 +44,7 @@ const ContentShopifySearch = () => {
     setSelectedId(value);
     parentRef?.current?.clearDataOrder();
   };
-  // const handleClearSearch = () => {
-  //   queryClient.removeQueries([QUERY_KEY.LIST_CUSTOMER_SHOPIFY, querySearch]);
-  //   setDataSaved("");
-  //   setSelectedId(null);
-  //   setQuerySearch("");
-  //   parentRef?.current?.clearDataOrder();
-  // };
-  // console.log(memoDataSearch, "memoDataSearch");
+
   const _renderListOption = () => {
     return isFetching ? (
       <div className={styles.itemSearched}>
@@ -75,7 +70,7 @@ const ContentShopifySearch = () => {
     ) : null;
   };
 
-  return isMobile ? (
+  return isMobileOrTablet ? (
     <div className={styles.wrapSearchInput}>
       <div className={styles.groupSearchOnMobile}>
         <Button

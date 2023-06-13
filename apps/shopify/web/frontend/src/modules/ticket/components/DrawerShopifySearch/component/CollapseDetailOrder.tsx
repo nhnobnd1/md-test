@@ -22,7 +22,7 @@ const CollapseDetailOrder = ({ order, uniqueIndex }: IProps) => {
                 [styles.collapseIconActive]: open,
               })}
             >
-              <Icon source={CaretDownMinor} color="warning" />
+              <Icon source={CaretDownMinor} />
             </div>
 
             {order?.name}
