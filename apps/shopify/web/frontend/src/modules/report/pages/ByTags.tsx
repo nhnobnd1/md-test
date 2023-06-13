@@ -12,7 +12,6 @@ import { MobileBackArrowMajor, SearchMinor } from "@shopify/polaris-icons";
 import classNames from "classnames";
 import dayjs from "dayjs";
 import { useCallback, useEffect, useMemo, useState } from "react";
-// import { isMobile } from "react-device-detect";
 import { useQuery } from "react-query";
 import MDDatePicker from "src/components/DatePicker/MDDatePicker";
 import { Pagination } from "src/components/Pagination";

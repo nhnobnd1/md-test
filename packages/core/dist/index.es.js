@@ -6085,7 +6085,7 @@ function Jp(M) {
 function gd(M) {
   return M.toLowerCase().replace(/\b\w/g, (z) => z.toUpperCase());
 }
-var ni = /* @__PURE__ */ ((M) => (M[M.XS = 320] = "XS", M[M.SM = 576] = "SM", M[M.MD = 768] = "MD", M[M.LG = 992] = "LG", M[M.XL = 1200] = "XL", M[M.XXL = 1600] = "XXL", M))(ni || {});
+var ni = /* @__PURE__ */ ((M) => (M[M.XS = 320] = "XS", M[M.SM = 576] = "SM", M[M.MD = 768] = "MD", M[M.LG = 1024] = "LG", M[M.XL = 1280] = "XL", M[M.XXL = 1600] = "XXL", M))(ni || {});
 function V3(M, z) {
   return function() {
     return M.apply(z, arguments);
