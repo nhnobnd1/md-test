@@ -2,9 +2,9 @@ import { useJob } from "@moose-desk/core";
 import { MethodOTP, UserSettingRepository } from "@moose-desk/repo";
 import {
   Button,
+  ButtonGroup,
   Form,
   FormLayout,
-  Layout,
   RadioButton,
   Stack,
 } from "@shopify/polaris";
@@ -46,7 +46,7 @@ const Enable2FA = ({
   const handleSubmit = useCallback(() => {
     submit({ method: value });
   }, [value, initialValues]);
-  const { run: submit } = useJob((dataSubmit: any) => {
+  const { run: submit, processing } = useJob((dataSubmit: any) => {
     return UserSettingRepository()
       .setupOtp(dataSubmit)
       .pipe(
@@ -89,54 +89,60 @@ const Enable2FA = ({
   }, [initialValues]);
   return (
     <Form onSubmit={handleSubmit}>
-      <Layout sectioned>
-        <Layout.Section>
-          <div className="main-content">
-            <FormLayout>
-              <Stack vertical>
-                <RadioButton
-                  label="Off"
-                  checked={value === "Disabled"}
-                  helpText={
-                    value === "Disabled"
-                      ? "You will login normally with your email and password without any additional verifycation steps. This method will have higher risks for any security breach."
-                      : undefined
-                  }
-                  name="status2FA"
-                  id="Disabled"
-                  onChange={handleChange}
-                />
-                <RadioButton
-                  label="Use Email Address"
-                  helpText={
-                    value === "Email"
-                      ? "When you login from a new computer or browser, system will send an OTP code to your email to verify your identity."
-                      : undefined
-                  }
-                  checked={value === "Email"}
-                  name="status2FA"
-                  onChange={handleChange}
-                  id="Email"
-                />
-                <RadioButton
-                  label="Use external authenticator application."
-                  checked={value === "Authenticator"}
-                  name="status2FA"
-                  onChange={handleChange}
-                  id="Authenticator"
-                />
-              </Stack>
-            </FormLayout>
-          </div>
-        </Layout.Section>
-        <Layout.Section fullWidth>
-          <Stack distribution="trailing">
-            <Button submit primary>
-              Save
-            </Button>
+      {/* <Layout sectioned> */}
+      {/* <Layout.Section> */}
+      <div className="main-content">
+        <FormLayout>
+          <Stack vertical>
+            <RadioButton
+              label="Off"
+              checked={value === "Disabled"}
+              helpText={
+                value === "Disabled"
+                  ? "You will login normally with your email and password without any additional verifycation steps. This method will have higher risks for any security breach."
+                  : undefined
+              }
+              name="status2FA"
+              id="Disabled"
+              onChange={handleChange}
+            />
+            <RadioButton
+              label="Use Email Address"
+              helpText={
+                value === "Email"
+                  ? "When you login from a new computer or browser, system will send an OTP code to your email to verify your identity."
+                  : undefined
+              }
+              checked={value === "Email"}
+              name="status2FA"
+              onChange={handleChange}
+              id="Email"
+            />
+            <RadioButton
+              label="Use external authenticator application."
+              checked={value === "Authenticator"}
+              name="status2FA"
+              onChange={handleChange}
+              id="Authenticator"
+            />
           </Stack>
-        </Layout.Section>
-      </Layout>
+        </FormLayout>
+      </div>
+      {/* </Layout.Section> */}
+      {/* <Layout.Section fullWidth> */}
+      {/* <Stack distribution="trailing"> */}
+      <div className="group-button-footer">
+        <ButtonGroup>
+          <Button onClick={handleCloseModal}>Cancel</Button>
+          <Button submit primary loading={processing}>
+            Save
+          </Button>
+        </ButtonGroup>
+      </div>
+
+      {/* </Stack> */}
+      {/* </Layout.Section> */}
+      {/* </Layout> */}
     </Form>
   );
 };

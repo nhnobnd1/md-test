@@ -1,38 +1,27 @@
-import { TokenManager, useJob, useMount, useToggle } from "@moose-desk/core";
+import { TokenManager, useJob, useToggle } from "@moose-desk/core";
 import { Agent, AgentRepository } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
-import {
-  Banner,
-  BannerStatus,
-  Card,
-  ContextualSaveBar,
-  Layout,
-  LegacyCard,
-  Page,
-  SkeletonBodyText,
-  SkeletonDisplayText,
-  TextContainer,
-} from "@shopify/polaris";
+import { Banner, BannerStatus, Button, Card, Text } from "@shopify/polaris";
 import { FormikProps } from "formik";
 import * as jose from "jose";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useQuery } from "react-query";
 import { catchError, map, of } from "rxjs";
+import SkeletonForm from "src/components/Skelaton/SkeletonForm";
+import { getProfile } from "src/modules/setting/api/api";
 import ProfileForm from "src/modules/setting/component/ProfileForm";
-
+import styles from "./styles.module.scss";
+const initialValuesForm: any = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  phoneNumber: "",
+};
 export default function IndexProfileManager() {
   const token = jose.decodeJwt(TokenManager.getToken("base_token") ?? "");
-
   const formRef = useRef<FormikProps<any>>(null);
   const { toggle: updateForm } = useToggle();
-  const initialValuesForm = useMemo<any>(() => {
-    return {
-      firstName: "",
-      lastName: "",
-      email: "",
-      phoneNumber: "",
-    };
-  }, []);
   const [dataProfile, setDataProfile] = useState<Agent>();
   const [banner, setBanner] = useState<{
     isShow: boolean;
@@ -45,20 +34,14 @@ export default function IndexProfileManager() {
   });
   const { show } = useToast();
   const { t, i18n } = useTranslation();
-
-  const { run: fetDetailsProfile, processing } = useJob(
-    (payload: string) => {
-      return AgentRepository()
-        .getOne(payload)
-        .pipe(
-          map(({ data }) => {
-            setDataProfile(data.data);
-            return data.data;
-          })
-        );
+  const { isLoading: isLoadingProfile } = useQuery({
+    queryKey: ["profile", token?.sub],
+    queryFn: () => getProfile(token?.sub ?? ""),
+    onSuccess: (data: any) => {
+      setDataProfile(data?.data?.data);
     },
-    { showLoading: false }
-  );
+    enabled: !!token?.sub,
+  });
   const { run: submit, processing: loading } = useJob((dataSubmit: any) => {
     const { _id } = dataSubmit;
     return AgentRepository()
@@ -73,16 +56,17 @@ export default function IndexProfileManager() {
             });
             show(t("messages:success.update_profile"));
             setDataProfile(data.data);
-          } else {
-            setBanner({
-              isShow: true,
-              type: "critical",
-              message: t("messages:error.update_profile"),
-            });
-            show(t("messages:error.update_profile"), {
-              isError: true,
-            });
           }
+          // else {
+          //   setBanner({
+          //     isShow: true,
+          //     type: "critical",
+          //     message: t("messages:error.update_profile"),
+          //   });
+          //   show(t("messages:error.update_profile"), {
+          //     isError: true,
+          //   });
+          // }
         }),
         catchError((error) => {
           setBanner({
@@ -106,51 +90,41 @@ export default function IndexProfileManager() {
   }, [formRef.current]);
 
   const profileProfile = (
-    <ProfileForm
-      ref={formRef}
-      updateForm={updateForm}
-      initialValues={dataProfile || initialValuesForm}
-      submit={submit}
-    />
+    <>
+      <ProfileForm
+        ref={formRef}
+        updateForm={updateForm}
+        initialValues={dataProfile || initialValuesForm}
+        submit={submit}
+      />
+      <div className={styles.groupButton}>
+        <Button onClick={handleResetForm}>Cancel</Button>
+        <Button
+          primary
+          onClick={handleSubmitForm}
+          loading={loading}
+          disabled={!formRef.current?.dirty}
+        >
+          Save
+        </Button>
+      </div>
+    </>
   );
 
-  useMount(() => fetDetailsProfile(token.sub ?? ""));
-
   return (
-    <>
-      {formRef.current?.dirty && (
-        <ContextualSaveBar
-          fullWidth
-          message="Unsaved changes"
-          saveAction={{
-            onAction: handleSubmitForm,
-            disabled: !formRef.current?.dirty,
-            loading: loading,
-          }}
-          discardAction={{
-            onAction: handleResetForm,
-          }}
-        />
-      )}
-      {processing ? (
-        <>
-          <Page fullWidth>
-            <Layout>
-              <Layout.Section>
-                <LegacyCard sectioned>
-                  <TextContainer>
-                    <SkeletonDisplayText size="extraLarge" />
-                    <SkeletonBodyText />
-                  </TextContainer>
-                </LegacyCard>
-              </Layout.Section>
-            </Layout>
-          </Page>
-        </>
-      ) : (
-        <Page fullWidth>
-          <Layout>
-            <Layout.Section>
+    <section className="page-wrap">
+      <div className={styles.pageContent}>
+        <Text variant="headingLg" as="h1">
+          Profile
+        </Text>
+        <div className={styles.wrapForm}>
+          {isLoadingProfile ? (
+            <SkeletonForm
+              noHeading
+              listLabels={["First name", "Last name", "Email", "Phone"]}
+            />
+          ) : (
+            <>
               {banner.isShow ? (
                 <Banner
                   status={banner.type}
@@ -159,13 +133,12 @@ export default function IndexProfileManager() {
                   {banner.message}
                 </Banner>
               ) : null}
-            </Layout.Section>
-            <Layout.Section>
+
               <Card sectioned>{profileProfile}</Card>
-            </Layout.Section>
-          </Layout>
-        </Page>
-      )}
-    </>
+            </>
+          )}
+        </div>
+      </div>
+    </section>
   );
 }
