@@ -383,24 +383,22 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const handleOpenModalDelete = useCallback((id: string) => {
     setIdDelete(id);
   }, []);
-  const handleApply = (values: any, filter = false) => {
+  const handleApply = (values: any) => {
     getListTicketFilter({
       page: 1,
       limit: 10,
+      priority: values.priority || undefined,
+      status: values.status || undefined,
+      customer: values.customer || undefined,
+      tags: values.tags?.toString() || undefined,
+    });
+    setFilterObject({
       priority: values.priority,
       status: values.status,
       customer: values.customer,
       tags: values.tags?.toString(),
     });
-    if (filter) {
-      setFilterObject({
-        priority: values.priority,
-        status: values.status,
-        customer: values.customer,
-        tags: values.tags?.toString(),
-      });
-      setActiveButtonIndex(values.status || "ALL");
-    }
+    setActiveButtonIndex(values.status || "ALL");
   };
 
   useDidUpdate(() => {
@@ -892,7 +890,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                             <Pagination
                               total={meta.totalCount}
                               pageSize={filterData.limit ?? 0}
-                              currentPage={filterData.page}
+                              currentPage={meta.page}
                               onChangePage={(page) =>
                                 setFilterData((val) => {
                                   return { ...val, page };
