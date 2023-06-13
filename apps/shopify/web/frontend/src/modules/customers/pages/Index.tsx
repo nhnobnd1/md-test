@@ -1,4 +1,4 @@
-import { useNavigate, useToggle } from "@moose-desk/core";
+import { MediaScreen, useNavigate, useToggle } from "@moose-desk/core";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { BaseListCustomerRequest } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
@@ -15,7 +15,7 @@ import {
 import { MobileBackArrowMajor, SearchMinor } from "@shopify/polaris-icons";
 import classNames from "classnames";
 import { useMemo, useState } from "react";
-import { isMobile } from "react-device-detect";
+// import { isMobile } from "react-device-detect";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "react-query";
 import { ButtonDelete } from "src/components/Button/ButtonDelete";
@@ -25,6 +25,7 @@ import { Pagination } from "src/components/Pagination";
 import { Search } from "src/components/Search/Search";
 import { SkeletonTable } from "src/components/Skelaton/SkeletonTable";
 import env from "src/core/env";
+import useScreenType from "src/hooks/useScreenType";
 import { deleteCustomer, getListCustomer } from "src/modules/customers/api/api";
 import { CustomModal } from "src/modules/customers/component/Modal";
 import styles from "./styles.module.scss";
@@ -39,7 +40,8 @@ const defaultFilter = () => ({
 });
 export default function CustomerIndexPage() {
   const navigate = useNavigate();
-
+  const [screenType, screenWidth] = useScreenType();
+  const isMobile = Boolean(screenWidth < MediaScreen.MD);
   const { t } = useTranslation();
   const { show } = useToast();
   const { state: visible, on: openPopup, off: closePopup } = useToggle();
@@ -156,7 +158,7 @@ export default function CustomerIndexPage() {
               {isMobile ? (
                 <Button icon={SearchMinor} onClick={onToggleSearch}></Button>
               ) : (
-                <div style={{ width: 448 }} className="md-input">
+                <div className={styles.searchInputWrap}>
                   <Search onTypeSearch={handleSearch} />
                 </div>
               )}
