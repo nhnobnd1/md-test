@@ -63,46 +63,45 @@ export default function Enable2FAModal({
 
   return (
     <Modal
-      large
       open={open}
       onClose={handleCloseModal}
       title="Enable Two-Factor Authentication"
     >
-      <Modal.Section>
-        {step === 1 ? (
-          <Enable2FA
-            initialValues={status2FA}
-            handleData2FA={setStatus2FA}
-            setProps={setProps}
-            handleCloseModal={handleCloseModal}
-            fetch2FAStatus={fetch2FAStatus}
-            show={show}
-            setBanner={setBanner}
-            setStep={setStep}
-          />
-        ) : null}
-        {step === 2 ? (
-          <EmailOTP
-            initialValues={status2FA}
-            back={setStep}
-            handleCloseModal={handleCloseModal}
-            fetch2FAStatus={fetch2FAStatus}
-            show={show}
-            setBanner={setBanner}
-          />
-        ) : null}
-        {step === 3 ? (
-          <ExternalAuth
-            initialValues={status2FA}
-            props={props}
-            back={setStep}
-            handleCloseModal={handleCloseModal}
-            fetch2FAStatus={fetch2FAStatus}
-            show={show}
-            setBanner={setBanner}
-          />
-        ) : null}
-      </Modal.Section>
+      {/* <Modal.Section> */}
+      {step === 1 ? (
+        <Enable2FA
+          initialValues={status2FA}
+          handleData2FA={setStatus2FA}
+          setProps={setProps}
+          handleCloseModal={handleCloseModal}
+          fetch2FAStatus={fetch2FAStatus}
+          show={show}
+          setBanner={setBanner}
+          setStep={setStep}
+        />
+      ) : null}
+      {step === 2 ? (
+        <EmailOTP
+          initialValues={status2FA}
+          back={setStep}
+          handleCloseModal={handleCloseModal}
+          fetch2FAStatus={fetch2FAStatus}
+          show={show}
+          setBanner={setBanner}
+        />
+      ) : null}
+      {step === 3 ? (
+        <ExternalAuth
+          initialValues={status2FA}
+          props={props}
+          back={setStep}
+          handleCloseModal={handleCloseModal}
+          fetch2FAStatus={fetch2FAStatus}
+          show={show}
+          setBanner={setBanner}
+        />
+      ) : null}
+      {/* </Modal.Section> */}
     </Modal>
   );
 }
