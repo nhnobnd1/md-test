@@ -22,7 +22,7 @@ export const ButtonTrashTicket = ({
   const [active, setActive] = useState(false);
   const activator = (
     <Button
-      primary
+      // primary
       destructive={destructive}
       onClick={() => {
         setActive(true);

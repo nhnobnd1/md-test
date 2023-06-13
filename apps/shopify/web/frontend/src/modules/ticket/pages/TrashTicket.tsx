@@ -86,6 +86,8 @@ const TrashTicket: FC<TrashTicketProps> = () => {
       NEW: 0,
     },
   });
+  const [showTitle, setShowTitle] = useState(true);
+
   const [meta, setMeta] = useState<any>();
   const [activeButtonIndex, setActiveButtonIndex] = useState("TRASH");
   const listSort = [
@@ -124,14 +126,7 @@ const TrashTicket: FC<TrashTicketProps> = () => {
       };
     });
   }, []);
-  const handleQueryValueRemove = useCallback(() => {
-    setFilterData((old: any) => {
-      return {
-        ...old,
-        query: "",
-      };
-    });
-  }, []);
+
   const { run: getListTagApi } = useJob((payload: GetListTagRequest) => {
     return TagRepository()
       .getList(payload)
@@ -152,8 +147,6 @@ const TrashTicket: FC<TrashTicketProps> = () => {
                 limit: payload.limit,
               });
             }
-          } else {
-            // message.error("Get data ticket failed");
           }
         })
       );
@@ -166,8 +159,6 @@ const TrashTicket: FC<TrashTicketProps> = () => {
           if (data.statusCode === 200) {
             getListTrashApi(filterData);
             getStatisticTicket();
-          } else {
-            // message.error("Get data ticket failed");
           }
         })
       );
@@ -179,8 +170,6 @@ const TrashTicket: FC<TrashTicketProps> = () => {
         map(({ data }) => {
           if (data.statusCode === 200) {
             setStatistic(data);
-          } else {
-            // message.error("Get data ticket failed");
           }
         })
       );
@@ -198,8 +187,6 @@ const TrashTicket: FC<TrashTicketProps> = () => {
               }));
               setTickets(tickets);
               setMeta(data.metadata);
-            } else {
-              // message.error("Get data ticket failed");
             }
           })
         );
@@ -213,8 +200,6 @@ const TrashTicket: FC<TrashTicketProps> = () => {
           if (data.statusCode === 200) {
             getListTrashApi(filterData);
             getStatisticTicket();
-          } else {
-            // message.error("Get data ticket failed");
           }
         })
       );
@@ -313,9 +298,6 @@ const TrashTicket: FC<TrashTicketProps> = () => {
       </IndexTable.Row>
     )
   );
-  const resetFilterData = useCallback(() => {
-    setFilterData(defaultFilter());
-  }, []);
 
   useEffect(() => {
     getListTagApi({
@@ -337,21 +319,76 @@ const TrashTicket: FC<TrashTicketProps> = () => {
     <>
       <style scoped>{screenType === ScreenType.SM ? css : ""}</style>{" "}
       <Page
-        // breadcrumbs={[{ onAction: () => navigate(TicketRoutePaths.Index) }]}
+        title={
+          (
+            <div
+              className={`min-w-[100px]  ${
+                showTitle ? "inline-block" : "hidden"
+              }`}
+            >
+              <span>Tickets</span>
+            </div>
+          ) as any
+        }
         fullWidth
         primaryAction={
-          <div className="flex gap-2">
-            <div className="w-full">
-              <div className="flex gap-2 items-center justify-end">
-                <HeaderListTicket
-                  handleSearch={handleFiltersQueryChange}
-                  handleAddNew={() => {
-                    navigate(generatePath(TicketRoutePaths.Create));
-                  }}
-                ></HeaderListTicket>
+          selectedResources.length === 0 ? (
+            <div className="flex gap-2">
+              <div className="w-full">
+                <div className="flex gap-2 items-center justify-end">
+                  <HeaderListTicket
+                    setShowTitle={setShowTitle}
+                    handleSearch={handleFiltersQueryChange}
+                    handleAddNew={() => {
+                      navigate(generatePath(TicketRoutePaths.Create));
+                    }}
+                  ></HeaderListTicket>
+                </div>
               </div>
             </div>
-          </div>
+          ) : screenWidth <= MediaScreen.LG ? (
+            <div className="flex gap-2">
+              <div className="w-full">
+                <div className="flex gap-2 items-center justify-end">
+                  <HeaderListTicket
+                    setShowTitle={setShowTitle}
+                    handleSearch={handleFiltersQueryChange}
+                    handleAddNew={() => {
+                      navigate(generatePath(TicketRoutePaths.Create));
+                    }}
+                  ></HeaderListTicket>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="flex gap-2">
+              <ButtonTrashTicket
+                title="Are you sure that you want to permanently remove these tickets?"
+                content="These tickets will be remove permanently. This action cannot be undone."
+                action={() => {
+                  handleDelete(selectedResources);
+                }}
+                primaryContent="Remove"
+                text={
+                  screenType === ScreenType.SM ? "Delete" : "Delete Selected"
+                }
+                destructive
+                icon={<CancelIcon fontSize={16} />}
+              />
+              <ButtonTrashTicket
+                title="Are you sure that you want to restore these tickets"
+                content="These tickets will be moved back to the Ticket list. You can continue working with them."
+                action={() => {
+                  handleRestore(selectedResources);
+                }}
+                primaryContent="Restore"
+                text={
+                  screenType === ScreenType.SM ? "Restore" : "Restore Selected"
+                }
+                icon={<RestoreIcon fontSize={16} />}
+              />
+            </div>
+          )
         }
       >
         <LegacyCard sectioned>
@@ -512,7 +549,7 @@ const TrashTicket: FC<TrashTicketProps> = () => {
                 }}
                 primaryContent="Remove"
                 text={
-                  screenType === ScreenType.SM ? "Deleted" : "Deleted Selected"
+                  screenType === ScreenType.SM ? "Delete" : "Delete Selected"
                 }
                 destructive
                 icon={<CancelIcon fontSize={16} />}
