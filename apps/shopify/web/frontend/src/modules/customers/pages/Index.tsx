@@ -106,10 +106,14 @@ export default function CustomerIndexPage() {
         <IndexTable.Cell className="py-3">
           <ButtonGroup>
             <div className="flex gap-2">
-              <ButtonEdit onClick={() => handleOpenPopup(records)}></ButtonEdit>
+              <ButtonEdit
+                isTable
+                onClick={() => handleOpenPopup(records)}
+              ></ButtonEdit>
               <ButtonDelete
+                isTable
                 onClick={() => handleOpenModalDelete(records)}
-                destructive
+                // destructive
               ></ButtonDelete>
             </div>
           </ButtonGroup>

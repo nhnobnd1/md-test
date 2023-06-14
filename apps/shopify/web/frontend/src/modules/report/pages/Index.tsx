@@ -1,4 +1,4 @@
-import { PageComponent } from "@moose-desk/core";
+import { MediaScreen, PageComponent } from "@moose-desk/core";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { LegacyCard, SkeletonBodyText, Text } from "@shopify/polaris";
 import dayjs from "dayjs";
@@ -7,6 +7,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQueries } from "react-query";
 import MDDatePicker from "src/components/DatePicker/MDDatePicker";
 import useGlobalData from "src/hooks/useGlobalData";
+import useScreenType from "src/hooks/useScreenType";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import {
   getFirstResponseTime,
@@ -31,6 +32,8 @@ enum ChartReportData {
 const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
   const { subDomain } = useSubdomain();
   const { timezone }: any = useGlobalData(true, subDomain || "");
+  const [screenType, screenWidth] = useScreenType();
+  const isMobile = Boolean(screenWidth < MediaScreen.MD);
   const [filter, setFilter] = useState({
     startTime: "",
     endTime: "",
@@ -105,17 +108,20 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
         <Text variant="headingLg" as="h1">
           Reporting
         </Text>
-        <div className={styles.groupFilter}>
-          <div className={styles.dateTime}>
-            <MDDatePicker
-              defaultRangeTime={{
-                start: formatDefaultTimeRangePicker(filter.startTime, timezone),
-                end: formatDefaultTimeRangePicker(filter.endTime, timezone),
-              }}
-              onSubmitTime={handleSubmitDate}
-              datePickerClassName={styles.datePickerCustomer}
-            />
-          </div>
+        <div
+          className={styles.groupFilter}
+          style={!isMobile ? { marginBottom: 0 } : {}}
+        >
+          {/* <div className={styles.dateTime}> */}
+          <MDDatePicker
+            defaultRangeTime={{
+              start: formatDefaultTimeRangePicker(filter.startTime, timezone),
+              end: formatDefaultTimeRangePicker(filter.endTime, timezone),
+            }}
+            onSubmitTime={handleSubmitDate}
+            datePickerClassName={styles.datePickerCustomer}
+          />
+          {/* </div> */}
         </div>
         <div className={styles.statistic}>
           <Statistic

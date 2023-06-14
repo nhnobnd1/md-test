@@ -70,20 +70,20 @@ const ByAgentPage = (props: ByAgentPageProps) => {
           By Agent
         </Text>
         <div className={styles.groupFilter}>
-          <div className={styles.dateTime}>
-            <MDDatePicker
-              defaultRangeTime={{
-                start: formatDefaultTimeRangePicker(
-                  filterData.startTime,
-                  timezone
-                ),
+          {/* <div className={styles.dateTime}> */}
+          <MDDatePicker
+            defaultRangeTime={{
+              start: formatDefaultTimeRangePicker(
+                filterData.startTime,
+                timezone
+              ),
 
-                end: formatDefaultTimeRangePicker(filterData.endTime, timezone),
-              }}
-              onSubmitTime={handleSubmitDate}
-              datePickerClassName={styles.datePickerCustomer}
-            />
-          </div>
+              end: formatDefaultTimeRangePicker(filterData.endTime, timezone),
+            }}
+            onSubmitTime={handleSubmitDate}
+            datePickerClassName={styles.datePickerCustomer}
+          />
+          {/* </div> */}
         </div>
       </div>
 

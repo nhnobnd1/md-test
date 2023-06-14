@@ -43,7 +43,7 @@ const listSort = ["tagName", "totalTicket", "percentage", "percentageClosed"];
 export const ByTags: PageComponent<ByTagsProps> = () => {
   const { subDomain } = useSubdomain();
   const [screenType, screenWidth] = useScreenType();
-  const isMobileOrTablet = Boolean(screenWidth <= MediaScreen.LG);
+  const isMobile = Boolean(screenWidth < MediaScreen.MD);
   const { timezone }: any = useGlobalData(false, subDomain || "");
   const { state: isSearch, toggle: onToggleSearch } = useToggle(false);
   const [filterData, setFilterData] = useState<ITableFilter | any>({
@@ -139,18 +139,14 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
           </div>
         </div>
       ) : (
-        <div
-          className={classNames(styles.groupTopTable, {
-            "align-start": !isMobileOrTablet,
-          })}
-        >
+        <div className={classNames(styles.groupTopTable)}>
           <div>
             <Text variant="headingLg" as="h1">
               By Tags
             </Text>
           </div>
-          <div className="d-flex align-center">
-            {isMobileOrTablet ? (
+          <div className="d-flex align-center justify-end">
+            {isMobile ? (
               <div className={styles.buttonSearch}>
                 <Button icon={SearchMinor} onClick={onToggleSearch}></Button>
               </div>
@@ -159,26 +155,25 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
                 <Search onTypeSearch={handleSearchInput} />
               </div>
             )}
-            <div className={styles.dateTime}>
-              <MDDatePicker
-                defaultRangeTime={{
-                  start: formatDefaultTimeRangePicker(
-                    filterData.startTime,
-                    timezone
-                  ),
-
-                  end: formatDefaultTimeRangePicker(
-                    filterData.endTime,
-                    timezone
-                  ),
-                }}
-                onSubmitTime={handleSubmitDate}
-                datePickerClassName={styles.datePickerCustomer}
-              />
-            </div>
           </div>
         </div>
       )}
+      <div className={styles.groupFilter}>
+        <div className={styles.dateTime}>
+          <MDDatePicker
+            defaultRangeTime={{
+              start: formatDefaultTimeRangePicker(
+                filterData.startTime,
+                timezone
+              ),
+
+              end: formatDefaultTimeRangePicker(filterData.endTime, timezone),
+            }}
+            onSubmitTime={handleSubmitDate}
+            datePickerClassName={styles.datePickerCustomer}
+          />
+        </div>
+      </div>
       {isFetching && <Loading />}
 
       {isLoading ? (
