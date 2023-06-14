@@ -60,7 +60,7 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
     setFilterData((pre: any) => ({
       ...pre,
       startTime: String(
-        dayjs().tz(timezone).subtract(2, "weeks").startOf("day").unix()
+        dayjs().tz(timezone).subtract(14, "days").startOf("day").unix()
       ),
       endTime: String(dayjs().tz(timezone).endOf("day").unix()),
     }));

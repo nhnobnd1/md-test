@@ -42,7 +42,7 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
     if (!timezone) return;
     setFilter({
       startTime: String(
-        dayjs().tz(timezone).subtract(2, "weeks").startOf("day").unix()
+        dayjs().tz(timezone).subtract(14, "days").startOf("day").unix()
       ),
       endTime: String(dayjs().tz(timezone).endOf("day").unix()),
     });
