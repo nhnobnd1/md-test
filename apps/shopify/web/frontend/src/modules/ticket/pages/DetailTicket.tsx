@@ -66,7 +66,6 @@ import { RowMessage } from "src/modules/ticket/components/RowMessage/RowMessage"
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import * as Yup from "yup";
 import FaMailReply from "~icons/fa/mail-reply";
-import SearchIcon from "~icons/material-symbols/search";
 import BackIcon from "~icons/mingcute/back-2-fill";
 import styles from "./style.module.scss";
 export interface ChatItem {
@@ -547,9 +546,7 @@ const DetailTicket = (props: DetailTicketProps) => {
   };
 
   const handleToggleSearch = () => {
-    if (screenWidth >= MediaScreen.XL) {
-      setVisible(!visible);
-    }
+    setVisible(!visible);
   };
   useUnMount(() => {
     setVisible(false);
@@ -606,8 +603,8 @@ const DetailTicket = (props: DetailTicketProps) => {
                 handleSaveTicket={handleSaveTicket}
               />
               <Button
-                onClick={() => {}}
-                icon={<SearchIcon style={{ fontSize: 16 }} />}
+                onClick={handleToggleSearch}
+                icon={PriceLookupMinor}
               ></Button>
             </div>
           </div>

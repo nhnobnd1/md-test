@@ -25,7 +25,6 @@ import { PriceLookupMinor } from "@shopify/polaris-icons";
 import { FormikProps } from "formik";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { catchError, map, of } from "rxjs";
-import { Banner } from "src/components/Banner";
 import { useBanner } from "src/hooks/useBanner";
 import usePreventNav from "src/hooks/usePreventNav";
 import useSaveDataGlobal from "src/hooks/useSaveDataGlobal";
@@ -99,9 +98,7 @@ const CreateTicket = (props: CreateTicketProps) => {
     getPrimaryEmail();
   }, []);
   const handleToggleSearch = () => {
-    if (screenWidth >= MediaScreen.MD) {
-      setVisible(!visible);
-    }
+    setVisible(!visible);
   };
 
   return (
@@ -139,12 +136,6 @@ const CreateTicket = (props: CreateTicketProps) => {
           fullWidth
         >
           <Layout>
-            {banner.visible && (
-              <Layout.Section>
-                <Banner banner={banner} onDismiss={closeBanner}></Banner>
-              </Layout.Section>
-            )}
-
             <Layout.Section>
               <LegacyCard sectioned>
                 <div className={visible ? "d-flex" : ""}>
