@@ -6,6 +6,9 @@
   margin: 20px 0;
   @include mq(md, "max") {
     margin: 16px 0 10px;
+    .dateTime {
+      padding: 0 16px;
+    }
   }
 }
 .wrapTop {
@@ -45,20 +48,16 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
   @include mq(md, "max") {
     padding: 0 16px;
   }
 
   .search {
     width: 385px;
-    margin-right: 8px;
-    @include mq(md, "max") {
+    @include breakpoints(md, lg) {
       // margin: 0 8xpx 0px;
+      width: 300px;
     }
-  }
-  .buttonSearch {
-    margin-right: 8px;
   }
 }
 .groupSearchOnMobile {
