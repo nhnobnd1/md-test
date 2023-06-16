@@ -23,7 +23,7 @@ export interface AgentFormValues {
 
 const AgentForm = ({ disableForm = false, ...props }: AgentFormProps) => {
   const options = [
-    { label: "Super Admin", value: Role.Admin },
+    { label: "System Admin", value: Role.Admin },
     { label: "Agent Leader", value: Role.AgentLeader },
     { label: "Basic Agent", value: Role.BasicAgent },
   ];

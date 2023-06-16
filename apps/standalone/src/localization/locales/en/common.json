@@ -82,7 +82,7 @@
     "password_rules": "The password must be 8 characters long and must be a combination of uppercase letters, lowercase letters, numbers, and symbols"
   },
   "roles": {
-    "super_admin": "Super Admin",
+    "super_admin": "System Admin",
     "agent_leader": "Agent Leader",
     "basic_leader": "Basic Leader"
   },

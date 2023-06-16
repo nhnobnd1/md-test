@@ -37,7 +37,7 @@ export const AgentForm = ({
   }, [props.initialValues]);
 
   const options = [
-    { label: "Super Admin", value: Role.Admin },
+    { label: "System Admin", value: Role.Admin },
     { label: "Agent Leader", value: Role.AgentLeader },
     { label: "Basic Agent", value: Role.BasicAgent },
   ];

@@ -1,3 +1,4 @@
+import { EditOutlined } from "@ant-design/icons";
 import {
   useDebounceFn,
   useJob,
@@ -11,7 +12,7 @@ import {
   GetListAgentRequest,
   Role,
 } from "@moose-desk/repo";
-import { Input, TableProps, Tag } from "antd";
+import { Button, Input, TableProps, Tag, Tooltip } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -50,7 +51,7 @@ const AgentsIndex = () => {
     page: 1,
     limit: env.DEFAULT_PAGE_SIZE,
   });
-  const { isAgent } = usePermission();
+  const { isAgent, isLead } = usePermission();
 
   const [filterData, setFilterData] =
     useState<GetListAgentRequest>(defaultFilter);
@@ -205,12 +206,12 @@ const AgentsIndex = () => {
               render={(_, record: Agent) => (
                 <span
                   className={
-                    !isAgent
+                    !isAgent && !(isLead && record.role === Role.Admin)
                       ? `cursor-pointer hover:underline hover:text-blue-500`
                       : ``
                   }
                   onClick={() => {
-                    if (!isAgent) {
+                    if (!isAgent && !(isLead && record.role === Role.Admin)) {
                       handleEdit(record);
                     }
                   }}
@@ -277,14 +278,27 @@ const AgentsIndex = () => {
               <Table.Column
                 align="center"
                 title="Action"
-                render={(_, record: Agent) => (
-                  <TableAction
-                    record={record}
-                    edit={!isAgent}
-                    onlyIcon
-                    onEdit={handleEdit}
-                  />
-                )}
+                render={(_, record: Agent) =>
+                  !isAgent && !(isLead && record.role === Role.Admin) ? (
+                    <TableAction
+                      record={record}
+                      edit={!isAgent}
+                      onlyIcon
+                      onEdit={handleEdit}
+                    />
+                  ) : (
+                    <Tooltip
+                      placement="top"
+                      title={"You do not have permission to edit this account"}
+                    >
+                      <Button
+                        type="primary"
+                        disabled
+                        icon={<EditOutlined />}
+                      ></Button>
+                    </Tooltip>
+                  )
+                }
               />
             ) : (
               <></>
