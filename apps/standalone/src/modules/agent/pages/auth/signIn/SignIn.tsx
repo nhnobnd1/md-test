@@ -227,10 +227,10 @@ export const SignIn = () => {
                       </span>
                     </div>
                   </div>
-                  <div className="mt-5 w-[80%] mx-auto text-center">
+                  {/* <div className="mt-5 w-[80%] mx-auto text-center">
                     Want to get started with MooseDesk? Create a{" "}
                     <span className="link">free account</span> here.
-                  </div>
+                  </div> */}
                 </Form>
               </div>
             </div>
@@ -253,10 +253,10 @@ export const SignIn = () => {
                       Return to home page
                     </span>
                   </div>
-                  <div>
+                  {/* <div>
                     Want to get started with MooseDesk? Create a{" "}
                     <span className="link">free account</span> here.
-                  </div>
+                  </div> */}
                 </div>
               ) : (
                 <>
