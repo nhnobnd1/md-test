@@ -65,7 +65,7 @@ export const DetailOrderCustomer = memo(({ dataOrder }: IProps) => {
       style: "text-bold",
     },
   ];
-  console.log(dataOrder?.financial_status, dataOrder?.fulfillment_status);
+
   const memoDataSource = useMemo(() => {
     const listRefundsItem = dataOrder?.refunds;
     const listRefunds: any = [];

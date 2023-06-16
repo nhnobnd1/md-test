@@ -179,7 +179,6 @@ export const ListTicketCustomer = memo(({ customerId }: IProps) => {
       </IndexTable.Row>
     )
   );
-  console.log(isLoading, "loading");
   return (
     <div className={styles.wrapTableTicketCustomer}>
       <div className={classNames(styles.searchWrap)}>

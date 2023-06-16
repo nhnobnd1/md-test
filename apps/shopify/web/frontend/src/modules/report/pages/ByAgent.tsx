@@ -32,7 +32,7 @@ const ByAgentPage = (props: ByAgentPageProps) => {
     if (!timezone) return;
     setFilterData({
       startTime: String(
-        dayjs().tz(timezone).subtract(2, "weeks").startOf("day").unix()
+        dayjs().tz(timezone).subtract(14, "days").startOf("day").unix()
       ),
       endTime: String(dayjs().tz(timezone).endOf("day").unix()),
     });
