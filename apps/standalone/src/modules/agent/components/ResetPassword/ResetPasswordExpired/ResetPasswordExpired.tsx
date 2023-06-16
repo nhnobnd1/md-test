@@ -25,10 +25,10 @@ const ResetPasswordExpired = () => {
                 Return to home page
               </span>
             </div>
-            <div>
+            {/* <div>
               Want to get started with MooseDesk? Create a{" "}
               <span className="link">free account</span> here.
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

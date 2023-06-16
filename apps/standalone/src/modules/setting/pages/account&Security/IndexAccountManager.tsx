@@ -175,7 +175,7 @@ export default function IndexAccountManager({ props }: any) {
       enableReinitialize
       form={form}
     >
-      <Card title="Auto-Join Settings">
+      {/* <Card title="Auto-Join Settings">
         <div className="flex">
           <div className="flex items-center  mt-1">
             <Form.Item name="autoJoinEnabled">
@@ -224,7 +224,7 @@ export default function IndexAccountManager({ props }: any) {
             </Form.Item>
           </div>
         </div>
-      </Card>
+      </Card> */}
       <Card title="Two-Factor Authentication (2FA)" className="mt-8">
         <div className="flex">
           <div className="flex items-center">
