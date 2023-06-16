@@ -270,7 +270,7 @@ export const PopupAgent = ({
           map(
             ({ data }) => {
               if (data.statusCode === 200) {
-                message.success(t("messages:error.active_agent"));
+                message.success(t("messages:success.active_agent"));
                 onChange && onChange();
                 getDetailAgentApi(id);
               } else {
