@@ -152,7 +152,11 @@ export default function IndexAccountManager({ props }: any) {
   // update data
   const handleSubmit = useCallback(
     (data: any) => {
-      const dataSubmit = { ...data, whitelistDomains: selectedDomain };
+      const dataSubmit = {
+        ...data,
+        whitelistDomains: selectedDomain,
+        autoJoinEnabled: false,
+      };
       updateAccountMutate(dataSubmit);
     },
     [selectedDomain]
@@ -209,7 +213,7 @@ export default function IndexAccountManager({ props }: any) {
                 <Text as="h2" variant="headingMd">
                   Auto-Join Settings
                 </Text>
-                {/* {isLoading ? (
+                {isLoading ? (
                   <div>
                     <br />
                     <SkeletonBodyText lines={3} />
@@ -230,16 +234,16 @@ export default function IndexAccountManager({ props }: any) {
                       <Link> {getLinkSignUp(import.meta.env.MODE)}</Link>
                     </div>
                   </div>
-                )} */}
+                )}
 
                 <div className={styles.domainForm}>
-                  {/* <div className={styles.labels}>
+                  <div className={styles.labels}>
                     <Text variant="bodyMd" as="span">
                       Email domain:
                     </Text>
-                  </div> */}
+                  </div>
 
-                  {/* {isLoading ? (
+                  {isLoading ? (
                     <div>
                       <br />
                       <SkeletonBodyText lines={1} />
@@ -252,7 +256,7 @@ export default function IndexAccountManager({ props }: any) {
                         disabled={disabled}
                       />
                     </FormItem>
-                  )} */}
+                  )}
                 </div>
                 <div className="mt-2">
                   <FormItem name="whitelistDomains">

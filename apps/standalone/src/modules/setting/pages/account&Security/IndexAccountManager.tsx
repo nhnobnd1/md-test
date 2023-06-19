@@ -1,6 +1,6 @@
 import { useJob } from "@moose-desk/core";
 import { AccessManger, UserSettingRepository } from "@moose-desk/repo";
-import { Button, Card, Space, Tag } from "antd";
+import { Button, Card, Tag } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
@@ -9,7 +9,6 @@ import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { usePermission } from "src/hooks/usePerrmisson";
 import { useSubdomain } from "src/hooks/useSubdomain";
-import InputDisableSubmit from "src/modules/setting/component/InputDisableSubmit/InputDisableSubmit";
 import SwitchForm from "src/modules/setting/component/Switch/Switch";
 export default function IndexAccountManager({ props }: any) {
   const [form] = Form.useForm();
@@ -129,7 +128,11 @@ export default function IndexAccountManager({ props }: any) {
   // update data
   const handleSubmit = useCallback(
     (data: any) => {
-      const dataSubmit = { ...data, whitelistDomains: selectedDomain };
+      const dataSubmit = {
+        ...data,
+        whitelistDomains: selectedDomain,
+        autoJoinEnabled: false,
+      };
       submit(dataSubmit);
     },
     [selectedDomain]
