@@ -1,5 +1,6 @@
 import { Spin, SpinProps } from "antd";
 import classNames from "classnames";
+import { Loader } from "src/components/Loader/Loader";
 import "./Loading.scss";
 
 interface LoadingProps extends SpinProps {
@@ -19,7 +20,11 @@ export const Loading = ({
   return (
     <div className="LoadingPage">
       {fullPage ? (
-        <Spin className="LoadingPage__full-page" {...props}>
+        <Spin
+          className="LoadingPage__full-page"
+          indicator={<Loader />}
+          {...props}
+        >
           {children}
         </Spin>
       ) : (
