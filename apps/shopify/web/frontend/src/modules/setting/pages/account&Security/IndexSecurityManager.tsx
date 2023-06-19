@@ -1,4 +1,5 @@
 import { useJob } from "@moose-desk/core";
+import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { AccountRepository } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
@@ -69,7 +70,7 @@ export default function IndexAccountManager() {
     isLoading,
     refetch: fetchingStatus,
   }: any = useQuery({
-    queryKey: ["2FAStatus"],
+    queryKey: [QUERY_KEY.TWO_FA_STATUS],
     queryFn: () => getStatus2FA(),
   });
   const method = useMemo(() => {
