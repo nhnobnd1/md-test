@@ -1,84 +1,70 @@
-import { TokenManager, useJob, useMount } from "@moose-desk/core";
-import { AgentRepository } from "@moose-desk/repo";
+import { TokenManager } from "@moose-desk/core";
+import { Agent } from "@moose-desk/repo";
 import { Button, Card, Input, Skeleton } from "antd";
 import * as jose from "jose";
-import { useCallback } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { catchError, map, of } from "rxjs";
+import { useMutation, useQuery } from "react-query";
 import { Form } from "src/components/UI/Form";
 import InputPhone from "src/components/UI/InputPhone/InputPhone";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
+import { getProfile, updateProfile } from "src/modules/setting/api/api";
 import { regexPhoneValidate } from "src/regex";
 
 export default function IndexProfileManager() {
   const token = jose.decodeJwt(TokenManager.getToken("base_token") || "");
   const { t } = useTranslation();
-
   const message = useMessage();
   const notification = useNotification();
   const [form] = Form.useForm();
+  const [dataProfile, setDataProfile] = useState<Agent>();
   const {
-    run: fetDetailsProfile,
-    result,
-    processing,
-  } = useJob(
-    (payload: string) => {
-      return AgentRepository()
-        .getOne(payload)
-        .pipe(
-          map(({ data }) => {
-            return data.data;
-          })
-        );
+    data: profiles,
+    isLoading: isLoadingProfile,
+    refetch: refetchProfile,
+  }: any = useQuery({
+    queryKey: ["profile", token.sub],
+    queryFn: () => getProfile(token.sub ?? ""),
+    enabled: !!token.sub,
+    onSuccess: (data: any) => {
+      setDataProfile(data?.data?.data);
     },
-    { showLoading: false }
-  );
-  const { run: submit } = useJob((dataSubmit: any) => {
-    message.loading.show(t("messages:loading.updating_profile"));
-
-    const { _id } = dataSubmit;
-    return AgentRepository()
-      .update(_id, dataSubmit)
-      .pipe(
-        map(({ data }) => {
-          message.loading.hide();
-          if (data.statusCode === 200) {
-            notification.success(t("messages:success.update_profile"));
-            fetDetailsProfile(token.sub ?? "");
-          } else {
-            notification.error(t("messages:error.update_profile"));
-          }
-        }),
-        catchError((error) => {
-          message.loading.hide();
-          notification.error(t("messages:error.update_profile"));
-
-          return of(error);
-        })
-      );
   });
-  const handleSubmitForm = useCallback((value: any) => {
-    submit(value);
-  }, []);
+  const { mutate: submitMutate, isLoading: updating } = useMutation({
+    mutationFn: (payload: any) =>
+      updateProfile(dataProfile?._id || "", payload),
+    onMutate: () => {
+      message.loading.show(t("messages:loading.updating_profile"));
+    },
+    onSuccess: async () => {
+      await refetchProfile();
+      message.loading.hide();
+      notification.success(t("messages:success.update_profile"));
+    },
+    onError: () => {
+      message.loading.hide();
 
+      notification.error(t("messages:error.update_profile"));
+    },
+  });
   const handleResetForm = () => {
-    form.resetFields();
-    fetDetailsProfile(token.sub ?? "");
+    form.setFieldsValue(profiles?.data?.data);
   };
-  useMount(() => fetDetailsProfile(token.sub ?? ""));
+
   return (
     <div>
       <Card title="Profile">
-        {processing ? (
+        {isLoadingProfile || !dataProfile ? (
           <>
             <Skeleton />
           </>
         ) : (
           <Form
-            onFinish={handleSubmitForm}
+            form={form}
+            onFinish={submitMutate}
             layout="vertical"
-            initialValues={result}
+            initialValues={dataProfile}
             enableReinitialize
           >
             <Form.Item name="_id" hidden>
@@ -142,8 +128,15 @@ export default function IndexProfileManager() {
               <InputPhone placeholder="Enter phone number" />
             </Form.Item>
             <div className="flex-1 text-right mt-4">
-              <Button onClick={handleResetForm}>Cancel</Button>
-              <Button htmlType="submit" type="primary" className="ml-4">
+              <Button onClick={handleResetForm} disabled={updating}>
+                Cancel
+              </Button>
+              <Button
+                htmlType="submit"
+                type="primary"
+                className="ml-4"
+                loading={updating}
+              >
                 Save
               </Button>
             </div>

@@ -1,99 +1,61 @@
-import { useJob, useMount } from "@moose-desk/core";
-import { AccountRepository } from "@moose-desk/repo";
+import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { Button, Card, Input, Typography } from "antd";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { catchError, map, of } from "rxjs";
+import { useMutation, useQuery } from "react-query";
 import { Form } from "src/components/UI/Form";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
+import { getStatus2FA, updatePassword } from "src/modules/setting/api/api";
 import Enable2FAModal from "src/modules/setting/component/Security/Enable2FAModal";
+import { RequestPasswordPayload } from "src/modules/setting/helper/interface";
 import { rulesValidatePassword } from "src/regex";
 export default function IndexAccountManager() {
-  const [status, setStatus] = useState(false);
   const { t } = useTranslation();
-
-  const message = useMessage();
   const notification = useNotification();
+  const message = useMessage();
   const [form] = Form.useForm();
-  const [method, setMethod] = useState<{
-    show: boolean;
-    method: string;
-  }>({
-    show: false,
-    method: "Disabled",
+  const {
+    data: statusSecurity,
+    isLoading,
+    refetch: fetchingStatus,
+  }: any = useQuery({
+    queryKey: [QUERY_KEY.TWO_FA_STATUS],
+    queryFn: () => getStatus2FA(),
   });
-  const initialValues = useMemo(
-    () => ({
-      currentPassword: "",
-      newPassword: "",
-      confirmNewPassword: "",
-    }),
-    []
-  );
-  // fetch init data
-  // const token = jose.decodeJwt(TokenManager.getToken("base_token"));
-
-  const { run: fetch2FAStatus } = useJob(
-    () => {
-      return AccountRepository()
-        .userGet2FAStatus()
-        .pipe(
-          map(({ data }) => {
-            setMethod({
-              ...method,
-              show: data.data.twoFactorEnabled,
-              method: data.data.twoFactorMethod,
-            });
-            setStatus(data.data.twoFactorStoreEnabled);
-            return data.data;
-          })
-        );
-    },
-    { showLoading: false }
-  );
+  const method = useMemo(() => {
+    return {
+      show: statusSecurity?.data?.data?.twoFactorEnabled,
+      method: statusSecurity?.data?.data?.twoFactorMethod || "Disabled",
+    };
+  }, [statusSecurity]);
+  const status = useMemo(() => {
+    return statusSecurity?.data?.data?.twoFactorStoreEnabled || false;
+  }, [statusSecurity]);
   // update password
-  const handleSubmit = useCallback((data: any) => {
-    const dataSubmit = { ...data };
-    submit(dataSubmit);
-  }, []);
+  const { mutate: updatePasswordMutate, isLoading: updating } = useMutation({
+    mutationFn: (payload: RequestPasswordPayload) => updatePassword(payload),
+    onMutate: () => {
+      message.loading.show(t("messages:loading.updating_password"));
+    },
+    onSuccess: () => {
+      message.loading.hide();
+      notification.success(t("messages:success.change_password"));
+      handleResetForm();
+    },
+    onError: (error: any) => {
+      message.loading.hide();
 
-  const { run: submit } = useJob((dataSubmit: any) => {
-    message.loading.show(t("messages:loading.updating_password"));
-
-    return AccountRepository()
-      .changePassword(dataSubmit)
-      .pipe(
-        map(({ data }) => {
-          message.loading.hide();
-          if (data.statusCode === 200) {
-            notification.success(t("messages:success.change_password"));
-            handleResetForm();
-          } else {
-            notification.error(t("messages:error.change_password"));
-          }
-        }),
-        catchError((error) => {
-          message.loading.hide();
-          if (error.response.status === 400) {
-            if (error.response.data.error[0] === "PASSWORD_NOT_MATCH") {
-              notification.error(
-                "Current Password not match! Please try again."
-              );
-            } else {
-              notification.error(
-                "Confirm New Password not match with New Password! Please try again."
-              );
-            }
-          } else {
-            notification.error(
-              "System error. Please try again in a few minutes!"
-            );
-          }
-          return of(error);
-        })
-      );
+      if (error.response.status === 400) {
+        if (error.response.data.error[0] === "PASSWORD_NOT_MATCH") {
+          notification.error("Current Password not match! Please try again.");
+        }
+      } else {
+        notification.error("System error. Please try again in a few minutes!");
+      }
+    },
   });
+
   // name method
 
   // reset form
@@ -102,10 +64,6 @@ export default function IndexAccountManager() {
   }, []);
   // modal
   const [open2FA, setOpen2FA] = useState(false);
-  // effect
-  useMount(() => {
-    fetch2FAStatus();
-  });
   return (
     <>
       {open2FA ? (
@@ -113,14 +71,13 @@ export default function IndexAccountManager() {
           open={open2FA}
           setOpen={setOpen2FA}
           initialValue={{ ...method, status }}
-          fetch2FAStatus={fetch2FAStatus}
+          fetch2FAStatus={fetchingStatus}
         />
       ) : null}
       <Card title="Change Password">
         <Form
-          initialValues={initialValues}
           form={form}
-          onFinish={handleSubmit}
+          onFinish={updatePasswordMutate}
           onReset={handleResetForm}
           layout="vertical"
           enableReinitialize
@@ -153,6 +110,7 @@ export default function IndexAccountManager() {
           </Form.Item>
           <Form.Item
             name="confirmNewPassword"
+            dependencies={["newPassword"]}
             label="Confirm New Password"
             rules={[
               {
@@ -174,7 +132,7 @@ export default function IndexAccountManager() {
             <Input minLength={8} type="password" autoComplete="off" />
           </Form.Item>
           <div className="flex-1 text-right mt-4">
-            <Button htmlType="submit" type="primary">
+            <Button htmlType="submit" type="primary" loading={updating}>
               Update Password
             </Button>
           </div>
