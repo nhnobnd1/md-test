@@ -144,7 +144,11 @@ export default function IndexAccountManager({ props }: any) {
   });
   const handleSubmit = useCallback(
     (data: any) => {
-      const dataSubmit = { ...data, whitelistDomains: selectedDomain };
+      const dataSubmit = {
+        ...data,
+        whitelistDomains: selectedDomain,
+        autoJoinEnabled: false,
+      };
       updateAccountMutate(dataSubmit);
     },
     [selectedDomain]

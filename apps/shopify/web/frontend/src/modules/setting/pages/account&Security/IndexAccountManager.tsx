@@ -151,7 +151,11 @@ export default function IndexAccountManager({ props }: any) {
   // update data
   const handleSubmit = useCallback(
     (data: any) => {
-      const dataSubmit = { ...data, whitelistDomains: selectedDomain };
+      const dataSubmit = {
+        ...data,
+        whitelistDomains: selectedDomain,
+        autoJoinEnabled: false,
+      };
       updateAccountMutate(dataSubmit);
     },
     [selectedDomain]
@@ -205,9 +209,9 @@ export default function IndexAccountManager({ props }: any) {
                 ) : // </Layout.Section>
                 null}
                 {/* <Layout.Section> */}
-                <Text as="h2" variant="headingMd">
+                {/* <Text as="h2" variant="headingMd">
                   Auto-Join Settings
-                </Text>
+                </Text> */}
                 {/* {isLoading ? (
                   <div>
                     <br />
@@ -231,14 +235,14 @@ export default function IndexAccountManager({ props }: any) {
                   </div>
                 )} */}
 
-                <div className={styles.domainForm}>
-                  {/* <div className={styles.labels}>
+                {/* <div className={styles.domainForm}>
+                  <div className={styles.labels}>
                     <Text variant="bodyMd" as="span">
                       Email domain:
                     </Text>
-                  </div> */}
+                  </div>
 
-                  {/* {isLoading ? (
+                  {isLoading ? (
                     <div>
                       <br />
                       <SkeletonBodyText lines={1} />
@@ -251,8 +255,8 @@ export default function IndexAccountManager({ props }: any) {
                         disabled={disabled}
                       />
                     </FormItem>
-                  )} */}
-                </div>
+                  )}
+                </div> */}
                 <div className="mt-2">
                   <FormItem name="whitelistDomains">
                     <Stack spacing="tight">{selectedMarkup}</Stack>

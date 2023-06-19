@@ -114,6 +114,25 @@ const BoxSelectAutoReply = (props: BoxSelectAutoReplyProps) => {
           value={inputValue}
           placeholder={props.placeholder || "Search"}
           autoComplete="off"
+          clearButton
+          onClearButtonClick={() => {
+            setInputValue("");
+            props.onChange && props.onChange("");
+          }}
+          onFocus={() => {
+            setOptions(
+              props.dataAutoReply.map((item) => ({
+                label: item.name,
+                value: item.code,
+              }))
+            );
+          }}
+          onBlur={() => {
+            if (options.length === 0) {
+              setInputValue("");
+              props.onChange && props.onChange("");
+            }
+          }}
           suffix={
             <Icon
               accessibilityLabel="select"

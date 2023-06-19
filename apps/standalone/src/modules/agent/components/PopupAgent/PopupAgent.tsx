@@ -105,31 +105,30 @@ export const PopupAgent = ({
       return AgentRepository()
         .create(payload)
         .pipe(
-          map(
-            ({ data }) => {
-              message.loading.hide();
-              if (data.statusCode === 200) {
-                onChange && onChange(true);
-                notification.success(t("messages:success.inactive_email"));
-              } else {
-                if (data.errorCode) {
-                  notification.error(
-                    getMessageCreateError(data.errorCode as ErrorCodeCreate)
-                  );
-                }
-              }
-            },
-            catchError((err) => {
-              message.loading.hide();
-              const errorCode = err.response.data.errorCode;
-              if (errorCode) {
+          map(({ data }) => {
+            message.loading.hide();
+            if (data.statusCode === 200) {
+              onChange && onChange(true);
+              notification.success(t("messages:success.inactive_email"));
+            } else {
+              if (data.errorCode) {
                 notification.error(
-                  getMessageCreateError(errorCode as ErrorCodeCreate)
+                  getMessageCreateError(data.errorCode as ErrorCodeCreate)
                 );
               }
-              return of(err);
-            })
-          )
+            }
+          }),
+          catchError((err) => {
+            message.loading.hide();
+            console.log("error");
+            const errorCode = err.response.data.errorCode;
+            if (errorCode) {
+              notification.error(
+                getMessageCreateError(errorCode as ErrorCodeCreate)
+              );
+            }
+            return of(err);
+          })
         );
     }
   );
