@@ -210,10 +210,10 @@ export default function IndexAccountManager({ props }: any) {
                 ) : // </Layout.Section>
                 null}
                 {/* <Layout.Section> */}
-                <Text as="h2" variant="headingMd">
+                {/* <Text as="h2" variant="headingMd">
                   Auto-Join Settings
-                </Text>
-                {isLoading ? (
+                </Text> */}
+                {/* {isLoading ? (
                   <div>
                     <br />
                     <SkeletonBodyText lines={3} />
@@ -234,9 +234,9 @@ export default function IndexAccountManager({ props }: any) {
                       <Link> {getLinkSignUp(import.meta.env.MODE)}</Link>
                     </div>
                   </div>
-                )}
+                )} */}
 
-                <div className={styles.domainForm}>
+                {/* <div className={styles.domainForm}>
                   <div className={styles.labels}>
                     <Text variant="bodyMd" as="span">
                       Email domain:
@@ -257,7 +257,7 @@ export default function IndexAccountManager({ props }: any) {
                       />
                     </FormItem>
                   )}
-                </div>
+                </div> */}
                 <div className="mt-2">
                   <FormItem name="whitelistDomains">
                     <Stack spacing="tight">{selectedMarkup}</Stack>
