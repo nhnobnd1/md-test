@@ -6,37 +6,41 @@
   background-repeat: no-repeat;
   background-color: $background-gray-color;
   background-position: left 3.9% top 35%;
+
   .logo {
     height: 56px;
     margin-bottom: 40px;
   }
+
   h2 {
     font-size: 30px;
     line-height: 40px;
     margin-bottom: 8px;
   }
+
   .subHeader {
     color: $opacity-black;
     margin-bottom: 0;
-    line-height: 22px;
   }
+
   .formWrap {
     margin-top: 32px;
+
     :global {
       .ant-form-item-required {
         color: $character-title;
+
         &::before {
           display: none !important;
         }
       }
+
       .ant-input,
       .ant-input-password {
         border-radius: 6px !important;
       }
     }
-    .reCaptcha {
-      border: none;
-    }
+
     input:autofill {
       background-color: transparent !important;
     }
@@ -45,18 +49,29 @@
       background-color: transparent !important;
     }
 
-    .buttonSubmit {
+    .buttonChange {
       width: 100%;
-      // margin-top: 32px;
+      margin-top: 8px;
       background-color: $primary;
       font-size: 16px;
       border-radius: 6px;
+
       &:hover {
         background-color: $primary-hover;
       }
     }
   }
-  .forgotWrap {
+  .wrapLink {
+    margin-top: 32px;
+  }
+  .link {
+    color: $primary;
+    font-size: 16px;
+    &:hover {
+      color: $primary-hover;
+    }
+  }
+  .changeWrap {
     position: absolute;
     height: 100%;
     top: 20%;
@@ -66,10 +81,11 @@
     padding: 0 100px;
   }
 }
-.link {
-  color: $primary !important;
-  font-size: 16px;
-  &:hover {
-    color: $primary-hover !important;
-  }
+.error {
+  background-color: $dust-red;
+  margin-bottom: 0;
+  color: $error-color;
+  padding: 12px;
+  border-radius: 6px;
+  line-height: 22px;
 }

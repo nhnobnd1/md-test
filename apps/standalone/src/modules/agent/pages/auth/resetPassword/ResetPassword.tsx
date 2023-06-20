@@ -1,4 +1,3 @@
-import { SyncOutlined } from "@ant-design/icons";
 import {
   generatePath,
   useJob,
@@ -11,16 +10,17 @@ import {
   ForgotPasswordRequest,
 } from "@moose-desk/repo";
 import { Button, Form, Input } from "antd";
+import Link from "antd/es/typography/Link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
+import logo from "src/assets/images/logo/logoBase.png";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
-import ResetPasswordExpired from "src/modules/agent/components/ResetPassword/ResetPasswordExpired/ResetPasswordExpired";
 import { useStore } from "src/providers/StoreProviders";
 import { rulesValidatePassword } from "src/regex";
 import RoutePaths from "src/routes/paths";
-import "./ResetPassword.scss";
+import styles from "./styles.module.scss";
 
 const ResetPassword = () => {
   const [searchParams] = useSearchParams();
@@ -141,15 +141,31 @@ const ResetPassword = () => {
     <>
       {isValid !== null && (
         <>
-          {isValid ? (
-            <div className="resetPassword">
-              <div className="card-resetPassword">
-                <div className="w-[80%] h-full mx-auto">
-                  <div className="card-resetPassword__image">
-                    <SyncOutlined style={{ fontSize: 80 }} />
-                  </div>
+          <section className={styles.container}>
+            <div className={styles.changeWrap}>
+              <img className={styles.logo} src={logo} alt="logo" />
+              {isValid ? (
+                <div>
+                  <h2>{!finalPage ? "Change password" : "Password changed"}</h2>
+                  <p className={styles.subHeader}>
+                    {!finalPage
+                      ? "Please enter your new password and confirm password to change password."
+                      : "Your password has been reset successfully. You can try login again with your new password."}
+                  </p>
+                </div>
+              ) : (
+                <div>
+                  <h2>Reset password expired</h2>
+                  <p className={styles.error}>
+                    The reset password link has expired. if you still want to
+                    reset your password. Please start over again.
+                  </p>
+                </div>
+              )}
+              {isValid ? (
+                <div>
                   {!finalPage ? (
-                    <div className="card-form">
+                    <div className={styles.formWrap}>
                       <Form
                         layout="vertical"
                         initialValues={initialValues}
@@ -165,15 +181,16 @@ const ResetPassword = () => {
                             },
                             ...rulesValidatePassword,
                           ]}
-                          hasFeedback
                         >
-                          <Input.Password />
+                          <Input.Password
+                            size="large"
+                            placeholder="Enter new password"
+                          />
                         </Form.Item>
                         <Form.Item
                           name="confirmPassword"
                           label="Confirm Password"
                           dependencies={["password"]}
-                          hasFeedback
                           rules={[
                             {
                               required: true,
@@ -196,46 +213,39 @@ const ResetPassword = () => {
                             }),
                           ]}
                         >
-                          <Input.Password />
+                          <Input.Password
+                            size="large"
+                            placeholder="Enter confirm password"
+                          />
                         </Form.Item>
 
-                        <div className="text-center">
-                          <Button
-                            className="mb-4 mt-1"
-                            type="primary"
-                            htmlType="submit"
-                          >
-                            Change Password
-                          </Button>
-                        </div>
+                        <Button
+                          className={styles.buttonChange}
+                          size="large"
+                          type="primary"
+                          htmlType="submit"
+                        >
+                          Change Password
+                        </Button>
                       </Form>
                     </div>
                   ) : (
-                    <div>
-                      <div className="text-center">
-                        Your password has been reseted successfully.
-                      </div>
-                      <div className="text-center mb-[24px]">
-                        You can try login again with your new password.
-                      </div>
-                      <div className="text-center">
-                        <span
-                          className="link"
-                          onClick={() =>
-                            navigate(generatePath(RoutePaths.Login))
-                          }
-                        >
-                          Back to login page
-                        </span>
-                      </div>
+                    <div className={styles.wrapLink}>
+                      <Link href={RoutePaths.Login} className={styles.link}>
+                        Back to login page
+                      </Link>
                     </div>
                   )}
                 </div>
-              </div>
+              ) : (
+                <div className={styles.wrapLink}>
+                  <Link href={RoutePaths.Login} className={styles.link}>
+                    Back to login page
+                  </Link>
+                </div>
+              )}
             </div>
-          ) : (
-            <ResetPasswordExpired />
-          )}
+          </section>
         </>
       )}
     </>

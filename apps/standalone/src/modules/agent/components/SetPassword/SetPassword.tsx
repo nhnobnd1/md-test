@@ -91,7 +91,6 @@ export const SetPassword = ({
             },
             ...rulesValidatePassword,
           ]}
-          hasFeedback
         >
           <Input.Password />
         </Form.Item>
@@ -99,7 +98,6 @@ export const SetPassword = ({
           name="confirmPassword"
           label="Confirm Password"
           dependencies={["password"]}
-          hasFeedback
           rules={[
             {
               required: true,

@@ -19,8 +19,16 @@
     color: $opacity-black;
     margin-bottom: 0;
   }
+  .error {
+    background-color: $dust-red;
+    margin-bottom: 0;
+    color: $error-color;
+    padding: 12px;
+    border-radius: 6px;
+    line-height: 22px;
+  }
   .formWrap {
-    margin-top: 48px;
+    margin-top: 32px;
     :global {
       .ant-form-item-required {
         color: $character-title;
@@ -43,6 +51,9 @@
     .link {
       color: $primary;
       font-size: 16px;
+      &:hover {
+        color: $primary-hover;
+      }
     }
     .buttonLogin {
       width: 100%;
@@ -50,6 +61,9 @@
       background-color: $primary;
       font-size: 16px;
       border-radius: 6px;
+      &:hover {
+        background-color: $primary-hover;
+      }
     }
   }
   .loginWrap {

@@ -1,0 +1,70 @@
+@import "../../../../styles/variables.scss";
+h2 {
+  font-size: 30px;
+  line-height: 40px;
+  margin-bottom: 8px;
+}
+
+.subHeader {
+  color: $opacity-black;
+  margin-bottom: 0;
+}
+.formWrap {
+  margin-top: 32px;
+
+  :global {
+    .ant-form-item {
+      margin-bottom: 0;
+    }
+
+    .ant-form-item-required {
+      color: $character-title;
+
+      &::before {
+        display: none !important;
+      }
+    }
+
+    .ant-input,
+    .ant-input-password {
+      border-radius: 6px !important;
+    }
+  }
+
+  input:autofill {
+    background-color: transparent !important;
+  }
+
+  input:-webkit-autofill {
+    background-color: transparent !important;
+  }
+
+  .link {
+    color: $primary;
+    text-decoration: underline;
+    cursor: pointer;
+    &:hover {
+      color: $primary-hover;
+    }
+  }
+  .disabledLink {
+    color: $opacity-black !important;
+    text-decoration: none;
+    cursor: not-allowed;
+  }
+  .time {
+    color: $dust-red-6;
+    margin-left: 12px;
+  }
+  .buttonLogin {
+    width: 100%;
+    margin-top: 32px;
+    margin-bottom: 16px;
+    background-color: $primary;
+    font-size: 16px;
+    border-radius: 6px;
+    &:hover {
+      background-color: $primary-hover;
+    }
+  }
+}

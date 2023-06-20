@@ -5,7 +5,7 @@ import classNames from "classnames";
 import { useCallback, useMemo } from "react";
 import { useCountDown } from "src/hooks/useCountDown";
 import { useStore } from "src/providers/StoreProviders";
-import "./Factor2Auth.scss";
+import styles from "./styles.module.scss";
 
 interface Factor2AuthProps {
   type: "email" | "authenticator";
@@ -75,42 +75,50 @@ export const Factor2Auth = ({
     );
   }, [state]);
   return (
-    <div className="Factor2Auth h-full pt-[20%]">
-      <h2 className="mb-8 text-center">2-Factor Authentication</h2>
+    <div>
+      <h2>2-Factor Authentication</h2>
       <div className="form">
-        {type === "email" ? (
-          <p>Please enter the OTP which we sent to your email.</p>
-        ) : (
-          <p>
-            Please enter the OTP which was displayed in your authenticator
-            application.
-          </p>
-        )}
+        <p className={styles.subHeader}>
+          {type === "email"
+            ? "Please enter the OTP which we sent to your email."
+            : " Please enter the OTP which was displayed in your authenticator application."}
+        </p>
 
-        <Form className="mb-2" layout="inline" onFinish={handleFinish}>
-          <Form.Item
-            name="twoFactorCode"
-            rules={[{ required: true, message: "Please enter code OTP" }]}
-          >
-            <Input type="text"></Input>
-          </Form.Item>
-          <Button htmlType="submit" type="primary">
-            Login
-          </Button>
-        </Form>
-
-        {type === "email" && (
-          <div>
-            <span
-              className={classNames(["link text-base"], {
-                disabled: !activeResend,
-              })}
-              onClick={() => activeResend && handleResend()}
+        <div className={styles.formWrap}>
+          <Form layout="vertical" onFinish={handleFinish}>
+            <Form.Item
+              name="twoFactorCode"
+              label="OTP"
+              rules={[{ required: true, message: "Please enter code OTP" }]}
             >
-              Re-send OTP {!activeResend && `(${countDown})`}
-            </span>
-          </div>
-        )}
+              <Input type="text" size="large" placeholder="Enter OTP" />
+            </Form.Item>
+
+            <Button
+              className={styles.buttonLogin}
+              htmlType="submit"
+              type="primary"
+              size="large"
+            >
+              Login
+            </Button>
+            {type === "email" && (
+              <div className="d-flex align-center">
+                <span
+                  className={classNames(styles.link, {
+                    [styles.disabledLink]: !activeResend,
+                  })}
+                  onClick={() => activeResend && handleResend()}
+                >
+                  Re-send OTP Code
+                </span>
+                {!activeResend && (
+                  <span className={styles.time}>{countDown}s</span>
+                )}
+              </div>
+            )}
+          </Form>
+        </div>
       </div>
     </div>
   );

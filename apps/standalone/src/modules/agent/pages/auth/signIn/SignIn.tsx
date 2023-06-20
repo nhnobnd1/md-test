@@ -164,7 +164,7 @@ export const SignIn = () => {
               ) : (
                 <div>
                   <h2>Sign In</h2>
-                  <p className={styles.subHeader}>{errorMessage}</p>
+                  <p className={styles.error}>{errorMessage}</p>
                 </div>
               )}
             </div>
@@ -208,9 +208,6 @@ export const SignIn = () => {
                   <Link
                     href={RoutePaths.ForgotPassword}
                     className={styles.link}
-                    // onClick={() =>
-                    //   navigate(generatePath(RoutePaths.ForgotPassword))
-                    // }
                   >
                     Forgot Password?
                   </Link>
@@ -223,11 +220,6 @@ export const SignIn = () => {
                 >
                   Sign In
                 </Button>
-
-                {/* <div className="mt-5 w-[80%] mx-auto text-center">
-                    Want to get started with MooseDesk? Create a{" "}
-                    <span className="link">free account</span> here.
-                  </div> */}
               </Form>
             </div>
           </div>

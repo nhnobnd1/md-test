@@ -1,6 +1,7 @@
-import { generatePath, useJob, useNavigate } from "@moose-desk/core";
+import { useJob, useNavigate } from "@moose-desk/core";
 import { AccountRepository } from "@moose-desk/repo";
 import { Button, Form, Input } from "antd";
+import Link from "antd/es/typography/Link";
 import { useCallback, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useTranslation } from "react-i18next";
@@ -61,7 +62,7 @@ export const ForgotPassword = () => {
 
   return (
     <section className={styles.container}>
-      <div className={styles.loginWrap}>
+      <div className={styles.forgotWrap}>
         <img className={styles.logo} src={logo} alt="logo" />
         <h2>Reset your password</h2>
         {!finalPage.status ? (
@@ -85,26 +86,26 @@ export const ForgotPassword = () => {
                 >
                   <Input type="text" placeholder="Enter Email" size="large" />
                 </Form.Item>
-                <div className="flex">
-                  <Form.Item
-                    className="w-full hide-label"
-                    name="captcha"
-                    label="captcha"
-                    rules={[
-                      { required: true, message: "Please enter captcha" },
-                    ]}
-                  >
-                    <ReCAPTCHA
-                      className={styles.reCaptcha}
-                      sitekey={env.RECAPTCHA_KEYS}
-                    ></ReCAPTCHA>
-                  </Form.Item>
-                </div>
-                <div className="text-center">
-                  <Button onClick={() => form.submit()} type="primary">
-                    Submit
-                  </Button>
-                </div>
+                <Form.Item
+                  className="w-full hide-label"
+                  name="captcha"
+                  label="captcha"
+                  rules={[{ required: true, message: "Please enter captcha" }]}
+                >
+                  <ReCAPTCHA
+                    className={styles.reCaptcha}
+                    sitekey={env.RECAPTCHA_KEYS}
+                    size="normal"
+                  ></ReCAPTCHA>
+                </Form.Item>
+                <Button
+                  className={styles.buttonSubmit}
+                  onClick={() => form.submit()}
+                  type="primary"
+                  size="large"
+                >
+                  Submit
+                </Button>
               </Form>
             </div>
           </>
@@ -126,13 +127,10 @@ export const ForgotPassword = () => {
                 enter a valid email address.
               </div>
             )}
-            <div className="text-center">
-              <span
-                className="link"
-                onClick={() => navigate(generatePath(RoutePaths.Login))}
-              >
+            <div>
+              <Link href={RoutePaths.Login} className={styles.link}>
                 Back to login page
-              </span>
+              </Link>
             </div>
           </>
         )}
