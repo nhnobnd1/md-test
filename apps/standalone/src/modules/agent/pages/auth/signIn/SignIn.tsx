@@ -1,4 +1,3 @@
-import { LockOutlined } from "@ant-design/icons";
 import {
   useAuthContext,
   useJob,
@@ -193,6 +192,7 @@ export const SignIn = () => {
                 <Form.Item
                   name="password"
                   label="Password"
+                  className={styles.formPassword}
                   rules={[
                     { required: true, message: "The password is required" },
                     ...rulesValidatePassword,
@@ -204,7 +204,7 @@ export const SignIn = () => {
                     size="large"
                   />
                 </Form.Item>
-                <div>
+                <div className={styles.wrapLink}>
                   <Link
                     href={RoutePaths.ForgotPassword}
                     className={styles.link}
@@ -226,26 +226,17 @@ export const SignIn = () => {
         ) : (
           <>
             {view === "lock" ? (
-              <div className="pt-[40px] w-full h-full">
-                <div className="card-signin__image">
-                  <LockOutlined style={{ fontSize: 120 }} />
-                </div>
-                <div className="mb-6">
+              <div>
+                <h2>Failed to login</h2>
+                <p className={styles.error}>
                   You have failed to login more 3 times. Your account has been
                   deactivated. Please contact your system administrator.
+                </p>
+                <div className={styles.wrapLink}>
+                  <Link href={RoutePaths.Login} className={styles.link}>
+                    Back to login page
+                  </Link>
                 </div>
-                <div className="mb-4 text-center">
-                  <span
-                    className="link font-semibold"
-                    onClick={() => navigate(DashboardRoutePaths.Index)}
-                  >
-                    Return to home page
-                  </span>
-                </div>
-                {/* <div>
-                    Want to get started with MooseDesk? Create a{" "}
-                    <span className="link">free account</span> here.
-                  </div> */}
               </div>
             ) : (
               <>
