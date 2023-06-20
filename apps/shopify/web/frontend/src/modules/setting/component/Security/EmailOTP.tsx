@@ -1,11 +1,10 @@
-import { useCountDown, useJob, useMount } from "@moose-desk/core";
+import { useCountDown, useJob, useMount, useUnMount } from "@moose-desk/core";
 import { MethodOTP, UserSettingRepository } from "@moose-desk/repo";
 import {
   Button,
   ButtonGroup,
   FormLayout,
   Link,
-  Spinner,
   Stack,
   Text,
 } from "@shopify/polaris";
@@ -39,13 +38,11 @@ const EmailOPT = ({
   const {
     clearCountDown,
     initCountdown: startCountDown,
-    state,
+    state: countDown,
   } = useCountDown({
     initValue: timeOut,
     key: "countDownResendEmail",
   });
-  const [secondResend, setSecondResend] = useState(false);
-  const [onResendEmail, setOnResendEmail] = useState(false);
   const [error, setError] = useState<string>();
   const { t, i18n } = useTranslation();
 
@@ -89,51 +86,33 @@ const EmailOPT = ({
 
   // resend Email
 
-  const [spin, setSpin] = useState(false);
   const handleResendEmail = useCallback(() => {
-    if (onResendEmail) {
-      setSpin(true);
-      resetEmail();
-      handleOnResendEmail(true);
-    }
-  }, [onResendEmail]);
+    if (countDown) return;
+    startCountDown("countDownResendEmail");
+    resetEmail();
+  }, [countDown]);
   const { run: resetEmail } = useJob(() => {
     return UserSettingRepository()
       .setupOtp({ method: MethodOTP.Email })
       .pipe(
         map(({ data }) => {
-          setSpin(false);
           return data.data;
         }),
         catchError((error) => {
+          clearCountDown("countDownResendEmail");
           return of(error);
         })
       );
   });
 
-  const handleOnResendEmail = useCallback(
-    (again?: boolean) => {
-      if (!again) {
-        setOnResendEmail(false);
-        setTimeout(() => {
-          setOnResendEmail(true);
-        }, 300000);
-      } else {
-        setSecondResend(true);
-        setOnResendEmail(false);
-        startCountDown("countDownResendEmail");
-        setTimeout(() => {
-          setOnResendEmail(true);
-          clearCountDown("countDownResendEmail");
-        }, 30000);
-      }
-    },
-    [onResendEmail]
-  );
   useMount(() => {
     setError(undefined);
-    handleOnResendEmail();
+    startCountDown("countDownResendEmail");
+
+    // handleResendEmail();
   });
+  useUnMount(() => clearCountDown("countDownResendEmail"));
+
   return (
     <Form
       initialValues={{ code: "" }}
@@ -157,22 +136,16 @@ const EmailOPT = ({
                 Did not receive the code yet?
               </Text>
               <div className="flex ml-2">
-                <Link monochrome={!onResendEmail} onClick={handleResendEmail}>
+                <Link monochrome={!!countDown} onClick={handleResendEmail}>
                   Re-send OTP Code
                 </Link>
-                {spin ? (
-                  <Spinner
-                    accessibilityLabel="Small spinner example"
-                    size="small"
-                  />
-                ) : null}
-                {state !== 0 && !onResendEmail && secondResend ? (
+                {!countDown ? null : (
                   <div className="ml-2">
                     <Text as="span" variant="bodyMd">
-                      ({state} seconds)
+                      ({countDown}s)
                     </Text>
                   </div>
-                ) : null}
+                )}
               </div>
             </div>
           </Stack>

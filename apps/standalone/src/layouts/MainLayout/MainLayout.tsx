@@ -6,7 +6,7 @@ import {
   useNavigate,
 } from "@moose-desk/core";
 import { AccountRepository } from "@moose-desk/repo";
-import { Layout, Menu, MenuProps } from "antd";
+import { Layout, MenuProps } from "antd";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
@@ -83,7 +83,7 @@ export const MainLayout = () => {
   }, [caseTopMenu, location]);
   return (
     <Layout className="main-layout min-h-screen">
-      {location.pathname === RoutePaths.VerifyEmailFail ||
+      {/* {location.pathname === RoutePaths.VerifyEmailFail ||
       location.pathname === RoutePaths.VerifyEmailSuccess ? (
         <></>
       ) : (
@@ -97,14 +97,14 @@ export const MainLayout = () => {
             items={caseTopMenu}
           />
         </Layout.Header>
-      )}
-      <Layout className="p-6">
-        <Layout.Content>
-          <div className="wrap-main-content">
-            <Outlet />
-          </div>
-        </Layout.Content>
-      </Layout>
+      )} */}
+      {/* <Layout className="p-6"> */}
+      {/* <Layout.Content> */}
+      <div className="wrap-main-content">
+        <Outlet />
+      </div>
+      {/* </Layout.Content> */}
+      {/* </Layout> */}
     </Layout>
   );
 };

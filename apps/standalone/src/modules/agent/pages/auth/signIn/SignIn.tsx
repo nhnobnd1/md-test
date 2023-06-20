@@ -1,10 +1,5 @@
+import { LockOutlined } from "@ant-design/icons";
 import {
-  ImportOutlined,
-  LockOutlined,
-  WarningOutlined,
-} from "@ant-design/icons";
-import {
-  generatePath,
   useAuthContext,
   useJob,
   useMount,
@@ -12,9 +7,12 @@ import {
 } from "@moose-desk/core";
 import { AccountRepository, SignInAccountAgentRequest } from "@moose-desk/repo";
 import { Button, Form, Input } from "antd";
-import { useCallback, useMemo, useState } from "react";
+import Link from "antd/es/typography/Link";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+
 import { catchError, map, of } from "rxjs";
+import logo from "src/assets/images/logo/logoBase.png";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { useSubdomain } from "src/hooks/useSubdomain";
@@ -23,8 +21,7 @@ import DashboardRoutePaths from "src/modules/dashboard/routes/paths";
 import { useStore } from "src/providers/StoreProviders";
 import { rulesValidatePassword } from "src/regex";
 import RoutePaths from "src/routes/paths";
-import "./SignIn.scss";
-
+import styles from "./styles.module.scss";
 export const SignIn = () => {
   const { login } = useAuthContext();
   const message = useMessage();
@@ -141,138 +138,137 @@ export const SignIn = () => {
     });
   });
 
-  const handleSubmit = useCallback(
-    (values: { email: string; password: string }) => {
-      signInApi({
-        email: values.email,
-        password: values.password,
-        storeId: storeId,
-        ...(factor.state.subdomain && { subdomain: factor.state.subdomain }),
-      });
-    },
-    [window.location, factor, storeId]
-  );
+  const handleSubmit = (values: { email: string; password: string }) => {
+    signInApi({
+      email: values.email,
+      password: values.password,
+      storeId: storeId,
+      ...(factor.state.subdomain && { subdomain: factor.state.subdomain }),
+    });
+  };
 
   return (
-    <div className="signIn">
-      <div className="card-signin">
-        <div className="w-[80%] h-full mx-auto">
-          {view === "login" ? (
-            <div className="pt-[40px]">
-              <div className="card-signin__image">
-                {!errorMessage ? (
-                  <ImportOutlined style={{ fontSize: 120 }} />
-                ) : (
-                  <WarningOutlined style={{ fontSize: 120 }} />
-                )}
-
-                <img src="" alt="" />
-              </div>
-              <div className="card-signin__form">
-                <Form
-                  labelCol={{ span: 6 }}
-                  wrapperCol={{ span: 18 }}
-                  initialValues={initialValues}
-                  onFinish={handleSubmit}
-                >
-                  <div>
-                    <Form.Item
-                      name="email"
-                      label="Email"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Email address is required",
-                        },
-                        {
-                          type: "email",
-                          message: "The email address is not valid",
-                        },
-                      ]}
-                    >
-                      <Input />
-                    </Form.Item>
-                  </div>
-                  <Form.Item
-                    name="password"
-                    label="Password"
-                    rules={[
-                      { required: true, message: "The password is required" },
-                      ...rulesValidatePassword,
-                    ]}
-                  >
-                    <Input.Password autoComplete="on" />
-                  </Form.Item>
-
-                  <div className="text-center">
-                    <Button
-                      className="mb-4 mt-1"
-                      type="primary"
-                      htmlType="submit"
-                    >
-                      Login
-                    </Button>
-                    {errorMessage && (
-                      <div className="error-message">{errorMessage}</div>
-                    )}
-
-                    <div>
-                      <span
-                        className="link"
-                        onClick={() =>
-                          navigate(generatePath(RoutePaths.ForgotPassword))
-                        }
-                      >
-                        Forgot Password?
-                      </span>
-                    </div>
-                  </div>
-                  {/* <div className="mt-5 w-[80%] mx-auto text-center">
-                    Want to get started with MooseDesk? Create a{" "}
-                    <span className="link">free account</span> here.
-                  </div> */}
-                </Form>
-              </div>
-            </div>
-          ) : (
-            <>
-              {view === "lock" ? (
-                <div className="pt-[40px] w-full h-full">
-                  <div className="card-signin__image">
-                    <LockOutlined style={{ fontSize: 120 }} />
-                  </div>
-                  <div className="mb-6">
-                    You have failed to login more 3 times. Your account has been
-                    deactivated. Please contact your system administrator.
-                  </div>
-                  <div className="mb-4 text-center">
-                    <span
-                      className="link font-semibold"
-                      onClick={() => navigate(DashboardRoutePaths.Index)}
-                    >
-                      Return to home page
-                    </span>
-                  </div>
-                  {/* <div>
-                    Want to get started with MooseDesk? Create a{" "}
-                    <span className="link">free account</span> here.
-                  </div> */}
+    <section className={styles.container}>
+      <div className={styles.loginWrap}>
+        <img className={styles.logo} src={logo} alt="logo" />
+        {view === "login" ? (
+          <div>
+            <div className="card-signin__image">
+              {!errorMessage ? (
+                <div>
+                  <h2>Sign In</h2>
+                  <p className={styles.subHeader}>
+                    Please enter your credentials to sign in!
+                  </p>
                 </div>
               ) : (
-                <>
-                  <Factor2Auth
-                    type={factor.type}
-                    state={factor.state}
-                    onFinish={signInApi}
-                    onResend={signInApi}
-                  />
-                </>
+                <div>
+                  <h2>Sign In</h2>
+                  <p className={styles.subHeader}>{errorMessage}</p>
+                </div>
               )}
-            </>
-          )}
-        </div>
+            </div>
+            <div className={styles.formWrap}>
+              <Form
+                initialValues={initialValues}
+                onFinish={handleSubmit}
+                layout="vertical"
+              >
+                <Form.Item
+                  name="email"
+                  label="Email"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Email address is required",
+                    },
+                    {
+                      type: "email",
+                      message: "The email address is not valid",
+                    },
+                  ]}
+                >
+                  <Input placeholder="Enter email" size="large" />
+                </Form.Item>
+                <Form.Item
+                  name="password"
+                  label="Password"
+                  rules={[
+                    { required: true, message: "The password is required" },
+                    ...rulesValidatePassword,
+                  ]}
+                >
+                  <Input.Password
+                    placeholder="Password"
+                    autoComplete="on"
+                    size="large"
+                  />
+                </Form.Item>
+                <div>
+                  <Link
+                    href={RoutePaths.ForgotPassword}
+                    className={styles.link}
+                    // onClick={() =>
+                    //   navigate(generatePath(RoutePaths.ForgotPassword))
+                    // }
+                  >
+                    Forgot Password?
+                  </Link>
+                </div>
+                <Button
+                  className={styles.buttonLogin}
+                  type="primary"
+                  htmlType="submit"
+                  size="large"
+                >
+                  Sign In
+                </Button>
+
+                {/* <div className="mt-5 w-[80%] mx-auto text-center">
+                    Want to get started with MooseDesk? Create a{" "}
+                    <span className="link">free account</span> here.
+                  </div> */}
+              </Form>
+            </div>
+          </div>
+        ) : (
+          <>
+            {view === "lock" ? (
+              <div className="pt-[40px] w-full h-full">
+                <div className="card-signin__image">
+                  <LockOutlined style={{ fontSize: 120 }} />
+                </div>
+                <div className="mb-6">
+                  You have failed to login more 3 times. Your account has been
+                  deactivated. Please contact your system administrator.
+                </div>
+                <div className="mb-4 text-center">
+                  <span
+                    className="link font-semibold"
+                    onClick={() => navigate(DashboardRoutePaths.Index)}
+                  >
+                    Return to home page
+                  </span>
+                </div>
+                {/* <div>
+                    Want to get started with MooseDesk? Create a{" "}
+                    <span className="link">free account</span> here.
+                  </div> */}
+              </div>
+            ) : (
+              <>
+                <Factor2Auth
+                  type={factor.type}
+                  state={factor.state}
+                  onFinish={signInApi}
+                  onResend={signInApi}
+                />
+              </>
+            )}
+          </>
+        )}
       </div>
-    </div>
+    </section>
   );
 };
 
