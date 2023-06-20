@@ -16,7 +16,6 @@ import { Loading } from "@shopify/polaris";
 import { Suspense, lazy } from "react";
 import ReactDOM from "react-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { ReactQueryDevtools } from "react-query/devtools";
 import { Provider as ReduxProvider } from "react-redux";
 import ErrorBoundary from "src/ErrorBoundary";
 import { AppBridgeProvider, PolarisProvider } from "src/components";
@@ -51,8 +50,8 @@ const queryClient = new QueryClient({
 });
 ReactDOM.render(
   <QueryClientProvider client={queryClient}>
-    <ErrorBoundary>
-      <PolarisProvider>
+    <PolarisProvider>
+      <ErrorBoundary>
         <BrowserRouter>
           <AppBridgeProvider>
             {/* <QueryProvider> */}
@@ -106,8 +105,8 @@ ReactDOM.render(
             {/* </QueryProvider> */}
           </AppBridgeProvider>
         </BrowserRouter>
-      </PolarisProvider>
-    </ErrorBoundary>
+      </ErrorBoundary>
+    </PolarisProvider>
     {/* <ReactQueryDevtools initialIsOpen={false} /> */}
   </QueryClientProvider>,
   document.getElementById("app")
