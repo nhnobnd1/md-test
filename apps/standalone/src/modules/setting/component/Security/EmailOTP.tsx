@@ -1,6 +1,6 @@
-import { useCountDown, useJob, useMount } from "@moose-desk/core";
+import { useCountDown, useJob, useMount, useUnMount } from "@moose-desk/core";
 import { MethodOTP, UserSettingRepository } from "@moose-desk/repo";
-import { Space, Spin, Typography } from "antd";
+import { Space, Typography } from "antd";
 import Link from "antd/es/typography/Link";
 import { memo, useCallback, useEffect, useState } from "react";
 import { catchError, map, of } from "rxjs";
@@ -16,17 +16,15 @@ const EmailOTP = ({
   errorMessage,
   setErrorMessage,
 }: EmailOTP) => {
-  const timeOut = 30;
   const {
     clearCountDown,
     initCountdown: startCountDown,
-    state,
+    state: countDown,
   } = useCountDown({
-    initValue: timeOut,
+    initValue: 30,
     key: "countDownResendEmail",
   });
-  const [secondResend, setSecondResend] = useState(false);
-  const [onResendEmail, setOnResendEmail] = useState(false);
+
   const [value, setValue] = useState("");
   const handleChange = useCallback((value: string) => {
     setValue(value);
@@ -35,54 +33,35 @@ const EmailOTP = ({
     handleChange(value.code);
   }, []);
   // resend Email
-  const [spin, setSpin] = useState(false);
-  const handleResendEmail = useCallback(() => {
-    if (onResendEmail) {
-      setSpin(true);
-      resetEmail();
-      handleOnResendEmail(true);
-    }
-  }, [onResendEmail]);
+  const handleResendEmail = () => {
+    if (countDown) return;
+    startCountDown("countDownResendEmail");
+    resetEmail();
+  };
   const { run: resetEmail } = useJob(() => {
     return UserSettingRepository()
       .setupOtp({ method: MethodOTP.Email })
       .pipe(
         map(({ data }) => {
-          setSpin(false);
+          // startCountDown("countDownResendEmail");
           return data.data;
         }),
         catchError((error) => {
+          clearCountDown("countDownResendEmail");
           return of(error);
         })
       );
   });
 
-  const handleOnResendEmail = useCallback(
-    (again?: boolean) => {
-      if (!again) {
-        setOnResendEmail(false);
-        setTimeout(() => {
-          setOnResendEmail(true);
-        }, 300000);
-      } else {
-        setSecondResend(true);
-        setOnResendEmail(false);
-        startCountDown("countDownResendEmail");
-        setTimeout(() => {
-          setOnResendEmail(true);
-          clearCountDown("countDownResendEmail");
-        }, 30000);
-      }
-    },
-    [onResendEmail]
-  );
-
   useEffect(() => {
     setDataSubmitEmailOTP && setDataSubmitEmailOTP(value);
   }, [value]);
   useMount(() => {
-    handleOnResendEmail();
+    startCountDown("countDownResendEmail");
+
+    // handleResendEmail();
   });
+  useUnMount(() => clearCountDown("countDownResendEmail"));
   return (
     <Form initialValues={{ code: "" }} onValuesChange={handleChangeValueForm}>
       <Space direction="vertical" size="middle" className="mt-6">
@@ -108,18 +87,15 @@ const EmailOTP = ({
           <Typography.Text>Did not receive the code yet?</Typography.Text>
           <div className="flex ml-2">
             <Link
-              disabled={!onResendEmail}
-              type={onResendEmail ? "success" : "secondary"}
+              disabled={!!countDown}
+              type={!countDown ? "success" : "secondary"}
               onClick={handleResendEmail}
             >
               Re-send OTP Code
             </Link>
-            {spin ? <Spin size="small" /> : null}
-            {state !== 0 && !onResendEmail && secondResend ? (
-              <Typography.Text className="ml-2">
-                ({state} seconds)
-              </Typography.Text>
-            ) : null}
+            {!countDown ? null : (
+              <Typography.Text className="ml-2">({countDown}s)</Typography.Text>
+            )}
           </div>
         </div>
       </Space>
