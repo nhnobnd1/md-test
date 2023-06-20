@@ -1,15 +1,25 @@
-import { useJob } from "@moose-desk/core";
-import { AccessManger, UserSettingRepository } from "@moose-desk/repo";
+import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { Button, Card, Tag } from "antd";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { catchError, map, of } from "rxjs";
+import { useMutation, useQuery } from "react-query";
 import { Form } from "src/components/UI/Form";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { usePermission } from "src/hooks/usePerrmisson";
 import { useSubdomain } from "src/hooks/useSubdomain";
+import {
+  getSettingManager,
+  updateSettingManager,
+} from "src/modules/setting/api/api";
 import SwitchForm from "src/modules/setting/component/Switch/Switch";
+const initialValues = {
+  autoJoinEnabled: false,
+  whitelistDomains: [],
+  twoFactorAuthEnabled: false,
+  domain: "",
+};
+
 export default function IndexAccountManager({ props }: any) {
   const [form] = Form.useForm();
   const [valueInput, setValueInput] = useState("");
@@ -48,15 +58,6 @@ export default function IndexAccountManager({ props }: any) {
       }
     },
     [disabled, setDisabled]
-  );
-  const initialValues = useMemo(
-    () => ({
-      autoJoinEnabled: false,
-      whitelistDomains: [],
-      twoFactorAuthEnabled: false,
-      domain: "",
-    }),
-    [props]
   );
   const selectedMarkup = selectedDomain.map((domain) => (
     <Tag
@@ -111,21 +112,36 @@ export default function IndexAccountManager({ props }: any) {
     },
     [selectedDomain, valueInput, stateErrorInput]
   );
-  // fetch init data
-  const { run: fetchAccountManagerStatus, result } = useJob(
-    () => {
-      return UserSettingRepository()
-        .getAccessManagerSetting()
-        .pipe(
-          map(({ data }) => {
-            setSelectedDomain(data.data.whitelistDomains);
-            return data.data;
-          })
-        );
-    }
-    // { showLoading: true }
-  );
-  // update data
+  const {
+    data: accountData,
+    isLoading,
+    isFetching,
+    refetch: refetchAccountData,
+  } = useQuery({
+    queryKey: [QUERY_KEY.ACCOUNT_MANAGE],
+    queryFn: () => getSettingManager(),
+    keepPreviousData: true,
+    enabled: isAdmin,
+    onSuccess: ({ data }) => {
+      setSelectedDomain(data.data.whitelistDomains);
+      setDisabled(!data.data.autoJoinEnabled);
+    },
+  });
+  const { mutate: updateAccountMutate, isLoading: updating } = useMutation({
+    mutationFn: (payload: any) => updateSettingManager(payload),
+    onMutate: () => {
+      message.loading.show(t("messages:loading.updating_account_manager"));
+    },
+    onSuccess: async () => {
+      await refetchAccountData();
+      message.loading.hide();
+      notification.success(t("messages:success.update_access_manager"));
+    },
+    onError: () => {
+      message.loading.hide();
+      notification.error(t("messages:error.update_access_manager"));
+    },
+  });
   const handleSubmit = useCallback(
     (data: any) => {
       const dataSubmit = {
@@ -133,46 +149,19 @@ export default function IndexAccountManager({ props }: any) {
         whitelistDomains: selectedDomain,
         autoJoinEnabled: false,
       };
-      submit(dataSubmit);
+      updateAccountMutate(dataSubmit);
     },
     [selectedDomain]
   );
-  const { run: submit } = useJob((dataSubmit: AccessManger) => {
-    message.loading.show(t("messages:loading.updating_account_manager"));
 
-    return UserSettingRepository()
-      .updateAccessManagerSetting(dataSubmit)
-      .pipe(
-        map(({ data }) => {
-          message.loading.hide();
-          if (data.statusCode === 200) {
-            notification.success(t("messages:success.update_access_manager"));
-            fetchAccountManagerStatus();
-          } else {
-            notification.error(t("messages:error.update_access_manager"));
-          }
-        }),
-        catchError((error) => {
-          message.loading.hide();
-          notification.error(t("messages:error.update_access_manager"));
-
-          return of(error);
-        })
-      );
-  });
   // reset form
   const handleResetForm = () => {
-    form.resetFields();
-    fetchAccountManagerStatus();
+    form.setFieldsValue(accountData?.data?.data);
   };
 
-  useEffect(() => {
-    // eslint-disable-next-line no-unused-expressions
-    isAdmin ? fetchAccountManagerStatus() : "";
-  }, []);
   return (
     <Form
-      initialValues={result || initialValues}
+      initialValues={accountData?.data?.data || initialValues}
       onFinish={handleSubmit}
       // enableLoadForm
       enableReinitialize
@@ -241,8 +230,15 @@ export default function IndexAccountManager({ props }: any) {
         </div>
       </Card>
       <div className="flex-1 text-right mt-4">
-        <Button onClick={handleResetForm}>Cancel</Button>
-        <Button htmlType="submit" type="primary" className="ml-4">
+        <Button onClick={handleResetForm} disabled={updating}>
+          Cancel
+        </Button>
+        <Button
+          htmlType="submit"
+          type="primary"
+          className="ml-4"
+          loading={updating}
+        >
           Save
         </Button>
       </div>

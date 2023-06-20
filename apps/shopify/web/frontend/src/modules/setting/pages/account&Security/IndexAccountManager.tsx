@@ -1,11 +1,11 @@
 import { useToggle } from "@moose-desk/core";
+import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Banner,
   Button,
   Card,
   FormLayout,
-  Link,
   SkeletonBodyText,
   Stack,
   Tag,
@@ -24,7 +24,6 @@ import {
   getSettingManager,
   updateSettingManager,
 } from "src/modules/setting/api/api";
-import InputDisableSubmit from "src/modules/setting/component/InputDisableSubmit/InputDisableSubmit";
 import { BannerPropsAccessManager } from "src/modules/setting/modal/account&Security/AccountManager";
 import { object, string } from "yup";
 import styles from "./styles.module.scss";
@@ -119,7 +118,7 @@ export default function IndexAccountManager({ props }: any) {
     isFetching,
     refetch: refetchAccountData,
   } = useQuery({
-    queryKey: ["accountManager"],
+    queryKey: [QUERY_KEY.ACCOUNT_MANAGE],
     queryFn: () => getSettingManager(),
     keepPreviousData: true,
     onSuccess: ({ data }) => {

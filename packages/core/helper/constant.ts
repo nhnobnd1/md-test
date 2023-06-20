@@ -13,4 +13,7 @@ export const QUERY_KEY = {
   CUSTOMER_SHOPIFY: "customerShopify",
   CUSTOMER_SHOPIFY_ORDER: "customerShopifyOrder",
   BUSINESS_HOURS: "businessHour",
+  PROFILE: "profile",
+  TWO_FA_STATUS: "2FAStatus",
+  ACCOUNT_MANAGE: "accountManager",
 };

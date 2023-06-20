@@ -1,30 +1,92 @@
 .container-loader {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 100vw;
-    height: 100vh;
-    position: fixed;
-    top: 0;
-    left: 0;
-    // transform: translate(-50%, -50%);
-    background: #f3f3f333;
-    z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  // transform: translate(-50%, -50%);
+  background: #f3f3f333;
+  z-index: 9999;
 }
+// .custom-loader {
+//   margin-top: 3px;
+//   width: 60px;
+//   height: 10px;
+//   border-radius: 10px;
+//   background: repeating-linear-gradient(135deg, #fa7d00 0 5px, #fa7d00bf 0 10px)
+//       left/0% 100% no-repeat,
+//     repeating-linear-gradient(135deg, #fa7d0033 0 5px, #fa7d001a 0 10px)
+//       left/100% 100%;
+//   animation: p3 2s infinite;
+// }
+
+// @keyframes p3 {
+//   100% {
+//     background-size: 100% 100%;
+//   }
+// }
 .custom-loader {
-    margin-top: 3px;
-    width: 60px;
-    height: 10px;
-    border-radius: 10px;
-    background:
-        repeating-linear-gradient(135deg, #FA7D00 0 5px, #FA7D00bf 0 10px) left/0% 100% no-repeat,
-        repeating-linear-gradient(135deg, #FA7D0033 0 5px, #FA7D001a 0 10px) left/100% 100%;
-    animation: p3 2s infinite;
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: conic-gradient(#0000 10%, #fa7d00);
+  -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 8px), #000 0);
+  animation: s3 0.5s infinite linear;
+}
+.centerBlock {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  img {
+    width: 50px;
+  }
+}
+@keyframes s3 {
+  to {
+    transform: rotate(1turn);
+  }
+}
+.loading {
+  font-size: 16px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  text-align: center;
+
+  span {
+    display: inline-block;
+    margin: 0 -0.05em;
+    color: #000 !important;
+  }
+}
+.loadingText {
+  span {
+    margin: 0 -0.075em;
+    animation: loadingText 0.7s infinite alternate;
+
+    @for $i from 1 through 9 {
+      &:nth-child(#{$i + 1}) {
+        animation-delay: #{$i * 0.1}s;
+      }
+    }
+  }
 }
 
-@keyframes p3 {
-    100% {
-        background-size: 100% 100%
-    }
+@keyframes loadingText {
+  0% {
+    transform: scale(1);
+  }
+
+  100% {
+    transform: scale(0.7);
+  }
 }
