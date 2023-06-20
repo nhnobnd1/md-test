@@ -610,9 +610,9 @@ const DetailTicket = (props: DetailTicketProps) => {
           </div>
           <Layout>
             <Layout.Section>
-              <LegacyCard sectioned>
-                <div className={visible ? "d-flex" : ""}>
-                  <div className={visible ? styles.wrapContent : ""}>
+              <div className={visible ? "d-flex gap-5" : ""}>
+                <LegacyCard sectioned>
+                  <div className={""}>
                     <div
                       className={classNames(
                         styles.wrapSearchToggle,
@@ -833,11 +833,11 @@ const DetailTicket = (props: DetailTicketProps) => {
                       </div>
                     </Form>
                   </div>
-                  <div className={visible ? styles.wrapSearch : "d-none"}>
-                    <ContentShopifySearch />
-                  </div>
+                </LegacyCard>
+                <div className={visible ? styles.wrapSearch : "d-none"}>
+                  <ContentShopifySearch />
                 </div>
-              </LegacyCard>
+              </div>
             </Layout.Section>
           </Layout>
         </Page>
