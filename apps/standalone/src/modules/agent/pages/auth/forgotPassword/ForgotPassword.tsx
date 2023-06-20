@@ -113,21 +113,21 @@ export const ForgotPassword = () => {
           <>
             {finalPage.isSuccess ? (
               <>
-                <div className="mb-2 font-medium">
+                <p className={styles.subHeader}>
                   We have sent the instructions to your email address.
-                </div>
-                <div className="mb-8 font-medium">
+                </p>
+                <p className={styles.subHeader}>
                   Please follow the instructions in order to reset your
                   password.
-                </div>
+                </p>
               </>
             ) : (
-              <div className="text-center font-medium mb-8">
+              <p className={styles.error}>
                 The system failed to send email to your email address, please
                 enter a valid email address.
-              </div>
+              </p>
             )}
-            <div>
+            <div className={styles.wrapLink}>
               <Link href={RoutePaths.Login} className={styles.link}>
                 Back to login page
               </Link>
