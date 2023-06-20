@@ -17,7 +17,9 @@ import { Suspense, lazy } from "react";
 import ReactDOM from "react-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Provider as ReduxProvider } from "react-redux";
-import ErrorBoundary from "src/ErrorBoundary";
+// import ErrorBoundary from "src/ErrorBoundary";
+import { ErrorBoundary } from "react-error-boundary";
+import ErrorBoundaryComponent from "src/ErrorBoundaryComponent";
 import { AppBridgeProvider, PolarisProvider } from "src/components";
 import env from "src/core/env";
 import ModuleLoader from "src/core/utilities/ModuleLoader";
@@ -51,8 +53,8 @@ const queryClient = new QueryClient({
 ReactDOM.render(
   <QueryClientProvider client={queryClient}>
     <PolarisProvider>
-      <ErrorBoundary>
-        <BrowserRouter>
+      <BrowserRouter>
+        <ErrorBoundary fallback={<ErrorBoundaryComponent />}>
           <AppBridgeProvider>
             {/* <QueryProvider> */}
             <Suspense
@@ -104,8 +106,8 @@ ReactDOM.render(
             </Suspense>
             {/* </QueryProvider> */}
           </AppBridgeProvider>
-        </BrowserRouter>
-      </ErrorBoundary>
+        </ErrorBoundary>
+      </BrowserRouter>
     </PolarisProvider>
     {/* <ReactQueryDevtools initialIsOpen={false} /> */}
   </QueryClientProvider>,
