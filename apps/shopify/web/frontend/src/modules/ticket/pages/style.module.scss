@@ -13,8 +13,9 @@
 }
 .wrapSearch {
   width: 100%;
-  min-width: 300px;
-  flex: 1;
+  min-width: 250px;
+  flex-basis: 300px;
+  flex-grow: 1;
 }
 .toggleButton {
   font-size: 30px;
