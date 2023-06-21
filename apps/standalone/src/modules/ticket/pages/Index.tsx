@@ -30,11 +30,11 @@ import {
   TicketStatistic,
   UpdateTicket,
 } from "@moose-desk/repo";
-import { PDFDownloadLink } from "@react-pdf/renderer";
-import { Button, Input, Spin, TableProps } from "antd";
+import { Button, Input, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useReactToPrint } from "react-to-print";
 import { catchError, forkJoin, map, of } from "rxjs";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
 import { Form } from "src/components/UI/Form";
@@ -50,11 +50,13 @@ import useNotification from "src/hooks/useNotification";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { CardStatistic } from "src/modules/ticket/components/CardStatistic";
 import { DeleteSelectedModal } from "src/modules/ticket/components/DeleteSelectedModal";
-import { ExportTicketPdf } from "src/modules/ticket/components/ExportTicketPdf/ExportTicketPdf";
 import ModalFilter from "src/modules/ticket/components/ModalFilter/ModalFilter";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import IcRoundFilterAlt from "~icons/ic/round-filter-alt";
+
+import { ExportTicket } from "src/modules/ticket/components/ExportTicketPdf/ExportTicket";
 import UilImport from "~icons/uil/import";
+
 import "./ListTicket.scss";
 interface TicketIndexPageProps {}
 interface FilterObject {
@@ -111,6 +113,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const location = useLocation();
   const [statusFromTrash, setStatusFromTrash] = useState(location.state);
   const [filterObject, setFilterObject] = useState<FilterObject | null>(null);
+  const exportPdfRef = useRef<any>(null);
 
   const defaultFilter: () => any = () => ({
     page: 1,
@@ -316,7 +319,11 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     },
     [setFilterData]
   ) as TableProps<any>["onChange"];
-
+  const handlePrint = useReactToPrint({
+    content: () => exportPdfRef.current,
+    documentTitle: "Tickets",
+    onAfterPrint: () => {},
+  });
   const { run: deleteTicketApi } = useJob((id: string[]) => {
     message.loading.show(t("messages:loading.removing_ticket"));
 
@@ -554,53 +561,28 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                       />
                     </Form.Item>
                   </Form>
-
-                  {conversations.length !== selectedRowKeys.length ? (
-                    <Button
-                      disabled
-                      className="w-[100px]"
-                      icon={<Spin size="small" />}
-                    ></Button>
-                  ) : (
-                    <PDFDownloadLink
-                      document={
-                        <ExportTicketPdf
-                          conversations={conversations}
-                          agents={agents}
-                          tickets={tickets}
-                          selectedRowKeys={selectedRowKeys}
-                          timezone={timezone}
-                        />
-                      }
-                      fileName="Tickets.pdf"
-                      style={{ textDecoration: "none" }}
-                    >
-                      {({ loading }) =>
-                        loading ? (
-                          <div className="flex justify-center items-center">
-                            <Button
-                              disabled
-                              className="w-[100px]"
-                              icon={<Spin size="small" />}
-                            ></Button>
-                          </div>
-                        ) : (
-                          <div className="flex justify-center items-center">
-                            <Button
-                              className="w-[100px]"
-                              icon={
-                                <IconButton>
-                                  <UilImport />
-                                </IconButton>
-                              }
-                            >
-                              Export
-                            </Button>
-                          </div>
-                        )
-                      }
-                    </PDFDownloadLink>
-                  )}
+                  <Button
+                    onClick={handlePrint}
+                    className="w-[100px]"
+                    icon={
+                      <IconButton>
+                        <UilImport />
+                      </IconButton>
+                    }
+                  >
+                    Export
+                  </Button>
+                  <div className="hidden">
+                    <div ref={exportPdfRef}>
+                      <ExportTicket
+                        conversations={conversations}
+                        agents={agents}
+                        tickets={tickets}
+                        selectedRowKeys={selectedRowKeys}
+                        timezone={timezone}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

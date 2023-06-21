@@ -67,7 +67,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
     }
     return item.chat;
   }, [item.chat]);
-  const checkHeight = useHtmlStringHeight(sortChat);
+  const heightSortChat = useHtmlStringHeight(sortChat);
   const quote = useMemo(() => {
     if (item.chat.match(regexQuote)) {
       return item.chat.match(regexQuote)?.[0] as string;
@@ -75,7 +75,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
 
     return "";
   }, [item.chat]);
-  const checkHeightQuote = useHtmlStringHeight(quote);
+  const heightQuote = useHtmlStringHeight(quote);
 
   const disableQuote = useMemo(() => {
     if (quote === "") {
@@ -102,16 +102,16 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
 
     const objectElement = iframeRef.current;
 
-    objectElement.style.height = `${checkHeight}px`;
-  }, [sortChat, checkHeight, isMobile]);
+    objectElement.style.height = `${heightSortChat}px`;
+  }, [sortChat, heightSortChat, isMobile]);
   useEffect(() => {
     if (isMobile) return;
     if (!toggleQuote) {
       const objectElement = iframeRefQuote.current;
 
-      objectElement.style.height = `${checkHeightQuote}px`;
+      objectElement.style.height = `${heightQuote}px`;
     }
-  }, [quote, checkHeightQuote, toggleQuote, isMobile]);
+  }, [quote, heightQuote, toggleQuote, isMobile]);
   return (
     <div className="">
       <div className=" items-center gap-3 mx-2">
@@ -245,7 +245,9 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
             icon={<CollapseIcon />}
             size="medium"
           >
-            {`${item.attachments?.length} files attached`}
+            {`${item.attachments?.length} file${
+              item.attachments?.length > 1 ? "s" : ""
+            } attached`}
           </Button>
           <Collapsible
             open={open}
@@ -255,7 +257,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
           >
             <TextContainer>
               {item.attachments?.length ? (
-                <div className="flex gap-5 overflow-scroll box-file mt-2 ">
+                <div className="flex flex-wrap gap-5 overflow-scroll box-file mt-2 ">
                   {item.attachments?.map((item) => (
                     <div
                       key={item._id}
