@@ -67,9 +67,8 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
 
     return "";
   }, [item.chat]);
-  const checkHeight = useHtmlStringHeight(sortChat);
-  const checkHeightQuote = useHtmlStringHeight(quote);
-
+  const heightSortChat = useHtmlStringHeight(sortChat);
+  const heightQuote = useHtmlStringHeight(quote);
   const disableQuote = useMemo(() => {
     if (quote === "") {
       return true;
@@ -79,15 +78,15 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
   useEffect(() => {
     const objectElement = iframeRef.current;
 
-    objectElement.style.height = `${checkHeight}px`;
-  }, [sortChat, checkHeight]);
+    objectElement.style.height = `${heightSortChat}px`;
+  }, [sortChat, heightSortChat]);
   useEffect(() => {
     if (!toggleQuote) {
       const objectElement = iframeRefQuote.current;
 
-      objectElement.style.height = `${checkHeightQuote}px`;
+      objectElement.style.height = `${heightQuote}px`;
     }
-  }, [quote, checkHeightQuote, toggleQuote]);
+  }, [quote, heightQuote, toggleQuote]);
   return (
     <div className="">
       <div className=" items-center gap-3 mx-2">
@@ -160,7 +159,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
       /> */}
       <div ref={iframeRef}>
         <object
-          className="w-full h-full border-none mt-5"
+          className="w-full h-full border-none mt-5 "
           data={`data:text/html;charset=utf-8,${encodeURIComponent(
             `<div style="font-family:Helvetica;font-size:14px">${sortChat}</div>`
           )}`}
@@ -170,18 +169,20 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
       {disableQuote ? (
         <></>
       ) : (
-        <Popover content={<>Quote</>} className="mt-2 mb-5">
-          <Button
-            type="text"
-            onClick={() => {
-              setToggleQuote(!toggleQuote);
-            }}
-            style={{ padding: 5, height: 20 }}
-            className="flex items-center justify-center bg-slate-600"
-          >
-            <QuoteIcon color="white" />
-          </Button>
-        </Popover>
+        <div className="mt-10">
+          <Popover content={<>Quote</>} className="mt-2 mb-5">
+            <Button
+              type="text"
+              onClick={() => {
+                setToggleQuote(!toggleQuote);
+              }}
+              style={{ padding: 5, height: 20 }}
+              className="flex items-center justify-center bg-slate-600"
+            >
+              <QuoteIcon color="white" />
+            </Button>
+          </Popover>
+        </div>
       )}
 
       {toggleQuote ? (
@@ -207,10 +208,12 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
       {item.attachments?.length ? (
         <Collapse>
           <Collapse.Panel
-            header={`${item.attachments?.length} files attached`}
+            header={`${item.attachments?.length} file${
+              item.attachments?.length > 1 ? "s" : ""
+            } attached`}
             key={1}
           >
-            <div className="flex gap-5 overflow-scroll box-file mt-2 ">
+            <div className="flex flex-wrap gap-5 overflow-scroll box-file mt-2 ">
               {item.attachments?.map((item) => (
                 <div
                   key={item._id}
