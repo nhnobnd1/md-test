@@ -11,7 +11,7 @@ import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { catchError, map, of } from "rxjs";
-import logo from "src/assets/images/logo/logoBase.png";
+import LayoutSignInPage from "src/components/UI/LayoutSignInPage/LayoutSignInPage";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { useSubdomain } from "src/hooks/useSubdomain";
@@ -147,26 +147,19 @@ export const SignIn = () => {
   };
 
   return (
-    <section className={styles.container}>
-      <div className={styles.loginWrap}>
-        <img className={styles.logo} src={logo} alt="logo" />
-        {view === "login" ? (
-          <div>
-            <div className="card-signin__image">
-              {!errorMessage ? (
-                <div>
-                  <h2>Sign In</h2>
-                  <p className={styles.subHeader}>
-                    Please enter your credentials to sign in!
-                  </p>
-                </div>
-              ) : (
-                <div>
-                  <h2>Sign In</h2>
-                  <p className={styles.error}>{errorMessage}</p>
-                </div>
-              )}
-            </div>
+    <>
+      {view === "login" ? (
+        <LayoutSignInPage
+          subTitle={
+            !errorMessage ? (
+              <p className={styles.subHeader}>
+                Please enter your credentials to sign in!
+              </p>
+            ) : (
+              <p className={styles.error}>{errorMessage}</p>
+            )
+          }
+          content={
             <div className={styles.formWrap}>
               <Form
                 initialValues={initialValues}
@@ -222,36 +215,52 @@ export const SignIn = () => {
                 </Button>
               </Form>
             </div>
-          </div>
-        ) : (
-          <>
-            {view === "lock" ? (
-              <div>
-                <h2>Failed to login</h2>
+          }
+        />
+      ) : (
+        <>
+          {view === "lock" ? (
+            <LayoutSignInPage
+              title="Failed to login"
+              subTitle={
                 <p className={styles.error}>
                   You have failed to login more 3 times. Your account has been
                   deactivated. Please contact your system administrator.
                 </p>
+              }
+              content={
                 <div className={styles.wrapLink}>
                   <Link href={RoutePaths.Login} className={styles.link}>
                     Back to login page
                   </Link>
                 </div>
-              </div>
-            ) : (
-              <>
-                <Factor2Auth
-                  type={factor.type}
-                  state={factor.state}
-                  onFinish={signInApi}
-                  onResend={signInApi}
-                />
-              </>
-            )}
-          </>
-        )}
-      </div>
-    </section>
+              }
+            />
+          ) : (
+            <>
+              <LayoutSignInPage
+                title="2-Factor Authentication"
+                subTitle={
+                  <p className={styles.subHeader}>
+                    {factor.type === "email"
+                      ? "Please enter the OTP which we sent to your email."
+                      : " Please enter the OTP which was displayed in your authenticator application."}
+                  </p>
+                }
+                content={
+                  <Factor2Auth
+                    type={factor.type}
+                    state={factor.state}
+                    onFinish={signInApi}
+                    onResend={signInApi}
+                  />
+                }
+              />
+            </>
+          )}
+        </>
+      )}
+    </>
   );
 };
 

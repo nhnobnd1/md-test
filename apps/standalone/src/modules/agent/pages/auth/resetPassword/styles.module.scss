@@ -1,85 +1,39 @@
 @import "../../../../../styles/variables.scss";
 
-.container {
-  background-image: url(../../../../../assets/images/loginBackground.svg);
-  height: 100vh;
-  background-repeat: no-repeat;
-  background-color: $background-gray-color;
-  background-position: left 3.9% top 35%;
+.formWrap {
+  margin-top: 32px;
 
-  .logo {
-    height: 56px;
-    margin-bottom: 40px;
-  }
+  :global {
+    .ant-form-item-required {
+      color: $character-title;
 
-  h2 {
-    font-size: 30px;
-    line-height: 40px;
-    margin-bottom: 8px;
-  }
-
-  .subHeader {
-    color: $opacity-black;
-    margin-bottom: 0;
-  }
-
-  .formWrap {
-    margin-top: 32px;
-
-    :global {
-      .ant-form-item-required {
-        color: $character-title;
-
-        &::before {
-          display: none !important;
-        }
-      }
-
-      .ant-input,
-      .ant-input-password {
-        border-radius: 6px !important;
+      &::before {
+        display: none !important;
       }
     }
 
-    input:autofill {
-      background-color: transparent !important;
+    .ant-input,
+    .ant-input-password {
+      border-radius: 6px !important;
     }
+  }
+}
 
-    input:-webkit-autofill {
-      background-color: transparent !important;
-    }
+.wrapLink {
+  margin-top: 32px;
+}
 
-    .buttonChange {
-      width: 100%;
-      margin-top: 8px;
-      background-color: $primary;
-      font-size: 16px;
-      border-radius: 6px;
+.link {
+  color: $primary !important;
+  font-size: 16px;
 
-      &:hover {
-        background-color: $primary-hover;
-      }
-    }
+  &:hover {
+    color: $primary-hover !important;
   }
-  .wrapLink {
-    margin-top: 32px;
-  }
-  .link {
-    color: $primary;
-    font-size: 16px;
-    &:hover {
-      color: $primary-hover;
-    }
-  }
-  .changeWrap {
-    position: absolute;
-    height: 100%;
-    top: 20%;
-    right: 7.3%;
-    bottom: 0;
-    width: 584px;
-    padding: 0 100px;
-  }
+}
+.subHeader {
+  color: $opacity-black;
+  margin-bottom: 0;
 }
 .error {
   background-color: $dust-red;
@@ -88,4 +42,15 @@
   padding: 12px;
   border-radius: 6px;
   line-height: 22px;
+}
+.buttonChange {
+  width: 100%;
+  margin-top: 8px;
+  background-color: $primary;
+  font-size: 16px;
+  border-radius: 6px;
+
+  &:hover {
+    background-color: $primary-hover !important;
+  }
 }

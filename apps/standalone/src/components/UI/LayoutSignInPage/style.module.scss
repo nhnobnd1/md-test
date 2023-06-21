@@ -1,0 +1,45 @@
+@import "../../../styles/variables.scss";
+.container {
+  background-image: url(../../../assets/images/loginBackground.svg);
+  height: 100vh;
+  background-repeat: no-repeat;
+  background-color: $background-gray-color;
+  background-position: left 3.9% top 35%;
+  .loginWrap {
+    position: absolute;
+    height: 100%;
+    top: 20%;
+    right: 7.3%;
+    bottom: 0;
+    width: 584px;
+    padding: 0 100px;
+  }
+  .logo {
+    height: 56px;
+    margin-bottom: 40px;
+  }
+
+  h2 {
+    font-size: 30px;
+    line-height: 40px;
+    margin-bottom: 8px;
+  }
+
+  .contentWrap {
+
+    :global {
+      .ant-form-item-required {
+        color: $character-title;
+
+        &::before {
+          display: none !important;
+        }
+      }
+
+      .ant-input,
+      .ant-input-password {
+        border-radius: 6px !important;
+      }
+    }
+  }
+}

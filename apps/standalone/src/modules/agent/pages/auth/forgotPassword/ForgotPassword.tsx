@@ -6,7 +6,7 @@ import { useCallback, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
-import logo from "src/assets/images/logo/logoBase.png";
+import LayoutSignInPage from "src/components/UI/LayoutSignInPage/LayoutSignInPage";
 import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
@@ -62,15 +62,32 @@ export const ForgotPassword = () => {
 
   return (
     <section className={styles.container}>
-      <div className={styles.forgotWrap}>
-        <img className={styles.logo} src={logo} alt="logo" />
-        <h2>Reset your password</h2>
-        {!finalPage.status ? (
-          <>
+      <LayoutSignInPage
+        title="Reset your password"
+        subTitle={
+          !finalPage.status ? (
             <p className={styles.subHeader}>
               Please enter your email address and we will send the instructions
               to reset your password
             </p>
+          ) : finalPage.isSuccess ? (
+            <>
+              <p className={styles.subHeader}>
+                We have sent the instructions to your email address.
+              </p>
+              <p className={styles.subHeader}>
+                Please follow the instructions in order to reset your password.
+              </p>
+            </>
+          ) : (
+            <p className={styles.error}>
+              The system failed to send email to your email address, please
+              enter a valid email address.
+            </p>
+          )
+        }
+        content={
+          !finalPage.status ? (
             <div className={styles.formWrap}>
               <Form layout="vertical" form={form} onFinish={handleFinish}>
                 <Form.Item
@@ -108,33 +125,15 @@ export const ForgotPassword = () => {
                 </Button>
               </Form>
             </div>
-          </>
-        ) : (
-          <>
-            {finalPage.isSuccess ? (
-              <>
-                <p className={styles.subHeader}>
-                  We have sent the instructions to your email address.
-                </p>
-                <p className={styles.subHeader}>
-                  Please follow the instructions in order to reset your
-                  password.
-                </p>
-              </>
-            ) : (
-              <p className={styles.error}>
-                The system failed to send email to your email address, please
-                enter a valid email address.
-              </p>
-            )}
+          ) : (
             <div className={styles.wrapLink}>
               <Link href={RoutePaths.Login} className={styles.link}>
                 Back to login page
               </Link>
             </div>
-          </>
-        )}
-      </div>
+          )
+        }
+      />
     </section>
   );
 };
