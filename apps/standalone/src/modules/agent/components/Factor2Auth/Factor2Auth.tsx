@@ -75,51 +75,38 @@ export const Factor2Auth = ({
     );
   }, [state]);
   return (
-    <div>
-      <h2>2-Factor Authentication</h2>
-      <div className="form">
-        <p className={styles.subHeader}>
-          {type === "email"
-            ? "Please enter the OTP which we sent to your email."
-            : " Please enter the OTP which was displayed in your authenticator application."}
-        </p>
+    <div className={styles.formWrap}>
+      <Form layout="vertical" onFinish={handleFinish}>
+        <Form.Item
+          name="twoFactorCode"
+          label="OTP"
+          rules={[{ required: true, message: "Please enter code OTP" }]}
+        >
+          <Input type="text" size="large" placeholder="Enter OTP" />
+        </Form.Item>
 
-        <div className={styles.formWrap}>
-          <Form layout="vertical" onFinish={handleFinish}>
-            <Form.Item
-              name="twoFactorCode"
-              label="OTP"
-              rules={[{ required: true, message: "Please enter code OTP" }]}
+        <Button
+          className={styles.buttonLogin}
+          htmlType="submit"
+          type="primary"
+          size="large"
+        >
+          Login
+        </Button>
+        {type === "email" && (
+          <div className="d-flex align-center">
+            <span
+              className={classNames(styles.link, {
+                [styles.disabledLink]: !activeResend,
+              })}
+              onClick={() => activeResend && handleResend()}
             >
-              <Input type="text" size="large" placeholder="Enter OTP" />
-            </Form.Item>
-
-            <Button
-              className={styles.buttonLogin}
-              htmlType="submit"
-              type="primary"
-              size="large"
-            >
-              Login
-            </Button>
-            {type === "email" && (
-              <div className="d-flex align-center">
-                <span
-                  className={classNames(styles.link, {
-                    [styles.disabledLink]: !activeResend,
-                  })}
-                  onClick={() => activeResend && handleResend()}
-                >
-                  Re-send OTP Code
-                </span>
-                {!activeResend && (
-                  <span className={styles.time}>{countDown}s</span>
-                )}
-              </div>
-            )}
-          </Form>
-        </div>
-      </div>
+              Re-send OTP Code
+            </span>
+            {!activeResend && <span className={styles.time}>{countDown}s</span>}
+          </div>
+        )}
+      </Form>
     </div>
   );
 };

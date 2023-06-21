@@ -14,7 +14,7 @@ import Link from "antd/es/typography/Link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
-import logo from "src/assets/images/logo/logoBase.png";
+import LayoutSignInPage from "src/components/UI/LayoutSignInPage/LayoutSignInPage";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { useStore } from "src/providers/StoreProviders";
@@ -141,28 +141,17 @@ const ResetPassword = () => {
     <>
       {isValid !== null && (
         <>
-          <section className={styles.container}>
-            <div className={styles.changeWrap}>
-              <img className={styles.logo} src={logo} alt="logo" />
-              {isValid ? (
-                <div>
-                  <h2>{!finalPage ? "Change password" : "Password changed"}</h2>
-                  <p className={styles.subHeader}>
-                    {!finalPage
-                      ? "Please enter your new password and confirm password to change password."
-                      : "Your password has been reset successfully. You can try login again with your new password."}
-                  </p>
-                </div>
-              ) : (
-                <div>
-                  <h2>Reset password expired</h2>
-                  <p className={styles.error}>
-                    The reset password link has expired. if you still want to
-                    reset your password. Please start over again.
-                  </p>
-                </div>
-              )}
-              {isValid ? (
+          {isValid ? (
+            <LayoutSignInPage
+              title={!finalPage ? "Change password" : "Password changed"}
+              subTitle={
+                <p className={styles.subHeader}>
+                  {!finalPage
+                    ? "Please enter your new password and confirm password to change password."
+                    : "Your password has been reset successfully. You can try login again with your new password."}
+                </p>
+              }
+              content={
                 <div>
                   {!finalPage ? (
                     <div className={styles.formWrap}>
@@ -237,15 +226,26 @@ const ResetPassword = () => {
                     </div>
                   )}
                 </div>
-              ) : (
+              }
+            />
+          ) : (
+            <LayoutSignInPage
+              title="Reset password expired"
+              subTitle={
+                <p className={styles.error}>
+                  The reset password link has expired. if you still want to
+                  reset your password. Please start over again.
+                </p>
+              }
+              content={
                 <div className={styles.wrapLink}>
                   <Link href={RoutePaths.Login} className={styles.link}>
                     Back to login page
                   </Link>
                 </div>
-              )}
-            </div>
-          </section>
+              }
+            />
+          )}
         </>
       )}
     </>
