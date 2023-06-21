@@ -15,12 +15,14 @@ export default function LayoutSignInPage({
   return (
     <section className={styles.container}>
       <div className={styles.loginWrap}>
-        <img className={styles.logo} src={logo} alt="logo" />
-        <div>
-          <h2>{title}</h2>
-          {subTitle && subTitle}
+        <div className={styles.box}>
+          <img className={styles.logo} src={logo} alt="logo" />
+          <div>
+            <h2>{title}</h2>
+            {subTitle && subTitle}
+          </div>
+          <div className={styles.contentWrap}>{content}</div>
         </div>
-        <div className={styles.contentWrap}>{content}</div>
       </div>
     </section>
   );

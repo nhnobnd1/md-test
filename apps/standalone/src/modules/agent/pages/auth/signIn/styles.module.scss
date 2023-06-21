@@ -16,28 +16,11 @@
 
 .formWrap {
   margin-top: 32px;
-
-  :global {
-    .ant-form-item-required {
-      color: $character-title;
-
-      &::before {
-        display: none !important;
-      }
-    }
-
-    .ant-input,
-    .ant-input-password {
-      border-radius: 6px !important;
-    }
-  }
   .buttonLogin {
     width: 100%;
     margin-top: 32px;
     background-color: $primary;
     font-size: 16px;
-    border-radius: 6px;
-
     &:hover {
       background-color: $primary-hover;
     }
@@ -48,7 +31,7 @@
     
 }
 .wrapLink {
-    margin-top: 32px;
+    margin-top: 16px;
 }
  .link {
      color: $primary !important;
