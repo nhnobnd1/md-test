@@ -31,7 +31,7 @@ import {
   UpdateTicket,
 } from "@moose-desk/repo";
 import { PDFDownloadLink } from "@react-pdf/renderer";
-import { Button, Input, Skeleton, TableProps } from "antd";
+import { Button, Input, Spin, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -555,37 +555,52 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                     </Form.Item>
                   </Form>
 
-                  <PDFDownloadLink
-                    document={
-                      <ExportTicketPdf
-                        conversations={conversations}
-                        agents={agents}
-                        tickets={tickets}
-                        selectedRowKeys={selectedRowKeys}
-                        timezone={timezone}
-                      />
-                    }
-                    fileName="Tickets.pdf"
-                    style={{ textDecoration: "none" }}
-                  >
-                    {({ loading }) =>
-                      loading ? (
-                        <Skeleton.Input />
-                      ) : (
-                        <div className="flex justify-center items-center">
-                          <Button
-                            icon={
-                              <IconButton>
-                                <UilImport />
-                              </IconButton>
-                            }
-                          >
-                            Export
-                          </Button>
-                        </div>
-                      )
-                    }
-                  </PDFDownloadLink>
+                  {conversations.length !== selectedRowKeys.length ? (
+                    <Button
+                      disabled
+                      className="w-[100px]"
+                      icon={<Spin size="small" />}
+                    ></Button>
+                  ) : (
+                    <PDFDownloadLink
+                      document={
+                        <ExportTicketPdf
+                          conversations={conversations}
+                          agents={agents}
+                          tickets={tickets}
+                          selectedRowKeys={selectedRowKeys}
+                          timezone={timezone}
+                        />
+                      }
+                      fileName="Tickets.pdf"
+                      style={{ textDecoration: "none" }}
+                    >
+                      {({ loading }) =>
+                        loading ? (
+                          <div className="flex justify-center items-center">
+                            <Button
+                              disabled
+                              className="w-[100px]"
+                              icon={<Spin size="small" />}
+                            ></Button>
+                          </div>
+                        ) : (
+                          <div className="flex justify-center items-center">
+                            <Button
+                              className="w-[100px]"
+                              icon={
+                                <IconButton>
+                                  <UilImport />
+                                </IconButton>
+                              }
+                            >
+                              Export
+                            </Button>
+                          </div>
+                        )
+                      }
+                    </PDFDownloadLink>
+                  )}
                 </div>
               </div>
             </div>
