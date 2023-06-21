@@ -1,4 +1,10 @@
-import { emailRegex, useJob, useNavigate, useParams } from "@moose-desk/core";
+import {
+  createdDatetimeFormat,
+  emailRegex,
+  useJob,
+  useNavigate,
+  useParams,
+} from "@moose-desk/core";
 import {
   Agent,
   AgentRepository,
@@ -32,6 +38,7 @@ import moment from "moment";
 import VirtualList from "rc-virtual-list";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import TextEditorTicket from "src/components/UI/Editor/TextEditorTicket";
@@ -39,6 +46,7 @@ import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
 import Select, { LoadMoreValue } from "src/components/UI/Select/Select";
 import useMessage from "src/hooks/useMessage";
+import { useSubdomain } from "src/hooks/useSubdomain";
 import { RowMessage } from "src/modules/ticket/components/DetailTicketForm/RowMessage";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import FaMailReply from "~icons/fa/mail-reply";
@@ -102,6 +110,9 @@ const DetailTicketForm = () => {
   const [emailIntegrationOptions, setEmailIntegrationOptions] = useState<any>(
     []
   );
+  const { subDomain } = useSubdomain();
+
+  const { timezone } = useGlobalData(false, subDomain || "");
 
   const listChat = useMemo<ChatItem[]>(() => {
     const conversationMapping: any = conversationList?.map(
@@ -112,10 +123,10 @@ const DetailTicketForm = () => {
           time: `${moment
             .unix(item.createdTimestamp)
             .local()
-            .fromNow()} (${moment
-            .unix(item.createdTimestamp)
-            .local()
-            .format("HH:mm MM/DD/YYYY")})`,
+            .fromNow()} (${createdDatetimeFormat(
+            item.createdDatetime,
+            timezone
+          )})`,
           chat: item.description,
           email: item.fromEmail?.email,
           attachments: item.attachments,
@@ -138,13 +149,12 @@ const DetailTicketForm = () => {
       conversationMapping?.unshift({
         id: ticket._id,
         name: ticket?.fromEmail.name,
-        time: `${moment
-          .unix(ticket.createdTimestamp)
-          .local()
-          .fromNow()} (${moment
-          .unix(ticket.createdTimestamp)
-          .local()
-          .format("HH:mm MM/DD/YYYY")})`,
+        time: `${moment(
+          ticket.createdDatetime
+        ).fromNow()} (${createdDatetimeFormat(
+          ticket.createdDatetime,
+          timezone
+        )})`,
         chat: ticket.description,
         email: ticket.fromEmail.email,
         attachments: ticket.attachments,

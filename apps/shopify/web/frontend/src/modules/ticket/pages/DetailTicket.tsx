@@ -1,4 +1,5 @@
 import {
+  createdDatetimeFormat,
   generatePath,
   MediaScreen,
   useJob,
@@ -57,8 +58,10 @@ import BoxSelectFilter from "src/components/Modal/ModalFilter/BoxSelectFilter";
 import SelectAddEmail from "src/components/SelectAddEmail/SelectAddEmail";
 import SelectAddTag from "src/components/SelectAddTag/SelectAddTag";
 import { TextEditorTicket } from "src/components/TextEditorTicket";
+import useGlobalData from "src/hooks/useGlobalData";
 import usePreventNav from "src/hooks/usePreventNav";
 import useScreenType from "src/hooks/useScreenType";
+import { useSubdomain } from "src/hooks/useSubdomain";
 import useToggleGlobal from "src/hooks/useToggleGlobal";
 import ContentShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ContentShopifySearch";
 import { ModalInfoTicket } from "src/modules/ticket/components/ModalInfoTicket";
@@ -122,6 +125,8 @@ const DetailTicket = (props: DetailTicketProps) => {
   const [ccDefault, setCCDefault] = useState<string[]>([]);
   const [bccDefault, setBCCDefault] = useState<string[]>([]);
   usePreventNav();
+  const { subDomain } = useSubdomain();
+  const { timezone }: any = useGlobalData(false, subDomain || "");
   const listChat = useMemo<ChatItem[]>(() => {
     const conversationMapping: any = conversationList?.map(
       (item: Conversation) => {
@@ -131,10 +136,10 @@ const DetailTicket = (props: DetailTicketProps) => {
           time: `${moment
             .unix(item.createdTimestamp)
             .local()
-            .fromNow()} (${moment
-            .unix(item.createdTimestamp)
-            .local()
-            .format("HH:mm MM/DD/YYYY")})`,
+            .fromNow()} (${createdDatetimeFormat(
+            item.createdDatetime,
+            timezone
+          )})`,
           chat: item.description,
           email: item.fromEmail?.email,
           attachments: item.attachments,
@@ -157,13 +162,12 @@ const DetailTicket = (props: DetailTicketProps) => {
       conversationMapping?.unshift({
         id: ticket._id,
         name: ticket?.fromEmail.name,
-        time: `${moment
-          .unix(ticket.createdTimestamp)
-          .local()
-          .fromNow()} (${moment
-          .unix(ticket.createdTimestamp)
-          .local()
-          .format("HH:mm MM/DD/YYYY")})`,
+        time: `${moment(
+          ticket.createdDatetime
+        ).fromNow()} (${createdDatetimeFormat(
+          ticket.createdDatetime,
+          timezone
+        )})`,
         chat: ticket.description,
         email: ticket.fromEmail.email,
         attachments: ticket.attachments,
