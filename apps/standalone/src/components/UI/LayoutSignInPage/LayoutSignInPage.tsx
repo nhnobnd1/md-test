@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import logo from "src/assets/images/logo/logoBase.png";
+import logo from "src/assets/images/logo/logoSignIn.svg";
 import styles from "./style.module.scss";
 
 interface IProps {
@@ -8,7 +8,7 @@ interface IProps {
   content: ReactNode;
 }
 export default function LayoutSignInPage({
-  title = "Welcome Back!",
+  title = "Welcome Back",
   subTitle,
   content,
 }: IProps) {
