@@ -4,19 +4,30 @@
   height: 100vh;
   background-repeat: no-repeat;
   background-color: $background-gray-color;
-  background-position: left 3.9% top 35%;
+  background-position: center;
+  background-size: cover;
   .loginWrap {
     position: absolute;
-    height: 100%;
-    top: 20%;
-    right: 7.3%;
+    top: 0;
+    right: 11.1%;
     bottom: 0;
-    width: 584px;
-    padding: 0 100px;
+    width: 448px;
+    // padding: 0 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 5%;
+    .box {
+      width: 100%;
+      background-color: $white-color;
+      padding: 40px 32px;
+      box-shadow: 0px 10px 24px 2px rgba(57, 41, 24, 0.1);
+      border-radius: 24px;
+    }
   }
   .logo {
-    height: 56px;
-    margin-bottom: 40px;
+    height: 52px;
+    margin-bottom: 32px;
   }
 
   h2 {
@@ -26,7 +37,6 @@
   }
 
   .contentWrap {
-
     :global {
       .ant-form-item-required {
         color: $character-title;
@@ -38,7 +48,11 @@
 
       .ant-input,
       .ant-input-password {
-        border-radius: 6px !important;
+        border-radius: 8px !important;
+      }
+      button {
+        border-radius: 16px !important;
+        height: 56px !important;
       }
     }
   }

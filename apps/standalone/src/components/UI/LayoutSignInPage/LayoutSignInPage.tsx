@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import logo from "src/assets/images/logo/logoBase.png";
+import logo from "src/assets/images/logo/logoSignIn.svg";
 import styles from "./style.module.scss";
 
 interface IProps {
@@ -8,19 +8,21 @@ interface IProps {
   content: ReactNode;
 }
 export default function LayoutSignInPage({
-  title = "Welcome Back!",
+  title = "Welcome Back",
   subTitle,
   content,
 }: IProps) {
   return (
     <section className={styles.container}>
       <div className={styles.loginWrap}>
-        <img className={styles.logo} src={logo} alt="logo" />
-        <div>
-          <h2>{title}</h2>
-          {subTitle && subTitle}
+        <div className={styles.box}>
+          <img className={styles.logo} src={logo} alt="logo" />
+          <div>
+            <h2>{title}</h2>
+            {subTitle && subTitle}
+          </div>
+          <div className={styles.contentWrap}>{content}</div>
         </div>
-        <div className={styles.contentWrap}>{content}</div>
       </div>
     </section>
   );
