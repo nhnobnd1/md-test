@@ -30,12 +30,12 @@ import {
   Select as AntSelect,
   Button,
   Card,
+  Collapse,
   Divider,
   List,
   Skeleton,
 } from "antd";
 import moment from "moment";
-import VirtualList from "rc-virtual-list";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
@@ -50,7 +50,8 @@ import { useSubdomain } from "src/hooks/useSubdomain";
 import { RowMessage } from "src/modules/ticket/components/DetailTicketForm/RowMessage";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import FaMailReply from "~icons/fa/mail-reply";
-import BackIcon from "~icons/mingcute/back-2-fill";
+import AttachIcon from "~icons/mingcute/attachment-2-line";
+import BackIcon from "~icons/mingcute/attachment-fill";
 import "./BoxReply.scss";
 
 interface ValueForm {
@@ -581,7 +582,7 @@ const DetailTicketForm = () => {
                   <div className="w-full h-full">
                     <div className="box-chat">
                       <List>
-                        <VirtualList
+                        {/* <VirtualList
                           data={listChat}
                           itemHeight={50}
                           itemKey="id"
@@ -593,7 +594,41 @@ const DetailTicketForm = () => {
                               />
                             </List.Item>
                           )}
-                        </VirtualList>
+                        </VirtualList> */}
+                        <Collapse
+                          defaultActiveKey={listChat[listChat.length - 1].time}
+                          bordered={false}
+                          className="bg-white"
+                        >
+                          {listChat.map((item: ChatItem) => (
+                            <Collapse.Panel
+                              header={
+                                <div className="flex justify-between items-center">
+                                  <div className="flex gap-2 items-center">
+                                    <span className="font-bold">
+                                      {item.name}
+                                    </span>
+                                    <span className="text-gray-500 text-xs">
+                                      ({item.email})
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    {item?.attachments?.length ? (
+                                      <AttachIcon style={{ fontSize: 20 }} />
+                                    ) : (
+                                      <></>
+                                    )}
+
+                                    <span>{item.time}</span>
+                                  </div>
+                                </div>
+                              }
+                              key={item.time}
+                            >
+                              <RowMessage item={item} />
+                            </Collapse.Panel>
+                          ))}
+                        </Collapse>
                       </List>
                     </div>
                     <Divider />

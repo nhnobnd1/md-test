@@ -101,11 +101,11 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
             {item.typeChat ? item.typeChat : "replied"}
           </span>
         </div>
-        <div className="flex gap-3 justify-between mt-2">
+        {/* <div className="flex gap-3 justify-between mt-2">
           <span style={{ color: "black", fontSize: 12 }}>
             From: {item.email}
           </span>
-        </div>
+        </div> */}
         <div className="flex gap-3 justify-between mt-2">
           <span className="text-xs">{item.time}</span>
         </div>
