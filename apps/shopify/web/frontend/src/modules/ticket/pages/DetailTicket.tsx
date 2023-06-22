@@ -124,7 +124,7 @@ const DetailTicket = (props: DetailTicketProps) => {
   const { visible, setVisible } = useToggleGlobal();
   const [ccDefault, setCCDefault] = useState<string[]>([]);
   const [bccDefault, setBCCDefault] = useState<string[]>([]);
-  usePreventNav(MediaScreen.XL);
+  // usePreventNav(MediaScreen.XL);
   const { subDomain } = useSubdomain();
   const { timezone }: any = useGlobalData(false, subDomain || "");
   const listChat = useMemo<ChatItem[]>(() => {
@@ -635,7 +635,7 @@ const DetailTicket = (props: DetailTicketProps) => {
                       validationSchema={DetailTicketFormSchema}
                       onSubmit={() => {}}
                     >
-                      <div className="flex  md:flex-row-reverse xs:flex-col justify-between">
+                      <div className="flex flex-wrap  md:flex-row-reverse xs:flex-col justify-between">
                         <div
                           className={classNames(
                             styles.borderLeft,
