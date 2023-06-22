@@ -91,7 +91,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
     <div className="">
       <div className=" items-center gap-3 mx-2">
         <div className="flex items-end gap-3 ">
-          <h2 style={{ color: "black", margin: 0 }}>{item.name}</h2>
+          {/* <h2 style={{ color: "black", margin: 0 }}>{item.name}</h2> */}
           {item?.incoming ? (
             <UserIcon fontSize={24} />
           ) : (
@@ -106,9 +106,9 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
             From: {item.email}
           </span>
         </div> */}
-        <div className="flex gap-3 justify-between mt-2">
+        {/* <div className="flex gap-3 justify-between mt-2">
           <span className="text-xs">{item.time}</span>
-        </div>
+        </div> */}
         <div className="flex gap-3  mt-2 flex-wrap">
           <span style={{ color: "black", fontSize: 12 }}>
             <span style={{ fontWeight: "bold" }}>To </span>: {item.toEmail}
