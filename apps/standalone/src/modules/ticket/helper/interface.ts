@@ -1,3 +1,5 @@
+import { Conversation } from "@moose-desk/repo";
+
 type Address = {
   address1?: string;
   address2?: string;
@@ -51,4 +53,7 @@ export default interface ListShopifyCustomerRes {
   updated_at: string;
   verified_email: boolean;
 }
-export default interface ResultCustomerShopifySearch {}
+export interface ItemConversation {
+  id: string;
+  conversations: Conversation[];
+}

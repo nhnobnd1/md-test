@@ -12,8 +12,9 @@ import {
   TicketRepository,
   UpdateTicket,
 } from "@moose-desk/repo";
+import { useQueries } from "react-query";
 import { lastValueFrom } from "rxjs";
-
+import { ItemConversation } from "src/modules/ticket/helper/interface";
 export const getStatisticTicket = () => {
   return new Promise((resolve, reject) => {
     lastValueFrom(TicketRepository().getStatistic())
@@ -21,6 +22,15 @@ export const getStatisticTicket = () => {
       .catch((error) => reject(error));
   });
 };
+
+export const fetchConversationApi = (id: string): Promise<ItemConversation> => {
+  return new Promise((resolve, reject) => {
+    lastValueFrom(TicketRepository().getConversations(id))
+      .then(({ data }) => resolve({ id, conversations: data.data }))
+      .catch((error) => reject(error));
+  });
+};
+
 export const getTagsTicket = (payload: GetListTagRequest) => {
   return new Promise((resolve, reject) => {
     lastValueFrom(TagRepository().getList(payload))
@@ -98,3 +108,19 @@ export const emailIntegrationApi = () => {
       .catch((error) => reject(error));
   });
 };
+
+export function useExportTicket(
+  arrayString: string[]
+): [ItemConversation[], boolean] {
+  const queries = useQueries(
+    arrayString.map((id) => ({
+      queryKey: ["fetchConversation", id],
+      queryFn: () => fetchConversationApi(id),
+      staleTime: 10000,
+    }))
+  );
+  const isLoading: boolean = queries.some((query) => query.isLoading);
+
+  const data = queries.map((query) => query.data);
+  return [data as ItemConversation[], isLoading];
+}

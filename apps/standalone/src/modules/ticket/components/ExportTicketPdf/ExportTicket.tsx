@@ -7,12 +7,11 @@ import { Agent, Conversation, Ticket } from "@moose-desk/repo";
 import { Divider, Table } from "antd";
 import moment from "moment";
 import { FC, useMemo } from "react";
-interface ItemConversation {
-  id: string;
-  conversations: Conversation[];
-}
+import { ItemConversation } from "src/modules/ticket/helper/interface";
+import useTicketSelected from "src/modules/ticket/store/useTicketSelected";
+
 interface ExportTicketProps {
-  tickets: Ticket[];
+  // tickets: Ticket[];
   selectedRowKeys: React.Key[];
   agents: Agent[];
   conversations: ItemConversation[];
@@ -20,12 +19,12 @@ interface ExportTicketProps {
 }
 
 export const ExportTicket: FC<ExportTicketProps> = ({
-  tickets,
   selectedRowKeys,
   agents,
   conversations,
   timezone,
 }) => {
+  const tickets = useTicketSelected((state) => state.needTicket);
   const user: any = useUser();
   const filterItem = useMemo(() => {
     return tickets.filter((item) => selectedRowKeys.includes(item._id));
@@ -101,8 +100,6 @@ export const ExportTicket: FC<ExportTicketProps> = ({
     },
   ];
 
-  const regexQuote = /<div dir="ltr".*?<\/div><br>/s;
-
   const itemConversation = (one: any) => {
     return (
       <div key={one.id}>
@@ -133,7 +130,7 @@ export const ExportTicket: FC<ExportTicketProps> = ({
       return agent._id === item.agentObjectId;
     });
     const conversation = conversations.find(
-      (conversation) => conversation.id === item._id
+      (conversation) => conversation?.id === item._id
     );
     const conversationMapping: any = conversation?.conversations.map(
       (one: Conversation) => {
@@ -177,12 +174,16 @@ export const ExportTicket: FC<ExportTicketProps> = ({
 
   return (
     <div className="p-5">
-      {" "}
       <p>Date: {moment().format("MM/DD/YYYY HH:mm:ss")}</p>
       <p>
         Exported by: {user?.family_name} {user?.given_name}
       </p>
-      <Table pagination={false} columns={columns} dataSource={filterItem} />
+      <Table
+        pagination={false}
+        columns={columns}
+        dataSource={filterItem}
+        rowKey="_id"
+      />
       <div className="flex justify-end mt-5">
         <p>{recordText}</p>
       </div>
