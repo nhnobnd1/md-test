@@ -124,7 +124,7 @@ const DetailTicket = (props: DetailTicketProps) => {
   const { visible, setVisible } = useToggleGlobal();
   const [ccDefault, setCCDefault] = useState<string[]>([]);
   const [bccDefault, setBCCDefault] = useState<string[]>([]);
-  usePreventNav();
+  usePreventNav(MediaScreen.XL);
   const { subDomain } = useSubdomain();
   const { timezone }: any = useGlobalData(false, subDomain || "");
   const listChat = useMemo<ChatItem[]>(() => {

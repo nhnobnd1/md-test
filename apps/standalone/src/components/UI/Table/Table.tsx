@@ -21,6 +21,7 @@ export const Table = (props: TableProps) => {
       }}
       {...props}
       rowKey={props.rowKey ?? "_id"}
+      showSorterTooltip={false}
     />
   );
 };

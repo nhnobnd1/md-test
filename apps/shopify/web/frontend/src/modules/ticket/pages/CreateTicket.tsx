@@ -41,7 +41,7 @@ const CreateTicket = (props: CreateTicketProps) => {
   const { toggle: updateForm } = useToggle();
   const { visible, setVisible } = useToggleGlobal();
   const { dataSaved, setDataSaved }: any = useSaveDataGlobal();
-  usePreventNav();
+  usePreventNav(MediaScreen.XL);
   const [screenType, screenWidth] = useScreenType();
   const isMobileOrTablet = Boolean(screenWidth <= MediaScreen.LG);
   const formRef = useRef<FormikProps<any>>(null);
