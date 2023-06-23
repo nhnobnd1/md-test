@@ -14,7 +14,7 @@ import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { map } from "rxjs";
 import Images from "src/assets/images";
 import { Loading } from "src/components/Loading";
-import Breadcrumb from "src/components/UI/Breadcrums/Breadcrumb";
+import LayoutPageContent from "src/components/UI/LayoutPageContent/LayoutPageContent";
 import useAuth from "src/hooks/useAuth";
 import { usePermission } from "src/hooks/usePerrmisson";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
@@ -392,33 +392,36 @@ export const AppLayout = () => {
         </Layout.Sider>
 
         <div
-          className="w-full p-6"
+          className="w-full"
           style={{
             maxHeight: "calc(100vh - 64px)",
             overflow: "auto",
           }}
         >
-          <Breadcrumb className="mb-4" {...breadCrumb} />
-          <Layout.Content
+          {/* <Breadcrumb className="mb-4" {...breadCrumb} /> */}
+          {/* <Layout.Content
             style={{
               padding: 24,
               margin: 0,
-              minHeight: 280,
-              background: "#fff",
+              // minHeight: 280,
+              // background: "#fff",
             }}
           >
-            <div className="wrap-main-content pb-[32px]">
-              <Suspense
-                fallback={
-                  <Loading fullPage>
-                    <div className="w-[100vw] h-[100vh]"></div>
-                  </Loading>
-                }
-              >
-                <Outlet />
-              </Suspense>
-            </div>
-          </Layout.Content>
+            <div className="wrap-main-content pb-[32px]"> */}
+          <LayoutPageContent mainLayout>
+            <Suspense
+              fallback={
+                <Loading fullPage>
+                  <div className="w-[100vw] h-[100vh]"></div>
+                </Loading>
+              }
+            >
+              <Outlet />
+            </Suspense>
+          </LayoutPageContent>
+
+          {/* </div>
+          </Layout.Content> */}
         </div>
       </Layout>
     </Layout>

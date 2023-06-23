@@ -1,0 +1,37 @@
+@import "../../../styles/variables.scss";
+@import "../../../styles/mixin.scss";
+.block {
+    display: flex;
+    align-items: center;
+    padding: 16px 24px;
+    border-radius: 8px;
+    background-color: $white-color;
+    width: 18%;
+    @include mq(md, 'max') {
+        width: 100%;
+        margin-bottom: 8px;
+        padding: 12px;
+    }
+    @include breakpoints(md, lg) {
+        width: 48%;
+        margin-bottom: 16px;
+    }
+    .icon {
+        margin-right: 16px;
+        // @include mq(md, 'max') {
+        //        margin-right: 8px;
+        //        width: 36px;
+        //     }
+    }
+    .value {
+        font-size: 24px;
+        font-weight: 500;
+        line-height: 32px;
+        margin-bottom: 0;
+    }
+    .label {
+        color: $opacity-black;
+        margin-bottom: 0;
+        white-space: nowrap;
+    }
+}
