@@ -23,7 +23,7 @@ export default function ActivateItem({ data }: IProps) {
     switch (data.actions.type) {
       case ACTIVATE_TYPE.NEW_TICKET_BY_AGENT:
         return (
-          <div>
+          <div className={styles.wrapActive}>
             {renderName(data.performer.isAgent)}{" "}
             <span className={styles.content}>
               created a ticket{" "}
@@ -37,7 +37,7 @@ export default function ActivateItem({ data }: IProps) {
         );
       case ACTIVATE_TYPE.NEW_TICKET_BY_CUSTOMER:
         return (
-          <div>
+          <div className={styles.wrapActive}>
             {renderName(data.performer.isAgent)}{" "}
             <span className={styles.content}>
               raised a new ticket{" "}
@@ -51,7 +51,7 @@ export default function ActivateItem({ data }: IProps) {
         );
       case ACTIVATE_TYPE.NEW_REPLY_BY_AGENT:
         return (
-          <div>
+          <div className={styles.wrapActive}>
             {renderName(data.performer.isAgent)}{" "}
             <span className={styles.content}>
               has sent a response to the ticket{" "}
@@ -65,7 +65,7 @@ export default function ActivateItem({ data }: IProps) {
         );
       case ACTIVATE_TYPE.NEW_REPLY_BY_CUSTOMER:
         return (
-          <div>
+          <div className={styles.wrapActive}>
             {renderName(data.performer.isAgent)}{" "}
             <span className={styles.content}>
               has sent an email response to the ticket{" "}

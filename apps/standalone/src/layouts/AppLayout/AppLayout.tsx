@@ -52,7 +52,7 @@ export const AppLayout = () => {
     return [
       {
         key: `case-${DashboardRoutePaths.Index}`,
-        label: "Home",
+        label: "Dashboard",
         link: DashboardRoutePaths.Index,
         icon: <JamDashboard />,
         onClick: () => navigate(generatePath(DashboardRoutePaths.Index)),

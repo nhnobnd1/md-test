@@ -37,7 +37,7 @@ export interface NavigationItems
 
 const caseNavigation: NavigationItems[] = [
   {
-    label: "Home",
+    label: "Dashboard",
     url: DashboardRoutePaths.Index,
     icon: () => <HomeMinor />,
   },

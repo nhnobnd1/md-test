@@ -18,16 +18,16 @@ import {
   GetListAgentRequest,
   GetListTagRequest,
   Priority,
+  priorityOptions,
+  statusOptions,
   StatusTicket,
   Tag,
   TagRepository,
   Ticket,
   TicketRepository,
   UpdateTicket,
-  priorityOptions,
-  statusOptions,
 } from "@moose-desk/repo";
-import { Select as AntSelect, Button, Card, Divider, Skeleton } from "antd";
+import { Button, Card, Divider, Select as AntSelect, Skeleton } from "antd";
 import moment from "moment";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 

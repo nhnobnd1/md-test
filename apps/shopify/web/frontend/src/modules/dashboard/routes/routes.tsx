@@ -7,7 +7,7 @@ import OnBoardingRoutePaths from "src/modules/onBoarding/routes/paths";
 
 const dashboardRoutes: IRoute = {
   path: DashboardRoutePaths.Index,
-  title: "Home",
+  title: "Dashboard",
   component: lazy(() => import("src/layouts/MainLayout")),
   middleware: (route, navigate) => {
     if (StorageManager.getToken("isAcceptUsing")) {

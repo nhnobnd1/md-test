@@ -1,5 +1,11 @@
 import { createdDatetimeFormat } from "@moose-desk/core";
-import { Button, EmptySearchResult, IndexTable, Link } from "@shopify/polaris";
+import {
+  Button,
+  EmptySearchResult,
+  IndexTable,
+  Link,
+  Text,
+} from "@shopify/polaris";
 import React, { useState } from "react";
 import { useQuery } from "react-query";
 import { SkeletonTable } from "src/components/Skelaton/SkeletonTable";
@@ -34,13 +40,17 @@ export const TodoList = React.memo(() => {
   const rowMarkup = todoList?.data?.data?.map((records: any, index: number) => (
     <IndexTable.Row id={records?._id} key={records?._id} position={index}>
       <IndexTable.Cell className="">
-        <Link monochrome url={`/ticket/${records?._id}`}>
-          {records?.ticketId}
+        <Link monochrome removeUnderline url={`/ticket/${records?._id}`}>
+          <Text variant="bodyMd" fontWeight="bold" as="span">
+            {records?.ticketId}
+          </Text>
         </Link>
       </IndexTable.Cell>
       <IndexTable.Cell className="">
-        <Link monochrome url={`/ticket/${records?._id}`}>
-          {records?.subject}
+        <Link monochrome removeUnderline url={`/ticket/${records?._id}`}>
+          <Text variant="bodyMd" fontWeight="bold" as="span">
+            {records?.subject}
+          </Text>
         </Link>
       </IndexTable.Cell>
       <IndexTable.Cell>

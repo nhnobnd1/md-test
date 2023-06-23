@@ -1,34 +1,36 @@
 @import "../../../styles/variables.scss";
 @import "../../../styles/mixin.scss";
 .bottomBlock {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    .title {
-        font-size: 16px;
-        font-weight: 500;
-        color: $character-title;
-        margin-bottom: 24px;
-    }
-    .block {
-        position: relative;
-        width: calc(50% - 12px);
-        overflow: hidden;
-        background-color: $white-color;
-        border-radius: 8px;
-        padding: 24px 24px 52px;
-      
-    }
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  .title {
+    font-size: 16px;
+    font-weight: 500;
+    color: $character-title;
+    padding: 0 24px 24px;
+    box-shadow: 0px 15px 23px -18px #a39e9e;
+    margin-bottom: 10px;
+  }
+  .block {
+    position: relative;
+    width: calc(50% - 12px);
+    overflow: hidden;
+    background-color: $white-color;
+    border-radius: 8px;
+    padding: 24px 0 0;
+    box-shadow: 0px 2px 16px 0px rgba(33, 43, 54, 0.08),
+            0px 0px 0px 1px rgba(6, 44, 82, 0.1);
+  }
 }
 .topBlock {
-    margin-bottom: 24px;
-    @include mq(lg, 'max') {
+  margin-bottom: 24px;
+  @include mq(lg, "max") {
     margin-bottom: 8px;
-    }
-
+  }
 }
- .pageTitle {
-     font-size: 20px;
-     line-height: 28px;
-     color: $character-title;
- }
+.pageTitle {
+  font-size: 20px;
+  line-height: 28px;
+  color: $character-title;
+}

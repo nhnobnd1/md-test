@@ -3,6 +3,7 @@ import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import { Ticket } from "@moose-desk/repo";
 import { Button, Table } from "antd";
 import Link from "antd/es/typography/Link";
+import classNames from "classnames";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { useSubdomain } from "src/hooks/useSubdomain";
@@ -36,13 +37,13 @@ export const TodoList = () => {
       key: "ticketId",
       render: (_: string, record: Ticket) => (
         <Link
-          className="cursor-pointer text-default hover:underline hover:text-blue-500 subject one-line"
+          className={classNames(styles.actionLink, "one-line")}
           href={`/ticket/${record._id}`}
         >
           {record.ticketId}
         </Link>
       ),
-      width: "20%",
+      width: "15%",
     },
     {
       title: "Ticket Title",
@@ -50,11 +51,11 @@ export const TodoList = () => {
       key: "subject",
       render: (_: string, record: Ticket) => (
         <Link
-          className="cursor-pointer text-default hover:underline hover:text-blue-500 subject one-line"
+          className={classNames(styles.actionLink, "one-line")}
           href={`/ticket/${record._id}`}
         >{`${record.subject}`}</Link>
       ),
-      width: "40%",
+      width: "50%",
     },
 
     {
@@ -64,7 +65,7 @@ export const TodoList = () => {
       render: (_: string, record: any) => (
         <div>{createdDatetimeFormat(record.updatedDatetime, timezone)}</div>
       ),
-      width: "40%",
+      width: "35%",
     },
   ];
   return (
