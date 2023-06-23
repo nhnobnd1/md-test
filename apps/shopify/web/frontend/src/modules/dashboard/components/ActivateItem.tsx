@@ -14,6 +14,7 @@ export default function ActivateItem({ data }: IProps) {
       <Link
         url={data.performer.id ? `/customers?id=${data.performer.id}` : "#"} // for checking undefined id when re-build backend
         monochrome
+        removeUnderline
       >
         <span className={styles.name}>{data.performer.name}</span>
       </Link>
@@ -28,7 +29,10 @@ export default function ActivateItem({ data }: IProps) {
             <span className={styles.content}>
               created a ticket{" "}
               <span className={styles.ticketTitle}>
-                <Link url={`/ticket/${data.actions.ticketObjectId}`}>
+                <Link
+                  removeUnderline
+                  url={`/ticket/${data.actions.ticketObjectId}`}
+                >
                   {data.actions.ticketSubject}
                 </Link>
               </span>{" "}
@@ -42,7 +46,10 @@ export default function ActivateItem({ data }: IProps) {
             <span className={styles.content}>
               raised a new ticket{" "}
               <span className={styles.ticketTitle}>
-                <Link url={`/ticket/${data.actions.ticketObjectId}`}>
+                <Link
+                  removeUnderline
+                  url={`/ticket/${data.actions.ticketObjectId}`}
+                >
                   {data.actions.ticketSubject}
                 </Link>
               </span>{" "}
@@ -56,7 +63,10 @@ export default function ActivateItem({ data }: IProps) {
             <span className={styles.content}>
               has sent a response to the ticket{" "}
               <span className={styles.ticketTitle}>
-                <Link url={`/ticket/${data.actions.ticketObjectId}`}>
+                <Link
+                  removeUnderline
+                  url={`/ticket/${data.actions.ticketObjectId}`}
+                >
                   {data.actions.ticketSubject}
                 </Link>
               </span>{" "}
@@ -70,7 +80,10 @@ export default function ActivateItem({ data }: IProps) {
             <span className={styles.content}>
               has sent an email response to the ticket{" "}
               <span className={styles.ticketTitle}>
-                <Link url={`/ticket/${data.actions.ticketObjectId}`}>
+                <Link
+                  removeUnderline
+                  url={`/ticket/${data.actions.ticketObjectId}`}
+                >
                   {data.actions.ticketSubject}
                 </Link>
               </span>{" "}
