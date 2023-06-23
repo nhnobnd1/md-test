@@ -1,6 +1,6 @@
 import { Customer } from "@moose-desk/repo";
 import { Button, Card, Modal, ModalProps, Space, Tabs } from "antd";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQueryClient } from "react-query";
 import Form from "src/components/UI/Form/Form";
@@ -16,21 +16,23 @@ import { useStore } from "src/providers/StoreProviders";
 interface PopupCustomerProps extends Omit<ModalProps, "onCancel"> {
   dataForm?: Customer;
   onCancel?: () => void;
+  querySearchCustomer?: string | undefined | null;
 }
 
 export const PopupCustomer = ({
   dataForm,
-  // onChange,
   onCancel,
+  querySearchCustomer = "",
   ...props
 }: PopupCustomerProps) => {
   const [form] = Form.useForm();
   const queryClient = useQueryClient();
   const { storeId } = useStore();
   const message = useMessage();
+
   const notification = useNotification();
   const { t } = useTranslation();
-
+  const [activeKey, setActiveKey] = useState("1");
   const { mutate: createCustomerMutate, isLoading: isCreating } = useMutation({
     mutationFn: (payload: any) => createCustomer(payload),
     onSuccess: async () => {
@@ -56,6 +58,14 @@ export const PopupCustomer = ({
       notification.error(t("messages:error.update_customer"));
     },
   });
+  useEffect(() => {
+    if (querySearchCustomer && dataForm?._id && props.open) setActiveKey("2");
+  }, [querySearchCustomer, dataForm?._id, props.open]);
+  useEffect(() => {
+    if (querySearchCustomer && !props.open) {
+      setActiveKey("1");
+    }
+  }, [props.open]);
 
   const handleSubmitValue = useCallback(
     (values: any) => {
@@ -89,7 +99,8 @@ export const PopupCustomer = ({
     return dataForm?._id ? (
       <Card>
         <Tabs
-          defaultActiveKey="1"
+          activeKey={activeKey}
+          onChange={(key: string) => setActiveKey(key)}
           items={[
             {
               key: "1",
@@ -121,14 +132,18 @@ export const PopupCustomer = ({
       />
     );
   };
+  const handleCloseModal = () => {
+    onCancel && onCancel();
+    setActiveKey("1");
+  };
   return (
     <Modal
       {...props}
       destroyOnClose
-      onCancel={onCancel}
+      onCancel={handleCloseModal}
       footer={
         <Space>
-          <Button onClick={onCancel}>Cancel</Button>
+          <Button onClick={handleCloseModal}>Cancel</Button>
           <Button
             type="primary"
             onClick={handleSubmit}
