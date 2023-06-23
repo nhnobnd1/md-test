@@ -17,7 +17,7 @@ export default function ActivateItem({ data }: IProps) {
               created a ticket{" "}
               <span className={styles.ticketTitle}>
                 <Link url={`/ticket/${data.actions.id}`}>
-                  {data.actions.title}
+                  {data.actions.ticketSubject}
                 </Link>
               </span>{" "}
             </span>
@@ -31,7 +31,7 @@ export default function ActivateItem({ data }: IProps) {
               raised a new ticket{" "}
               <span className={styles.ticketTitle}>
                 <Link url={`/ticket/${data.actions.id}`}>
-                  {data.actions.title}
+                  {data.actions.ticketSubject}
                 </Link>
               </span>{" "}
             </span>
@@ -45,7 +45,7 @@ export default function ActivateItem({ data }: IProps) {
               has sent a response to the ticket{" "}
               <span className={styles.ticketTitle}>
                 <Link url={`/ticket/${data.actions.id}`}>
-                  {data.actions.title}
+                  {data.actions.ticketSubject}
                 </Link>
               </span>{" "}
             </span>
@@ -59,7 +59,7 @@ export default function ActivateItem({ data }: IProps) {
               has sent an email response to the ticket{" "}
               <span className={styles.ticketTitle}>
                 <Link url={`/ticket/${data.actions.id}`}>
-                  {data.actions.title}
+                  {data.actions.ticketSubject}
                 </Link>
               </span>{" "}
             </span>

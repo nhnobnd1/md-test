@@ -13,7 +13,7 @@ export interface Activities {
   performedTimestamp: number;
   actions: {
     type: string;
-    title: string;
+    ticketSubject: string;
     id: string;
   };
 }
