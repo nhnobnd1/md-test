@@ -14,7 +14,7 @@ export interface Activities {
   actions: {
     type: string;
     ticketSubject: string;
-    id: string;
+    ticketObjectId: string;
   };
 }
 export interface TodoList {
