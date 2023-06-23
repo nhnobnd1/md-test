@@ -16,7 +16,7 @@ export default function ActivateItem({ data }: IProps) {
             <span className={styles.content}>
               created a ticket{" "}
               <span className={styles.ticketTitle}>
-                <Link url={`/ticket/${data.actions.id}`}>
+                <Link url={`/ticket/${data.actions.ticketObjectId}`}>
                   {data.actions.ticketSubject}
                 </Link>
               </span>{" "}
@@ -30,7 +30,7 @@ export default function ActivateItem({ data }: IProps) {
             <span className={styles.content}>
               raised a new ticket{" "}
               <span className={styles.ticketTitle}>
-                <Link url={`/ticket/${data.actions.id}`}>
+                <Link url={`/ticket/${data.actions.ticketObjectId}`}>
                   {data.actions.ticketSubject}
                 </Link>
               </span>{" "}
@@ -44,7 +44,7 @@ export default function ActivateItem({ data }: IProps) {
             <span className={styles.content}>
               has sent a response to the ticket{" "}
               <span className={styles.ticketTitle}>
-                <Link url={`/ticket/${data.actions.id}`}>
+                <Link url={`/ticket/${data.actions.ticketObjectId}`}>
                   {data.actions.ticketSubject}
                 </Link>
               </span>{" "}
@@ -58,7 +58,7 @@ export default function ActivateItem({ data }: IProps) {
             <span className={styles.content}>
               has sent an email response to the ticket{" "}
               <span className={styles.ticketTitle}>
-                <Link url={`/ticket/${data.actions.id}`}>
+                <Link url={`/ticket/${data.actions.ticketObjectId}`}>
                   {data.actions.ticketSubject}
                 </Link>
               </span>{" "}
