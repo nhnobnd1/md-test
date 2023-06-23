@@ -2,6 +2,7 @@ import {
   createdDatetimeFormat,
   emailRegex,
   useJob,
+  useLoading,
   useNavigate,
   useParams,
 } from "@moose-desk/core";
@@ -17,25 +18,18 @@ import {
   GetListAgentRequest,
   GetListTagRequest,
   Priority,
+  priorityOptions,
+  statusOptions,
   StatusTicket,
   Tag,
   TagRepository,
   Ticket,
   TicketRepository,
   UpdateTicket,
-  priorityOptions,
-  statusOptions,
 } from "@moose-desk/repo";
-import {
-  Select as AntSelect,
-  Button,
-  Card,
-  Collapse,
-  Divider,
-  Skeleton,
-} from "antd";
+import { Button, Card, Divider, Select as AntSelect, Skeleton } from "antd";
 import moment from "moment";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import { useTranslation } from "react-i18next";
@@ -46,10 +40,9 @@ import { Header } from "src/components/UI/Header";
 import Select, { LoadMoreValue } from "src/components/UI/Select/Select";
 import useMessage from "src/hooks/useMessage";
 import { useSubdomain } from "src/hooks/useSubdomain";
-import { RowMessage } from "src/modules/ticket/components/DetailTicketForm/RowMessage";
+import { CollapseMessage } from "src/modules/ticket/components/DetailTicketForm/CollapseMessage";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import FaMailReply from "~icons/fa/mail-reply";
-import AttachIcon from "~icons/mingcute/attachment-2-line";
 import BackIcon from "~icons/mingcute/back-2-fill";
 import "./BoxReply.scss";
 
@@ -106,6 +99,14 @@ const DetailTicketForm = () => {
   const { t } = useTranslation();
 
   const [agents, setAgents] = useState<Agent[]>([]);
+  const { state: loadingApi, startLoading, stopLoading } = useLoading();
+  const endPageRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (!loadingApi) {
+      endPageRef?.current?.scrollIntoView();
+    }
+  }, [loadingApi]);
 
   const [emailIntegrationOptions, setEmailIntegrationOptions] = useState<any>(
     []
@@ -326,12 +327,15 @@ const DetailTicketForm = () => {
       .pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
-            // console.log("response create reply", data);
             message.success(t("messages:success.send_mail"));
-
-            // getTicketApi(payload.id);
+            stopLoading();
             setConversationList([...conversationList, data.data]);
           }
+        }),
+        catchError((err) => {
+          stopLoading();
+
+          return of(err);
         })
       );
   });
@@ -350,22 +354,27 @@ const DetailTicketForm = () => {
         })
       );
   });
-  const { run: fetchConversation } = useJob((id: string) => {
-    return TicketRepository()
-      .getConversations(id)
-      .pipe(
-        map(({ data }) => {
-          getListTagApi({
-            page: 1,
-            limit: 500,
-          });
-          setConversationList(data.data);
-        }),
-        catchError((err) => {
-          return of(err);
-        })
-      );
-  });
+  const { run: fetchConversation, processing: isFetchConversation } = useJob(
+    (id: string) => {
+      return TicketRepository()
+        .getConversations(id)
+        .pipe(
+          map(({ data }) => {
+            getListTagApi({
+              page: 1,
+              limit: 500,
+            });
+            stopLoading();
+            setConversationList(data.data);
+          }),
+          catchError((err) => {
+            stopLoading();
+
+            return of(err);
+          })
+        );
+    }
+  );
   const { run: updateTicketApi } = useJob((data: UpdateTicket) => {
     return TicketRepository()
       .update(data)
@@ -373,10 +382,13 @@ const DetailTicketForm = () => {
         map(({ data }) => {
           // console.log("update ticket success", data);
           if (data.statusCode === 200) {
+            stopLoading();
             message.success(t("messages:success.update_ticket"));
           }
         }),
         catchError((err) => {
+          stopLoading();
+
           return of(err);
         })
       );
@@ -420,6 +432,7 @@ const DetailTicketForm = () => {
   }, [id]);
 
   const onFinish = (values: ValueForm, closeTicket = false) => {
+    startLoading();
     const findItemConfigEmail = emailIntegrationOptions.find(
       (item: any) => item.value === values.from
     );
@@ -463,6 +476,7 @@ const DetailTicketForm = () => {
     form.setFieldValue("content", "");
   };
   const handleCloseTicket = () => {
+    startLoading();
     form.setFieldValue("status", "RESOLVED");
     setTicket((previous: any) => {
       return { ...previous, status: "RESOLVED" };
@@ -470,6 +484,7 @@ const DetailTicketForm = () => {
     onFinish(form.getFieldsValue(), true);
   };
   const handleReopenTicket = () => {
+    startLoading();
     const values = form.getFieldsValue();
     form.setFieldValue("status", "OPEN");
     setTicket((previous: any) => {
@@ -484,6 +499,7 @@ const DetailTicketForm = () => {
 
   const handleSaveTicket = () => {
     const values = form.getFieldsValue();
+
     updateTicketApi({
       priority: values.priority,
       status: values.status,
@@ -504,9 +520,6 @@ const DetailTicketForm = () => {
         </>
       ) : (
         <div className="wrapContainer">
-          {/* <div className="searchToggle">
-            <LeftCircleOutlined />
-          </div> */}
           <Header
             className="mr-10"
             title={`Ticket ${ticket?.ticketId}: ${ticket?.subject}`}
@@ -586,38 +599,13 @@ const DetailTicketForm = () => {
                 <div className="BoxReply w-full">
                   <div className="w-full h-full">
                     <div className="box-chat">
-                      <Collapse
-                        defaultActiveKey={listChat[listChat.length - 1].time}
-                        bordered={false}
-                        className="bg-white"
-                      >
-                        {listChat.map((item: ChatItem) => (
-                          <Collapse.Panel
-                            header={
-                              <div className="flex justify-between items-center">
-                                <div className="flex gap-2 items-center">
-                                  <span className="font-bold">{item.name}</span>
-                                  <span className="text-gray-500 text-xs">
-                                    ({item.email})
-                                  </span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  {item?.attachments?.length ? (
-                                    <AttachIcon style={{ fontSize: 20 }} />
-                                  ) : (
-                                    <></>
-                                  )}
-
-                                  <span>{item.time}</span>
-                                </div>
-                              </div>
-                            }
-                            key={item.time}
-                          >
-                            <RowMessage item={item} />
-                          </Collapse.Panel>
-                        ))}
-                      </Collapse>
+                      {!loadingApi && !isFetchConversation ? (
+                        <CollapseMessage listChat={listChat} />
+                      ) : (
+                        <>
+                          <Skeleton />
+                        </>
+                      )}
                     </div>
                     <Divider />
                     <div className="box-comment">
@@ -807,6 +795,7 @@ const DetailTicketForm = () => {
           </Form>
         </div>
       )}
+      <div ref={endPageRef}></div>
     </>
   );
 };
