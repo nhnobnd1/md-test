@@ -4,6 +4,7 @@ import {
   PageComponent,
   upperCaseFirst,
   useJob,
+  useLoading,
   useLocation,
   useNavigate,
   useToggle,
@@ -81,6 +82,8 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const getTicketSelected = useTicketSelected(
     (state) => state.getTicketSelected
   );
+  const { startLoading, stopLoading } = useLoading();
+
   const [statistic, setStatistic] = useState<TicketStatistic>({
     statusCode: 200,
     data: {
@@ -295,7 +298,10 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const handlePrint = useReactToPrint({
     content: () => exportPdfRef.current,
     documentTitle: "Tickets",
-    onAfterPrint: () => {},
+    onBeforeGetContent: () => startLoading(),
+    onAfterPrint: () => {
+      stopLoading();
+    },
   });
   const { run: deleteTicketApi } = useJob((id: string[]) => {
     message.loading.show(t("messages:loading.removing_ticket"));
