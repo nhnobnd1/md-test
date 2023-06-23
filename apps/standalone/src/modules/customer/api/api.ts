@@ -14,6 +14,13 @@ export const getListCustomer = (params: GetListCustomerRequest) => {
       .catch((error) => reject(error));
   });
 };
+export const getOneCustomer = (id: string) => {
+  return new Promise((resolve, reject) => {
+    lastValueFrom(CustomerRepository().getOne(id))
+      .then((data) => resolve(data))
+      .catch((error) => reject(error));
+  });
+};
 export const getListTicketCustomer = (
   id: string,
   params: ListTicketCustomerFilter

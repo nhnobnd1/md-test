@@ -1,4 +1,9 @@
-import { PageComponent, useToggle } from "@moose-desk/core";
+import {
+  PageComponent,
+  useNavigate,
+  useSearchParams,
+  useToggle,
+} from "@moose-desk/core";
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import {
   BaseListCustomerRequest,
@@ -7,7 +12,7 @@ import {
 } from "@moose-desk/repo";
 import { TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "react-query";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
@@ -20,7 +25,11 @@ import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { usePermission } from "src/hooks/usePerrmisson";
-import { deleteCustomer, getListCustomer } from "src/modules/customer/api/api";
+import {
+  deleteCustomer,
+  getListCustomer,
+  getOneCustomer,
+} from "src/modules/customer/api/api";
 import PopupCustomer from "src/modules/customer/component/PopupCustomer";
 import { QUERY_KEY } from "src/modules/customer/helper/constant";
 
@@ -36,6 +45,8 @@ const defaultFilter: () => GetListCustomerRequest = () => ({
 const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
   const message = useMessage();
   const notification = useNotification();
+  const navigate = useNavigate();
+
   const {
     state: popupCustomer,
     on: openPopupCustomer,
@@ -59,7 +70,8 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
   });
   const [querySearch, setQuerySearch] = useState<string>("");
   const debounceValue: string = useDebounce(querySearch, 500);
-
+  const [searchParams] = useSearchParams();
+  const querySearchCustomer = searchParams.get("id");
   const [filterData, setFilterData] =
     useState<BaseListCustomerRequest>(defaultFilter);
   const { t } = useTranslation();
@@ -68,7 +80,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
     data: listCustomer,
     refetch: refetchListCustomer,
     isLoading: isFetchingListCustomer,
-  } = useQuery({
+  }: any = useQuery({
     queryKey: [QUERY_KEY.LIST_CUSTOMER, filterData, debounceValue],
     queryFn: () => getListCustomer({ ...filterData, query: debounceValue }),
     // keepPreviousData: true,
@@ -91,6 +103,22 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
       });
     },
   });
+  useEffect(() => {
+    if (!querySearchCustomer) return;
+    const getCustomerData = async () => {
+      try {
+        const { data: customerData }: any = await getOneCustomer(
+          querySearchCustomer
+        );
+        if (customerData) {
+          handleEdit(customerData?.data);
+        }
+      } catch (error) {
+        console.log(error, "error");
+      }
+    };
+    getCustomerData();
+  }, [querySearchCustomer, listCustomer]);
   const columns: any = [
     {
       title: "Customer name",
@@ -202,7 +230,11 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
       <PopupCustomer
         open={popupCustomer}
         dataForm={dataPopup as Customer}
-        onCancel={closePopupCustomer}
+        onCancel={() => {
+          closePopupCustomer();
+          navigate("/customers");
+        }}
+        querySearchCustomer={querySearchCustomer}
       />
       <Header title="Customer">
         <div className="flex-1 flex justify-end">
