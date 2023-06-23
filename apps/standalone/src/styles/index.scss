@@ -1,5 +1,5 @@
 @import "./Button.scss";
-
+@import "./variables.scss";
 .unstyle-link a {
   text-decoration: none;
   color: #202223;
@@ -27,7 +27,14 @@
     color: rgba(0, 0, 0, 0.45);
   }
 }
-
+.one-line {
+  overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    /* start showing ellipsis when 3rd line is reached */
+    white-space: pre-wrap;
+}
 .hide-label {
   .ant-form-item-label {
     visibility: hidden;
@@ -90,6 +97,9 @@
 }
 .text-bold {
   font-weight: 700;
+}
+.text-default {
+  color: $character-title !important;
 }
 .text-line-through {
   text-decoration: line-through;

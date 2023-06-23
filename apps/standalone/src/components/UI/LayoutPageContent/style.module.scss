@@ -1,0 +1,26 @@
+@import "../../../styles/variables.scss";
+.container {
+  padding: 24px;
+  background-color: $background-page-color;
+  .groupTopPage {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .title {
+    font-size: 20px;
+    line-height: 28px;
+    color: $character-title;
+  }
+  .actionWrap {
+  }
+  .mainContent {
+    margin-top: 24px;
+  }
+}
+.onlyScreen {
+  max-height: calc(100vh - 64px);
+  min-height: calc(100vh - 64px);
+  height: calc(100vh - 64px);
+  overflow: hidden;
+}

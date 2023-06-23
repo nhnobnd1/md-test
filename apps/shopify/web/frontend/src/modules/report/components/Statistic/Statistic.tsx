@@ -6,7 +6,7 @@ import SummaryReportRes from "src/modules/report/helper/interface";
 import styles from "./style.module.scss";
 
 export interface StatisticProps {
-  data: SummaryReportRes;
+  data: SummaryReportRes | any;
   loading: boolean;
 }
 export const Statistic = ({ data, loading }: StatisticProps) => {

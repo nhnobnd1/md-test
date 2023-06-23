@@ -1,0 +1,68 @@
+@import "../../../styles/variables.scss";
+@import "../../../styles/mixin.scss";
+.wrapActivities,
+.wrapTodoList {
+  // position: relative;
+  width: 100%;
+  word-break: break-word;
+  max-height: calc(100vh - 400px);
+  min-height: calc(100vh - 400px);
+  height: calc(100vh - 400px);
+  overflow-y: scroll;
+  @include mq(md, 'max') {
+    padding-top: 16px;
+  }
+}
+.loadMoreButton {
+  position: absolute;
+  bottom: 12px;
+  left: 0;
+  width: 100%;
+  color: $primary;
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  font-size: 16px;
+  font-weight: 600;
+  &:hover {
+    color: $primary-hover !important;
+  }
+  &:disabled {
+    background-color: transparent;
+    &:hover {
+      color: rgba(0, 0, 0, 0.25) !important;
+    }
+  }
+}
+.activateWrap {
+  color: $opacity-black;
+  margin-bottom: 12px;
+  .name {
+    color: $character-title;
+    font-weight: 500;
+  }
+  .ticketTitle {
+    color: $link;
+    font-weight: 500;
+    cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+.wrapCollapse {
+  width: 100%;
+  :global {
+    .ant-collapse {
+      width: 100%;
+      .ant-collapse-header-text {
+        font-size: 16px;
+        font-weight: 500;
+      }
+      .ant-collapse-content-box {
+        position: relative;
+        padding: 0 16px 50px;
+      }
+    }
+  }
+}

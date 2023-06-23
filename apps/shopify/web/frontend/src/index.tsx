@@ -13,19 +13,21 @@ import {
 } from "@moose-desk/repo";
 import * as Sentry from "@sentry/react";
 import { Loading } from "@shopify/polaris";
-import { Suspense, lazy } from "react";
+import { lazy, Suspense } from "react";
 import ReactDOM from "react-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Provider as ReduxProvider } from "react-redux";
 // import ErrorBoundary from "src/ErrorBoundary";
 import { ErrorBoundary } from "react-error-boundary";
-import ErrorBoundaryComponent from "src/ErrorBoundaryComponent";
+import { ReactQueryDevtools } from "react-query/devtools";
 import { AppBridgeProvider, PolarisProvider } from "src/components";
 import env from "src/core/env";
 import ModuleLoader from "src/core/utilities/ModuleLoader";
+import ErrorBoundaryComponent from "src/ErrorBoundaryComponent";
 import InitApp from "src/providers/InitAppProviders";
 import { StoreProviders } from "src/providers/StoreProviders";
 import { store } from "src/redux";
+
 import("src/styles/index.scss").then(() => {
   import("@shopify/polaris/build/esm/styles.css");
 });
@@ -109,7 +111,7 @@ ReactDOM.render(
         </ErrorBoundary>
       </BrowserRouter>
     </PolarisProvider>
-    {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+    <ReactQueryDevtools initialIsOpen={false} />
   </QueryClientProvider>,
   document.getElementById("app")
 );

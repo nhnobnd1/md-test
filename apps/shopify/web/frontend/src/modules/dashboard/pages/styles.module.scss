@@ -1,0 +1,39 @@
+@import "../../../styles/variables.scss";
+@import "../../../styles/mixin.scss";
+.bottomBlock {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 20px;
+  @include mq(lg, 'max') {
+    flex-direction: column;
+    margin-top: 16px;
+  }
+  .block {
+    position: relative;
+    width: calc(50% - 12px);
+    overflow: hidden;
+    background-color: $white-color;
+    // border-radius: 8px;
+    // padding: 24px 24px 52px;
+    :global {
+        .Polaris-LegacyCard__Section {
+            padding-bottom: 50px !important;
+        }
+    }
+    @include mq(lg, 'max') {
+            width: 100%;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+  }
+}
+.pageWrap {
+    padding: 20px 32px;
+    @include breakpoints(md, lg) {
+            padding: 20px 24px;
+        }
+    @include mq(md, 'max') {
+            padding: 16px 16px 30px;
+        }
+}

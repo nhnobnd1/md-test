@@ -48,8 +48,29 @@
 .text-red {
   color: rgba(215, 44, 13, 1);
 }
+.text-default {
+  color: $text-default !important;
+  a {
+  color: $text-default !important;
+  word-break: break-word !important;
+  white-space: pre-wrap;
+  }
+}
+.max-width-200 {
+  max-width: 200px;
+}
+.max-width-100-mobile {
+  @include mq(md, 'max') {
+  width: 100px;
+  }
+}
 .mb-9px {
   margin-bottom: 9px;
+}
+.h-100vh {
+  height: 100vh;
+  max-height: 100vh;
+  min-height: 100vh;
 }
 .flex-center {
   display: flex;
