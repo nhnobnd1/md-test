@@ -70,7 +70,7 @@ const Widgets = (props: WidgetsProps) => {
   const [initialValues, setInitialValues] = useState(widgetSetting);
   const { show } = useToast();
   const { t, i18n } = useTranslation();
-  usePreventNav(MediaScreen.XL);
+  // usePreventNav(MediaScreen.XL);
   const defaultFilter: () => GetListHelpWidgetRequest = () => ({
     page: 1,
     limit: env.DEFAULT_PAGE_SIZE,

@@ -15,7 +15,6 @@ import {
   Agent,
   AgentRepository,
   BaseListTicketFilterRequest,
-  Conversation,
   Customer,
   CustomerRepository,
   GetListAgentRequest,
@@ -43,10 +42,10 @@ import {
   Text,
   useIndexResourceState,
 } from "@shopify/polaris";
-import { forkJoin, map } from "rxjs";
+import { map } from "rxjs";
 
 import { useToast } from "@shopify/app-bridge-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ButtonDelete } from "src/components/Button/ButtonDelete";
 import { ButtonEdit } from "src/components/Button/ButtonEdit";
 import { ModalDelete } from "src/components/Modal/ModalDelete";
@@ -58,6 +57,7 @@ import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import { ScreenType } from "@moose-desk/repo/global/Global";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { useTranslation } from "react-i18next";
+import { useReactToPrint } from "react-to-print";
 import { ModalFilter } from "src/components/Modal/ModalFilter";
 import BoxSelectFilter from "src/components/Modal/ModalFilter/BoxSelectFilter";
 import useGlobalData from "src/hooks/useGlobalData";
@@ -65,7 +65,11 @@ import useScreenType from "src/hooks/useScreenType";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { ExportTicketPdf } from "src/modules/ticket/components/ExportTicketPdf";
 import { HeaderListTicket } from "src/modules/ticket/components/HeaderListTicket";
+import { useExportTicket } from "src/modules/ticket/helper/api";
 import UilImport from "~icons/uil/import";
+
+import { ExportTicket } from "src/modules/ticket/components/ExportTicket";
+import useTicketSelected from "src/modules/ticket/store/useTicketSelected";
 import "./ListTicket.scss";
 
 interface TicketIndexPageProps {}
@@ -74,10 +78,6 @@ export interface FilterObject {
   tags: string;
   status: string;
   priority: string;
-}
-interface ItemConversation {
-  id: string;
-  conversations: Conversation[];
 }
 
 const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
@@ -95,7 +95,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   );
   const [indexSort, setIndexSort] = useState<number | undefined>(undefined);
 
-  const [conversations, setConversations] = useState<ItemConversation[]>([]);
   const location = useLocation();
   const [statusFromTrash, setStatusFromTrash] = useState(location.state);
   const defaultFilter: () => any = () => ({
@@ -113,13 +112,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     },
     [activeButtonIndex]
   );
-  const [sortValue, setSortValue] = useState<string[]>([]);
-
-  const {
-    state: btnSort,
-    toggle: toggleBtnSort,
-    off: closeBtnSort,
-  } = useToggle();
 
   const [filterData, setFilterData] = useState<GetListTicketRequest>(
     defaultFilter()
@@ -168,19 +160,23 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     });
     return mapping;
   }, [agents]);
-  const prevIdDelete = usePrevious(idDelete);
-  const { run: fetchConversation } = useJob((id: string) => {
-    return TicketRepository()
-      .getConversations(id)
-      .pipe(
-        map(({ data }) => {
-          setConversations((previous) => [
-            ...previous,
-            { id, conversations: data.data },
-          ]);
-        })
-      );
+  const [conversations, loadingExport] = useExportTicket(
+    selectedResources as string[]
+  );
+  const exportPdfRef = useRef<any>(null);
+
+  const handlePrint = useReactToPrint({
+    content: () => exportPdfRef.current,
+    documentTitle: "Tickets",
+    onAfterPrint: () => {},
   });
+  const prevIdDelete = usePrevious(idDelete);
+  const changeTicketSelected = useTicketSelected(
+    (state) => state.changeTicketSelected
+  );
+  const getTicketSelected = useTicketSelected(
+    (state) => state.getTicketSelected
+  );
   const { run: getListCustomerApi } = useJob(
     (payload: GetListCustomerRequest) => {
       return CustomerRepository()
@@ -423,28 +419,11 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   }, []);
 
   useEffect(() => {
-    if (prevFilter?.query !== filterData.query && filterData.query) {
-      // get list debounce
-    } else {
-      // get list
-    }
-  }, [filterData]);
-
-  useEffect(() => {
-    const needRequest = selectedResources.filter(
-      (item) => !conversations.some((obj) => obj.id === item)
+    const findTicket = tickets.filter((item) =>
+      selectedResources.includes(item._id)
     );
-    if (needRequest.length === 0) {
-      const filterConversations = conversations.filter((item) =>
-        selectedResources.includes(item.id)
-      );
-      setConversations(filterConversations);
-      return;
-    }
-    const listRequest = needRequest.map((item) =>
-      fetchConversation(item as string)
-    );
-    forkJoin(listRequest).pipe(map(() => {}));
+    changeTicketSelected(findTicket);
+    getTicketSelected(selectedResources as string[]);
   }, [selectedResources]);
 
   const handleFiltersQueryChange = useCallback((queryValue: string) => {
@@ -579,13 +558,15 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
           <ButtonGroup>
             <div className="flex gap-2">
               <ButtonEdit
+                isTable
                 onClick={() => {
                   navigate(generatePath(TicketRoutePaths.Detail, { id: _id }));
                 }}
               ></ButtonEdit>
               <ButtonDelete
+                isTable
                 onClick={() => handleOpenModalDelete(_id)}
-                destructive
+                // destructive
               >
                 Remove
               </ButtonDelete>
@@ -697,29 +678,23 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                     selectedResources?.length ? "block" : "hidden"
                   }`}
                 >
-                  <PDFDownloadLink
-                    document={
-                      <ExportTicketPdf
+                  <Button
+                    onClick={handlePrint}
+                    disabled={loadingExport}
+                    icon={<UilImport />}
+                  >
+                    Export
+                  </Button>
+                  <div className="hidden">
+                    <div ref={exportPdfRef}>
+                      <ExportTicket
                         conversations={conversations}
                         agents={agents}
-                        tickets={tickets}
                         selectedRowKeys={selectedResources}
                         timezone={timezone}
                       />
-                    }
-                    fileName="Tickets.pdf"
-                    style={{ textDecoration: "none" }}
-                  >
-                    {({ blob, url, loading, error }) =>
-                      loading ? (
-                        <Button icon={<UilImport />}>Export</Button>
-                      ) : (
-                        <div className="flex justify-center items-center">
-                          <Button icon={<UilImport />}>Export</Button>
-                        </div>
-                      )
-                    }
-                  </PDFDownloadLink>
+                    </div>
+                  </div>
                 </div>
                 <div
                   className={`col-span-1 ${

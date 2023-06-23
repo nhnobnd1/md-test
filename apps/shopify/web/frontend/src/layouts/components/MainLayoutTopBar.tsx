@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import Images from "src/assets/images";
 
 import "src/assets/styles/layouts/components/main-layout-topbar.scss";
+import useToggleGlobal from "src/hooks/useToggleGlobal";
 import useFullScreen from "src/store/useFullScreen";
 
 interface MainLayoutTopBarProps {
@@ -31,6 +32,10 @@ const MainLayoutTopBar = ({
   useEffect(() => {
     fullScreen ? changeUpdateScreen(true) : changeUpdateScreen(false);
   }, [fullScreen]);
+  const { visible } = useToggleGlobal();
+  useEffect(() => {
+    setExpendedMenu(!visible);
+  }, [visible]);
 
   const SecondaryMenu = () => {
     return (

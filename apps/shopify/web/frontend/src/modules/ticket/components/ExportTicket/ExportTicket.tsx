@@ -4,7 +4,8 @@ import {
   useUser,
 } from "@moose-desk/core";
 import { Agent, Conversation, Ticket } from "@moose-desk/repo";
-import { Divider, Table } from "antd";
+import { Divider, IndexTable, Text } from "@shopify/polaris";
+
 import moment from "moment";
 import { FC, useMemo } from "react";
 import { ItemConversation } from "src/modules/ticket/helper/interface";
@@ -35,71 +36,6 @@ export const ExportTicket: FC<ExportTicketProps> = ({
     return `${filterItem.length} Records`;
   }, [filterItem]);
 
-  const columns = [
-    {
-      title: "#",
-      dataIndex: "ticketId",
-      key: "ticketId",
-      render: (_: any, record: Ticket) => (
-        <span className="cursor-pointer hover:underline hover:text-blue-500">
-          {`${record.ticketId}`}
-        </span>
-      ),
-    },
-    {
-      title: "Ticket Title",
-      dataIndex: "subject",
-      key: "subject",
-      render: (_: any, record: Ticket) => (
-        <span className="cursor-pointer hover:underline hover:text-blue-500 subject">{`${record.subject}`}</span>
-      ),
-    },
-    {
-      title: "Customer",
-      dataIndex: "customer",
-      key: "customer",
-      render: (_: any, record: Ticket) => {
-        if (record.createdViaWidget || record.incoming) {
-          return (
-            <span className="subject">{`${record?.fromEmail.email}`}</span>
-          );
-        }
-        return (
-          <span className="subject">{`${record?.toEmails[0]?.email}`}</span>
-        );
-      },
-    },
-    {
-      title: "Tags",
-      dataIndex: "tags",
-      key: "tags",
-      render: (_: any, record: Ticket) => {
-        return (
-          <div className="flex flex-col wrap gap-2">
-            {record.tags?.slice(-2).map((item, index) => (
-              <span className="tag-item" key={item + index}>
-                #{item}
-              </span>
-            ))}
-          </div>
-        );
-      },
-    },
-    {
-      title: "Priority",
-      dataIndex: "priority",
-      key: "priority",
-    },
-    {
-      title: "Last Update",
-      dataIndex: "updatedDatetime",
-      key: "updatedDatetime",
-      render: (_: any, record: Ticket) => (
-        <span>{createdDatetimeFormat(record.updatedDatetime, timezone)}</span>
-      ),
-    },
-  ];
-
   const itemConversation = (one: any) => {
     return (
       <div key={one.id}>
@@ -120,7 +56,9 @@ export const ExportTicket: FC<ExportTicketProps> = ({
         <div className="flex justify-end">
           <p>{one?.time}</p>
         </div>
-        <Divider />
+        <div className="mt-5">
+          <Divider />
+        </div>
       </div>
     );
   };
@@ -166,11 +104,72 @@ export const ExportTicket: FC<ExportTicketProps> = ({
           <p>Assignee: {findItemAgentName?.email}</p>
           <p>Priority: {upperCaseFirst(item.priority)}</p>
         </div>
-        <Divider />
+        <div className="mt-5">
+          <Divider />
+        </div>
         {conversationMapping?.map((one: any) => itemConversation(one))}
       </div>
     );
   };
+
+  const rowMarkup = tickets.map(
+    (
+      {
+        _id,
+        ticketId,
+        subject,
+        priority,
+        updatedDatetime,
+        tags,
+        incoming,
+        createdViaWidget,
+        fromEmail,
+        toEmails,
+      },
+      index
+    ) => (
+      <IndexTable.Row id={_id} key={ticketId} position={index}>
+        <IndexTable.Cell>
+          <div className="hover:underline">
+            <Text variant="bodyMd" fontWeight="bold" as="span">
+              {ticketId}
+            </Text>
+          </div>
+        </IndexTable.Cell>
+        <IndexTable.Cell>
+          {
+            <div className="hover:underline max-w-[200px] truncate">
+              <Text variant="bodyMd" fontWeight="bold" as="span">
+                {subject}
+              </Text>
+            </div>
+          }
+        </IndexTable.Cell>
+        <IndexTable.Cell>
+          <div className="max-w-[100px] truncate">
+            {createdViaWidget || incoming ? (
+              <span className="subject max-w[100px] truncate inline-block">{`${fromEmail.email}`}</span>
+            ) : (
+              <span className="subject max-w-[100px] truncate inline-block">{`${toEmails[0]?.email}`}</span>
+            )}
+          </div>
+        </IndexTable.Cell>
+        <IndexTable.Cell>
+          <div className="flex flex-col wrap gap-2">
+            {tags?.slice(-2).map((item, indexTag) => (
+              <span className="tag-item" key={item + indexTag}>
+                #{item}
+              </span>
+            ))}
+          </div>
+        </IndexTable.Cell>
+        <IndexTable.Cell>{upperCaseFirst(priority)}</IndexTable.Cell>
+        <IndexTable.Cell>
+          {createdDatetimeFormat(updatedDatetime, timezone)}
+        </IndexTable.Cell>
+      </IndexTable.Row>
+    )
+  );
 
   return (
     <div className="p-5">
@@ -178,12 +177,21 @@ export const ExportTicket: FC<ExportTicketProps> = ({
       <p>
         Exported by: {user?.family_name} {user?.given_name}
       </p>
-      <Table
-        pagination={false}
-        columns={columns}
-        dataSource={filterItem}
-        rowKey="_id"
-      />
+      <IndexTable
+        resourceName={{ singular: "ticket", plural: "tickets" }}
+        itemCount={tickets?.length}
+        headings={[
+          { title: "#" },
+          { title: "Ticket Title" },
+          { title: "Customer" },
+          { title: "Tags" },
+          { title: "Priority" },
+          { title: "Last Update" },
+        ]}
+        selectable={false}
+      >
+        {rowMarkup}
+      </IndexTable>
       <div className="flex justify-end mt-5">
         <p>{recordText}</p>
       </div>

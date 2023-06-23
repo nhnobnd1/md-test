@@ -295,6 +295,7 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
                 <IndexTable.Cell className="py-3">
                   <div className="flex gap-2">
                     <ButtonEdit
+                      isTable
                       onClick={() =>
                         navigate(
                           generatePath(GroupsRoutePaths.Detail, {
@@ -304,8 +305,9 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
                       }
                     ></ButtonEdit>
                     <ButtonDelete
+                      isTable
                       onClick={() => handleOpenModalDelete(groupItem._id)}
-                      destructive
+                      // destructive
                     >
                       Remove
                     </ButtonDelete>

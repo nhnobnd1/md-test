@@ -276,11 +276,12 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
       onValuesChange={handleChangeForm}
       {...props}
     >
-      <div>
-        <div className="grid grid-cols-2 gap-x-[7%]">
-          <div className="flex items-start gap-2">
+      <div className="flex flex-col items-center">
+        <div className="grid grid-cols-1 gap-x-[7%] xl:w-[800px]  ">
+          <div className="flex items-start gap-2 ">
             <div className="flex-1">
               <Form.Item
+                className="w-full"
                 label="To"
                 name="to"
                 rules={[
@@ -369,14 +370,6 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
               </span>
             </div>
           </div>
-
-          <Form.Item label="Assignee" name="assignee">
-            <Select.Ajax
-              placeholder="Search agents"
-              virtual
-              loadMore={fetchAgents}
-            />
-          </Form.Item>
           <Form.Item
             label="From"
             name="from"
@@ -388,17 +381,6 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
               loadMore={fetchEmailIntegration}
               onChange={onChangeEmailIntegration}
             />
-          </Form.Item>
-          <Form.Item label="Priority" name="priority">
-            <Select options={priorityOptions}></Select>
-          </Form.Item>
-          <Form.Item name="tags" label="Tags">
-            <Select.Tags
-              mode="tags"
-              placeholder="Add tags"
-              loadMore={fetchTags}
-              // onChange={onChangeTag}
-            ></Select.Tags>
           </Form.Item>
           <Form.Item
             name="subject"
@@ -413,32 +395,54 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
           >
             <Input placeholder="Subject" />
           </Form.Item>
+          <div className="mt-4 xl:w-[800px]">
+            <Form.Item
+              label="Message"
+              name="content"
+              className="w-full"
+              rules={[
+                { required: true, message: "Please input your message!" },
+              ]}
+            >
+              <TextEditorTicket
+                form={form}
+                files={files}
+                setFiles={setFiles}
+                setLoadingButton={setLoadingButton}
+                // setIsChanged={setIsChanged}
+                init={{
+                  menubar: false,
+                  placeholder: "Please input your message here......",
+                }}
+              />
+            </Form.Item>
+          </div>
+          <Form.Item label="Priority" name="priority">
+            <Select options={priorityOptions}></Select>
+          </Form.Item>
+          <Form.Item name="tags" label="Tags">
+            <Select.Tags
+              mode="tags"
+              placeholder="Add tags"
+              loadMore={fetchTags}
+              // onChange={onChangeTag}
+            ></Select.Tags>
+          </Form.Item>
+          <Form.Item label="Assignee" name="assignee">
+            <Select.Ajax
+              placeholder="Search agents"
+              virtual
+              loadMore={fetchAgents}
+            />
+          </Form.Item>
+
           <div></div>
           {/* <Form.Item name="macros" label="Macros">
             <Select></Select>
           </Form.Item> */}
         </div>
-        <div className="mt-4">
-          <Form.Item
-            name="content"
-            className="w-full"
-            rules={[{ required: true, message: "Please input your message!" }]}
-          >
-            <TextEditorTicket
-              form={form}
-              files={files}
-              setFiles={setFiles}
-              setLoadingButton={setLoadingButton}
-              // setIsChanged={setIsChanged}
-              init={{
-                menubar: false,
-                placeholder: "Please input your message here......",
-              }}
-            />
-          </Form.Item>
-        </div>
       </div>
-      <div className="flex-1 flex justify-end items-center gap-2">
+      <div className="flex-1 flex justify-end items-center gap-2 mt-5">
         <Button
           onClick={() => {
             navigate(TicketRoutePaths.Index);

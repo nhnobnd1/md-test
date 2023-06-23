@@ -1,19 +1,18 @@
 import { AutoReply, Holidays } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
-  Button,
   ButtonGroup,
   Card,
   EmptySearchResult,
-  Icon,
   IndexTable,
   Link,
   Text,
 } from "@shopify/polaris";
-import { DeleteMajor, EditMajor } from "@shopify/polaris-icons";
 import dayjs from "dayjs";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { ButtonDelete } from "src/components/Button/ButtonDelete";
+import { ButtonEdit } from "src/components/Button/ButtonEdit";
 import { ModalDelete } from "src/components/Modal/ModalDelete";
 import { Pagination } from "src/components/Pagination";
 import ModalAutoReply from "src/modules/setting/component/AutoReply/ModalAutoReply";
@@ -71,20 +70,11 @@ const AutoReplyTab = ({
         </IndexTable.Cell>
         <IndexTable.Cell className="py-3">
           <ButtonGroup>
-            <Button
-              onClick={() => handleDetails(index)}
-              icon={() => <Icon source={() => <EditMajor />} color="base" />}
-            />
-            <Button
-              icon={() => (
-                <Icon
-                  accessibilityLabel="Delete"
-                  source={() => <DeleteMajor />}
-                />
-              )}
+            <ButtonEdit plain onClick={() => handleDetails(index)}></ButtonEdit>
+            <ButtonDelete
+              plain
               onClick={() => handleOpenModalDelete(index)}
-              destructive
-            />
+            ></ButtonDelete>
           </ButtonGroup>
         </IndexTable.Cell>
       </IndexTable.Row>

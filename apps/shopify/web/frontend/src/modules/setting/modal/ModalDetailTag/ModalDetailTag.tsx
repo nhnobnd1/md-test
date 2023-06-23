@@ -1,12 +1,12 @@
 import { useJob, useToggle } from "@moose-desk/core";
 import { Tag, TagRepository } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
-import { Button, Icon, Modal } from "@shopify/polaris";
-import { EditMajor } from "@shopify/polaris-icons";
+import { Modal } from "@shopify/polaris";
 import { FormikProps } from "formik";
 import { FC, useCallback, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
+import { ButtonEdit } from "src/components/Button/ButtonEdit";
 import TagForm from "src/modules/setting/component/TagForm";
 
 interface ModalDetailTagProps {
@@ -29,12 +29,12 @@ export const ModalDetailTag: FC<ModalDetailTagProps> = ({
   }, [formRef.current]);
 
   const activator = (
-    <Button
+    <ButtonEdit
+      isTable
       onClick={() => {
         setActive(true);
       }}
-      icon={() => <Icon source={() => <EditMajor />} color="base" />}
-    ></Button>
+    ></ButtonEdit>
   );
 
   const initialValuesForm = useMemo(() => {

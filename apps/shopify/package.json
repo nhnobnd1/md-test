@@ -25,6 +25,7 @@
 		"@tinymce/tinymce-react": "^4.3.0",
 		"dotenv": "^16.0.3",
 		"node-fetch": "^3.3.0",
+		"react-to-print": "^2.14.13",
 		"uuidv4": "^6.2.13"
 	},
 	"devDependencies": {

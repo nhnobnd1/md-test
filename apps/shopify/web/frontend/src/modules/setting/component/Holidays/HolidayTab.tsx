@@ -1,16 +1,15 @@
 import { AutoReply, Holidays } from "@moose-desk/repo";
 import {
-  Button,
   Card,
   EmptySearchResult,
-  Icon,
   IndexTable,
   Link,
   Text,
 } from "@shopify/polaris";
-import { DeleteMajor, EditMajor } from "@shopify/polaris-icons";
 import dayjs from "dayjs";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { ButtonDelete } from "src/components/Button/ButtonDelete";
+import { ButtonEdit } from "src/components/Button/ButtonEdit";
 import { ModalDelete } from "src/components/Modal/ModalDelete";
 import { Pagination } from "src/components/Pagination";
 import ModalHoliday from "src/modules/setting/component/Holidays/ModalHoliday";
@@ -79,20 +78,11 @@ const HolidayTab = ({
         </IndexTable.Cell>
         <IndexTable.Cell className="py-3">
           <div className="flex gap-2">
-            <Button
-              onClick={() => handleDetails(index)}
-              icon={() => <Icon source={() => <EditMajor />} color="base" />}
-            />
-            <Button
-              icon={() => (
-                <Icon
-                  accessibilityLabel="Delete"
-                  source={() => <DeleteMajor />}
-                />
-              )}
+            <ButtonEdit plain onClick={() => handleDetails(index)}></ButtonEdit>
+            <ButtonDelete
+              plain
               onClick={() => handleOpenModalDelete(index)}
-              destructive
-            />
+            ></ButtonDelete>
           </div>
         </IndexTable.Cell>
       </IndexTable.Row>

@@ -9,20 +9,18 @@ import { BaseListTagRequest, Tag, TagRepository } from "@moose-desk/repo";
 import { ScreenType } from "@moose-desk/repo/global/Global";
 import { useToast } from "@shopify/app-bridge-react";
 import {
-  Button,
   Card,
   EmptySearchResult,
-  Icon,
   IndexTable,
   Link,
   Loading,
   Page,
   Text,
 } from "@shopify/polaris";
-import { DeleteMajor } from "@shopify/polaris-icons";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
+import { ButtonDelete } from "src/components/Button/ButtonDelete";
 import { HeaderList } from "src/components/HeaderList";
 import { ModalDelete } from "src/components/Modal/ModalDelete";
 import Pagination from "src/components/Pagination/Pagination";
@@ -101,16 +99,10 @@ export default function TagIndexPage() {
         <IndexTable.Cell className="py-3">
           <div className="flex gap-2">
             <ModalDetailTag fetchListTag={fetchListTag} dataTag={tags[index]} />
-            <Button
-              icon={() => (
-                <Icon
-                  accessibilityLabel="Delete"
-                  source={() => <DeleteMajor />}
-                />
-              )}
-              onClick={() => handleOpenModalDelete(name)}
-              destructive
-            />
+
+            <ButtonDelete isTable onClick={() => handleOpenModalDelete(name)}>
+              Remove
+            </ButtonDelete>
           </div>
         </IndexTable.Cell>
       </IndexTable.Row>

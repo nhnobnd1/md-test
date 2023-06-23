@@ -242,6 +242,7 @@ export const ModalDetailAgent: FC<ModalDetailAgentProps> = ({
       onClick={() => {
         setActive(true);
       }}
+      plain
       icon={<Icon source={EditMinor} color="base" />}
     ></Button>
   );
