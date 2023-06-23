@@ -354,25 +354,27 @@ const DetailTicketForm = () => {
         })
       );
   });
-  const { run: fetchConversation } = useJob((id: string) => {
-    return TicketRepository()
-      .getConversations(id)
-      .pipe(
-        map(({ data }) => {
-          getListTagApi({
-            page: 1,
-            limit: 500,
-          });
-          stopLoading();
-          setConversationList(data.data);
-        }),
-        catchError((err) => {
-          stopLoading();
+  const { run: fetchConversation, processing: isFetchConversation } = useJob(
+    (id: string) => {
+      return TicketRepository()
+        .getConversations(id)
+        .pipe(
+          map(({ data }) => {
+            getListTagApi({
+              page: 1,
+              limit: 500,
+            });
+            stopLoading();
+            setConversationList(data.data);
+          }),
+          catchError((err) => {
+            stopLoading();
 
-          return of(err);
-        })
-      );
-  });
+            return of(err);
+          })
+        );
+    }
+  );
   const { run: updateTicketApi } = useJob((data: UpdateTicket) => {
     return TicketRepository()
       .update(data)
@@ -597,7 +599,7 @@ const DetailTicketForm = () => {
                 <div className="BoxReply w-full">
                   <div className="w-full h-full">
                     <div className="box-chat">
-                      {!loadingApi ? (
+                      {!loadingApi && !isFetchConversation ? (
                         <CollapseMessage listChat={listChat} />
                       ) : (
                         <>

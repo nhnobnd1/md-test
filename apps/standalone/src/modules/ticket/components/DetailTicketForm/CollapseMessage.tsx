@@ -1,4 +1,4 @@
-import { Button, Collapse } from "antd";
+import { Button, Collapse, Divider } from "antd";
 import { FC, useState } from "react";
 import { ChatItem } from "src/modules/ticket/components/DetailTicketForm/DetailTicketForm";
 import { RowMessage } from "src/modules/ticket/components/DetailTicketForm/RowMessage";
@@ -14,14 +14,13 @@ export const CollapseMessage: FC<CollapseMessageProps> = ({ listChat }) => {
   const handleShowMiddleItems = () => {
     setShowMiddleItems(!showMiddleItems);
   };
-
   return listChat.length > 4 ? (
     <Collapse
-      defaultActiveKey={listChat[listChat.length - 1].time}
+      defaultActiveKey={listChat.slice(-2).map((item: ChatItem) => item.id)}
       bordered={false}
       className="bg-white w-full"
     >
-      {listChat.slice(0, 2).map((item: ChatItem) => (
+      {listChat.slice(0, 2).map((item: ChatItem, index: number) => (
         <Collapse.Panel
           header={
             <div className="flex justify-between items-center">
@@ -40,23 +39,27 @@ export const CollapseMessage: FC<CollapseMessageProps> = ({ listChat }) => {
               </div>
             </div>
           }
-          key={item.time}
+          key={item.id}
         >
           <RowMessage item={item} />
         </Collapse.Panel>
       ))}
       {!showMiddleItems && (
-        <div className=" mt-2">
+        <div className=" mt-2 flex  items-center w-full ">
           <Button
-            //   icon={<ExpandIcon />}
             shape="circle"
             onClick={handleShowMiddleItems}
-            className="w-[40px] h-[40px]"
+            className="min-w-[40px] min-h-[40px] "
           >
             {listChat.length - 4}
           </Button>
+          <div className="w-full overflow-hidden">
+            <Divider className="m-4" />
+            <Divider className="m-4" />
+          </div>
         </div>
       )}
+
       {showMiddleItems &&
         listChat.slice(2, listChat.length - 2).map((item: ChatItem) => (
           <Collapse.Panel
@@ -77,7 +80,7 @@ export const CollapseMessage: FC<CollapseMessageProps> = ({ listChat }) => {
                 </div>
               </div>
             }
-            key={item.time}
+            key={item.id}
           >
             <RowMessage item={item} />
           </Collapse.Panel>
@@ -103,7 +106,7 @@ export const CollapseMessage: FC<CollapseMessageProps> = ({ listChat }) => {
                 </div>
               </div>
             }
-            key={item.time}
+            key={item.id}
           >
             <RowMessage item={item} />
           </Collapse.Panel>
@@ -111,7 +114,7 @@ export const CollapseMessage: FC<CollapseMessageProps> = ({ listChat }) => {
     </Collapse>
   ) : (
     <Collapse
-      defaultActiveKey={listChat[listChat.length - 1].time}
+      defaultActiveKey={listChat.slice(-2).map((item: ChatItem) => item.id)}
       bordered={false}
       className="bg-white w-full"
     >
@@ -134,7 +137,7 @@ export const CollapseMessage: FC<CollapseMessageProps> = ({ listChat }) => {
               </div>
             </div>
           }
-          key={item.time}
+          key={item.id}
         >
           <RowMessage item={item} />
         </Collapse.Panel>
