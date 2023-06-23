@@ -20,6 +20,7 @@ interface IModal {
   secondaryButtonAction: () => void;
   // children: ReactNode;
   customerData: any;
+  querySearchCustomer: string | undefined | null;
 }
 export const CustomModal = ({
   visible,
@@ -30,6 +31,7 @@ export const CustomModal = ({
   secondaryButtonLabel,
   secondaryButtonAction,
   customerData,
+  querySearchCustomer,
 }: // children,
 IModal) => {
   const formRef = useRef<FormikProps<any>>(null);
@@ -78,7 +80,7 @@ IModal) => {
       updateCustomer(customerData?._id || "", payload),
     onSuccess: async () => {
       await queryClient.invalidateQueries(QUERY_KEY.LIST_CUSTOMER);
-      onClose();
+      // onClose();
       show(t("messages:success.update_customer"));
     },
     onError: () => {
@@ -88,11 +90,18 @@ IModal) => {
     },
   });
   useEffect(() => {
+    if (querySearchCustomer && customerData?._id && visible) setSelectedTabs(1);
+  }, [querySearchCustomer, customerData?._id, visible]);
+  useEffect(() => {
     if (!visible) {
       queryClient.removeQueries(QUERY_KEY.LIST_TICKET_CUSTOMER);
       setSelectedTabs(0);
     }
+    if (querySearchCustomer && !visible) {
+      setSelectedTabs(0);
+    }
   }, [visible]);
+
   const handleSubmitForm = useCallback(() => {
     formRef.current?.submitForm();
     // createCustomerMutate(value);

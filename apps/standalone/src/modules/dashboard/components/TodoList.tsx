@@ -31,7 +31,7 @@ export const TodoList = () => {
   };
   const columns = [
     {
-      title: "ID",
+      title: "#",
       dataIndex: "ticketId",
       key: "ticketId",
       render: (_: string, record: Ticket) => (
@@ -45,7 +45,7 @@ export const TodoList = () => {
       width: "20%",
     },
     {
-      title: "TICKET TITLE",
+      title: "Ticket Title",
       dataIndex: "subject",
       key: "subject",
       render: (_: string, record: Ticket) => (
@@ -58,7 +58,7 @@ export const TodoList = () => {
     },
 
     {
-      title: "DATE REQUESTED",
+      title: "Date Requested",
       dataIndex: "updatedDatetime",
       key: "updatedDatetime",
       render: (_: string, record: any) => (

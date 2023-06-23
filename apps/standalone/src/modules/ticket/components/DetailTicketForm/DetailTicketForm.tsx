@@ -32,7 +32,6 @@ import {
   Card,
   Collapse,
   Divider,
-  List,
   Skeleton,
 } from "antd";
 import moment from "moment";
@@ -51,7 +50,7 @@ import { RowMessage } from "src/modules/ticket/components/DetailTicketForm/RowMe
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import FaMailReply from "~icons/fa/mail-reply";
 import AttachIcon from "~icons/mingcute/attachment-2-line";
-import BackIcon from "~icons/mingcute/attachment-fill";
+import BackIcon from "~icons/mingcute/back-2-fill";
 import "./BoxReply.scss";
 
 interface ValueForm {
@@ -465,11 +464,17 @@ const DetailTicketForm = () => {
   };
   const handleCloseTicket = () => {
     form.setFieldValue("status", "RESOLVED");
+    setTicket((previous: any) => {
+      return { ...previous, status: "RESOLVED" };
+    });
     onFinish(form.getFieldsValue(), true);
   };
   const handleReopenTicket = () => {
     const values = form.getFieldsValue();
     form.setFieldValue("status", "OPEN");
+    setTicket((previous: any) => {
+      return { ...previous, status: "OPEN" };
+    });
     updateTicketApi({
       status: "OPEN",
       priority: values.priority,
@@ -581,55 +586,38 @@ const DetailTicketForm = () => {
                 <div className="BoxReply w-full">
                   <div className="w-full h-full">
                     <div className="box-chat">
-                      <List>
-                        {/* <VirtualList
-                          data={listChat}
-                          itemHeight={50}
-                          itemKey="id"
-                        >
-                          {(item: ChatItem) => (
-                            <List.Item key={item.id} style={{ paddingLeft: 0 }}>
-                              <List.Item.Meta
-                                description={<RowMessage item={item} />}
-                              />
-                            </List.Item>
-                          )}
-                        </VirtualList> */}
-                        <Collapse
-                          defaultActiveKey={listChat[listChat.length - 1].time}
-                          bordered={false}
-                          className="bg-white"
-                        >
-                          {listChat.map((item: ChatItem) => (
-                            <Collapse.Panel
-                              header={
-                                <div className="flex justify-between items-center">
-                                  <div className="flex gap-2 items-center">
-                                    <span className="font-bold">
-                                      {item.name}
-                                    </span>
-                                    <span className="text-gray-500 text-xs">
-                                      ({item.email})
-                                    </span>
-                                  </div>
-                                  <div className="flex items-center gap-2">
-                                    {item?.attachments?.length ? (
-                                      <AttachIcon style={{ fontSize: 20 }} />
-                                    ) : (
-                                      <></>
-                                    )}
-
-                                    <span>{item.time}</span>
-                                  </div>
+                      <Collapse
+                        defaultActiveKey={listChat[listChat.length - 1].time}
+                        bordered={false}
+                        className="bg-white"
+                      >
+                        {listChat.map((item: ChatItem) => (
+                          <Collapse.Panel
+                            header={
+                              <div className="flex justify-between items-center">
+                                <div className="flex gap-2 items-center">
+                                  <span className="font-bold">{item.name}</span>
+                                  <span className="text-gray-500 text-xs">
+                                    ({item.email})
+                                  </span>
                                 </div>
-                              }
-                              key={item.time}
-                            >
-                              <RowMessage item={item} />
-                            </Collapse.Panel>
-                          ))}
-                        </Collapse>
-                      </List>
+                                <div className="flex items-center gap-2">
+                                  {item?.attachments?.length ? (
+                                    <AttachIcon style={{ fontSize: 20 }} />
+                                  ) : (
+                                    <></>
+                                  )}
+
+                                  <span>{item.time}</span>
+                                </div>
+                              </div>
+                            }
+                            key={item.time}
+                          >
+                            <RowMessage item={item} />
+                          </Collapse.Panel>
+                        ))}
+                      </Collapse>
                     </div>
                     <Divider />
                     <div className="box-comment">
