@@ -1,4 +1,9 @@
-import { MediaScreen, useNavigate, useToggle } from "@moose-desk/core";
+import {
+  MediaScreen,
+  useNavigate,
+  useSearchParams,
+  useToggle,
+} from "@moose-desk/core";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { BaseListCustomerRequest } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
@@ -14,7 +19,7 @@ import {
 } from "@shopify/polaris";
 import { MobileBackArrowMajor, SearchMinor } from "@shopify/polaris-icons";
 import classNames from "classnames";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 // import { isMobile } from "react-device-detect";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "react-query";
@@ -26,7 +31,11 @@ import { Search } from "src/components/Search/Search";
 import { SkeletonTable } from "src/components/Skelaton/SkeletonTable";
 import env from "src/core/env";
 import useScreenType from "src/hooks/useScreenType";
-import { deleteCustomer, getListCustomer } from "src/modules/customers/api/api";
+import {
+  deleteCustomer,
+  getListCustomer,
+  getOneCustomer,
+} from "src/modules/customers/api/api";
 import { CustomModal } from "src/modules/customers/component/Modal";
 import styles from "./styles.module.scss";
 const resourceName = {
@@ -44,6 +53,8 @@ export default function CustomerIndexPage() {
   const isMobile = Boolean(screenWidth < MediaScreen.MD);
   const { t } = useTranslation();
   const { show } = useToast();
+  const [searchParams] = useSearchParams();
+  const querySearchCustomer = searchParams.get("id");
   const { state: visible, on: openPopup, off: closePopup } = useToggle();
   const { state: isSearch, toggle: onToggleSearch } = useToggle(false);
   const [customerData, setCustomerData] = useState<any>();
@@ -51,7 +62,6 @@ export default function CustomerIndexPage() {
   const [direction, setDirection] = useState<"descending" | "ascending">(
     "descending"
   );
-
   const [filterData, setFilterData] =
     useState<BaseListCustomerRequest>(defaultFilter);
   const [isOpen, setIsOpen] = useState(false);
@@ -78,6 +88,22 @@ export default function CustomerIndexPage() {
       // });
     },
   });
+  useEffect(() => {
+    if (!querySearchCustomer) return;
+    const getCustomerData = async () => {
+      try {
+        const { data: customerData }: any = await getOneCustomer(
+          querySearchCustomer
+        );
+        if (customerData) {
+          handleOpenPopup(customerData?.data);
+        }
+      } catch (error) {
+        console.log(error, "error");
+      }
+    };
+    getCustomerData();
+  }, [querySearchCustomer, listCustomers]);
   const convertCustomerData = useMemo(() => {
     return listCustomers?.data;
   }, [listCustomers]);
@@ -148,6 +174,7 @@ export default function CustomerIndexPage() {
   const handleClosePopup = () => {
     closePopup();
     setCustomerData(undefined);
+    navigate("/customers");
   };
 
   return (
@@ -215,6 +242,7 @@ export default function CustomerIndexPage() {
           primaryButtonLabel="Save"
           secondaryButtonAction={handleClosePopup}
           secondaryButtonLabel="Discard"
+          querySearchCustomer={querySearchCustomer}
         />
         {isLoading ? (
           <SkeletonTable columnsCount={4} rowsCount={5} />

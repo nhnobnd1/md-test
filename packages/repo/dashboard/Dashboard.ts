@@ -8,6 +8,7 @@ export interface Activities {
     name: string;
     email: string;
     isAgent: boolean;
+    id: string;
   };
   performedDatetime: string;
   performedTimestamp: number;
