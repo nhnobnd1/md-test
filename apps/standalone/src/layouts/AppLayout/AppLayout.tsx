@@ -7,8 +7,8 @@ import {
   useUser,
 } from "@moose-desk/core";
 import useToggleGlobal from "@moose-desk/core/hooks/useToggleGlobal";
-import { AccountRepository } from "@moose-desk/repo";
-import { Layout, Menu } from "antd";
+import { AccountRepository, ScreenType } from "@moose-desk/repo";
+import { Button, Layout, Menu } from "antd";
 import classNames from "classnames";
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { map } from "rxjs";
@@ -32,11 +32,14 @@ import FeUsers from "~icons/fe/users";
 import IconoirReports from "~icons/iconoir/reports";
 import IonTicketSharp from "~icons/ion/ticket-sharp";
 import JamDashboard from "~icons/jam/dashboard";
+import MenuIcon from "~icons/material-symbols/menu";
 import MaterialSymbolsSettings from "~icons/material-symbols/settings";
 import MaterialSymbolsSettingsInputComponentOutline from "~icons/material-symbols/settings-input-component-outline";
 import MdiFolderNetworkOutline from "~icons/mdi/folder-network-outline";
 import MdiSecurity from "~icons/mdi/security";
 import RiLogoutCircleRLine from "~icons/ri/logout-circle-r-line";
+
+import useScreenType from "src/hooks/useScreenType";
 import "./AppLayout.scss";
 
 export const AppLayout = () => {
@@ -47,6 +50,8 @@ export const AppLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
   const { logout } = useAuth();
   const { isAdmin, isAgent } = usePermission();
+  const [screenType, screenWidth] = useScreenType();
+
   const user = useUser();
   const caseTopMenu = useMemo<any["items"]>(() => {
     return [
@@ -55,21 +60,30 @@ export const AppLayout = () => {
         label: "Dashboard",
         link: DashboardRoutePaths.Index,
         icon: <JamDashboard />,
-        onClick: () => navigate(generatePath(DashboardRoutePaths.Index)),
+        onClick: () => {
+          navigate(generatePath(DashboardRoutePaths.Index));
+          handleCollapseMobile(true);
+        },
       },
       {
         key: `case-${TicketRoutePaths.Index}`,
         label: "Tickets",
         link: TicketRoutePaths.Index,
         icon: <IonTicketSharp />,
-        onClick: () => navigate(generatePath(TicketRoutePaths.Index)),
+        onClick: () => {
+          navigate(generatePath(TicketRoutePaths.Index));
+          handleCollapseMobile(true);
+        },
       },
       {
         key: `case-${CustomersRoutePaths.Index}`,
         icon: <ClarityUsersSolid />,
         link: CustomersRoutePaths.Index,
         label: "Customers",
-        onClick: () => navigate(generatePath(CustomersRoutePaths.Index)),
+        onClick: () => {
+          navigate(generatePath(CustomersRoutePaths.Index));
+          handleCollapseMobile(true);
+        },
       },
       !isAgent
         ? {
@@ -81,20 +95,28 @@ export const AppLayout = () => {
                 key: `case-${ReportRoutePaths.Overview}`,
                 label: "Overview",
                 link: ReportRoutePaths.Overview,
-                onClick: () =>
-                  navigate(generatePath(ReportRoutePaths.Overview)),
+                onClick: () => {
+                  navigate(generatePath(ReportRoutePaths.Overview));
+                  handleCollapseMobile(true);
+                },
               },
               {
                 key: `case-${ReportRoutePaths.ByAgent}`,
                 label: "By Agents",
                 link: ReportRoutePaths.ByAgent,
-                onClick: () => navigate(generatePath(ReportRoutePaths.ByAgent)),
+                onClick: () => {
+                  navigate(generatePath(ReportRoutePaths.ByAgent));
+                  handleCollapseMobile(true);
+                },
               },
               {
                 key: `case-${ReportRoutePaths.ByTags}`,
                 label: "By Tags",
                 link: ReportRoutePaths.ByTags,
-                onClick: () => navigate(generatePath(ReportRoutePaths.ByTags)),
+                onClick: () => {
+                  navigate(generatePath(ReportRoutePaths.ByTags));
+                  handleCollapseMobile(true);
+                },
               },
             ],
           }
@@ -114,19 +136,23 @@ export const AppLayout = () => {
                     key: `case-${SettingChannelRoutePaths.Index}`,
                     label: "Channels",
                     link: SettingChannelRoutePaths.Index,
-                    onClick: () =>
-                      navigate(generatePath(SettingChannelRoutePaths.Index)),
+                    onClick: () => {
+                      navigate(generatePath(SettingChannelRoutePaths.Index));
+                      handleCollapseMobile(true);
+                    },
                   },
                   {
                     key: `case-${SettingRoutePaths.GenaralSetting.BusinessHours.Index}`,
                     label: "Business Hours",
                     link: SettingRoutePaths.GenaralSetting.BusinessHours.Index,
-                    onClick: () =>
+                    onClick: () => {
                       navigate(
                         generatePath(
                           SettingRoutePaths.GenaralSetting.BusinessHours.Index
                         )
-                      ),
+                      );
+                      handleCollapseMobile(true);
+                    },
                   },
                 ],
               }
@@ -140,14 +166,19 @@ export const AppLayout = () => {
                 key: `case-${AgentRoutePaths.Agents.Index}`,
                 label: "Agents",
                 link: AgentRoutePaths.Agents.Index,
-                onClick: () =>
-                  navigate(generatePath(AgentRoutePaths.Agents.Index)),
+                onClick: () => {
+                  navigate(generatePath(AgentRoutePaths.Agents.Index));
+                  handleCollapseMobile(true);
+                },
               },
               {
                 key: `case-${GroupRoutePaths.Index}`,
                 label: "Groups",
                 link: GroupRoutePaths.Index,
-                onClick: () => navigate(generatePath(GroupRoutePaths.Index)),
+                onClick: () => {
+                  navigate(generatePath(GroupRoutePaths.Index));
+                  handleCollapseMobile(true);
+                },
               },
             ],
           },
@@ -160,8 +191,10 @@ export const AppLayout = () => {
                 key: `case-${SettingRoutePaths.Workdesk.Tag.Index}`,
                 label: "Tags",
                 link: SettingRoutePaths.Workdesk.Tag.Index,
-                onClick: () =>
-                  navigate(generatePath(SettingRoutePaths.Workdesk.Tag.Index)),
+                onClick: () => {
+                  navigate(generatePath(SettingRoutePaths.Workdesk.Tag.Index));
+                  handleCollapseMobile(true);
+                },
               },
             ],
           },
@@ -174,35 +207,41 @@ export const AppLayout = () => {
                 key: `case-${SettingRoutePaths.AccountSecurity.Profile.Index}`,
                 label: "Profile",
                 link: SettingRoutePaths.AccountSecurity.Profile.Index,
-                onClick: () =>
+                onClick: () => {
                   navigate(
                     generatePath(
                       SettingRoutePaths.AccountSecurity.Profile.Index
                     )
-                  ),
+                  );
+                  handleCollapseMobile(true);
+                },
               },
               {
                 key: `case-${SettingRoutePaths.AccountSecurity.Security.Index}`,
                 label: "Security",
                 link: SettingRoutePaths.AccountSecurity.Security.Index,
-                onClick: () =>
+                onClick: () => {
                   navigate(
                     generatePath(
                       SettingRoutePaths.AccountSecurity.Security.Index
                     )
-                  ),
+                  );
+                  handleCollapseMobile(true);
+                },
               },
               isAdmin
                 ? {
                     key: `case-${SettingRoutePaths.AccountSecurity.AccessManager.Index}`,
                     label: "Access Manager",
                     link: SettingRoutePaths.AccountSecurity.AccessManager.Index,
-                    onClick: () =>
+                    onClick: () => {
                       navigate(
                         generatePath(
                           SettingRoutePaths.AccountSecurity.AccessManager.Index
                         )
-                      ),
+                      );
+                      handleCollapseMobile(true);
+                    },
                   }
                 : "",
             ],
@@ -210,7 +249,13 @@ export const AppLayout = () => {
         ],
       },
     ];
-  }, [AgentRoutePaths, DashboardRoutePaths, SettingRoutePaths, RoutePaths]);
+  }, [
+    AgentRoutePaths,
+    DashboardRoutePaths,
+    SettingRoutePaths,
+    RoutePaths,
+    screenType,
+  ]);
   useEffect(() => {
     setCollapsed(visible); // set lại khi bấm nút show/hide shopify customer
   }, [visible]);
@@ -346,17 +391,34 @@ export const AppLayout = () => {
   const handleLogout = () => {
     SignOutApi();
   };
+  const handleCollapseMobile = (boolean = true) => {
+    if (screenType === ScreenType.SM) {
+      setCollapsed(boolean);
+    }
+  };
   return (
     <Layout className="app-layout min-h-screen">
-      <Layout.Header className="header p-0 pr-10">
-        <div className="flex justify-between items-center">
-          <div
-            className="logo hover:cursor-pointer"
-            onClick={() => {
-              window.location.reload();
-            }}
-          >
-            <img src={Images.Logo.LogoMooseDesk} width="150"></img>
+      <Layout.Header className="header p-0 ">
+        <div className="flex justify-between items-center px-6">
+          <div className="logo hover:cursor-pointer flex justify-center items-center gap-2">
+            <Button
+              icon={
+                <span className="">
+                  <MenuIcon fontSize={20} />
+                </span>
+              }
+              type="text"
+              onClick={() => {
+                setCollapsed(!collapsed);
+              }}
+            ></Button>
+            <img
+              onClick={() => {
+                window.location.reload();
+              }}
+              src={Images.Logo.LogoMooseDesk}
+              width="150"
+            ></img>
           </div>
           <div className="user-action">
             <div className="flex gap-3">
@@ -375,10 +437,14 @@ export const AppLayout = () => {
       </Layout.Header>
       <Layout>
         <Layout.Sider
-          width={260}
-          collapsible
+          width={screenType === ScreenType.SM ? screenWidth : 260}
+          // collapsible
+
           collapsed={collapsed}
           onCollapse={(value) => setCollapsed(value)}
+          className={
+            collapsed && screenType === ScreenType.SM ? "hidden" : "block"
+          }
         >
           <Menu
             className="layout-menu"
