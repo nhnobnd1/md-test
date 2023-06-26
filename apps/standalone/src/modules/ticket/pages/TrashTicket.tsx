@@ -1,4 +1,9 @@
-import { createdDatetimeFormat, upperCaseFirst } from "@moose-desk/core";
+import {
+  createdDatetimeFormat,
+  generatePath,
+  upperCaseFirst,
+  useNavigate,
+} from "@moose-desk/core";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import {
   BaseDeleteList,
@@ -6,15 +11,17 @@ import {
   BaseMetaDataListResponse,
   GetListTagResponse,
   GetListTicketResponse,
+  StatusTicket,
   Tag,
   Ticket,
   TicketStatistic,
 } from "@moose-desk/repo";
-import { Input, TableProps } from "antd";
+import { Button, Card, Input, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
 import { Header } from "src/components/UI/Header";
 import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
@@ -22,7 +29,6 @@ import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { ButtonTicket } from "src/modules/ticket/components/ButtonTicket";
-import { CardStatistic } from "src/modules/ticket/components/CardStatistic";
 import {
   forceDeleteApi,
   getListTrashApi,
@@ -30,6 +36,7 @@ import {
   getTagsTicket,
   restoreTicketApi,
 } from "src/modules/ticket/helper/api";
+import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import CancelIcon from "~icons/mdi/cancel";
 import RestoreIcon from "~icons/mdi/restore";
 import "./ListTicket.scss";
@@ -40,6 +47,7 @@ const TrashTicket = () => {
   const [tags, setTags] = useState<Tag[]>([]);
   const [meta, setMeta] = useState<BaseMetaDataListResponse>();
   const message = useMessage();
+  const navigate = useNavigate();
   const defaultFilter: () => any = () => ({
     page: 1,
     limit: env.DEFAULT_PAGE_SIZE,
@@ -51,7 +59,14 @@ const TrashTicket = () => {
   const { subDomain } = useSubdomain();
   const { timezone } = useGlobalData(false, subDomain || "");
   const { t } = useTranslation();
-
+  const [activeButtonIndex, setActiveButtonIndex] = useState("TRASH");
+  const handleButtonClick = useCallback(
+    (index: string) => {
+      if (activeButtonIndex === index) return;
+      setActiveButtonIndex(index);
+    },
+    [activeButtonIndex]
+  );
   const [statistic, setStatistic] = useState<TicketStatistic>({
     statusCode: 200,
     data: {
@@ -100,7 +115,7 @@ const TrashTicket = () => {
     [setFilterData]
   ) as TableProps<any>["onChange"];
 
-  useQuery({
+  const { isFetching: loadingList } = useQuery({
     queryKey: ["getListTrash", filterData],
     queryFn: () => getListTrashApi(filterData),
     retry: 1,
@@ -195,77 +210,116 @@ const TrashTicket = () => {
               });
             }}
           ></Input.Search>
+          <ButtonAdd onClick={() => navigate(TicketRoutePaths.Create)}>
+            Add new
+          </ButtonAdd>
         </div>
       </Header>
       <div className="mt-6">
-        <div className="grid grid-cols-5 gap-6 mb-2">
-          <div className="col-span-4 col-start-2">
-            <div className="flex ">
-              <div
-                className={`filters flex gap-3 h-[56px] items-center ${
-                  selectedRowKeys.length
-                    ? "opacity-100"
-                    : "opacity-0 pointer-events-none"
-                }`}
-              >
-                <ButtonTicket
-                  title="Are you sure that you want to restore these tickets"
-                  content="These tickets will be moved back to the Ticket list. You can continue working with them."
-                  action={() => {
-                    handleRestore(selectedRowKeys as string[]);
-                  }}
-                  icon={
-                    <div className="flex items-center gap-2">
-                      <RestoreIcon fontSize={20} />
-                      <span>Restore Selected</span>
-                    </div>
-                  }
-                  textAction="Restore"
-                />
-                <ButtonTicket
-                  title="Are you sure that you want to permanently remove these tickets?"
-                  content="These tickets will be remove permanently. This action cannot be undone."
-                  action={() => {
-                    handleDelete(selectedRowKeys as string[]);
-                  }}
-                  icon={
-                    <div className="flex items-center gap-2">
-                      <CancelIcon fontSize={20} />
-                      <span>Deleted Selected</span>
-                    </div>
-                  }
-                  textAction="Remove"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
         <div className="grid grid-cols-7 gap-4">
-          <div className="col-span-1 ">
-            <CardStatistic
-              className="mb-4"
-              keyPanel="publicViews"
-              panelProps={{
-                header: "Public Views",
-              }}
-              screen="Trash"
-              options={[
-                { label: "New", value: `${statistic.data.NEW}` },
-                { label: "Open", value: `${statistic?.data.OPEN}` },
-                { label: "Pending", value: `${statistic?.data.PENDING}` },
-                { label: "Resolved", value: `${statistic?.data.RESOLVED}` },
-                { label: "Trash", value: `${statistic?.data.TRASH}` },
-              ]}
-            />
-          </div>
-          <div className="col-span-6 ">
+          <div className="col-span-7 ">
             {tickets && (
               <>
+                <Card
+                  bodyStyle={{
+                    padding: 8,
+                    paddingTop: 8,
+                    paddingBottom: 8,
+                    overflow: "scroll",
+                  }}
+                >
+                  <div className="flex gap-2">
+                    <Button
+                      type={activeButtonIndex === "ALL" ? "primary" : "text"}
+                      onClick={() => {
+                        handleButtonClick("ALL");
+                        navigate(generatePath(TicketRoutePaths.Index));
+                      }}
+                    >
+                      All (
+                      {`${
+                        statistic?.data.OPEN +
+                        statistic?.data.PENDING +
+                        statistic?.data.RESOLVED
+                      }`}
+                      )
+                    </Button>
+                    <Button
+                      type={
+                        activeButtonIndex === StatusTicket.NEW
+                          ? "primary"
+                          : "text"
+                      }
+                      onClick={() => {
+                        handleButtonClick(StatusTicket.NEW);
+                        navigate(TicketRoutePaths.Index, {
+                          state: StatusTicket.NEW,
+                        });
+                      }}
+                    >
+                      New ({`${statistic?.data.NEW}`})
+                    </Button>
+                    <Button
+                      type={
+                        activeButtonIndex === StatusTicket.OPEN
+                          ? "primary"
+                          : "text"
+                      }
+                      onClick={() => {
+                        handleButtonClick(StatusTicket.OPEN);
+                        navigate(TicketRoutePaths.Index, {
+                          state: StatusTicket.OPEN,
+                        });
+                      }}
+                    >
+                      Open ({`${statistic?.data.OPEN}`})
+                    </Button>
+                    <Button
+                      type={
+                        activeButtonIndex === StatusTicket.PENDING
+                          ? "primary"
+                          : "text"
+                      }
+                      onClick={() => {
+                        handleButtonClick(StatusTicket.PENDING);
+                        navigate(TicketRoutePaths.Index, {
+                          state: StatusTicket.PENDING,
+                        });
+                      }}
+                    >
+                      Pending ({`${statistic?.data.PENDING}`})
+                    </Button>
+                    <Button
+                      type={
+                        activeButtonIndex === StatusTicket.RESOLVED
+                          ? "primary"
+                          : "text"
+                      }
+                      onClick={() => {
+                        handleButtonClick(StatusTicket.RESOLVED);
+                        navigate(TicketRoutePaths.Index, {
+                          state: StatusTicket.RESOLVED,
+                        });
+                      }}
+                    >
+                      Resolve ({`${statistic?.data.RESOLVED}`})
+                    </Button>
+                    <Button
+                      type={activeButtonIndex === "TRASH" ? "primary" : "text"}
+                      onClick={() => {
+                        handleButtonClick("TRASH");
+                      }}
+                    >
+                      Trash ({`${statistic?.data.TRASH}`})
+                    </Button>
+                  </div>
+                </Card>
                 <Table
                   rowSelection={rowSelection}
                   dataSource={tickets}
                   onChange={onChangeTable}
                   scroll={{ x: 1024 }}
+                  loading={loadingList}
                 >
                   <Table.Column
                     key="ticketId"

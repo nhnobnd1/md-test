@@ -55,7 +55,6 @@ import env from "src/core/env";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 
 import { ScreenType } from "@moose-desk/repo/global/Global";
-import { PDFDownloadLink } from "@react-pdf/renderer";
 import { useTranslation } from "react-i18next";
 import { useReactToPrint } from "react-to-print";
 import { ModalFilter } from "src/components/Modal/ModalFilter";
@@ -63,7 +62,6 @@ import BoxSelectFilter from "src/components/Modal/ModalFilter/BoxSelectFilter";
 import useGlobalData from "src/hooks/useGlobalData";
 import useScreenType from "src/hooks/useScreenType";
 import { useSubdomain } from "src/hooks/useSubdomain";
-import { ExportTicketPdf } from "src/modules/ticket/components/ExportTicketPdf";
 import { HeaderListTicket } from "src/modules/ticket/components/HeaderListTicket";
 import { useExportTicket } from "src/modules/ticket/helper/api";
 import UilImport from "~icons/uil/import";
@@ -211,10 +209,13 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       .pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
-            const tags = data.data.map((item) => ({
-              ...item,
-              id: item._id,
-            }));
+            const tags = data.data
+              .filter((item) => item.isActive && item.emailConfirmed)
+
+              .map((item) => ({
+                ...item,
+                id: item._id,
+              }));
             setAgents((prevTags) => {
               return [...prevTags, ...tags];
             });
@@ -908,7 +909,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                     <div
                       className={`${
                         selectedResources?.length ? "block" : "hidden"
-                      } w-[250px]`}
+                      } w-[250px] mb-3`}
                     >
                       <BoxSelectFilter
                         label={"Status"}
@@ -917,38 +918,25 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                         placeholder="Set Status"
                       />
                     </div>
-                    <div
-                      className={`${
-                        selectedResources?.length ? "block" : "hidden"
-                      } w-[250px] mt-5`}
-                    >
-                      <PDFDownloadLink
-                        document={
-                          <ExportTicketPdf
+                    <div className="w-[250px]">
+                      <Button
+                        onClick={handlePrint}
+                        disabled={loadingExport}
+                        icon={<UilImport />}
+                        fullWidth
+                      >
+                        Export
+                      </Button>
+                      <div className="hidden">
+                        <div ref={exportPdfRef}>
+                          <ExportTicket
                             conversations={conversations}
                             agents={agents}
-                            tickets={tickets}
                             selectedRowKeys={selectedResources}
                             timezone={timezone}
                           />
-                        }
-                        fileName="Tickets.pdf"
-                        style={{ textDecoration: "none" }}
-                      >
-                        {({ blob, url, loading, error }) =>
-                          loading ? (
-                            <Button fullWidth icon={<UilImport />}>
-                              Export
-                            </Button>
-                          ) : (
-                            <div className="flex justify-center items-center">
-                              <Button fullWidth icon={<UilImport />}>
-                                Export
-                              </Button>
-                            </div>
-                          )
-                        }
-                      </PDFDownloadLink>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </Modal>
