@@ -1,4 +1,5 @@
 @import "../../../styles/variables.scss";
+@import "../../../styles/mixin.scss";
 .container {
   background-image: url(../../../assets/images/loginBackground.svg);
   height: 100vh;
@@ -6,6 +7,11 @@
   background-color: $background-gray-color;
   background-position: center;
   background-size: cover;
+  @include mq(lg, "max") {
+    background-image: url(../../../assets/images/backgroundLoginOnMobile.svg);
+    background-position: top;
+    background-size: contain;
+  }
   .loginWrap {
     position: absolute;
     top: 0;
@@ -17,27 +23,49 @@
     align-items: center;
     justify-content: center;
     padding-bottom: 5%;
+    @include mq(lg, "max") {
+      right: 0;
+      width: 100%;
+      top: 20%;
+      padding: 0 16px;
+    }
     .box {
       width: 100%;
       background-color: $white-color;
       padding: 40px 32px;
       box-shadow: 0px 10px 24px 2px rgba(57, 41, 24, 0.1);
       border-radius: 24px;
+      @include mq(lg, "max") {
+        box-shadow: unset;
+        padding: 16px;
+        background-color: transparent;
+      }
     }
   }
   .logo {
     height: 52px;
     margin-bottom: 32px;
+    @include mq(md, "max") {
+      height: 40px;
+      margin-bottom: 24px;
+    }
   }
 
   h2 {
     font-size: 30px;
     line-height: 40px;
     margin-bottom: 8px;
+    @include mq(md, "max") {
+      font-size: 24px;
+      margin-bottom: 0;
+    }
   }
 
   .contentWrap {
     :global {
+      .ant-form-item {
+        margin-bottom: 16px;
+      }
       .ant-form-item-required {
         color: $character-title;
 
@@ -53,6 +81,9 @@
       button {
         border-radius: 16px !important;
         height: 56px !important;
+        @include mq(md, 'max') {
+          height: 48px !important;
+        }
       }
     }
   }

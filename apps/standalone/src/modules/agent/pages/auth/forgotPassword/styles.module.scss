@@ -1,4 +1,5 @@
 @import "../../../../../styles/variables.scss";
+@import "../../../../../styles/mixin.scss";
 .subHeader {
   color: $opacity-black;
   margin-bottom: 0;
@@ -6,6 +7,9 @@
 }
 .formWrap {
   margin-top: 32px;
+  @include mq(md, 'max') {
+      margin-top: 24px;
+    }
   :global {
     .ant-form-item-required {
       color: $character-title;
@@ -39,10 +43,16 @@
 }
 .wrapLink {
   margin-top: 16px;
+  @include mq(md, 'max') {
+    margin-top: 12px;
+  }
 }
 .link {
   color: $primary !important;
   font-size: 16px;
+  @include mq(md, 'max') {
+      font-size: 14px;
+    }
   &:hover {
     color: $primary-hover !important;
   }
