@@ -11,6 +11,14 @@
     padding: 0 24px 24px;
     box-shadow: 0px 15px 23px -18px #a39e9e;
     margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    @include mq(lg, "max") {
+      padding-bottom: 12px;
+    }
+    span {
+      margin-left: 12px;
+    }
   }
   .block {
     position: relative;
@@ -20,7 +28,10 @@
     border-radius: 8px;
     padding: 24px 0 0;
     box-shadow: 0px 2px 16px 0px rgba(33, 43, 54, 0.08),
-            0px 0px 0px 1px rgba(6, 44, 82, 0.1);
+      0px 0px 0px 1px rgba(6, 44, 82, 0.1);
+    @include mq(lg, "max") {
+      padding-top: 12px;
+    }
   }
 }
 .topBlock {
@@ -33,4 +44,9 @@
   font-size: 20px;
   line-height: 28px;
   color: $character-title;
+  margin-bottom: 24px;
+
+  @include mq(lg, "max") {
+    margin-bottom: 16px;
+  }
 }

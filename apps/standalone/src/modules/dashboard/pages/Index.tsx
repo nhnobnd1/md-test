@@ -1,4 +1,5 @@
 import { MediaScreen, PageComponent } from "@moose-desk/core";
+import Icon from "src/components/UI/Icon";
 import useViewport from "src/hooks/useViewport";
 import { CollapseOnMobile } from "src/modules/dashboard/components/CollapseOnMobile";
 import { RecentActivities } from "src/modules/dashboard/components/RecentActivities";
@@ -22,11 +23,16 @@ const DashboardIndexPage: PageComponent<DashboardIndexPageProps> = () => {
         ) : (
           <>
             <div className={styles.block}>
-              <div className={styles.title}>Recent Activities</div>
+              <div className={styles.title}>
+                <Icon name="activities" /> <span>Recent Activities</span>
+              </div>
               <RecentActivities />
             </div>
             <div className={styles.block}>
-              <div className={styles.title}>To do List</div>
+              <div className={styles.title}>
+                <Icon name="todo" />
+                <span>To do List</span>
+              </div>
               <TodoList />
             </div>
           </>

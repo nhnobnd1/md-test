@@ -11,7 +11,7 @@
   overflow-y: scroll;
   padding: 0 24px 56px;
   @include mq(md, "max") {
-    padding: 16px 0 56px;
+    padding: 16px 16px 56px;
     // padding-bottom: 16px;
   }
 }
@@ -63,13 +63,23 @@
   :global {
     .ant-collapse {
       width: 100%;
+      .ant-collapse-header {
+        background-color: $gray-background-2;
+        border-top-right-radius: 8px;
+        border-top-left-radius: 8px;
+      }
       .ant-collapse-header-text {
         font-size: 16px;
         font-weight: 500;
       }
       .ant-collapse-content-box {
         position: relative;
-        padding: 0 16px 0px;
+        padding: 0;
+      }
+      .ant-collapse-item-active:last-child {
+        .ant-collapse-header {
+          border-radius: 0;
+        }
       }
     }
   }
@@ -87,4 +97,12 @@
   -webkit-line-clamp: 2;
   /* start showing ellipsis when 3rd line is reached */
   white-space: pre-wrap;
+}
+.title {
+  display: flex;
+  align-items: center;
+
+  span {
+    margin-left: 12px;
+  }
 }
