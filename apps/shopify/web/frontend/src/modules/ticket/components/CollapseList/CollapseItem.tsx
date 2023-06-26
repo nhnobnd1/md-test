@@ -21,7 +21,7 @@ export const CollapseItem: FC<CollapseItemProps> = ({
     <div>
       <Card>
         <div
-          className="flex h-[54px] mb-3 hover:cursor-pointer px-2"
+          className="flex min-h-[54px] mb-3 hover:cursor-pointer px-2"
           onClick={handleToggle}
         >
           <Button
@@ -32,8 +32,8 @@ export const CollapseItem: FC<CollapseItemProps> = ({
             icon={<CollapseIcon />}
             size="medium"
           ></Button>
-          <div className="flex justify-between items-center w-full flex-wrap ">
-            <div className="flex gap-2 items-center">
+          <div className="flex justify-between items-center w-full flex-wrap overflow-scroll">
+            <div className="flex gap-2 items-center flex-wrap">
               <span className="font-bold">{item.name}</span>
               <span className="text-gray-500 text-xs">({item.email})</span>
             </div>

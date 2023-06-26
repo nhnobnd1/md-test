@@ -23,8 +23,8 @@ export const CollapseMessage: FC<CollapseMessageProps> = ({ listChat }) => {
       {listChat.slice(0, 2).map((item: ChatItem, index: number) => (
         <Collapse.Panel
           header={
-            <div className="flex justify-between items-center">
-              <div className="flex gap-2 items-center">
+            <div className="flex justify-between items-center flex-wrap">
+              <div className="flex gap-2 items-center flex-wrap">
                 <span className="font-bold">{item.name}</span>
                 <span className="text-gray-500 text-xs">({item.email})</span>
               </div>
@@ -65,8 +65,8 @@ export const CollapseMessage: FC<CollapseMessageProps> = ({ listChat }) => {
         listChat.slice(2, listChat.length - 2).map((item: ChatItem) => (
           <Collapse.Panel
             header={
-              <div className="flex justify-between items-center">
-                <div className="flex gap-2 items-center">
+              <div className="flex justify-between items-center flex-wrap">
+                <div className="flex gap-2 items-center flex-wrap">
                   <span className="font-bold">{item.name}</span>
                   <span className="text-gray-500 text-xs">({item.email})</span>
                 </div>
@@ -91,8 +91,8 @@ export const CollapseMessage: FC<CollapseMessageProps> = ({ listChat }) => {
         .map((item: ChatItem) => (
           <Collapse.Panel
             header={
-              <div className="flex justify-between items-center">
-                <div className="flex gap-2 items-center">
+              <div className="flex justify-between items-center flex-wrap">
+                <div className="flex gap-2 items-center flex-wrap">
                   <span className="font-bold">{item.name}</span>
                   <span className="text-gray-500 text-xs">({item.email})</span>
                 </div>
@@ -122,8 +122,8 @@ export const CollapseMessage: FC<CollapseMessageProps> = ({ listChat }) => {
       {listChat.map((item: ChatItem) => (
         <Collapse.Panel
           header={
-            <div className="flex justify-between items-center">
-              <div className="flex gap-2 items-center">
+            <div className="flex justify-between items-center flex-wrap">
+              <div className="flex gap-2 items-center flex-wrap">
                 <span className="font-bold">{item.name}</span>
                 <span className="text-gray-500 text-xs">({item.email})</span>
               </div>
