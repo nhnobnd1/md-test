@@ -59,13 +59,12 @@ import SelectAddEmail from "src/components/SelectAddEmail/SelectAddEmail";
 import SelectAddTag from "src/components/SelectAddTag/SelectAddTag";
 import { TextEditorTicket } from "src/components/TextEditorTicket";
 import useGlobalData from "src/hooks/useGlobalData";
-import usePreventNav from "src/hooks/usePreventNav";
 import useScreenType from "src/hooks/useScreenType";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import useToggleGlobal from "src/hooks/useToggleGlobal";
+import { CollapseList } from "src/modules/ticket/components/CollapseList";
 import ContentShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ContentShopifySearch";
 import { ModalInfoTicket } from "src/modules/ticket/components/ModalInfoTicket";
-import { RowMessage } from "src/modules/ticket/components/RowMessage/RowMessage";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import * as Yup from "yup";
 import FaMailReply from "~icons/fa/mail-reply";
@@ -332,22 +331,24 @@ const DetailTicket = (props: DetailTicketProps) => {
         );
     }
   );
-  const { run: fetchConversation } = useJob((id: string) => {
-    return TicketRepository()
-      .getConversations(id)
-      .pipe(
-        map(({ data }) => {
-          getListTagApi({
-            page: 1,
-            limit: 500,
-          });
-          setConversationList(data.data);
-        }),
-        catchError((err) => {
-          return of(err);
-        })
-      );
-  });
+  const { run: fetchConversation, processing: isFetchConversation } = useJob(
+    (id: string) => {
+      return TicketRepository()
+        .getConversations(id)
+        .pipe(
+          map(({ data }) => {
+            getListTagApi({
+              page: 1,
+              limit: 500,
+            });
+            setConversationList(data.data);
+          }),
+          catchError((err) => {
+            return of(err);
+          })
+        );
+    }
+  );
   const { run: getListTagApi } = useJob((payload: GetListTagRequest) => {
     return TagRepository()
       .getList(payload)
@@ -557,7 +558,7 @@ const DetailTicket = (props: DetailTicketProps) => {
   });
   return (
     <div className="relative">
-      {processing ? (
+      {processing || isFetchConversation ? (
         <Page fullWidth>
           <SkeletonPage primaryAction />
           <Layout>
@@ -692,11 +693,7 @@ const DetailTicket = (props: DetailTicketProps) => {
 
                         <div className="flex-1 px-4">
                           <div className="mt-5 mb-5">
-                            {listChat.map((item: ChatItem) => (
-                              <div key={item.id}>
-                                <RowMessage item={item} />
-                              </div>
-                            ))}
+                            <CollapseList listChat={listChat} />
                           </div>
                           <div className="w-full flex justify-between gap-2 flex-wrap">
                             <div className="flex flex-1 flex-col">

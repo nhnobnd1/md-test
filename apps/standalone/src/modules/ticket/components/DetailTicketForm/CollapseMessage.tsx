@@ -47,6 +47,7 @@ export const CollapseMessage: FC<CollapseMessageProps> = ({ listChat }) => {
       {!showMiddleItems && (
         <div className=" mt-2 flex  items-center w-full ">
           <Button
+            type="primary"
             shape="circle"
             onClick={handleShowMiddleItems}
             className="min-w-[40px] min-h-[40px] "
