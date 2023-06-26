@@ -16,6 +16,11 @@ function App() {
   const config = useMemo<ConfigProviderProps>(() => {
     return {
       locale: i18n.resolvedLanguage === "en" ? antEnLocale : antViLocale,
+      theme: {
+        token: {
+          colorPrimary: "rgba(242, 117, 34, 1)",
+        },
+      },
     };
   }, [i18n]);
 
