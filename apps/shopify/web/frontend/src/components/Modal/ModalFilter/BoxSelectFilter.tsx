@@ -117,7 +117,9 @@ const BoxSelectFilter = (props: BoxSelectAutoReplyProps) => {
       }
     >
       {options.length > 0 && !props.disabled ? (
-        <Listbox onSelect={updateSelection}>{optionsMarkup}</Listbox>
+        <div className="min-h-[100px]">
+          <Listbox onSelect={updateSelection}>{optionsMarkup}</Listbox>
+        </div>
       ) : (
         <div className="p-3 h-[100px]">
           <EmptySearchResult
