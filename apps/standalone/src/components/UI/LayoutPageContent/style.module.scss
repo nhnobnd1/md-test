@@ -1,7 +1,11 @@
 @import "../../../styles/variables.scss";
+@import "../../../styles/mixin.scss";
 .container {
   padding: 24px;
   background-color: $background-page-color;
+  @include mq(md, "max") {
+    padding: 16px;
+  }
   .groupTopPage {
     display: flex;
     justify-content: space-between;
@@ -16,6 +20,12 @@
   }
   .mainContent {
     margin-top: 24px;
+    @include breakpoints(md, lg) {
+      margin-top: 0px;
+    }
+    @include mq(md, "max") {
+      margin-top: 8px;
+    }
   }
 }
 .onlyScreen {
