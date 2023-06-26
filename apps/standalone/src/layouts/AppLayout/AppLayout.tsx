@@ -47,7 +47,7 @@ export const AppLayout = () => {
   const location = useLocation();
   const { breadCrumb, setBreadCrumb } = useAppConfig();
   const { visible } = useToggleGlobal(); // lấy giá trị visible khi bấm vào nút mở search shopify customer
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const { logout } = useAuth();
   const { isAdmin, isAgent } = usePermission();
   const [screenType, screenWidth] = useScreenType();
@@ -256,19 +256,11 @@ export const AppLayout = () => {
     RoutePaths,
     screenType,
   ]);
+
   useEffect(() => {
     setCollapsed(visible); // set lại khi bấm nút show/hide shopify customer
   }, [visible]);
 
-  useEffect(() => {
-    function handleResize() {
-      setCollapsed(window.innerWidth < 1000);
-    }
-
-    window.addEventListener("resize", handleResize);
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
   const getDefaultOpenKeys = useCallback(
     (
       list: any[],
@@ -371,6 +363,11 @@ export const AppLayout = () => {
       }),
     });
   }, [caseTopMenu, keys, location.pathname]);
+  useEffect(() => {
+    if (screenType === ScreenType.SM) {
+      setCollapsed(true);
+    }
+  }, [screenType]);
 
   const { run: SignOutApi } = useJob(
     () => {
@@ -450,7 +447,12 @@ export const AppLayout = () => {
             className="layout-menu"
             mode="inline"
             theme="dark"
-            style={{ height: "100%", borderRight: 0 }}
+            style={{
+              height: "100%",
+
+              background: "#161819",
+              color: "white",
+            }}
             selectedKeys={[keys.activeKeys]}
             defaultOpenKeys={keys.defaultOpenKeys}
             items={caseTopMenu}

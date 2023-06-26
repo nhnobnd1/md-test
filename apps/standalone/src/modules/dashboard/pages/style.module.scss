@@ -44,4 +44,9 @@
   font-size: 20px;
   line-height: 28px;
   color: $character-title;
+  margin-bottom: 24px;
+
+  @include mq(lg, "max") {
+    margin-bottom: 16px;
+  }
 }

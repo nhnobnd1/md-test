@@ -85,9 +85,7 @@ const Pagination = ({
 
   return (
     <APagination
-      showTotal={(total) => (
-        <ShowSize total={total} options={pageSizeOptions} />
-      )}
+      showTotal={(total) => `${total} Results`}
       {...props}
       total={total}
       defaultPageSize={pageSize}
@@ -97,7 +95,7 @@ const Pagination = ({
       current={currentPage}
       onChange={handleChangePagination}
       onShowSizeChange={handleSizeChange}
-      showSizeChanger={false}
+      showSizeChanger={true}
     />
   );
 };

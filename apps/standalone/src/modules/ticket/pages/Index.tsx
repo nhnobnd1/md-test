@@ -1,6 +1,7 @@
 import {
   createdDatetimeFormat,
   generatePath,
+  MediaScreen,
   PageComponent,
   upperCaseFirst,
   useJob,
@@ -23,6 +24,7 @@ import {
   GetListTagRequest,
   GetListTicketRequest,
   statusOptions,
+  StatusTicket,
   Tag,
   TagRepository,
   Ticket,
@@ -30,7 +32,7 @@ import {
   TicketStatistic,
   UpdateTicket,
 } from "@moose-desk/repo";
-import { Button, Input, TableProps } from "antd";
+import { Button, Card, Input, Modal, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -48,15 +50,15 @@ import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { useSubdomain } from "src/hooks/useSubdomain";
-import { CardStatistic } from "src/modules/ticket/components/CardStatistic";
 import { DeleteSelectedModal } from "src/modules/ticket/components/DeleteSelectedModal";
 import ModalFilter from "src/modules/ticket/components/ModalFilter/ModalFilter";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
-import IcRoundFilterAlt from "~icons/ic/round-filter-alt";
 
 import { ExportTicket } from "src/modules/ticket/components/ExportTicketPdf/ExportTicket";
 import UilImport from "~icons/uil/import";
 
+import { FilterOutlined } from "@ant-design/icons";
+import useScreenType from "src/hooks/useScreenType";
 import { useExportTicket } from "src/modules/ticket/helper/api";
 import useTicketSelected from "src/modules/ticket/store/useTicketSelected";
 import "./ListTicket.scss";
@@ -83,6 +85,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     (state) => state.getTicketSelected
   );
   const { startLoading, stopLoading } = useLoading();
+  const [isModalActionsOpen, setIsModalActionsOpen] = useState(false);
 
   const [statistic, setStatistic] = useState<TicketStatistic>({
     statusCode: 200,
@@ -126,12 +129,23 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const defaultFilter: () => any = () => ({
     page: 1,
     limit: env.DEFAULT_PAGE_SIZE,
+    query: "",
   });
-
+  const [activeButtonIndex, setActiveButtonIndex] = useState(
+    statusFromTrash || "ALL"
+  );
   const [filterData, setFilterData] =
     useState<BaseListTicketRequest>(defaultFilter);
 
   const [meta, setMeta] = useState<BaseMetaDataListResponse>();
+  const handleButtonClick = useCallback(
+    (index: string) => {
+      if (activeButtonIndex === index) return;
+      setActiveButtonIndex(index);
+    },
+    [activeButtonIndex]
+  );
+  const [screenType, screenWidth] = useScreenType();
 
   const { run: getListTicketApi, processing: loadingList } = useJob(
     (payload: GetListTicketRequest) => {
@@ -194,10 +208,14 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         map(({ data }) => {
           if (data.statusCode === 200) {
             // let current: any = [];
-            const tags = data.data.map((item) => ({
-              ...item,
-              id: item._id,
-            }));
+            const tags = data.data
+
+              .filter((item) => item.isActive && item.emailConfirmed)
+
+              .map((item) => ({
+                ...item,
+                id: item._id,
+              }));
             setAgents((prevTags) => {
               // current = [...prevTags, ...tags];
               return [...prevTags, ...tags];
@@ -484,120 +502,214 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         setTickets={setTickets}
         closeFilterModal={closeFilterModal}
         handleApply={handleApply}
+        centered
       />
-      <Header title="Ticket">
-        <div className="flex items-center justify-end flex-1 gap-4">
-          <Input.Search
-            allowClear
-            className="max-w-[400px]"
-            placeholder="Search ticket"
-            onSearch={(searchText: string) => {
-              setFilterData((value: any) => {
-                return {
-                  ...value,
-                  query: searchText,
-                  page: 1,
-                };
-              });
-            }}
-          ></Input.Search>
-          <ButtonAdd onClick={() => navigate(TicketRoutePaths.Create)}>
-            Create New Ticket
-          </ButtonAdd>
-        </div>
-      </Header>
-      <div className="mt-6">
-        <div className="grid grid-cols-7 gap-6 mb-2">
-          <div className="col-span-4 col-start-2">
-            <div className="flex ">
-              <div className="filters flex gap-3">
-                <Button
-                  onClick={openFilterModal}
-                  type="primary"
-                  icon={
-                    <IconButton>
-                      <IcRoundFilterAlt />
-                    </IconButton>
-                  }
-                >
-                  Filters
-                </Button>
-                <div
-                  className={`flex gap-3 ${
-                    selectedRowKeys.length
-                      ? "opacity-100"
-                      : "opacity-0 pointer-events-none"
-                  }`}
-                >
-                  <Form
-                    onValuesChange={handleChangeForm}
-                    className="flex gap-2"
-                  >
-                    <Form.Item label="" name="agentObjectId">
-                      <Select
-                        placeholder="Assign to"
-                        options={agentsOptions}
-                        className="w-[300px]"
-                      />
-                    </Form.Item>
-                    <Form.Item label="" name="status">
-                      <Select
-                        placeholder="Set Status"
-                        className="w-[150px]"
-                        options={statusOptions}
-                      />
-                    </Form.Item>
-                  </Form>
-                  <Button
-                    disabled={loadingExport}
-                    onClick={handlePrint}
-                    className="w-[100px]"
-                    icon={
-                      <IconButton>
-                        <UilImport />
-                      </IconButton>
-                    }
-                  >
-                    Export
-                  </Button>
-                  <div className="hidden">
-                    <div ref={exportPdfRef}>
-                      <ExportTicket
-                        conversations={conversations}
-                        agents={agents}
-                        selectedRowKeys={selectedRowKeys}
-                        timezone={timezone}
-                      />
-                    </div>
-                  </div>
-                </div>
+      <Header title="Tickets">
+        {selectedRowKeys.length === 0 ? (
+          <div className="flex items-center justify-end flex-1 gap-2  ">
+            <Input.Search
+              allowClear
+              enterButton
+              className="md:w-[300px] lg:w-[400px] sm:w-[250px]"
+              placeholder="Search"
+              onSearch={(searchText: string) => {
+                setFilterData((value: any) => {
+                  return {
+                    ...value,
+                    query: searchText,
+                    page: 1,
+                  };
+                });
+              }}
+            ></Input.Search>
+            <Button
+              onClick={openFilterModal}
+              icon={<FilterOutlined />}
+            ></Button>
+
+            <ButtonAdd onClick={() => navigate(TicketRoutePaths.Create)}>
+              Add new
+            </ButtonAdd>
+          </div>
+        ) : screenWidth < MediaScreen.LG ? (
+          <div className="flex items-center justify-end flex-1 gap-2  ">
+            <Input.Search
+              allowClear
+              enterButton
+              className="md:w-[300px] lg:w-[400px] sm:w-[250px]"
+              placeholder="Search"
+              onSearch={(searchText: string) => {
+                setFilterData((value: any) => {
+                  return {
+                    ...value,
+                    query: searchText,
+                    page: 1,
+                  };
+                });
+              }}
+            ></Input.Search>
+            <Button
+              onClick={openFilterModal}
+              icon={<FilterOutlined />}
+            ></Button>
+
+            <ButtonAdd onClick={() => navigate(TicketRoutePaths.Create)}>
+              Add new
+            </ButtonAdd>
+          </div>
+        ) : (
+          <div className={`flex items-center justify-end flex-1 gap-2  `}>
+            <Form
+              onValuesChange={handleChangeForm}
+              className="flex gap-2 items-center"
+              layout="horizontal"
+            >
+              <Form.Item label="" name="agentObjectId" className="mb-0">
+                <Select
+                  placeholder="Assign to"
+                  options={agentsOptions}
+                  className="w-[300px]"
+                />
+              </Form.Item>
+              <Form.Item label="" name="status" className="mb-0">
+                <Select
+                  placeholder="Set Status"
+                  className="w-[150px]"
+                  options={statusOptions}
+                />
+              </Form.Item>
+              <Button
+                disabled={loadingExport}
+                onClick={handlePrint}
+                className="w-[100px]"
+                icon={
+                  <IconButton>
+                    <UilImport />
+                  </IconButton>
+                }
+              >
+                Export
+              </Button>
+              <DeleteSelectedModal
+                handleDeleteSelected={handleDeleteSelected}
+              />
+            </Form>
+
+            <div className="hidden">
+              <div ref={exportPdfRef}>
+                <ExportTicket
+                  conversations={conversations}
+                  agents={agents}
+                  selectedRowKeys={selectedRowKeys}
+                  timezone={timezone}
+                />
               </div>
             </div>
           </div>
-        </div>
+        )}
+      </Header>
+      <div className="mt-6">
         <div className="grid grid-cols-7 gap-4">
-          <div className="col-span-1 ">
-            <CardStatistic
-              status={filterObject?.status || location.state}
-              className="mb-4"
-              keyPanel="publicViews"
-              panelProps={{
-                header: "Public Views",
-              }}
-              handleApply={handleApply}
-              screen="ListTicket"
-              options={[
-                { label: "New", value: `${statistic?.data.NEW}` },
-                { label: "Open", value: `${statistic?.data.OPEN}` },
-                { label: "Pending", value: `${statistic?.data.PENDING}` },
-                { label: "Resolved", value: `${statistic?.data.RESOLVED}` },
-                { label: "Trash", value: `${statistic?.data.TRASH}` },
-              ]}
-            />
-          </div>
-          <div className="col-span-6">
+          <div className="col-span-7">
             {tickets && (
               <>
+                <Card
+                  bodyStyle={{
+                    padding: 8,
+                    paddingTop: 8,
+                    paddingBottom: 8,
+                    overflow: "scroll",
+                  }}
+                >
+                  <div className="flex gap-2">
+                    <Button
+                      type={activeButtonIndex === "ALL" ? "primary" : "text"}
+                      onClick={() => {
+                        handleButtonClick("ALL");
+                        handleApply({
+                          status: "",
+                        });
+                      }}
+                    >
+                      All (
+                      {`${
+                        statistic?.data.OPEN +
+                        statistic?.data.PENDING +
+                        statistic?.data.RESOLVED
+                      }`}
+                      )
+                    </Button>
+                    <Button
+                      type={
+                        activeButtonIndex === StatusTicket.NEW
+                          ? "primary"
+                          : "text"
+                      }
+                      onClick={() => {
+                        handleButtonClick(StatusTicket.NEW);
+                        handleApply({
+                          status: StatusTicket.NEW,
+                        });
+                      }}
+                    >
+                      New ({`${statistic?.data.NEW}`})
+                    </Button>
+                    <Button
+                      type={
+                        activeButtonIndex === StatusTicket.OPEN
+                          ? "primary"
+                          : "text"
+                      }
+                      onClick={() => {
+                        handleButtonClick(StatusTicket.OPEN);
+                        handleApply({
+                          status: StatusTicket.OPEN,
+                        });
+                      }}
+                    >
+                      Open ({`${statistic?.data.OPEN}`})
+                    </Button>
+                    <Button
+                      type={
+                        activeButtonIndex === StatusTicket.PENDING
+                          ? "primary"
+                          : "text"
+                      }
+                      onClick={() => {
+                        handleButtonClick(StatusTicket.PENDING);
+                        handleApply({
+                          status: StatusTicket.PENDING,
+                        });
+                      }}
+                    >
+                      Pending ({`${statistic?.data.PENDING}`})
+                    </Button>
+                    <Button
+                      type={
+                        activeButtonIndex === StatusTicket.RESOLVED
+                          ? "primary"
+                          : "text"
+                      }
+                      onClick={() => {
+                        handleButtonClick(StatusTicket.RESOLVED);
+                        handleApply({
+                          status: StatusTicket.RESOLVED,
+                        });
+                      }}
+                    >
+                      Resolve ({`${statistic?.data.RESOLVED}`})
+                    </Button>
+                    <Button
+                      type={activeButtonIndex === "TRASH" ? "primary" : "text"}
+                      onClick={() => {
+                        handleButtonClick("TRASH");
+                        navigate(generatePath(TicketRoutePaths.Trash));
+                      }}
+                    >
+                      Trash ({`${statistic?.data.TRASH}`})
+                    </Button>
+                  </div>
+                </Card>
                 <Table
                   rowSelection={rowSelection}
                   dataSource={tickets}
@@ -730,20 +842,14 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                 </Table>
                 {meta?.totalCount
                   ? meta && (
-                      <div className="flex justify-between items-end">
-                        {selectedRowKeys.length > 0 ? (
-                          <DeleteSelectedModal
-                            handleDeleteSelected={handleDeleteSelected}
-                          />
-                        ) : (
-                          <div></div>
-                        )}
+                      <div className="flex justify-end items-end">
                         <Pagination
-                          className="mt-4 flex justify-end flex-wrap "
+                          className="mt-4 flex justify-end flex-wrap"
                           currentPage={filterData.page ?? 1}
                           total={meta?.totalCount}
                           pageSize={filterData.limit ?? env.DEFAULT_PAGE_SIZE}
                           onChange={onPagination}
+                          simple={screenWidth <= MediaScreen.MD}
                         />
                       </div>
                     )
@@ -753,6 +859,70 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
           </div>
         </div>
       </div>
+      {screenWidth <= MediaScreen.LG && selectedRowKeys.length > 0 && (
+        <div
+          className={`sticky z-50 bottom-0 bg-white right-0 px-3   flex justify-between items-center w-full h-[56px] `}
+        >
+          <DeleteSelectedModal handleDeleteSelected={handleDeleteSelected} />
+          <Button
+            type="link"
+            onClick={() => {
+              setIsModalActionsOpen(true);
+            }}
+          >
+            <span>More actions </span>
+          </Button>
+          <Modal
+            title="More actions"
+            open={isModalActionsOpen}
+            centered
+            onCancel={() => {
+              setIsModalActionsOpen(false);
+            }}
+            footer={null}
+            width={700}
+          >
+            <Form
+              onValuesChange={handleChangeForm}
+              className="flex gap-2 items-center flex-col"
+              layout="vertical"
+            >
+              <Form.Item
+                label="Assign to"
+                name="agentObjectId"
+                className="mb-0"
+              >
+                <Select
+                  placeholder="Assign to"
+                  options={agentsOptions}
+                  className="w-[250px]"
+                />
+              </Form.Item>
+              <Form.Item label="Set status" name="status" className="mb-0">
+                <Select
+                  placeholder="Set Status"
+                  className="w-[250px]"
+                  options={statusOptions}
+                />
+              </Form.Item>
+              <Form.Item name="" label="Export pdf">
+                <Button
+                  disabled={loadingExport}
+                  onClick={handlePrint}
+                  className="w-[250px]"
+                  icon={
+                    <IconButton>
+                      <UilImport />
+                    </IconButton>
+                  }
+                >
+                  Export
+                </Button>
+              </Form.Item>
+            </Form>
+          </Modal>
+        </div>
+      )}
     </>
   );
 };
