@@ -1,4 +1,5 @@
 @import "../../../../styles/variables.scss";
+@import "../../../../styles/mixin.scss";
 h2 {
   font-size: 30px;
   line-height: 40px;
@@ -11,7 +12,9 @@ h2 {
 }
 .formWrap {
   margin-top: 32px;
-
+  @include mq(md, "max") {
+    margin-top: 24px;
+  }
   :global {
     .ant-form-item {
       margin-bottom: 0;
@@ -63,6 +66,10 @@ h2 {
     background-color: $primary;
     font-size: 16px;
     border-radius: 6px;
+    @include mq(md, "max") {
+      margin-top: 8px;
+      margin-bottom: 12px;
+    }
     &:hover {
       background-color: $primary-hover;
     }
