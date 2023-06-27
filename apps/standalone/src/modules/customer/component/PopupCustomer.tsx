@@ -1,10 +1,11 @@
 import { Customer } from "@moose-desk/repo";
-import { Button, Card, Modal, ModalProps, Space, Tabs } from "antd";
+import { Button, Modal, ModalProps, Tabs } from "antd";
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQueryClient } from "react-query";
 import Form from "src/components/UI/Form/Form";
 import { Header } from "src/components/UI/Header";
+import Icon from "src/components/UI/Icon";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { createCustomer, updateCustomer } from "src/modules/customer/api/api";
@@ -12,7 +13,7 @@ import CustomerForm from "src/modules/customer/component/CustomerForm";
 import { ListTicketCustomer } from "src/modules/customer/component/ListTicketCustomer";
 import { QUERY_KEY } from "src/modules/customer/helper/constant";
 import { useStore } from "src/providers/StoreProviders";
-
+import styles from "./styles.module.scss";
 interface PopupCustomerProps extends Omit<ModalProps, "onCancel"> {
   dataForm?: Customer;
   onCancel?: () => void;
@@ -97,32 +98,30 @@ export const PopupCustomer = ({
   };
   const _renderContentModal = () => {
     return dataForm?._id ? (
-      <Card>
-        <Tabs
-          activeKey={activeKey}
-          onChange={(key: string) => setActiveKey(key)}
-          items={[
-            {
-              key: "1",
-              label: `Customer profile`,
-              children: (
-                <CustomerForm
-                  enableLoadForm
-                  enableReinitialize
-                  data={dataForm}
-                  form={form}
-                  onFinish={handleSubmitValue}
-                />
-              ),
-            },
-            {
-              key: "2",
-              label: `List ticket`,
-              children: <ListTicketCustomer customerId={dataForm?._id || ""} />,
-            },
-          ]}
-        />
-      </Card>
+      <Tabs
+        activeKey={activeKey}
+        onChange={(key: string) => setActiveKey(key)}
+        items={[
+          {
+            key: "1",
+            label: `Customer profile`,
+            children: (
+              <CustomerForm
+                enableLoadForm
+                enableReinitialize
+                data={dataForm}
+                form={form}
+                onFinish={handleSubmitValue}
+              />
+            ),
+          },
+          {
+            key: "2",
+            label: `List ticket`,
+            children: <ListTicketCustomer customerId={dataForm?._id || ""} />,
+          },
+        ]}
+      />
     ) : (
       <CustomerForm
         enableLoadForm
@@ -138,27 +137,34 @@ export const PopupCustomer = ({
   };
   return (
     <Modal
+      className={styles.modalCustomer}
       {...props}
       destroyOnClose
       onCancel={handleCloseModal}
+      closeIcon={<Icon name="close" />}
       footer={
-        <Space>
-          <Button onClick={handleCloseModal}>Cancel</Button>
+        <div className={styles.modalFooter}>
+          <Button size="large" onClick={handleCloseModal}>
+            Cancel
+          </Button>
           <Button
+            size="large"
             type="primary"
             onClick={handleSubmit}
             loading={isUpdating || isCreating}
           >
             Save
           </Button>
-        </Space>
+        </div>
       }
       width={686}
       style={{ minHeight: 500 }}
     >
       <div>
-        <Header title={_renderTitleModal()}></Header>
-        {_renderContentModal()}
+        <div className={styles.modalTitle}>
+          <Header subTitle={_renderTitleModal()}></Header>
+        </div>
+        <div className={styles.modalContent}>{_renderContentModal()}</div>
       </div>
     </Modal>
   );

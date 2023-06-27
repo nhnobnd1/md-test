@@ -68,7 +68,6 @@ const InputPhone = ({
         value={valueSelect}
         onChange={handleChangeValueSelect}
         disabled={disabled}
-        style={{ maxWidth: "300px", maxHeight: "330px" }}
         className={styles.phoneSelect}
         optionFilterProp="children"
       >
@@ -78,25 +77,26 @@ const InputPhone = ({
             label={`+${item.phonePrefix}${item.countryName}`}
             key={item.code}
           >
-            <div>
+            <div className="flex-center">
               <img width={40} height={30} src={item?.flagImage} />
               <span>
                 {item.countryName.length < 30
                   ? item.countryName
                   : item.countryName.slice(0, 24) + " ..."}{" "}
-                (+{item.phonePrefix})
+                +{item.phonePrefix}
               </span>
             </div>
           </Select.Option>
         ))}
       </Select>
       <InputTextNumber
-        style={{ flex: 1, flexBasis: 300 }}
+        className={styles.phoneInput}
         type="tel"
         {...props}
         autoComplete="tel"
         value={valueField}
         disabled={disabled}
+        size="large"
         onChange={handleChangeValueInput}
       />
     </div>

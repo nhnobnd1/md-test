@@ -1,5 +1,4 @@
 import { useNavigate } from "@moose-desk/core";
-import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import { Customer } from "@moose-desk/repo";
 import { message } from "antd";
@@ -36,7 +35,6 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
   const { timezone } = useGlobalData(false, subDomain || "");
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [querySearch, setQuerySearch] = useState<string>("");
   const [filter, setFilter] = useState<ListTicketCustomerFilter>({
     limit,
     page: 1,
@@ -44,11 +42,9 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
     sortBy: undefined,
     sortOrder: undefined,
   });
-  const debounceValue: string = useDebounce(querySearch, 500);
   const { data: dataSource, isFetching: isFetchingListTicket } = useQuery({
-    queryKey: [QUERY_KEY.LIST_TICKET_CUSTOMER, filter, debounceValue],
-    queryFn: () =>
-      getListTicketCustomer(customerId, { ...filter, query: debounceValue }),
+    queryKey: [QUERY_KEY.LIST_TICKET_CUSTOMER, filter],
+    queryFn: () => getListTicketCustomer(customerId, filter),
     onError: () => {
       message.error(t("messages:error.get_ticket_customer"));
     },
@@ -125,9 +121,8 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
       width: "11%",
     },
   ];
-  const handleSearchInput = (e: any) => {
-    const newQuery = e.target.value;
-    setQuerySearch(newQuery);
+  const handleSearchInput = (query: string) => {
+    setFilter((pre) => ({ ...pre, query }));
   };
   const handleChangePage = ({
     page,
@@ -162,7 +157,7 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
   return (
     <div className={styles.wrapTableTicketCustomer}>
       <div className={classNames(styles.searchWrap, "mb-10")}>
-        <MDSearchInput onChange={handleSearchInput} value={querySearch} />
+        <MDSearchInput onTypeSearch={handleSearchInput} />
       </div>
       <section className={styles.wrapTable}>
         <Table

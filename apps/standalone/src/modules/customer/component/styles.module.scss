@@ -1,7 +1,40 @@
+@import "../../../styles/variables.scss";
 .wrapTable {
     :global {
         .ant-table-row {
             cursor: pointer;
         }
+    }
+}
+.formCustomer {
+    :global {
+        .ant-form-item {
+            margin-bottom: 16px;
+        }
+    }
+}
+.modalCustomer {
+    :global {
+        .ant-modal-content {
+            padding: 0;
+        }
+        .ant-modal-close {
+            width: 24px;
+            height: 24px;
+        }
+        .ant-modal-footer {
+            margin-top: 0;
+        }
+    }
+    .modalTitle {
+        padding: 20px;
+        border-bottom: 1px solid $gray-border-2;
+    }
+    .modalContent {
+        padding: 20px;
+        border-bottom: 1px solid $gray-border-2;
+    }
+    .modalFooter {
+        padding: 20px;
     }
 }

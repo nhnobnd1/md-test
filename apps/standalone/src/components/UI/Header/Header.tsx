@@ -6,16 +6,18 @@ import styles from "./style.module.scss";
 interface HeaderProps {
   back?: boolean;
   backAction?: () => void;
-  title: string | React.ReactElement;
+  title?: string | React.ReactElement;
   justify?: "start" | "end" | "center";
   children?: React.ReactNode;
   className?: string;
+  subTitle?: string;
 }
 
 export const Header = ({
   back = false,
   backAction,
   title,
+  subTitle,
   justify,
   children,
   className = "",
@@ -37,7 +39,8 @@ export const Header = ({
             <LeftOutlined />
           </Button>
         )}
-        <h1>{title}</h1>
+        {title && <h1>{title}</h1>}
+        {subTitle && <h2>{subTitle}</h2>}
         {children}
       </div>
     </div>

@@ -2,7 +2,7 @@ import { Col, Input, Row } from "antd";
 import Form, { FormProps } from "src/components/UI/Form/Form";
 import InputPhone from "src/components/UI/InputPhone/InputPhone";
 import { CustomerRequestData } from "src/modules/customer/helper/interface";
-
+import styles from "./styles.module.scss";
 interface CustomerFormProps extends FormProps {
   disabled?: boolean;
   data?: CustomerRequestData;
@@ -14,7 +14,12 @@ export const CustomerForm = ({
   ...props
 }: CustomerFormProps) => {
   return (
-    <Form {...props} layout="vertical" initialValues={data}>
+    <Form
+      {...props}
+      className={styles.formCustomer}
+      layout="vertical"
+      initialValues={data}
+    >
       <Row gutter={16} justify="space-between">
         <Col span={12}>
           <Form.Item
@@ -32,7 +37,7 @@ export const CustomerForm = ({
               },
             ]}
           >
-            <Input disabled={disabled} placeholder="Enter first name" />
+            <Input size="large" disabled={disabled} placeholder="First name" />
           </Form.Item>
         </Col>
         <Col span={12}>
@@ -51,7 +56,7 @@ export const CustomerForm = ({
               },
             ]}
           >
-            <Input disabled={disabled} placeholder="Enter last name" />
+            <Input size="large" disabled={disabled} placeholder="Last name" />
           </Form.Item>
         </Col>
       </Row>
@@ -64,11 +69,15 @@ export const CustomerForm = ({
           { type: "email", message: "The email address is not valid" },
         ]}
       >
-        <Input disabled={disabled} placeholder="Enter email" />
+        <Input
+          size="large"
+          disabled={disabled}
+          placeholder="example@example.com"
+        />
       </Form.Item>
 
       <Form.Item
-        label="Phone number"
+        label="Phone"
         name="phoneNumber"
         rules={[
           {
@@ -77,7 +86,7 @@ export const CustomerForm = ({
           },
         ]}
       >
-        <InputPhone placeholder="Enter phone number" />
+        <InputPhone placeholder="Phone" />
       </Form.Item>
     </Form>
   );

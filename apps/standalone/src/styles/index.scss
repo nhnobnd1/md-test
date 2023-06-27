@@ -103,6 +103,20 @@
 .text-line-through {
   text-decoration: line-through;
 }
+// global css antd
+.ant-input-lg {
+  border-radius: 6px;
+}
+.ant-btn-lg {
+  border-radius: 6px !important;
+}
+.ant-form-item-required::before {
+  position: absolute;
+  font-size: 18px;
+  right: -14px;
+  top: 5px;
+}
+
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
