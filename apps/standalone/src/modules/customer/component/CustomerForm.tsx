@@ -1,4 +1,4 @@
-import { Input } from "antd";
+import { Col, Input, Row } from "antd";
 import Form, { FormProps } from "src/components/UI/Form/Form";
 import InputPhone from "src/components/UI/InputPhone/InputPhone";
 import { CustomerRequestData } from "src/modules/customer/helper/interface";
@@ -15,40 +15,47 @@ export const CustomerForm = ({
 }: CustomerFormProps) => {
   return (
     <Form {...props} layout="vertical" initialValues={data}>
-      <Form.Item
-        label="First name"
-        name="firstName"
-        rules={[
-          { required: true, message: "First name is required!" },
-          {
-            max: 255,
-            message: "First name up to 255 characters",
-          },
-          {
-            pattern: /[^\s]/,
-            message: "First name is required!",
-          },
-        ]}
-      >
-        <Input disabled={disabled} placeholder="Enter first name" />
-      </Form.Item>
-      <Form.Item
-        label="Last name"
-        name="lastName"
-        rules={[
-          { required: true, message: "Last name is required!" },
-          {
-            max: 255,
-            message: "Last name up to 255 characters",
-          },
-          {
-            pattern: /[^\s]/,
-            message: "Last name is required!",
-          },
-        ]}
-      >
-        <Input disabled={disabled} placeholder="Enter last name" />
-      </Form.Item>
+      <Row gutter={16} justify="space-between">
+        <Col span={12}>
+          <Form.Item
+            label="First name"
+            name="firstName"
+            rules={[
+              { required: true, message: "First name is required!" },
+              {
+                max: 255,
+                message: "First name up to 255 characters",
+              },
+              {
+                pattern: /[^\s]/,
+                message: "First name is required!",
+              },
+            ]}
+          >
+            <Input disabled={disabled} placeholder="Enter first name" />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            label="Last name"
+            name="lastName"
+            rules={[
+              { required: true, message: "Last name is required!" },
+              {
+                max: 255,
+                message: "Last name up to 255 characters",
+              },
+              {
+                pattern: /[^\s]/,
+                message: "Last name is required!",
+              },
+            ]}
+          >
+            <Input disabled={disabled} placeholder="Enter last name" />
+          </Form.Item>
+        </Col>
+      </Row>
+
       <Form.Item
         label="Email"
         name="email"

@@ -1,5 +1,5 @@
-import { Table as ATable, TableProps as ATableProps, Empty } from "antd";
-import "./Table.scss";
+import { Empty, Table as ATable, TableProps as ATableProps } from "antd";
+import styles from "./style.module.scss";
 
 interface TableProps extends ATableProps<any> {}
 
@@ -7,7 +7,7 @@ export const Table = (props: TableProps) => {
   return (
     <ATable
       scroll={{ x: 512 }}
-      className="Table"
+      className={styles.MDTable}
       pagination={false}
       sortDirections={["ascend", "descend", "ascend"]}
       locale={{

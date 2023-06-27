@@ -1,6 +1,6 @@
-import { DeleteOutlined } from "@ant-design/icons";
 import { Button, ButtonProps, ModalProps } from "antd";
 import { useState } from "react";
+import Icon from "src/components/UI/Icon";
 import { ModalDelete } from "src/components/UI/Modal/ModalDelete";
 import "./ButtonModalDelete.scss";
 interface ButtonModalDeleteProps {
@@ -37,19 +37,32 @@ export const ButtonModalDelete = ({
 
   return (
     <>
-      <Button
-        danger
-        type="primary"
-        onClick={() => {
-          onClick && onClick();
-          setOpenModal(true);
-        }}
-        icon={<DeleteOutlined />}
-        {...buttonProps}
-        disabled={disabled}
-      >
-        {textDelete && !onlyIcon ? textDelete : undefined}
-      </Button>
+      {onlyIcon ? (
+        <Button
+          type="text"
+          onClick={() => {
+            onClick && onClick();
+            setOpenModal(true);
+          }}
+          icon={<Icon name="delete" />}
+          {...buttonProps}
+          disabled={disabled}
+        ></Button>
+      ) : (
+        <Button
+          danger
+          type="primary"
+          onClick={() => {
+            onClick && onClick();
+            setOpenModal(true);
+          }}
+          icon={<Icon name="delete" />}
+          {...buttonProps}
+          disabled={disabled}
+        >
+          {textDelete && !onlyIcon ? textDelete : undefined}
+        </Button>
+      )}
       <ModalDelete
         open={openModal}
         onCancel={() => {

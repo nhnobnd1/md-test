@@ -93,7 +93,7 @@ export const PopupCustomer = ({
   const _renderTitleModal = () => {
     return dataForm?._id
       ? `${dataForm.firstName} ${dataForm.lastName}`
-      : "New customer profile";
+      : "New customer";
   };
   const _renderContentModal = () => {
     return dataForm?._id ? (
@@ -153,7 +153,7 @@ export const PopupCustomer = ({
           </Button>
         </Space>
       }
-      width={1000}
+      width={686}
       style={{ minHeight: 500 }}
     >
       <div>

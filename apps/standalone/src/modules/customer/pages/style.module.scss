@@ -1,0 +1,53 @@
+@import "../../../styles/variables.scss";
+@import "../../../styles/mixin.scss";
+.groupTopPage {
+  .buttonAdd {
+    margin-left: 12px;
+  }
+}
+
+.searchInputWrap {
+  width: 284px;
+  @include breakpoints(md, lg) {
+    width: 230px;
+  }
+}
+
+.topPage {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  @include mq(md, "max") {
+    padding: 0 16px;
+  }
+}
+
+.groupSearchOnMobile {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+
+  @include mq(md, "max") {
+    padding: 0 10px;
+  }
+
+  .searchOnMobile {
+    width: calc(100% - 50px);
+  }
+}
+.wrapTable {
+    background-color: $white-color;
+    padding-bottom: 16px;
+    border-radius: 8px;
+}
+ .pagination {
+     display: flex;
+     align-items: center;
+     justify-content: flex-end;
+     padding-top: 16px;
+     padding-right: 16px;
+     :global {
+        
+     }
+ }

@@ -1,6 +1,7 @@
 import { EditOutlined } from "@ant-design/icons";
 import { Button, ButtonProps, Tooltip } from "antd";
 import classNames from "classnames";
+import Icon from "src/components/UI/Icon";
 import "./ButtonEdit.scss";
 interface ButtonEditProps extends Omit<ButtonProps, "icon"> {
   onlyIcon?: boolean;
@@ -19,10 +20,10 @@ export const ButtonEdit = ({
       {onlyIcon ? (
         <Tooltip placement="top" title={"Edit"}>
           <Button
-            className={classNames([className, "btn-edit"])}
-            type="primary"
+            // className={classNames([className, "btn-edit"])}
+            type="text"
             {...props}
-            icon={<EditOutlined />}
+            icon={<Icon name="edit" />}
           ></Button>
         </Tooltip>
       ) : (
