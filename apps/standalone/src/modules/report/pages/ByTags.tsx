@@ -1,6 +1,5 @@
 import { PageComponent } from "@moose-desk/core";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
-import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import { DatePicker, Form, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
@@ -60,12 +59,10 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
       endTime: String(current?.tz(timezone).endOf("day").unix()),
     }));
   }, [timezone]);
-  const [querySearch, setQuerySearch] = useState<string>("");
-  const debounceValue: string = useDebounce(querySearch, 500);
 
   const { data: listReportTags, isFetching } = useQuery({
-    queryKey: [QUERY_KEY.REPORT_BY_TAGS, filterData, debounceValue],
-    queryFn: () => getReportByTags({ ...filterData, query: debounceValue }),
+    queryKey: [QUERY_KEY.REPORT_BY_TAGS, filterData],
+    queryFn: () => getReportByTags(filterData),
     keepPreviousData: true,
     enabled: !isAgent && !!filterData.startTime && !!filterData.endTime,
   });
@@ -133,9 +130,8 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
     },
     []
   ) as TableProps<any>["onChange"];
-  const handleSearchInput = (e: any) => {
-    const newQuery = e.target.value;
-    setQuerySearch(newQuery);
+  const handleSearchInput = (query: string) => {
+    setFilterData((pre) => ({ ...pre, query }));
   };
   const onPagination = useCallback(
     ({ page, limit }: { page: number; limit: number }) => {
@@ -208,7 +204,7 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
           </Form>
         </div>
         <div className="">
-          <MDSearchInput onChange={handleSearchInput} value={querySearch} />
+          <MDSearchInput onTypeSearch={handleSearchInput} />
         </div>
       </section>
       <section>

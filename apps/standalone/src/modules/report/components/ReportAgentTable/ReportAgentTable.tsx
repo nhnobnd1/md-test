@@ -1,5 +1,4 @@
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
-import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import { TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { memo, useCallback, useState } from "react";
@@ -36,15 +35,13 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
     endTime: "",
     query: "",
   });
-  const [querySearch, setQuerySearch] = useState<string>("");
-  const debounceValue: string = useDebounce(querySearch, 500);
   const { isAgent } = usePermission();
 
   const { data: listAgentData, isLoading } = useQuery({
-    queryKey: [QUERY_KEY.LIST_AGENT, filterData, rangeTime, debounceValue],
+    queryKey: [QUERY_KEY.LIST_AGENT, filterData, rangeTime],
     queryFn: () =>
       getListAgent({
-        ...{ ...filterData, query: debounceValue },
+        ...filterData,
         ...rangeTime,
       }),
     // keepPreviousData: true,
@@ -126,9 +123,8 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
     },
     []
   ) as TableProps<any>["onChange"];
-  const handleSearchInput = (e: any) => {
-    const newQuery = e.target.value;
-    setQuerySearch(newQuery);
+  const handleSearchInput = (query: string) => {
+    setFilterData((pre) => ({ ...pre, query }));
   };
   const onPagination = useCallback(
     ({ page, limit }: { page: number; limit: number }) => {
@@ -146,7 +142,7 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
   return (
     <>
       <div className="mb-10">
-        <MDSearchInput onChange={handleSearchInput} value={querySearch} />
+        <MDSearchInput onTypeSearch={handleSearchInput} />
       </div>
       <section>
         <Table

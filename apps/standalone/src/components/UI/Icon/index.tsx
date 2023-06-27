@@ -455,6 +455,28 @@ class Icon extends React.Component<IconProps> {
         />
       </svg>
     ),
+    close: (
+      <svg
+        width={24}
+        height={25}
+        viewBox="0 0 24 25"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M18.7071 5.6928C19.0976 6.08332 19.0976 6.71648 18.7071 7.10701L6.70711 19.107C6.31658 19.4975 5.68342 19.4975 5.29289 19.107C4.90237 18.7165 4.90237 18.0833 5.29289 17.6928L17.2929 5.6928C17.6834 5.30227 18.3166 5.30227 18.7071 5.6928Z"
+          fill="#BFBFBF"
+        />
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M5.29289 5.6928C5.68342 5.30227 6.31658 5.30227 6.70711 5.6928L18.7071 17.6928C19.0976 18.0833 19.0976 18.7165 18.7071 19.107C18.3166 19.4975 17.6834 19.4975 17.2929 19.107L5.29289 7.10701C4.90237 6.71648 4.90237 6.08332 5.29289 5.6928Z"
+          fill="#BFBFBF"
+        />
+      </svg>
+    ),
   };
 
   getProperty(property: keyof IconProps, value: any): any {
