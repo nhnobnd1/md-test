@@ -39,7 +39,7 @@ export const Header = ({
             <LeftOutlined />
           </Button>
         )}
-        {title && <h1>{title}</h1>}
+        {title && <h1 className="m-0">{title}</h1>}
         {subTitle && <h2>{subTitle}</h2>}
         {children}
       </div>

@@ -14,11 +14,12 @@ import {
   TicketRepository,
   priorityOptions,
 } from "@moose-desk/repo";
-import { Button, Input } from "antd";
+import { Input } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQueryClient } from "react-query";
 import { catchError, map, of } from "rxjs";
+import { MDButton } from "src/components/UI/Button/MDButton";
 import TextEditorTicket from "src/components/UI/Editor/TextEditorTicket";
 import { Form } from "src/components/UI/Form";
 import Select, { LoadMoreValue } from "src/components/UI/Select/Select";
@@ -277,7 +278,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
       onValuesChange={handleChangeForm}
       {...props}
     >
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center mt-5">
         <div className="w-full  xl:w-[800px]  ">
           <div className="flex items-start gap-2 ">
             <div className="flex-1">
@@ -394,7 +395,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
               },
             ]}
           >
-            <Input placeholder="Subject" />
+            <Input size="large" placeholder="Subject" />
           </Form.Item>
           <div className="mt-4 xl:w-[800px]">
             <Form.Item
@@ -419,10 +420,11 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
             </Form.Item>
           </div>
           <Form.Item label="Priority" name="priority">
-            <Select options={priorityOptions}></Select>
+            <Select size="large" options={priorityOptions}></Select>
           </Form.Item>
           <Form.Item name="tags" label="Tags">
             <Select.Tags
+              size="large"
               mode="tags"
               placeholder="Add tags"
               loadMore={fetchTags}
@@ -444,16 +446,16 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
         </div>
       </div>
       <div className="flex-1 flex justify-end items-center gap-2 mt-5 ">
-        <Button
+        <MDButton
           onClick={() => {
             navigate(TicketRoutePaths.Index);
           }}
         >
           Cancel
-        </Button>
-        <Button loading={loadingButton} type="primary" htmlType="submit">
+        </MDButton>
+        <MDButton loading={loadingButton} type="primary" htmlType="submit">
           Save
-        </Button>
+        </MDButton>
       </div>
     </Form>
   );

@@ -8,32 +8,30 @@ import {
 } from "@moose-desk/core";
 import {
   Agent,
-  AgentRepository,
   AttachFile,
   Conversation,
   CreateReplyTicketRequest,
   CustomerRepository,
   EmailIntegration,
   EmailIntegrationRepository,
-  GetListAgentRequest,
-  GetListTagRequest,
   Priority,
-  priorityOptions,
-  statusOptions,
   StatusTicket,
   Tag,
-  TagRepository,
   Ticket,
   TicketRepository,
   UpdateTicket,
+  priorityOptions,
+  statusOptions,
 } from "@moose-desk/repo";
-import { Button, Card, Divider, Select as AntSelect, Skeleton } from "antd";
+import { Select as AntSelect, Card, Divider, Skeleton } from "antd";
 import moment from "moment";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import { useTranslation } from "react-i18next";
+import { useQuery } from "react-query";
 import { catchError, map, of } from "rxjs";
+import { MDButton } from "src/components/UI/Button/MDButton";
 import TextEditorTicket from "src/components/UI/Editor/TextEditorTicket";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
@@ -41,6 +39,7 @@ import Select, { LoadMoreValue } from "src/components/UI/Select/Select";
 import useMessage from "src/hooks/useMessage";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { CollapseMessage } from "src/modules/ticket/components/DetailTicketForm/CollapseMessage";
+import { getListAgentApi, getTagsTicket } from "src/modules/ticket/helper/api";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import FaMailReply from "~icons/fa/mail-reply";
 import BackIcon from "~icons/mingcute/back-2-fill";
@@ -90,15 +89,63 @@ const DetailTicketForm = () => {
   const [form] = Form.useForm();
 
   const [conversationList, setConversationList] = useState<Conversation[]>([]);
-  const [tags, setTags] = useState<Tag[]>([]);
+  const { data: dataTags } = useQuery({
+    queryKey: [
+      "getTagsTicket",
+      {
+        page: 1,
+        limit: 500,
+      },
+    ],
+    queryFn: () =>
+      getTagsTicket({
+        page: 1,
+        limit: 500,
+      }),
+    staleTime: 10000,
+    retry: 1,
+
+    onError: () => {
+      message.error(t("messages:error.get_tag"));
+    },
+  });
+  const tags = useMemo(() => {
+    if (!dataTags) return [];
+    return dataTags;
+  }, [dataTags]);
+
   const [enableCC, setEnableCC] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
   const [primaryEmail, setPrimaryEmail] = useState<EmailIntegration>();
   const [files, setFiles] = useState<any>([]);
   const [loadingButton, setLoadingButton] = useState(false);
   const { t } = useTranslation();
+  const { data: dataAgents } = useQuery({
+    queryKey: [
+      "getAgents",
+      {
+        page: 1,
+        limit: 500,
+      },
+    ],
+    queryFn: () =>
+      getListAgentApi({
+        page: 1,
+        limit: 500,
+      }),
+    staleTime: 10000,
+    retry: 1,
 
-  const [agents, setAgents] = useState<Agent[]>([]);
+    onError: () => {
+      message.error(t("messages:error.get_agent"));
+    },
+  });
+
+  const agents = useMemo(() => {
+    if (!dataAgents) return [];
+    return dataAgents.filter((item) => item.isActive && item.emailConfirmed);
+  }, [dataAgents]);
+
   const { state: loadingApi, startLoading, stopLoading } = useLoading();
   const endPageRef = useRef<any>(null);
 
@@ -264,34 +311,6 @@ const DetailTicketForm = () => {
     }
   }, [ticket, primaryEmail, conversationList]);
 
-  const { run: getListAgentApi } = useJob((payload: GetListAgentRequest) => {
-    return AgentRepository()
-      .getList(payload)
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            const tags = data.data
-              .filter((item) => item.isActive && item.emailConfirmed)
-              .map((item) => ({
-                ...item,
-                id: item._id,
-              }));
-            setAgents((prevTags) => {
-              return [...prevTags, ...tags];
-            });
-
-            if (data.metadata.totalPage > (payload.page as number)) {
-              getListAgentApi({
-                page: (payload.page as number) + 1,
-                limit: payload.limit,
-              });
-            }
-          } else {
-            message.error(t("messages:error.get_agent"));
-          }
-        })
-      );
-  });
   const agentsOptions = useMemo(() => {
     const mapping = agents.map((item: Agent) => {
       return {
@@ -360,10 +379,6 @@ const DetailTicketForm = () => {
         .getConversations(id)
         .pipe(
           map(({ data }) => {
-            getListTagApi({
-              page: 1,
-              limit: 500,
-            });
             stopLoading();
             setConversationList(data.data);
           }),
@@ -393,41 +408,12 @@ const DetailTicketForm = () => {
         })
       );
   });
-  const { run: getListTagApi } = useJob((payload: GetListTagRequest) => {
-    return TagRepository()
-      .getList(payload)
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            const tags = data.data.map((item) => ({
-              ...item,
-              id: item._id,
-            }));
-            setTags((prevTags) => {
-              return [...prevTags, ...tags];
-            });
 
-            if (data.metadata.totalPage > (payload.page as number)) {
-              getListTagApi({
-                page: (payload.page as number) + 1,
-                limit: payload.limit,
-              });
-            }
-          } else {
-            message.error(t("messages:error.get_ticket"));
-          }
-        })
-      );
-  });
   useEffect(() => {
     if (id) {
       getTicketApi(id);
       fetchConversation(id);
       fetchEmailIntegrationApi();
-      getListAgentApi({
-        page: 1,
-        limit: 500,
-      });
     }
   }, [id]);
 
@@ -534,52 +520,50 @@ const DetailTicketForm = () => {
               loadingButton
             }
             form={form}
-            layout="horizontal"
+            layout="vertical"
             initialValues={initialValues}
             enableLoadForm
             enableReinitialize
             onFinish={onFinish}
+            className="flex flex-wrap md:flex-row-reverse xs:flex-col justify-between gap-2"
           >
-            <Card className="w-full">
-              <div className="w-full flex items-center gap-1 flex-wrap">
+            <Card className=" mt-5 w-[300px] xs:hidden md:block">
+              <div>
                 <Form.Item
-                  className="mr-4"
                   labelAlign="left"
                   label={<span style={{ width: 50 }}>Status</span>}
                   name="status"
                 >
-                  <Select className="w-[150px]" options={statusOptions} />
+                  <Select
+                    size="large"
+                    className="w-full"
+                    options={statusOptions}
+                  />
                 </Form.Item>
-                <Form.Item label="Assignee" name="assignee">
-                  <AntSelect
-                    placeholder="Search agents"
-                    className="w-[300px]"
-                    options={agentsOptions}
-                    // onChange={onChangeAssignee}
-                  ></AntSelect>
-                </Form.Item>
-              </div>
-              <div className="flex gap-1 justify-between items-center w-full mb-1 flex-wrap">
                 <Form.Item
-                  className="mr-4"
                   labelAlign="left"
                   label={<span style={{ width: 50 }}>Priority</span>}
                   name="priority"
                 >
-                  <Select
-                    prefixCls=""
-                    className="w-[150px]"
-                    options={priorityOptions}
-                  />
+                  <Select className="w-full" options={priorityOptions} />
                 </Form.Item>
+                <Form.Item label="Assignee" name="assignee">
+                  <AntSelect
+                    placeholder="Search agents"
+                    className="w-full"
+                    options={agentsOptions}
+                    size="large"
+                  ></AntSelect>
+                </Form.Item>
+
                 <Form.Item
                   name="tags"
                   label={<span style={{ width: 60 }}>Tags</span>}
-                  className="flex-1"
                   labelAlign="left"
                 >
                   <AntSelect
-                    className="w-[300px]"
+                    size="large"
+                    className="w-full"
                     placeholder="Add tags"
                     mode="tags"
                     options={tags.map((item: Tag) => ({
@@ -588,13 +572,15 @@ const DetailTicketForm = () => {
                     }))}
                   />
                 </Form.Item>
+
+                <div className="flex items-center justify-end">
+                  <MDButton type="primary" onClick={handleSaveTicket}>
+                    Save
+                  </MDButton>
+                </div>
               </div>
-              <div className="flex items-center justify-end">
-                <Button type="primary" onClick={handleSaveTicket}>
-                  Save
-                </Button>
-              </div>
-              <Divider />
+            </Card>
+            <Card className=" mt-5 flex-1">
               {ticket ? (
                 <div className="BoxReply w-full">
                   <div className="w-full h-full">
@@ -611,7 +597,7 @@ const DetailTicketForm = () => {
                     <div className="box-comment">
                       <div className="w-full flex justify-between gap-4 flex-wrap">
                         <div className="flex flex-1 flex-col">
-                          <div className="w-[400px]">
+                          <div className="xs:w-[300px] sm:w-[400px] ">
                             <Form.Item
                               label={<div style={{ width: 35 }}>From</div>}
                               name="from"
@@ -626,14 +612,28 @@ const DetailTicketForm = () => {
                               <Select
                                 placeholder="Search email integration"
                                 virtual
-                                style={{ maxWidth: 334.99 }}
+                                className=""
                                 options={emailIntegrationOptions}
                               />
                             </Form.Item>
                           </div>
-                          <div className="w-[400px]">
+                          <div className="xs:w-[300px] sm:w-[400px]">
                             <Form.Item
-                              label={<div style={{ width: 35 }}> To</div>}
+                              label={
+                                <div className="flex justify-between items-center xs:w-[300px] sm:w-[400px]">
+                                  <div style={{ width: 35 }}> To</div>
+                                  <div>
+                                    <span
+                                      className="link  inline-block"
+                                      onClick={() => {
+                                        setEnableCC(!enableCC);
+                                      }}
+                                    >
+                                      CC/BCC
+                                    </span>
+                                  </div>
+                                </div>
+                              }
                               name="to"
                               labelAlign="left"
                             >
@@ -643,7 +643,7 @@ const DetailTicketForm = () => {
                         </div>
                         <div className="flex flex-1 flex-col">
                           {enableCC ? (
-                            <div className="min-w-[300px] max-w-[400px]">
+                            <div className="xs:w-[300px] sm:w-[400px] ">
                               <Form.Item
                                 label={<div style={{ width: 35 }}> CC</div>}
                                 name="CC"
@@ -676,7 +676,7 @@ const DetailTicketForm = () => {
                             <></>
                           )}
                           {enableCC ? (
-                            <div className="min-w-[300px] max-w-[400px]">
+                            <div className="xs:w-[300px] sm:w-[400px] ">
                               <Form.Item
                                 label={<div style={{ width: 35 }}> BCC</div>}
                                 name="BCC"
@@ -709,16 +709,7 @@ const DetailTicketForm = () => {
                           )}
                         </div>
                       </div>
-                      <div>
-                        <span
-                          className="link mb-5 inline-block"
-                          onClick={() => {
-                            setEnableCC(!enableCC);
-                          }}
-                        >
-                          CC/BCC
-                        </span>
-                      </div>
+
                       <Form.Item
                         name="content"
                         rules={[
@@ -748,7 +739,7 @@ const DetailTicketForm = () => {
                         {form.getFieldValue("status") ===
                         StatusTicket.RESOLVED ? (
                           <>
-                            <Button
+                            <MDButton
                               icon={
                                 <span className="mr-2 translate-y-[3px]">
                                   <BackIcon fontSize={14} />
@@ -758,11 +749,11 @@ const DetailTicketForm = () => {
                               disabled={false}
                             >
                               Reopen
-                            </Button>
+                            </MDButton>
                           </>
                         ) : (
                           <div className="flex items-center gap-2">
-                            <Button
+                            <MDButton
                               type="primary"
                               icon={
                                 <span className="mr-2 translate-y-[3px]">
@@ -773,13 +764,13 @@ const DetailTicketForm = () => {
                               disabled={!isChanged || loadingButton}
                             >
                               Reply
-                            </Button>
-                            <Button
+                            </MDButton>
+                            <MDButton
                               disabled={!isChanged || loadingButton}
                               onClick={handleCloseTicket}
                             >
                               Reply & Close Ticket
-                            </Button>
+                            </MDButton>
                           </div>
                         )}
                       </div>

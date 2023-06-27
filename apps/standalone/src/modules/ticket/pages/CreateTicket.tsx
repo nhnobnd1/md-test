@@ -87,11 +87,11 @@ const CreateTicket = () => {
     <section className={classNames(styles.container, { "d-flex": visible })}>
       <div className={styles.wrapContent}>
         <div className={styles.wrapSearchToggle}>{_renderButtonToggle()}</div>
-        <Header className="mb-[40px]" title="New Ticket" back></Header>
+        <Header title="New Ticket" back></Header>
 
         {processing || loadingList ? (
           <>
-            <Skeleton />
+            <Skeleton className="mt-5" />
           </>
         ) : (
           <TicketForm

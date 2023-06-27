@@ -5,16 +5,12 @@ import {
   upperCaseFirst,
   useJob,
   useNavigate,
-  useToggle,
 } from "@moose-desk/core";
 import {
   BaseDeleteList,
-  GetListTagRequest,
   GetListTicketRequest,
   ScreenType,
   StatusTicket,
-  Tag,
-  TagRepository,
   Ticket,
   TicketRepository,
   TicketStatistic,
@@ -35,6 +31,7 @@ import { map } from "rxjs";
 
 import { Pagination } from "src/components/Pagination";
 import env from "src/core/env";
+import useDeepEffect from "src/hooks/useDeepEffect";
 import useGlobalData from "src/hooks/useGlobalData";
 import useScreenType from "src/hooks/useScreenType";
 import { useSubdomain } from "src/hooks/useSubdomain";
@@ -44,29 +41,25 @@ import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import CancelIcon from "~icons/mdi/cancel";
 import RestoreIcon from "~icons/mdi/restore";
 interface TrashTicketProps {}
-
+const defaultFilter: () => any = () => ({
+  page: 1,
+  limit: env.DEFAULT_PAGE_SIZE,
+  query: "",
+});
 const TrashTicket: FC<TrashTicketProps> = () => {
   const navigate = useNavigate();
   const [tickets, setTickets] = useState<Ticket[]>([]);
-  const [tags, setTags] = useState<Tag[]>([]);
-  const {
-    state: btnSort,
-    toggle: toggleBtnSort,
-    off: closeBtnSort,
-  } = useToggle();
-  const [sortValue, setSortValue] = useState<string[]>([]);
-  const defaultFilter: () => any = () => ({
-    page: 1,
-    limit: env.DEFAULT_PAGE_SIZE,
-  });
+
   const [direction, setDirection] = useState<"descending" | "ascending">(
     "descending"
   );
   const [screenType, screenWidth] = useScreenType();
   const [indexSort, setIndexSort] = useState<number | undefined>(undefined);
+
   const [filterData, setFilterData] = useState<GetListTicketRequest>(
     defaultFilter()
   );
+
   const { subDomain } = useSubdomain();
   const { timezone }: any = useGlobalData(false, subDomain || "");
 
@@ -127,30 +120,6 @@ const TrashTicket: FC<TrashTicketProps> = () => {
     });
   }, []);
 
-  const { run: getListTagApi } = useJob((payload: GetListTagRequest) => {
-    return TagRepository()
-      .getList(payload)
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            const tags = data.data.map((item: Tag) => ({
-              ...item,
-              id: item._id,
-            }));
-            setTags((prevTags) => {
-              return [...prevTags, ...tags];
-            });
-
-            if (data.metadata.totalPage > (payload.page as number)) {
-              getListTagApi({
-                page: (payload.page as number) + 1,
-                limit: payload.limit,
-              });
-            }
-          }
-        })
-      );
-  });
   const { run: restoreTicketApi } = useJob((payload: BaseDeleteList) => {
     return TicketRepository()
       .restore(payload)
@@ -301,15 +270,14 @@ const TrashTicket: FC<TrashTicketProps> = () => {
   );
 
   useEffect(() => {
-    getListTagApi({
-      page: 1,
-      limit: 500,
-    });
     getStatisticTicket();
   }, []);
-  useEffect(() => {
+
+  useDeepEffect(() => {
+    console.log("vaoday");
     getListTrashApi(filterData);
   }, [filterData]);
+
   const css = `
   .Polaris-Page-Header__RightAlign ,.Polaris-Page-Header__PrimaryActionWrapper{
     width:100%!important;

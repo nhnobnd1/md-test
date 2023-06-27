@@ -59,8 +59,8 @@ const Select = ({
     <AntSelect
       {...props}
       optionFilterProp="label"
-      size={size}
       onChange={handleChange}
+      size="large"
     >
       {!props.children ? (
         <>
@@ -257,6 +257,7 @@ Select.Ajax = ({
   return (
     <Select
       {...props}
+      size="large"
       value={value}
       mode={mode}
       options={renderOption ? undefined : options}
@@ -698,6 +699,7 @@ Select.Auto = ({
 
   return (
     <AutoComplete
+      size="large"
       {...props}
       // value={value}
       options={renderOption ? undefined : options}

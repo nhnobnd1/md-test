@@ -1,13 +1,16 @@
 import {
+  Agent,
   AgentRepository,
   BaseDeleteList,
   BaseListTicketFilterRequest,
+  Customer,
   CustomerRepository,
   EmailIntegrationRepository,
   GetListAgentRequest,
   GetListCustomerRequest,
   GetListTagRequest,
   GetListTicketRequest,
+  Tag,
   TagRepository,
   TicketRepository,
   UpdateTicket,
@@ -31,10 +34,10 @@ export const fetchConversationApi = (id: string): Promise<ItemConversation> => {
   });
 };
 
-export const getTagsTicket = (payload: GetListTagRequest) => {
+export const getTagsTicket = (payload: GetListTagRequest): Promise<Tag[]> => {
   return new Promise((resolve, reject) => {
     lastValueFrom(TagRepository().getList(payload))
-      .then(({ data }) => resolve(data))
+      .then(({ data }) => resolve(data.data))
       .catch((error) => reject(error));
   });
 };
@@ -86,18 +89,22 @@ export const getListTicketFilterApi = (
   });
 };
 
-export const getListCustomerApi = (payload: GetListCustomerRequest) => {
+export const getListCustomerApi = (
+  payload: GetListCustomerRequest
+): Promise<Customer[]> => {
   return new Promise((resolve, reject) => {
     lastValueFrom(CustomerRepository().getList(payload))
-      .then(({ data }) => resolve(data))
+      .then(({ data }) => resolve(data.data))
       .catch((error) => reject(error));
   });
 };
 
-export const getListAgentApi = (payload: GetListAgentRequest) => {
+export const getListAgentApi = (
+  payload: GetListAgentRequest
+): Promise<Agent[]> => {
   return new Promise((resolve, reject) => {
     lastValueFrom(AgentRepository().getList(payload))
-      .then(({ data }) => resolve(data))
+      .then(({ data }) => resolve(data.data))
       .catch((error) => reject(error));
   });
 };
