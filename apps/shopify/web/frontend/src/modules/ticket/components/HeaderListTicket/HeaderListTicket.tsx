@@ -1,5 +1,5 @@
 import { useToggle } from "@moose-desk/core";
-import { ScreenType } from "@moose-desk/repo/global/Global";
+import { ScreenType } from "@moose-desk/repo";
 import { Button } from "@shopify/polaris";
 import { MobileBackArrowMajor, SearchMinor } from "@shopify/polaris-icons";
 import { FC, useEffect } from "react";

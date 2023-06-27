@@ -8365,7 +8365,7 @@ const Wa = I0(
     }
   }
 );
-var Zr = /* @__PURE__ */ ((M) => (M.Plain = "Plain", M.Login = "Login", M.MD5 = "CRAM - MD5", M))(Zr || {}), Ma = /* @__PURE__ */ ((M) => (M.Both = "both", M.Incoming = "incoming", M.Outgoing = "outgoing", M))(Ma || {}), ba = /* @__PURE__ */ ((M) => (M.CUSTOM = "CUSTOM", M.MOOSEDESK = "MOOSEDESK", M.FORWARD = "FORWARD", M))(ba || {}), za = /* @__PURE__ */ ((M) => (M.GMAIL = "GMAIL", M.OUTLOOK = "OUTLOOK", M.OTHER = "OTHER", M.MOOSEDESK = "MOOSEDESK", M))(za || {});
+var Zr = /* @__PURE__ */ ((M) => (M.Plain = "Plain", M.Login = "Login", M.MD5 = "CRAM - MD5", M))(Zr || {}), Ma = /* @__PURE__ */ ((M) => (M.Both = "both", M.Incoming = "incoming", M.Outgoing = "outgoing", M))(Ma || {}), ba = /* @__PURE__ */ ((M) => (M.CUSTOM = "CUSTOM", M.MOOSEDESK = "MOOSEDESK", M.FORWARD = "FORWARD", M))(ba || {}), za = /* @__PURE__ */ ((M) => (M.XS = "xs", M.SM = "sm", M.MD = "md", M.LG = "lg", M.XL = "xl", M.XXL = "xxl", M))(za || {}), pa = /* @__PURE__ */ ((M) => (M.GMAIL = "GMAIL", M.OUTLOOK = "OUTLOOK", M.OTHER = "OTHER", M.MOOSEDESK = "MOOSEDESK", M))(pa || {});
 const ra = I0(
   () => ({
     baseURL: `${F0.getApiUrl()}/api/v1/email-integration`
@@ -8449,9 +8449,7 @@ const ra = I0(
       return M.get("", b);
     }
   }
-);
-var pa = /* @__PURE__ */ ((M) => (M.XS = "xs", M.SM = "sm", M.MD = "md", M.LG = "lg", M.XL = "xl", M.XXL = "xxl", M))(pa || {});
-const ia = I0(
+), ia = I0(
   () => ({
     baseURL: `${F0.getApiUrl()}/api/v1/help-widget`
   }),
@@ -8661,13 +8659,13 @@ export {
   Kr as ErrorCodeCreate,
   aa as GlobalRepository,
   ia as HelpWidgetRepository,
-  za as MailBoxType,
+  pa as MailBoxType,
   ba as MailSettingType,
   qa as MethodOTP,
   oa as PermissionScopesShopify,
   Oa as Priority,
   Aa as Role,
-  pa as ScreenType,
+  za as ScreenType,
   ca as StatusTicket,
   da as StoreRepository,
   sa as TagRepository,

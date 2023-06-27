@@ -11,6 +11,7 @@ import {
   BaseDeleteList,
   GetListTagRequest,
   GetListTicketRequest,
+  ScreenType,
   StatusTicket,
   Tag,
   TagRepository,
@@ -18,7 +19,6 @@ import {
   TicketRepository,
   TicketStatistic,
 } from "@moose-desk/repo";
-import { ScreenType } from "@moose-desk/repo/global/Global";
 import {
   Button,
   ButtonGroup,
