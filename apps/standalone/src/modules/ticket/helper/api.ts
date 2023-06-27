@@ -5,9 +5,11 @@ import {
   BaseListTicketFilterRequest,
   Customer,
   CustomerRepository,
+  EmailIntegration,
   EmailIntegrationRepository,
   GetListAgentRequest,
   GetListCustomerRequest,
+  GetListEmailRequest,
   GetListTagRequest,
   GetListTicketRequest,
   Tag,
@@ -108,10 +110,20 @@ export const getListAgentApi = (
       .catch((error) => reject(error));
   });
 };
-export const emailIntegrationApi = () => {
+export const emailIntegrationApi = (): Promise<EmailIntegration> => {
   return new Promise((resolve, reject) => {
     lastValueFrom(EmailIntegrationRepository().getPrimaryEmail())
-      .then(({ data }) => resolve(data))
+      .then(({ data }) => resolve(data.data))
+      .catch((error) => reject(error));
+  });
+};
+
+export const getListEmailIntegration = (
+  payload: GetListEmailRequest
+): Promise<EmailIntegration[]> => {
+  return new Promise((resolve, reject) => {
+    lastValueFrom(EmailIntegrationRepository().getListEmail(payload))
+      .then(({ data }) => resolve(data.data))
       .catch((error) => reject(error));
   });
 };

@@ -1,23 +1,52 @@
 import { LeftCircleOutlined, RightCircleOutlined } from "@ant-design/icons";
-import { useJob } from "@moose-desk/core";
 import useToggleGlobal from "@moose-desk/core/hooks/useToggleGlobal";
-import {
-  EmailIntegration,
-  EmailIntegrationRepository,
-  Priority,
-} from "@moose-desk/repo";
+import { Priority } from "@moose-desk/repo";
 import { Skeleton } from "antd";
 import classNames from "classnames";
-import { useEffect, useMemo, useState } from "react";
-import { catchError, map, of } from "rxjs";
+import { useEffect, useMemo } from "react";
+import { useQuery } from "react-query";
 import { Header } from "src/components/UI/Header";
 import ContentShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ContentShopifySearch";
 import { TicketForm } from "src/modules/ticket/components/TicketForm";
+import {
+  emailIntegrationApi,
+  getListEmailIntegration,
+} from "src/modules/ticket/helper/api";
 import styles from "./styles.module.scss";
 
 const CreateTicket = () => {
   const { visible, setVisible } = useToggleGlobal();
-  const [primaryEmail, setPrimaryEmail] = useState<EmailIntegration>();
+  const { data: dataPrimaryEmail, isLoading: processing } = useQuery({
+    queryKey: ["emailIntegrationApi"],
+    queryFn: () => emailIntegrationApi(),
+    retry: 3,
+    staleTime: 10000,
+    onError: () => {
+      // message.error(t("messages:error.get_customer"));
+    },
+  });
+  const { data: dataEmailIntegration, isLoading: loadingList } = useQuery({
+    queryKey: ["getListEmailIntegration"],
+    queryFn: () => getListEmailIntegration({ page: 1, limit: 500 }),
+    retry: 3,
+    staleTime: 10000,
+    onError: () => {
+      //  message.error(t("messages:error.get_customer"));
+    },
+  });
+
+  const primaryEmail = useMemo(() => {
+    if (dataPrimaryEmail?._id) {
+      return dataPrimaryEmail;
+    }
+    if (!dataEmailIntegration) {
+      return undefined;
+    }
+    return dataEmailIntegration?.length > 0
+      ? dataEmailIntegration[0]
+      : undefined;
+  }, [dataPrimaryEmail, dataEmailIntegration]);
+
   const initialValues = useMemo(() => {
     return {
       priority: Priority.MEDIUM,
@@ -26,40 +55,8 @@ const CreateTicket = () => {
       to: "",
     };
   }, [primaryEmail?._id]);
-  const { run: getListEmailApi, processing: loadingList } = useJob(
-    (payload: any) => {
-      return EmailIntegrationRepository()
-        .getListEmail(payload)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              setPrimaryEmail(data.data[0]);
-            }
-          })
-        );
-    }
-  );
-  const { run: getPrimaryEmail, processing } = useJob(() => {
-    return EmailIntegrationRepository()
-      .getPrimaryEmail()
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            if (Object.keys(data.data).length) {
-              setPrimaryEmail(data.data);
-            } else {
-              getListEmailApi({ page: 1, limit: 10 });
-            }
-          }
-        }),
-        catchError((err) => {
-          return of(err);
-        })
-      );
-  });
 
   useEffect(() => {
-    getPrimaryEmail();
     return () => {
       setVisible(false);
     };

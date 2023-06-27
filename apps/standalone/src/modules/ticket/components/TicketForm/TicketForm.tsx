@@ -6,27 +6,30 @@ import {
 } from "@moose-desk/core";
 import useSaveDataGlobal from "@moose-desk/core/hooks/useSaveDataGlobal";
 import {
-  AgentRepository,
-  CustomerRepository,
   EmailIntegration,
-  EmailIntegrationRepository,
-  TagRepository,
   TicketRepository,
   priorityOptions,
 } from "@moose-desk/repo";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useQueryClient } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { catchError, map, of } from "rxjs";
 import { MDButton } from "src/components/UI/Button/MDButton";
 import TextEditorTicket from "src/components/UI/Editor/TextEditorTicket";
 import { Form } from "src/components/UI/Form";
 import { MDInput } from "src/components/UI/Input";
-import Select, { LoadMoreValue } from "src/components/UI/Select/Select";
-import env from "src/core/env";
+import Select from "src/components/UI/Select/Select";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
-// import AutocompleteLoadMore from "src/modules/ticket/components/AutocompleteMore";
+import { AutoSelect } from "src/modules/ticket/components/TicketForm/AutoSelect";
+import { SelectList } from "src/modules/ticket/components/TicketForm/SelectList";
+import { SelectTag } from "src/modules/ticket/components/TicketForm/SelectTag";
+import {
+  getListAgentApi,
+  getListCustomerApi,
+  getListEmailIntegration,
+  getTagsTicket,
+} from "src/modules/ticket/helper/api";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 
 interface TicketFormProps {
@@ -60,131 +63,109 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
   const [loadingButton, setLoadingButton] = useState(false);
   const { dataSaved }: any = useSaveDataGlobal();
   const { t } = useTranslation();
-
-  const fetchAgents = useCallback(
-    (params: LoadMoreValue) => {
-      const limit = 500;
-
-      return AgentRepository()
-        .getList({
-          page: params.page,
-          limit: limit,
-          query: params.searchText,
-        })
-        .pipe(
-          map(({ data }) => {
-            return {
-              options: data.data
-                .filter((item) => item.isActive && item.emailConfirmed)
-                .map((item) => ({
-                  label: item.lastName.includes("admin")
-                    ? `${item.firstName} - ${item.email}`
-                    : `${item.firstName} ${item.lastName} - ${item.email}`,
-                  value: `${item._id},${item.email}`,
-                  obj: item,
-                })),
-              canLoadMore: params.page < data.metadata.totalPage,
-            };
-          })
-        );
+  const { data: dataCustomers } = useQuery({
+    queryKey: ["getCustomers"],
+    queryFn: () => getListCustomerApi({ page: 1, limit: 500 }),
+    retry: 3,
+    staleTime: 10000,
+    onError: () => {
+      message.error(t("messages:error.get_customer"));
     },
-    [AgentRepository]
-  );
+  });
+  const customersOptions = useMemo(() => {
+    if (!dataCustomers) return [];
+    return dataCustomers.map((item) => {
+      return {
+        label: `${item.firstName} ${item.lastName} - ${item.email}`,
+        value: item.email,
+        obj: item,
+      };
+    });
+  }, [dataCustomers]);
 
-  const fetchTags = useCallback(
-    (params: LoadMoreValue) => {
-      const limit = 500;
-      return TagRepository()
-        .getList({
-          page: params.page,
-          limit: limit,
-          query: params.searchText,
-        })
-        .pipe(
-          map(({ data }) => {
-            return {
-              options: data.data.map((item) => ({
-                label: item.name,
-                value: item.name,
-                obj: item,
-              })),
-              canLoadMore: params.page < data.metadata.totalPage,
-            };
-          })
-        );
+  const { data: dataEmailIntegration } = useQuery({
+    queryKey: ["getListEmailIntegration"],
+    queryFn: () => getListEmailIntegration({ page: 1, limit: 500 }),
+    retry: 3,
+    staleTime: 10000,
+    onError: () => {
+      message.error(t("messages:error.get_customer"));
     },
-    [TagRepository]
-  );
+  });
+  const emailIntegrationOptions = useMemo(() => {
+    if (!dataEmailIntegration) return [];
+    return dataEmailIntegration.map((item) => {
+      return {
+        label: `${item.name} - ${item.supportEmail}`,
+        value: item._id,
+        obj: item,
+      };
+    });
+  }, [dataEmailIntegration]);
 
-  const fetchEmailIntegration = useCallback(
-    (params: LoadMoreValue) => {
-      const limit = env.DEFAULT_PAGE_SIZE;
-      if (params.value && params.isFirst) {
-        return EmailIntegrationRepository()
-          .getOneEmail(params.value)
-          .pipe(
-            map(({ data }) => {
-              const item = data.data;
-              return {
-                options: [
-                  {
-                    label: `${item.name} - ${item.supportEmail}`,
-                    value: item._id,
-                    obj: item,
-                  },
-                ],
-                canLoadMore: true,
-              };
-            })
-          );
-      } else {
-        return EmailIntegrationRepository()
-          .getListEmail({
-            page: params.page,
-            limit: limit,
-            query: params.searchText,
-          })
-          .pipe(
-            map(({ data }) => {
-              return {
-                options: data.data.map((item) => ({
-                  label: `${item.name} - ${item.supportEmail}`,
-                  value: item._id,
-                  obj: item,
-                })),
-                canLoadMore: params.page < data.metadata.totalPage,
-              };
-            })
-          );
-      }
-    },
-    [EmailIntegrationRepository]
-  );
+  const { data: dataAgents } = useQuery({
+    queryKey: [
+      "getAgents",
+      {
+        page: 1,
+        limit: 500,
+      },
+    ],
+    queryFn: () =>
+      getListAgentApi({
+        page: 1,
+        limit: 500,
+      }),
+    staleTime: 10000,
+    retry: 1,
 
-  const fetchCustomer = useCallback(
-    (params: LoadMoreValue) => {
-      const limit = 500;
-      return CustomerRepository()
-        .getList({
-          page: params.page,
-          limit: limit,
-          query: params.searchText,
-        })
-        .pipe(
-          map(({ data }) => {
-            return {
-              options: data.data.map((item) => ({
-                label: `${item.firstName} ${item.lastName} - ${item.email}`,
-                value: item.email,
-                obj: item,
-              })),
-              canLoadMore: params.page < data.metadata.totalPage,
-            };
-          })
-        );
+    onError: () => {
+      message.error(t("messages:error.get_agent"));
     },
-    [EmailIntegrationRepository]
-  );
+  });
+
+  const agentsOptions = useMemo(() => {
+    if (!dataAgents) return [];
+    return dataAgents
+      .filter((item) => item.isActive && item.emailConfirmed)
+      .map((item) => ({
+        label: item.lastName.includes("admin")
+          ? `${item.firstName} - ${item.email}`
+          : `${item.firstName} ${item.lastName} - ${item.email}`,
+        value: `${item._id},${item.email}`,
+        obj: item,
+      }));
+  }, [dataAgents]);
+
+  const { data: dataTags } = useQuery({
+    queryKey: [
+      "getTagsTicket",
+      {
+        page: 1,
+        limit: 500,
+      },
+    ],
+    queryFn: () =>
+      getTagsTicket({
+        page: 1,
+        limit: 500,
+      }),
+    staleTime: 10000,
+    retry: 1,
+
+    onError: () => {
+      message.error(t("messages:error.get_tag"));
+    },
+  });
+
+  const tagsOptions = useMemo(() => {
+    if (!dataTags) return [];
+    return dataTags.map((item) => ({
+      label: item.name,
+      value: item.name,
+      obj: item,
+    }));
+  }, [dataTags]);
 
   const { run: CreateTicket } = useJob((dataSubmit: any) => {
     message.loading.show(t("messages:loading.creating_ticket"));
@@ -297,10 +278,9 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
                   },
                 ]}
               >
-                <Select.Auto
+                <AutoSelect
                   placeholder="Email"
-                  virtual
-                  loadMore={fetchCustomer}
+                  options={customersOptions}
                   onChange={onChangeEmail}
                 />
               </Form.Item>
@@ -323,11 +303,11 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
                       }),
                     ]}
                   >
-                    <Select.Tags
-                      loadMore={fetchCustomer}
+                    <SelectTag
                       mode="tags"
                       placeholder="Type CC email..."
-                    ></Select.Tags>
+                      options={customersOptions}
+                    />
                   </Form.Item>
                 ) : (
                   <></>
@@ -350,11 +330,11 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
                       }),
                     ]}
                   >
-                    <Select.Tags
-                      loadMore={fetchCustomer}
+                    <SelectTag
                       mode="tags"
                       placeholder="Type BCC email..."
-                    ></Select.Tags>
+                      options={customersOptions}
+                    />
                   </Form.Item>
                 ) : (
                   <></>
@@ -377,11 +357,9 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
             name="from"
             rules={[{ required: true, message: "From is required" }]}
           >
-            <Select.Ajax
-              placeholder="Search email integration"
-              virtual
-              loadMore={fetchEmailIntegration}
+            <SelectList
               onChange={onChangeEmailIntegration}
+              options={emailIntegrationOptions}
             />
           </Form.Item>
           <Form.Item
@@ -423,26 +401,11 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
             <Select size="large" options={priorityOptions}></Select>
           </Form.Item>
           <Form.Item name="tags" label="Tags">
-            <Select.Tags
-              size="large"
-              mode="tags"
-              placeholder="Add tags"
-              loadMore={fetchTags}
-              // onChange={onChangeTag}
-            ></Select.Tags>
+            <SelectTag placeholder="Add tags" options={tagsOptions} />
           </Form.Item>
           <Form.Item label="Assignee" name="assignee">
-            <Select.Ajax
-              placeholder="Search agents"
-              virtual
-              loadMore={fetchAgents}
-            />
+            <SelectList placeholder="Search agents" options={agentsOptions} />
           </Form.Item>
-
-          <div></div>
-          {/* <Form.Item name="macros" label="Macros">
-            <Select></Select>
-          </Form.Item> */}
         </div>
       </div>
       <div className="flex-1 flex justify-end items-center gap-2 mt-5 ">

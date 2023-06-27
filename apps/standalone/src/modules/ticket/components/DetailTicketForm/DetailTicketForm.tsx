@@ -11,7 +11,6 @@ import {
   AttachFile,
   Conversation,
   CreateReplyTicketRequest,
-  CustomerRepository,
   EmailIntegration,
   EmailIntegrationRepository,
   Priority,
@@ -25,7 +24,7 @@ import {
 } from "@moose-desk/repo";
 import { Select as AntSelect, Card, Divider, Skeleton } from "antd";
 import moment from "moment";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import { useTranslation } from "react-i18next";
@@ -35,11 +34,17 @@ import { MDButton } from "src/components/UI/Button/MDButton";
 import TextEditorTicket from "src/components/UI/Editor/TextEditorTicket";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
-import Select, { LoadMoreValue } from "src/components/UI/Select/Select";
+import Select from "src/components/UI/Select/Select";
 import useMessage from "src/hooks/useMessage";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { CollapseMessage } from "src/modules/ticket/components/DetailTicketForm/CollapseMessage";
-import { getListAgentApi, getTagsTicket } from "src/modules/ticket/helper/api";
+import { SelectTag } from "src/modules/ticket/components/TicketForm/SelectTag";
+import {
+  getListAgentApi,
+  getListCustomerApi,
+  getListEmailIntegration,
+  getTagsTicket,
+} from "src/modules/ticket/helper/api";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import FaMailReply from "~icons/fa/mail-reply";
 import BackIcon from "~icons/mingcute/back-2-fill";
@@ -154,10 +159,26 @@ const DetailTicketForm = () => {
       endPageRef?.current?.scrollIntoView();
     }
   }, [loadingApi]);
+  const { data: dataEmailIntegration, isLoading: loadingList } = useQuery({
+    queryKey: ["getListEmailIntegration"],
+    queryFn: () => getListEmailIntegration({ page: 1, limit: 500 }),
+    retry: 3,
+    staleTime: 10000,
+    onError: () => {
+      //  message.error(t("messages:error.get_customer"));
+    },
+  });
+  const emailIntegrationOptions = useMemo(() => {
+    if (!dataEmailIntegration) return [];
+    return dataEmailIntegration.map((item) => {
+      return {
+        label: `${item.name} - ${item.supportEmail}`,
+        value: item._id,
+        obj: item,
+      };
+    });
+  }, [dataEmailIntegration]);
 
-  const [emailIntegrationOptions, setEmailIntegrationOptions] = useState<any>(
-    []
-  );
   const { subDomain } = useSubdomain();
 
   const { timezone } = useGlobalData(false, subDomain || "");
@@ -216,54 +237,26 @@ const DetailTicketForm = () => {
     return conversationMapping;
   }, [ticket, conversationList]);
 
-  const { run: fetchEmailIntegrationApi } = useJob(() => {
-    return EmailIntegrationRepository()
-      .getListEmail({
-        page: 1,
-        limit: 500,
-      })
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            setEmailIntegrationOptions(
-              data.data.map((item: EmailIntegration) => ({
-                label: `${item.name} - ${item.supportEmail}`,
-                value: item._id,
-                obj: item,
-              }))
-            );
-          }
-        }),
-        catchError((err) => {
-          return of(err);
-        })
-      );
-  });
-
-  const fetchCustomer = useCallback(
-    (params: LoadMoreValue) => {
-      const limit = 500;
-      return CustomerRepository()
-        .getList({
-          page: params.page,
-          limit: limit,
-          query: params.searchText,
-        })
-        .pipe(
-          map(({ data }) => {
-            return {
-              options: data.data.map((item) => ({
-                label: `${item.firstName} ${item.lastName} - ${item.email}`,
-                value: item.email,
-                obj: item,
-              })),
-              canLoadMore: params.page < data.metadata.totalPage,
-            };
-          })
-        );
+  const { data: dataCustomers } = useQuery({
+    queryKey: ["getCustomers"],
+    queryFn: () => getListCustomerApi({ page: 1, limit: 500 }),
+    retry: 3,
+    staleTime: 10000,
+    onError: () => {
+      message.error(t("messages:error.get_customer"));
     },
-    [EmailIntegrationRepository]
-  );
+  });
+  const customersOptions = useMemo(() => {
+    if (!dataCustomers) return [];
+    return dataCustomers.map((item) => {
+      return {
+        label: `${item.firstName} ${item.lastName} - ${item.email}`,
+        value: item.email,
+        obj: item,
+      };
+    });
+  }, [dataCustomers]);
+
   const initialValues = useMemo(() => {
     const condition = ticket?.incoming || ticket?.createdViaWidget;
     if (conversationList.length === 0) {
@@ -413,7 +406,6 @@ const DetailTicketForm = () => {
     if (id) {
       getTicketApi(id);
       fetchConversation(id);
-      fetchEmailIntegrationApi();
     }
   }, [id]);
 
@@ -430,8 +422,8 @@ const DetailTicketForm = () => {
       description: values.content,
       ccEmails: values.CC,
       fromEmail: {
-        name: findItemConfigEmail.obj.name,
-        email: findItemConfigEmail.obj.supportEmail,
+        name: findItemConfigEmail?.obj.name,
+        email: findItemConfigEmail?.obj.supportEmail,
       },
       senderConfigId: values.from,
 
@@ -664,12 +656,11 @@ const DetailTicketForm = () => {
                                   }),
                                 ]}
                               >
-                                <Select.Tags
-                                  defaultValue={form.getFieldValue("CC")}
-                                  loadMore={fetchCustomer}
+                                <SelectTag
                                   mode="tags"
                                   placeholder="Type CC email..."
-                                ></Select.Tags>
+                                  options={customersOptions}
+                                />
                               </Form.Item>
                             </div>
                           ) : (
@@ -697,11 +688,11 @@ const DetailTicketForm = () => {
                                   }),
                                 ]}
                               >
-                                <Select.Tags
-                                  loadMore={fetchCustomer}
+                                <SelectTag
                                   mode="tags"
                                   placeholder="Type BCC email..."
-                                ></Select.Tags>
+                                  options={customersOptions}
+                                />
                               </Form.Item>
                             </div>
                           ) : (
