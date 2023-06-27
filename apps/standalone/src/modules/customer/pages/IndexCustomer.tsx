@@ -9,14 +9,16 @@ import {
   Customer,
   GetListCustomerRequest,
 } from "@moose-desk/repo";
-import { Button, TableProps } from "antd";
+import { TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import classNames from "classnames";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "react-query";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
+import { MDButton } from "src/components/UI/Button/MDButton";
 import { Header } from "src/components/UI/Header";
+import Icon from "src/components/UI/Icon";
 import { MDSearchInput } from "src/components/UI/MDSearchInput";
 import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
@@ -241,7 +243,10 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
           <Header title="Customers" />
           <div className={classNames(styles.groupTopPage, "d-flex")}>
             {isMobile ? (
-              <Button onClick={onToggleSearch}>Search</Button>
+              <MDButton
+                icon={<Icon name="search" />}
+                onClick={onToggleSearch}
+              ></MDButton>
             ) : (
               <div className={styles.searchInputWrap}>
                 <MDSearchInput onTypeSearch={handleSearchInput} />
@@ -256,7 +261,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
         </div>
       ) : (
         <div className={styles.groupSearchOnMobile}>
-          <Button onClick={onToggleSearch}>Search</Button>
+          <MDButton onClick={onToggleSearch}>Search</MDButton>
           <div className={styles.searchOnMobile}>
             <MDSearchInput onTypeSearch={handleSearchInput} />
           </div>

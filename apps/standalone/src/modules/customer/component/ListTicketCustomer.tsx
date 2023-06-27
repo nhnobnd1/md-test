@@ -156,7 +156,7 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
   };
   return (
     <div className={styles.wrapTableTicketCustomer}>
-      <div className={classNames(styles.searchWrap, "mb-10")}>
+      <div className={classNames(styles.searchWrap)}>
         <MDSearchInput onTypeSearch={handleSearchInput} />
       </div>
       <section className={styles.wrapTable}>
@@ -175,13 +175,14 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
           }}
         />
         {/* <section className={styles.wrapPagination}> */}
-        <Pagination
-          className="mt-4 flex justify-end"
-          currentPage={filter.page ?? 1}
-          total={(dataSource as any)?.data.metadata.totalCount}
-          pageSize={filter.limit ?? env.DEFAULT_PAGE_SIZE}
-          onChange={handleChangePage}
-        />
+        <div className={styles.pagination}>
+          <Pagination
+            currentPage={filter.page ?? 1}
+            total={(dataSource as any)?.data.metadata.totalCount}
+            pageSize={filter.limit ?? env.DEFAULT_PAGE_SIZE}
+            onChange={handleChangePage}
+          />
+        </div>
       </section>
       {/* </section> */}
     </div>
