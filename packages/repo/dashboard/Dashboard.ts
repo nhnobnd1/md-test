@@ -60,11 +60,11 @@ export interface TodoList {
   mailMessageId: string;
 }
 export interface Summary {
-  ticketCreatedCount?: number;
-  ticketRepliedCount?: number;
-  ticketClosedCount?: number;
-  avgFirstResponseTime?: number;
-  avgResolutionTime?: number;
+  ticketCreatedCount: number;
+  ticketRepliedCount: number;
+  ticketClosedCount: number;
+  avgFirstResponseTime: number;
+  avgResolutionTime: number;
 }
 export interface BaseDashboardRequest extends BaseListRequest {
   startTime?: string;
