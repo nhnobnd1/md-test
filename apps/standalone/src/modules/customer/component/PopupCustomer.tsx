@@ -1,11 +1,12 @@
 import { Customer } from "@moose-desk/repo";
-import { Button, Modal, ModalProps, Tabs } from "antd";
+import { ModalProps, Tabs } from "antd";
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQueryClient } from "react-query";
+import { MDButton } from "src/components/UI/Button/MDButton";
 import Form from "src/components/UI/Form/Form";
 import { Header } from "src/components/UI/Header";
-import Icon from "src/components/UI/Icon";
+import { MDModal } from "src/components/UI/Modal/MDModal";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { createCustomer, updateCustomer } from "src/modules/customer/api/api";
@@ -136,29 +137,23 @@ export const PopupCustomer = ({
     setActiveKey("1");
   };
   return (
-    <Modal
+    <MDModal
       className={styles.modalCustomer}
       {...props}
-      destroyOnClose
       onCancel={handleCloseModal}
-      closeIcon={<Icon name="close" />}
+      onClose={handleCloseModal}
       footer={
         <div className={styles.modalFooter}>
-          <Button size="large" onClick={handleCloseModal}>
-            Cancel
-          </Button>
-          <Button
-            size="large"
+          <MDButton onClick={handleCloseModal}>Cancel</MDButton>
+          <MDButton
             type="primary"
             onClick={handleSubmit}
             loading={isUpdating || isCreating}
           >
             Save
-          </Button>
+          </MDButton>
         </div>
       }
-      width={686}
-      style={{ minHeight: 500 }}
     >
       <div>
         <div className={styles.modalTitle}>
@@ -166,7 +161,7 @@ export const PopupCustomer = ({
         </div>
         <div className={styles.modalContent}>{_renderContentModal()}</div>
       </div>
-    </Modal>
+    </MDModal>
   );
 };
 

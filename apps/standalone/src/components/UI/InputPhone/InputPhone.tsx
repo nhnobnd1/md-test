@@ -78,7 +78,12 @@ const InputPhone = ({
             key={item.code}
           >
             <div className="flex-center">
-              <img width={40} height={30} src={item?.flagImage} />
+              <img
+                className={styles.flagImg}
+                width={40}
+                height={30}
+                src={item?.flagImage}
+              />
               <span>
                 {item.countryName.length < 30
                   ? item.countryName

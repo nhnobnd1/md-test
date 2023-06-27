@@ -1,5 +1,6 @@
-import { Col, Input, Row } from "antd";
+import { Col, Row } from "antd";
 import Form, { FormProps } from "src/components/UI/Form/Form";
+import { MDInput } from "src/components/UI/Input";
 import InputPhone from "src/components/UI/InputPhone/InputPhone";
 import { CustomerRequestData } from "src/modules/customer/helper/interface";
 import styles from "./styles.module.scss";
@@ -21,7 +22,7 @@ export const CustomerForm = ({
       initialValues={data}
     >
       <Row gutter={16} justify="space-between">
-        <Col span={12}>
+        <Col lg={12} xl={12} sm={24} xs={24}>
           <Form.Item
             label="First name"
             name="firstName"
@@ -37,10 +38,10 @@ export const CustomerForm = ({
               },
             ]}
           >
-            <Input size="large" disabled={disabled} placeholder="First name" />
+            <MDInput disabled={disabled} placeholder="First name" />
           </Form.Item>
         </Col>
-        <Col span={12}>
+        <Col lg={12} xl={12} sm={24} xs={24}>
           <Form.Item
             label="Last name"
             name="lastName"
@@ -56,7 +57,7 @@ export const CustomerForm = ({
               },
             ]}
           >
-            <Input size="large" disabled={disabled} placeholder="Last name" />
+            <MDInput disabled={disabled} placeholder="Last name" />
           </Form.Item>
         </Col>
       </Row>
@@ -69,11 +70,7 @@ export const CustomerForm = ({
           { type: "email", message: "The email address is not valid" },
         ]}
       >
-        <Input
-          size="large"
-          disabled={disabled}
-          placeholder="example@example.com"
-        />
+        <MDInput disabled={disabled} placeholder="example@example.com" />
       </Form.Item>
 
       <Form.Item

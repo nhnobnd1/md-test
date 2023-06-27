@@ -1,5 +1,8 @@
 @import "../../../styles/variables.scss";
+@import "../../../styles/mixin.scss";
 .MDPagination {
+  display: flex;
+  align-items: center;
   :global {
     .ant-pagination-total-text {
       color: $opacity-black;

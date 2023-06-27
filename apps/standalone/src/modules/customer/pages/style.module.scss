@@ -19,7 +19,7 @@
   align-items: center;
   margin-bottom: 16px;
   @include mq(md, "max") {
-    padding: 0 16px;
+    // padding: 0 16px;
   }
 }
 
@@ -29,22 +29,28 @@
   margin-bottom: 16px;
 
   @include mq(md, "max") {
-    padding: 0 10px;
+    // padding: 0 10px;
   }
 
   .searchOnMobile {
-    width: calc(100% - 50px);
+    width: calc(100% - 38px);
   }
 }
 .wrapTable {
-    background-color: $white-color;
-    padding-bottom: 16px;
-    border-radius: 8px;
+  background-color: $white-color;
+  padding-bottom: 16px;
+  border-radius: 8px;
+  @include mq(md, "max") {
+    margin: 0 -16px;
+  }
 }
- .pagination {
-     display: flex;
-     align-items: center;
-     justify-content: flex-end;
-     padding-top: 16px;
-     padding-right: 16px;
- }
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-top: 16px;
+  padding-right: 16px;
+  @include mq(md, "max") {
+    // justify-content: center;
+  }
+}

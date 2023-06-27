@@ -261,7 +261,11 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
         </div>
       ) : (
         <div className={styles.groupSearchOnMobile}>
-          <MDButton onClick={onToggleSearch}>Search</MDButton>
+          <MDButton
+            onClick={onToggleSearch}
+            icon={<Icon name="back" />}
+            type="text"
+          ></MDButton>
           <div className={styles.searchOnMobile}>
             <MDSearchInput onTypeSearch={handleSearchInput} />
           </div>
