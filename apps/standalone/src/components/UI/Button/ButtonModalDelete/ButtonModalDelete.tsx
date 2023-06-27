@@ -1,4 +1,4 @@
-import { Button, ButtonProps, ModalProps } from "antd";
+import { Button, ButtonProps, ModalProps, Tooltip } from "antd";
 import { useState } from "react";
 import Icon from "src/components/UI/Icon";
 import { ModalDelete } from "src/components/UI/Modal/ModalDelete";
@@ -38,16 +38,18 @@ export const ButtonModalDelete = ({
   return (
     <>
       {onlyIcon ? (
-        <Button
-          type="text"
-          onClick={() => {
-            onClick && onClick();
-            setOpenModal(true);
-          }}
-          icon={<Icon name="delete" />}
-          {...buttonProps}
-          disabled={disabled}
-        ></Button>
+        <Tooltip placement="top" title={"Delete"}>
+          <Button
+            type="text"
+            onClick={() => {
+              onClick && onClick();
+              setOpenModal(true);
+            }}
+            icon={<Icon name="delete" />}
+            {...buttonProps}
+            disabled={disabled}
+          ></Button>
+        </Tooltip>
       ) : (
         <Button
           danger
