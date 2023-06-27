@@ -58,8 +58,12 @@ import { ExportTicket } from "src/modules/ticket/components/ExportTicketPdf/Expo
 import UilImport from "~icons/uil/import";
 
 import { FilterOutlined } from "@ant-design/icons";
+import { useQuery } from "react-query";
 import useScreenType from "src/hooks/useScreenType";
-import { useExportTicket } from "src/modules/ticket/helper/api";
+import {
+  getStatisticTicket,
+  useExportTicket,
+} from "src/modules/ticket/helper/api";
 import useTicketSelected from "src/modules/ticket/store/useTicketSelected";
 import "./ListTicket.scss";
 interface TicketIndexPageProps {}
@@ -87,16 +91,30 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const { startLoading, stopLoading } = useLoading();
   const [isModalActionsOpen, setIsModalActionsOpen] = useState(false);
 
-  const [statistic, setStatistic] = useState<TicketStatistic>({
-    statusCode: 200,
-    data: {
-      OPEN: 0,
-      PENDING: 0,
-      RESOLVED: 0,
-      TRASH: 0,
-      NEW: 0,
+  const { data: dataStatistic, refetch: refetchStatistic } = useQuery({
+    queryKey: ["getStatisticTicket"],
+    queryFn: () => getStatisticTicket(),
+    retry: 3,
+    onSuccess: (data: TicketStatistic) => {
+      setStatistic(data);
+    },
+    onError: () => {
+      message.error(t("messages:error.get_ticket"));
     },
   });
+
+  const [statistic, setStatistic] = useState<TicketStatistic>(
+    dataStatistic ?? {
+      statusCode: 200,
+      data: {
+        OPEN: 0,
+        PENDING: 0,
+        RESOLVED: 0,
+        TRASH: 0,
+        NEW: 0,
+      },
+    }
+  );
   const [conversations, loadingExport] = useExportTicket(
     selectedRowKeys as string[]
   );
@@ -187,19 +205,19 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         );
     }
   );
-  const { run: getStatisticTicket } = useJob(() => {
-    return TicketRepository()
-      .getStatistic()
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            setStatistic(data);
-          } else {
-            message.error(t("messages:error.get_ticket"));
-          }
-        })
-      );
-  });
+  // const { run: getStatisticTicket } = useJob(() => {
+  //   return TicketRepository()
+  //     .getStatistic()
+  //     .pipe(
+  //       map(({ data }) => {
+  //         if (data.statusCode === 200) {
+  //           setStatistic(data);
+  //         } else {
+  //           message.error(t("messages:error.get_ticket"));
+  //         }
+  //       })
+  //     );
+  // });
 
   const { run: getListAgentApi } = useJob((payload: GetListAgentRequest) => {
     return AgentRepository()
@@ -333,7 +351,8 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
           message.loading.hide();
           if (data.statusCode === 200) {
             notification.success(t("messages:success.delete_ticket"));
-            getStatisticTicket();
+            // getStatisticTicket();
+            refetchStatistic();
             if (filterObject) {
               getListTicketFilter({ ...filterData, ...filterObject });
               return;
@@ -368,7 +387,8 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         map(({ data }) => {
           // console.log("update ticket success", data);
           if (data.statusCode === 200) {
-            getStatisticTicket();
+            // getStatisticTicket();
+            refetchStatistic();
             message.success(t("messages:success.update_ticket"));
           }
         }),
@@ -405,7 +425,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       page: 1,
       limit: 500,
     });
-    getStatisticTicket();
+    // getStatisticTicket();
   }, []);
 
   useEffect(() => {
@@ -505,33 +525,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         centered
       />
       <Header title="Tickets">
-        {selectedRowKeys.length === 0 ? (
-          <div className="flex items-center justify-end flex-1 gap-2  ">
-            <Input.Search
-              allowClear
-              enterButton
-              className="md:w-[300px] lg:w-[400px] sm:w-[250px]"
-              placeholder="Search"
-              onSearch={(searchText: string) => {
-                setFilterData((value: any) => {
-                  return {
-                    ...value,
-                    query: searchText,
-                    page: 1,
-                  };
-                });
-              }}
-            ></Input.Search>
-            <Button
-              onClick={openFilterModal}
-              icon={<FilterOutlined />}
-            ></Button>
-
-            <ButtonAdd onClick={() => navigate(TicketRoutePaths.Create)}>
-              Add new
-            </ButtonAdd>
-          </div>
-        ) : screenWidth < MediaScreen.LG ? (
+        {selectedRowKeys.length === 0 || screenWidth <= MediaScreen.LG ? (
           <div className="flex items-center justify-end flex-1 gap-2  ">
             <Input.Search
               allowClear
@@ -849,7 +843,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                           total={meta?.totalCount}
                           pageSize={filterData.limit ?? env.DEFAULT_PAGE_SIZE}
                           onChange={onPagination}
-                          simple={screenWidth <= MediaScreen.MD}
                         />
                       </div>
                     )
@@ -861,7 +854,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       </div>
       {screenWidth <= MediaScreen.LG && selectedRowKeys.length > 0 && (
         <div
-          className={`sticky z-50 bottom-0 bg-white right-0 px-3   flex justify-between items-center w-full h-[56px] `}
+          className={`sticky z-50 bottom-0 bg-white right-0 px-3   flex justify-between items-center w-full h-[56px] mt-2`}
         >
           <DeleteSelectedModal handleDeleteSelected={handleDeleteSelected} />
           <Button

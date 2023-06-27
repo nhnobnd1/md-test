@@ -11,4 +11,3 @@ export enum ScreenType {
 	XL = 'xl',
 	XXL = 'xxl',
 }
-export default ScreenType

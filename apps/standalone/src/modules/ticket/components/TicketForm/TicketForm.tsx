@@ -278,7 +278,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
       {...props}
     >
       <div className="flex flex-col items-center">
-        <div className="grid grid-cols-1 gap-x-[7%] xl:w-[800px]  ">
+        <div className="w-full  xl:w-[800px]  ">
           <div className="flex items-start gap-2 ">
             <div className="flex-1">
               <Form.Item
@@ -443,7 +443,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
           </Form.Item> */}
         </div>
       </div>
-      <div className="flex-1 flex justify-end items-center gap-2 mt-5">
+      <div className="flex-1 flex justify-end items-center gap-2 mt-5 ">
         <Button
           onClick={() => {
             navigate(TicketRoutePaths.Index);

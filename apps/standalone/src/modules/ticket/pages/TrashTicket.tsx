@@ -1,4 +1,5 @@
 import {
+  MediaScreen,
   createdDatetimeFormat,
   generatePath,
   upperCaseFirst,
@@ -27,6 +28,7 @@ import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
 import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
+import useScreenType from "src/hooks/useScreenType";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { ButtonTicket } from "src/modules/ticket/components/ButtonTicket";
 import {
@@ -42,20 +44,35 @@ import RestoreIcon from "~icons/mdi/restore";
 import "./ListTicket.scss";
 
 const TrashTicket = () => {
-  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const defaultFilter: () => any = () => ({
+    page: 1,
+    limit: env.DEFAULT_PAGE_SIZE,
+  });
+  const [filterData, setFilterData] =
+    useState<BaseListTicketRequest>(defaultFilter);
+  const { data: trashTicket, isFetching: loadingList } = useQuery({
+    queryKey: ["getListTrash", filterData],
+    queryFn: () => getListTrashApi(filterData),
+    retry: 1,
+    onSuccess: (data: GetListTicketResponse) => {
+      setTickets(data.data);
+      setMeta(data.metadata);
+    },
+    onError: () => {
+      message.error(t("messages:error.get_ticket"));
+    },
+    initialData: [],
+  });
+  const [tickets, setTickets] = useState<Ticket[]>(trashTicket?.data ?? []);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [meta, setMeta] = useState<BaseMetaDataListResponse>();
   const message = useMessage();
   const navigate = useNavigate();
-  const defaultFilter: () => any = () => ({
-    page: 1,
-    limit: env.DEFAULT_PAGE_SIZE,
-  });
-  const queryClient = useQueryClient();
 
-  const [filterData, setFilterData] =
-    useState<BaseListTicketRequest>(defaultFilter);
+  const queryClient = useQueryClient();
+  const [screenType, screenWidth] = useScreenType();
+
   const { subDomain } = useSubdomain();
   const { timezone } = useGlobalData(false, subDomain || "");
   const { t } = useTranslation();
@@ -67,25 +84,7 @@ const TrashTicket = () => {
     },
     [activeButtonIndex]
   );
-  const [statistic, setStatistic] = useState<TicketStatistic>({
-    statusCode: 200,
-    data: {
-      OPEN: 0,
-      PENDING: 0,
-      RESOLVED: 0,
-      TRASH: 0,
-      NEW: 0,
-    },
-  });
-  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    setSelectedRowKeys(newSelectedRowKeys);
-  };
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
-    preserveSelectedRowKeys: true,
-  };
-  useQuery({
+  const { data: dataStatistic } = useQuery({
     queryKey: ["getStatisticTicket"],
     queryFn: () => getStatisticTicket(),
     retry: 3,
@@ -96,6 +95,27 @@ const TrashTicket = () => {
       message.error(t("messages:error.get_ticket"));
     },
   });
+  const [statistic, setStatistic] = useState<TicketStatistic>(
+    dataStatistic ?? {
+      statusCode: 200,
+      data: {
+        OPEN: 0,
+        PENDING: 0,
+        RESOLVED: 0,
+        TRASH: 0,
+        NEW: 0,
+      },
+    }
+  );
+  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+    preserveSelectedRowKeys: true,
+  };
+
   const onChangeTable = useCallback(
     (pagination: any, filters: any, sorter: SorterResult<any>) => {
       if (sorter.order && sorter.columnKey) {
@@ -115,18 +135,6 @@ const TrashTicket = () => {
     [setFilterData]
   ) as TableProps<any>["onChange"];
 
-  const { isFetching: loadingList } = useQuery({
-    queryKey: ["getListTrash", filterData],
-    queryFn: () => getListTrashApi(filterData),
-    retry: 1,
-    onSuccess: (data: GetListTicketResponse) => {
-      setTickets(data.data);
-      setMeta(data.metadata);
-    },
-    onError: () => {
-      message.error(t("messages:error.get_ticket"));
-    },
-  });
   useQuery({
     queryKey: [
       "getTagsTicket",
@@ -196,24 +204,61 @@ const TrashTicket = () => {
   return (
     <>
       <Header title="" back>
-        <div className="flex items-center justify-end flex-1 gap-4">
-          <Input.Search
-            className="max-w-[400px]"
-            placeholder="Search ticket"
-            onSearch={(searchText: string) => {
-              setFilterData((value: any) => {
-                return {
-                  ...value,
-                  query: searchText,
-                  page: 1,
-                };
-              });
-            }}
-          ></Input.Search>
-          <ButtonAdd onClick={() => navigate(TicketRoutePaths.Create)}>
-            Add new
-          </ButtonAdd>
-        </div>
+        {selectedRowKeys.length === 0 || screenWidth <= MediaScreen.LG ? (
+          <div className="flex items-center justify-end flex-1 gap-4">
+            <Input.Search
+              className="max-w-[400px]"
+              placeholder="Search ticket"
+              onSearch={(searchText: string) => {
+                setFilterData((value: any) => {
+                  return {
+                    ...value,
+                    query: searchText,
+                    page: 1,
+                  };
+                });
+              }}
+            ></Input.Search>
+            <ButtonAdd onClick={() => navigate(TicketRoutePaths.Create)}>
+              Add new
+            </ButtonAdd>
+          </div>
+        ) : (
+          <>
+            <div className="flex justify-end w-full gap-2">
+              <ButtonTicket
+                title="Are you sure that you want to permanently remove these tickets?"
+                content="These tickets will be remove permanently. This action cannot be undone."
+                action={() => {
+                  handleDelete(selectedRowKeys as string[]);
+                }}
+                icon={
+                  <div className="flex items-center gap-2">
+                    <CancelIcon fontSize={20} />
+                    <span>Deleted Selected</span>
+                  </div>
+                }
+                textAction="Remove"
+                danger
+                type="primary"
+              />
+              <ButtonTicket
+                title="Are you sure that you want to restore these tickets"
+                content="These tickets will be moved back to the Ticket list. You can continue working with them."
+                action={() => {
+                  handleRestore(selectedRowKeys as string[]);
+                }}
+                icon={
+                  <div className="flex items-center gap-2">
+                    <RestoreIcon fontSize={20} />
+                    <span>Restore Selected</span>
+                  </div>
+                }
+                textAction="Restore"
+              />
+            </div>
+          </>
+        )}
       </Header>
       <div className="mt-6">
         <div className="grid grid-cols-7 gap-4">
@@ -421,7 +466,7 @@ const TrashTicket = () => {
                     align="center"
                     title="Action"
                     render={(_, record: Ticket) => (
-                      <div className="flex">
+                      <div className="flex gap-2">
                         <ButtonTicket
                           title="Are you sure that you want to restore this ticket"
                           content="This ticket will be moved back to the Ticket list. You can continue working with it."
@@ -439,6 +484,8 @@ const TrashTicket = () => {
                           }}
                           icon={<CancelIcon fontSize={16} />}
                           textAction="Remove"
+                          danger
+                          type="primary"
                         />
                       </div>
                     )}
@@ -462,6 +509,44 @@ const TrashTicket = () => {
           </div>
         </div>
       </div>
+      {screenWidth <= MediaScreen.LG && selectedRowKeys.length > 0 && (
+        <div
+          className={`sticky z-50 bottom-0 bg-white right-0 px-3   flex justify-between items-center w-full h-[56px] mt-2`}
+        >
+          <div className="flex justify-between w-full gap-2">
+            <ButtonTicket
+              title="Are you sure that you want to permanently remove these tickets?"
+              content="These tickets will be remove permanently. This action cannot be undone."
+              action={() => {
+                handleDelete(selectedRowKeys as string[]);
+              }}
+              icon={
+                <div className="flex items-center gap-2">
+                  <CancelIcon fontSize={20} />
+                  <span>Deleted Selected</span>
+                </div>
+              }
+              textAction="Remove"
+              danger
+              type="primary"
+            />
+            <ButtonTicket
+              title="Are you sure that you want to restore these tickets"
+              content="These tickets will be moved back to the Ticket list. You can continue working with them."
+              action={() => {
+                handleRestore(selectedRowKeys as string[]);
+              }}
+              icon={
+                <div className="flex items-center gap-2">
+                  <RestoreIcon fontSize={20} />
+                  <span>Restore Selected</span>
+                </div>
+              }
+              textAction="Restore"
+            />
+          </div>
+        </div>
+      )}
     </>
   );
 };
