@@ -2,7 +2,7 @@ import { LeftOutlined } from "@ant-design/icons";
 import { useNavigate } from "@moose-desk/core";
 import { Button } from "antd";
 import classNames from "classnames";
-
+import styles from "./style.module.scss";
 interface HeaderProps {
   back?: boolean;
   backAction?: () => void;
@@ -22,7 +22,7 @@ export const Header = ({
 }: HeaderProps) => {
   const navigate = useNavigate();
   return (
-    <div className={classNames([className, "mb-5"])}>
+    <div className={classNames(styles.MDHeader, className)}>
       <div
         className={classNames([
           "flex items-center mb-0 pb-0",
@@ -37,7 +37,7 @@ export const Header = ({
             <LeftOutlined />
           </Button>
         )}
-        <h2 className={classNames(["translate-y-[4px] truncate"])}>{title}</h2>
+        <h1>{title}</h1>
         {children}
       </div>
     </div>
