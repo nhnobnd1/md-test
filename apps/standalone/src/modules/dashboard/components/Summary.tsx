@@ -8,10 +8,7 @@ import { useQuery } from "react-query";
 import SummaryBlock from "src/components/UI/SummaryBlock/SummaryBlock";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { getDashboardSummary } from "src/modules/dashboard/api/api";
-import {
-  convertSecondsToHoursMinutes,
-  getTimeFilterDefault,
-} from "src/modules/report/helper/convert";
+import { getTimeFilterDefault } from "src/modules/report/helper/convert";
 
 export const Summary = () => {
   const { subDomain } = useSubdomain();
@@ -41,12 +38,8 @@ export const Summary = () => {
       <SummaryBlock
         data={{
           ...summaryData?.data,
-          avgFirstResponseTime: convertSecondsToHoursMinutes(
-            summaryData?.data.avgFirstResponseTime || 0
-          ),
-          avgResolutionTime: convertSecondsToHoursMinutes(
-            summaryData?.data.avgResolutionTime || 0
-          ),
+          avgFirstResponseTime: summaryData?.data.avgFirstResponseTime || 0,
+          avgResolutionTime: summaryData?.data.avgResolutionTime || 0,
         }}
       />
     </div>
