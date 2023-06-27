@@ -450,7 +450,7 @@ export const AppLayout = () => {
             style={{
               height: "100%",
 
-              background: "#161819",
+              background: "#000B16",
               color: "white",
             }}
             selectedKeys={[keys.activeKeys]}
