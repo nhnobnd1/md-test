@@ -1,50 +1,69 @@
 @import "../../../styles/variables.scss";
+@import "../../../styles/mixin.scss";
 .wrapTable {
-    :global {
-        .ant-table-row {
-            cursor: pointer;
-        }
+  :global {
+    .ant-table-row {
+      cursor: pointer;
     }
+  }
+  @include mq(md, "max") {
+    margin: 0 -16px;
+  }
 }
 .formCustomer {
-    :global {
-        .ant-form-item {
-            margin-bottom: 16px;
-        }
+  :global {
+    .ant-form-item {
+      margin-bottom: 16px;
     }
+  }
 }
 .modalCustomer {
-    :global {
-        .ant-modal-content {
-            padding: 0;
-        }
-        .ant-modal-close {
-            width: 24px;
-            height: 24px;
-        }
-        .ant-modal-footer {
-            margin-top: 0;
-        }
+  :global {
+    .ant-modal-content {
+      padding: 0;
     }
-    .modalTitle {
-        padding: 20px;
-        border-bottom: 1px solid $gray-border-2;
+    .ant-modal-close {
+      width: 24px;
+      height: 24px;
     }
-    .modalContent {
-        padding: 20px;
-        border-bottom: 1px solid $gray-border-2;
+    .ant-modal-footer {
+      margin-top: 0;
     }
-    .modalFooter {
-        padding: 20px;
+  }
+  .modalTitle {
+    padding: 20px;
+    border-bottom: 1px solid $gray-border-2;
+    @include mq(md, "max") {
+      padding: 16px;
     }
+  }
+  .modalContent {
+    padding: 20px;
+    border-bottom: 1px solid $gray-border-2;
+    @include mq(md, "max") {
+      padding: 16px;
+    }
+  }
+  .modalFooter {
+    padding: 20px;
+    @include mq(md, "max") {
+      padding: 16px;
+      button:last-child {
+        margin-left: 8px;
+      }
+    }
+  }
 }
 .searchWrap {
-    margin-bottom: 16px;
+  margin-bottom: 16px;
 }
- .pagination {
-     display: flex;
-     align-items: center;
-     justify-content: flex-end;
-     padding-top: 16px;
-    //  padding-right: 16px;
- }
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-top: 16px;
+  @include mq(md, "max") {
+    padding-right: 16px;
+  }
+  //  padding-right: 16px;
+}

@@ -2,6 +2,7 @@ import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import { Input, InputProps } from "antd";
 import React, { useEffect, useState } from "react";
 import Icon from "src/components/UI/Icon";
+import useViewport from "src/hooks/useViewport";
 import styles from "./style.module.scss";
 interface IMDSearchInput extends InputProps {
   placeholder?: string;
@@ -9,6 +10,7 @@ interface IMDSearchInput extends InputProps {
 }
 export const MDSearchInput = React.memo(
   ({ placeholder = "Search", onTypeSearch, ...props }: IMDSearchInput) => {
+    const { isMobile } = useViewport();
     const [querySearch, setQuerySearch] = useState<string>("");
     const debounceValue: string = useDebounce(querySearch, 300);
     const handleChange = (e: any) => {
@@ -27,7 +29,7 @@ export const MDSearchInput = React.memo(
         maxLength={255}
         allowClear
         suffix={<Icon name="search" />}
-        size="large"
+        size={isMobile ? "middle" : "large"}
         {...props}
       />
     );
