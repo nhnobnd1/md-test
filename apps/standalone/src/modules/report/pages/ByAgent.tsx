@@ -5,8 +5,10 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
+import Icon from "src/components/UI/Icon";
 import { usePermission } from "src/hooks/usePerrmisson";
 import { useSubdomain } from "src/hooks/useSubdomain";
+import useViewport from "src/hooks/useViewport";
 import { getReportTopFive } from "src/modules/report/api/api";
 import ChartAgentsTicket from "src/modules/report/components/ChartAgentsTicket/ChartAgentsTicket";
 import { ReportAgentTable } from "src/modules/report/components/ReportAgentTable";
@@ -16,11 +18,12 @@ import {
   getTwoWeeksAfter,
   getTwoWeeksBefore,
 } from "src/modules/report/helper/convert";
+import styles from "./styles.module.scss";
 
 const ByAgentPage = () => {
   const [form] = Form.useForm();
   const { subDomain } = useSubdomain();
-
+  const { isMobile } = useViewport();
   const { timezone } = useGlobalData(false, subDomain || "");
   const { isAgent } = usePermission();
   const { current, twoWeekAgo } = getTimeFilterDefault();
@@ -85,25 +88,40 @@ const ByAgentPage = () => {
   };
   return (
     <>
-      <Header title="Reporting" />
-      <Form form={form} layout="inline">
-        <Form.Item name="from" label="From">
-          <DatePicker
-            format={"MM/DD/YYYY"}
-            disabledDate={disabledStartDate}
-            onChange={handleChangeStartTime}
-          />
-        </Form.Item>
-        <Form.Item name="to" label="To">
-          <DatePicker
-            format={"MM/DD/YYYY"}
-            disabledDate={disabledEndDate}
-            onChange={handleChangeEndTime}
-          />
-        </Form.Item>
-      </Form>
-      <div className="wrap-chart mb-[40px] mt-6">
-        <div className="title text-lg font-semibold mb-6">
+      <Header title="Report By Agents" />
+      <div className={styles.dateWrap}>
+        <Form form={form}>
+          <div className={styles.groupDatePicker}>
+            <span>From:</span>
+            <Form.Item name="from" label="">
+              <DatePicker
+                format={"MM/DD/YYYY"}
+                disabledDate={disabledStartDate}
+                onChange={handleChangeStartTime}
+                suffixIcon={<Icon name="calendar" />}
+                size={isMobile ? "middle" : "large"}
+                // defaultValue={twoWeekAgo}
+              />
+            </Form.Item>
+          </div>
+          <div className={styles.groupDatePicker}>
+            <span>To:</span>
+            <Form.Item name="to" label="">
+              <DatePicker
+                format={"MM/DD/YYYY"}
+                disabledDate={disabledEndDate}
+                onChange={handleChangeEndTime}
+                suffixIcon={<Icon name="calendar" />}
+                size={isMobile ? "middle" : "large"}
+                // defaultValue={current}
+              />
+            </Form.Item>
+          </div>
+        </Form>
+      </div>
+
+      <div className={styles.wrapChart}>
+        <div className={styles.title}>
           Ticket closed per agent per day (Top 5 Agents)
         </div>
         <div className="w-full h-[450px]">
@@ -111,10 +129,7 @@ const ByAgentPage = () => {
         </div>
       </div>
 
-      <div>
-        <div className="title text-lg font-semibold mb-6">
-          Tickets by Agents
-        </div>
+      <div className={styles.wrapChart}>
         <ReportAgentTable rangeTime={filter} />
       </div>
     </>

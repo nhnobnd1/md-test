@@ -9,22 +9,14 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { CustomXAxisTick } from "src/modules/report/components/Customize/CustomXAxisTick";
+import { CustomYAxisTickTime } from "src/modules/report/components/Customize/CustomYAxisTickTime";
 import { convertSecondsToHoursMinutes } from "src/modules/report/helper/convert";
 import ChartFirstResponseTimeRes from "src/modules/report/helper/interface";
 
 interface ChartFirstResponseTimeProps {
   data: ChartFirstResponseTimeRes[];
 }
-const barChartStyle = {
-  margin: {
-    top: 5,
-    right: 30,
-    left: 20,
-    bottom: 5,
-  },
-  width: 500,
-  height: 400,
-};
 export const ChartFirstResponseTime = ({
   data,
 }: ChartFirstResponseTimeProps) => {
@@ -61,19 +53,28 @@ export const ChartFirstResponseTime = ({
   return (
     <ResponsiveContainer width="100%" height="100%">
       <AreaChart
-        width={barChartStyle.width}
-        height={barChartStyle.height}
         data={chartData}
-        margin={barChartStyle.margin}
+        margin={{
+          top: 20,
+          right: 20,
+        }}
       >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
+        <CartesianGrid vertical={false} color="#F0F0F0" />
+        <XAxis dataKey="name" tickLine={false} tick={<CustomXAxisTick />} />
         <YAxis
-          tickFormatter={formatYAxis}
           domain={maxYValue ? [0, maxYValue] : undefined}
+          tickLine={false}
+          tick={<CustomYAxisTickTime />}
         />
         <Tooltip content={<CustomTooltip />} />
-        <Area type="monotone" dataKey="time" stroke="#43A047" fill="#43A047" />
+        <Area
+          type="monotone"
+          dataKey="time"
+          stroke="#FA7D00"
+          fill="none"
+          strokeWidth={2}
+          dot={{ r: 4, fill: "#FA7D00" }}
+        />
       </AreaChart>
     </ResponsiveContainer>
   );

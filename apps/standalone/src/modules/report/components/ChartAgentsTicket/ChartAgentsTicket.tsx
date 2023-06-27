@@ -9,6 +9,9 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { CustomTooltip } from "src/modules/report/components/Customize/CustomTooltip";
+import { CustomXAxisTick } from "src/modules/report/components/Customize/CustomXAxisTick";
+import { CustomYAxisTick } from "src/modules/report/components/Customize/CustomYAxisTick";
 import ChartTopFiveRes from "src/modules/report/helper/interface";
 interface ChartAgentsTicketProps {
   data: ChartTopFiveRes[];
@@ -64,16 +67,17 @@ const ChartAgentsTicket = ({ data }: ChartAgentsTicketProps) => {
   };
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <BarChart
-        width={barChartStyle.width}
-        height={barChartStyle.height}
-        data={memoChartData}
-        margin={barChartStyle.margin}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
-        <YAxis />
-        <Tooltip />
+      <BarChart data={memoChartData}>
+        <CartesianGrid vertical={false} color="#F0F0F0" />
+        <XAxis
+          dataKey="name"
+          color="black"
+          axisLine={false}
+          tickLine={false}
+          tick={<CustomXAxisTick />}
+        />
+        <YAxis axisLine={false} tickLine={false} tick={<CustomYAxisTick />} />
+        <Tooltip content={<CustomTooltip />} />
         <Legend />
         {_renderListBarChart()}
       </BarChart>

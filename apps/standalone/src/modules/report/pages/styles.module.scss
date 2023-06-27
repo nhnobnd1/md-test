@@ -1,0 +1,125 @@
+@import "../../../styles/variables.scss";
+@import "../../../styles/mixin.scss";
+.dateWrap {
+  margin-top: 20px;
+  .groupDatePicker {
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+    &:first-child {
+        margin-right: 24px;
+        @include mq(md, "max") {
+                margin-right: 12px;
+            }
+    }
+    @include mq(md, "max") {
+           margin-bottom: 16px;
+        }
+    span {
+        margin-right: 10px;
+    }
+  }
+  :global {
+    .ant-form {
+      display: flex;
+      .ant-form-item:first-child {
+        margin-right: 24px;
+        @include mq(md, "max") { 
+            margin-right: 0;
+        }
+      }
+    }
+    .ant-form-item {
+        margin-bottom: 0;
+    }
+    .ant-form-item-label {
+      display: flex;
+      align-items: center;
+      @include mq(md, "max") {
+        flex: unset !important;
+        margin-right: 5px;
+      }
+    }
+    @include mq(md, "max") {
+      .ant-form {
+        justify-content: space-between;
+      }
+      
+    }
+        .ant-picker-suffix,
+        .ant-picker-clear {
+            margin-right: 0 !important;
+            background: transparent;
+        }
+  }
+}
+.summary {
+  margin-bottom: 24px;
+  // margin-top: 24px;
+  @include mq(md, "max") {
+    margin-bottom: 8px;
+  }
+}
+.wrapChart {
+  padding: 24px;
+  background-color: $white-color;
+  border-radius: 8px;
+  box-shadow: 0px -1px 0px 0px #e1e3e5 inset;
+  margin-bottom: 24px;
+  @include mq(md, "max") {
+    padding: 16px;
+    margin: 0 -16px 16px;
+    border-radius: 0;
+  }
+  .title {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+    margin-bottom: 24px;
+  }
+}
+.wrapTopFilter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  @include mq(md, "max") {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 12px;
+  }
+  .title {
+    margin-bottom: 0;
+    @include mq(md, "max") {
+      margin-bottom: 12px;
+    }
+  }
+  .searchWrap {
+    width: 284px;
+    @include mq(md, "max") {
+      width: 100%;
+    }
+  }
+}
+.reportTagTableWrap {
+  border-radius: 8px;
+  background-color: $white-color;
+  padding: 24px;
+  @include mq(md, "max") {
+    padding: 16px;
+    margin: 0 -16px 16px;
+    border-radius: 0;
+  }
+  .searchTagWrap {
+    display: flex;
+    justify-content: flex-end;
+  }
+  .searchTag {
+    width: 284px;
+    margin-bottom: 24px;
+    @include mq(md, "max") {
+      width: 100%;
+      margin-bottom: 12px;
+    }
+  }
+}

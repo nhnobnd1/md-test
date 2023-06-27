@@ -10,6 +10,7 @@ import env from "src/core/env";
 import { usePermission } from "src/hooks/usePerrmisson";
 import { getListAgent } from "src/modules/report/api/api";
 import ListAgentTableRes from "src/modules/report/helper/interface";
+import styles from "../../pages/styles.module.scss";
 interface ReportAgentTableProps {
   rangeTime: {
     startTime: string;
@@ -141,8 +142,11 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
 
   return (
     <>
-      <div className="mb-10">
-        <MDSearchInput onTypeSearch={handleSearchInput} />
+      <div className={styles.wrapTopFilter}>
+        <div className={styles.title}>Tickets By Agents</div>
+        <div className={styles.searchWrap}>
+          <MDSearchInput onTypeSearch={handleSearchInput} />
+        </div>
       </div>
       <section>
         <Table
