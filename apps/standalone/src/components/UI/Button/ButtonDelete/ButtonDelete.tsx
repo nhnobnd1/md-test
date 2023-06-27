@@ -1,6 +1,7 @@
 import { DeleteOutlined } from "@ant-design/icons";
 import { Button, ButtonProps, Popconfirm } from "antd";
 import classNames from "classnames";
+import Icon from "src/components/UI/Icon";
 import "./ButtonDelete.scss";
 interface ButtonDeleteProps extends Omit<ButtonProps, "icon"> {
   onlyIcon?: boolean;
@@ -31,10 +32,10 @@ export const ButtonDelete = ({
           onConfirm={onClick}
         >
           <Button
-            className={classNames([className, "btn-delete"])}
-            danger
-            type="primary"
-            icon={<DeleteOutlined />}
+            // className={classNames([className, "btn-delete"])}
+            // danger
+            type="text"
+            icon={<Icon name="delete" />}
             {...props}
           ></Button>
         </Popconfirm>

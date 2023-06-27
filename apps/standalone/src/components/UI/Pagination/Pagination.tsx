@@ -4,7 +4,7 @@ import {
 } from "antd";
 import { memo, useCallback, useMemo } from "react";
 import Select, { OptionType } from "src/components/UI/Select/Select";
-
+import styles from "./style.module.scss";
 interface PaginationProps extends Omit<APaginationProps, "onChange"> {
   total: number;
   pageSize: number;
@@ -64,7 +64,9 @@ const Pagination = ({
   const ShowSize = ({ total, options }: ShowSizeProps) => {
     return (
       <div className="flex items-center">
-        <span className="mr-2 whitespace-nowrap">{total} Results</span>
+        <span className="mr-2 whitespace-nowrap md-result-record">
+          {total} Results
+        </span>
         <Select
           className="mr-2"
           size={
@@ -85,6 +87,7 @@ const Pagination = ({
 
   return (
     <APagination
+      className={styles.MDPagination}
       showTotal={(total) => `${total} Results`}
       {...props}
       total={total}

@@ -312,6 +312,149 @@ class Icon extends React.Component<IconProps> {
         />
       </svg>
     ),
+    search: (
+      <svg
+        width={19}
+        height={18}
+        viewBox="0 0 19 18"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <g clipPath="url(#clip0_180039_37110)">
+          <rect
+            width={18}
+            height={18}
+            transform="translate(0.00170898 0.000488281)"
+            fill="white"
+            fillOpacity={0.01}
+          />
+          <path
+            d="M15.7517 8.62549C15.7517 10.0347 15.3338 11.4122 14.5509 12.5839C13.768 13.7556 12.6553 14.6689 11.3533 15.2081C10.0514 15.7474 8.61881 15.8885 7.23669 15.6136C5.85458 15.3387 4.58503 14.6601 3.58858 13.6636C2.59213 12.6672 1.91354 11.3976 1.63862 10.0155C1.3637 8.63339 1.5048 7.20079 2.04407 5.89887C2.58334 4.59695 3.49657 3.48417 4.66827 2.70127C5.83997 1.91836 7.21752 1.50049 8.62671 1.50049C10.5164 1.50049 12.3287 2.25116 13.6648 3.58735C15.001 4.92355 15.7517 6.73582 15.7517 8.62549V8.62549Z"
+            stroke="#595959"
+            strokeWidth={1.3}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M16.5017 16.5005L15.0017 15.0005"
+            stroke="#595959"
+            strokeWidth={1.3}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </g>
+        <defs>
+          <clipPath id="clip0_180039_37110">
+            <rect
+              width={18}
+              height={18}
+              fill="white"
+              transform="translate(0.00170898 0.000488281)"
+            />
+          </clipPath>
+        </defs>
+      </svg>
+    ),
+    add: (
+      <svg
+        width={18}
+        height={18}
+        viewBox="0 0 18 18"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M4.5 9H13.5"
+          stroke="white"
+          strokeWidth={1.5}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M9 13.5V4.5"
+          stroke="white"
+          strokeWidth={1.5}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
+    edit: (
+      <svg
+        width={20}
+        height={20}
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M11.05 2.99987L4.20833 10.2415C3.92083 10.5829 3.72827 10.9939 3.65 11.4332L3.34167 14.134C3.30124 14.344 3.3144 14.5608 3.37991 14.7644C3.44542 14.968 3.56117 15.1517 3.71648 15.2987C3.87179 15.4457 4.06164 15.5512 4.2685 15.6055C4.47535 15.6597 4.69254 15.6609 4.9 15.609L7.58333 15.1507C8.02028 15.0548 8.42158 14.8382 8.74166 14.5257L15.5833 7.28404C16.7667 6.03404 17.3 4.60904 15.4583 2.86737C13.625 1.14154 12.2333 1.74987 11.05 2.99987Z"
+          stroke="#1890FF"
+          strokeWidth={1.5}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M9.90833 4.2085C10.083 5.32587 10.6238 6.35361 11.4458 7.13037C12.2678 7.90713 13.3245 8.38894 14.45 8.50016"
+          stroke="#1890FF"
+          strokeWidth={1.5}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M2.5 18.3335H17.5"
+          stroke="#1890FF"
+          strokeWidth={1.5}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
+    delete: (
+      <svg
+        width={20}
+        height={20}
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M17.5 4.98356C14.725 4.70856 11.9333 4.56689 9.15 4.56689C7.49685 4.56705 5.84475 4.65049 4.2 4.81689L2.5 4.98356"
+          stroke="#FF4D4F"
+          strokeWidth={1.3}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M7.08331 4.1415L7.26665 3.04984C7.39998 2.25817 7.49998 1.6665 8.90831 1.6665H11.0916C12.5 1.6665 12.6083 2.2915 12.7333 3.05817L12.9166 4.1415"
+          stroke="#FF4D4F"
+          strokeWidth={1.3}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M15.7084 7.6167L15.1667 16.0084C15.075 17.3167 15 18.3334 12.675 18.3334H7.32502C5.00002 18.3334 4.92502 17.3167 4.83335 16.0084L4.29169 7.6167"
+          stroke="#FF4D4F"
+          strokeWidth={1.3}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M8.60834 13.75H11.3833"
+          stroke="#FF4D4F"
+          strokeWidth={1.3}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M7.91669 10.4165H12.0834"
+          stroke="#FF4D4F"
+          strokeWidth={1.3}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
   };
 
   getProperty(property: keyof IconProps, value: any): any {

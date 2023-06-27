@@ -1,11 +1,12 @@
 import { createdDatetimeFormat } from "@moose-desk/core";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import { Ticket } from "@moose-desk/repo";
-import { Button, Table } from "antd";
+import { Button } from "antd";
 import Link from "antd/es/typography/Link";
 import classNames from "classnames";
 import { useState } from "react";
 import { useQuery } from "react-query";
+import { Table } from "src/components/UI/Table";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { getTodoList } from "src/modules/dashboard/api/api";
 import styles from "./styles.module.scss";

@@ -1,7 +1,7 @@
-import { PlusOutlined } from "@ant-design/icons";
 import { Button, ButtonProps } from "antd";
 import classNames from "classnames";
-import "./ButtonAdd.scss";
+import Icon from "src/components/UI/Icon";
+import styles from "./style.module.scss";
 interface ButtonAddProps extends Omit<ButtonProps, "icon"> {
   onlyIcon?: boolean;
   className?: string;
@@ -16,10 +16,11 @@ export const ButtonAdd = ({
 }: ButtonAddProps) => {
   return (
     <Button
-      className={classNames([className, "btn-add"])}
+      className={classNames(styles.buttonAdd, className)}
       type="primary"
+      icon={<Icon name="add" />}
+      size="large"
       {...props}
-      icon={<PlusOutlined style={{ color: "#fff" }} />}
     >
       {!onlyIcon && <>{children && children}</>}
     </Button>

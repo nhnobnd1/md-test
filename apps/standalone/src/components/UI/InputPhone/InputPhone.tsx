@@ -1,10 +1,11 @@
 import { InputProps } from "antd";
+import classNames from "classnames";
 import { memo, useEffect, useState } from "react";
 import { InputTextNumber } from "src/components/UI/InputTextNumber";
 import Select from "src/components/UI/Select/Select";
 import constaint from "src/constaint";
 import { Country } from "src/constaint/country";
-import "./InputPhone.scss";
+import styles from "./style.module.scss";
 interface InputPhoneProps
   extends Omit<InputProps, "value" | "onChange" | "disabled"> {
   value?: string;
@@ -25,22 +26,6 @@ const InputPhone = ({
   onChange,
   ...props
 }: InputPhoneProps) => {
-  // init data
-  // filter
-  // const [dataSelect, setDataSelect] = useState(optionSelectPhone);
-  // const [filterValue, setFilterValue] = useState("");
-
-  // const handleSearchChange = useCallback(
-  //   (value: string) => {
-  //     // setFilterValue(value);
-  //     // const filterRegex = new RegExp(value.toLowerCase(), "g");
-  //     // setDataSelect(optionFilter);
-  //   },
-  //   [optionSelectPhone]
-  // );
-  // const { subDomain } = useSubdomain();
-  // const { timezone } = useGlobalData(false, subDomain || "");
-
   const [flagValue, setFlagValue] = useState<string>("1");
   const [valueSelect, setValueSelect] = useState("CA");
   const [valueField, setValueField] = useState("");
@@ -77,16 +62,14 @@ const InputPhone = ({
   }, [value]);
 
   return (
-    <div className="flex flex-wrap gap-3">
+    <div className={classNames(styles.MDPhone, "flex")}>
       <Select
         showSearch
-        // searchValue={filterValue}
-        // onSearch={handleSearchChange}
         value={valueSelect}
         onChange={handleChangeValueSelect}
         disabled={disabled}
         style={{ maxWidth: "300px", maxHeight: "330px" }}
-        className="flex"
+        className={styles.phoneSelect}
         optionFilterProp="children"
       >
         {optionSelectPhone.map((item) => (

@@ -4,14 +4,14 @@ import {
   useSearchParams,
   useToggle,
 } from "@moose-desk/core";
-import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import {
   BaseListCustomerRequest,
   Customer,
   GetListCustomerRequest,
 } from "@moose-desk/repo";
-import { TableProps } from "antd";
+import { Button, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
+import classNames from "classnames";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "react-query";
@@ -25,6 +25,7 @@ import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { usePermission } from "src/hooks/usePerrmisson";
+import useViewport from "src/hooks/useViewport";
 import {
   deleteCustomer,
   getListCustomer,
@@ -32,7 +33,7 @@ import {
 } from "src/modules/customer/api/api";
 import PopupCustomer from "src/modules/customer/component/PopupCustomer";
 import { QUERY_KEY } from "src/modules/customer/helper/constant";
-
+import styles from "./style.module.scss";
 interface CustomerIndexPageProps {}
 
 const defaultFilter: () => GetListCustomerRequest = () => ({
@@ -46,6 +47,9 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
   const message = useMessage();
   const notification = useNotification();
   const navigate = useNavigate();
+  const { state: isSearch, toggle: onToggleSearch } = useToggle(false);
+  const { isMobile } = useViewport();
+  const { t } = useTranslation();
 
   const {
     state: popupCustomer,
@@ -68,22 +72,19 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
     lastName: "",
     phoneNumber: "",
   });
-  const [querySearch, setQuerySearch] = useState<string>("");
-  const debounceValue: string = useDebounce(querySearch, 500);
   const [searchParams] = useSearchParams();
   const querySearchCustomer = searchParams.get("id");
   const [filterData, setFilterData] =
     useState<BaseListCustomerRequest>(defaultFilter);
-  const { t } = useTranslation();
 
   const {
     data: listCustomer,
     refetch: refetchListCustomer,
     isLoading: isFetchingListCustomer,
   }: any = useQuery({
-    queryKey: [QUERY_KEY.LIST_CUSTOMER, filterData, debounceValue],
-    queryFn: () => getListCustomer({ ...filterData, query: debounceValue }),
-    // keepPreviousData: true,
+    queryKey: [QUERY_KEY.LIST_CUSTOMER, filterData],
+    queryFn: () => getListCustomer(filterData),
+    keepPreviousData: true,
     onError: () => {
       message.error(t("messages:error.get_customer"));
     },
@@ -178,9 +179,8 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
       ),
     },
   ];
-  const handleSearchInput = (e: any) => {
-    const newQuery = e.target.value;
-    setQuerySearch(newQuery);
+  const handleSearchInput = (query: string) => {
+    setFilterData((pre) => ({ ...pre, query }));
   };
   const handleEdit = (record: Customer) => {
     setDataPopup(record);
@@ -236,15 +236,33 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
         }}
         querySearchCustomer={querySearchCustomer}
       />
-      <Header title="Customer">
-        <div className="flex-1 flex justify-end">
-          <ButtonAdd onClick={handleAddCustomer}>Add customer</ButtonAdd>
+      {!isSearch ? (
+        <div className={styles.topPage}>
+          <Header title="Customers" />
+          <div className={classNames(styles.groupTopPage, "d-flex")}>
+            {isMobile ? (
+              <Button onClick={onToggleSearch}>Search</Button>
+            ) : (
+              <div className={styles.searchInputWrap}>
+                <MDSearchInput onTypeSearch={handleSearchInput} />
+              </div>
+            )}
+            <div
+              className={classNames(styles.buttonAdd, "md-btn md-btn-primary")}
+            >
+              <ButtonAdd onClick={handleAddCustomer}>Add customer</ButtonAdd>
+            </div>
+          </div>
         </div>
-      </Header>
-      <div className="mb-10">
-        <MDSearchInput onChange={handleSearchInput} value={querySearch} />
-      </div>
-      <div>
+      ) : (
+        <div className={styles.groupSearchOnMobile}>
+          <Button onClick={onToggleSearch}>Search</Button>
+          <div className={styles.searchOnMobile}>
+            <MDSearchInput onTypeSearch={handleSearchInput} />
+          </div>
+        </div>
+      )}
+      <div className={styles.wrapTable}>
         <Table
           dataSource={(listCustomer as any)?.data?.data}
           loading={isFetchingListCustomer}
@@ -252,13 +270,15 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
           columns={columns}
           scroll={{ x: 1024 }}
         />
-        <Pagination
-          className="mt-4 flex justify-end"
-          currentPage={filterData.page ?? 1}
-          total={(listCustomer as any)?.data?.metadata?.totalCount || 0}
-          pageSize={filterData.limit ?? env.DEFAULT_PAGE_SIZE}
-          onChange={handleChangePage}
-        />
+
+        <div className={styles.pagination}>
+          <Pagination
+            currentPage={filterData.page ?? 1}
+            total={(listCustomer as any)?.data?.metadata?.totalCount || 0}
+            pageSize={filterData.limit ?? env.DEFAULT_PAGE_SIZE}
+            onChange={handleChangePage}
+          />
+        </div>
       </div>
     </div>
   );

@@ -1,0 +1,16 @@
+@import "../../../styles/variables.scss";
+.MDPagination {
+  :global {
+    .ant-pagination-total-text {
+      color: $opacity-black;
+    }
+    .ant-pagination-prev,
+    .ant-pagination-next,
+    .ant-pagination-item {
+      border: 1px solid $gray-border;
+    }
+    .ant-pagination-item-active {
+        border-color: $primary;
+    }
+  }
+}
