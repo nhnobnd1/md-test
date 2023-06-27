@@ -6,12 +6,15 @@ import { SorterResult } from "antd/es/table/interface";
 import { useForm } from "antd/lib/form/Form";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
+import { Header } from "src/components/UI/Header";
+import Icon from "src/components/UI/Icon";
 import { MDSearchInput } from "src/components/UI/MDSearchInput";
 import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
 import env from "src/core/env";
 import { usePermission } from "src/hooks/usePerrmisson";
 import { useSubdomain } from "src/hooks/useSubdomain";
+import useViewport from "src/hooks/useViewport";
 import { getReportByTags } from "src/modules/report/api/api";
 import {
   convertTimeStamp,
@@ -19,6 +22,8 @@ import {
   getTwoWeeksAfter,
   getTwoWeeksBefore,
 } from "src/modules/report/helper/convert";
+import styles from "./styles.module.scss";
+
 interface ByTagsProps {}
 interface ITableFilter {
   page: number;
@@ -33,6 +38,7 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
   const { subDomain } = useSubdomain();
 
   const { timezone } = useGlobalData(false, subDomain || "");
+  const { isMobile } = useViewport();
 
   const [form] = useForm();
   const { isAgent } = usePermission();
@@ -180,34 +186,45 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
   };
   return (
     <>
-      <section className="flex-start mb-10 justify-between">
-        <div>
-          <Form form={form} layout="inline">
-            <Form.Item name="from" label="From">
-              <DatePicker
-                format={"MM/DD/YYYY"}
-                disabledDate={disabledStartDate}
-                onChange={handleChangeStartTime}
-                // allowClear={false}
-                // defaultValue={dayjs().tz(timezone).startOf("month")}
-              />
-            </Form.Item>
-            <Form.Item name="to" label="To">
-              <DatePicker
-                format={"MM/DD/YYYY"}
-                disabledDate={disabledEndDate}
-                onChange={handleChangeEndTime}
-                // allowClear={false}
-                // defaultValue={dayjs().tz(timezone).endOf("month")}
-              />
-            </Form.Item>
+      <Header title="Report By Tags" />
+      <section className="flex-start">
+        <div className={styles.dateWrap}>
+          <Form form={form}>
+            <div className={styles.groupDatePicker}>
+              <span>From:</span>
+              <Form.Item name="from" label="">
+                <DatePicker
+                  format={"MM/DD/YYYY"}
+                  disabledDate={disabledStartDate}
+                  onChange={handleChangeStartTime}
+                  suffixIcon={<Icon name="calendar" />}
+                  size={isMobile ? "middle" : "large"}
+                  // defaultValue={twoWeekAgo}
+                />
+              </Form.Item>
+            </div>
+            <div className={styles.groupDatePicker}>
+              <span>To:</span>
+              <Form.Item name="to" label="">
+                <DatePicker
+                  format={"MM/DD/YYYY"}
+                  disabledDate={disabledEndDate}
+                  onChange={handleChangeEndTime}
+                  suffixIcon={<Icon name="calendar" />}
+                  size={isMobile ? "middle" : "large"}
+                  // defaultValue={current}
+                />
+              </Form.Item>
+            </div>
           </Form>
         </div>
-        <div className="">
-          <MDSearchInput onTypeSearch={handleSearchInput} />
-        </div>
       </section>
-      <section>
+      <section className={styles.reportTagTableWrap}>
+        <div className={styles.searchTagWrap}>
+          <div className={styles.searchTag}>
+            <MDSearchInput onTypeSearch={handleSearchInput} />
+          </div>
+        </div>
         <Table
           dataSource={memoChartData}
           columns={columns}

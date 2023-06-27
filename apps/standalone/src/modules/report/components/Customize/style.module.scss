@@ -1,0 +1,44 @@
+.tooltip {
+  border-radius: 8px;
+  padding: 16px 16px 4px;
+  background-color: #ffffff;
+  width: 272px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.05), 0px 1px 2px rgba(0, 0, 0, 0.15);
+
+  .time {
+    font-size: 16px;
+    font-weight: 600;
+    color: #202223;
+    margin-bottom: 20px;
+  }
+  .item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .box {
+    width: 16px;
+    height: 16px;
+    border-radius: 2px;
+    margin-right: 12px;
+  }
+  .group {
+    display: flex;
+    align-items: center;
+    width: 170px;
+    justify-content: space-between;
+    .name {
+      color: #6d7175;
+      padding-right: 5px;
+    }
+
+    .value {
+      font-size: 16px;
+      color: #202223;
+      font-weight: 500;
+    }
+  }
+}
+*:focus-visible {
+  outline: none;
+}

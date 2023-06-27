@@ -10,20 +10,14 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { CustomTooltip } from "src/modules/report/components/Customize/CustomTooltip";
+import { CustomXAxisTick } from "src/modules/report/components/Customize/CustomXAxisTick";
+import { CustomYAxisTick } from "src/modules/report/components/Customize/CustomYAxisTick";
 import ChartSupportVolumeRes from "src/modules/report/helper/interface";
 interface ChartSupportVolumeProps {
   data: ChartSupportVolumeRes[];
 }
-const barChartStyle = {
-  margin: {
-    top: 5,
-    right: 30,
-    left: 20,
-    bottom: 5,
-  },
-  width: 500,
-  height: 400,
-};
+
 export const ChartSupportVolume = ({ data }: ChartSupportVolumeProps) => {
   const chartData = data?.map((item: ChartSupportVolumeRes) => {
     return {
@@ -37,33 +31,52 @@ export const ChartSupportVolume = ({ data }: ChartSupportVolumeProps) => {
   return (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart
-        width={barChartStyle.width}
-        height={barChartStyle.height}
+        // width={500}
+        height={450}
+        barGap={10}
         data={chartData}
-        margin={barChartStyle.margin}
+        margin={{
+          // left: -20,
+          // right: -20,
+          top: 20,
+        }}
       >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
+        <XAxis
+          dataKey="name"
+          color="black"
+          tickLine={false}
+          tick={<CustomXAxisTick />}
+        />
+        <CartesianGrid vertical={false} color="#F0F0F0" />
+        <YAxis tick={<CustomYAxisTick />} />
+        <Tooltip content={<CustomTooltip />} />
         <Bar
           name="Ticket Created"
           dataKey="uv"
-          fill="#42A5F5"
-          radius={[5, 5, 0, 0]}
+          fill="#FA7D00"
+          radius={[2, 2, 0, 0]}
+          barSize={32}
         />
         <Bar
           name="Ticket Responded"
           dataKey="pv"
-          fill="#FFC107"
-          radius={[5, 5, 0, 0]}
+          fill="#2C6ECB"
+          radius={[2, 2, 0, 0]}
+          barSize={32}
         />
         <Bar
           name="Ticket Closed"
           dataKey="cd"
-          fill="#8E24AA"
-          radius={[5, 5, 0, 0]}
+          fill="#D72C0D"
+          radius={[2, 2, 0, 0]}
+          barSize={32}
+        />
+        <Legend
+          align="left"
+          formatter={(value) => (
+            <span style={{ color: "#141414" }}>{value}</span>
+          )}
+          iconSize={16}
         />
       </BarChart>
     </ResponsiveContainer>

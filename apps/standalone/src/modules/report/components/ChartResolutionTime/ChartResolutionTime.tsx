@@ -9,21 +9,13 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { CustomXAxisTick } from "src/modules/report/components/Customize/CustomXAxisTick";
+import { CustomYAxisTickTime } from "src/modules/report/components/Customize/CustomYAxisTickTime";
 import { convertSecondsToHoursMinutes } from "src/modules/report/helper/convert";
 import ChartResolutionTimeRes from "src/modules/report/helper/interface";
 interface ChartResolutionTimeProps {
   data: ChartResolutionTimeRes[];
 }
-const barChartStyle = {
-  margin: {
-    top: 5,
-    right: 30,
-    left: 20,
-    bottom: 5,
-  },
-  width: 500,
-  height: 400,
-};
 export const ChartResolutionTime = ({ data }: ChartResolutionTimeProps) => {
   const chartData: any[] = data?.map((item: ChartResolutionTimeRes) => {
     return {
@@ -63,19 +55,31 @@ export const ChartResolutionTime = ({ data }: ChartResolutionTimeProps) => {
   return (
     <ResponsiveContainer width="100%" height="100%">
       <AreaChart
-        width={barChartStyle.width}
-        height={barChartStyle.height}
+        // width={500}
+        // height={400}
         data={chartData}
-        margin={barChartStyle.margin}
+        margin={{
+          right: 20,
+          top: 20,
+        }}
       >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
+        <CartesianGrid vertical={false} color="#F0F0F0" />
+        <XAxis dataKey="name" tickLine={false} tick={<CustomXAxisTick />} />
         <YAxis
-          tickFormatter={formatYAxis}
           domain={maxYValue ? [0, maxYValue] : undefined}
+          tickLine={false}
+          tick={<CustomYAxisTickTime />}
+          // tickFormatter={formatYAxis}
         />
         <Tooltip content={<CustomTooltip />} />
-        <Area type="monotone" dataKey="time" stroke="#4DD0E1" fill="#4DD0E1" />
+        <Area
+          type="monotone"
+          dataKey="time"
+          stroke="#FA7D00"
+          fill="none"
+          strokeWidth={2}
+          dot={{ r: 4, fill: "#FA7D00" }}
+        />
       </AreaChart>
     </ResponsiveContainer>
   );
