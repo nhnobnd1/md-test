@@ -78,6 +78,7 @@ export const ButtonModalDelete = ({
           setOpenModal(false);
           onConfirm && onConfirm();
         }}
+        width={386}
         okText={okeText ?? textDelete}
         {...modalProps}
       />
