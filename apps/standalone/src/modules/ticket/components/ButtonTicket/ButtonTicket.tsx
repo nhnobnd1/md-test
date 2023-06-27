@@ -1,7 +1,7 @@
-import { Button, Modal } from "antd";
+import { Button, Modal, ButtonProps } from "antd";
 import { FC, ReactNode, useState } from "react";
 
-interface ButtonTicketProps {
+interface ButtonTicketProps extends Omit<ButtonProps, "icon"> {
   action: () => void;
   icon: ReactNode;
   title: string;
@@ -15,6 +15,7 @@ export const ButtonTicket: FC<ButtonTicketProps> = ({
   title,
   content,
   textAction,
+  ...props
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -32,8 +33,8 @@ export const ButtonTicket: FC<ButtonTicketProps> = ({
   };
   return (
     <>
-      <Button type="text" onClick={showModal} className="p-1">
-        <div className="flex items-center">{icon}</div>
+      <Button type="default" onClick={showModal} className="p-0" {...props}>
+        <div className="flex items-center justify-center px-2">{icon}</div>
       </Button>
       <Modal
         title={title}

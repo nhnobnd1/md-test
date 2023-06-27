@@ -611,25 +611,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
           ) as any
         }
         primaryAction={
-          selectedResources.length === 0 ? (
-            <div className="flex gap-2 items-center justify-end">
-              <HeaderListTicket
-                setShowTitle={setShowTitle}
-                handleSearch={handleFiltersQueryChange}
-                handleAddNew={() => {
-                  navigate(generatePath(TicketRoutePaths.Create));
-                }}
-              >
-                <ModalFilter
-                  handleResetModal={handleResetModal}
-                  customers={customers}
-                  tags={tags}
-                  handleApply={handleApply}
-                  filterObject={filterObject}
-                />
-              </HeaderListTicket>
-            </div>
-          ) : screenWidth <= MediaScreen.LG ? (
+          selectedResources.length === 0 || screenWidth <= MediaScreen.LG ? (
             <div className="flex gap-2 items-center justify-end">
               <HeaderListTicket
                 setShowTitle={setShowTitle}

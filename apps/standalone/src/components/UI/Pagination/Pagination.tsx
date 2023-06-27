@@ -1,9 +1,11 @@
+import { MediaScreen } from "@moose-desk/core";
 import {
   Pagination as APagination,
   PaginationProps as APaginationProps,
 } from "antd";
 import { memo, useCallback, useMemo } from "react";
 import Select, { OptionType } from "src/components/UI/Select/Select";
+import useScreenType from "src/hooks/useScreenType";
 
 interface PaginationProps extends Omit<APaginationProps, "onChange"> {
   total: number;
@@ -39,6 +41,7 @@ const Pagination = ({
       ];
     }
   }, [props.pageSizeOptions]);
+  const [screenType, screenWidth] = useScreenType();
 
   const handleChangePagination = useCallback(
     (page: number, pageSize: number) => {
@@ -96,6 +99,7 @@ const Pagination = ({
       onChange={handleChangePagination}
       onShowSizeChange={handleSizeChange}
       showSizeChanger={true}
+      simple={screenWidth <= MediaScreen.MD}
     />
   );
 };

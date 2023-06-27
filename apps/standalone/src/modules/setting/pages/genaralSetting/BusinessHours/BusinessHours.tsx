@@ -1,16 +1,16 @@
-import { useJob, useMount, useRole, useToggle } from "@moose-desk/core";
+import { useMount, useRole, useToggle } from "@moose-desk/core";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import {
   AutoReply,
   BusinessCalendar,
   BusinessHoursType,
+  GetListBusinessCalendarResponse,
   Holidays,
 } from "@moose-desk/repo";
-import BusinessCalendarRepository from "@moose-desk/repo/businessCalendar/BusinessCalendarRepository";
 import { Button, Card, Input, Skeleton, Space, Tabs } from "antd";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { catchError, map, of } from "rxjs";
+import { useMutation, useQuery } from "react-query";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
 import timeZoneList from "src/constaint/timeZone";
@@ -22,6 +22,10 @@ import AutoReplyTab from "src/modules/setting/component/AutoReply/AutoReplyTab";
 import BusinessHoursTab from "src/modules/setting/component/BusinessHours/BusinessHoursTab";
 import HolidayTab from "src/modules/setting/component/Holidays/HolidayTab";
 import SelectTimeZone from "src/modules/setting/component/SelectTimeZone/SelectTimeZone";
+import {
+  getListBusinessCalendar,
+  updateListBusinessCalendar,
+} from "src/modules/setting/helper/api";
 
 const BusinessHours = () => {
   const message = useMessage();
@@ -29,20 +33,63 @@ const BusinessHours = () => {
   const { subDomain } = useSubdomain();
   const { refetchGlobal } = useGlobalData(false, subDomain || "");
   // main code
-  const [dataBusinessCalendar, setDataBusinessCalendar] =
-    useState<BusinessCalendar>();
+  const {
+    data,
+    refetch: refetchBusinessCalendar,
+    isLoading: processing,
+  } = useQuery({
+    queryKey: ["getListBusinessCalendar"],
+    queryFn: () => getListBusinessCalendar(),
+    retry: 3,
+    enabled: false,
+    onSuccess: (data: GetListBusinessCalendarResponse) => {
+      setDataBusinessCalendar({ ...data.data[0] });
+      setDataAutoReply([...data.data[0].autoReply]);
+      setDataHolidays([...data.data[0].holidays]);
+      setDataBusinessHoursAutoReplyCode(
+        data.data[0].businessHoursAutoReplyCode
+      );
+    },
+    onError: () => {
+      message.error(t("messages:error.get_ticket"));
+    },
+  });
+  const update = useMutation({
+    mutationFn: (payload) => updateListBusinessCalendar(payload),
+    onSuccess: () => {
+      message.loading.hide();
+      refetchBusinessCalendar();
+      notification.success(t("messages:success.update_business_calendar"));
+      refetchGlobal();
+    },
+
+    onError: () => {
+      message.loading.hide();
+      notification.error(t("messages:error.update_business_calendar"), {
+        description: "Update failed!",
+        style: {
+          width: 450,
+        },
+      });
+    },
+  });
+  const [dataBusinessCalendar, setDataBusinessCalendar] = useState<
+    BusinessCalendar | undefined
+  >(data ? { ...data.data[0] } : undefined);
   const { toggle: updateForm } = useToggle();
-  const [dataAutoReply, setDataAutoReply] = useState<AutoReply[]>([]);
-  const [dataHolidays, setDataHolidays] = useState<Holidays[]>([]);
+  const [dataAutoReply, setDataAutoReply] = useState<AutoReply[]>(
+    data ? [...data.data[0].autoReply] : []
+  );
+  const [dataHolidays, setDataHolidays] = useState<Holidays[]>(
+    data ? [...data.data[0].holidays] : []
+  );
   const [dataBusinessHoursAutoReplyCode, setDataBusinessHoursAutoReplyCode] =
-    useState("");
+    useState(data ? data.data[0].businessHoursAutoReplyCode : "");
   const { t } = useTranslation();
 
   const [form] = Form.useForm();
   const role = useRole();
-  // const [disabled, setDisabled] = useState(false);
 
-  // handle Data in tabs
   const handleChangeValues = useCallback((value) => {
     updateForm();
     if (value.autoReply) {
@@ -57,88 +104,20 @@ const BusinessHours = () => {
     return form.getFieldValue("businessHoursType") === BusinessHoursType.Full;
   }, [form.getFieldValue("businessHoursType")]);
 
-  // fetch business calendar
-  const { run: fetchListBusinessCalendar, processing } = useJob(
-    () => {
-      return BusinessCalendarRepository()
-        .getListBusinessCalendar({
-          page: 1,
-          limit: 10,
-        })
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              setDataBusinessCalendar({ ...data.data[0] });
-              setDataAutoReply([...data.data[0].autoReply]);
-              setDataHolidays([...data.data[0].holidays]);
-              setDataBusinessHoursAutoReplyCode(
-                data.data[0].businessHoursAutoReplyCode
-              );
-            } else {
-              message.error(t("messages:error.get_business_calendar"));
-            }
-          }),
-          catchError((error) => {
-            message.error(t("messages:error.get_business_calendar"));
-
-            return of(error);
-          })
-        );
-    },
-    { showLoading: false }
-  );
-
-  // update business calendar
-  const { run: updateBusinessCalendar } = useJob((dataSubmit: any) => {
-    message.loading.show(t("messages:loading.updating_business_calendar"));
-
-    const { _id } = dataSubmit;
-    return BusinessCalendarRepository()
-      .updateBusinessCalendar(_id, dataSubmit)
-      .pipe(
-        map(({ data }) => {
-          message.loading.hide().then(() => {
-            if (data.statusCode === 200) {
-              notification.success(
-                t("messages:success.update_business_calendar")
-              );
-              refetchGlobal();
-            } else {
-              notification.error(t("messages:error.update_business_calendar"), {
-                description: "Update failed!",
-                style: {
-                  width: 450,
-                },
-              });
-            }
-          });
-        }),
-        catchError((error) => {
-          message.loading.hide().then(() => {
-            notification.error(t("messages:error.update_business_calendar"), {
-              description: "Update failed!",
-              style: {
-                width: 450,
-              },
-            });
-          });
-          return of(error);
-        })
-      );
-  });
-
   const handleSubmit = useCallback((data: any) => {
     const revertTimeZome = timeZoneList.timeZone.find(
       (item) => item.description === data.timezone
     );
     data.timezone = revertTimeZome?.olsonName;
-    updateBusinessCalendar(data);
+    message.loading.show(t("messages:loading.updating_business_calendar"));
+
+    update.mutate(data);
   }, []);
   // UI Tabs
   // handle Effect
   useMount(() => {
     // eslint-disable-next-line no-unused-expressions
-    role === Role.Admin ? fetchListBusinessCalendar() : "";
+    role === Role.Admin ? refetchBusinessCalendar() : "";
   });
   return (
     <>

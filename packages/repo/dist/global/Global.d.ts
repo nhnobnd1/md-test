@@ -10,5 +10,4 @@ export declare enum ScreenType {
     XL = "xl",
     XXL = "xxl"
 }
-export default ScreenType;
 //# sourceMappingURL=Global.d.ts.map
