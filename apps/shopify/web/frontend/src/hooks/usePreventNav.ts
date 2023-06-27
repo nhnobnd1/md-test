@@ -1,4 +1,4 @@
-import { ScreenType } from "@moose-desk/repo/global/Global";
+import { ScreenType } from "@moose-desk/repo";
 import { useEffect } from "react";
 import useScreenType from "src/hooks/useScreenType";
 import useFullScreen from "src/store/useFullScreen";

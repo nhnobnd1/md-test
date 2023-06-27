@@ -6,8 +6,12 @@ import {
   useNavigate,
   usePrevious,
 } from "@moose-desk/core";
-import { Agent, AgentRepository, GetListAgentRequest } from "@moose-desk/repo";
-import { ScreenType } from "@moose-desk/repo/global/Global";
+import {
+  Agent,
+  AgentRepository,
+  GetListAgentRequest,
+  ScreenType,
+} from "@moose-desk/repo";
 import {
   Badge,
   ButtonGroup,

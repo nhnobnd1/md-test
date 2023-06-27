@@ -22,6 +22,7 @@ import {
   GetListTagRequest,
   Priority,
   priorityOptions,
+  ScreenType,
   statusOptions,
   StatusTicket,
   Tag,
@@ -30,7 +31,6 @@ import {
   TicketRepository,
   UpdateTicket,
 } from "@moose-desk/repo";
-import { ScreenType } from "@moose-desk/repo/global/Global";
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Button,

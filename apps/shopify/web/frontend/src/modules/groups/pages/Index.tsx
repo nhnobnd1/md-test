@@ -11,10 +11,10 @@ import {
 import {
   BaseMetaDataListResponse,
   GetListUserGroupRequest,
+  ScreenType,
   UserGroup,
   UserGroupRepository,
 } from "@moose-desk/repo";
-import { ScreenType } from "@moose-desk/repo/global/Global";
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Button,

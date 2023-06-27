@@ -21,6 +21,7 @@ import {
   GetListCustomerRequest,
   GetListTagRequest,
   GetListTicketRequest,
+  ScreenType,
   statusOptions,
   StatusTicket,
   Tag,
@@ -54,7 +55,7 @@ import { Pagination } from "src/components/Pagination";
 import env from "src/core/env";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 
-import { ScreenType } from "@moose-desk/repo/global/Global";
+// import { ScreenType } from "@moose-desk/repo/";
 import { useTranslation } from "react-i18next";
 import { useReactToPrint } from "react-to-print";
 import { ModalFilter } from "src/components/Modal/ModalFilter";

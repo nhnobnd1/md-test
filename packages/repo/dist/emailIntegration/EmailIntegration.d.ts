@@ -14,6 +14,14 @@ export declare enum MailSettingType {
     MOOSEDESK = "MOOSEDESK",
     FORWARD = "FORWARD"
 }
+export declare enum ScreenType {
+    XS = "xs",
+    SM = "sm",
+    MD = "md",
+    LG = "lg",
+    XL = "xl",
+    XXL = "xxl"
+}
 export declare enum MailBoxType {
     GMAIL = "GMAIL",
     OUTLOOK = "OUTLOOK",

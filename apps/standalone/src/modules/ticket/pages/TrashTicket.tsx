@@ -17,11 +17,12 @@ import {
   Ticket,
   TicketStatistic,
 } from "@moose-desk/repo";
-import { Button, Card, Input, TableProps } from "antd";
+import { Button, Card, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import { HeaderList } from "src/components/HeaderList";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
 import { Header } from "src/components/UI/Header";
 import Pagination from "src/components/UI/Pagination/Pagination";
@@ -206,10 +207,8 @@ const TrashTicket = () => {
       <Header title="" back>
         {selectedRowKeys.length === 0 || screenWidth <= MediaScreen.LG ? (
           <div className="flex items-center justify-end flex-1 gap-4">
-            <Input.Search
-              className="max-w-[400px]"
-              placeholder="Search ticket"
-              onSearch={(searchText: string) => {
+            <HeaderList
+              handleSearch={(searchText: string) => {
                 setFilterData((value: any) => {
                   return {
                     ...value,
@@ -218,10 +217,11 @@ const TrashTicket = () => {
                   };
                 });
               }}
-            ></Input.Search>
-            <ButtonAdd onClick={() => navigate(TicketRoutePaths.Create)}>
-              Add new
-            </ButtonAdd>
+            >
+              <ButtonAdd onClick={() => navigate(TicketRoutePaths.Create)}>
+                Add new
+              </ButtonAdd>
+            </HeaderList>
           </div>
         ) : (
           <>

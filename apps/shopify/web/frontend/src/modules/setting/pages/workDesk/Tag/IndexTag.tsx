@@ -5,8 +5,12 @@ import {
   useJob,
   useNavigate,
 } from "@moose-desk/core";
-import { BaseListTagRequest, Tag, TagRepository } from "@moose-desk/repo";
-import { ScreenType } from "@moose-desk/repo/global/Global";
+import {
+  BaseListTagRequest,
+  ScreenType,
+  Tag,
+  TagRepository,
+} from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Card,

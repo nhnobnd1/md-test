@@ -17,6 +17,14 @@ export enum MailSettingType {
 	MOOSEDESK = 'MOOSEDESK',
 	FORWARD = 'FORWARD',
 }
+export enum ScreenType {
+	XS = 'xs',
+	SM = 'sm',
+	MD = 'md',
+	LG = 'lg',
+	XL = 'xl',
+	XXL = 'xxl',
+}
 
 export enum MailBoxType {
 	GMAIL = 'GMAIL',

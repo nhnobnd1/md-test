@@ -32,7 +32,7 @@ import {
   TicketStatistic,
   UpdateTicket,
 } from "@moose-desk/repo";
-import { Button, Card, Input, Modal, TableProps } from "antd";
+import { Button, Card, Modal, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -57,8 +57,9 @@ import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import { ExportTicket } from "src/modules/ticket/components/ExportTicketPdf/ExportTicket";
 import UilImport from "~icons/uil/import";
 
-import { FilterOutlined } from "@ant-design/icons";
 import { useQuery } from "react-query";
+import Icon from "src/components/UI/Icon";
+import { MDSearchInput } from "src/components/UI/MDSearchInput";
 import useScreenType from "src/hooks/useScreenType";
 import {
   getStatisticTicket,
@@ -205,19 +206,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         );
     }
   );
-  // const { run: getStatisticTicket } = useJob(() => {
-  //   return TicketRepository()
-  //     .getStatistic()
-  //     .pipe(
-  //       map(({ data }) => {
-  //         if (data.statusCode === 200) {
-  //           setStatistic(data);
-  //         } else {
-  //           message.error(t("messages:error.get_ticket"));
-  //         }
-  //       })
-  //     );
-  // });
 
   const { run: getListAgentApi } = useJob((payload: GetListAgentRequest) => {
     return AgentRepository()
@@ -527,12 +515,9 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       <Header title="Tickets">
         {selectedRowKeys.length === 0 || screenWidth <= MediaScreen.LG ? (
           <div className="flex items-center justify-end flex-1 gap-2  ">
-            <Input.Search
-              allowClear
-              enterButton
-              className="md:w-[300px] lg:w-[400px] sm:w-[250px]"
-              placeholder="Search"
-              onSearch={(searchText: string) => {
+            <MDSearchInput
+              className="w-[300px]"
+              onTypeSearch={(searchText: string) => {
                 setFilterData((value: any) => {
                   return {
                     ...value,
@@ -541,10 +526,11 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                   };
                 });
               }}
-            ></Input.Search>
+            />
             <Button
+              className="w-[50px] h-[40px] flex justify-center items-center"
               onClick={openFilterModal}
-              icon={<FilterOutlined />}
+              icon={<Icon name="filter" />}
             ></Button>
 
             <ButtonAdd onClick={() => navigate(TicketRoutePaths.Create)}>
