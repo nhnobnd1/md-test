@@ -1,5 +1,5 @@
 import { DeleteOutlined } from "@ant-design/icons";
-import { Button, ButtonProps, Popconfirm } from "antd";
+import { Button, ButtonProps, Popconfirm, Tooltip } from "antd";
 import classNames from "classnames";
 import Icon from "src/components/UI/Icon";
 import "./ButtonDelete.scss";
@@ -31,13 +31,13 @@ export const ButtonDelete = ({
           title={confirmTitle}
           onConfirm={onClick}
         >
-          <Button
-            // className={classNames([className, "btn-delete"])}
-            // danger
-            type="text"
-            icon={<Icon name="delete" />}
-            {...props}
-          ></Button>
+          <Tooltip placement="top" title={"Delete"}>
+            <Button
+              type="text"
+              icon={<Icon name="delete" />}
+              {...props}
+            ></Button>
+          </Tooltip>
         </Popconfirm>
       ) : (
         <Button
