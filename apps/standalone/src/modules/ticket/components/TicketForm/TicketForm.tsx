@@ -14,7 +14,6 @@ import {
   TicketRepository,
   priorityOptions,
 } from "@moose-desk/repo";
-import { Input } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQueryClient } from "react-query";
@@ -22,6 +21,7 @@ import { catchError, map, of } from "rxjs";
 import { MDButton } from "src/components/UI/Button/MDButton";
 import TextEditorTicket from "src/components/UI/Editor/TextEditorTicket";
 import { Form } from "src/components/UI/Form";
+import { MDInput } from "src/components/UI/Input";
 import Select, { LoadMoreValue } from "src/components/UI/Select/Select";
 import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
@@ -395,7 +395,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
               },
             ]}
           >
-            <Input size="large" placeholder="Subject" />
+            <MDInput placeholder="Subject" />
           </Form.Item>
           <div className="mt-4 xl:w-[800px]">
             <Form.Item

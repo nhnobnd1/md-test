@@ -9,7 +9,7 @@ interface IMDButton extends ButtonProps {
 }
 export const MDButton = ({ className, children, ...props }: IMDButton) => {
   const { isMobile } = useViewport();
-  console.log(isMobile);
+
   return (
     <Button
       className={classNames(styles.MDButton, className)}

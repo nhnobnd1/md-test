@@ -12,6 +12,7 @@ import { SelectProps as AntSelectProps, SelectValue } from "antd/lib/select";
 import _ from "lodash";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Observable, map } from "rxjs";
+import useViewport from "src/hooks/useViewport";
 
 export type OptionType = {
   value: string | number;
@@ -44,6 +45,8 @@ const Select = ({
   onChange,
   ...props
 }: SelectProps) => {
+  const { isMobile } = useViewport();
+
   const handleChange = useCallback(
     (value: string, option: any) => {
       onChange && onChange(value, option as OptionType | OptionType[]);
@@ -60,7 +63,7 @@ const Select = ({
       {...props}
       optionFilterProp="label"
       onChange={handleChange}
-      size="large"
+      size={isMobile ? "middle" : "large"}
     >
       {!props.children ? (
         <>
@@ -131,6 +134,7 @@ Select.Ajax = ({
   const [canLoadMore, setCanLoadMore] = useState(true);
   const { state: loading, on: startLoading, off: stopLoading } = useToggle();
   const [isFirst, setIsFirst] = useState(true);
+  const { isMobile } = useViewport();
 
   const canFetch = useMemo(() => {
     return !loading && canLoadMore;
@@ -257,7 +261,7 @@ Select.Ajax = ({
   return (
     <Select
       {...props}
-      size="large"
+      size={isMobile ? "middle" : "large"}
       value={value}
       mode={mode}
       options={renderOption ? undefined : options}
@@ -587,6 +591,7 @@ Select.Auto = ({
   const [canLoadMore, setCanLoadMore] = useState(true);
   const { state: loading, on: startLoading, off: stopLoading } = useToggle();
   const [isFirst, setIsFirst] = useState(true);
+  const { isMobile } = useViewport();
 
   const canFetch = useMemo(() => {
     return !loading && canLoadMore;
@@ -699,7 +704,7 @@ Select.Auto = ({
 
   return (
     <AutoComplete
-      size="large"
+      size={isMobile ? "middle" : "large"}
       {...props}
       // value={value}
       options={renderOption ? undefined : options}

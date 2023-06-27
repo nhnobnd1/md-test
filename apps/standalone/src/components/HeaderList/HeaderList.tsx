@@ -46,8 +46,9 @@ export const HeaderList: FC<HeaderListProps> = ({
       ) : (
         <div className="flex w-full gap-2 items-center">
           <MDButton
-            icon={<Icon name="search" />}
             onClick={onToggleSearch}
+            icon={<Icon name="back" />}
+            type="text"
           ></MDButton>
           <div className="w-full">
             <MDSearchInput onTypeSearch={handleSearch} />
