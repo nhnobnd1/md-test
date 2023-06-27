@@ -145,7 +145,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
           return a.email - b.email;
         },
       },
-      width: "25%",
+      width: "45%",
     },
     {
       title: "Number of tickets",
@@ -153,12 +153,12 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
       sorter: {
         compare: (a: any, b: any) => a.numberOfTicket - b.numberOfTicket,
       },
-      width: "25%",
+      width: "20%",
     },
     {
       title: "Action",
       dataIndex: "",
-      width: "25%",
+      width: "10%",
       align: "center",
       render: (_: any, record: Customer) => (
         <TableAction
@@ -261,7 +261,11 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
         </div>
       ) : (
         <div className={styles.groupSearchOnMobile}>
-          <MDButton onClick={onToggleSearch}>Search</MDButton>
+          <MDButton
+            onClick={onToggleSearch}
+            icon={<Icon name="back" />}
+            type="text"
+          ></MDButton>
           <div className={styles.searchOnMobile}>
             <MDSearchInput onTypeSearch={handleSearchInput} />
           </div>

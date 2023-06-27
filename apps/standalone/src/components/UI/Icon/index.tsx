@@ -508,6 +508,30 @@ class Icon extends React.Component<IconProps> {
         </defs>
       </svg>
     ),
+    back: (
+      <svg
+        width={20}
+        height={20}
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M7.97501 4.94141L2.91667 9.99974L7.97501 15.0581"
+          stroke="#595959"
+          strokeWidth={1.5}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M17.0833 10H3.05832"
+          stroke="#595959"
+          strokeWidth={1.5}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
   };
 
   getProperty(property: keyof IconProps, value: any): any {
