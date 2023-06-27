@@ -67,6 +67,7 @@ import { HeaderListTicket } from "src/modules/ticket/components/HeaderListTicket
 import { useExportTicket } from "src/modules/ticket/helper/api";
 import UilImport from "~icons/uil/import";
 
+import useDeepEffect from "src/hooks/useDeepEffect";
 import { ExportTicket } from "src/modules/ticket/components/ExportTicket";
 import useTicketSelected from "src/modules/ticket/store/useTicketSelected";
 import "./ListTicket.scss";
@@ -78,6 +79,11 @@ export interface FilterObject {
   status: string;
   priority: string;
 }
+const defaultFilter = () => ({
+  page: 1,
+  limit: env.DEFAULT_PAGE_SIZE,
+  query: "",
+});
 
 const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const navigate = useNavigate();
@@ -96,10 +102,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
 
   const location = useLocation();
   const [statusFromTrash, setStatusFromTrash] = useState(location.state);
-  const defaultFilter: () => any = () => ({
-    page: 1,
-    limit: env.DEFAULT_PAGE_SIZE,
-  });
+
   const [activeButtonIndex, setActiveButtonIndex] = useState(
     statusFromTrash || "ALL"
   );
@@ -115,6 +118,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const [filterData, setFilterData] = useState<GetListTicketRequest>(
     defaultFilter()
   );
+
   const [screenType, screenWidth] = useScreenType();
 
   const [agents, setAgents] = useState<Agent[]>([]);
@@ -355,7 +359,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       );
   });
 
-  useEffect(() => {
+  useDeepEffect(() => {
     if (statusFromTrash) {
       getListTicketFilter({ ...filterData, status: statusFromTrash });
       setStatusFromTrash("");
@@ -374,6 +378,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     }
     getListTicketApi(filterData);
   }, [filterData]);
+
   const handleResetModal = useCallback(() => {
     setFilterObject(null);
   }, [filterData]);

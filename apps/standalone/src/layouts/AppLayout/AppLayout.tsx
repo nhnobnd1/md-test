@@ -450,11 +450,11 @@ export const AppLayout = () => {
             style={{
               height: "100%",
 
-              background: "#161819",
+              background: "#000B16",
               color: "white",
             }}
             selectedKeys={[keys.activeKeys]}
-            defaultOpenKeys={keys.defaultOpenKeys}
+            // defaultOpenKeys={keys.defaultOpenKeys}
             items={caseTopMenu}
           />
         </Layout.Sider>
@@ -464,6 +464,7 @@ export const AppLayout = () => {
           style={{
             maxHeight: "calc(100vh - 64px)",
             overflow: "auto",
+            background: "#F0F2F5",
           }}
         >
           {/* <Breadcrumb className="mb-4" {...breadCrumb} /> */}

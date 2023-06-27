@@ -10,10 +10,8 @@ import {
   BaseDeleteList,
   BaseListTicketRequest,
   BaseMetaDataListResponse,
-  GetListTagResponse,
   GetListTicketResponse,
   StatusTicket,
-  Tag,
   Ticket,
   TicketStatistic,
 } from "@moose-desk/repo";
@@ -36,21 +34,23 @@ import {
   forceDeleteApi,
   getListTrashApi,
   getStatisticTicket,
-  getTagsTicket,
   restoreTicketApi,
 } from "src/modules/ticket/helper/api";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import CancelIcon from "~icons/mdi/cancel";
 import RestoreIcon from "~icons/mdi/restore";
 import "./ListTicket.scss";
-
+const defaultFilter = () => ({
+  page: 1,
+  limit: env.DEFAULT_PAGE_SIZE,
+  query: "",
+  sortBy: undefined,
+  sortOrder: undefined,
+});
 const TrashTicket = () => {
-  const defaultFilter: () => any = () => ({
-    page: 1,
-    limit: env.DEFAULT_PAGE_SIZE,
-  });
-  const [filterData, setFilterData] =
-    useState<BaseListTicketRequest>(defaultFilter);
+  const [filterData, setFilterData] = useState<BaseListTicketRequest>(
+    defaultFilter()
+  );
   const { data: trashTicket, isFetching: loadingList } = useQuery({
     queryKey: ["getListTrash", filterData],
     queryFn: () => getListTrashApi(filterData),
@@ -59,14 +59,17 @@ const TrashTicket = () => {
       setTickets(data.data);
       setMeta(data.metadata);
     },
+
     onError: () => {
       message.error(t("messages:error.get_ticket"));
     },
     initialData: [],
   });
+  const [showTitle, setShowTitle] = useState(true);
+
   const [tickets, setTickets] = useState<Ticket[]>(trashTicket?.data ?? []);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  const [tags, setTags] = useState<Tag[]>([]);
+
   const [meta, setMeta] = useState<BaseMetaDataListResponse>();
   const message = useMessage();
   const navigate = useNavigate();
@@ -85,6 +88,7 @@ const TrashTicket = () => {
     },
     [activeButtonIndex]
   );
+
   const { data: dataStatistic } = useQuery({
     queryKey: ["getStatisticTicket"],
     queryFn: () => getStatisticTicket(),
@@ -108,6 +112,7 @@ const TrashTicket = () => {
       },
     }
   );
+
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     setSelectedRowKeys(newSelectedRowKeys);
   };
@@ -135,29 +140,6 @@ const TrashTicket = () => {
     },
     [setFilterData]
   ) as TableProps<any>["onChange"];
-
-  useQuery({
-    queryKey: [
-      "getTagsTicket",
-      {
-        page: 1,
-        limit: 500,
-      },
-    ],
-    queryFn: () =>
-      getTagsTicket({
-        page: 1,
-        limit: 500,
-      }),
-    staleTime: 10000,
-    retry: 1,
-    onSuccess: (data: GetListTagResponse) => {
-      setTags(data.data);
-    },
-    onError: () => {
-      message.error(t("messages:error.get_tag"));
-    },
-  });
 
   const restore = useMutation({
     mutationFn: (payload: BaseDeleteList) => restoreTicketApi(payload),
@@ -204,10 +186,11 @@ const TrashTicket = () => {
 
   return (
     <>
-      <Header title="" back>
+      <Header title={showTitle ? "Tickets" : ""}>
         {selectedRowKeys.length === 0 || screenWidth <= MediaScreen.LG ? (
           <div className="flex items-center justify-end flex-1 gap-4">
             <HeaderList
+              setShowTitle={setShowTitle}
               handleSearch={(searchText: string) => {
                 setFilterData((value: any) => {
                   return {
@@ -260,7 +243,7 @@ const TrashTicket = () => {
           </>
         )}
       </Header>
-      <div className="mt-6">
+      <div className="mt-5">
         <div className="grid grid-cols-7 gap-4">
           <div className="col-span-7 ">
             {tickets && (
@@ -418,15 +401,11 @@ const TrashTicket = () => {
                     key="tags"
                     title="Tags"
                     render={(_, record: Ticket) => {
-                      const filterItemTag = tags.filter((item) =>
-                        record.tags?.slice(-2).includes(item.id)
-                      );
-
                       return (
                         <div className="flex flex-col wrap gap-2">
-                          {filterItemTag.map((item) => (
-                            <span className="tag-item" key={item._id}>
-                              #{item.name}
+                          {record.tags?.slice(-2).map((item, index) => (
+                            <span className="tag-item" key={item + index}>
+                              #{item}
                             </span>
                           ))}
                         </div>

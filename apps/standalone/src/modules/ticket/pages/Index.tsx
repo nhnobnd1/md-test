@@ -13,20 +13,12 @@ import {
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import {
   Agent,
-  AgentRepository,
   BaseListTicketFilterRequest,
   BaseListTicketRequest,
   BaseMetaDataListResponse,
-  Customer,
-  CustomerRepository,
-  GetListAgentRequest,
-  GetListCustomerRequest,
-  GetListTagRequest,
-  GetListTicketRequest,
   statusOptions,
   StatusTicket,
   Tag,
-  TagRepository,
   Ticket,
   TicketRepository,
   TicketStatistic,
@@ -58,15 +50,20 @@ import { ExportTicket } from "src/modules/ticket/components/ExportTicketPdf/Expo
 import UilImport from "~icons/uil/import";
 
 import { useQuery } from "react-query";
+import { HeaderList } from "src/components/HeaderList";
+import { MDButton } from "src/components/UI/Button/MDButton";
 import Icon from "src/components/UI/Icon";
-import { MDSearchInput } from "src/components/UI/MDSearchInput";
 import useScreenType from "src/hooks/useScreenType";
 import {
+  getListAgentApi,
+  getListCustomerApi,
   getStatisticTicket,
+  getTagsTicket,
   useExportTicket,
 } from "src/modules/ticket/helper/api";
 import useTicketSelected from "src/modules/ticket/store/useTicketSelected";
 import "./ListTicket.scss";
+import useDeepEffect from "src/hooks/useDeepEffect";
 interface TicketIndexPageProps {}
 interface FilterObject {
   customer: string;
@@ -75,12 +72,82 @@ interface FilterObject {
   priority: string;
 }
 
+const defaultFilter = () => ({
+  page: 1,
+  limit: env.DEFAULT_PAGE_SIZE,
+  query: "",
+});
+
 const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  const [tags, setTags] = useState<Tag[]>([]);
-  const [agents, setAgents] = useState<Agent[]>([]);
-  const [customers, setCustomers] = useState<Customer[]>([]);
+  const { data: dataTags } = useQuery({
+    queryKey: [
+      "getTagsTicket",
+      {
+        page: 1,
+        limit: 500,
+      },
+    ],
+    queryFn: () =>
+      getTagsTicket({
+        page: 1,
+        limit: 500,
+      }),
+    staleTime: 10000,
+    retry: 1,
+
+    onError: () => {
+      message.error(t("messages:error.get_tag"));
+    },
+  });
+
+  const tags = useMemo(() => {
+    if (!dataTags) return [];
+    return dataTags;
+  }, [dataTags]);
+
+  const { data: dataAgents } = useQuery({
+    queryKey: [
+      "getAgents",
+      {
+        page: 1,
+        limit: 500,
+      },
+    ],
+    queryFn: () =>
+      getListAgentApi({
+        page: 1,
+        limit: 500,
+      }),
+    staleTime: 10000,
+    retry: 1,
+
+    onError: () => {
+      message.error(t("messages:error.get_agent"));
+    },
+  });
+
+  const agents = useMemo(() => {
+    if (!dataAgents) return [];
+    return dataAgents.filter((item) => item.isActive && item.emailConfirmed);
+  }, [dataAgents]);
+
+  const { data: dataCustomers } = useQuery({
+    queryKey: ["getCustomers"],
+    queryFn: () => getListCustomerApi({ page: 1, limit: 500 }),
+    retry: 3,
+    staleTime: 10000,
+    onError: () => {
+      message.error(t("messages:error.get_customer"));
+    },
+  });
+
+  const customers = useMemo(() => {
+    if (!dataCustomers) return [];
+    return dataCustomers;
+  }, [dataCustomers]);
+
   const { subDomain } = useSubdomain();
   const { timezone } = useGlobalData(false, subDomain || "");
   const changeTicketSelected = useTicketSelected(
@@ -144,17 +211,14 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const [statusFromTrash, setStatusFromTrash] = useState(location.state);
   const [filterObject, setFilterObject] = useState<FilterObject | null>(null);
   const exportPdfRef = useRef<any>(null);
+  const [showTitle, setShowTitle] = useState(true);
 
-  const defaultFilter: () => any = () => ({
-    page: 1,
-    limit: env.DEFAULT_PAGE_SIZE,
-    query: "",
-  });
   const [activeButtonIndex, setActiveButtonIndex] = useState(
     statusFromTrash || "ALL"
   );
-  const [filterData, setFilterData] =
-    useState<BaseListTicketRequest>(defaultFilter);
+  const [filterData, setFilterData] = useState<BaseListTicketRequest>(
+    defaultFilter()
+  );
 
   const [meta, setMeta] = useState<BaseMetaDataListResponse>();
   const handleButtonClick = useCallback(
@@ -166,26 +230,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   );
   const [screenType, screenWidth] = useScreenType();
 
-  const { run: getListTicketApi, processing: loadingList } = useJob(
-    (payload: GetListTicketRequest) => {
-      return TicketRepository()
-        .getList(payload)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              const tickets = data.data.map((item) => ({
-                ...item,
-                id: item._id,
-              }));
-              setTickets(tickets);
-              setMeta(data.metadata);
-            } else {
-              message.error(t("messages:error.get_ticket"));
-            }
-          })
-        );
-    }
-  );
   const { run: getListTicketFilter, processing: loadingFilter } = useJob(
     (payload: BaseListTicketFilterRequest) => {
       return TicketRepository()
@@ -201,100 +245,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
               setMeta(data.metadata);
             } else {
               message.error(t("messages:error.get_ticket"));
-            }
-          })
-        );
-    }
-  );
-
-  const { run: getListAgentApi } = useJob((payload: GetListAgentRequest) => {
-    return AgentRepository()
-      .getList(payload)
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            // let current: any = [];
-            const tags = data.data
-
-              .filter((item) => item.isActive && item.emailConfirmed)
-
-              .map((item) => ({
-                ...item,
-                id: item._id,
-              }));
-            setAgents((prevTags) => {
-              // current = [...prevTags, ...tags];
-              return [...prevTags, ...tags];
-            });
-
-            if (data.metadata.totalPage > (payload.page as number)) {
-              getListAgentApi({
-                page: (payload.page as number) + 1,
-                limit: payload.limit,
-              });
-              // return;
-            }
-            // console.log("asdasd", current);
-          } else {
-            message.error(t("messages:error.get_agent"));
-          }
-        })
-      );
-  });
-
-  const { run: getListTagApi } = useJob((payload: GetListTagRequest) => {
-    return TagRepository()
-      .getList(payload)
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            // let current: any = [];
-            const tags = data.data.map((item) => ({
-              ...item,
-              id: item._id,
-            }));
-            setTags((prevTags) => {
-              // current = [...prevTags, ...tags];
-              return [...prevTags, ...tags];
-            });
-
-            if (data.metadata.totalPage > (payload.page as number)) {
-              getListTagApi({
-                page: (payload.page as number) + 1,
-                limit: payload.limit,
-              });
-              // return;
-            }
-            // console.log("asdasd", current);
-          } else {
-            message.error(t("messages:error.get_tag"));
-          }
-        })
-      );
-  });
-  const { run: getListCustomerApi } = useJob(
-    (payload: GetListCustomerRequest) => {
-      return CustomerRepository()
-        .getList(payload)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              const tags = data.data.map((item) => ({
-                ...item,
-                id: item._id,
-              }));
-              setCustomers((prevTags) => {
-                return [...prevTags, ...tags];
-              });
-
-              if (data.metadata.totalPage > (payload.page as number)) {
-                getListCustomerApi({
-                  page: (payload.page as number) + 1,
-                  limit: payload.limit,
-                });
-              }
-            } else {
-              message.error(t("messages:error.get_customer"));
             }
           })
         );
@@ -339,15 +289,12 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
           message.loading.hide();
           if (data.statusCode === 200) {
             notification.success(t("messages:success.delete_ticket"));
-            // getStatisticTicket();
             refetchStatistic();
             if (filterObject) {
               getListTicketFilter({ ...filterData, ...filterObject });
               return;
             }
-            getListTicketApi(filterData);
-
-            // setFilterObject(null);
+            getListTicketFilter(filterData);
           } else {
             notification.error(t("messages:error.delete_ticket"), {
               description: "Remove Ticket failed",
@@ -373,9 +320,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       .update(data)
       .pipe(
         map(({ data }) => {
-          // console.log("update ticket success", data);
           if (data.statusCode === 200) {
-            // getStatisticTicket();
             refetchStatistic();
             message.success(t("messages:success.update_ticket"));
           }
@@ -400,21 +345,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     },
     []
   );
-  useEffect(() => {
-    getListTagApi({
-      page: 1,
-      limit: 500,
-    });
-    getListCustomerApi({
-      page: 1,
-      limit: 500,
-    });
-    getListAgentApi({
-      page: 1,
-      limit: 500,
-    });
-    // getStatisticTicket();
-  }, []);
 
   useEffect(() => {
     const findTicket = tickets.filter((item) =>
@@ -424,7 +354,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     getTicketSelected(selectedRowKeys as string[]);
   }, [selectedRowKeys]);
 
-  useEffect(() => {
+  useDeepEffect(() => {
     if (statusFromTrash) {
       getListTicketFilter({ ...filterData, status: statusFromTrash });
       setStatusFromTrash("");
@@ -442,8 +372,9 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       getListTicketFilter({ ...filterData, ...filterObject });
       return;
     }
-    getListTicketApi(filterData);
+    getListTicketFilter(filterData);
   }, [filterData]);
+
   const handleEdit = (record: Ticket) => {
     navigate(generatePath(TicketRoutePaths.Detail, { id: record._id }));
   };
@@ -474,10 +405,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     deleteTicketApi(selectedRowKeys as string[]);
   }, [selectedRowKeys]);
   const handleResetModal = useCallback(() => {
-    // getListTicketApi(filterData);
-    // closeFilterModal();
     setFilterObject(null);
-    // closeFilterModal();
   }, [filterData]);
 
   const handleApply = (values: any) => {
@@ -512,12 +440,12 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         handleApply={handleApply}
         centered
       />
-      <Header title="Tickets">
+      <Header title={showTitle ? "Tickets" : ""}>
         {selectedRowKeys.length === 0 || screenWidth <= MediaScreen.LG ? (
           <div className="flex items-center justify-end flex-1 gap-2  ">
-            <MDSearchInput
-              className="w-[300px]"
-              onTypeSearch={(searchText: string) => {
+            <HeaderList
+              setShowTitle={setShowTitle}
+              handleSearch={(searchText: string) => {
                 setFilterData((value: any) => {
                   return {
                     ...value,
@@ -526,16 +454,17 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                   };
                 });
               }}
-            />
-            <Button
-              className="w-[50px] h-[40px] flex justify-center items-center"
-              onClick={openFilterModal}
-              icon={<Icon name="filter" />}
-            ></Button>
+            >
+              <MDButton
+                className=" flex justify-center items-center"
+                onClick={openFilterModal}
+                icon={<Icon name="filter" />}
+              ></MDButton>
 
-            <ButtonAdd onClick={() => navigate(TicketRoutePaths.Create)}>
-              Add new
-            </ButtonAdd>
+              <ButtonAdd onClick={() => navigate(TicketRoutePaths.Create)}>
+                Add new
+              </ButtonAdd>
+            </HeaderList>
           </div>
         ) : (
           <div className={`flex items-center justify-end flex-1 gap-2  `}>
@@ -588,7 +517,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
           </div>
         )}
       </Header>
-      <div className="mt-6">
+      <div className="mt-5">
         <div className="grid grid-cols-7 gap-4">
           <div className="col-span-7">
             {tickets && (
@@ -694,7 +623,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                   rowSelection={rowSelection}
                   dataSource={tickets}
                   scroll={{ x: 1024 }}
-                  loading={loadingList || loadingFilter}
+                  loading={loadingFilter}
                   onChange={onChangeTable}
                 >
                   <Table.Column
