@@ -15,7 +15,7 @@ import {
 } from "@moose-desk/repo";
 import { TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import { HeaderList } from "src/components/HeaderList";
@@ -25,10 +25,12 @@ import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
 import TableAction from "src/components/UI/Table/TableAction/TableAction";
 import env from "src/core/env";
+import useDeepEffect from "src/hooks/useDeepEffect";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { usePermission } from "src/hooks/usePerrmisson";
 import GroupRoutePaths from "src/modules/group/routes/paths";
+import { defaultFilter } from "src/utils/localValue";
 
 interface GroupIndexPageProps {}
 
@@ -39,11 +41,6 @@ const GroupIndexPage: PageComponent<GroupIndexPageProps> = () => {
   const notification = useNotification();
   const { isAdmin, isAgent } = usePermission();
   const [showTitle, setShowTitle] = useState(true);
-
-  const defaultFilter: () => GetListUserGroupRequest = () => ({
-    page: 1,
-    limit: env.DEFAULT_PAGE_SIZE,
-  });
 
   const [filterData, setFilterData] =
     useState<GetListUserGroupRequest>(defaultFilter);
@@ -153,7 +150,7 @@ const GroupIndexPage: PageComponent<GroupIndexPageProps> = () => {
     deleteGroupApi(record._id);
   }, []);
 
-  useEffect(() => {
+  useDeepEffect(() => {
     if (prevFilter?.query !== filterData.query && filterData.query) {
       getListGroupDebounce(filterData);
     } else {
@@ -183,7 +180,7 @@ const GroupIndexPage: PageComponent<GroupIndexPageProps> = () => {
               }}
               disabled={isAgent}
             >
-              Add New
+              Add new
             </ButtonAdd>
           </HeaderList>
         </div>

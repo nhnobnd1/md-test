@@ -65,6 +65,7 @@ import {
   useExportTicket,
 } from "src/modules/ticket/helper/api";
 import useTicketSelected from "src/modules/ticket/store/useTicketSelected";
+import { defaultFilter } from "src/utils/localValue";
 import "./ListTicket.scss";
 interface TicketIndexPageProps {}
 interface FilterObject {
@@ -73,12 +74,6 @@ interface FilterObject {
   status: string;
   priority: string;
 }
-
-const defaultFilter = () => ({
-  page: 1,
-  limit: env.DEFAULT_PAGE_SIZE,
-  query: "",
-});
 
 const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -218,9 +213,8 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const [activeButtonIndex, setActiveButtonIndex] = useState(
     statusFromTrash || "ALL"
   );
-  const [filterData, setFilterData] = useState<BaseListTicketRequest>(
-    defaultFilter()
-  );
+  const [filterData, setFilterData] =
+    useState<BaseListTicketRequest>(defaultFilter);
 
   const [meta, setMeta] = useState<BaseMetaDataListResponse>();
   const handleButtonClick = useCallback(

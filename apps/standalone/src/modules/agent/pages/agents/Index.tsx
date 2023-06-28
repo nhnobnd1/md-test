@@ -14,7 +14,7 @@ import {
 } from "@moose-desk/repo";
 import { Badge, Button, TableProps, Tooltip } from "antd";
 import { SorterResult } from "antd/es/table/interface";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { map } from "rxjs";
 import { HeaderList } from "src/components/HeaderList";
@@ -24,11 +24,13 @@ import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
 import TableAction from "src/components/UI/Table/TableAction/TableAction";
 import env from "src/core/env";
+import useDeepEffect from "src/hooks/useDeepEffect";
 import useMessage from "src/hooks/useMessage";
 import { usePermission } from "src/hooks/usePerrmisson";
 import { AgentFormValues } from "src/modules/agent/components/AgentForm";
 import { PopupAgent } from "src/modules/agent/components/PopupAgent";
 import { getStatusAgent } from "src/modules/agent/constant";
+import { defaultFilter } from "src/utils/localValue";
 
 const AgentsIndex = () => {
   const [agents, setAgents] = useState<Agent[]>([]);
@@ -49,10 +51,6 @@ const AgentsIndex = () => {
   const { t } = useTranslation();
   const [showTitle, setShowTitle] = useState(true);
 
-  const defaultFilter: () => GetListAgentRequest = () => ({
-    page: 1,
-    limit: env.DEFAULT_PAGE_SIZE,
-  });
   const { isAgent, isLead } = usePermission();
 
   const [filterData, setFilterData] =
@@ -134,7 +132,7 @@ const AgentsIndex = () => {
     [filterData]
   );
 
-  useEffect(() => {
+  useDeepEffect(() => {
     if (prevFilter?.query !== filterData.query && filterData.query) {
       getListDebounce(filterData);
     } else {
@@ -191,7 +189,7 @@ const AgentsIndex = () => {
                 setDataPopup(undefined);
               }}
             >
-              Add agent
+              Add new
             </ButtonAdd>
           </HeaderList>
         </div>

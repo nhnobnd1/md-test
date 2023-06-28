@@ -25,14 +25,13 @@ import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
 import TableAction from "src/components/UI/Table/TableAction/TableAction";
 import env from "src/core/env";
+import useDeepEffect from "src/hooks/useDeepEffect";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
 import useMailSetting from "src/modules/settingChannel/store/useMailSetting";
-const defaultFilter: () => any = () => ({
-  page: 1,
-  limit: env.DEFAULT_PAGE_SIZE,
-});
+import { defaultFilter } from "src/utils/localValue";
+
 const ChannelEmail = () => {
   const navigate = useNavigate();
   const message = useMessage();
@@ -174,7 +173,7 @@ const ChannelEmail = () => {
     []
   );
 
-  useEffect(() => {
+  useDeepEffect(() => {
     if (prevFilter?.query !== filterData.query && filterData.query) {
       getListDebounce(filterData);
     } else {

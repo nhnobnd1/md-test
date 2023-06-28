@@ -18,7 +18,7 @@ import {
 } from "@moose-desk/repo";
 import { TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import { HeaderList } from "src/components/HeaderList";
@@ -28,6 +28,7 @@ import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
 import TableAction from "src/components/UI/Table/TableAction/TableAction";
 import env from "src/core/env";
+import useDeepEffect from "src/hooks/useDeepEffect";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { usePermission } from "src/hooks/usePerrmisson";
@@ -35,6 +36,7 @@ import { useSubdomain } from "src/hooks/useSubdomain";
 import PopupTag from "src/modules/setting/component/PopupTag";
 import { TagFormValues } from "src/modules/setting/component/TagForm";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
+import { defaultFilter } from "src/utils/localValue";
 import "./TagStyle.scss";
 
 interface TagIndexPageProps {}
@@ -55,13 +57,6 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
 
   const { subDomain } = useSubdomain();
   const { timezone } = useGlobalData(false, subDomain || "");
-  const defaultFilter: () => GetListTagRequest = () => ({
-    page: 1,
-    limit: env.DEFAULT_PAGE_SIZE,
-    query: "",
-    sortBy: undefined,
-    sortOrder: undefined,
-  });
 
   const [filterData, setFilterData] =
     useState<BaseListTagRequest>(defaultFilter);
@@ -168,7 +163,7 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
   const handleDeleteTag = useCallback((tag: Tag) => {
     deleteTagApi([tag.name]);
   }, []);
-  useEffect(() => {
+  useDeepEffect(() => {
     if (prevFilter?.query !== filterData.query && filterData.query) {
       getListDebounce(filterData);
     } else {
@@ -202,8 +197,8 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
         onCancel={closePopupTag}
         onChange={handleChangePopup}
       />
-      <Header title={showTitle ? "Tags" : ""}>
-        <div className="flex-1 flex justify-end mb-5">
+      <Header title={showTitle ? "Tags" : ""} className="mb-5">
+        <div className="flex-1 flex justify-end ">
           <HeaderList
             setShowTitle={setShowTitle}
             handleSearch={handleChangeValueInput}
@@ -214,7 +209,7 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
                 setDataPopup(undefined);
               }}
             >
-              Add new tag
+              Add new
             </ButtonAdd>
           </HeaderList>
         </div>

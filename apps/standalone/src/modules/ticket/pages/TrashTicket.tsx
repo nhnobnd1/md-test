@@ -38,20 +38,14 @@ import {
   restoreTicketApi,
 } from "src/modules/ticket/helper/api";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
+import { defaultFilter } from "src/utils/localValue";
 import CancelIcon from "~icons/mdi/cancel";
 import RestoreIcon from "~icons/mdi/restore";
 import "./ListTicket.scss";
-const defaultFilter = () => ({
-  page: 1,
-  limit: env.DEFAULT_PAGE_SIZE,
-  query: "",
-  sortBy: undefined,
-  sortOrder: undefined,
-});
+
 const TrashTicket = () => {
-  const [filterData, setFilterData] = useState<BaseListTicketRequest>(
-    defaultFilter()
-  );
+  const [filterData, setFilterData] =
+    useState<BaseListTicketRequest>(defaultFilter);
   const { data: trashTicket, isFetching: loadingList } = useQuery({
     queryKey: ["getListTrash", filterData],
     queryFn: () => getListTrashApi(filterData),

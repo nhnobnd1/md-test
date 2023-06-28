@@ -1,4 +1,5 @@
 import jwt_decode from "jwt-decode";
+import env from "src/core/env";
 
 const modeEnv = import.meta.env.MODE;
 
@@ -33,4 +34,9 @@ const getSubDomain = () => {
     return domain.replace(".moosedesk.com", "");
   }
 };
-export { getBaseToken, getRefreshToken, getStoreId };
+const defaultFilter = () => ({
+  page: 1,
+  limit: env.DEFAULT_PAGE_SIZE,
+  query: "",
+});
+export { defaultFilter, getBaseToken, getRefreshToken, getStoreId };
