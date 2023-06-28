@@ -1,13 +1,14 @@
 import { Row } from "antd";
 import Icon from "src/components/UI/Icon";
+import { convertSecondsToHoursMinutes } from "src/modules/report/helper/convert";
 import styles from "./style.module.scss";
 interface IProps {
   data: {
     ticketCreatedCount: number;
     ticketRepliedCount: number;
     ticketClosedCount: number;
-    avgFirstResponseTime: string;
-    avgResolutionTime: string;
+    avgFirstResponseTime: number;
+    avgResolutionTime: number;
   };
   loading?: boolean;
 }
@@ -30,12 +31,12 @@ export default function SummaryBlock({ data, loading }: IProps) {
     },
     {
       labels: "First Response Time",
-      value: data.avgFirstResponseTime,
+      value: convertSecondsToHoursMinutes(data.avgFirstResponseTime),
       iconName: "firstResponseTime",
     },
     {
       labels: "Resolution Time",
-      value: data.avgResolutionTime,
+      value: convertSecondsToHoursMinutes(data.avgResolutionTime),
       iconName: "resolutionTime",
     },
   ];
