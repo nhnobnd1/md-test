@@ -446,12 +446,12 @@ export const AppLayout = () => {
           <Menu
             className="layout-menu"
             mode="inline"
-            theme="dark"
+            theme="light"
             style={{
               height: "100%",
 
-              background: "#000B16",
-              color: "white",
+              background: "#F0F2F5",
+              // color: "white",
             }}
             selectedKeys={[keys.activeKeys]}
             // defaultOpenKeys={keys.defaultOpenKeys}

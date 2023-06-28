@@ -100,7 +100,11 @@ const CustomTimeWorkingCard = ({
   return (
     <>
       {valueCustomHours.map((day, index) => (
-        <Space align="center" key={index} className="w-full mt-4">
+        <Space
+          align="center"
+          key={index}
+          className="w-full mt-4 flex flex-wrap"
+        >
           <div className="w-40">
             <Checkbox
               checked={day.checked}

@@ -6,7 +6,7 @@ import {
   MailSetting,
   MailSettingType,
 } from "@moose-desk/repo";
-import { Checkbox, Input, Radio, RadioChangeEvent, Tooltip } from "antd";
+import { Checkbox, Radio, RadioChangeEvent, Tooltip } from "antd";
 import React, {
   useCallback,
   useEffect,
@@ -16,6 +16,7 @@ import React, {
 } from "react";
 import { map } from "rxjs";
 import { Form, FormProps } from "src/components/UI/Form";
+import { MDInput } from "src/components/UI/Input";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { CardForwardEmail } from "src/modules/settingChannel/components/ChannelEmail/CardForwardEmail";
 import {
@@ -234,7 +235,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
       form.setFieldValue("mailboxType", MailBoxType.GMAIL);
     }
   }, [form.getFieldValue("mailSettingType")]);
-
+  console.log("hehe", !!id);
   return (
     <Form
       {...props}
@@ -259,7 +260,12 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
               }`}
             >
               <Radio
-                disabled={haveMooseDeskEmail}
+                disabled={
+                  haveMooseDeskEmail ||
+                  !!id ||
+                  !!signInCallback.refKey ||
+                  isForwardEmailCreated
+                }
                 value={MailSettingType.MOOSEDESK}
               >
                 Use Moosedesk email address
@@ -270,7 +276,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
         </Form.Item>
         <div className={`${isHidden ? "hidden" : ""}`}>
           <Form.Item name="name" label="Name">
-            <Input />
+            <MDInput />
           </Form.Item>
           <Form.Item
             name="supportEmail"
@@ -286,7 +292,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
               },
             ]}
           >
-            <Input disabled={true} />
+            <MDInput disabled={true} />
           </Form.Item>
         </div>
 

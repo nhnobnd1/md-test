@@ -3,6 +3,7 @@ import {
   generatePath,
   MediaScreen,
   PageComponent,
+  priorityToTag,
   upperCaseFirst,
   useJob,
   useLoading,
@@ -24,7 +25,7 @@ import {
   TicketStatistic,
   UpdateTicket,
 } from "@moose-desk/repo";
-import { Button, Card, Modal, TableProps } from "antd";
+import { Button, Card, Modal, TableProps, Tag as TagAntd } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -53,6 +54,7 @@ import { useQuery } from "react-query";
 import { HeaderList } from "src/components/HeaderList";
 import { MDButton } from "src/components/UI/Button/MDButton";
 import Icon from "src/components/UI/Icon";
+import useDeepEffect from "src/hooks/useDeepEffect";
 import useScreenType from "src/hooks/useScreenType";
 import {
   getListAgentApi,
@@ -63,7 +65,6 @@ import {
 } from "src/modules/ticket/helper/api";
 import useTicketSelected from "src/modules/ticket/store/useTicketSelected";
 import "./ListTicket.scss";
-import useDeepEffect from "src/hooks/useDeepEffect";
 interface TicketIndexPageProps {}
 interface FilterObject {
   customer: string;
@@ -477,7 +478,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                 <Select
                   placeholder="Assign to"
                   options={agentsOptions}
-                  className="w-[300px]"
+                  className="w-[250px]"
                 />
               </Form.Item>
               <Form.Item label="" name="status" className="mb-0">
@@ -487,10 +488,10 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                   options={statusOptions}
                 />
               </Form.Item>
-              <Button
+              <MDButton
                 disabled={loadingExport}
                 onClick={handlePrint}
-                className="w-[100px]"
+                // className="w-[100px]"
                 icon={
                   <IconButton>
                     <UilImport />
@@ -498,7 +499,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                 }
               >
                 Export
-              </Button>
+              </MDButton>
               <DeleteSelectedModal
                 handleDeleteSelected={handleDeleteSelected}
               />
@@ -706,7 +707,9 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                     key="priority"
                     title="Priority"
                     render={(_, record: Ticket) => (
-                      <span>{`${upperCaseFirst(record.priority)}`}</span>
+                      <TagAntd
+                        color={priorityToTag(record.priority)}
+                      >{`${upperCaseFirst(record.priority)}`}</TagAntd>
                     )}
                     sorter={{
                       compare: (a: any, b: any) => a.priority - b.priority,
@@ -788,7 +791,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
               setIsModalActionsOpen(false);
             }}
             footer={null}
-            width={700}
+            width={500}
           >
             <Form
               onValuesChange={handleChangeForm}
@@ -814,7 +817,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                 />
               </Form.Item>
               <Form.Item name="" label="Export pdf">
-                <Button
+                <MDButton
                   disabled={loadingExport}
                   onClick={handlePrint}
                   className="w-[250px]"
@@ -825,7 +828,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                   }
                 >
                   Export
-                </Button>
+                </MDButton>
               </Form.Item>
             </Form>
           </Modal>

@@ -1,7 +1,8 @@
 /* eslint-disable react/no-unescaped-entities */
-import { Button, Result, Spin, Typography } from "antd";
+import { Result, Spin, Typography } from "antd";
 import { FormInstance } from "antd/lib/form/Form";
 import React, { Dispatch, FC, SetStateAction, useEffect } from "react";
+import { MDButton } from "src/components/UI/Button/MDButton";
 import { SenderVerifyStep } from "src/modules/settingChannel/components/ChannelEmail/CardForwardEmail/SenderVerifyStep";
 interface ContentWaitProps {
   handleVerifyFinish: () => void;
@@ -55,7 +56,7 @@ export const CompleteStep: FC<ContentWaitProps> = React.memo(
           title="Couldn't complete setup"
           subTitle="Cannot be verified yet. Please check your email and click on the link to verify. Click on the re-check button to check the verification status again"
           extra={[
-            <Button
+            <MDButton
               onClick={() => {
                 sendVerify();
                 setRetryCount(2);
@@ -65,7 +66,7 @@ export const CompleteStep: FC<ContentWaitProps> = React.memo(
               key="console"
             >
               Re-check
-            </Button>,
+            </MDButton>,
           ]}
         />
       </div>

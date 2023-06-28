@@ -33,7 +33,7 @@ const CategoryChannel = ({
   return (
     <Card
       className={className}
-      type="inner"
+      // type="inner"
       title={
         <div className="flex items-center gap-4">
           <span className="flex text-[20px]">{icon}</span>

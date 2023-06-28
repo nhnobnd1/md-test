@@ -13,11 +13,12 @@ import {
   GetListEmailRequest,
   MailBoxType,
 } from "@moose-desk/repo";
-import { Button, Input, Space, TableProps, Tooltip } from "antd";
+import { Button, Space, TableProps, Tooltip } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, forkJoin, map, of } from "rxjs";
+import { HeaderList } from "src/components/HeaderList";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
 import { Header } from "src/components/UI/Header";
 import Pagination from "src/components/UI/Pagination/Pagination";
@@ -44,6 +45,7 @@ const ChannelEmail = () => {
   );
   const [filterData, setFilterData] =
     useState<GetListEmailRequest>(defaultFilter);
+  const [showTitle, setShowTitle] = useState(true);
 
   const [meta, setMeta] = useState<BaseMetaDataListResponse>();
 
@@ -158,9 +160,6 @@ const ChannelEmail = () => {
     },
     { wait: 300 }
   );
-  // const resetFilterData = useCallback(() => {
-  //   setFilterData(defaultFilter());
-  // }, []);
 
   const onPagination = useCallback(
     ({ page, limit }: { page: number; limit: number }) => {
@@ -255,22 +254,15 @@ const ChannelEmail = () => {
   return (
     <>
       <style scoped>{css}</style>
-      <Header title="Email Configuration">
-        <div className="flex-1 flex justify-end">
-          <ButtonAdd onClick={handleRedirectToCreate}>
-            Add new Email Address
-          </ButtonAdd>
+      <Header title={showTitle ? "Email Configuration" : ""}>
+        <div className="flex items-center justify-end flex-1">
+          <HeaderList setShowTitle={setShowTitle} handleSearch={handleSearch}>
+            <ButtonAdd onClick={handleRedirectToCreate}>Add new</ButtonAdd>
+          </HeaderList>
         </div>
       </Header>
-      <div className="search mb-6">
-        <Input.Search
-          placeholder="Search"
-          enterButton
-          allowClear
-          onSearch={handleSearch}
-        />
-      </div>
-      <div>
+
+      <div className="mt-5">
         <>
           <Table
             rowSelection={{

@@ -161,7 +161,7 @@ const BoxSelectTime = ({
 
   return (
     <div className="mb-2">
-      <Space align="center">
+      <Space align="center" className="flex flex-wrap">
         <div style={{ maxWidth: 130 }}>
           <Select
             value={inputValueStart}

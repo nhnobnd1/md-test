@@ -1,6 +1,7 @@
 import { DeleteOutlined } from "@ant-design/icons";
-import { Button, Modal } from "antd";
+import { Modal } from "antd";
 import { FC, useState } from "react";
+import { MDButton } from "src/components/UI/Button/MDButton";
 
 interface DeleteSelectedModalProps {
   handleDeleteSelected: () => void;
@@ -25,14 +26,14 @@ export const DeleteSelectedModal: FC<DeleteSelectedModalProps> = ({
   };
   return (
     <>
-      <Button
+      <MDButton
         type="primary"
         onClick={showModal}
         danger
         icon={<DeleteOutlined />}
       >
         <span>Remove </span>
-      </Button>
+      </MDButton>
       <Modal
         title="Are you sure that you want to remove these tickets ?"
         open={isModalOpen}

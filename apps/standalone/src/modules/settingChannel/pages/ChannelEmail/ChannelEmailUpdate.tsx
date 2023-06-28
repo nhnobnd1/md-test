@@ -14,10 +14,10 @@ import {
   MailBoxType,
   MailSettingType,
 } from "@moose-desk/repo";
-import { Button } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map } from "rxjs";
+import { MDButton } from "src/components/UI/Button/MDButton";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
 import useMessage from "src/hooks/useMessage";
@@ -250,9 +250,13 @@ const ChannelEmailUpdate = () => {
         backAction={handleBack}
       >
         <div className="flex-1 flex justify-end">
-          <Button type="primary" disabled={!activeSave} onClick={handleSubmit}>
+          <MDButton
+            type="primary"
+            disabled={!activeSave}
+            onClick={handleSubmit}
+          >
             Save
-          </Button>
+          </MDButton>
         </div>
       </Header>
       {email && (

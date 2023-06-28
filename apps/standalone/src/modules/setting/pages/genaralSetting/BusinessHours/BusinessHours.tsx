@@ -7,10 +7,11 @@ import {
   GetListBusinessCalendarResponse,
   Holidays,
 } from "@moose-desk/repo";
-import { Button, Card, Input, Skeleton, Space, Tabs } from "antd";
+import { Card, Input, Skeleton, Space, Tabs } from "antd";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "react-query";
+import { MDButton } from "src/components/UI/Button/MDButton";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
 import timeZoneList from "src/constaint/timeZone";
@@ -121,7 +122,10 @@ const BusinessHours = () => {
   });
   return (
     <>
-      <Header title="Business Hours"></Header>
+      <Header
+        className="xs:h-[32px] md:h-[40px] flex items-center"
+        title="Business Hours"
+      ></Header>
       {processing ? (
         <>
           <Skeleton />
@@ -134,8 +138,9 @@ const BusinessHours = () => {
             enableReinitialize
             onFinish={handleSubmit}
             onValuesChange={handleChangeValues}
+            className="mt-5"
           >
-            <Form.Item name="timezone" label="Time zone:">
+            <Form.Item name="timezone" label="Time zone">
               <SelectTimeZone />
             </Form.Item>
             <Card>
@@ -184,10 +189,10 @@ const BusinessHours = () => {
           </Form>
           <div className="flex-1 text-right mt-4">
             <Space>
-              <Button onClick={() => form.resetFields()}>Cancel</Button>
-              <Button type="primary" onClick={() => form.submit()}>
+              <MDButton onClick={() => form.resetFields()}>Cancel</MDButton>
+              <MDButton type="primary" onClick={() => form.submit()}>
                 Save
-              </Button>
+              </MDButton>
             </Space>
           </div>
         </>

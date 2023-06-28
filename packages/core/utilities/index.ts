@@ -25,6 +25,21 @@ export function upperCaseFirst(str: string) {
   return str.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
+export function priorityToTag(str: string) {
+  switch (str.toLowerCase()) {
+    case "urgent":
+      return "error";
+    case "high":
+      return "warning";
+    case "medium":
+      return "processing";
+    case "low":
+      return "default";
+    default:
+      return "default";
+  }
+}
+
 export enum MediaScreen {
   XS = 320,
   SM = 576,

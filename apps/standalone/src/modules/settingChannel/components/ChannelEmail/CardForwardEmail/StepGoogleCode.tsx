@@ -1,7 +1,8 @@
 /* eslint-disable react/no-unescaped-entities */
-import { Button, Checkbox, Typography } from "antd";
+import { Checkbox, Typography } from "antd";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import React, { FC, useState } from "react";
+import { MDButton } from "src/components/UI/Button/MDButton";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import Step5Icon from "~icons/ph/number-circle-five-fill";
 import Step4Icon from "~icons/ph/number-circle-four-fill";
@@ -119,7 +120,7 @@ export const StepGoogleCode: FC<ContentWaitProps> = React.memo(
         )}
         <div>{children}</div>
         <div className="flex gap-5 justify-center mt-7">
-          <Button
+          <MDButton
             disabled={!isChecked}
             onClick={() => {
               sendVerify();
@@ -127,7 +128,7 @@ export const StepGoogleCode: FC<ContentWaitProps> = React.memo(
             type="primary"
           >
             Verify
-          </Button>
+          </MDButton>
         </div>
       </div>
     );

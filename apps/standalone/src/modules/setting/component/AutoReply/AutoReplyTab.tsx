@@ -1,9 +1,9 @@
 import { AutoReply, Holidays } from "@moose-desk/repo";
-import Link from "antd/es/typography/Link";
 import dayjs from "dayjs";
 import moment from "moment";
 import { memo, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
 import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
 import TableAction from "src/components/UI/Table/TableAction/TableAction";
@@ -176,9 +176,12 @@ const AutoReplyTab = ({
     setValueListAutoReplys(value?.length ? [...value] : []);
   }, [value]);
   return (
-    <div className="p-2 mt-2">
+    <div>
+      <div className="w-full flex justify-end py-2">
+        <ButtonAdd onClick={handleOpen}>Add new</ButtonAdd>
+      </div>
       <ModalAutoReply
-        title="Add an Auto-Reply"
+        title="New Auto-Reply"
         open={openModalAutoReply}
         onClose={handleCloseModal}
         dataForm={dataForm}
@@ -236,9 +239,9 @@ const AutoReplyTab = ({
           />
         </div>
       ) : null}
-      <>
+      {/* <>
         <Link onClick={handleOpen}>Add an auto-reply...</Link>
-      </>
+      </> */}
     </div>
   );
 };

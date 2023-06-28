@@ -1,11 +1,12 @@
 /* eslint-disable react/no-unescaped-entities */
 import { useJob } from "@moose-desk/core";
 import { EmailIntegrationRepository } from "@moose-desk/repo";
-import { Button, Result, Spin, Typography } from "antd";
+import { Result, Spin, Typography } from "antd";
 import { FormInstance } from "antd/lib/form/Form";
 import React, { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
+import { MDButton } from "src/components/UI/Button/MDButton";
 import useMessage from "src/hooks/useMessage";
 import useMailSetting from "src/modules/settingChannel/store/useMailSetting";
 
@@ -127,13 +128,13 @@ export const SenderVerifyStep: FC<ContentWaitProps> = React.memo(
             // title="Your setup has been failure"
             subTitle="Cannot be verified yet. Please check your email and click on the link to verify. Click on the re-check button to check the verification status again"
             extra={[
-              <Button
+              <MDButton
                 onClick={handleClickButtonCheck}
                 type="primary"
                 key="console"
               >
                 Re-check
-              </Button>,
+              </MDButton>,
             ]}
           />
         </div>

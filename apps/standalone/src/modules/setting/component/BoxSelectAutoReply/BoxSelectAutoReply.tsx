@@ -1,6 +1,7 @@
 import { AutoReply } from "@moose-desk/repo";
 import { Select } from "antd";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import useViewport from "src/hooks/useViewport";
 
 interface BoxSelectAutoReplyProps {
   placeholder?: string;
@@ -13,9 +14,7 @@ interface BoxSelectAutoReplyProps {
 }
 
 const BoxSelectAutoReply = (props: BoxSelectAutoReplyProps) => {
-  // config UI
-
-  // init data
+  const { isMobile } = useViewport();
 
   const deselectedOptions = useMemo(() => {
     return props.dataAutoReply.map((item) => ({
@@ -89,6 +88,7 @@ const BoxSelectAutoReply = (props: BoxSelectAutoReplyProps) => {
   return (
     <div>
       <Select
+        size={isMobile ? "middle" : "large"}
         value={inputValue}
         onSearch={updateText}
         options={optionsMarkup || []}

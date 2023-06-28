@@ -10,6 +10,7 @@ import {
 } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ColorResult, SketchPicker } from "react-color";
+import { MDButton } from "src/components/UI/Button/MDButton";
 import { UIWidget } from "src/modules/settingChannel/components/Widgets/UIWidget";
 import useUpdateSave from "src/modules/settingChannel/store/saveUpdateWidget";
 import useWidgetSetting from "src/modules/settingChannel/store/useSetting";
@@ -148,38 +149,25 @@ export default function Appearance() {
     });
   };
   return (
-    <>
+    <div className="flex flex-row-reverse gap-10 flex-wrap justify-center">
       <Form
-        labelCol={{ span: 14 }}
-        wrapperCol={{ span: 16 }}
-        style={{ marginTop: 20, position: "relative" }}
+        // labelCol={{ span: 14 }}
+        // wrapperCol={{ span: 16 }}
         initialValues={initialFormValues}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         form={form}
         autoComplete="off"
+        className="flex-1 basis-3/6 mt-5"
+        layout="vertical"
       >
-        <div style={{ marginLeft: 450 }}>
-          <Card
-            style={{
-              maxWidth: 500,
-              // marginTop: 16,
-            }}
-          >
+        <div>
+          <Card className="w-full">
             <h2>Widget Appearance</h2>
             <Divider />
-            <Row>
-              <Col
-                span={10}
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-start",
-                  alignItems: "center",
-                }}
-              >
-                Header Background Color
-              </Col>
-              <Col span={3}>
+            <Row className="max-w-[300px] flex gap-2">
+              <span className="w-[200px]">Header Background Color</span>
+              <div>
                 <Popover content={backgroundHeader}>
                   <Button
                     style={{
@@ -187,23 +175,13 @@ export default function Appearance() {
                       backgroundColor: `${
                         color?.hex ? color?.hex : data?.headerBackgroundColor
                       }`,
-                      marginLeft: 20,
                     }}
                   ></Button>
                 </Popover>
-              </Col>
+              </div>
             </Row>
-            <Row style={{ marginTop: 20 }}>
-              <Col
-                span={10}
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-start",
-                  alignItems: "center",
-                }}
-              >
-                Text Color
-              </Col>
+            <Row className="max-w-[300px] flex gap-2 mt-5">
+              <span className="w-[200px]"> Text Color</span>
               <Col span={3}>
                 <Popover content={bgText}>
                   <Button
@@ -212,7 +190,6 @@ export default function Appearance() {
                       backgroundColor: `${
                         textColor?.hex ? textColor?.hex : data?.headerTextColor
                       }`,
-                      marginLeft: 20,
                     }}
                   ></Button>
                 </Popover>
@@ -220,56 +197,48 @@ export default function Appearance() {
             </Row>
           </Card>
 
-          <div style={{ maxWidth: 500 }}>
-            <Row
-              style={{
-                display: "flex",
-                alignItems: "center",
-                marginTop: 20,
-                marginBottom: 10,
-                gap: 20,
-              }}
-            >
-              <span>Widget Position</span>
-              <Button
-                onClick={handleUpdateWidgetPosition}
-                type={targetButton === 1 ? "primary" : "default"}
-                // style={{ marginLeft: 20, marginRight: 20 }}
-                size="large"
-                icon={
-                  <ArrowDownLeft
-                    fontSize={14}
-                    style={{ marginRight: 8, paddingTop: 5 }}
-                  />
-                }
-              >
-                Bottom Left
-              </Button>
-              <Button
-                onClick={handleUpdateSetting}
-                type={targetButton === 2 ? "primary" : "default"}
-                // style={{ marginLeft: 20, marginRight: 20 }}
-                size="large"
-                icon={
-                  <ArrowDownRight
-                    fontSize={14}
-                    style={{ marginRight: 8, paddingTop: 5 }}
-                  />
-                }
-              >
-                Bottom Right
-              </Button>
-            </Row>
-            <Row style={{ marginTop: 20 }}>
-              <Col span={24}>
-                <Form.Item
-                  labelAlign="left"
-                  label="Offset from bottom (pixels)"
-                  name="offsetBot"
+          <Card className="my-3 w-full">
+            <div className="mb-5 flex flex-col gap-2">
+              <span className="w-[200px]">Widget Position</span>
+              <div className="flex gap-4">
+                <MDButton
+                  onClick={handleUpdateWidgetPosition}
+                  type={targetButton === 1 ? "primary" : "default"}
+                  icon={
+                    <ArrowDownLeft
+                      fontSize={14}
+                      style={{ marginRight: 8, paddingTop: 5 }}
+                    />
+                  }
                 >
-                  <InputNumber onChange={handleUpdateButton} />
-                </Form.Item>
-              </Col>
+                  Bottom Left
+                </MDButton>
+                <MDButton
+                  onClick={handleUpdateSetting}
+                  type={targetButton === 2 ? "primary" : "default"}
+                  icon={
+                    <ArrowDownRight
+                      fontSize={14}
+                      style={{ marginRight: 8, paddingTop: 5 }}
+                    />
+                  }
+                >
+                  Bottom Right
+                </MDButton>
+              </div>
+            </div>
+            <Row className="max-w-[300px] flex gap-2 mt-5">
+              <Form.Item
+                labelAlign="left"
+                label="Offset from bottom (pixels)"
+                name="offsetBot"
+                className="w-full"
+              >
+                <InputNumber
+                  className="w-[200px]"
+                  onChange={handleUpdateButton}
+                />
+              </Form.Item>
             </Row>
 
             <Row>
@@ -279,32 +248,21 @@ export default function Appearance() {
                   label="Offset from left/right (pixels)"
                   name="offsetHorizontal"
                 >
-                  <InputNumber onChange={handleUpdateOffset} />
+                  <InputNumber
+                    className="w-[200px]"
+                    onChange={handleUpdateOffset}
+                  />
                 </Form.Item>
               </Col>
             </Row>
-          </div>
+          </Card>
 
-          <Card
-            style={{
-              maxWidth: 500,
-              // marginTop: 16,
-            }}
-          >
+          <Card className="w-full">
             <h2>Button Appearance</h2>
             <Divider />
-            <Row>
-              <Col
-                span={7}
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-start",
-                  alignItems: "center",
-                }}
-              >
-                Background Color
-              </Col>
-              <Col span={3}>
+            <Row className="max-w-[300px] flex gap-2">
+              <span className="w-[200px]">Background Color</span>
+              <div>
                 <Popover content={bgButton}>
                   <Button
                     style={{
@@ -314,24 +272,14 @@ export default function Appearance() {
                           ? buttonColor?.hex
                           : data?.buttonAppearanceColor
                       }`,
-                      marginLeft: 20,
                     }}
                   ></Button>
                 </Popover>
-              </Col>
+              </div>
             </Row>
-            <Row style={{ marginTop: 20 }}>
-              <Col
-                span={7}
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-start",
-                  alignItems: "center",
-                }}
-              >
-                Text Color
-              </Col>
-              <Col span={3}>
+            <Row className="max-w-[300px] flex gap-2 mt-5">
+              <span className="w-[200px]">Text Color</span>
+              <div>
                 <Popover content={bgButtonText}>
                   <Button
                     style={{
@@ -341,16 +289,15 @@ export default function Appearance() {
                           ? buttonTextColor?.hex
                           : data?.textButtonAppearanceColor
                       }`,
-                      marginLeft: 20,
                     }}
                   ></Button>
                 </Popover>
-              </Col>
+              </div>
             </Row>
           </Card>
         </div>
       </Form>
       <UIWidget />
-    </>
+    </div>
   );
 }

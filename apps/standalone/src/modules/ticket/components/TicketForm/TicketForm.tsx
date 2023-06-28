@@ -10,6 +10,7 @@ import {
   TicketRepository,
   priorityOptions,
 } from "@moose-desk/repo";
+import { Card } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery, useQueryClient } from "react-query";
@@ -260,7 +261,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
       {...props}
     >
       <div className="flex flex-col items-center mt-5">
-        <div className="w-full  xl:w-[800px]  ">
+        <Card className="w-full  xl:w-[850px]  ">
           <div className="flex items-start gap-2 ">
             <div className="flex-1">
               <Form.Item
@@ -406,19 +407,19 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
           <Form.Item label="Assignee" name="assignee">
             <SelectList placeholder="Search agents" options={agentsOptions} />
           </Form.Item>
-        </div>
-      </div>
-      <div className="flex-1 flex justify-end items-center gap-2 mt-5 ">
-        <MDButton
-          onClick={() => {
-            navigate(TicketRoutePaths.Index);
-          }}
-        >
-          Cancel
-        </MDButton>
-        <MDButton loading={loadingButton} type="primary" htmlType="submit">
-          Save
-        </MDButton>
+          <div className="flex-1 flex justify-end items-center gap-2 mt-10 ">
+            <MDButton
+              onClick={() => {
+                navigate(TicketRoutePaths.Index);
+              }}
+            >
+              Cancel
+            </MDButton>
+            <MDButton loading={loadingButton} type="primary" htmlType="submit">
+              Save
+            </MDButton>
+          </div>
+        </Card>
       </div>
     </Form>
   );

@@ -1,6 +1,7 @@
-import { Card, Checkbox, Col, Divider, Form, Input, Row } from "antd";
+import { Card, Checkbox, Col, Divider, Form, Row } from "antd";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import { ChangeEvent, useEffect, useState } from "react";
+import { MDInput } from "src/components/UI/Input";
 import { UIWidget } from "src/modules/settingChannel/components/Widgets/UIWidget";
 import useUpdateSave from "src/modules/settingChannel/store/saveUpdateWidget";
 import useWidgetSetting from "src/modules/settingChannel/store/useSetting";
@@ -82,45 +83,41 @@ export default function General() {
   }, [data.id, cancelState]);
 
   return (
-    <div style={{ position: "relative" }}>
+    <div className="flex flex-row-reverse gap-10 flex-wrap justify-center">
       <Form
         labelCol={{ span: 10 }}
-        wrapperCol={{ span: 16 }}
-        style={{ marginTop: 20 }}
+        wrapperCol={{ span: 22 }}
         initialValues={initialFormValues}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         form={form}
         autoComplete="off"
+        layout="vertical"
+        className="flex-1 basis-3/6 mt-5"
       >
-        <div style={{ marginLeft: 450 }}>
-          <div style={{ maxWidth: 500 }}>
+        <div>
+          <Card className="w-full ">
             <Row gutter={16} justify="space-between" align="bottom">
               <Col span={22}>
-                <Form.Item label="Title Text: " name="title" labelAlign="left">
-                  <Input onChange={handleChangeTitleText} />
+                <Form.Item label="Title Text " name="title" labelAlign="left">
+                  <MDInput onChange={handleChangeTitleText} />
                 </Form.Item>
               </Col>
             </Row>
             <Row gutter={16} justify="space-between" align="bottom">
               <Col span={22}>
                 <Form.Item
-                  label="Widget Header: "
+                  label="Widget Header "
                   name="header"
                   labelAlign="left"
                 >
-                  <Input onChange={handleUpdateSetting} />
+                  <MDInput onChange={handleUpdateSetting} />
                 </Form.Item>
               </Col>
             </Row>
-          </div>
+          </Card>
           <div>
-            <Card
-              style={{
-                maxWidth: 500,
-                marginTop: 16,
-              }}
-            >
+            <Card className=" mt-5">
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <h2>Contact Form</h2>
                 {/* <Switch checked={loading} onChange={onChangeToggle} /> */}
@@ -130,33 +127,33 @@ export default function General() {
                 <Row gutter={20} justify="space-between" align="bottom">
                   <Col span={22}>
                     <Form.Item
-                      label="Form Title: "
+                      label="Form Title"
                       name="form_title"
                       labelAlign="left"
                     >
-                      <Input onChange={handleChangeFormTitle} />
+                      <MDInput onChange={handleChangeFormTitle} />
                     </Form.Item>
                   </Col>
                 </Row>
                 <Row gutter={20} justify="space-between" align="bottom">
                   <Col span={22}>
                     <Form.Item
-                      label="Button text: "
+                      label="Button text"
                       name="button_text"
                       labelAlign="left"
                     >
-                      <Input onChange={handleUpdateButton} />
+                      <MDInput onChange={handleUpdateButton} />
                     </Form.Item>
                   </Col>
                 </Row>
                 <Row gutter={20} justify="space-between" align="bottom">
                   <Col span={22}>
                     <Form.Item
-                      label="Confirmation Message: "
+                      label="Confirmation Message"
                       name="confirm_message"
                       labelAlign="left"
                     >
-                      <Input onChange={handleChangeMessage} />
+                      <MDInput onChange={handleChangeMessage} />
                     </Form.Item>
                   </Col>
                 </Row>

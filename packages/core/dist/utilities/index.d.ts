@@ -8,6 +8,7 @@ export * from "./request";
 export * from "./useRole";
 export declare function makeId(length: number): string;
 export declare function upperCaseFirst(str: string): string;
+export declare function priorityToTag(str: string): "error" | "warning" | "processing" | "default";
 export declare enum MediaScreen {
     XS = 320,
     SM = 576,
