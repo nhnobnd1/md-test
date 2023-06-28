@@ -1,6 +1,7 @@
 import { DeleteOutlined } from "@ant-design/icons";
 import { Modal } from "antd";
 import { FC, useState } from "react";
+import { MDModalUI } from "src/components/MDModalUI";
 import { MDButton } from "src/components/UI/Button/MDButton";
 
 interface DeleteSelectedModalProps {
@@ -34,7 +35,7 @@ export const DeleteSelectedModal: FC<DeleteSelectedModalProps> = ({
       >
         <span>Remove </span>
       </MDButton>
-      <Modal
+      <MDModalUI
         title="Are you sure that you want to remove these tickets ?"
         open={isModalOpen}
         onOk={handleOk}
@@ -52,7 +53,7 @@ export const DeleteSelectedModal: FC<DeleteSelectedModalProps> = ({
           These tickets will be moved to Trash. You can no longer access to
           these tickets
         </p>
-      </Modal>
+      </MDModalUI>
     </>
   );
 };

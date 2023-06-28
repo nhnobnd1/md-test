@@ -174,7 +174,7 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
                 showTitle ? "inline-block" : "hidden"
               }`}
             >
-              <span>Account</span>
+              <span>Agents</span>
             </div>
           ) as any
         }

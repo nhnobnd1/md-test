@@ -1,5 +1,6 @@
 import { ButtonProps, Modal } from "antd";
 import { FC, ReactNode, useState } from "react";
+import { MDModalUI } from "src/components/MDModalUI";
 import { MDButton } from "src/components/UI/Button/MDButton";
 
 interface ButtonTicketProps extends Omit<ButtonProps, "icon"> {
@@ -37,7 +38,7 @@ export const ButtonTicket: FC<ButtonTicketProps> = ({
       <MDButton type="default" onClick={showModal} className="p-0" {...props}>
         <div className="flex items-center justify-center px-2">{icon}</div>
       </MDButton>
-      <Modal
+      <MDModalUI
         title={title}
         open={isModalOpen}
         onOk={handleOk}
@@ -52,7 +53,7 @@ export const ButtonTicket: FC<ButtonTicketProps> = ({
         }}
       >
         <p>{content}</p>
-      </Modal>
+      </MDModalUI>
     </>
   );
 };

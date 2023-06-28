@@ -13,11 +13,12 @@ import {
   UserGroup,
   UserGroupRepository,
 } from "@moose-desk/repo";
-import { Input, TableProps } from "antd";
+import { TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
+import { HeaderList } from "src/components/HeaderList";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
 import { Header } from "src/components/UI/Header";
 import Pagination from "src/components/UI/Pagination/Pagination";
@@ -37,6 +38,7 @@ const GroupIndexPage: PageComponent<GroupIndexPageProps> = () => {
   const message = useMessage();
   const notification = useNotification();
   const { isAdmin, isAgent } = usePermission();
+  const [showTitle, setShowTitle] = useState(true);
 
   const defaultFilter: () => GetListUserGroupRequest = () => ({
     page: 1,
@@ -161,35 +163,33 @@ const GroupIndexPage: PageComponent<GroupIndexPageProps> = () => {
 
   return (
     <div>
-      <Header title="Group">
+      <Header title={showTitle ? "Groups" : ""}>
         <div className="flex-1 flex justify-end">
-          <ButtonAdd
-            onClick={() => {
-              navigate(GroupRoutePaths.Create);
+          <HeaderList
+            setShowTitle={setShowTitle}
+            handleSearch={(searchText: string) => {
+              setFilterData((value) => {
+                return {
+                  ...value,
+                  query: searchText,
+                  page: 1,
+                };
+              });
             }}
-            disabled={isAgent}
           >
-            Add Group
-          </ButtonAdd>
+            <ButtonAdd
+              onClick={() => {
+                navigate(GroupRoutePaths.Create);
+              }}
+              disabled={isAgent}
+            >
+              Add New
+            </ButtonAdd>
+          </HeaderList>
         </div>
       </Header>
-      <div className="search mb-6">
-        <Input.Search
-          placeholder="Search"
-          enterButton
-          allowClear
-          onSearch={(searchText: string) => {
-            setFilterData((value) => {
-              return {
-                ...value,
-                query: searchText,
-                page: 1,
-              };
-            });
-          }}
-        />
-      </div>
-      <div>
+
+      <div className="mt-5">
         <Table
           dataSource={groups}
           loading={loadingList}

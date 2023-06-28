@@ -202,7 +202,7 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
                 showTitle ? "inline-block" : "hidden"
               }`}
             >
-              <span>Group</span>
+              <span>Groups</span>
             </div>
           ) as any
         }
