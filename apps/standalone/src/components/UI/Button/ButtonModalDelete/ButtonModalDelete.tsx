@@ -3,6 +3,7 @@ import { useState } from "react";
 import Icon from "src/components/UI/Icon";
 import { ModalDelete } from "src/components/UI/Modal/ModalDelete";
 import "./ButtonModalDelete.scss";
+import { MDButton } from "src/components/UI/Button/MDButton";
 interface ButtonModalDeleteProps {
   onlyIcon?: boolean;
   title: string;
@@ -51,7 +52,7 @@ export const ButtonModalDelete = ({
           ></Button>
         </Tooltip>
       ) : (
-        <Button
+        <MDButton
           danger
           type="primary"
           onClick={() => {
@@ -63,7 +64,7 @@ export const ButtonModalDelete = ({
           disabled={disabled}
         >
           {textDelete && !onlyIcon ? textDelete : undefined}
-        </Button>
+        </MDButton>
       )}
       <ModalDelete
         open={openModal}

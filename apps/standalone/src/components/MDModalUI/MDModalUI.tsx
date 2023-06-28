@@ -8,9 +8,14 @@ interface MDModalUIProps extends ModalProps {}
 
 export const MDModalUI: FC<MDModalUIProps> = ({ children, ...props }) => {
   const { isMobile } = useViewport();
-
   return !isMobile ? (
-    <Modal destroyOnClose closeIcon={<Icon name="close" />} {...props}>
+    <Modal
+      okButtonProps={{ size: "large" }}
+      cancelButtonProps={{ size: "large" }}
+      destroyOnClose
+      closeIcon={<Icon name="close" />}
+      {...props}
+    >
       {children}
     </Modal>
   ) : (
@@ -28,7 +33,7 @@ export const MDModalUI: FC<MDModalUIProps> = ({ children, ...props }) => {
         <MDButton
           key="submit"
           type="primary"
-          danger
+          danger={props.okText !== "Save"}
           // loading={loading}
           onClick={(e: any) => {
             props.onOk && props.onOk(e);

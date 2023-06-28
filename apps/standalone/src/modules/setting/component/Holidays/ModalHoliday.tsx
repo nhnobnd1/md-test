@@ -1,8 +1,9 @@
 import { AutoReply, Holidays } from "@moose-desk/repo";
-import { Modal, ModalProps } from "antd";
+import { ModalProps } from "antd";
 import dayjs from "dayjs";
 import { FormikValues } from "formik";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { MDModalUI } from "src/components/MDModalUI";
 import { Form } from "src/components/UI/Form";
 import { MDInput } from "src/components/UI/Input";
 import useViewport from "src/hooks/useViewport";
@@ -88,7 +89,7 @@ const ModalHoliday = ({
   }, [dataForm]);
 
   return (
-    <Modal
+    <MDModalUI
       {...props}
       open={open}
       onCancel={() => {
@@ -140,7 +141,7 @@ const ModalHoliday = ({
           </Form.Item>
         </Form>
       </div>
-    </Modal>
+    </MDModalUI>
   );
 };
 

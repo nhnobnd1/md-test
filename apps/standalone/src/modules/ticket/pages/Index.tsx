@@ -25,7 +25,7 @@ import {
   TicketStatistic,
   UpdateTicket,
 } from "@moose-desk/repo";
-import { Button, Card, Modal, TableProps, Tag as TagAntd } from "antd";
+import { Button, Card, TableProps, Tag as TagAntd } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -52,6 +52,7 @@ import UilImport from "~icons/uil/import";
 
 import { useQuery } from "react-query";
 import { HeaderList } from "src/components/HeaderList";
+import { MDModalUI } from "src/components/MDModalUI";
 import { MDButton } from "src/components/UI/Button/MDButton";
 import Icon from "src/components/UI/Icon";
 import useDeepEffect from "src/hooks/useDeepEffect";
@@ -783,7 +784,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
           >
             <span>More actions </span>
           </Button>
-          <Modal
+          <MDModalUI
             title="More actions"
             open={isModalActionsOpen}
             centered
@@ -831,7 +832,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                 </MDButton>
               </Form.Item>
             </Form>
-          </Modal>
+          </MDModalUI>
         </div>
       )}
     </>

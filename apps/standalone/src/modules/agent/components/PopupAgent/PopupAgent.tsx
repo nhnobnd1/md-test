@@ -7,13 +7,15 @@ import {
   ResendEmailInvitationRequest,
   UpdateAgentRequest,
 } from "@moose-desk/repo";
-import { Button, Modal, ModalProps, Space, Tag } from "antd";
+import { ModalProps, Space, Tag } from "antd";
 import classNames from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import { Loading } from "src/components/Loading";
+import { MDModalUI } from "src/components/MDModalUI";
 import { ButtonModalDelete } from "src/components/UI/Button/ButtonModalDelete";
+import { MDButton } from "src/components/UI/Button/MDButton";
 import Form from "src/components/UI/Form/Form";
 import { Header } from "src/components/UI/Header";
 import useMessage from "src/hooks/useMessage";
@@ -343,19 +345,19 @@ export const PopupAgent = ({
   }, [dataForm]);
 
   return (
-    <Modal
+    <MDModalUI
       {...props}
       onCancel={onCancel}
       footer={
         <Space>
-          <Button
+          <MDButton
             onClick={() => {
               form.resetFields();
               onCancel && onCancel();
             }}
           >
             Cancel
-          </Button>
+          </MDButton>
           {dataForm?._id ? (
             <>
               {!dataForm.emailConfirmed && dataForm.isActive ? (
@@ -393,20 +395,20 @@ export const PopupAgent = ({
                         loading={loadingDeactivate}
                         onConfirm={() => deActiveAgentApi(dataForm._id)}
                       />
-                      <Button type="primary" onClick={() => form.submit()}>
+                      <MDButton type="primary" onClick={() => form.submit()}>
                         Save
-                      </Button>
+                      </MDButton>
                     </>
                   ) : (
                     <>
-                      <Button
+                      <MDButton
                         className="btn-active"
                         type="primary"
                         onClick={() => activeAgentApi(dataForm._id)}
                         loading={loadingActive}
                       >
                         Active
-                      </Button>
+                      </MDButton>
                     </>
                   )}
                 </>
@@ -414,9 +416,9 @@ export const PopupAgent = ({
             </>
           ) : (
             <>
-              <Button type="primary" onClick={() => form.submit()}>
+              <MDButton type="primary" onClick={() => form.submit()}>
                 Send Invitation Email
-              </Button>
+              </MDButton>
             </>
           )}
         </Space>
@@ -424,6 +426,7 @@ export const PopupAgent = ({
     >
       <div>
         <Header
+          className="xs:h-[32px] md:h-[40px] flex items-center mb-5"
           title={
             dataForm?._id ? (
               <div className="flex items-center gap-2">
@@ -468,7 +471,7 @@ export const PopupAgent = ({
           )}
         </Loading>
       </div>
-    </Modal>
+    </MDModalUI>
   );
 };
 

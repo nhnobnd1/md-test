@@ -1,7 +1,8 @@
 import { AutoReply } from "@moose-desk/repo";
-import { Modal, ModalProps } from "antd";
+import { ModalProps } from "antd";
 import { FormikValues } from "formik";
 import { memo, useCallback } from "react";
+import { MDModalUI } from "src/components/MDModalUI";
 import TextEditor from "src/components/UI/Editor/TextEditor";
 import { Form } from "src/components/UI/Form";
 import { MDInput } from "src/components/UI/Input";
@@ -40,14 +41,10 @@ const ModalAutoReply = ({
     },
     [dataForm?.value]
   );
-  // handle Validate regex
-  // const validateObject = object().shape({
-  //   name: string().required("Required!"),
-  //   content: string().required("Required!"),
-  // });
+
   return (
     <div className="mt-4" style={{ width: "1000px" }}>
-      <Modal
+      <MDModalUI
         {...props}
         open={open}
         onOk={() => {
@@ -108,7 +105,7 @@ const ModalAutoReply = ({
             </Form.Item>
           </Form>
         </div>
-      </Modal>
+      </MDModalUI>
     </div>
   );
 };

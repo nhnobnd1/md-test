@@ -1,5 +1,6 @@
 import { ModalProps } from "antd";
 import { MDModalUI } from "src/components/MDModalUI";
+import Icon from "src/components/UI/Icon";
 import "./ModalDelete.scss";
 interface ModalDeleteProps extends Omit<ModalProps, "title"> {
   title: string;
@@ -18,13 +19,13 @@ export const ModalDelete = ({
       {...props}
       title={title}
       okText={props.okText ?? "Delete"}
-      // okButtonProps={{
-      //   type: "primary",
-      //   danger: true,
-      //   loading: loading,
-      //   size: "large",
-      // }}
-      // closeIcon={<Icon name="close" />}
+      okButtonProps={{
+        type: "primary",
+        danger: true,
+        loading: loading,
+        size: "large",
+      }}
+      closeIcon={<Icon name="close" />}
       width={props.width ?? "700px"}
       cancelText={props.cancelText ?? "Cancel"}
     >

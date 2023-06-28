@@ -81,7 +81,7 @@ const ModalFilter = ({
       }}
     >
       <div className="pt-4">
-        <Form layout="vertical" enableReinitialize form={form}>
+        <Form layout="vertical" form={form}>
           <Form.Item label="Customer" name="customer">
             <Select options={customersOptions} />
           </Form.Item>

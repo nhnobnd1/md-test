@@ -1,7 +1,7 @@
 import { Role } from "@moose-desk/repo";
-import { Input } from "antd";
 import { useMemo } from "react";
 import Form, { FormProps } from "src/components/UI/Form/Form";
+import { MDInput } from "src/components/UI/Input";
 import InputPhone from "src/components/UI/InputPhone/InputPhone";
 import Select from "src/components/UI/Select/Select";
 import "./AgentForm.scss";
@@ -52,7 +52,10 @@ export const AgentForm = ({
           { type: "email", message: "The input email domain is not valid" },
         ]}
       >
-        <Input disabled={disabled || disabledEmail} placeholder="Enter email" />
+        <MDInput
+          disabled={disabled || disabledEmail}
+          placeholder="Enter email"
+        />
       </Form.Item>
 
       <Form.Item
@@ -70,7 +73,7 @@ export const AgentForm = ({
           },
         ]}
       >
-        <Input disabled={disabled} placeholder="Enter first name" />
+        <MDInput disabled={disabled} placeholder="Enter first name" />
       </Form.Item>
       <Form.Item
         label="Last name"
@@ -87,7 +90,7 @@ export const AgentForm = ({
           },
         ]}
       >
-        <Input disabled={disabled} placeholder="Enter last name" />
+        <MDInput disabled={disabled} placeholder="Enter last name" />
       </Form.Item>
       <Form.Item
         label="Phone number"
