@@ -1,0 +1,95 @@
+@import "../../../../styles/variables.scss";
+@import "../../../../styles/mixin.scss";
+
+.wrapForm {
+  width: 55%;
+  min-width: 656px;
+  padding: 24px;
+  background-color: $white-color;
+  box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  margin-top: 24px;
+  @include mq(md, "max") {
+    width: 100%;
+    min-width: unset;
+    margin-top: 16px;
+    padding: 16px;
+    box-shadow: unset;
+  }
+  @include breakpoints(md, lg) {
+    width: 100%;
+    min-width: unset;
+    box-shadow: unset;
+  }
+  .groupButton {
+    padding: 24px 24px 0 24px;
+    border-top: 1px solid $border-form;
+    margin: 0 -24px;
+    button:last-child {
+      margin-left: 12px;
+      @include mq(md, "max") {
+        margin-left: 8px;
+      }
+    }
+
+    @include mq(md, "max") {
+      padding: 16px 16px 0 16px;
+      margin: 0 -16px;
+    }
+  }
+}
+.formTitle {
+  margin-bottom: 16px;
+}
+.wrapSubForm {
+  width: 45%;
+  margin-top: 24px;
+  margin-left: 16px;
+  @include mq(md, "max") {
+    margin-top: 16px;
+    width: 100%;
+    margin-left: 0;
+  }
+}
+.mainContainer {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  @include mq(lg, "max") {
+    flex-direction: column;
+  }
+
+  .wrapFormSecurity {
+    width: 55%;
+    min-width: 500px;
+
+    @include mq(md, "max") {
+      width: 100%;
+      min-width: unset;
+    }
+  }
+
+  .wrapSubForm {
+    width: calc(45% - 16px);
+    padding: 24px;
+    background-color: $white-color;
+    box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    @include mq(md, "max") {
+      margin-top: 16px;
+      width: 100%;
+      padding: 16px;
+      box-shadow: unset;
+    }
+    @include breakpoints(md, lg) {
+      width: 100%;
+      margin-left: 0;
+      box-shadow: unset;
+    }
+    .status {
+      margin-top: 16px;
+    }
+  }
+}

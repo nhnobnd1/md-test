@@ -1,15 +1,19 @@
 import { useJob, useMount } from "@moose-desk/core";
 import { MethodOTP, UserSettingRepository } from "@moose-desk/repo";
-import { Button, Modal } from "antd";
+import classNames from "classnames";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
+import { MDButton } from "src/components/UI/Button/MDButton";
+import { Header } from "src/components/UI/Header";
+import { MDModal } from "src/components/UI/Modal/MDModal";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import EmailOTP from "src/modules/setting/component/Security/EmailOTP";
 import Enable2FA from "src/modules/setting/component/Security/Enable2FA";
 import ExternalAuth from "src/modules/setting/component/Security/ExternalAuth";
 import "./Enable2FAModal.scss";
+import styles from "./styles.module.scss";
 interface Enable2FAModal {
   setOpen: (status: boolean) => void;
   open: boolean;
@@ -218,35 +222,44 @@ export default function Enable2FAModal({
   useMount(() => setStep(1));
 
   return (
-    <Modal
-      title="Enable Two-Factor Authentication"
+    <MDModal
       open={open}
-      width={1000}
       onCancel={handleCloseModal}
+      rootClassName={styles.modal2FA}
+      onClose={handleCloseModal}
       footer={
-        <div className="flex-1 text-right mt-4">
-          {step === 1 ? null : <Button onClick={handleBackStep}>Cancel</Button>}
-          <Button onClick={handleSubmitModal} type="primary" className="ml-4">
+        <div className={classNames(styles.footerButton, "text-right")}>
+          {step === 1 ? null : (
+            <MDButton onClick={handleBackStep}>Cancel</MDButton>
+          )}
+          <MDButton onClick={handleSubmitModal} type="primary" className="ml-4">
             {saveText}
-          </Button>
+          </MDButton>
         </div>
       }
     >
-      <div className="main-content">
-        {step === 1 ? (
+      <div className={styles.title}>
+        <Header subTitle="Enable Two-Factor Authentication" />
+      </div>
+      {step === 1 ? (
+        <div className={styles.mainContentModal2FA}>
           <Enable2FA
             initialValues={status2FA}
             setDataSubmit2FA={setDataSubmit2FA}
           />
-        ) : null}
-        {step === 2 ? (
+        </div>
+      ) : null}
+      {step === 2 ? (
+        <div className={styles.mainContentModal2FA}>
           <EmailOTP
             setDataSubmitEmailOTP={setDataSubmitEmailOTP}
             errorMessage={errorMessage}
             setErrorMessage={setErrorMessage}
           />
-        ) : null}
-        {step === 3 ? (
+        </div>
+      ) : null}
+      {step === 3 ? (
+        <div className={styles.mainContentModal2FA}>
           <ExternalAuth
             initialValues={status2FA}
             props={props}
@@ -254,8 +267,8 @@ export default function Enable2FAModal({
             errorMessage={errorMessage}
             setErrorMessage={setErrorMessage}
           />
-        ) : null}
-      </div>
-    </Modal>
+        </div>
+      ) : null}
+    </MDModal>
   );
 }
