@@ -244,7 +244,7 @@ const ChannelEmailUpdate = () => {
   return (
     <>
       <Header
-        className="mb-[40px]"
+        className="xs:h-[32px] md:h-[40px] mb-5 "
         title="Email Configuration"
         back
         backAction={handleBack}

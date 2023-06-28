@@ -123,7 +123,7 @@ const BusinessHours = () => {
   return (
     <>
       <Header
-        className="xs:h-[32px] md:h-[40px] flex items-center"
+        className="xs:h-[32px] md:h-[40px] flex items-center mb-5"
         title="Business Hours"
       ></Header>
       {processing ? (
@@ -138,7 +138,6 @@ const BusinessHours = () => {
             enableReinitialize
             onFinish={handleSubmit}
             onValuesChange={handleChangeValues}
-            className="mt-5"
           >
             <Form.Item name="timezone" label="Time zone">
               <SelectTimeZone />

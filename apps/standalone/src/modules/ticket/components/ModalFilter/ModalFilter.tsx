@@ -6,8 +6,9 @@ import {
   priorityOptions,
   statusOptions,
 } from "@moose-desk/repo";
-import { Modal, ModalProps } from "antd";
+import { ModalProps } from "antd";
 import { Dispatch, SetStateAction, useMemo } from "react";
+import { MDModalUI } from "src/components/MDModalUI";
 import { MDButton } from "src/components/UI/Button/MDButton";
 import { Form } from "src/components/UI/Form";
 import Select from "src/components/UI/Select/Select";
@@ -50,7 +51,7 @@ const ModalFilter = ({
     handleApply(form.getFieldsValue());
   };
   return (
-    <Modal
+    <MDModalUI
       title="FILTER"
       {...props}
       onOk={handleApplySubmit}
@@ -95,7 +96,7 @@ const ModalFilter = ({
           </Form.Item>
         </Form>
       </div>
-    </Modal>
+    </MDModalUI>
   );
 };
 

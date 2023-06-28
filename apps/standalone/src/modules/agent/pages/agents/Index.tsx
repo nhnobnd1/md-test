@@ -12,11 +12,12 @@ import {
   GetListAgentRequest,
   Role,
 } from "@moose-desk/repo";
-import { Button, Input, TableProps, Tag, Tooltip } from "antd";
+import { Badge, Button, TableProps, Tooltip } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { map } from "rxjs";
+import { HeaderList } from "src/components/HeaderList";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
 import { Header } from "src/components/UI/Header";
 import Pagination from "src/components/UI/Pagination/Pagination";
@@ -46,6 +47,7 @@ const AgentsIndex = () => {
     role: Role.BasicAgent,
   });
   const { t } = useTranslation();
+  const [showTitle, setShowTitle] = useState(true);
 
   const defaultFilter: () => GetListAgentRequest = () => ({
     page: 1,
@@ -70,6 +72,7 @@ const AgentsIndex = () => {
                 ...item,
                 id: item._id,
               }));
+
               setAgents(listAgent);
               setMeta(data.metadata);
             } else {
@@ -121,12 +124,15 @@ const AgentsIndex = () => {
     []
   );
 
-  const handleChangePopup = useCallback((closeModal?: boolean) => {
-    getListAgentApi(filterData);
-    if (closeModal) {
-      closePopupAgent();
-    }
-  }, []);
+  const handleChangePopup = useCallback(
+    (closeModal?: boolean) => {
+      getListAgentApi(filterData);
+      if (closeModal) {
+        closePopupAgent();
+      }
+    },
+    [filterData]
+  );
 
   useEffect(() => {
     if (prevFilter?.query !== filterData.query && filterData.query) {
@@ -164,36 +170,34 @@ const AgentsIndex = () => {
         destroyOnClose
         onChange={handleChangePopup}
       />
-      <Header title="Account">
+      <Header title={showTitle ? "Agents" : ""} className="mb-5">
         <div className="flex-1 flex justify-end">
-          <ButtonAdd
-            disabled={isAgent}
-            onClick={() => {
-              openPopupAgent();
-              setDataPopup(undefined);
+          <HeaderList
+            setShowTitle={setShowTitle}
+            handleSearch={(searchText: string) => {
+              setFilterData((value) => {
+                return {
+                  ...value,
+                  query: searchText,
+                  page: 1,
+                };
+              });
             }}
           >
-            Add agent
-          </ButtonAdd>
+            <ButtonAdd
+              disabled={isAgent}
+              onClick={() => {
+                openPopupAgent();
+                setDataPopup(undefined);
+              }}
+            >
+              Add agent
+            </ButtonAdd>
+          </HeaderList>
         </div>
       </Header>
-      <div className="search mb-6">
-        <Input.Search
-          placeholder="Search"
-          enterButton
-          allowClear
-          onSearch={(searchText: string) => {
-            setFilterData((value) => {
-              return {
-                ...value,
-                query: searchText,
-                page: 1,
-              };
-            });
-          }}
-        />
-      </div>
-      <div>
+
+      <div className="">
         <>
           <Table
             dataSource={agents}
@@ -251,13 +255,14 @@ const AgentsIndex = () => {
                 compare: (a: any, b: any) => a.isActive - b.isActive,
               }}
               render={(_, record: Agent) => (
-                <Tag
+                <Badge
                   color={
                     getStatusAgent(record.isActive, record.emailConfirmed).color
                   }
-                >
-                  {getStatusAgent(record.isActive, record.emailConfirmed).label}
-                </Tag>
+                  text={
+                    getStatusAgent(record.isActive, record.emailConfirmed).label
+                  }
+                ></Badge>
               )}
             />
             <Table.Column

@@ -16,11 +16,12 @@ import {
   Tag,
   TagRepository,
 } from "@moose-desk/repo";
-import { Input, TableProps } from "antd";
+import { TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
+import { HeaderList } from "src/components/HeaderList";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
 import { Header } from "src/components/UI/Header";
 import Pagination from "src/components/UI/Pagination/Pagination";
@@ -50,6 +51,8 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
     name: "",
     description: "",
   });
+  const [showTitle, setShowTitle] = useState(true);
+
   const { subDomain } = useSubdomain();
   const { timezone } = useGlobalData(false, subDomain || "");
   const defaultFilter: () => GetListTagRequest = () => ({
@@ -199,27 +202,24 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
         onCancel={closePopupTag}
         onChange={handleChangePopup}
       />
-      <Header title="Manage tags">
-        <div className="flex-1 flex justify-end">
-          <ButtonAdd
-            onClick={() => {
-              openPopupTag();
-              setDataPopup(undefined);
-            }}
+      <Header title={showTitle ? "Tags" : ""}>
+        <div className="flex-1 flex justify-end mb-5">
+          <HeaderList
+            setShowTitle={setShowTitle}
+            handleSearch={handleChangeValueInput}
           >
-            Add new tag
-          </ButtonAdd>
+            <ButtonAdd
+              onClick={() => {
+                openPopupTag();
+                setDataPopup(undefined);
+              }}
+            >
+              Add new tag
+            </ButtonAdd>
+          </HeaderList>
         </div>
       </Header>
-      <div className="pb-2">
-        <Input.Search
-          placeholder="Search"
-          className="mr-2"
-          onSearch={handleChangeValueInput}
-          allowClear
-          enterButton
-        />
-      </div>
+
       <div>
         {tags && (
           <>
