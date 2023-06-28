@@ -1,4 +1,4 @@
-import { FormLayout, TextField } from "@shopify/polaris";
+import { FormLayout, Grid, TextField } from "@shopify/polaris";
 import { FormikProps } from "formik";
 import { ForwardedRef, forwardRef, useCallback } from "react";
 import Form from "src/components/Form";
@@ -43,22 +43,29 @@ const CustomerForm = (
     >
       <FormLayout>
         <FormItem name="_id" />
-        <FormItem name="firstName">
-          <TextField
-            type="text"
-            placeholder="Your first name"
-            label="First name"
-            autoComplete="cc-name"
-          />
-        </FormItem>
-        <FormItem name="lastName">
-          <TextField
-            type="text"
-            placeholder="Your last name"
-            label="Last name"
-            autoComplete="cc-name"
-          />
-        </FormItem>
+        <Grid columns={{ xs: 1, sm: 2, lg: 2, xl: 2 }}>
+          <Grid.Cell>
+            <FormItem name="firstName">
+              <TextField
+                type="text"
+                placeholder="Your first name"
+                label="First name"
+                autoComplete="cc-name"
+              />
+            </FormItem>
+          </Grid.Cell>
+          <Grid.Cell>
+            <FormItem name="lastName">
+              <TextField
+                type="text"
+                placeholder="Your last name"
+                label="Last name"
+                autoComplete="cc-name"
+              />
+            </FormItem>
+          </Grid.Cell>
+        </Grid>
+
         <FormItem name="email">
           <TextField
             type="email"
