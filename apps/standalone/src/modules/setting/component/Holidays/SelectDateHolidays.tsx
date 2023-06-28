@@ -3,6 +3,7 @@ import { RangePickerProps } from "antd/es/date-picker";
 import dayjs, { Dayjs } from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useCallback, useEffect, useState } from "react";
+import useViewport from "src/hooks/useViewport";
 
 interface SelectDateHolidaysProps {
   valueDate?: {
@@ -28,6 +29,8 @@ const SelectDateHolidays = ({
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
     return current < dayjs().endOf("day") && current.year() !== dayjs().year();
   };
+  const { isMobile } = useViewport();
+
   const [selectedDates, setSelectedDates] =
     useState<[startDate: Dayjs, endDate: Dayjs]>();
 
@@ -55,6 +58,7 @@ const SelectDateHolidays = ({
   return (
     <div>
       <RangePicker
+        size={isMobile ? "middle" : "large"}
         disabledDate={disabledDate}
         value={selectedDates}
         format="MM/DD/YYYY"

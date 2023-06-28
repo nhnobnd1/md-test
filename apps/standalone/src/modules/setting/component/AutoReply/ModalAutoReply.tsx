@@ -1,9 +1,10 @@
 import { AutoReply } from "@moose-desk/repo";
-import { Input, Modal, ModalProps } from "antd";
+import { Modal, ModalProps } from "antd";
 import { FormikValues } from "formik";
 import { memo, useCallback } from "react";
 import TextEditor from "src/components/UI/Editor/TextEditor";
 import { Form } from "src/components/UI/Form";
+import { MDInput } from "src/components/UI/Input";
 
 interface ModalAutoReplyProps extends ModalProps {
   dataForm?: {
@@ -82,7 +83,7 @@ const ModalAutoReply = ({
                 },
               ]}
             >
-              <Input placeholder="Enter name auto-reply" />
+              <MDInput placeholder="Enter name auto-reply" />
             </Form.Item>
             <Form.Item name="code" hidden />
             <Form.Item name="createAt" hidden></Form.Item>
@@ -99,11 +100,9 @@ const ModalAutoReply = ({
             >
               <TextEditor
                 form={form}
-                // value={dataForm?.value.content}
                 init={{
                   toolbar:
                     "undo redo blocks fontfamily fontsizeinput bold italic underline strikethrough link image media table mergetags addcomment showcomments spellcheckdialog a11ycheck typography align lineheight ",
-                  // setup: () => {},
                 }}
               />
             </Form.Item>

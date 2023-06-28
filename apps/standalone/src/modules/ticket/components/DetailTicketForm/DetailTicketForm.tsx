@@ -566,8 +566,12 @@ const DetailTicketForm = () => {
                 </Form.Item>
 
                 <div className="flex items-center justify-end">
-                  <MDButton type="primary" onClick={handleSaveTicket}>
-                    Save
+                  <MDButton
+                    className="w-full"
+                    type="primary"
+                    onClick={handleSaveTicket}
+                  >
+                    Update
                   </MDButton>
                 </div>
               </div>

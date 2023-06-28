@@ -1,9 +1,11 @@
 import { AutoReply, Holidays } from "@moose-desk/repo";
-import { Input, Modal, ModalProps } from "antd";
+import { Modal, ModalProps } from "antd";
 import dayjs from "dayjs";
 import { FormikValues } from "formik";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Form } from "src/components/UI/Form";
+import { MDInput } from "src/components/UI/Input";
+import useViewport from "src/hooks/useViewport";
 import BoxSelectAutoReply from "src/modules/setting/component/BoxSelectAutoReply/BoxSelectAutoReply";
 import SelectDateHolidays from "src/modules/setting/component/Holidays/SelectDateHolidays";
 
@@ -28,6 +30,7 @@ const ModalHoliday = ({
 }: ModalHolidayProps) => {
   const [form] = Form.useForm();
   const dateNow = new Date();
+  const { isMobile } = useViewport();
   const [valueDate, setValueDate] = useState<
     | {
         startDate: Date;
@@ -96,6 +99,8 @@ const ModalHoliday = ({
       onOk={() => form.submit()}
       cancelText="Cancel"
       okText="Save"
+      cancelButtonProps={{ size: isMobile ? "middle" : "large" }}
+      okButtonProps={{ size: isMobile ? "middle" : "large" }}
     >
       <div className="mt-4">
         <Form
@@ -113,7 +118,7 @@ const ModalHoliday = ({
               { required: true, message: "Name is required", whitespace: true },
             ]}
           >
-            <Input placeholder="Enter name holiday" />
+            <MDInput placeholder="Enter name holiday" />
           </Form.Item>
           <Form.Item
             name="date"

@@ -18,6 +18,7 @@ import React, {
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import Images from "src/assets/images";
+import { MDButton } from "src/components/UI/Button/MDButton";
 import { Form } from "src/components/UI/Form";
 import useMessage from "src/hooks/useMessage";
 import CardSettingExternalMail, {
@@ -292,9 +293,8 @@ export const CardSelectEmail = forwardRef(
                 // closable
               />
               <div className="flex gap-2 items-center flex-wrap mt-3">
-                <Button
+                <MDButton
                   className="flex items-center "
-                  size="middle"
                   icon={
                     <span className="flex items-center mr-2 text-[16px]">
                       <LogosGoogleIcon />
@@ -303,7 +303,7 @@ export const CardSelectEmail = forwardRef(
                   onClick={() => handleSignInSocial("google")}
                 >
                   Sign In Gmail
-                </Button>
+                </MDButton>
               </div>
             </div>
           ) : (
@@ -335,14 +335,6 @@ export const CardSelectEmail = forwardRef(
                 <SettingUpMail />
               ) : (
                 <div className="flex gap-2 items-center flex-wrap hover:cursor-pointer">
-                  {/* <Button
-                    className="flex items-center "
-                    size="middle"
-                    icon={
-                      <img src={Images.Logo.ButtonGoogle} width={240} alt="" />
-                    }
-                    onClick={() => handleSignInSocial("google")}
-                  ></Button> */}
                   <img
                     src={Images.Logo.ButtonGoogle}
                     width={180}

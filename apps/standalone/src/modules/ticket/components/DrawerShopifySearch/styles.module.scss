@@ -315,3 +315,8 @@
         }
     }
  }
+ .resultContainer {
+  @include mq(lg, 'max') {
+    // overflow-y: scroll;
+  }
+ }

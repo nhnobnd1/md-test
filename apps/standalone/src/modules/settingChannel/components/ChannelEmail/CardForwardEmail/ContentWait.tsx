@@ -1,5 +1,6 @@
-import { Button, Typography } from "antd";
+import { Typography } from "antd";
 import { Dispatch, FC, SetStateAction } from "react";
+import { MDButton } from "src/components/UI/Button/MDButton";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import Step1Icon from "~icons/ph/number-circle-one-fill";
 import Step3Icon from "~icons/ph/number-circle-three-fill";
@@ -24,7 +25,7 @@ export const ContentWait: FC<ContentWaitProps> = ({
   return (
     <div className="flex flex-col items-center">
       <Typography.Title level={3}>Setup email forwarding</Typography.Title>
-      <div className="flex justify-start items-start gap-2 w-[400px]">
+      <div className="flex justify-start items-start gap-2 xs:w-[300px] md:w-[400px]">
         <div>
           <Step1Icon fontSize={20} />
         </div>
@@ -35,7 +36,7 @@ export const ContentWait: FC<ContentWaitProps> = ({
           </span>
         </div>
       </div>
-      <div className="flex justify-start items-start gap-2 w-[400px] mt-5">
+      <div className="flex justify-start items-start gap-2 xs:w-[300px] md:w-[400px] mt-5">
         <div>
           <Step2Icon fontSize={20} />
         </div>
@@ -49,7 +50,7 @@ export const ContentWait: FC<ContentWaitProps> = ({
           </>
         </div>
       </div>
-      <div className="flex justify-start items-start gap-2 w-[400px] mt-5">
+      <div className="flex justify-start items-start gap-2 xs:w-[300px] md:w-[400px] mt-5">
         <div>
           <Step3Icon fontSize={20} />
         </div>
@@ -67,21 +68,21 @@ export const ContentWait: FC<ContentWaitProps> = ({
 
       <div>{children}</div>
       <div className="flex gap-5 justify-center mt-5">
-        <Button
+        <MDButton
           onClick={() => {
             setStep(0);
           }}
         >
           Back
-        </Button>
-        <Button
+        </MDButton>
+        <MDButton
           onClick={() => {
             handleVerifyCodeGoogle();
           }}
           type="primary"
         >
           Next
-        </Button>
+        </MDButton>
       </div>
     </div>
   );

@@ -5,10 +5,10 @@ import {
   MailBoxType,
   MailSettingType,
 } from "@moose-desk/repo";
-import { Button } from "antd";
 import { useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map } from "rxjs";
+import { MDButton } from "src/components/UI/Button/MDButton";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
 import useMessage from "src/hooks/useMessage";
@@ -207,15 +207,17 @@ const ChannelEmailCreate = () => {
   return (
     <>
       <Header
-        className="mb-[40px]"
+        className="xs:h-[32px] md:h-[40px] mb-5 "
         title="Email Configuration"
         back
         backAction={handleBack}
       >
         <div className="flex-1 flex justify-end">
-          <Button
+          <MDButton
             className={
-              mailSettingType === MailSettingType.FORWARD ? "hidden" : ""
+              mailSettingType === MailSettingType.FORWARD
+                ? "opacity-0 pointer-events-none"
+                : ""
             }
             type="primary"
             onClick={handleSubmit}
@@ -225,7 +227,7 @@ const ChannelEmailCreate = () => {
             }
           >
             Save
-          </Button>
+          </MDButton>
         </div>
       </Header>
 

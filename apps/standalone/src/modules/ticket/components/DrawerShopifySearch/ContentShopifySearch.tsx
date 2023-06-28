@@ -123,10 +123,11 @@ const ContentShopifySearch = () => {
             )}
             <MDSearchInput placeholder="Search" onTypeSearch={handleSearch} />
           </div>
-          <div>{_renderListSearchResult()}</div>
+          <div className={styles.resultContainer}>
+            {_renderListSearchResult()}
+          </div>
         </div>
       </div>
-      {/* {_renderResultSearch()} */}
     </section>
   );
 };

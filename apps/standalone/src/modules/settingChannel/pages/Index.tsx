@@ -1,4 +1,3 @@
-import { Card } from "antd";
 import { ReactNode, useMemo } from "react";
 import { Header } from "src/components/UI/Header";
 import { ChannelTitle } from "src/constaint/SettingChannel";
@@ -45,23 +44,24 @@ const ChannelIndexPage = () => {
     []
   );
   return (
-    <div>
-      <Header title="Channels" />
-      <div>
-        <Card>
-          {listCategory.map((item, index) => (
-            <CategoryChannel
-              className="mb-6"
-              title={item.title}
-              description={item.description ?? undefined}
-              link={item.link}
-              icon={item.icon}
-              key={`category-${index}`}
-            />
-          ))}
-        </Card>
+    <>
+      <Header
+        title="Channels"
+        className="xs:h-[32px] md:h-[40px] flex items-center"
+      />
+      <div className="mt-5">
+        {listCategory.map((item, index) => (
+          <CategoryChannel
+            className="mb-6"
+            title={item.title}
+            description={item.description ?? undefined}
+            link={item.link}
+            icon={item.icon}
+            key={`category-${index}`}
+          />
+        ))}
       </div>
-    </div>
+    </>
   );
 };
 

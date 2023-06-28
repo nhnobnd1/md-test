@@ -1,8 +1,8 @@
 import { AutoReply, Holidays } from "@moose-desk/repo";
-import Link from "antd/es/typography/Link";
 import moment from "moment";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
 import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
 import TableAction from "src/components/UI/Table/TableAction/TableAction";
@@ -131,9 +131,12 @@ const HolidayTab = ({ value, onChange, dataAutoReply }: HolidayTabProps) => {
     setValueListHolidays(value?.length ? [...value] : []);
   }, [value]);
   return (
-    <div className="p-2 mt-2">
+    <div>
+      <div className="my-2 w-full flex justify-end">
+        <ButtonAdd onClick={handleOpen}>Add new</ButtonAdd>
+      </div>
       <ModalHoliday
-        title="Add a holiday"
+        title="New holiday"
         open={openModalHoliday}
         onClose={handleCloseModal}
         dataForm={dataForm}
@@ -202,7 +205,7 @@ const HolidayTab = ({ value, onChange, dataAutoReply }: HolidayTabProps) => {
           />
         </div>
       ) : null}
-      <Link onClick={handleOpen}>Add a holiday...</Link>
+      {/* <Link onClick={handleOpen}>Add a holiday...</Link> */}
     </div>
   );
 };

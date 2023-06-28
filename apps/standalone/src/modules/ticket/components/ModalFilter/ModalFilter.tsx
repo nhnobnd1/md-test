@@ -6,8 +6,9 @@ import {
   priorityOptions,
   statusOptions,
 } from "@moose-desk/repo";
-import { Button, Modal, ModalProps } from "antd";
+import { Modal, ModalProps } from "antd";
 import { Dispatch, SetStateAction, useMemo } from "react";
+import { MDButton } from "src/components/UI/Button/MDButton";
 import { Form } from "src/components/UI/Form";
 import Select from "src/components/UI/Select/Select";
 
@@ -54,7 +55,7 @@ const ModalFilter = ({
       {...props}
       onOk={handleApplySubmit}
       footer={[
-        <Button
+        <MDButton
           key="back"
           onClick={() => {
             handleResetModal();
@@ -64,15 +65,15 @@ const ModalFilter = ({
           }}
         >
           Reset
-        </Button>,
-        <Button
+        </MDButton>,
+        <MDButton
           key="submit"
           type="primary"
           // loading={loading}
           onClick={handleApplySubmit}
         >
           Apply
-        </Button>,
+        </MDButton>,
       ]}
       onCancel={() => {
         closeFilterModal();

@@ -5,10 +5,11 @@ import {
   HelpWidget,
   HelpWidgetRepository,
 } from "@moose-desk/repo";
-import { Button, Skeleton, Tabs } from "antd";
+import { Card, Skeleton, Tabs } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
+import { MDButton } from "src/components/UI/Button/MDButton";
 import { Header } from "src/components/UI/Header";
 import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
@@ -122,34 +123,12 @@ const WidgetDetail = () => {
 
   const FooterButton = () => {
     return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          marginTop: 20,
-          position: "sticky",
-          bottom: 0,
-          // left: 300,
-          background: "white",
-          width: "100%",
-          zIndex: 1,
-          paddingTop: 10,
-          paddingBottom: 10,
-          // backgroundColor: "red",
-          // height: 50,
-        }}
-      >
-        <Button
-          size="large"
-          style={{ marginRight: 10, marginLeft: 10 }}
-          onClick={handleCancel}
-        >
-          Cancel
-        </Button>
+      <div className="flex gap-2">
+        <MDButton onClick={handleCancel}>Cancel</MDButton>
 
-        <Button size="large" type="primary" onClick={handleSaveWidget}>
+        <MDButton type="primary" onClick={handleSaveWidget}>
           Save
-        </Button>
+        </MDButton>
       </div>
     );
   };
@@ -162,7 +141,7 @@ const WidgetDetail = () => {
         children: (
           <>
             <General />
-            <FooterButton />
+            {/* <FooterButton /> */}
           </>
         ),
       },
@@ -172,7 +151,7 @@ const WidgetDetail = () => {
         children: (
           <>
             <Appearance />
-            <FooterButton />
+            {/* <FooterButton /> */}
           </>
         ),
       },
@@ -186,20 +165,23 @@ const WidgetDetail = () => {
 
   return (
     <>
-      <Header title="Web Form ">
-        <div className="flex-1 flex justify-end"></div>
+      <Header
+        title="Web Form"
+        back
+        className="xs:h-[32px] md:h-[40px]  mb-5   "
+      >
+        <div className="flex flex-1 justify-end items-center">
+          <FooterButton />
+        </div>
       </Header>
       {loadingList ? (
         <>
           <Skeleton />
         </>
       ) : (
-        <Tabs
-          onChange={onChange}
-          type="card"
-          items={items}
-          defaultActiveKey={"1"}
-        />
+        <Card>
+          <Tabs onChange={onChange} items={items} defaultActiveKey={"1"} />
+        </Card>
       )}
     </>
   );

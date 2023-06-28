@@ -23,11 +23,10 @@ export const UIWidget: FC<UIWidgetProps> = () => {
     `;
   const commonStyles = {
     wrap: {
-      // padding: 20,
       backgroundColor: "#EFF2F5",
       borderRadius: 20,
       width: 400,
-      maxHeight: 800,
+      // maxHeight: 800,
     },
     header: {
       height: 200,
@@ -85,7 +84,7 @@ export const UIWidget: FC<UIWidgetProps> = () => {
   }, [updateState]);
 
   return (
-    <div style={{ position: "absolute", top: 0, left: 0, zIndex: 2 }}>
+    <div className="z-2 flex justify-center mt-5">
       <style scoped>{css}</style>
       <div style={commonStyles.wrap}>
         <div className="header-bg" style={commonStyles.header}>
@@ -154,13 +153,19 @@ export const UIWidget: FC<UIWidgetProps> = () => {
               </Form.Item>
               {data?.allowAttach ? (
                 <Form.Item labelAlign="left" label="Attachment">
-                  <div className="mb-5">
-                    <section className="p-2 bg-gray-100 border-2 border-dotted border-slate-50">
-                      <div className="flex justify-center items-center flex-col">
+                  <div className="mb-5 rounded-md">
+                    <section
+                      style={{ backgroundColor: "#FAFAFA" }}
+                      className="p-2  border-2 border-dotted border-slate-50"
+                    >
+                      <div className="flex justify-center items-center flex-col p-3">
                         <CloudUploadOutlined style={{ fontSize: 32 }} />
 
-                        <p className="text">Upload files (max 3)</p>
-                        <span style={{ textAlign: "center" }}>
+                        <p className="text mt-2">Upload files (max 3)</p>
+                        <span
+                          className="text-center"
+                          style={{ color: "rgba(0, 0, 0, 0.45)" }}
+                        >
                           Drag & Drop or Click to add your file(s)
                         </span>
                       </div>
@@ -200,17 +205,11 @@ export const UIWidget: FC<UIWidgetProps> = () => {
           <FloatButton
             shape="square"
             style={{
-              // padding: 10,
-              // right: 0,
-              // marginTop: 10,
               marginBottom: 10,
               width: flexWithButton,
               position: "relative",
               backgroundColor: data?.buttonAppearanceColor,
-              // bottom: 0,
               borderRadius: 20,
-
-              // ...positionWidget,
             }}
             description={
               <div style={commonStyles.description}>

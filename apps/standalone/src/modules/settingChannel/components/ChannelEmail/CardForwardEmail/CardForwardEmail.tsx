@@ -16,6 +16,8 @@ import {
 import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
+import { MDButton } from "src/components/UI/Button/MDButton";
+import { MDInput } from "src/components/UI/Input";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { CompleteStep } from "src/modules/settingChannel/components/ChannelEmail/CardForwardEmail/CompleteStep";
@@ -323,7 +325,7 @@ Please check your inbox and click on the link within to use this email for sendi
                   showIcon
                 />
                 <div className="flex gap-5 justify-center mt-2">
-                  <Button
+                  <MDButton
                     loading={isVerifySender === "Pending"}
                     onClick={handleSend}
                     type="primary"
@@ -331,7 +333,7 @@ Please check your inbox and click on the link within to use this email for sendi
                     {isVerifySender === "Pending"
                       ? "Sender verification inprogress ..."
                       : "Send verification email"}
-                  </Button>
+                  </MDButton>
                 </div>
               </>
             )}
@@ -381,7 +383,7 @@ Please check your inbox and click on the link within to use this email for sendi
                       { type: "email", message: "Email is invalid!" },
                     ]}
                   >
-                    <Input
+                    <MDInput
                       onKeyPress={(e) => {
                         e.key === "Enter" && e.preventDefault();
                       }}
@@ -390,7 +392,7 @@ Please check your inbox and click on the link within to use this email for sendi
                     />
                   </Form.Item>
                   <Form.Item name="name" label="Name">
-                    <Input
+                    <MDInput
                       onKeyPress={(e) => {
                         e.key === "Enter" && e.preventDefault();
                       }}
@@ -399,7 +401,7 @@ Please check your inbox and click on the link within to use this email for sendi
                     />
                   </Form.Item>
 
-                  <Button
+                  <MDButton
                     type="primary"
                     onClick={() => {
                       form.submit();
@@ -407,7 +409,7 @@ Please check your inbox and click on the link within to use this email for sendi
                     className="w-[100px] "
                   >
                     Go
-                  </Button>
+                  </MDButton>
                 </div>
               </div>
             )}

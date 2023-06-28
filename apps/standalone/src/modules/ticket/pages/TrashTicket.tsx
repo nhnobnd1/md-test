@@ -2,6 +2,7 @@ import {
   MediaScreen,
   createdDatetimeFormat,
   generatePath,
+  priorityToTag,
   upperCaseFirst,
   useNavigate,
 } from "@moose-desk/core";
@@ -15,7 +16,7 @@ import {
   Ticket,
   TicketStatistic,
 } from "@moose-desk/repo";
-import { Button, Card, TableProps } from "antd";
+import { Button, Card, TableProps, Tag as TagAntd } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -419,7 +420,9 @@ const TrashTicket = () => {
                     key="priority"
                     title="Priority"
                     render={(_, record: Ticket) => (
-                      <span>{`${upperCaseFirst(record.priority)}`}</span>
+                      <TagAntd
+                        color={priorityToTag(record.priority)}
+                      >{`${upperCaseFirst(record.priority)}`}</TagAntd>
                     )}
                     sorter={{
                       compare: (a: any, b: any) => a.priority - b.priority,
