@@ -10,7 +10,7 @@
   .phoneSelect {
     border: none;
     height: 100%;
-    width: 30%;
+    width: 40%;
     @include mq(md, 'max') {
       width: 50%;
       .flagImg {
@@ -20,18 +20,19 @@
     }
     :global {
       .ant-select-selector {
-        height: 100%;
+      height: calc(100% - 2px) !important;
         border: none;
         .ant-select-selection-item,
         .ant-select-selection-search {
           display: flex;
           align-items: center;
+          height: calc(100% - 2px);
         }
       }
     }
   }
   .phoneInput {
-    width: 70%;
+    width: 60%;
     border: none;
     border-left: 1px solid $gray-border;
     border-radius: 0 6px 6px 0;

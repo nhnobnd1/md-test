@@ -1,5 +1,6 @@
 import {
   generatePath,
+  MediaScreen,
   Outlet,
   useJob,
   useLocation,
@@ -40,6 +41,7 @@ import MdiSecurity from "~icons/mdi/security";
 import RiLogoutCircleRLine from "~icons/ri/logout-circle-r-line";
 
 import useScreenType from "src/hooks/useScreenType";
+import useViewport from "src/hooks/useViewport";
 import "./AppLayout.scss";
 
 export const AppLayout = () => {
@@ -51,7 +53,7 @@ export const AppLayout = () => {
   const { logout } = useAuth();
   const { isAdmin, isAgent } = usePermission();
   const [screenType, screenWidth] = useScreenType();
-
+  const { isMobile } = useViewport(MediaScreen.LG);
   const user = useUser();
   const caseTopMenu = useMemo<any["items"]>(() => {
     return [
@@ -258,6 +260,7 @@ export const AppLayout = () => {
   ]);
 
   useEffect(() => {
+    if (isMobile) return;
     setCollapsed(visible); // set lại khi bấm nút show/hide shopify customer
   }, [visible]);
 

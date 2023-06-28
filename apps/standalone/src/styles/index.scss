@@ -5,7 +5,9 @@
   color: #202223;
   font-weight: 600;
 }
-
+.text-line-through {
+  text-decoration: line-through;
+}
 .unstyle-link a:hover {
   text-decoration: underline;
   color: #202223;
@@ -109,6 +111,11 @@
 }
 .ant-btn-lg {
   border-radius: 6px !important;
+}
+.ant-btn-icon-only {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .ant-form-item-required::before {
   position: absolute;

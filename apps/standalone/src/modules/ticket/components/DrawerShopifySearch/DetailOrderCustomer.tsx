@@ -1,9 +1,7 @@
-import { RocketOutlined, UndoOutlined } from "@ant-design/icons";
 import { formatTimeDDMMYY } from "@moose-desk/core/helper/format";
 import Link from "antd/es/typography/Link";
 import classNames from "classnames";
 import { memo, useMemo } from "react";
-import { Table } from "src/components/UI/Table";
 import styles from "./styles.module.scss";
 
 interface IProps {
@@ -24,32 +22,14 @@ export const DetailOrderCustomer = memo(({ dataOrder }: IProps) => {
   };
   const LIST_OVERVIEW = [
     {
-      title: "Order #",
-      value: dataOrder?.order_number,
-      style: "text-underlined",
+      title: "Date",
+      value: formatTimeDDMMYY(dataOrder?.created_at),
     },
     {
       title: "Order Status",
       value: `${dataOrder?.financial_status || "refund"}, ${
         dataOrder?.fulfillment_status || "unfulfilled"
       }`,
-      style: "text-bold",
-    },
-    {
-      title: "Date",
-      value: formatTimeDDMMYY(dataOrder?.created_at),
-    },
-    {
-      title: "Tax",
-      value: `${dataOrder?.current_total_tax || 0}${unit}`,
-    },
-    {
-      title: "Shipping",
-      value: `${countShippingPrice()}${unit}`,
-    },
-    {
-      title: "Total",
-      value: `${dataOrder?.current_total_price || 0}${unit}`,
       style: "text-bold",
     },
   ];
@@ -168,13 +148,14 @@ export const DetailOrderCustomer = memo(({ dataOrder }: IProps) => {
       !["partially_refunded", "refunded"].includes(dataOrder?.financial_status)
     ) {
       return (
-        <div className="pt-5 pl-5 d-flex">
-          <div className="text-bold mr-5">Address:</div>
-          <div>
+        <div className={styles.contentBlock}>
+          <span className={styles.labels}>Address:</span>
+          <p className={styles.number}>
             {addressOverview?.first_name} {addressOverview?.last_name} -
-            {addressOverview?.address1} - {addressOverview?.city} -{" "}
+            {addressOverview?.address1 && `${addressOverview?.address1} -`}{" "}
+            {addressOverview?.city && `${addressOverview?.city} -`}{" "}
             {addressOverview?.country}
-          </div>
+          </p>
         </div>
       );
     }
@@ -186,41 +167,27 @@ export const DetailOrderCustomer = memo(({ dataOrder }: IProps) => {
     ) {
       return (
         <>
-          <div className="pt-5 pl-5">
-            <div>
-              <span className="text-bold">Tracking Url:</span>
-              <span className="ml-1">
-                {trackingAddress?.tracking_url ? (
-                  <Link href={trackingAddress?.tracking_url}>
-                    {trackingAddress?.tracking_url}
-                  </Link>
-                ) : (
-                  "(empty)"
-                )}
-              </span>
-            </div>
+          <div className={styles.contentBlock}>
+            <span className={styles.labels}>Track url:</span>
+            <span className={styles.link}>
+              {trackingAddress?.tracking_url ? (
+                <Link href={trackingAddress?.tracking_url}>
+                  {trackingAddress?.tracking_url}
+                </Link>
+              ) : (
+                "Empty"
+              )}
+            </span>
           </div>
-          <div className="pt-2 pl-5">
-            <div>
-              <span className="text-bold">Tracking Number:</span>
-              <span className="ml-1">
-                {trackingAddress?.tracking_number || "(empty)"}
-              </span>
-            </div>
+          <div className={styles.contentBlock}>
+            <span className={styles.labels}>Track number:</span>
+            <span className={styles.number}>
+              {trackingAddress?.tracking_number || "Empty"}
+            </span>
           </div>
         </>
       );
     }
-  };
-  const _renderListBlock = () => {
-    return LIST_OVERVIEW.map((block, index) => (
-      <div key={index} className={styles.blockItem}>
-        <div className={styles.titleBlock}>{block.title}: </div>
-        <div className={classNames(styles.dataBlock, block.style)}>
-          {block.value}
-        </div>
-      </div>
-    ));
   };
   const _renderListNote = () => {
     return memoDetailRefund?.listNote?.map((note: string, index: number) => (
@@ -230,54 +197,140 @@ export const DetailOrderCustomer = memo(({ dataOrder }: IProps) => {
       </span>
     ));
   };
+  const _renderBadge = (status: string) => {
+    switch (status) {
+      case "fulfilled":
+        return ["Fulfilled", styles.fulfilled];
+      case "partially_refunded":
+        return ["Partially Refunded", styles.partiallyRefunded];
+      case "refunded":
+        return ["Refund", styles.refund];
+      case "paid":
+        return ["Paid", styles.paid];
+      default:
+        return ["Unfulfilled", styles.warning];
+    }
+  };
   return (
     <section className={styles.detailContainer}>
-      {/* <div className={styles.back} onClick={onBack}>
-        <ArrowLeftOutlined /> <span className={styles.backTitle}>Back</span>
-      </div> */}
       <div className={styles.content}>
-        <div className={styles.overview}>{_renderListBlock()}</div>
-        <div className={styles.tableItemOrder}>
-          <Table
-            columns={columns}
-            dataSource={memoDataSource}
-            rowKey={(record) => record.id}
-            scroll={{ y: 500 }}
-          />
-        </div>
-        <div className={styles.wrapShipping}>
-          <div className={styles.subTitle}>
-            <RocketOutlined /> Shipping
+        <div className={styles.overview}>
+          <div className={styles.blockItem}>
+            <div className={styles.titleBlock}>Date: </div>
+            <div className={classNames(styles.dataBlock)}>
+              {formatTimeDDMMYY(dataOrder?.created_at)}
+            </div>
           </div>
+          <div className={styles.status}>
+            <div
+              className={classNames(
+                styles.badge,
+                _renderBadge(dataOrder?.financial_status || "refunded")[1]
+              )}
+            >
+              {
+                _renderBadge(
+                  dataOrder?.financial_status || "refunded"
+                )[0] as any
+              }
+            </div>
+            <div
+              className={classNames(
+                styles.badge,
+                _renderBadge(dataOrder?.fulfillment_status)[1] as any
+              )}
+            >
+              {_renderBadge(dataOrder?.fulfillment_status)[0] as any}
+            </div>
+          </div>
+        </div>
+        <div className={styles.tableItemOrder}>
+          {memoDataSource?.map((item: any, index: number) => (
+            <div className={styles.order} key={index}>
+              <div
+                className={classNames(styles.orderName, {
+                  "text-line-through": item?.isRefund,
+                })}
+              >
+                {item?.quantity}x{item?.name}
+                {item?.sku && (
+                  <div
+                    className={classNames(styles.orderName, {
+                      "text-line-through": item?.isRefund,
+                    })}
+                  >
+                    {item?.sku}
+                  </div>
+                )}
+              </div>
+              <div
+                className={classNames(styles.orderPrice, {
+                  "text-line-through": item?.isRefund,
+                })}
+              >
+                {countPrice(item)}
+                {unit}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className={styles.priceStatistic}>
+          <div className={styles.tax}>
+            <span>Tax:</span>
+            <p>
+              {dataOrder?.current_total_tax || 0}
+              {unit}
+            </p>
+          </div>
+          <div className={styles.shipping}>
+            <span>Shipping:</span>
+            <p>
+              {countShippingPrice()}
+              {unit}
+            </p>
+          </div>
+          <div className={styles.total}>
+            <span>Total:</span>
+            <p>
+              {dataOrder?.current_total_price || 0}
+              {unit}
+            </p>
+          </div>
+        </div>
+        <section className={styles.wrapShipping}>
+          <h5 className={styles.subTitle}>Shipping</h5>
           <div className={styles.contentShipping}>
             {_renderContentShipping()}
           </div>
-        </div>
+        </section>
         {["partially_refunded", "refunded"].includes(
           dataOrder?.financial_status
         ) && (
-          <div className={styles.wrapRefund}>
-            <div className={styles.subTitle}>
-              <UndoOutlined /> Refund
-            </div>
+          <section className={styles.wrapRefund}>
+            <h5 className={styles.subTitle}>Refund</h5>
             <div className={styles.contentRefund}>
-              <div className="pt-5 pl-5">
-                <div>
-                  <span className="text-bold">Refunded:</span>
-                  <span className="ml-1">
-                    {memoDetailRefund?.totalRefund}
-                    {unit}
-                  </span>
-                </div>
+              <div className={styles.contentBlock}>
+                <span className={styles.labels}>Refunded:</span>
+                <p className={styles.number}>
+                  {memoDetailRefund?.totalRefund}
+                  {unit}
+                </p>
               </div>
-              <div className="pt-2 pl-5">
-                <div>
-                  <span className="text-bold">Reason:</span>{" "}
-                  <span className="ml-1">{_renderListNote()}</span>
-                </div>
+              <div className={styles.contentBlock}>
+                <span className={styles.labels}>Reason:</span>{" "}
+                <p className={styles.number}>
+                  {memoDetailRefund?.listNote?.map(
+                    (note: string, index: number) => (
+                      <span key={index}>
+                        {note}
+                        {index + 1 < memoDetailRefund?.listNote?.length && ", "}
+                      </span>
+                    )
+                  )}
+                </p>
               </div>
             </div>
-          </div>
+          </section>
         )}
       </div>
     </section>

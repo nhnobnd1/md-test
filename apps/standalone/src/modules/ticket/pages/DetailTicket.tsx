@@ -1,32 +1,18 @@
-import { LeftCircleOutlined, RightCircleOutlined } from "@ant-design/icons";
+import { MediaScreen } from "@moose-desk/core";
 import useToggleGlobal from "@moose-desk/core/hooks/useToggleGlobal";
 import classNames from "classnames";
 import { useEffect } from "react";
+import { MDButton } from "src/components/UI/Button/MDButton";
+import Icon from "src/components/UI/Icon";
+import useViewport from "src/hooks/useViewport";
 import DetailTicketForm from "src/modules/ticket/components/DetailTicketForm/DetailTicketForm";
 import ContentShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ContentShopifySearch";
+import DrawerShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/DrawerShopifySearch";
 import styles from "./styles.module.scss";
 
 const DetailTicket = () => {
   const { visible, setVisible } = useToggleGlobal();
-  const handleOpenDrawerSearch = () => {
-    setVisible(true);
-  };
-  const handleCloseDrawerSearch = () => {
-    setVisible(false);
-  };
-  const _renderButtonToggle = () => {
-    return !visible ? (
-      <LeftCircleOutlined
-        className={classNames(styles.toggleButton, styles.toggleButtonOpen)}
-        onClick={handleOpenDrawerSearch}
-      />
-    ) : (
-      <RightCircleOutlined
-        className={classNames(styles.toggleButton, styles.toggleButtonClose)}
-        onClick={handleCloseDrawerSearch}
-      />
-    );
-  };
+  const { isMobile } = useViewport(MediaScreen.LG);
   useEffect(() => {
     return () => {
       setVisible(false);
@@ -36,15 +22,27 @@ const DetailTicket = () => {
     <section className={classNames(styles.container, { "d-flex": visible })}>
       <div
         className={classNames(styles.wrapContent, {
-          [styles.maxWidthContent]: visible,
+          [styles.maxWidthContent]: visible && !isMobile,
         })}
       >
-        <div className={styles.wrapSearchToggle}>{_renderButtonToggle()}</div>
+        <div className={styles.wrapSearchToggle}>
+          <MDButton
+            onClick={() => setVisible(!visible)}
+            icon={<Icon name="findOrder" />}
+          />
+        </div>
         <DetailTicketForm />
       </div>
-      <div className={visible ? "" : "d-none"}>
-        <ContentShopifySearch />
-      </div>
+      {isMobile ? (
+        <DrawerShopifySearch
+          visible={visible}
+          onClose={() => setVisible(false)}
+        />
+      ) : (
+        <div className={visible ? "" : "d-none"}>
+          <ContentShopifySearch />
+        </div>
+      )}
     </section>
   );
 };
