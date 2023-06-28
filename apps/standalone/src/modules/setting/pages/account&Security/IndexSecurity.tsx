@@ -1,18 +1,27 @@
+import { MediaScreen } from "@moose-desk/core";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
-import { Button, Card, Input, Typography } from "antd";
+import { Typography } from "antd";
+import classNames from "classnames";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "react-query";
+import { MDButton } from "src/components/UI/Button/MDButton";
 import { Form } from "src/components/UI/Form";
+import { Header } from "src/components/UI/Header";
+import { MDInput } from "src/components/UI/Input";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
+import useViewport from "src/hooks/useViewport";
 import { getStatus2FA, updatePassword } from "src/modules/setting/api/api";
 import Enable2FAModal from "src/modules/setting/component/Security/Enable2FAModal";
 import { RequestPasswordPayload } from "src/modules/setting/helper/interface";
 import { rulesValidatePassword } from "src/regex";
+import styles from "./styles.module.scss";
+
 export default function IndexAccountManager() {
   const { t } = useTranslation();
   const notification = useNotification();
+  const { isMobile } = useViewport(MediaScreen.LG);
   const message = useMessage();
   const [form] = Form.useForm();
   const {
@@ -66,6 +75,7 @@ export default function IndexAccountManager() {
   const [open2FA, setOpen2FA] = useState(false);
   return (
     <>
+      <Header title="Security" />
       {open2FA ? (
         <Enable2FAModal
           open={open2FA}
@@ -74,149 +84,170 @@ export default function IndexAccountManager() {
           fetch2FAStatus={fetchingStatus}
         />
       ) : null}
-      <Card title="Change Password">
-        <Form
-          form={form}
-          onFinish={updatePasswordMutate}
-          onReset={handleResetForm}
-          layout="vertical"
-          enableReinitialize
-        >
-          <Form.Item
-            name="currentPassword"
-            label="Current Password"
-            rules={[
-              ...rulesValidatePassword,
-              {
-                required: true,
-                message: "The Current Password is required",
-              },
-            ]}
+      <section className={styles.mainContainer}>
+        <div className={styles.wrapForm}>
+          <div className={styles.formTitle}>
+            <Header subTitle="Change Password" />
+          </div>
+          <Form
+            form={form}
+            onFinish={updatePasswordMutate}
+            onReset={handleResetForm}
+            layout="vertical"
+            enableReinitialize
           >
-            <Input autoComplete="off" type="password" />
-          </Form.Item>
-          <Form.Item
-            name="newPassword"
-            label="New Password"
-            rules={[
-              ...rulesValidatePassword,
-              {
-                required: true,
-                message: "The New Password is required",
-              },
-            ]}
-          >
-            <Input minLength={8} type="password" autoComplete="off" />
-          </Form.Item>
-          <Form.Item
-            name="confirmNewPassword"
-            dependencies={["newPassword"]}
-            label="Confirm New Password"
-            rules={[
-              {
-                required: true,
-                message: "The Confirm New Password is required",
-              },
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  if (!value || getFieldValue("newPassword") === value) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject(
-                    new Error("The confirmation password is not match!")
-                  );
+            <Form.Item
+              name="currentPassword"
+              label="Current Password"
+              rules={[
+                ...rulesValidatePassword,
+                {
+                  required: true,
+                  message: "The Current Password is required",
                 },
-              }),
-            ]}
-          >
-            <Input minLength={8} type="password" autoComplete="off" />
-          </Form.Item>
-          <div className="flex-1 text-right mt-4">
-            <Button htmlType="submit" type="primary" loading={updating}>
-              Update Password
-            </Button>
-          </div>
-        </Form>
-      </Card>
-      <Card
-        title={
-          status ? (
-            <Typography.Title level={5}>
-              Two-Factor Authentication
-            </Typography.Title>
-          ) : (
-            <Typography.Title type="secondary" level={5}>
-              Two-Factor Authentication
-            </Typography.Title>
-          )
-        }
-        className="mt-8"
-      >
-        <div className="flex items-center">
-          <div className="mr-4">
-            {status ? (
-              <Typography.Text>Status :</Typography.Text>
-            ) : (
-              <Typography.Text type="secondary">Status :</Typography.Text>
-            )}
-          </div>
-          <div>
-            <Typography.Text
-              type={
-                method.show
-                  ? status
-                    ? "success"
-                    : "secondary"
-                  : status
-                  ? "danger"
-                  : "secondary"
-              }
-              strong
+              ]}
             >
-              {method.show ? "Active" : "InActive"}
-            </Typography.Text>
-          </div>
+              <MDInput
+                autoComplete="off"
+                type="password"
+                placeholder="Current Password"
+              />
+            </Form.Item>
+            <Form.Item
+              name="newPassword"
+              label="New Password"
+              rules={[
+                ...rulesValidatePassword,
+                {
+                  required: true,
+                  message: "The New Password is required",
+                },
+              ]}
+            >
+              <MDInput
+                minLength={8}
+                type="password"
+                autoComplete="off"
+                placeholder="New Password"
+              />
+            </Form.Item>
+            <Form.Item
+              name="confirmNewPassword"
+              dependencies={["newPassword"]}
+              label="Confirm New Password"
+              rules={[
+                {
+                  required: true,
+                  message: "The Confirm New Password is required",
+                },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue("newPassword") === value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(
+                      new Error("The confirmation password is not match!")
+                    );
+                  },
+                }),
+              ]}
+            >
+              <MDInput
+                minLength={8}
+                type="password"
+                autoComplete="off"
+                placeholder="Confirm New Password"
+              />
+            </Form.Item>
+            <div
+              className={classNames(
+                styles.groupButton,
+                isMobile ? "text-left-button" : "text-right"
+              )}
+            >
+              <MDButton htmlType="submit" type="primary" loading={updating}>
+                Update Password
+              </MDButton>
+            </div>
+          </Form>
         </div>
-        {method.show ? (
-          <div className="flex items-center mt-2">
+        <div className={styles.wrapSubForm}>
+          <div className={styles.formTitle}>
+            <Header
+              subTitle={
+                status
+                  ? "Two-Factor Authentication"
+                  : "Two-Factor Authentication"
+              }
+            />
+          </div>
+
+          <div className={classNames(styles.status, "flex items-center")}>
             <div className="mr-4">
               {status ? (
-                <Typography.Text>Method :</Typography.Text>
+                <Typography.Text>Status :</Typography.Text>
               ) : (
-                <Typography.Text type="secondary">Method :</Typography.Text>
+                <Typography.Text type="secondary">Status :</Typography.Text>
               )}
             </div>
             <div>
-              {status ? (
-                <Typography.Text strong>
-                  {method.method === "Email"
-                    ? "Email OTP"
-                    : method.method === "Authenticator"
-                    ? "External Authentication Application"
-                    : method.method}
-                </Typography.Text>
-              ) : (
-                <Typography.Text strong type="secondary">
-                  {method.method === "Email"
-                    ? "Email OTP"
-                    : method.method === "Authenticator"
-                    ? "External Authentication Application"
-                    : method.method}
-                </Typography.Text>
-              )}
+              <Typography.Text
+                type={
+                  method.show
+                    ? status
+                      ? "success"
+                      : "secondary"
+                    : status
+                    ? "danger"
+                    : "secondary"
+                }
+                strong
+              >
+                {method.show ? "Active" : "InActive"}
+              </Typography.Text>
             </div>
           </div>
-        ) : null}
-        <div className="mt-4">
-          <Button
-            onClick={() => setOpen2FA(true)}
-            type="primary"
-            disabled={!status}
-          >
-            {method.show ? "Change 2FA Method" : "Enable 2FA"}
-          </Button>
+          {method.show ? (
+            <div className="flex items-center mt-2">
+              <div className="mr-4">
+                {status ? (
+                  <Typography.Text>Method :</Typography.Text>
+                ) : (
+                  <Typography.Text type="secondary">Method :</Typography.Text>
+                )}
+              </div>
+              <div>
+                {status ? (
+                  <Typography.Text strong>
+                    {method.method === "Email"
+                      ? "Email OTP"
+                      : method.method === "Authenticator"
+                      ? "External Authentication Application"
+                      : method.method}
+                  </Typography.Text>
+                ) : (
+                  <Typography.Text strong type="secondary">
+                    {method.method === "Email"
+                      ? "Email OTP"
+                      : method.method === "Authenticator"
+                      ? "External Authentication Application"
+                      : method.method}
+                  </Typography.Text>
+                )}
+              </div>
+            </div>
+          ) : null}
+          <div className={styles.status}>
+            <MDButton
+              onClick={() => setOpen2FA(true)}
+              type="primary"
+              disabled={!status}
+            >
+              {method.show ? "Change 2FA Method" : "Enable 2FA"}
+            </MDButton>
+          </div>
         </div>
-      </Card>
+      </section>
     </>
   );
 }

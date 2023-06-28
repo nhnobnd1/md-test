@@ -1,9 +1,12 @@
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
-import { Button, Card, Tag } from "antd";
+import { Tag } from "antd";
+import classNames from "classnames";
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "react-query";
+import { MDButton } from "src/components/UI/Button/MDButton";
 import { Form } from "src/components/UI/Form";
+import { Header } from "src/components/UI/Header";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { usePermission } from "src/hooks/usePerrmisson";
@@ -13,6 +16,8 @@ import {
   updateSettingManager,
 } from "src/modules/setting/api/api";
 import SwitchForm from "src/modules/setting/component/Switch/Switch";
+import styles from "./styles.module.scss";
+
 const initialValues = {
   autoJoinEnabled: false,
   whitelistDomains: [],
@@ -160,14 +165,17 @@ export default function IndexAccountManager({ props }: any) {
   };
 
   return (
-    <Form
-      initialValues={accountData?.data?.data || initialValues}
-      onFinish={handleSubmit}
-      // enableLoadForm
-      enableReinitialize
-      form={form}
-    >
-      {/* <Card title="Auto-Join Settings">
+    <div>
+      <Header title="Access Manager" />
+      <div className={styles.wrapForm}>
+        <Form
+          initialValues={accountData?.data?.data || initialValues}
+          onFinish={handleSubmit}
+          // enableLoadForm
+          enableReinitialize
+          form={form}
+        >
+          {/* <Card title="Auto-Join Settings">
         <div className="flex">
           <div className="flex items-center  mt-1">
             <Form.Item name="autoJoinEnabled">
@@ -217,31 +225,30 @@ export default function IndexAccountManager({ props }: any) {
           </div>
         </div>
       </Card> */}
-      <Card title="Two-Factor Authentication (2FA)" className="mt-8">
-        <div className="flex">
-          <div className="flex items-center">
-            <Form.Item name="twoFactorAuthEnabled">
-              <SwitchForm />
-            </Form.Item>
+          <div className={styles.formTitle}>
+            <Header subTitle="Two-Factor Authentication (2FA)" />
           </div>
-          <div className="ml-4">
-            <p className="mt-1">Toggle 2FA for all users.</p>
+
+          <div className="flex">
+            <div className="flex items-center">
+              <Form.Item name="twoFactorAuthEnabled">
+                <SwitchForm />
+              </Form.Item>
+            </div>
+            <div className="ml-4">
+              <p className="mt-1">Toggle 2FA for all users.</p>
+            </div>
           </div>
-        </div>
-      </Card>
-      <div className="flex-1 text-right mt-4">
-        <Button onClick={handleResetForm} disabled={updating}>
-          Cancel
-        </Button>
-        <Button
-          htmlType="submit"
-          type="primary"
-          className="ml-4"
-          loading={updating}
-        >
-          Save
-        </Button>
+          <div className={classNames(styles.groupButton, "text-right")}>
+            <MDButton onClick={handleResetForm} disabled={updating}>
+              Cancel
+            </MDButton>
+            <MDButton htmlType="submit" type="primary" loading={updating}>
+              Save
+            </MDButton>
+          </div>
+        </Form>
       </div>
-    </Form>
+    </div>
   );
 }

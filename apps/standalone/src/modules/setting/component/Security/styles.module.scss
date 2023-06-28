@@ -1,0 +1,33 @@
+@import "../../../../styles/variables.scss";
+@import "../../../../styles/mixin.scss";
+.mainContentModal2FA {
+  padding: 20px;
+  @include mq(md, "max") {
+    padding: 16px;
+  }
+}
+.modal2FA {
+  :global {
+    .ant-modal-content {
+      padding: 0;
+    }
+  }
+  .title {
+    padding: 20px;
+    border-bottom: 1px solid $border-form;
+    @include mq(md, "max") {
+      padding: 16px;
+    }
+  }
+  .footerButton {
+    padding: 20px;
+    border-top: 1px solid $border-form;
+    @include mq(md, "max") {
+      padding: 16px;
+    }
+  }
+}
+.label {
+  display: flex;
+  align-items: center;
+}

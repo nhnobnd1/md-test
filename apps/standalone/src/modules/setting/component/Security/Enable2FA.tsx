@@ -25,7 +25,7 @@ const Enable2FA = ({ initialValues, setDataSubmit2FA }: Enable2FA) => {
 
   return (
     <Radio.Group value={value}>
-      <Space direction="vertical" size="middle" className="mt-6">
+      <Space direction="vertical" size="middle">
         <Radio value="Disabled" onChange={handleChange}>
           <Typography.Text>Off</Typography.Text>
         </Radio>
