@@ -8,9 +8,9 @@
     font-size: 16px;
     font-weight: 500;
     color: $character-title;
-    padding: 0 24px 24px;
-    box-shadow: 0px 9px 20px -20px #a39e9e;
-    margin-bottom: 10px;
+    padding: 0 24px 16px;
+    // box-shadow: 0px 9px 20px -16px #a39e9e;
+    // margin-bottom: 10px;
     display: flex;
     align-items: center;
     @include mq(lg, "max") {
@@ -26,7 +26,7 @@
     overflow: hidden;
     background-color: $white-color;
     border-radius: 8px;
-    padding: 24px 0 0;
+    padding: 16px 0 0;
     box-shadow: 0px 2px 16px 0px rgba(33, 43, 54, 0.08),
       0px 0px 0px 1px rgba(6, 44, 82, 0.1);
     @include mq(lg, "max") {
