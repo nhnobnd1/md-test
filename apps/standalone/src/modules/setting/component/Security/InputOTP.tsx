@@ -1,5 +1,6 @@
-import { Input, Typography } from "antd";
+import { Typography } from "antd";
 import { useCallback, useEffect, useState } from "react";
+import { MDInput } from "src/components/UI/Input";
 
 interface InputOTPProps {
   value?: string;
@@ -33,13 +34,14 @@ const InputOTP = ({
   }, [errorMessage]);
   return (
     <div className="flex items-center">
-      <div className="w-20">
-        <Input
+      <div className="">
+        <MDInput
           value={value}
           onChange={handleChangeValueInput}
           type="text"
           autoComplete="off"
           maxLength={6}
+          placeholder="OTP Code"
         />
       </div>
       {errorText ? (

@@ -2,10 +2,12 @@ import { useCountDown, useJob, useMount, useUnMount } from "@moose-desk/core";
 import { MethodOTP, UserSettingRepository } from "@moose-desk/repo";
 import { Space, Typography } from "antd";
 import Link from "antd/es/typography/Link";
+import classNames from "classnames";
 import { memo, useCallback, useEffect, useState } from "react";
 import { catchError, map, of } from "rxjs";
 import { Form } from "src/components/UI/Form";
 import InputOTP from "src/modules/setting/component/Security/InputOTP";
+import styles from "./styles.module.scss";
 interface EmailOTP {
   setDataSubmitEmailOTP: (data: any) => void;
   errorMessage?: string;
@@ -64,13 +66,15 @@ const EmailOTP = ({
   useUnMount(() => clearCountDown("countDownResendEmail"));
   return (
     <Form initialValues={{ code: "" }} onValuesChange={handleChangeValueForm}>
-      <Space direction="vertical" size="middle" className="mt-6">
+      <Space direction="vertical" size="middle">
         <Typography.Text>
           Please enter the 6 digits OTP code that we send to your email address
           in order to enable 2FA with your email.
         </Typography.Text>
         <div className="flex">
-          <Typography.Text className="mr-4">OTP code: </Typography.Text>
+          <Typography.Text className={classNames(styles.label, "mr-4")}>
+            OTP code:{" "}
+          </Typography.Text>
           <Form.Item
             name="code"
             rules={[{ required: true, message: "OTP is required" }]}
@@ -83,9 +87,9 @@ const EmailOTP = ({
           </Form.Item>
         </div>
 
-        <div className="flex items-center">
+        <div className="flex items-center flex-column-mobile">
           <Typography.Text>Did not receive the code yet?</Typography.Text>
-          <div className="flex ml-2">
+          <div className="flex ml-2  ml-0-mobile">
             <Link
               disabled={!!countDown}
               type={!countDown ? "success" : "secondary"}

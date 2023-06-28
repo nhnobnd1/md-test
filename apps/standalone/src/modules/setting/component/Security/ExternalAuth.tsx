@@ -35,7 +35,7 @@ const ExternalAuth = ({
   useEffect(() => {}, [initialValues]);
   return (
     <Form initialValues={{ code: "" }} onValuesChange={handleChangeValueForm}>
-      <Space direction="vertical" size="middle" className="mt-6">
+      <Space direction="vertical" size="middle">
         <Typography.Text>
           1. Download and install any authenticator application in your mobile
           device (Google Authenticator, 2FAs, Duo Mobile,...etc)
@@ -44,7 +44,7 @@ const ExternalAuth = ({
           <Typography.Text>
             2. Open your authenticator and scan this QR code.
           </Typography.Text>
-          <div className="p-4">
+          <div className="">
             <img
               width={220}
               height={220}

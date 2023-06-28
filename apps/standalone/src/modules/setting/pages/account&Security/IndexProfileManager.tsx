@@ -1,17 +1,21 @@
 import { TokenManager } from "@moose-desk/core";
 import { Agent } from "@moose-desk/repo";
-import { Button, Card, Input, Skeleton } from "antd";
+import { Col, Input, Row, Skeleton } from "antd";
+import classNames from "classnames";
 import * as jose from "jose";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "react-query";
+import { MDButton } from "src/components/UI/Button/MDButton";
 import { Form } from "src/components/UI/Form";
+import { Header } from "src/components/UI/Header";
+import { MDInput } from "src/components/UI/Input";
 import InputPhone from "src/components/UI/InputPhone/InputPhone";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { getProfile, updateProfile } from "src/modules/setting/api/api";
 import { regexPhoneValidate } from "src/regex";
-
+import styles from "./styles.module.scss";
 export default function IndexProfileManager() {
   const token = jose.decodeJwt(TokenManager.getToken("base_token") || "");
   const { t } = useTranslation();
@@ -54,12 +58,13 @@ export default function IndexProfileManager() {
 
   return (
     <div>
-      <Card title="Profile">
-        {isLoadingProfile || !dataProfile ? (
-          <>
-            <Skeleton />
-          </>
-        ) : (
+      <Header title="Profile" />
+      {isLoadingProfile || !dataProfile ? (
+        <>
+          <Skeleton />
+        </>
+      ) : (
+        <div className={styles.wrapForm}>
           <Form
             form={form}
             onFinish={submitMutate}
@@ -70,40 +75,47 @@ export default function IndexProfileManager() {
             <Form.Item name="_id" hidden>
               <Input placeholder="" />
             </Form.Item>
-            <Form.Item
-              label="First name"
-              name="firstName"
-              rules={[
-                { required: true, message: "First name is required!" },
-                {
-                  max: 255,
-                  message: "First name up to 255 characters",
-                },
-                {
-                  pattern: /[^\s]/,
-                  message: "First name is required!",
-                },
-              ]}
-            >
-              <Input placeholder="Enter first name" />
-            </Form.Item>
-            <Form.Item
-              label="Last name"
-              name="lastName"
-              rules={[
-                { required: true, message: "Last name is required!" },
-                {
-                  max: 255,
-                  message: "Last name up to 255 characters",
-                },
-                {
-                  pattern: /[^\s]/,
-                  message: "Last name is required!",
-                },
-              ]}
-            >
-              <Input placeholder="Enter last name" />
-            </Form.Item>
+            <Row gutter={16} justify="space-between">
+              <Col lg={12} xl={12} sm={24} xs={24}>
+                <Form.Item
+                  label="First name"
+                  name="firstName"
+                  rules={[
+                    { required: true, message: "First name is required!" },
+                    {
+                      max: 255,
+                      message: "First name up to 255 characters",
+                    },
+                    {
+                      pattern: /[^\s]/,
+                      message: "First name is required!",
+                    },
+                  ]}
+                >
+                  <MDInput placeholder="First name" />
+                </Form.Item>
+              </Col>
+              <Col lg={12} xl={12} sm={24} xs={24}>
+                <Form.Item
+                  label="Last name"
+                  name="lastName"
+                  rules={[
+                    { required: true, message: "Last name is required!" },
+                    {
+                      max: 255,
+                      message: "Last name up to 255 characters",
+                    },
+                    {
+                      pattern: /[^\s]/,
+                      message: "Last name is required!",
+                    },
+                  ]}
+                >
+                  <MDInput placeholder="Last name" />
+                </Form.Item>
+              </Col>
+            </Row>
+
             <Form.Item
               label="Email"
               name="email"
@@ -112,11 +124,11 @@ export default function IndexProfileManager() {
                 { type: "email", message: "Email is invalid!" },
               ]}
             >
-              <Input disabled={true} placeholder="Enter email" />
+              <MDInput disabled={true} placeholder="Enter email" />
             </Form.Item>
 
             <Form.Item
-              label="Phone No."
+              label="Phone"
               name="phoneNumber"
               rules={[
                 {
@@ -127,22 +139,17 @@ export default function IndexProfileManager() {
             >
               <InputPhone placeholder="Enter phone number" />
             </Form.Item>
-            <div className="flex-1 text-right mt-4">
-              <Button onClick={handleResetForm} disabled={updating}>
+            <div className={classNames(styles.groupButton, "text-right")}>
+              <MDButton onClick={handleResetForm} disabled={updating}>
                 Cancel
-              </Button>
-              <Button
-                htmlType="submit"
-                type="primary"
-                className="ml-4"
-                loading={updating}
-              >
+              </MDButton>
+              <MDButton htmlType="submit" type="primary" loading={updating}>
                 Save
-              </Button>
+              </MDButton>
             </div>
           </Form>
-        )}
-      </Card>
+        </div>
+      )}
     </div>
   );
 }

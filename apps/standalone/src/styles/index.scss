@@ -1,5 +1,6 @@
 @import "./Button.scss";
 @import "./variables.scss";
+@import "./mixin.scss";
 .unstyle-link a {
   text-decoration: none;
   color: #202223;
@@ -7,6 +8,12 @@
 }
 .text-line-through {
   text-decoration: line-through;
+}
+.text-left-button {
+  text-align: start;
+  button:last-child {
+    margin-left: 0 !important;
+  }
 }
 .unstyle-link a:hover {
   text-decoration: underline;
@@ -69,6 +76,18 @@
 .flex-center {
   display: flex;
   align-items: center;
+}
+.flex-column-mobile {
+  @include mq(md, "max") {
+  flex-direction: column;
+  // justify-content: flex-start;
+  align-items: flex-start !important;
+  }
+}
+.ml-0-mobile {
+  @include mq(md, "max") {
+    margin-left: 0 !important;
+  }
 }
 .justify-between {
   justify-content: space-between;
