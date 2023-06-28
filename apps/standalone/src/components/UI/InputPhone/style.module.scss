@@ -20,12 +20,13 @@
     }
     :global {
       .ant-select-selector {
-        height: 100%;
+      height: calc(100% - 2px) !important;
         border: none;
         .ant-select-selection-item,
         .ant-select-selection-search {
           display: flex;
           align-items: center;
+          height: calc(100% - 2px);
         }
       }
     }

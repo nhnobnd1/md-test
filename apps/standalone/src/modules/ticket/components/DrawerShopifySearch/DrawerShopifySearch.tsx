@@ -1,6 +1,8 @@
 import { memo } from "react";
 import { MDDrawer } from "src/components/UI/MDDrawer";
 import ContentShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ContentShopifySearch";
+import styles from "./styles.module.scss";
+
 interface IProps {
   visible: boolean;
   onClose: () => void;
@@ -11,6 +13,7 @@ const DrawerShopifySearch = ({ visible, onClose }: IProps) => {
       title="Shopify Orders"
       visible={visible}
       onClose={onClose}
+      rootClassName={styles.drawerSearch}
       content={<ContentShopifySearch />}
     />
   );

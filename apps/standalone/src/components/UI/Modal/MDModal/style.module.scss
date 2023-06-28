@@ -1,7 +1,7 @@
 @import "../../../../styles/variables.scss";
 @import "../../../../styles/mixin.scss";
 .MDModal {
-  width: 686px;
+  width: 686px !important;
 }
 .drawerWrap {
   :global {

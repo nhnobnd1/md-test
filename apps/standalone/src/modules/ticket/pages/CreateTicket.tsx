@@ -1,12 +1,16 @@
-import { LeftCircleOutlined, RightCircleOutlined } from "@ant-design/icons";
+import { MediaScreen } from "@moose-desk/core";
 import useToggleGlobal from "@moose-desk/core/hooks/useToggleGlobal";
 import { Priority } from "@moose-desk/repo";
 import { Skeleton } from "antd";
 import classNames from "classnames";
 import { useEffect, useMemo } from "react";
 import { useQuery } from "react-query";
+import { MDButton } from "src/components/UI/Button/MDButton";
 import { Header } from "src/components/UI/Header";
+import Icon from "src/components/UI/Icon";
+import useViewport from "src/hooks/useViewport";
 import ContentShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ContentShopifySearch";
+import DrawerShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/DrawerShopifySearch";
 import { TicketForm } from "src/modules/ticket/components/TicketForm";
 import {
   emailIntegrationApi,
@@ -15,6 +19,7 @@ import {
 import styles from "./styles.module.scss";
 
 const CreateTicket = () => {
+  const { isMobile } = useViewport(MediaScreen.LG);
   const { visible, setVisible } = useToggleGlobal();
   const { data: dataPrimaryEmail, isLoading: processing } = useQuery({
     queryKey: ["emailIntegrationApi"],
@@ -61,29 +66,19 @@ const CreateTicket = () => {
       setVisible(false);
     };
   }, []);
-  const handleOpenDrawerSearch = () => {
-    setVisible(true);
-  };
-  const handleCloseDrawerSearch = () => {
-    setVisible(false);
-  };
-  const _renderButtonToggle = () => {
-    return !visible ? (
-      <LeftCircleOutlined
-        className={classNames(styles.toggleButton, styles.toggleButtonOpen)}
-        onClick={handleOpenDrawerSearch}
-      />
-    ) : (
-      <RightCircleOutlined
-        className={classNames(styles.toggleButton, styles.toggleButtonClose)}
-        onClick={handleCloseDrawerSearch}
-      />
-    );
-  };
   return (
-    <section className={classNames(styles.container, { "d-flex": visible })}>
+    <section
+      className={classNames(styles.container, {
+        "d-flex": visible && !isMobile,
+      })}
+    >
       <div className={styles.wrapContent}>
-        <div className={styles.wrapSearchToggle}>{_renderButtonToggle()}</div>
+        <div className={styles.wrapSearchToggle}>
+          <MDButton
+            onClick={() => setVisible(!visible)}
+            icon={<Icon name="findOrder" />}
+          />
+        </div>
         <Header title="New Ticket" back></Header>
 
         {processing || loadingList ? (
@@ -97,9 +92,16 @@ const CreateTicket = () => {
           />
         )}
       </div>
-      <div className={visible ? "" : "d-none"}>
-        <ContentShopifySearch />
-      </div>
+      {isMobile ? (
+        <DrawerShopifySearch
+          visible={visible}
+          onClose={() => setVisible(false)}
+        />
+      ) : (
+        <div className={visible ? "" : "d-none"}>
+          <ContentShopifySearch />
+        </div>
+      )}
     </section>
   );
 };
