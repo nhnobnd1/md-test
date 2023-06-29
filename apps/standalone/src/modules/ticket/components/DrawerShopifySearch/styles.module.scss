@@ -3,7 +3,7 @@
 .wrapSearchInput {
   width: 100%;
   .searchGroup {
-    @include mq(lg, "max") {
+    @include breakpoints(zero, lg) {
         display: flex;
         align-items: center;
         button {
@@ -86,7 +86,7 @@
   box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.15);
   background-color: $white-color;
   border-radius: 8px;
-  @include mq(lg, 'max') {
+  @include breakpoints(zero, lg) {
     margin: 0;
     width: 100%;
     padding: 0 0 35px 0;
@@ -316,7 +316,7 @@
     }
  }
  .resultContainer {
-  @include mq(lg, 'max') {
+  @include breakpoints(zero, lg) {
     // overflow-y: scroll;
   }
  }

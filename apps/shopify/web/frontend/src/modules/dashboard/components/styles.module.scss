@@ -9,7 +9,7 @@
   min-height: 400px;
   height: 400px;
   overflow-y: scroll;
-  @include mq(lg, 'max') {
+  @include breakpoints(zero, lg) {
     padding-top: 20px;
     max-height: 546px;
     // min-height: 546px;
