@@ -12,7 +12,7 @@ export const MDSearchInput = React.memo(
   ({ placeholder = "Search", onTypeSearch, ...props }: IMDSearchInput) => {
     const { isMobile } = useViewport();
     const [querySearch, setQuerySearch] = useState<string>("");
-    const debounceValue: string = useDebounce(querySearch, 300);
+    const debounceValue: string = useDebounce(querySearch, 500);
     const handleChange = (e: any) => {
       setQuerySearch(e?.target?.value);
     };

@@ -395,11 +395,13 @@ export const AppLayout = () => {
   return (
     <Layout
       className={classNames("app-layout min-h-screen", {
-        "overflow-hidden": !collapsed,
+        "overflow-hidden": !collapsed && isMobile,
       })}
     >
       <Layout.Header
-        className={classNames("header p-0 ", { "no-touch": !collapsed })}
+        className={classNames("header p-0 ", {
+          "no-touch": !collapsed && isMobile,
+        })}
       >
         <div className="flex justify-between items-center px-20px full-height-header">
           <div className="logo hover:cursor-pointer flex justify-center items-center gap-2">
@@ -477,7 +479,7 @@ export const AppLayout = () => {
           className="md-layout-content"
           style={{
             maxHeight: "calc(100vh - 64px)",
-            overflow: !collapsed ? "hidden" : "auto",
+            overflow: !collapsed && isMobile ? "hidden" : "auto",
             background: "#F0F2F5",
           }}
         >

@@ -14,7 +14,10 @@
     height: 100%;
   }
   .ant-menu {
-    // box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.15);
+    box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.15);
+    @include breakpoints(zero, lg) {
+      box-shadow: unset;
+    }
   }
   .layout-menu {
     svg {
@@ -167,9 +170,6 @@
   }
 }
 .overflow-hidden {
-  // max-height: calc(100vh - 64px) !important;
-  // height: calc(100vh - 64px) !important;
-  // min-height: unset !important;
   overflow: hidden !important;
 }
 .px-20px {
