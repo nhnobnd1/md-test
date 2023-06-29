@@ -2,24 +2,17 @@ import {
   PageComponent,
   createdDatetimeFormat,
   generatePath,
-  useDebounceFn,
   useJob,
   useNavigate,
-  usePrevious,
   useToggle,
 } from "@moose-desk/core";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
-import {
-  BaseListTagRequest,
-  BaseMetaDataListResponse,
-  GetListTagRequest,
-  Tag,
-  TagRepository,
-} from "@moose-desk/repo";
+import { BaseListTagRequest, Tag, TagRepository } from "@moose-desk/repo";
 import { TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useQuery } from "react-query";
 import { catchError, map, of } from "rxjs";
 import { HeaderList } from "src/components/HeaderList";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
@@ -28,11 +21,11 @@ import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
 import TableAction from "src/components/UI/Table/TableAction/TableAction";
 import env from "src/core/env";
-import useDeepEffect from "src/hooks/useDeepEffect";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { usePermission } from "src/hooks/usePerrmisson";
 import { useSubdomain } from "src/hooks/useSubdomain";
+import { getListTagFilter } from "src/modules/setting/api/api";
 import PopupTag from "src/modules/setting/component/PopupTag";
 import { TagFormValues } from "src/modules/setting/component/TagForm";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
@@ -42,7 +35,6 @@ import "./TagStyle.scss";
 interface TagIndexPageProps {}
 
 const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
-  const [tags, setTags] = useState<Tag[]>([]);
   const message = useMessage();
   const notification = useNotification();
   const { state: popupTag, on: openPopupTag, off: closePopupTag } = useToggle();
@@ -68,38 +60,30 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
       query: value,
     }));
   }, []);
-  const [meta, setMeta] = useState<BaseMetaDataListResponse>();
   const { t } = useTranslation();
 
-  const prevFilter = usePrevious<GetListTagRequest>(filterData);
+  const {
+    data: dataTag,
+    isLoading: loadingList,
+    refetch,
+  } = useQuery({
+    queryKey: ["getTags", filterData],
+    queryFn: () => getListTagFilter(filterData),
+    retry: 1,
 
-  const { run: getListTagApi, processing: loadingList } = useJob(
-    (payload: GetListTagRequest) => {
-      return TagRepository()
-        .getList(payload)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              const listTag = data.data.map((item) => ({
-                ...item,
-                id: item._id,
-              }));
-              setTags(listTag);
-              setMeta(data.metadata);
-            } else {
-              message.error(t("messages:error.get_tag"));
-            }
-          })
-        );
-    }
-  );
-
-  const { run: getListDebounce } = useDebounceFn(
-    (payload: GetListTagRequest) => {
-      getListTagApi(payload);
+    onError: () => {
+      message.error(t("messages:error.get_tag"));
     },
-    { wait: 300 }
-  );
+  });
+  const tags = useMemo(() => {
+    if (!dataTag?.data) return [];
+    return dataTag.data;
+  }, [dataTag?.data]);
+  const meta = useMemo(() => {
+    if (!dataTag?.metadata)
+      return { page: 0, totalPage: 0, totalCount: 0, resultsPerPage: 0 };
+    return dataTag.metadata;
+  }, [dataTag?.metadata]);
 
   const handleEdit = (record: Tag) => {
     setDataPopup(record);
@@ -120,7 +104,7 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
   );
 
   const handleChangePopup = useCallback(() => {
-    getListTagApi(filterData);
+    refetch();
     closePopupTag();
   }, []);
   const { run: deleteTagApi } = useJob((id: string[]) => {
@@ -135,10 +119,8 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
           message.loading.hide();
           if (data.statusCode === 200) {
             notification.success(t("messages:success.delete_tag"));
-            getListTagApi({
-              page: 1,
-              limit: env.DEFAULT_PAGE_SIZE,
-            });
+
+            refetch();
           } else {
             notification.error(t("messages:error.delete_tag"), {
               description: "Remove tag failed",
@@ -163,13 +145,6 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
   const handleDeleteTag = useCallback((tag: Tag) => {
     deleteTagApi([tag.name]);
   }, []);
-  useDeepEffect(() => {
-    if (prevFilter?.query !== filterData.query && filterData.query) {
-      getListDebounce(filterData);
-    } else {
-      getListTagApi(filterData);
-    }
-  }, [filterData]);
 
   const onChangeTable = useCallback(
     (pagination: any, filters: any, sorter: SorterResult<Tag>) => {

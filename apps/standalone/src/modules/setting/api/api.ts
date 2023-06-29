@@ -1,6 +1,9 @@
 import {
   AccountRepository,
   AgentRepository,
+  GetListTagRequest,
+  GetListTagResponse,
+  TagRepository,
   UserSettingRepository,
 } from "@moose-desk/repo";
 import { lastValueFrom } from "rxjs";
@@ -48,6 +51,16 @@ export const updateSettingManager = (payload: any) => {
   return new Promise((resolve, reject) => {
     lastValueFrom(UserSettingRepository().updateAccessManagerSetting(payload))
       .then((data) => resolve(data))
+      .catch((error) => reject(error));
+  });
+};
+
+export const getListTagFilter = (
+  payload: GetListTagRequest
+): Promise<GetListTagResponse> => {
+  return new Promise((resolve, reject) => {
+    lastValueFrom(TagRepository().getList(payload))
+      .then(({ data }) => resolve(data))
       .catch((error) => reject(error));
   });
 };

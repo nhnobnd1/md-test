@@ -9,11 +9,12 @@ import {
   CheckPasswordResetToken,
   ForgotPasswordRequest,
 } from "@moose-desk/repo";
-import { Button, Form, Input } from "antd";
+import { Button, Form } from "antd";
 import Link from "antd/es/typography/Link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
+import { MDInput } from "src/components/UI/Input";
 import LayoutSignInPage from "src/components/UI/LayoutSignInPage/LayoutSignInPage";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
@@ -171,8 +172,8 @@ const ResetPassword = () => {
                             ...rulesValidatePassword,
                           ]}
                         >
-                          <Input.Password
-                            size="large"
+                          <MDInput
+                            type="password"
                             placeholder="Enter new password"
                           />
                         </Form.Item>
@@ -202,8 +203,8 @@ const ResetPassword = () => {
                             }),
                           ]}
                         >
-                          <Input.Password
-                            size="large"
+                          <MDInput
+                            type="password"
                             placeholder="Enter confirm password"
                           />
                         </Form.Item>

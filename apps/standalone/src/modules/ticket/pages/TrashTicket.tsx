@@ -253,7 +253,9 @@ const TrashTicket = () => {
                 >
                   <div className="flex gap-2">
                     <Button
-                      className="text-xs"
+                      className={`text-xs ${
+                        loadingList && "pointer-events-none"
+                      }`}
                       type={activeButtonIndex === "ALL" ? "primary" : "text"}
                       onClick={() => {
                         handleButtonClick("ALL");
@@ -269,7 +271,9 @@ const TrashTicket = () => {
                       )
                     </Button>
                     <Button
-                      className="text-xs"
+                      className={`text-xs ${
+                        loadingList && "pointer-events-none"
+                      }`}
                       type={
                         activeButtonIndex === StatusTicket.NEW
                           ? "primary"
@@ -285,7 +289,9 @@ const TrashTicket = () => {
                       New ({`${statistic?.data.NEW}`})
                     </Button>
                     <Button
-                      className="text-xs"
+                      className={`text-xs ${
+                        loadingList && "pointer-events-none"
+                      }`}
                       type={
                         activeButtonIndex === StatusTicket.OPEN
                           ? "primary"
@@ -301,7 +307,9 @@ const TrashTicket = () => {
                       Open ({`${statistic?.data.OPEN}`})
                     </Button>
                     <Button
-                      className="text-xs"
+                      className={`text-xs ${
+                        loadingList && "pointer-events-none"
+                      }`}
                       type={
                         activeButtonIndex === StatusTicket.PENDING
                           ? "primary"
@@ -317,7 +325,9 @@ const TrashTicket = () => {
                       Pending ({`${statistic?.data.PENDING}`})
                     </Button>
                     <Button
-                      className="text-xs"
+                      className={`text-xs ${
+                        loadingList && "pointer-events-none"
+                      }`}
                       type={
                         activeButtonIndex === StatusTicket.RESOLVED
                           ? "primary"
@@ -333,7 +343,9 @@ const TrashTicket = () => {
                       Resolve ({`${statistic?.data.RESOLVED}`})
                     </Button>
                     <Button
-                      className="text-xs"
+                      className={`text-xs ${
+                        loadingList && "pointer-events-none"
+                      }`}
                       type={activeButtonIndex === "TRASH" ? "primary" : "text"}
                       onClick={() => {
                         handleButtonClick("TRASH");

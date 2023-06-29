@@ -1,8 +1,9 @@
 import { useMount } from "@moose-desk/core";
 import { SignInAccountAgentRequest } from "@moose-desk/repo";
-import { Button, Form, Input } from "antd";
+import { Button, Form } from "antd";
 import classNames from "classnames";
 import { useCallback, useMemo } from "react";
+import { MDInput } from "src/components/UI/Input";
 import { useCountDown } from "src/hooks/useCountDown";
 import { useStore } from "src/providers/StoreProviders";
 import styles from "./styles.module.scss";
@@ -82,7 +83,7 @@ export const Factor2Auth = ({
           label="OTP"
           rules={[{ required: true, message: "Please enter code OTP" }]}
         >
-          <Input type="text" size="large" placeholder="Enter OTP" />
+          <MDInput type="text" placeholder="Enter OTP" />
         </Form.Item>
 
         <Button
