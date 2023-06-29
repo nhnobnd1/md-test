@@ -1,7 +1,7 @@
 @import "../../../styles/variables.scss";
 @import "../../../styles/mixin.scss";
 .MDPhone {
-  height: 40px;
+  height: 37px;
   border: 1px solid $gray-border;
   border-radius: 6px;
   @include mq(md, "max") {
@@ -11,6 +11,12 @@
     border: none;
     height: 100%;
     width: 40%;
+    .wrapPhoneFlag {
+      height: 100%;
+      span {
+        font-size: 14px;
+      }
+    }
     @include mq(md, "max") {
       width: 50%;
       .flagImg {
@@ -24,9 +30,15 @@
       }
     }
     :global {
+      .ant-select {
+        display: flex;
+        align-items: center;
+      }
       .ant-select-selector {
         height: calc(100% - 2px) !important;
         border: none;
+        display: flex;
+        align-items: center;
         .ant-select-selection-item,
         .ant-select-selection-search {
           display: flex;
