@@ -7,5 +7,5 @@ interface SelectListProps extends SelectProps {}
 export const SelectList: FC<SelectListProps> = ({ ...props }) => {
   const { isMobile } = useViewport();
 
-  return <Select size={"middle"} {...props}></Select>;
+  return <Select size={isMobile ? "middle" : "large"} {...props}></Select>;
 };

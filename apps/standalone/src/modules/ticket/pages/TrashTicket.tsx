@@ -262,13 +262,16 @@ const TrashTicket = () => {
                         navigate(generatePath(TicketRoutePaths.Index));
                       }}
                     >
-                      All (
-                      {`${
-                        statistic?.data.OPEN +
-                        statistic?.data.PENDING +
-                        statistic?.data.RESOLVED
-                      }`}
-                      )
+                      <span className="!text-xs">
+                        {" "}
+                        All (
+                        {`${
+                          statistic?.data.OPEN +
+                          statistic?.data.PENDING +
+                          statistic?.data.RESOLVED
+                        }`}
+                        )
+                      </span>
                     </Button>
                     <Button
                       className={`text-xs ${
@@ -286,7 +289,10 @@ const TrashTicket = () => {
                         });
                       }}
                     >
-                      New ({`${statistic?.data.NEW}`})
+                      <span className="!text-xs">
+                        {" "}
+                        New ({`${statistic?.data.NEW}`})
+                      </span>
                     </Button>
                     <Button
                       className={`text-xs ${
@@ -304,7 +310,10 @@ const TrashTicket = () => {
                         });
                       }}
                     >
-                      Open ({`${statistic?.data.OPEN}`})
+                      <span className="!text-xs">
+                        {" "}
+                        Open ({`${statistic?.data.OPEN}`})
+                      </span>
                     </Button>
                     <Button
                       className={`text-xs ${
@@ -322,7 +331,9 @@ const TrashTicket = () => {
                         });
                       }}
                     >
-                      Pending ({`${statistic?.data.PENDING}`})
+                      <span className="!text-xs">
+                        Pending ({`${statistic?.data.PENDING}`})
+                      </span>
                     </Button>
                     <Button
                       className={`text-xs ${
@@ -340,7 +351,10 @@ const TrashTicket = () => {
                         });
                       }}
                     >
-                      Resolve ({`${statistic?.data.RESOLVED}`})
+                      <span className="!text-xs">
+                        {" "}
+                        Resolve ({`${statistic?.data.RESOLVED}`})
+                      </span>
                     </Button>
                     <Button
                       className={`text-xs ${
@@ -351,7 +365,10 @@ const TrashTicket = () => {
                         handleButtonClick("TRASH");
                       }}
                     >
-                      Trash ({`${statistic?.data.TRASH}`})
+                      <span className="!text-xs">
+                        {" "}
+                        Trash ({`${statistic?.data.TRASH}`})
+                      </span>
                     </Button>
                   </div>
                 </Card>

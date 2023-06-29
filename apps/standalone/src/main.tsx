@@ -7,14 +7,16 @@ import {
 import LazyComponent from "@moose-desk/core/components/LazyComponent";
 import { AccountRepository, Env } from "@moose-desk/repo";
 import * as Sentry from "@sentry/react";
-import { lazy, Suspense } from "react";
+import { Suspense, lazy } from "react";
 import ReactDOM from "react-dom";
 import ReactGA from "react-ga4";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { persistQueryClient } from "react-query/persistQueryClient-experimental";
+import { createWebStoragePersistor } from "react-query/createWebStoragePersistor-experimental";
+import ErrorBoundary from "src/ErrorBoundary";
 import { Loading } from "src/components/Loading";
 import env from "src/core/env";
 import ModuleLoader from "src/core/utilities/ModuleLoader";
-import ErrorBoundary from "src/ErrorBoundary";
 import AppConfigProviders from "src/providers/AppConfigProviders";
 import InitApp from "src/providers/InitAppProviders";
 import { StoreProviders } from "src/providers/StoreProviders";
@@ -31,6 +33,14 @@ const queryClient = new QueryClient({
       retry: false,
     },
   },
+});
+const localStoragePersistor = createWebStoragePersistor({
+  storage: window.localStorage,
+});
+
+persistQueryClient({
+  queryClient,
+  persistor: localStoragePersistor,
 });
 ReactGA.initialize(env.TRACKING_ID);
 Sentry.init({

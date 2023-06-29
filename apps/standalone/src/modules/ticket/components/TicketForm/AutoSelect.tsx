@@ -14,7 +14,7 @@ export const AutoSelect: FC<AutoSelectProps> = ({ ...props }) => {
   return (
     <AutoComplete
       value={value}
-      size="middle"
+      size={isMobile ? "middle" : "large"}
       {...props}
       options={filterOptions}
       onSearch={(e) => {

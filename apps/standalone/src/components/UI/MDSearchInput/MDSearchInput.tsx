@@ -1,5 +1,6 @@
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import { Input, InputProps } from "antd";
+import classNames from "classnames";
 import React, { useEffect, useState } from "react";
 import Icon from "src/components/UI/Icon";
 import useViewport from "src/hooks/useViewport";
@@ -22,7 +23,7 @@ export const MDSearchInput = React.memo(
 
     return (
       <Input
-        className={styles.inputSearch}
+        className={classNames(styles.inputSearch, `${!isMobile && "h-[40px]"}`)}
         placeholder={placeholder}
         value={querySearch}
         onChange={handleChange}
