@@ -8,7 +8,7 @@
     width: 55%;
     min-width: 656px;
     margin-top: 20px;
-    @include mq(lg, "max") {
+    @include breakpoints(zero, lg) {
       width: 100%;
       min-width: unset;
     }
@@ -31,21 +31,21 @@
   width: 100%;
   display: flex;
   align-items: flex-start;
-  @include mq(lg, "max") {
+  @include breakpoints(zero, lg) {
     flex-direction: column;
   }
   .wrapFormSecurity {
     width: 55%;
     min-width: 500px;
 
-    @include mq(lg, "max") {
+    @include breakpoints(zero, lg) {
       width: 100%;
       min-width: unset;
     }
   }
   .wrapSubForm {
     width: 45%;
-    @include mq(lg, "max") {
+    @include breakpoints(zero, lg) {
       margin-top: 0;
       width: 100%;
     }
@@ -62,7 +62,7 @@
 }
 .domainForm {
   width: 70%;
-  @include mq(lg, "max") {
+  @include breakpoints(zero, lg) {
     width: 100%;
   }
   .labels {

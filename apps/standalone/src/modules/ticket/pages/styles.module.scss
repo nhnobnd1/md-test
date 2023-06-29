@@ -14,7 +14,7 @@
   right: 20px;
   top: 10px;
   z-index: 1;
-  @include mq(lg, "max") {
+  @include breakpoints(zero, lg) {
     top: 2px;
   }
 }

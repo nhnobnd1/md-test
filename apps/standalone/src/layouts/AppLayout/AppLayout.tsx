@@ -7,11 +7,9 @@ import {
   useNavigate,
   useUser,
 } from "@moose-desk/core";
-import useToggleGlobal from "@moose-desk/core/hooks/useToggleGlobal";
-import { AccountRepository, ScreenType } from "@moose-desk/repo";
-import { Button, Layout, Menu } from "antd";
-import classNames from "classnames";
-import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
+import { AccountRepository } from "@moose-desk/repo";
+import { Layout, Menu } from "antd";
+import { Suspense, useCallback, useMemo, useState } from "react";
 import { map } from "rxjs";
 import Images from "src/assets/images";
 import { Loading } from "src/components/Loading";
@@ -28,18 +26,11 @@ import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import { useAppConfig } from "src/providers/AppConfigProviders";
 import RoutePaths from "src/routes/paths";
-import ClarityUsersSolid from "~icons/clarity/users-solid";
-import FeUsers from "~icons/fe/users";
-import IconoirReports from "~icons/iconoir/reports";
-import IonTicketSharp from "~icons/ion/ticket-sharp";
-import JamDashboard from "~icons/jam/dashboard";
-import MenuIcon from "~icons/material-symbols/menu";
-import MaterialSymbolsSettings from "~icons/material-symbols/settings";
-import MaterialSymbolsSettingsInputComponentOutline from "~icons/material-symbols/settings-input-component-outline";
-import MdiFolderNetworkOutline from "~icons/mdi/folder-network-outline";
-import MdiSecurity from "~icons/mdi/security";
-import RiLogoutCircleRLine from "~icons/ri/logout-circle-r-line";
 
+import Link from "antd/es/typography/Link";
+import { MDButton } from "src/components/UI/Button/MDButton";
+import Icon from "src/components/UI/Icon";
+import { MenuIcon } from "src/components/UI/Icon/MenuIcon";
 import useScreenType from "src/hooks/useScreenType";
 import useViewport from "src/hooks/useViewport";
 import "./AppLayout.scss";
@@ -48,7 +39,7 @@ export const AppLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { breadCrumb, setBreadCrumb } = useAppConfig();
-  const { visible } = useToggleGlobal(); // lấy giá trị visible khi bấm vào nút mở search shopify customer
+  // const { visible } = useToggleGlobal(); // lấy giá trị visible khi bấm vào nút mở search shopify customer
   const [collapsed, setCollapsed] = useState(true);
   const { logout } = useAuth();
   const { isAdmin, isAgent } = usePermission();
@@ -61,7 +52,7 @@ export const AppLayout = () => {
         key: `case-${DashboardRoutePaths.Index}`,
         label: "Dashboard",
         link: DashboardRoutePaths.Index,
-        icon: <JamDashboard />,
+        icon: <Icon name="home" />,
         onClick: () => {
           navigate(generatePath(DashboardRoutePaths.Index));
           handleCollapseMobile(true);
@@ -71,7 +62,7 @@ export const AppLayout = () => {
         key: `case-${TicketRoutePaths.Index}`,
         label: "Tickets",
         link: TicketRoutePaths.Index,
-        icon: <IonTicketSharp />,
+        icon: <Icon name="ticket" />,
         onClick: () => {
           navigate(generatePath(TicketRoutePaths.Index));
           handleCollapseMobile(true);
@@ -79,7 +70,7 @@ export const AppLayout = () => {
       },
       {
         key: `case-${CustomersRoutePaths.Index}`,
-        icon: <ClarityUsersSolid />,
+        icon: <Icon name="customer" />,
         link: CustomersRoutePaths.Index,
         label: "Customers",
         onClick: () => {
@@ -90,7 +81,7 @@ export const AppLayout = () => {
       !isAgent
         ? {
             key: `case-2`,
-            icon: <IconoirReports />,
+            icon: <Icon name="reporting" />,
             label: "Reporting",
             children: [
               {
@@ -126,13 +117,13 @@ export const AppLayout = () => {
       {
         key: `case-3`,
         label: "Settings",
-        icon: <MaterialSymbolsSettings />,
+        icon: <Icon name="settings" />,
         children: [
           isAdmin
             ? {
                 key: `case-3-0`,
                 label: "General Settings",
-                icon: <MaterialSymbolsSettingsInputComponentOutline />,
+                // icon: <MaterialSymbolsSettingsInputComponentOutline />,
                 children: [
                   {
                     key: `case-${SettingChannelRoutePaths.Index}`,
@@ -162,7 +153,7 @@ export const AppLayout = () => {
           {
             key: `case-3-1`,
             label: "People",
-            icon: <FeUsers />,
+            // icon: <FeUsers />,
             children: [
               {
                 key: `case-${AgentRoutePaths.Agents.Index}`,
@@ -187,7 +178,7 @@ export const AppLayout = () => {
           {
             key: `case-3-2`,
             label: "Workdesk",
-            icon: <MdiFolderNetworkOutline />,
+            // icon: <MdiFolderNetworkOutline />,
             children: [
               {
                 key: `case-${SettingRoutePaths.Workdesk.Tag.Index}`,
@@ -203,7 +194,7 @@ export const AppLayout = () => {
           {
             key: `case-3-3`,
             label: "Account & Security",
-            icon: <MdiSecurity />,
+            // icon: <MdiSecurity />,
             children: [
               {
                 key: `case-${SettingRoutePaths.AccountSecurity.Profile.Index}`,
@@ -256,13 +247,14 @@ export const AppLayout = () => {
     DashboardRoutePaths,
     SettingRoutePaths,
     RoutePaths,
-    screenType,
+    isMobile,
+    // screenType,
   ]);
 
-  useEffect(() => {
-    if (isMobile) return;
-    setCollapsed(visible); // set lại khi bấm nút show/hide shopify customer
-  }, [visible]);
+  // useEffect(() => {
+  //   if (isMobile) return;
+  //   setCollapsed(visible); // set lại khi bấm nút show/hide shopify customer
+  // }, [visible]);
 
   const getDefaultOpenKeys = useCallback(
     (
@@ -337,40 +329,40 @@ export const AppLayout = () => {
     };
   }, [caseTopMenu, location.pathname, getDefaultOpenKeys]);
 
-  useEffect(() => {
-    setBreadCrumb({
-      items: keys.breadCrumb.map((bread) => {
-        return {
-          key: bread.key,
-          props: {
-            children: (
-              <>
-                {bread.link ? (
-                  <a
-                    className={classNames({
-                      active: bread.link === location.pathname,
-                    })}
-                    onClick={() =>
-                      bread.link && navigate(generatePath(bread.link))
-                    }
-                  >
-                    {bread.label}
-                  </a>
-                ) : (
-                  bread.label
-                )}
-              </>
-            ),
-          },
-        };
-      }),
-    });
-  }, [caseTopMenu, keys, location.pathname]);
-  useEffect(() => {
-    if (screenType === ScreenType.SM) {
-      setCollapsed(true);
-    }
-  }, [screenType]);
+  // useEffect(() => {
+  //   setBreadCrumb({
+  //     items: keys.breadCrumb.map((bread) => {
+  //       return {
+  //         key: bread.key,
+  //         props: {
+  //           children: (
+  //             <>
+  //               {bread.link ? (
+  //                 <a
+  //                   className={classNames({
+  //                     active: bread.link === location.pathname,
+  //                   })}
+  //                   onClick={() =>
+  //                     bread.link && navigate(generatePath(bread.link))
+  //                   }
+  //                 >
+  //                   {bread.label}
+  //                 </a>
+  //               ) : (
+  //                 bread.label
+  //               )}
+  //             </>
+  //           ),
+  //         },
+  //       };
+  //     }),
+  //   });
+  // }, [caseTopMenu, keys, location.pathname]);
+  // useEffect(() => {
+  //   if (isMobile) {
+  //     setCollapsed(true);
+  //   }
+  // }, [isMobile]);
 
   const { run: SignOutApi } = useJob(
     () => {
@@ -392,64 +384,69 @@ export const AppLayout = () => {
     SignOutApi();
   };
   const handleCollapseMobile = (boolean = true) => {
-    if (screenType === ScreenType.SM) {
+    if (isMobile) {
       setCollapsed(boolean);
     }
+  };
+  const handleToggleMenu = () => {
+    setCollapsed((pre) => !pre);
   };
   return (
     <Layout className="app-layout min-h-screen">
       <Layout.Header className="header p-0 ">
-        <div className="flex justify-between items-center px-6">
+        <div className="flex justify-between items-center px-20px full-height-header">
           <div className="logo hover:cursor-pointer flex justify-center items-center gap-2">
-            <Button
-              icon={
-                <span className="">
-                  <MenuIcon fontSize={20} />
-                </span>
-              }
+            <MDButton
+              icon={<MenuIcon visible={!collapsed} />}
               type="text"
-              onClick={() => {
-                setCollapsed(!collapsed);
-              }}
-            ></Button>
-            <img
-              onClick={() => {
-                window.location.reload();
-              }}
-              src={Images.Logo.LogoMooseDesk}
-              width="150"
-            ></img>
+              onClick={handleToggleMenu}
+            ></MDButton>
+            <Link href="/dashboard">
+              <img
+                src={Images.Logo.LogoMooseDesk}
+                width="150"
+                alt="home logo"
+              />
+            </Link>
           </div>
           <div className="user-action">
-            <div className="flex gap-3">
+            <div className="flex gap-3 align-center">
               <div className="md:flex hidden">
-                <span>
+                <Link
+                  className="md-link-ant"
+                  href="/setting/account&security/profile"
+                >
                   {user?.subdomain} / {user?.email}
-                </span>
+                </Link>
               </div>
-              <div className="btn-logout" onClick={handleLogout}>
-                <RiLogoutCircleRLine />
+              <MDButton
+                icon={<Icon name="logout" />}
+                className="btn-logout"
+                onClick={handleLogout}
+                type="text"
+              >
                 Logout
-              </div>
+              </MDButton>
             </div>
           </div>
         </div>
       </Layout.Header>
-      <Layout>
+      <Layout className="md-layout-contain-menu">
+        {!collapsed && isMobile && (
+          <div onClick={() => setCollapsed(true)} className="md-overlay"></div>
+        )}
         <Layout.Sider
-          width={screenType === ScreenType.SM ? screenWidth : 260}
+          width={isMobile ? screenWidth : 260}
           // collapsible
-
           collapsed={collapsed}
           onCollapse={(value) => setCollapsed(value)}
-          className={
-            collapsed && screenType === ScreenType.SM ? "hidden" : "block"
-          }
+          className={collapsed && isMobile ? "hidden" : "block"}
         >
           <Menu
             className="layout-menu"
             mode="inline"
             theme="light"
+            // motion={{}}
             style={{
               height: "100%",
 
@@ -463,7 +460,7 @@ export const AppLayout = () => {
         </Layout.Sider>
 
         <div
-          className="w-full"
+          className="md-layout-content"
           style={{
             maxHeight: "calc(100vh - 64px)",
             overflow: "auto",

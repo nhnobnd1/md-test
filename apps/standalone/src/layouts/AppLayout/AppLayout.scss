@@ -1,3 +1,5 @@
+@import "../../styles/variables.scss";
+@import "../../styles/mixin.scss";
 .app-layout {
   .header {
     background-color: #fff;
@@ -5,48 +7,179 @@
     position: relative;
     transition: 200ms background-color cubic-bezier(0.42, 0, 0.58, 1);
   }
-  // .layout-menu {
-  //   background-color: rgb(251, 127, 0);
-  //   color: #fff;
-  //   font-size: 14px;
-
-  //   .ant-menu-sub {
-  //     background-color: rgba(245, 151, 52, 0.98) !important;
-  //     .ant-menu-sub {
-  //       background-color: rgba(249, 195, 138, 0.95) !important;
-  //     }
-  //   }
-
-  //   .ant-menu-item {
-  //     margin: 0;
-  //     border-radius: 0;
-  //     width: 100%;
-  //   }
-
-  //   .ant-menu-submenu {
-  //     .ant-menu-submenu-title {
-  //       margin: 0;
-  //       border-radius: 0;
-  //       width: 100%;
-  //     }
-  //   }
-
-  //   .ant-menu-submenu-title:active,
-  //   .ant-menu-item:not(.ant-menu-item-selected):active {
-  //     background-color: #ff1744 !important;
-  //   }
-
-  //   .ant-menu-item-selected {
-  //     background-color: #ff1744 !important;
-  //   }
-  // }
-
+  .full-height-header {
+    height: 100%;
+  }
+  .ant-menu {
+    box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.15);
+  }
+  .layout-menu {
+    svg {
+      // margin-top: -1px;
+      path {
+        transition: stroke 0.4s;
+      }
+    }
+    .ant-menu-item {
+      // transform: translate(0%, -50%)
+    }
+    .ant-menu-item:hover {
+      .ant-menu-title-content {
+        color: $primary;
+      }
+      svg {
+        path {
+          transition: stroke 0.4s;
+          stroke: $primary;
+        }
+      }
+    }
+    .ant-menu-title-content {
+      padding-left: 10px;
+      // animation: showText 0.2s ease;
+    }
+    .ant-menu-item-selected,
+    .ant-menu-submenu-selected {
+      svg {
+        path {
+          transition: stroke 0.4s;
+          stroke: $primary;
+        }
+      }
+    }
+    .ant-menu-submenu-title:hover:not(.ant-menu-item-selected):not(
+        .ant-menu-submenu-selected
+      ) {
+      color: $primary;
+      svg {
+        path {
+          transition: stroke 0.4s;
+          stroke: $primary;
+        }
+      }
+    }
+  }
+  .ant-menu-inline-collapsed {
+    .ant-menu-item,
+    .ant-menu-submenu-title {
+      width: fit-content;
+      svg {
+        margin-bottom: -3px;
+      }
+    }
+    .ant-menu-title-content {
+      visibility: hidden;
+      opacity: 0;
+      transition: all 0.3s;
+    }
+  }
+  .ant-menu-light .ant-menu-item-selected {
+    background-color: $primary-background-hover;
+  }
+  .ant-menu-item,
+  .ant-menu-submenu-title {
+    border-radius: 0;
+    margin: 0;
+    width: 100%;
+  }
+  .ant-menu-item-selected::after {
+    width: 3px;
+    background: $primary;
+  }
   .btn-logout {
     @apply flex justify-center items-center gap-2;
     cursor: pointer;
+  }
+  .md-link-ant {
+    color: $character-title;
+  }
+}
+.ant-layout-sider-collapsed {
+  box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.15);
+}
+.ant-menu-light.ant-menu-root.ant-menu-vertical {
+  border-inline-end: none;
+}
+.md-layout-contain-menu {
+  @include breakpoints(zero, lg) {
+    .ant-layout-sider {
+      position: fixed;
+      flex: unset;
+      height: 100vh;
+      z-index: 1052;
+      min-width: unset !important;
+      width: 300px !important;
+      .ant-menu {
+        transition: width 0.3s;
+        border-right: 0 !important;
+        .ant-menu-item {
+          animation: showText 0.5s ease;
 
-    &:hover {
-      color: #1677ff;
+          opacity: 1;
+        }
+        .ant-menu-submenu-title {
+          animation: showText 0.5s ease;
+
+          opacity: 1;
+        }
+      }
     }
+  }
+}
+.ant-menu-inline-collapsed > .ant-menu-submenu > .ant-menu-submenu-title {
+  padding: 0 30px;
+}
+.ant-menu-item {
+  // transition: unset;
+  padding-left: 30px !important;
+  @include breakpoints(zero, lg) {
+    padding-left: 27px !important;
+  }
+}
+
+.ant-menu-submenu-title {
+  // transition: unset;
+  padding-left: 30px !important;
+  @include breakpoints(zero, lg) {
+    padding-left: 27px !important;
+  }
+}
+.ant-layout-sider-collapsed {
+  max-width: 77px !important;
+  min-width: 77px !important;
+  width: 77px !important;
+  flex: 0 0 77px !important;
+  overflow: hidden;
+  .ant-menu-item {
+    padding: 0 30px;
+  }
+}
+
+.px-20px {
+  padding-right: 20px;
+  padding-left: 20px;
+}
+.md-layout-content {
+  width: 100% !important;
+  // @include breakpoints(md, lg) {
+  //   width: calc(100% - 77px) !important;
+  //   margin-left: 77px;
+  // }
+}
+.md-overlay {
+  background: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  top: 64px;
+  height: 100vh;
+  width: 100vw;
+  z-index: 1051;
+  animation: showText 0.2s ease;
+}
+@keyframes showText {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
