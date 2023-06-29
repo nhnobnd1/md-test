@@ -1,5 +1,6 @@
-import { Modal } from "antd";
+import { Button } from "antd";
 import { FC, useState } from "react";
+import { ModalDelete } from "src/components/UI/Modal/ModalDelete";
 
 interface ButtonTicketProps {
   action: () => void;
@@ -30,13 +31,10 @@ export const ButtonRemoveTag: FC<ButtonTicketProps> = ({
   };
   return (
     <>
-      <span
-        onClick={showModal}
-        className="underline text-blue-500 hover:cursor-pointer"
-      >
-        Remove Tags from all Tickets
-      </span>
-      <Modal
+      <Button onClick={showModal} danger type="primary">
+        Remove all
+      </Button>
+      <ModalDelete
         title={title}
         open={isModalOpen}
         onOk={handleOk}
@@ -44,14 +42,8 @@ export const ButtonRemoveTag: FC<ButtonTicketProps> = ({
         centered
         cancelText="Cancel"
         okText={textAction}
-        width={700}
-        okButtonProps={{
-          type: "primary",
-          danger: textAction === "Remove",
-        }}
-      >
-        <p>{content}</p>
-      </Modal>
+        description={content}
+      ></ModalDelete>
     </>
   );
 };
