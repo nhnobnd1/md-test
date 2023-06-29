@@ -1,8 +1,9 @@
 import { useJob, useNavigate } from "@moose-desk/core";
 import { ActiveNewAgentRequest, AgentRepository } from "@moose-desk/repo";
-import { Button, Form, Input } from "antd";
+import { Button, Form } from "antd";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
+import { MDInput } from "src/components/UI/Input";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { rulesValidatePassword } from "src/regex";
@@ -92,7 +93,7 @@ export const SetPassword = ({
             ...rulesValidatePassword,
           ]}
         >
-          <Input.Password />
+          <MDInput type="password" placeholder="New password" />
         </Form.Item>
         <Form.Item
           name="confirmPassword"
@@ -115,7 +116,7 @@ export const SetPassword = ({
             }),
           ]}
         >
-          <Input.Password />
+          <MDInput type="password" placeholder="Confirm password" />
         </Form.Item>
         <div className="text-center">
           <Button type="primary" htmlType="submit">

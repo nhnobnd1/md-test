@@ -28,6 +28,7 @@ import { useAppConfig } from "src/providers/AppConfigProviders";
 import RoutePaths from "src/routes/paths";
 
 import Link from "antd/es/typography/Link";
+import classNames from "classnames";
 import { MDButton } from "src/components/UI/Button/MDButton";
 import Icon from "src/components/UI/Icon";
 import { MenuIcon } from "src/components/UI/Icon/MenuIcon";
@@ -328,7 +329,7 @@ export const AppLayout = () => {
       breadCrumb: atk.breadCrumb,
     };
   }, [caseTopMenu, location.pathname, getDefaultOpenKeys]);
-
+  console.log(keys, "keys");
   // useEffect(() => {
   //   setBreadCrumb({
   //     items: keys.breadCrumb.map((bread) => {
@@ -392,8 +393,14 @@ export const AppLayout = () => {
     setCollapsed((pre) => !pre);
   };
   return (
-    <Layout className="app-layout min-h-screen">
-      <Layout.Header className="header p-0 ">
+    <Layout
+      className={classNames("app-layout min-h-screen", {
+        "overflow-hidden": !collapsed,
+      })}
+    >
+      <Layout.Header
+        className={classNames("header p-0 ", { "no-touch": !collapsed })}
+      >
         <div className="flex justify-between items-center px-20px full-height-header">
           <div className="logo hover:cursor-pointer flex justify-center items-center gap-2">
             <MDButton
@@ -404,7 +411,7 @@ export const AppLayout = () => {
             <Link href="/dashboard">
               <img
                 src={Images.Logo.LogoMooseDesk}
-                width="150"
+                width="130"
                 alt="home logo"
               />
             </Link>
@@ -437,23 +444,30 @@ export const AppLayout = () => {
         )}
         <Layout.Sider
           width={isMobile ? screenWidth : 260}
-          // collapsible
           collapsed={collapsed}
           onCollapse={(value) => setCollapsed(value)}
           className={collapsed && isMobile ? "hidden" : "block"}
         >
+          <div className="md-top-menu-on-mobile">
+            <img src={Images.Logo.LogoMooseDesk} width="150" alt="home logo" />
+            <MDButton
+              icon={<MenuIcon visible={!collapsed} />}
+              type="text"
+              onClick={handleToggleMenu}
+            ></MDButton>
+          </div>
           <Menu
             className="layout-menu"
             mode="inline"
             theme="light"
-            // motion={{}}
             style={{
               height: "100%",
+              overflow: "scroll",
 
               background: "#F0F2F5",
-              // color: "white",
             }}
             selectedKeys={[keys.activeKeys]}
+            onChange={(key: any) => console.log(key)}
             // defaultOpenKeys={keys.defaultOpenKeys}
             items={caseTopMenu}
           />
@@ -463,7 +477,7 @@ export const AppLayout = () => {
           className="md-layout-content"
           style={{
             maxHeight: "calc(100vh - 64px)",
-            overflow: "auto",
+            overflow: !collapsed ? "hidden" : "auto",
             background: "#F0F2F5",
           }}
         >

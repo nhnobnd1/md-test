@@ -5,12 +5,13 @@ import {
   useNavigate,
 } from "@moose-desk/core";
 import { AccountRepository, SignInAccountAgentRequest } from "@moose-desk/repo";
-import { Button, Form, Input } from "antd";
+import { Button, Form } from "antd";
 import Link from "antd/es/typography/Link";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { catchError, map, of } from "rxjs";
+import { MDInput } from "src/components/UI/Input";
 import LayoutSignInPage from "src/components/UI/LayoutSignInPage/LayoutSignInPage";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
@@ -180,7 +181,7 @@ export const SignIn = () => {
                     },
                   ]}
                 >
-                  <Input placeholder="Enter email" size="large" />
+                  <MDInput placeholder="Enter email" />
                 </Form.Item>
                 <Form.Item
                   name="password"
@@ -191,10 +192,10 @@ export const SignIn = () => {
                     ...rulesValidatePassword,
                   ]}
                 >
-                  <Input.Password
+                  <MDInput
                     placeholder="Password"
                     autoComplete="on"
-                    size="large"
+                    type="password"
                   />
                 </Form.Item>
                 <div className={styles.wrapLink}>

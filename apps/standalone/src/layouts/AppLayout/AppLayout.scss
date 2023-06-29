@@ -7,21 +7,20 @@
     position: relative;
     transition: 200ms background-color cubic-bezier(0.42, 0, 0.58, 1);
   }
+  .ant-layout-sider {
+    background: rgb(240, 242, 245);
+  }
   .full-height-header {
     height: 100%;
   }
   .ant-menu {
-    box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.15);
+    // box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.15);
   }
   .layout-menu {
     svg {
-      // margin-top: -1px;
       path {
         transition: stroke 0.4s;
       }
-    }
-    .ant-menu-item {
-      // transform: translate(0%, -50%)
     }
     .ant-menu-item:hover {
       .ant-menu-title-content {
@@ -36,7 +35,6 @@
     }
     .ant-menu-title-content {
       padding-left: 10px;
-      // animation: showText 0.2s ease;
     }
     .ant-menu-item-selected,
     .ant-menu-submenu-selected {
@@ -70,7 +68,23 @@
     .ant-menu-title-content {
       visibility: hidden;
       opacity: 0;
-      transition: all 0.3s;
+      transition: all 0.2s;
+      animation: hideTitle 0.3s ease;
+      display: inline-block;
+      width: 0;
+      padding-left: 0;
+    }
+    @keyframes hideTitle {
+      from {
+        display: block;
+        padding-left: 10px;
+        width: fit-content;
+      }
+      to {
+        display: inline-block;
+        width: 0;
+        padding-left: 0;
+      }
     }
   }
   .ant-menu-light .ant-menu-item-selected {
@@ -104,8 +118,10 @@
   @include breakpoints(zero, lg) {
     .ant-layout-sider {
       position: fixed;
+      top: 0;
       flex: unset;
-      height: 100vh;
+      height: 100%;
+      overflow-y: scroll;
       z-index: 1052;
       min-width: unset !important;
       width: 300px !important;
@@ -113,13 +129,9 @@
         transition: width 0.3s;
         border-right: 0 !important;
         .ant-menu-item {
-          // animation: showText 0.5s ease;
-
           opacity: 1;
         }
         .ant-menu-submenu-title {
-          // animation: showText 0.5s ease;
-
           opacity: 1;
         }
       }
@@ -130,7 +142,6 @@
   padding: 0 30px;
 }
 .ant-menu-item {
-  // transition: unset;
   padding-left: 30px !important;
   @include breakpoints(zero, lg) {
     padding-left: 27px !important;
@@ -138,7 +149,6 @@
 }
 
 .ant-menu-submenu-title {
-  // transition: unset;
   padding-left: 30px !important;
   @include breakpoints(zero, lg) {
     padding-left: 27px !important;
@@ -149,31 +159,40 @@
   min-width: 77px !important;
   width: 77px !important;
   flex: 0 0 77px !important;
+  touch-action: none;
+  -ms-touch-action: none;
   overflow: hidden;
   .ant-menu-item {
     padding: 0 30px;
   }
 }
-
+.overflow-hidden {
+  // max-height: calc(100vh - 64px) !important;
+  // height: calc(100vh - 64px) !important;
+  // min-height: unset !important;
+  overflow: hidden !important;
+}
 .px-20px {
   padding-right: 20px;
   padding-left: 20px;
 }
 .md-layout-content {
   width: 100% !important;
-  // @include breakpoints(md, lg) {
-  //   width: calc(100% - 77px) !important;
-  //   margin-left: 77px;
-  // }
+}
+.no-touch {
+  touch-action: none;
+  -ms-touch-action: none;
 }
 .md-overlay {
   background: rgba(0, 0, 0, 0.5);
   position: fixed;
-  top: 64px;
+  top: 0;
   height: 100vh;
   width: 100vw;
   z-index: 1051;
   animation: showText 0.2s ease;
+  touch-action: none;
+  -ms-touch-action: none;
 }
 @keyframes showText {
   from {
@@ -181,5 +200,15 @@
   }
   to {
     opacity: 1;
+  }
+}
+.md-top-menu-on-mobile {
+  display: none;
+  @include breakpoints(zero, lg) {
+    display: flex;
+    align-items: center;
+    padding: 8px 10px;
+    justify-content: space-between;
+    background-color: rgb(240, 242, 245);
   }
 }

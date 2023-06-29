@@ -77,7 +77,7 @@ const InputPhone = ({
             label={`+${item.phonePrefix}${item.countryName}`}
             key={item.code}
           >
-            <div className="flex-center">
+            <div className={classNames(styles.wrapPhoneFlag, "flex-center")}>
               <img
                 className={styles.flagImg}
                 width={40}

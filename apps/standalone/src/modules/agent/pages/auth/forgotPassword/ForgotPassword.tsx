@@ -1,11 +1,12 @@
 import { useJob, useNavigate } from "@moose-desk/core";
 import { AccountRepository } from "@moose-desk/repo";
-import { Button, Form, Input } from "antd";
+import { Button, Form } from "antd";
 import Link from "antd/es/typography/Link";
 import { useCallback, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
+import { MDInput } from "src/components/UI/Input";
 import LayoutSignInPage from "src/components/UI/LayoutSignInPage/LayoutSignInPage";
 import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
@@ -101,7 +102,7 @@ export const ForgotPassword = () => {
                     },
                   ]}
                 >
-                  <Input type="text" placeholder="Enter Email" size="large" />
+                  <MDInput type="text" placeholder="Enter Email" />
                 </Form.Item>
                 <Form.Item
                   className="w-full hide-label"

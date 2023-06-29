@@ -146,7 +146,12 @@
   right: -14px;
   top: 5px;
 }
-
+.ant-table-thead {
+  .ant-table-cell {
+    font-size: 12px !important;
+    padding: 8px 16px !important;
+  }
+}
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
@@ -157,4 +162,7 @@ select:-webkit-autofill,
 select:-webkit-autofill:hover,
 select:-webkit-autofill:focus {
   transition: background-color 5000s ease-in-out 0s;
+}
+input, textarea, select {
+  font-size: 14px !important;
 }
