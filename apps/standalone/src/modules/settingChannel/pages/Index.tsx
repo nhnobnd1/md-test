@@ -52,7 +52,7 @@ const ChannelIndexPage = () => {
       <div className="mt-5">
         {listCategory.map((item, index) => (
           <CategoryChannel
-            className="mb-6"
+            className="mb-6 hover:cursor-pointer"
             title={item.title}
             description={item.description ?? undefined}
             link={item.link}

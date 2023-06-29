@@ -1,22 +1,21 @@
 import {
   generatePath,
   PageComponent,
-  useDebounceFn,
   useJob,
   useNavigate,
   usePrevious,
 } from "@moose-desk/core";
 import {
   Agent,
-  BaseMetaDataListResponse,
   GetListUserGroupRequest,
   UserGroup,
   UserGroupRepository,
 } from "@moose-desk/repo";
 import { TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useQuery } from "react-query";
 import { catchError, map, of } from "rxjs";
 import { HeaderList } from "src/components/HeaderList";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
@@ -25,17 +24,17 @@ import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
 import TableAction from "src/components/UI/Table/TableAction/TableAction";
 import env from "src/core/env";
-import useDeepEffect from "src/hooks/useDeepEffect";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { usePermission } from "src/hooks/usePerrmisson";
+import { getListGroupFilter } from "src/modules/group/helper/api";
 import GroupRoutePaths from "src/modules/group/routes/paths";
 import { defaultFilter } from "src/utils/localValue";
 
 interface GroupIndexPageProps {}
 
 const GroupIndexPage: PageComponent<GroupIndexPageProps> = () => {
-  const [groups, setGroups] = useState<UserGroup[]>([]);
+  // const [groups, setGroups] = useState<UserGroup[]>([]);
   const navigate = useNavigate();
   const message = useMessage();
   const notification = useNotification();
@@ -44,38 +43,33 @@ const GroupIndexPage: PageComponent<GroupIndexPageProps> = () => {
 
   const [filterData, setFilterData] =
     useState<GetListUserGroupRequest>(defaultFilter);
-  const [meta, setMeta] = useState<BaseMetaDataListResponse>();
+  // const [meta, setMeta] = useState<BaseMetaDataListResponse>();
   const { t } = useTranslation();
 
   const prevFilter = usePrevious<GetListUserGroupRequest>(filterData);
 
-  const { run: getListGroup, processing: loadingList } = useJob(
-    (payload: GetListUserGroupRequest) => {
-      return UserGroupRepository()
-        .getList(payload)
-        .pipe(
-          map(
-            ({ data }) => {
-              if (data.statusCode === 200) {
-                const listGroup = data.data.map((item) => ({
-                  ...item,
-                  id: item._id,
-                }));
-                setGroups(listGroup);
-                setMeta(data.metadata);
-              } else {
-                message.error(t("messages:error.get_agent"));
-              }
-            },
-            catchError((err) => {
-              message.error(t("messages:error.get_agent"));
+  const {
+    data: dataGroup,
+    isLoading: loadingList,
+    refetch,
+  } = useQuery({
+    queryKey: ["getGroups", filterData],
+    queryFn: () => getListGroupFilter(filterData),
+    retry: 1,
 
-              return of(err);
-            })
-          )
-        );
-    }
-  );
+    onError: () => {
+      // message.error(t("messages:error.get_agent"));
+    },
+  });
+
+  const groups = useMemo(() => {
+    if (!dataGroup?.data) return [];
+    return dataGroup.data;
+  }, [dataGroup?.data]);
+  const meta = useMemo(() => {
+    if (!dataGroup?.metadata) return { page: 0, totalPage: 0, totalCount: 0, resultsPerPage: 0 };
+    return dataGroup.metadata;
+  }, [dataGroup?.metadata]);
 
   const { run: deleteGroupApi } = useJob(
     (id: string) => {
@@ -88,7 +82,7 @@ const GroupIndexPage: PageComponent<GroupIndexPageProps> = () => {
             if (data.statusCode === 200) {
               message.loading.hide().then(() => {
                 notification.success(t("messages:success.delete_group"));
-                getListGroup(filterData);
+                refetch();
               });
             } else {
               message.loading.hide().then(() => {
@@ -105,13 +99,6 @@ const GroupIndexPage: PageComponent<GroupIndexPageProps> = () => {
         );
     },
     { showLoading: true }
-  );
-
-  const { run: getListGroupDebounce } = useDebounceFn(
-    (payload: GetListUserGroupRequest) => {
-      getListGroup(payload);
-    },
-    { wait: 300 }
   );
 
   const onPagination = useCallback(
@@ -149,14 +136,6 @@ const GroupIndexPage: PageComponent<GroupIndexPageProps> = () => {
   const handleDelete = useCallback((record: UserGroup) => {
     deleteGroupApi(record._id);
   }, []);
-
-  useDeepEffect(() => {
-    if (prevFilter?.query !== filterData.query && filterData.query) {
-      getListGroupDebounce(filterData);
-    } else {
-      getListGroup(filterData);
-    }
-  }, [filterData]);
 
   return (
     <div>

@@ -40,6 +40,7 @@ const CategoryChannel = ({
           <span>{title}</span>
         </div>
       }
+      onClick={() => navigate(generatePath(link))}
     >
       <div className="flex justify-between items-center">
         <div>{description}</div>

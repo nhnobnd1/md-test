@@ -1,22 +1,11 @@
 import { EditOutlined } from "@ant-design/icons";
-import {
-  useDebounceFn,
-  useJob,
-  usePrevious,
-  useToggle,
-} from "@moose-desk/core";
-import {
-  Agent,
-  AgentRepository,
-  BaseMetaDataListResponse,
-  GetListAgentRequest,
-  Role,
-} from "@moose-desk/repo";
+import { useToggle } from "@moose-desk/core";
+import { Agent, GetListAgentRequest, Role } from "@moose-desk/repo";
 import { Badge, Button, TableProps, Tooltip } from "antd";
 import { SorterResult } from "antd/es/table/interface";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { map } from "rxjs";
+import { useQuery } from "react-query";
 import { HeaderList } from "src/components/HeaderList";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
 import { Header } from "src/components/UI/Header";
@@ -24,16 +13,15 @@ import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
 import TableAction from "src/components/UI/Table/TableAction/TableAction";
 import env from "src/core/env";
-import useDeepEffect from "src/hooks/useDeepEffect";
 import useMessage from "src/hooks/useMessage";
 import { usePermission } from "src/hooks/usePerrmisson";
 import { AgentFormValues } from "src/modules/agent/components/AgentForm";
 import { PopupAgent } from "src/modules/agent/components/PopupAgent";
 import { getStatusAgent } from "src/modules/agent/constant";
+import { getListAgentFilter } from "src/modules/agent/helper/api";
 import { defaultFilter } from "src/utils/localValue";
 
 const AgentsIndex = () => {
-  const [agents, setAgents] = useState<Agent[]>([]);
   const message = useMessage();
   const {
     state: popupAgent,
@@ -55,38 +43,31 @@ const AgentsIndex = () => {
 
   const [filterData, setFilterData] =
     useState<GetListAgentRequest>(defaultFilter);
-  const [meta, setMeta] = useState<BaseMetaDataListResponse>();
 
-  const prevFilter = usePrevious<GetListAgentRequest>(filterData);
+  const {
+    data: dataAgents,
+    isLoading: loadingList,
+    refetch,
+  } = useQuery({
+    queryKey: ["getAgents", filterData],
+    queryFn: () => getListAgentFilter(filterData),
+    retry: 1,
 
-  const { run: getListAgentApi, processing: loadingList } = useJob(
-    (payload: GetListAgentRequest) => {
-      return AgentRepository()
-        .getList(payload)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              const listAgent = data.data.map((item) => ({
-                ...item,
-                id: item._id,
-              }));
-
-              setAgents(listAgent);
-              setMeta(data.metadata);
-            } else {
-              message.error(t("messages:error.get_agent"));
-            }
-          })
-        );
-    }
-  );
-
-  const { run: getListDebounce } = useDebounceFn(
-    (payload: GetListAgentRequest) => {
-      getListAgentApi(payload);
+    onError: () => {
+      message.error(t("messages:error.get_agent"));
     },
-    { wait: 300 }
-  );
+  });
+
+  const agents = useMemo(() => {
+    if (!dataAgents?.data) return [];
+    return dataAgents.data;
+  }, [dataAgents?.data]);
+  const meta = useMemo(() => {
+    if (!dataAgents?.metadata) return { page: 0, totalPage: 0, totalCount: 0, resultsPerPage: 0 };
+    return dataAgents.metadata;
+  }, [dataAgents?.metadata]);
+
+  console.log({ agents, meta });
 
   const getLabelRole = useCallback(
     (role: Role) => {
@@ -124,21 +105,14 @@ const AgentsIndex = () => {
 
   const handleChangePopup = useCallback(
     (closeModal?: boolean) => {
-      getListAgentApi(filterData);
+      // getListAgentApi(filterData);
+      refetch();
       if (closeModal) {
         closePopupAgent();
       }
     },
     [filterData]
   );
-
-  useDeepEffect(() => {
-    if (prevFilter?.query !== filterData.query && filterData.query) {
-      getListDebounce(filterData);
-    } else {
-      getListAgentApi(filterData);
-    }
-  }, [filterData]);
 
   const onChangeTable = useCallback(
     (pagination: any, filters: any, sorter: SorterResult<Agent>) => {
