@@ -5,7 +5,7 @@
   justify-content: space-between;
   align-items: flex-start;
   margin-top: 20px;
-  @include mq(lg, 'max') {
+  @include breakpoints(zero, lg) {
     flex-direction: column;
     margin-top: 16px;
   }
@@ -21,7 +21,7 @@
             padding-bottom: 50px !important;
         }
     }
-    @include mq(lg, 'max') {
+    @include breakpoints(zero, lg) {
             width: 100%;
             margin-bottom: 10px;
             border-radius: 8px;

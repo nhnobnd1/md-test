@@ -7,7 +7,7 @@
   background-color: $background-gray-color;
   background-position: center;
   background-size: cover;
-  @include mq(lg, "max") {
+  @include breakpoints(zero, lg) {
     background-image: url(../../../assets/images/backgroundLoginOnMobile.svg);
     background-position: top;
     background-size: contain;
@@ -23,7 +23,7 @@
     align-items: center;
     justify-content: center;
     padding-bottom: 5%;
-    @include mq(lg, "max") {
+    @include breakpoints(zero, lg) {
       right: 0;
       width: 100%;
       top: 20%;
@@ -35,7 +35,7 @@
       padding: 40px 32px;
       box-shadow: 0px 10px 24px 2px rgba(57, 41, 24, 0.1);
       border-radius: 24px;
-      @include mq(lg, "max") {
+      @include breakpoints(zero, lg) {
         box-shadow: unset;
         padding: 16px;
         background-color: transparent;

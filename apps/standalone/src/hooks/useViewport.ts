@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export default function useViewport(innerWidth = 768) {
+export default function useViewport(innerWidth = 767) {
   const [width, setWidth] = useState(window.innerWidth);
 
   useEffect(() => {
@@ -9,5 +9,5 @@ export default function useViewport(innerWidth = 768) {
     return () => window.removeEventListener("resize", handleWindowResize);
   }, []);
 
-  return { isMobile: width < innerWidth, width };
+  return { isMobile: width <= innerWidth, width };
 }

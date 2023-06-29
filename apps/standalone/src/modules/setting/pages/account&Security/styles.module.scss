@@ -57,7 +57,7 @@
   align-items: flex-start;
   justify-content: space-between;
 
-  @include mq(lg, "max") {
+@include breakpoints(zero, lg) {
     flex-direction: column;
   }
 

@@ -14,9 +14,10 @@
   right: 20px;
   top: 10px;
   z-index: 1;
+  @include breakpoints(zero, lg) {
   display: flex;
   gap: 8px;
-  @include mq(lg, "max") {
+ 
     top: 2px;
   }
 }
