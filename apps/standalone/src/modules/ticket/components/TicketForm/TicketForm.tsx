@@ -261,7 +261,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
       {...props}
     >
       <div className="flex flex-col items-center mt-5">
-        <Card className="w-full  xl:w-[850px]  ">
+        <Card className="w-full    ">
           <div className="flex items-start gap-2 ">
             <div className="flex-1">
               <Form.Item
@@ -376,7 +376,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
           >
             <MDInput placeholder="Subject" />
           </Form.Item>
-          <div className="mt-4 xl:w-[800px]">
+          <div className="mt-4 ">
             <Form.Item
               label="Message"
               name="content"
@@ -394,18 +394,21 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
                 init={{
                   menubar: false,
                   placeholder: "Please input your message here......",
+
+                  width: "100%",
                 }}
               />
             </Form.Item>
           </div>
-          <Form.Item label="Priority" name="priority">
-            <Select size="large" options={priorityOptions}></Select>
-          </Form.Item>
+
           <Form.Item name="tags" label="Tags">
             <SelectTag placeholder="Add tags" options={tagsOptions} />
           </Form.Item>
           <Form.Item label="Assignee" name="assignee">
             <SelectList placeholder="Search agents" options={agentsOptions} />
+          </Form.Item>
+          <Form.Item label="Priority" name="priority">
+            <Select size="large" options={priorityOptions}></Select>
           </Form.Item>
           <div className="flex-1 flex justify-end items-center gap-2 mt-10 ">
             <MDButton
@@ -416,7 +419,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
               Cancel
             </MDButton>
             <MDButton loading={loadingButton} type="primary" htmlType="submit">
-              Save
+              Send
             </MDButton>
           </div>
         </Card>

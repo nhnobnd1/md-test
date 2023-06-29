@@ -1,9 +1,10 @@
 import { useJob } from "@moose-desk/core";
 import { Tag, TagRepository } from "@moose-desk/repo";
-import { Button, Modal, ModalProps, Space } from "antd";
+import { Button, ModalProps, Space } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
+import { MDModalUI } from "src/components/MDModalUI";
 import Form from "src/components/UI/Form/Form";
 import { Header } from "src/components/UI/Header";
 import useMessage from "src/hooks/useMessage";
@@ -125,7 +126,7 @@ export const PopupTag = ({
     setIsUpdate(!!dataForm?._id);
   }, [dataForm]);
   return (
-    <Modal
+    <MDModalUI
       {...props}
       destroyOnClose
       onCancel={onCancel}
@@ -141,7 +142,8 @@ export const PopupTag = ({
     >
       <div>
         <Header
-          title={dataForm?._id ? `${dataForm.name}` : "New tag profile"}
+          title={dataForm?._id ? `Edit tag` : "New tag"}
+          className="mb-5"
         ></Header>
         <TagForm
           initialValues={dataForm}
@@ -151,7 +153,7 @@ export const PopupTag = ({
           onFinish={handleSubmitValue}
         />
       </div>
-    </Modal>
+    </MDModalUI>
   );
 };
 
