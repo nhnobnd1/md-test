@@ -19,7 +19,6 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { Provider as ReduxProvider } from "react-redux";
 // import ErrorBoundary from "src/ErrorBoundary";
 import { ErrorBoundary } from "react-error-boundary";
-import { ReactQueryDevtools } from "react-query/devtools";
 import { AppBridgeProvider, PolarisProvider } from "src/components";
 import env from "src/core/env";
 import ModuleLoader from "src/core/utilities/ModuleLoader";
@@ -111,7 +110,7 @@ ReactDOM.render(
         </ErrorBoundary>
       </BrowserRouter>
     </PolarisProvider>
-    <ReactQueryDevtools initialIsOpen={false} />
+    {/* <ReactQueryDevtools initialIsOpen={false} /> */}
   </QueryClientProvider>,
   document.getElementById("app")
 );
