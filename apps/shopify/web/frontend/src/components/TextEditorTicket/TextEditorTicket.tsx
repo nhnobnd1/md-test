@@ -260,6 +260,10 @@ export const TextEditorTicket = ({
           </TextContainer>
         </Modal.Section>
       </Modal>
+      <div className="mb-1">
+        <span className="mr-1 text-red-500">*</span>
+        <span>Message</span>
+      </div>
 
       <Editor
         apiKey="t4mxpsmop8giuev4szkrl7etgn43rtilju95m2tnst9m9uod"

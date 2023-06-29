@@ -147,3 +147,13 @@
 //   z-index: 1000;
 //   pointer-events: none;
 // }
+.header-detail-ticket {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  max-height: 4.2em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  width: 100%;
+}

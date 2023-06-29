@@ -235,7 +235,6 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
       form.setFieldValue("mailboxType", MailBoxType.GMAIL);
     }
   }, [form.getFieldValue("mailSettingType")]);
-  console.log("hehe", !!id);
   return (
     <Form
       {...props}

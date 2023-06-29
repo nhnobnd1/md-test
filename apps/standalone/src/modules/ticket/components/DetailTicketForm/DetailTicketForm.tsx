@@ -520,7 +520,7 @@ const DetailTicketForm = () => {
             }}
           >
             <div className="flex justify-between w-full items-center">
-              <h1 className="break-words overflow-hidden">{` Ticket ${ticket?.ticketId}: ${ticket?.subject}`}</h1>
+              <h1 className="break-words overflow-hidden header-detail-ticket">{` Ticket ${ticket?.ticketId}: ${ticket?.subject}`}</h1>
               <div className="flex gap-2 ">
                 <MDButton
                   className={isMobile ? "flex" : "hidden"}
@@ -814,11 +814,12 @@ const DetailTicketForm = () => {
               )}
             </Card>
             <MDModalUI
-              title="Properties"
+              // title="Properties"
               open={statusModal}
               onCancel={() => {
                 closeStatusModal();
               }}
+              centered
               footer={[
                 <MDButton
                   key="back"

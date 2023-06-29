@@ -394,7 +394,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
               />
             </FormItem>
           </div>
-          <div className="w-full mt-6">
+          <div className="w-full mt-4">
             <FormItem name="content">
               <TextEditorTicket
                 files={files}

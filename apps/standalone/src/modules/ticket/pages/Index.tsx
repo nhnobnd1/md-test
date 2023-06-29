@@ -528,6 +528,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                 >
                   <div className="flex gap-2">
                     <Button
+                      className="text-xs"
                       type={activeButtonIndex === "ALL" ? "primary" : "text"}
                       onClick={() => {
                         handleButtonClick("ALL");
@@ -545,6 +546,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                       )
                     </Button>
                     <Button
+                      className="text-xs"
                       type={
                         activeButtonIndex === StatusTicket.NEW
                           ? "primary"
@@ -560,6 +562,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                       New ({`${statistic?.data.NEW}`})
                     </Button>
                     <Button
+                      className="text-xs"
                       type={
                         activeButtonIndex === StatusTicket.OPEN
                           ? "primary"
@@ -575,6 +578,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                       Open ({`${statistic?.data.OPEN}`})
                     </Button>
                     <Button
+                      className="text-xs"
                       type={
                         activeButtonIndex === StatusTicket.PENDING
                           ? "primary"
@@ -590,6 +594,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                       Pending ({`${statistic?.data.PENDING}`})
                     </Button>
                     <Button
+                      className="text-xs"
                       type={
                         activeButtonIndex === StatusTicket.RESOLVED
                           ? "primary"
@@ -605,6 +610,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                       Resolve ({`${statistic?.data.RESOLVED}`})
                     </Button>
                     <Button
+                      className="text-xs"
                       type={activeButtonIndex === "TRASH" ? "primary" : "text"}
                       onClick={() => {
                         handleButtonClick("TRASH");
@@ -767,7 +773,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       </div>
       {screenWidth <= MediaScreen.LG && selectedRowKeys.length > 0 && (
         <div
-          className={`sticky z-50 bottom-0 bg-white right-0 px-3   flex justify-between items-center w-full h-[56px] mt-2`}
+          className={`fixed z-50 bottom-0 bg-white right-0 px-3   flex justify-between items-center w-full h-[56px] mt-2`}
         >
           <DeleteSelectedModal handleDeleteSelected={handleDeleteSelected} />
           <Button

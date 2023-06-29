@@ -253,6 +253,7 @@ const TrashTicket = () => {
                 >
                   <div className="flex gap-2">
                     <Button
+                      className="text-xs"
                       type={activeButtonIndex === "ALL" ? "primary" : "text"}
                       onClick={() => {
                         handleButtonClick("ALL");
@@ -268,6 +269,7 @@ const TrashTicket = () => {
                       )
                     </Button>
                     <Button
+                      className="text-xs"
                       type={
                         activeButtonIndex === StatusTicket.NEW
                           ? "primary"
@@ -283,6 +285,7 @@ const TrashTicket = () => {
                       New ({`${statistic?.data.NEW}`})
                     </Button>
                     <Button
+                      className="text-xs"
                       type={
                         activeButtonIndex === StatusTicket.OPEN
                           ? "primary"
@@ -298,6 +301,7 @@ const TrashTicket = () => {
                       Open ({`${statistic?.data.OPEN}`})
                     </Button>
                     <Button
+                      className="text-xs"
                       type={
                         activeButtonIndex === StatusTicket.PENDING
                           ? "primary"
@@ -313,6 +317,7 @@ const TrashTicket = () => {
                       Pending ({`${statistic?.data.PENDING}`})
                     </Button>
                     <Button
+                      className="text-xs"
                       type={
                         activeButtonIndex === StatusTicket.RESOLVED
                           ? "primary"
@@ -328,6 +333,7 @@ const TrashTicket = () => {
                       Resolve ({`${statistic?.data.RESOLVED}`})
                     </Button>
                     <Button
+                      className="text-xs"
                       type={activeButtonIndex === "TRASH" ? "primary" : "text"}
                       onClick={() => {
                         handleButtonClick("TRASH");
@@ -487,7 +493,7 @@ const TrashTicket = () => {
       </div>
       {screenWidth <= MediaScreen.LG && selectedRowKeys.length > 0 && (
         <div
-          className={`sticky z-50 bottom-0 bg-white right-0 px-3   flex justify-between items-center w-full h-[56px] mt-2`}
+          className={`fixed z-50 bottom-0 bg-white right-0 px-3   flex justify-between items-center w-full h-[56px] mt-2`}
         >
           <div className="flex justify-between w-full gap-2">
             <ButtonTicket

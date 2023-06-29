@@ -342,7 +342,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
                 )}
               </>
             </div>
-            <div className="mt-8">
+            <div className="mt-8 absolute right-10 top-[-10px]">
               <span
                 className="link"
                 onClick={() => {
