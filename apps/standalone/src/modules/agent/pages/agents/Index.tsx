@@ -63,7 +63,8 @@ const AgentsIndex = () => {
     return dataAgents.data;
   }, [dataAgents?.data]);
   const meta = useMemo(() => {
-    if (!dataAgents?.metadata) return { page: 0, totalPage: 0, totalCount: 0, resultsPerPage: 0 };
+    if (!dataAgents?.metadata)
+      return { page: 0, totalPage: 0, totalCount: 0, resultsPerPage: 0 };
     return dataAgents.metadata;
   }, [dataAgents?.metadata]);
 

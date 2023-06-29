@@ -67,7 +67,8 @@ const GroupIndexPage: PageComponent<GroupIndexPageProps> = () => {
     return dataGroup.data;
   }, [dataGroup?.data]);
   const meta = useMemo(() => {
-    if (!dataGroup?.metadata) return { page: 0, totalPage: 0, totalCount: 0, resultsPerPage: 0 };
+    if (!dataGroup?.metadata)
+      return { page: 0, totalPage: 0, totalCount: 0, resultsPerPage: 0 };
     return dataGroup.metadata;
   }, [dataGroup?.metadata]);
 
