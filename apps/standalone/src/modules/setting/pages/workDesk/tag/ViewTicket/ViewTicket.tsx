@@ -24,15 +24,10 @@ import useMessage from "src/hooks/useMessage";
 import { usePermission } from "src/hooks/usePerrmisson";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { ButtonRemoveTag } from "src/modules/setting/component/ButtonRemoveTag";
+import { defaultFilter } from "src/utils/localValue";
 import "./ViewTicket.scss";
 interface ViewTicketProps {}
-const defaultFilter = () => ({
-  page: 1,
-  limit: env.DEFAULT_PAGE_SIZE,
-  query: "",
-  sortBy: undefined,
-  sortOrder: undefined,
-});
+
 const ViewTicket: FC<ViewTicketProps> = () => {
   const { id } = useParams();
   const message = useMessage();
@@ -83,7 +78,6 @@ const ViewTicket: FC<ViewTicketProps> = () => {
         .pipe(
           map(({ data }) => {
             if (data.statusCode === 200) {
-              //   console.log("data repsonse", data.data);
               setTickets(data.data);
               setMeta(data.metadata);
             } else {
@@ -121,20 +115,20 @@ const ViewTicket: FC<ViewTicketProps> = () => {
   return (
     <>
       <Header back title={`Tickets tagged with "${id}"`}>
-        <div className="flex-1 flex justify-end"></div>
+        <div className="flex-1 flex justify-end">
+          {!isAgent && tickets.length > 0 ? (
+            <ButtonRemoveTag
+              title="Are you sure that you want to permanently remove all?"
+              content="All tickets will remove this tag permanently. This action cannot be undone."
+              action={handleDelete}
+              textAction="Remove"
+            />
+          ) : (
+            <></>
+          )}
+        </div>
       </Header>
-      <div className="flex justify-end">
-        {!isAgent ? (
-          <ButtonRemoveTag
-            title="Are you sure that you want to permanently remove all?"
-            content="All tickets will remove this tag permanently. This action cannot be undone."
-            action={handleDelete}
-            textAction="Remove"
-          />
-        ) : (
-          <></>
-        )}
-      </div>
+
       <Table
         className="mt-10"
         dataSource={tickets}

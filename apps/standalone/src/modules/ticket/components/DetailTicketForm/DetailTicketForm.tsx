@@ -1,10 +1,12 @@
 import {
+  MediaScreen,
   createdDatetimeFormat,
   emailRegex,
   useJob,
   useLoading,
   useNavigate,
   useParams,
+  useToggle,
 } from "@moose-desk/core";
 import {
   Agent,
@@ -27,16 +29,20 @@ import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
+import useToggleGlobal from "@moose-desk/core/hooks/useToggleGlobal";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import { catchError, map, of } from "rxjs";
+import { MDModalUI } from "src/components/MDModalUI";
 import { MDButton } from "src/components/UI/Button/MDButton";
 import TextEditorTicket from "src/components/UI/Editor/TextEditorTicket";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
+import Icon from "src/components/UI/Icon";
 import Select from "src/components/UI/Select/Select";
 import useMessage from "src/hooks/useMessage";
 import { useSubdomain } from "src/hooks/useSubdomain";
+import useViewport from "src/hooks/useViewport";
 import { CollapseMessage } from "src/modules/ticket/components/DetailTicketForm/CollapseMessage";
 import { SelectTag } from "src/modules/ticket/components/TicketForm/SelectTag";
 import {
@@ -118,13 +124,19 @@ const DetailTicketForm = () => {
     if (!dataTags) return [];
     return dataTags;
   }, [dataTags]);
-
+  const { visible, setVisible } = useToggleGlobal();
+  const { isMobile } = useViewport(MediaScreen.LG);
   const [enableCC, setEnableCC] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
   const [primaryEmail, setPrimaryEmail] = useState<EmailIntegration>();
   const [files, setFiles] = useState<any>([]);
   const [loadingButton, setLoadingButton] = useState(false);
   const { t } = useTranslation();
+  const {
+    state: statusModal,
+    on: openStatusModal,
+    off: closeStatusModal,
+  } = useToggle();
   const { data: dataAgents } = useQuery({
     queryKey: [
       "getAgents",
@@ -477,6 +489,7 @@ const DetailTicketForm = () => {
 
   const handleSaveTicket = () => {
     const values = form.getFieldsValue();
+    startLoading();
 
     updateTicketApi({
       priority: values.priority,
@@ -499,13 +512,35 @@ const DetailTicketForm = () => {
       ) : (
         <div className="wrapContainer">
           <Header
-            className="mr-10"
-            title={`Ticket ${ticket?.ticketId}: ${ticket?.subject}`}
+            // className="mr-10"
+            // title={`  Ticket ${ticket?.ticketId}: ${ticket?.subject}`}
             back
             backAction={() => {
               navigate(TicketRoutePaths.Index);
             }}
-          />
+          >
+            <div className="flex justify-between w-full items-center">
+              <h1 className="break-words overflow-hidden">{` Ticket ${ticket?.ticketId}: ${ticket?.subject}`}</h1>
+              <div className="flex gap-2 ">
+                <MDButton
+                  className={isMobile ? "flex" : "hidden"}
+                  onClick={() => {
+                    endPageRef?.current?.scrollIntoView({ behavior: "smooth" });
+                  }}
+                  icon={<Icon name="replyTicket" />}
+                />
+                <MDButton
+                  className={isMobile ? "flex" : "hidden"}
+                  onClick={() => openStatusModal()}
+                  icon={<Icon name="statusTicket" />}
+                />
+                <MDButton
+                  onClick={() => setVisible(!visible)}
+                  icon={<Icon name="findOrder" />}
+                />
+              </div>
+            </div>
+          </Header>
           <Form
             disabled={
               form.getFieldValue("status") === StatusTicket.RESOLVED ||
@@ -519,7 +554,7 @@ const DetailTicketForm = () => {
             onFinish={onFinish}
             className="flex flex-wrap md:flex-row-reverse xs:flex-col justify-between gap-2"
           >
-            <Card className=" mt-5 w-[300px] xs:hidden md:block">
+            <Card className=" mt-5 w-[300px] xs:hidden lg:block">
               <div>
                 <Form.Item
                   labelAlign="left"
@@ -571,7 +606,7 @@ const DetailTicketForm = () => {
                     type="primary"
                     onClick={handleSaveTicket}
                   >
-                    Update
+                    Save
                   </MDButton>
                 </div>
               </div>
@@ -778,6 +813,80 @@ const DetailTicketForm = () => {
                 </>
               )}
             </Card>
+            <MDModalUI
+              title="Properties"
+              open={statusModal}
+              onCancel={() => {
+                closeStatusModal();
+              }}
+              footer={[
+                <MDButton
+                  key="back"
+                  onClick={() => {
+                    closeStatusModal();
+                  }}
+                >
+                  Cancel
+                </MDButton>,
+                <MDButton
+                  key="submit"
+                  type="primary"
+                  // loading={loading}
+                  onClick={() => {
+                    handleSaveTicket();
+                    closeStatusModal();
+                  }}
+                >
+                  Save
+                </MDButton>,
+              ]}
+            >
+              <Form layout="vertical" form={form}>
+                <Form.Item
+                  labelAlign="left"
+                  label={<span style={{ width: 50 }}>Status</span>}
+                  name="status"
+                >
+                  <Select
+                    size="large"
+                    className="w-full"
+                    options={statusOptions}
+                  />
+                </Form.Item>
+                <Form.Item
+                  labelAlign="left"
+                  label={<span style={{ width: 50 }}>Priority</span>}
+                  name="priority"
+                >
+                  <Select className="w-full" options={priorityOptions} />
+                </Form.Item>
+                <Form.Item label="Assignee" name="assignee">
+                  <AntSelect
+                    placeholder="Search agents"
+                    className="w-full"
+                    options={agentsOptions}
+                    size="large"
+                  ></AntSelect>
+                </Form.Item>
+
+                <Form.Item
+                  name="tags"
+                  label={<span style={{ width: 60 }}>Tags</span>}
+                  labelAlign="left"
+                >
+                  <AntSelect
+                    size="large"
+                    className="w-full"
+                    placeholder="Add tags"
+                    mode="tags"
+                    options={tags.map((item: Tag) => ({
+                      value: item.name,
+                      label: item.name,
+                    }))}
+                  />
+                </Form.Item>
+              </Form>
+            </MDModalUI>
           </Form>
         </div>
       )}

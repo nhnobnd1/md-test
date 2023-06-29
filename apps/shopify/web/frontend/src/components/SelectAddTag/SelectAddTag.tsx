@@ -99,7 +99,7 @@ const SelectAddTag = (props: BoxSelectAutoReplyProps) => {
   }, [selectedTags.length]);
 
   const optionsMarkup = (
-    <>
+    <div className="max-h-[200px]">
       {options.map((option) => {
         const { label, value } = option;
 
@@ -114,7 +114,7 @@ const SelectAddTag = (props: BoxSelectAutoReplyProps) => {
           </Listbox.Option>
         );
       })}
-    </>
+    </div>
   );
 
   useEffect(() => {

@@ -15,6 +15,9 @@
   top: 10px;
   z-index: 1;
   @include breakpoints(zero, lg) {
+  display: flex;
+  gap: 8px;
+ 
     top: 2px;
   }
 }
@@ -27,7 +30,8 @@
     transition: all 0.2s ease-out;
   }
 }
-.toggleButtonOpen, .toggleButtonClose {
+.toggleButtonOpen,
+.toggleButtonClose {
   &::after {
     content: "Search Order";
     position: absolute;
@@ -54,8 +58,8 @@
 }
 .toggleButtonClose {
   &::after {
-      content: "Close";
-      width: 60px;
+    content: "Close";
+    width: 60px;
   }
 }
 @keyframes scaleUpDown {
@@ -70,6 +74,6 @@
     font-size: 30px;
   }
 }
-.maxWidthContent {
-  max-width: calc(100% - 400px);
-}
+// .maxWidthContent {
+//   max-width: calc(100% - 400px);
+// }

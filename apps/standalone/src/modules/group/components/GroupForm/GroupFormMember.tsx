@@ -237,7 +237,7 @@ const GroupFormMember = memo(
 
     return (
       <div>
-        <div className="pb-6">
+        <div className="mb-5">
           <Select.Ajax
             className="w-full"
             placeholder="Search agents"
@@ -250,7 +250,7 @@ const GroupFormMember = memo(
           />
         </div>
         <div>
-          <div>
+          <div className="mb-5">
             <Input.Search
               allowClear
               value={filterData.query}
@@ -301,10 +301,21 @@ const GroupFormMember = memo(
               align="center"
               title="Action"
               render={(_, record: GroupMembers) => (
+                // <TableAction
+                //   record={record}
+                //   showDelete
+                //   onDelete={() => handleOpenModalRemove(record)}
+                //   onlyIcon
+                // />
                 <TableAction
                   record={record}
-                  showDelete
-                  onDelete={() => handleOpenModalRemove(record)}
+                  specialDelete={{
+                    title: "Remove member ?",
+                    description:
+                      "This Agent will be removed permanently. This action cannot be undone.",
+                    textDelete: "Remove",
+                  }}
+                  onSpecialDelete={() => handleOpenModalRemove(record)}
                   onlyIcon
                 />
               )}

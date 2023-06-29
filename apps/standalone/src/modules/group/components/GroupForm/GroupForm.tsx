@@ -1,5 +1,5 @@
 import { useToggle } from "@moose-desk/core";
-import { Button, Card, Input } from "antd";
+import { Card, Checkbox, Input } from "antd";
 import classNames from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Form, FormProps } from "src/components/UI/Form";
@@ -64,8 +64,8 @@ export const GroupForm = ({ id, ...props }: GroupFormProps) => {
       onValuesChange={handleUpdateForm}
       initialValues={initialValues}
     >
-      <div className="grid grid-cols-2 gap-6">
-        <Card>
+      <div className="flex flex-col gap-4">
+        <Card className="w-full">
           <Form.Item
             name="name"
             label="Name"
@@ -86,20 +86,22 @@ export const GroupForm = ({ id, ...props }: GroupFormProps) => {
             ></Input.TextArea>
           </Form.Item>
           <div className="flex items-baseline gap-4">
-            <div className="label">Group members</div>
-            <Button
+            {/* <div className="label">Group members</div> */}
+            {/* <Button
               type="primary"
               danger={viewAddMember}
               onClick={toggleViewAddMember}
             >
               {!viewAddMember ? "Add group member" : "Close add group member"}
-            </Button>
+            </Button> */}
+            <Checkbox checked={viewAddMember} onChange={toggleViewAddMember}>
+              Add group member
+            </Checkbox>
           </div>
         </Card>
         <Card className={classNames({ hidden: !viewAddMember })}>
           <Form.Item name="groupMembers" label="Add members" hidden></Form.Item>
           <div>
-            <div className="label mb-4">Add members: </div>
             <GroupFormMember
               groupId={id}
               value={valueGroupMembers}

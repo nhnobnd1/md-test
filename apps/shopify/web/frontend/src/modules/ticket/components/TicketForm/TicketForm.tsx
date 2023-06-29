@@ -311,16 +311,11 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
     >
       <style scoped>{css}</style>
       <FormLayout>
-        <div className="grid md:grid-cols-2 xs:grid-cols-1 gap-x-[7%]">
+        <div className="grid xs:grid-cols-1 gap-x-[7%]">
           <div className="flex items-center gap-2 justify-start">
             <div className="flex-1">
-              <div className="flex-1 xs:mt-4 md:mt-0">
+              <div className="flex-1 xs:mt-4 0">
                 <FormItem name="from">
-                  {/* <Select
-                    label="From"
-                    // placeholder="Defined Email address"
-                    options={emailIntegrationsOptions}
-                  /> */}
                   <BoxSelectFilter
                     // disabled={disabled}
                     label="From"
@@ -331,7 +326,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
               </div>
             </div>
           </div>
-          <div className="xs:order-first md:order-none">
+          <div className="xs:order-first ">
             <FormItem name="to">
               <FormItem name="to">
                 <BoxSelectCustomer
@@ -360,7 +355,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
             </FormItem>
           </div>
           {enableCC ? (
-            <div className="flex-1 mt-3 xs:-order-2 md:order-none">
+            <div className="flex-1 mt-3 xs:-order-2 ">
               <FormItem name="CC">
                 <SelectAddEmail
                   label="CC"
@@ -373,7 +368,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
             <></>
           )}
           {enableCC ? (
-            <div className="flex-1 mt-3 xs:-order-1 md:order-none">
+            <div className="flex-1 mt-3 xs:-order-1 ">
               <FormItem name="BCC">
                 <SelectAddEmail
                   label="BCC"
@@ -385,30 +380,6 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
           ) : (
             <></>
           )}
-          <div className="mt-4">
-            <FormItem name="assignee">
-              <ComboSelect.Ajax
-                label="Assignee"
-                placeholder="Search agents"
-                height=""
-                loadMore={fetchAgents}
-              />
-            </FormItem>
-          </div>
-          <div className="mt-4">
-            <FormItem name="priority">
-              <Select label="Priority" options={priorityOptions} />
-            </FormItem>
-          </div>
-          <div className="mt-4">
-            <FormItem name="tags">
-              <SelectAddTag
-                label="Tags"
-                data={tagsOptions}
-                placeholder="+ Add Tags"
-              />
-            </FormItem>
-          </div>
           <div className="mt-4">
             <FormItem name="subject">
               <TextField
@@ -423,25 +394,51 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
               />
             </FormItem>
           </div>
+          <div className="w-full mt-6">
+            <FormItem name="content">
+              <TextEditorTicket
+                files={files}
+                setFiles={setFiles}
+                formRef={props.innerRef}
+                setLoadingButton={setLoadingButton}
+                labelProps={{
+                  as: "span",
+                  variant: "bodyMd",
+                  children: "Content",
+                }}
+                init={{
+                  placeholder: "Please input your message here......",
+                }}
+              />
+            </FormItem>
+          </div>
+
+          <div className="mt-4">
+            <FormItem name="tags">
+              <SelectAddTag
+                label="Tags"
+                data={tagsOptions}
+                placeholder="+ Add Tags"
+              />
+            </FormItem>
+          </div>
         </div>
-        <div className="w-full mt-6">
-          <FormItem name="content">
-            <TextEditorTicket
-              files={files}
-              setFiles={setFiles}
-              formRef={props.innerRef}
-              setLoadingButton={setLoadingButton}
-              labelProps={{
-                as: "span",
-                variant: "bodyMd",
-                children: "Content",
-              }}
-              init={{
-                placeholder: "Please input your message here......",
-              }}
+        <div className="mt-4">
+          <FormItem name="assignee">
+            <ComboSelect.Ajax
+              label="Assignee"
+              placeholder="Search agents"
+              height=""
+              loadMore={fetchAgents}
             />
           </FormItem>
         </div>
+        <div className="mt-4">
+          <FormItem name="priority">
+            <Select label="Priority" options={priorityOptions} />
+          </FormItem>
+        </div>
+
         <div className="flex justify-end gap-2">
           <Button
             onClick={() => {
@@ -451,7 +448,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
             Cancel
           </Button>
           <Button primary loading={loadingButton} submit>
-            Save
+            Send
           </Button>
         </div>
       </FormLayout>
