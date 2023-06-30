@@ -40,6 +40,7 @@ import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
 import Icon from "src/components/UI/Icon";
 import Select from "src/components/UI/Select/Select";
+import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import useMessage from "src/hooks/useMessage";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import useViewport from "src/hooks/useViewport";
@@ -506,7 +507,7 @@ const DetailTicketForm = () => {
     <>
       {processing ? (
         <>
-          <Skeleton />
+          <MDSkeleton lines={10} />
         </>
       ) : (
         <div className="wrapContainer">

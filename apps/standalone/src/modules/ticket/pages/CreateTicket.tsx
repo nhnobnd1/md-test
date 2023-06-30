@@ -17,6 +17,7 @@ import {
   getListEmailIntegration,
 } from "src/modules/ticket/helper/api";
 import styles from "./styles.module.scss";
+import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 
 const CreateTicket = () => {
   const { isMobile } = useViewport(MediaScreen.LG);
@@ -79,11 +80,11 @@ const CreateTicket = () => {
             icon={<Icon name="findOrder" />}
           />
         </div>
-        <Header title="New Ticket" back></Header>
+        <Header title="New Ticket" back className="mb-5"></Header>
 
         {processing || loadingList ? (
           <>
-            <Skeleton className="mt-5" />
+            <MDSkeleton lines={10} />
           </>
         ) : (
           <TicketForm
