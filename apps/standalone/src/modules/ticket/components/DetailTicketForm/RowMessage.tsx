@@ -167,7 +167,26 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
         <object
           className="w-full h-full border-none mt-5 "
           data={`data:text/html;charset=utf-8,${encodeURIComponent(
-            `<div style="font-family:Helvetica;font-size:14px">${sortChat}</div>`
+            `<div style="font-family:Helvetica;font-size:14px"><style>
+            ::-webkit-scrollbar {
+  width: 16px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #FA7D00;
+  border-radius: 20px;
+  border: 6px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color:#FF9326;
+}
+            </style>${sortChat}</div>`
           )}`}
           type="text/html"
         ></object>
