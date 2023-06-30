@@ -23,7 +23,10 @@ export const Table = (props: TableProps) => {
       {...props}
       rowKey={props.rowKey ?? "_id"}
       showSorterTooltip={false}
-      loading={{ indicator: <Loading />, spinning: props.loading as boolean }}
+      loading={{
+        indicator: <Loading />,
+        spinning: typeof props.loading === "boolean" ? props.loading : false,
+      }}
     />
   );
 };
