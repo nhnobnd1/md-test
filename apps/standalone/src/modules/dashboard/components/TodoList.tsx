@@ -80,6 +80,7 @@ export const TodoList = () => {
           columns={columns}
           pagination={false}
           scroll={{ x: 500 }}
+          loading={isLoading}
           rowKey={(record) => record._id}
         />
       )}
