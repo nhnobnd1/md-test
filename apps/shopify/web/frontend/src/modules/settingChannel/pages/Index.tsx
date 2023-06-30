@@ -1,5 +1,5 @@
 import { PageComponent, TokenManager, useNavigate } from "@moose-desk/core";
-import { Card, Icon, Layout, Page } from "@shopify/polaris";
+import { Card, Icon, Layout, Page, Text } from "@shopify/polaris";
 import {
   ChecklistAlternateMajor,
   EmailNewsletterMajor,
@@ -80,10 +80,13 @@ const SettingChannelIndexPage: PageComponent<
                       <div>
                         <Icon source={card.icon}></Icon>
                       </div>
-                      <div className="font-bold">{card.title}</div>
+                      {/* <h1>{card.title}</h1> */}
+                      <Text variant="headingMd" as="h6">
+                        {card.title}
+                      </Text>
                     </div>
                     <div className="flex justify-between items-center">
-                      <div>{card.description}</div>
+                      <div className="text-gray-500">{card.description}</div>
                     </div>
                   </div>
                   <div className="">

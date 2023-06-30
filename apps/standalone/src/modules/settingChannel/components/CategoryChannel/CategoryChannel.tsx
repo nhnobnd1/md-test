@@ -1,12 +1,11 @@
 import { generatePath, useNavigate, useRole } from "@moose-desk/core";
-import { Button, Card } from "antd";
+import { Card } from "antd";
 import classNames from "classnames";
 import { ReactNode, useMemo } from "react";
 import { RolePermission } from "src/constaint/RolePermission";
 import { ChannelTitle } from "src/constaint/SettingChannel";
-import CarbonCloudSatelliteConfig from "~icons/carbon/cloud-satellite-config";
-import "./CategoryChannel.scss";
 import RightIcon from "~icons/material-symbols/arrow-right";
+import "./CategoryChannel.scss";
 
 interface CategoryChannelProps {
   title: string;
@@ -45,9 +44,9 @@ const CategoryChannel = ({
         <div>
           <div className="flex items-center gap-4 mb-4">
             <span className="flex text-[20px]">{icon}</span>
-            <span className="font-bold">{title}</span>
+            <h3 className="m-0">{title}</h3>
           </div>
-          <div>{description}</div>
+          <div className="text-gray-500">{description}</div>
         </div>
         <div>
           <div className="">
