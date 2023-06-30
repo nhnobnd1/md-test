@@ -9,6 +9,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import Icon from "src/components/UI/Icon";
 import { CustomTooltip } from "src/modules/report/components/Customize/CustomTooltip";
 import { CustomXAxisTick } from "src/modules/report/components/Customize/CustomXAxisTick";
 import { CustomYAxisTick } from "src/modules/report/components/Customize/CustomYAxisTick";
@@ -66,21 +67,34 @@ const ChartAgentsTicket = ({ data }: ChartAgentsTicketProps) => {
     ));
   };
   return (
-    <ResponsiveContainer width="100%" height="100%">
-      <BarChart data={memoChartData}>
-        <CartesianGrid vertical={false} color="#F0F0F0" />
-        <XAxis
-          dataKey="name"
-          color="black"
-          axisLine={false}
-          tickLine={false}
-          tick={<CustomXAxisTick />}
-        />
-        <YAxis axisLine={false} tickLine={false} tick={<CustomYAxisTick />} />
-        <Tooltip content={<CustomTooltip />} />
-        <Legend />
-        {_renderListBarChart()}
-      </BarChart>
+    <ResponsiveContainer
+      className="flex-center justify-center"
+      width="100%"
+      height="100%"
+    >
+      {!convertTopFiveAgents[0]?.length ? (
+        <div className="text-center">
+          <Icon name="emptyChartData" />
+          <p className="md_text--secondary">
+            Sorry!, There is no records matched with your criteria.
+          </p>
+        </div>
+      ) : (
+        <BarChart data={memoChartData}>
+          <CartesianGrid vertical={false} color="#F0F0F0" />
+          <XAxis
+            dataKey="name"
+            color="black"
+            axisLine={false}
+            tickLine={false}
+            tick={<CustomXAxisTick />}
+          />
+          <YAxis axisLine={false} tickLine={false} tick={<CustomYAxisTick />} />
+          <Tooltip content={<CustomTooltip />} />
+          <Legend />
+          {_renderListBarChart()}
+        </BarChart>
+      )}
     </ResponsiveContainer>
   );
 };

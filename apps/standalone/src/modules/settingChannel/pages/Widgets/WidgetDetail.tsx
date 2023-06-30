@@ -67,9 +67,7 @@ const WidgetDetail = () => {
     (state) => state.updateWidgetSetting
   );
 
-  const onChange = (key: string) => {
-    console.log(key);
-  };
+  const onChange = (key: string) => {};
   const handleCancel = () => {
     updateWidgetSetting(widget?.settings);
     updateCancel(new Date());

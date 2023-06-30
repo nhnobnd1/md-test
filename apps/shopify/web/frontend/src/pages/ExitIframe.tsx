@@ -6,7 +6,6 @@ import { useEffect } from "react";
 export default function ExitIframe() {
   const app = useAppBridge();
   const { search } = useLocation();
-  console.log("exit iframe");
 
   useEffect(() => {
     if (!!app && !!search) {
@@ -15,10 +14,8 @@ export default function ExitIframe() {
       if (!redirectUri) {
         return;
       }
-      console.log("1");
 
       const url = new URL(decodeURIComponent(redirectUri));
-      console.log("2");
 
       if (url.hostname === location.hostname) {
         const redirect = Redirect.create(app);
