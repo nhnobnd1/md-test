@@ -10,10 +10,10 @@ export const MDModalUI: FC<MDModalUIProps> = ({ children, ...props }) => {
   const { isMobile } = useViewport();
   return !isMobile ? (
     <Modal
-      okButtonProps={{ size: "large" }}
-      cancelButtonProps={{ size: "large" }}
+      okButtonProps={{ size: "large", className: "text-sm" }}
+      cancelButtonProps={{ size: "large", className: "text-sm" }}
       destroyOnClose
-      closeIcon={<Icon name="close" />}
+      // closeIcon={<Icon name="close" />}
       {...props}
     >
       {children}

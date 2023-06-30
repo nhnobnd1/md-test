@@ -1,6 +1,5 @@
 import { FC } from "react";
 import Images from "src/assets/images";
-import "./style.scss";
 interface VerifyEmailSuccessProps {}
 
 const VerifyEmailSuccess: FC<VerifyEmailSuccessProps> = () => {

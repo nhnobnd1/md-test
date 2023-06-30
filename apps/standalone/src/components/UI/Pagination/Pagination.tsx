@@ -7,8 +7,10 @@ import { memo, useCallback, useMemo } from "react";
 import Select, { OptionType } from "src/components/UI/Select/Select";
 import useScreenType from "src/hooks/useScreenType";
 
+import classNames from "classnames";
 import styles from "./style.module.scss";
 interface PaginationProps extends Omit<APaginationProps, "onChange"> {
+  className?: string;
   total: number;
   pageSize: number;
   currentPage: number;
@@ -21,6 +23,7 @@ interface ShowSizeProps {
 }
 
 const Pagination = ({
+  className,
   total,
   pageSize,
   currentPage,
@@ -91,7 +94,7 @@ const Pagination = ({
 
   return (
     <APagination
-      className={styles.MDPagination}
+      className={classNames(styles.MDPagination, className)}
       showTotal={(total) => `${total} Results`}
       {...props}
       total={total}
