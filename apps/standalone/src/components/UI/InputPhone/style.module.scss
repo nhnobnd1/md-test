@@ -1,7 +1,7 @@
 @import "../../../styles/variables.scss";
 @import "../../../styles/mixin.scss";
 .MDPhone {
-  height: 37px;
+  height: 40px;
   border: 1px solid $gray-border;
   border-radius: 6px;
   @include mq(md, "max") {
