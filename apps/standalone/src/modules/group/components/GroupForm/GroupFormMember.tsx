@@ -10,10 +10,10 @@ import {
   GroupMembers,
   UserGroupRepository,
 } from "@moose-desk/repo";
-import { Input } from "antd";
 import { uniqBy } from "lodash-es";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { map } from "rxjs";
+import { MDSearchInput } from "src/components/UI/MDSearchInput";
 import Select, {
   LoadMoreValue,
   OptionType,
@@ -240,8 +240,7 @@ const GroupFormMember = memo(
         <div className="mb-5">
           <Select.Ajax
             className="w-full"
-            placeholder="Search agents"
-            // suffixIcon={<PhUserPlusFill></PhUserPlusFill>}
+            placeholder="+ Add member"
             onChange={handleSelectAgent}
             value={null}
             virtual
@@ -251,12 +250,7 @@ const GroupFormMember = memo(
         </div>
         <div>
           <div className="mb-5">
-            <Input.Search
-              allowClear
-              value={filterData.query}
-              placeholder="Search"
-              onChange={(value) => handleFiltersQueryChange(value.target.value)}
-            />
+            <MDSearchInput onTypeSearch={handleFiltersQueryChange} />
           </div>
           <Table
             dataSource={groupMembersTable}
