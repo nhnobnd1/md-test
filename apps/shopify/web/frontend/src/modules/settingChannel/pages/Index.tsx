@@ -80,7 +80,7 @@ const SettingChannelIndexPage: PageComponent<
                       <div>
                         <Icon source={card.icon}></Icon>
                       </div>
-                      <div>{card.title}</div>
+                      <div className="font-bold">{card.title}</div>
                     </div>
                     <div className="flex justify-between items-center">
                       <div>{card.description}</div>

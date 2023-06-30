@@ -1,7 +1,7 @@
 import { Input, InputProps } from "antd";
+import classNames from "classnames";
 import useViewport from "src/hooks/useViewport";
 import styles from "./style.module.scss";
-import classNames from "classnames";
 interface IMDInput extends InputProps {}
 export const MDInput = ({ ...props }: IMDInput) => {
   const { isMobile } = useViewport();

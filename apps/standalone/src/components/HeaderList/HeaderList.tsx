@@ -35,7 +35,7 @@ export const HeaderList: FC<HeaderListProps> = ({
                 onClick={onToggleSearch}
               ></MDButton>
             ) : (
-              <div className="sm:w-[300px] xl:w-[500px] ">
+              <div className="sm:w-[284px]  ">
                 <MDSearchInput onTypeSearch={handleSearch} />
               </div>
             )}

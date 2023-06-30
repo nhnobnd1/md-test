@@ -3,11 +3,9 @@ import { useJob, useParams } from "@moose-desk/core";
 import { EmailIntegrationRepository } from "@moose-desk/repo";
 import {
   Alert,
-  Button,
   Card,
   Form,
   FormInstance,
-  Input,
   Spin,
   Steps,
   Tooltip,
@@ -16,6 +14,7 @@ import {
 import { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
+import SmallLoader from "src/components/Loader/SmallLoader";
 import { MDButton } from "src/components/UI/Button/MDButton";
 import { MDInput } from "src/components/UI/Input";
 import useMessage from "src/hooks/useMessage";
@@ -382,21 +381,20 @@ Please check your inbox and click on the link within to use this email for sendi
                       { required: true, message: "You must enter your email!" },
                       { type: "email", message: "Email is invalid!" },
                     ]}
+                    className="w-[300px]"
                   >
                     <MDInput
                       onKeyPress={(e) => {
                         e.key === "Enter" && e.preventDefault();
                       }}
-                      className="w-[300px]"
                       placeholder="e.g. support@company.com"
                     />
                   </Form.Item>
-                  <Form.Item name="name" label="Name">
+                  <Form.Item name="name" label="Name" className="w-[300px]">
                     <MDInput
                       onKeyPress={(e) => {
                         e.key === "Enter" && e.preventDefault();
                       }}
-                      className="w-[300px]"
                       placeholder="Name"
                     />
                   </Form.Item>
@@ -431,7 +429,11 @@ Please check your inbox and click on the link within to use this email for sendi
               )}
               {retryGoogleCode > 0 && retryGoogleCode !== 10 ? (
                 <>
-                  <Spin size="large" className="mt-3" />
+                  <Spin
+                    indicator={<SmallLoader />}
+                    size="large"
+                    className="mt-3"
+                  />
                 </>
               ) : (
                 <></>
