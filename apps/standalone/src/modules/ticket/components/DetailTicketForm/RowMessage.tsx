@@ -87,8 +87,14 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
       objectElement.style.height = `${heightQuote}px`;
     }
   }, [quote, heightQuote, toggleQuote]);
+  const css = `
+  .ant-collapse-header{
+    padding:12px 0px !important;
+  }
+  `;
   return (
     <div className="">
+      <style scoped>{css}</style>
       <div className=" items-center gap-3 mx-2">
         <div className="flex items-end gap-3 ">
           {/* <h2 style={{ color: "black", margin: 0 }}>{item.name}</h2> */}
