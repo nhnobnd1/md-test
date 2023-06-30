@@ -48,7 +48,6 @@ const ModalAutoReply = ({
         {...props}
         open={open}
         onOk={() => {
-          console.log("hola", form.getFieldValue("content"));
           form.submit();
         }}
         onCancel={() => onClose && onClose()}

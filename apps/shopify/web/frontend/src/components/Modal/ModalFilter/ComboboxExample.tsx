@@ -17,7 +17,6 @@ function ComboboxExample() {
   const [selectedOption, setSelectedOption] = useState<string | undefined>();
   const [inputValue, setInputValue] = useState("");
   const [options, setOptions] = useState(deselectedOptions);
-  console.log({ inputValue });
   const updateText = useCallback(
     (value: string) => {
       setInputValue(value);
@@ -38,7 +37,6 @@ function ComboboxExample() {
 
   const updateSelection = useCallback(
     (selected: string) => {
-      console.log("selected", selected);
       const matchedOption = options.find((option) => {
         return option.value.match(selected);
       });

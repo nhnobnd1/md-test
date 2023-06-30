@@ -73,7 +73,6 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
   const filterItem = useMemo(() => {
     return tickets.filter((item) => selectedRowKeys.includes(item._id));
   }, [selectedRowKeys, tickets]);
-  console.log({ selectedRowKeys, conversations, filterItem, tickets });
 
   const recordText = useMemo(() => {
     if (!filterItem.length) return "";
@@ -248,7 +247,6 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
     const parser = new DOMParser();
     const parsedHtml = parser.parseFromString(removeQuote, "text/html");
     const plainText = parsedHtml.body.textContent;
-    console.log({ removeQuote });
     return (
       <View key={one.id}>
         <View>

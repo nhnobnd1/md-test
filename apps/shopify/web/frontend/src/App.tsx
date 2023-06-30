@@ -40,7 +40,6 @@ export default function App() {
 
   useEffect(() => {
     if ((shop && !isLoggedIn) || (!user && shop)) {
-      console.log("Start login with token...");
       const payload = {
         email: localStorage.getItem("email"),
         offlineToken: localStorage.getItem("offlineToken"),

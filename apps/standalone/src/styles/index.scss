@@ -73,8 +73,14 @@
 .d-flex {
   display: flex;
 }
+.flex-column {
+  flex-direction: column;
+}
 .align-center {
   align-items: center;
+}
+.text-center {
+  text-align: center;
 }
 .flex-center {
   display: flex;
@@ -117,6 +123,9 @@
 .text-underlined {
   text-decoration: underline;
   color: #1677ff;
+}
+.md_text--secondary {
+  color: $opacity-black;
 }
 .text-bold {
   font-weight: 700;
