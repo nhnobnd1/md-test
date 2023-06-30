@@ -1,22 +1,53 @@
-.on-boarding {
-  @apply py-6 text-base;
-  height: calc(100vh - 64px - 48px);
-  display: flex;
-  .card-boarding {
+@import "../../../../../styles/variables.scss";
+@import "../../../../../styles/mixin.scss";
+.onboarding-title {
+  margin-bottom: 8px;
+  color: $character-title;
+}
+.onboarding-link {
+  color: $link !important;
+  text-decoration: underline !important;
+  // margin-bottom: 40px;
+}
+.onboarding-button {
+  width: 100%;
+  margin-top: 40px;
+  margin-bottom: 40px;
+  @include mq(md, "max") {
+    margin-bottom: 24px;
+    margin-top: 24px;
+  }
+  button {
+    width: 100%;
+  }
+}
+.onboarding-support {
+  color: $character-title;
+}
+.onboard-error {
+  background-color: $dust-red;
+    margin-bottom: 0;
+    color: $error-color;
+    padding: 12px;
     border-radius: 6px;
-    border: 1px solid #484242;
-    width: 800px;
-    margin: 0 auto;
-    padding: 24px;
-    background-color: #fff;
+    line-height: 22px;
+}
+.onboard-wrap-link {
+  margin-top: 16px;
 
-    &__description {
-      padding-bottom: 16px;
-      border-bottom: 1px solid #202020;
-      margin-bottom: 16px;
+  @include mq(md, "max") {
+    margin-top: 12px;
+  }
+  .link-to-login {
+    color: $primary !important;
+    font-size: 16px;
+
+    @include mq(md, "max") {
+      font-size: 14px;
     }
 
-    &__actions {
+    &:hover {
+      color: $primary-hover !important;
     }
   }
 }

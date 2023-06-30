@@ -41,6 +41,7 @@ export const Summary = () => {
           avgFirstResponseTime: summaryData?.data.avgFirstResponseTime || 0,
           avgResolutionTime: summaryData?.data.avgResolutionTime || 0,
         }}
+        loading={isLoading}
       />
     </div>
   );

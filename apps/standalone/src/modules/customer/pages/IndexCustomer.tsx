@@ -21,6 +21,7 @@ import { Header } from "src/components/UI/Header";
 import Icon from "src/components/UI/Icon";
 import { MDSearchInput } from "src/components/UI/MDSearchInput";
 import Pagination from "src/components/UI/Pagination/Pagination";
+import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import { Table } from "src/components/UI/Table";
 import TableAction from "src/components/UI/Table/TableAction/TableAction";
 import env from "src/core/env";
@@ -130,6 +131,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
       sorter: {
         compare: (a: any, b: any) => a.lastName - b.lastName,
       },
+
       render: (_: string, record: Customer) => (
         <div
           className="cursor-pointer fit-content hover-text"
@@ -272,21 +274,31 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
         </div>
       )}
       <div className={styles.wrapTable}>
-        <Table
-          dataSource={(listCustomer as any)?.data?.data}
-          loading={isFetchingListCustomer}
-          onChange={handleChangeTable}
-          columns={columns}
-          scroll={{ x: 1024 }}
-        />
+        {isFetchingListCustomer ? (
+          <div className="p-6">
+            <MDSkeleton lines={15} />
+          </div>
+        ) : (
+          <Table
+            dataSource={(listCustomer as any)?.data?.data}
+            loading={isFetchingListCustomer}
+            onChange={handleChangeTable}
+            columns={columns}
+            scroll={{ x: 1024 }}
+          />
+        )}
 
         <div className={styles.pagination}>
-          <Pagination
-            currentPage={filterData.page ?? 1}
-            total={(listCustomer as any)?.data?.metadata?.totalCount || 0}
-            pageSize={filterData.limit ?? env.DEFAULT_PAGE_SIZE}
-            onChange={handleChangePage}
-          />
+          {isFetchingListCustomer ? (
+            <MDSkeleton lines={1} width={300} />
+          ) : (
+            <Pagination
+              currentPage={filterData.page ?? 1}
+              total={(listCustomer as any)?.data?.metadata?.totalCount || 0}
+              pageSize={filterData.limit ?? env.DEFAULT_PAGE_SIZE}
+              onChange={handleChangePage}
+            />
+          )}
         </div>
       </div>
     </div>

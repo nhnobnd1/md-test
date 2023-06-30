@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import { MDSearchInput } from "src/components/UI/MDSearchInput";
 import Pagination from "src/components/UI/Pagination/Pagination";
+import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import { Table } from "src/components/UI/Table";
 import env from "src/core/env";
 import { useSubdomain } from "src/hooks/useSubdomain";
@@ -42,7 +43,11 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
     sortBy: undefined,
     sortOrder: undefined,
   });
-  const { data: dataSource, isFetching: isFetchingListTicket } = useQuery({
+  const {
+    data: dataSource,
+    isFetching: isFetchingListTicket,
+    isLoading,
+  } = useQuery({
     queryKey: [QUERY_KEY.LIST_TICKET_CUSTOMER, filter],
     queryFn: () => getListTicketCustomer(customerId, filter),
     onError: () => {
@@ -160,28 +165,38 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
         <MDSearchInput onTypeSearch={handleSearchInput} />
       </div>
       <section className={styles.wrapTable}>
-        <Table
-          columns={columns}
-          dataSource={memoDataSource}
-          rowKey={(record) => record._id}
-          scroll={{ x: 1024 }}
-          pagination={false}
-          loading={isFetchingListTicket}
-          onChange={handleChangeTable}
-          onRow={(record) => {
-            return {
-              onClick: () => handleClickRow(record),
-            };
-          }}
-        />
+        {isLoading ? (
+          <div className="p-3">
+            <MDSkeleton lines={5} />
+          </div>
+        ) : (
+          <Table
+            columns={columns}
+            dataSource={memoDataSource}
+            rowKey={(record) => record._id}
+            scroll={{ x: 1024 }}
+            pagination={false}
+            loading={isFetchingListTicket}
+            onChange={handleChangeTable}
+            onRow={(record) => {
+              return {
+                onClick: () => handleClickRow(record),
+              };
+            }}
+          />
+        )}
         {/* <section className={styles.wrapPagination}> */}
         <div className={styles.pagination}>
-          <Pagination
-            currentPage={filter.page ?? 1}
-            total={(dataSource as any)?.data.metadata.totalCount}
-            pageSize={filter.limit ?? env.DEFAULT_PAGE_SIZE}
-            onChange={handleChangePage}
-          />
+          {isLoading ? (
+            <MDSkeleton lines={1} width={200} />
+          ) : (
+            <Pagination
+              currentPage={filter.page ?? 1}
+              total={(dataSource as any)?.data.metadata.totalCount}
+              pageSize={filter.limit ?? env.DEFAULT_PAGE_SIZE}
+              onChange={handleChangePage}
+            />
+          )}
         </div>
       </section>
       {/* </section> */}

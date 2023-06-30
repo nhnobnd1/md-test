@@ -12,7 +12,7 @@
 .wrapSearchToggle {
   position: absolute;
   right: 20px;
-  top: 10px;
+  top: 0;
   z-index: 1;
   @include breakpoints(zero, lg) {
   display: flex;
