@@ -10,6 +10,7 @@ import { Header } from "src/components/UI/Header";
 import Icon from "src/components/UI/Icon";
 import { MDSearchInput } from "src/components/UI/MDSearchInput";
 import Pagination from "src/components/UI/Pagination/Pagination";
+import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import { Table } from "src/components/UI/Table";
 import env from "src/core/env";
 import { usePermission } from "src/hooks/usePerrmisson";
@@ -66,7 +67,11 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
     }));
   }, [timezone]);
 
-  const { data: listReportTags, isFetching } = useQuery({
+  const {
+    data: listReportTags,
+    isFetching,
+    isLoading,
+  } = useQuery({
     queryKey: [QUERY_KEY.REPORT_BY_TAGS, filterData],
     queryFn: () => getReportByTags(filterData),
     keepPreviousData: true,
@@ -225,21 +230,33 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
             <MDSearchInput onTypeSearch={handleSearchInput} />
           </div>
         </div>
-        <Table
-          dataSource={memoChartData}
-          columns={columns}
-          loading={isFetching}
-          onChange={onChangeTable}
-          scroll={{ x: 1024 }}
-          rowKey={(record) => record}
-        />
-        <Pagination
-          className="mt-4 flex justify-end"
-          currentPage={filterData.page ?? 1}
-          total={(listReportTags as any)?.data.metadata.totalCount}
-          pageSize={filterData.limit ?? env.DEFAULT_PAGE_SIZE}
-          onChange={onPagination}
-        />
+        {isLoading ? (
+          <div className="p-6">
+            <MDSkeleton lines={10} />
+          </div>
+        ) : (
+          <Table
+            dataSource={memoChartData}
+            columns={columns}
+            loading={isFetching}
+            onChange={onChangeTable}
+            scroll={{ x: 1024 }}
+            rowKey={(record) => record}
+          />
+        )}
+        {isLoading ? (
+          <div className="mt-4 flex justify-end">
+            <MDSkeleton lines={1} width={300} />
+          </div>
+        ) : (
+          <Pagination
+            className="mt-4 flex justify-end"
+            currentPage={filterData.page ?? 1}
+            total={(listReportTags as any)?.data.metadata.totalCount}
+            pageSize={filterData.limit ?? env.DEFAULT_PAGE_SIZE}
+            onChange={onPagination}
+          />
+        )}
       </section>
     </>
   );

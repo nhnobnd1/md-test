@@ -1,4 +1,3 @@
-import { WarningOutlined } from "@ant-design/icons";
 import {
   generatePath,
   useJob,
@@ -10,12 +9,12 @@ import {
   CheckTokenNewAgentRequest,
   TypeCheckTokenNewAgent,
 } from "@moose-desk/repo";
-import { Button } from "antd";
-import classNames from "classnames";
+import Link from "antd/es/typography/Link";
 import { useEffect, useState } from "react";
 import { map } from "rxjs";
-import Images from "src/assets/images";
 import { Loading } from "src/components/Loading";
+import { MDButton } from "src/components/UI/Button/MDButton";
+import LayoutSignInPage from "src/components/UI/LayoutSignInPage/LayoutSignInPage";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { SetPassword } from "src/modules/agent/components/SetPassword";
 import RoutePaths from "src/routes/paths";
@@ -102,85 +101,77 @@ export const OnBoarding = () => {
   }, [searchParams]);
 
   return (
-    <div className="on-boarding">
-      <div className="card-boarding">
-        <div
-          className={classNames([
-            "mx-auto",
-            stepPage === 1 ? "w-[70%]" : "w-[80%]",
-          ])}
-        >
-          {!processing ? (
+    <div className="">
+      {!processing ? (
+        <>
+          {!pageError.status ? (
             <>
-              {!pageError.status ? (
+              {stepPage === 1 ? (
                 <>
-                  {stepPage === 1 ? (
-                    <>
-                      <div className="card-boarding__description">
-                        <div className="text-center">
-                          <img src={Images.Logo.LogoIcon} width={240} alt="" />
-                        </div>
-                        {/* <div className="text-center font-medium">
-                          Lorem ipsum dolor sit amet consectetur adipisicing
-                          elit. Sed ab incidunt iusto fugit. Adipisci, id.
-                          Possimus, doloribus soluta nam aliquam quibusdam ipsam
-                          nesciunt minima autem deleniti eaque perferendis
-                          voluptatem nemo!
-                        </div> */}
-                      </div>
-                      <div className="card-boarding__actions">
-                        <div className="text-center">
+                  <LayoutSignInPage
+                    content={
+                      <div className="">
+                        <div className="onboarding-title">
                           Welcome to the help desk portal. Please save the link
                           below to login to your portal next time
                         </div>
-                        <div className="p-5">
-                          <div className="text-center mb-4">
-                            <span
-                              className="link font-medium"
-                              onClick={() =>
-                                navigate(generatePath(RoutePaths.Login))
-                              }
-                            >
-                              https://{getSubDomain()}
-                              {getDomain()}/login
-                            </span>
-                          </div>
-                          <div className="text-center">
-                            <Button
+                        <div className="">
+                          <Link
+                            href={RoutePaths.Login}
+                            className="onboarding-link font-medium"
+                          >
+                            https://{getSubDomain()}
+                            {getDomain()}/login
+                          </Link>
+
+                          <div className="onboarding-button">
+                            <MDButton
                               type="primary"
                               onClick={() => setStepPage(2)}
                             >
                               Continue
-                            </Button>
+                            </MDButton>
                           </div>
                         </div>
-                        <div className="w-[80%] mx-auto mt-5 text-center">
+                        <div className="onboarding-support">
                           If you forgot your sub-domain, please email to our
                           customer support at{" "}
-                          <span className="link font-medium">
+                          <Link
+                            href={`mailto:support@moosedesk.com`}
+                            className="onboarding-link font-medium"
+                          >
                             support@moosedesk.com
-                          </span>
+                          </Link>
                         </div>
                       </div>
-                    </>
-                  ) : (
-                    <SetPassword {...account} />
-                  )}
+                    }
+                  />
                 </>
               ) : (
-                <div className="flex flex-col justify-center items-center min-h-[400px]">
-                  <div className="mb-[40px]">
-                    <WarningOutlined style={{ fontSize: 120 }} />
-                  </div>
-                  <h3 className="text-center">{pageError.message}</h3>
-                </div>
+                <SetPassword {...account} />
               )}
             </>
           ) : (
-            <Loading insteadView></Loading>
+            <LayoutSignInPage
+              title="Oops!"
+              subTitle={
+                <p className="onboard-error">
+                  {pageError.message || "Something went wrong"}
+                </p>
+              }
+              content={
+                <div className="onboard-wrap-link">
+                  <Link href={RoutePaths.Login} className="link-to-login">
+                    Back to login page
+                  </Link>
+                </div>
+              }
+            />
           )}
-        </div>
-      </div>
+        </>
+      ) : (
+        <Loading fullPage></Loading>
+      )}
     </div>
   );
 };

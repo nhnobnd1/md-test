@@ -151,6 +151,7 @@ export const SignIn = () => {
     <>
       {view === "login" ? (
         <LayoutSignInPage
+          title="Welcome Back"
           subTitle={
             !errorMessage ? (
               <p className={styles.subHeader}>

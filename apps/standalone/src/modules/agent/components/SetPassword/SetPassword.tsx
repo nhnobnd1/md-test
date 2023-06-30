@@ -1,9 +1,11 @@
 import { useJob, useNavigate } from "@moose-desk/core";
 import { ActiveNewAgentRequest, AgentRepository } from "@moose-desk/repo";
-import { Button, Form } from "antd";
+import { Form } from "antd";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
+import { MDButton } from "src/components/UI/Button/MDButton";
 import { MDInput } from "src/components/UI/Input";
+import LayoutSignInPage from "src/components/UI/LayoutSignInPage/LayoutSignInPage";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { rulesValidatePassword } from "src/regex";
@@ -75,56 +77,60 @@ export const SetPassword = ({
     activeNewAgent(payload);
   };
   return (
-    <div className="flex flex-col justify-center items-center min-h-[400px]">
-      <h4 className="mb-6">
-        Welcome {agentName} to the support portal. Before starting to use the
-        support portal, please create a password which will be used for your
-        authentications.
-      </h4>
-      <Form layout="vertical" className="w-full" onFinish={handleFinish}>
-        <Form.Item
-          name="password"
-          label="New Password"
-          rules={[
-            {
-              required: true,
-              message: "The password is required",
-            },
-            ...rulesValidatePassword,
-          ]}
-        >
-          <MDInput type="password" placeholder="New password" />
-        </Form.Item>
-        <Form.Item
-          name="confirmPassword"
-          label="Confirm Password"
-          dependencies={["password"]}
-          rules={[
-            {
-              required: true,
-              message: "The confirmation password is required",
-            },
-            ({ getFieldValue }) => ({
-              validator(_, value) {
-                if (!value || getFieldValue("password") === value) {
-                  return Promise.resolve();
-                }
-                return Promise.reject(
-                  new Error("The confirmation password is not match!")
-                );
-              },
-            }),
-          ]}
-        >
-          <MDInput type="password" placeholder="Confirm password" />
-        </Form.Item>
-        <div className="text-center">
-          <Button type="primary" htmlType="submit">
-            Create Password
-          </Button>
+    <LayoutSignInPage
+      content={
+        <div className="">
+          <p className="subtitle-set-password">
+            Welcome <span>{agentName}</span> to the support portal. Before
+            starting to use the support portal, please create a password which
+            will be used for your authentications.
+          </p>
+          <Form layout="vertical" onFinish={handleFinish}>
+            <Form.Item
+              name="password"
+              label="New Password"
+              rules={[
+                {
+                  required: true,
+                  message: "The password is required",
+                },
+                ...rulesValidatePassword,
+              ]}
+            >
+              <MDInput type="password" placeholder="New password" />
+            </Form.Item>
+            <Form.Item
+              name="confirmPassword"
+              label="Confirm Password"
+              dependencies={["password"]}
+              rules={[
+                {
+                  required: true,
+                  message: "The confirmation password is required",
+                },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue("password") === value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(
+                      new Error("The confirmation password is not match!")
+                    );
+                  },
+                }),
+              ]}
+            >
+              <MDInput type="password" placeholder="Confirm password" />
+            </Form.Item>
+            <div className="set-password-button">
+              <MDButton type="primary" htmlType="submit">
+                Create Password
+              </MDButton>
+            </div>
+          </Form>
         </div>
-      </Form>
-    </div>
+      }
+    />
   );
 };
 

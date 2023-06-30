@@ -2,6 +2,7 @@ import { Activities } from "@moose-desk/repo/dashboard/Dashboard";
 import { Button } from "antd";
 import { useState } from "react";
 import { useQuery } from "react-query";
+import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import { getActivities } from "src/modules/dashboard/api/api";
 import ActivateItem from "src/modules/dashboard/components/ActivateItem";
 import styles from "./styles.module.scss";
@@ -26,9 +27,13 @@ export const RecentActivities = () => {
   };
   return (
     <div className={styles.wrapActivities}>
-      {dataActivities?.map((activity: Activities) => (
-        <ActivateItem data={activity} key={activity._id} />
-      ))}
+      {isLoading ? (
+        <MDSkeleton lines={15} />
+      ) : (
+        dataActivities?.map((activity: Activities) => (
+          <ActivateItem data={activity} key={activity._id} />
+        ))
+      )}
       <Button
         size="large"
         className={styles.loadMoreButton}

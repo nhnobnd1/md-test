@@ -469,7 +469,6 @@ export const AppLayout = () => {
               background: "#F0F2F5",
             }}
             selectedKeys={[keys.activeKeys]}
-            onChange={(key: any) => console.log(key)}
             // defaultOpenKeys={keys.defaultOpenKeys}
             items={caseTopMenu}
           />

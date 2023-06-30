@@ -20,6 +20,15 @@
     }
   }
   .layout-menu {
+    .ant-menu-submenu {
+      .ant-menu-sub {
+        .ant-menu-item {
+          .ant-menu-title-content {
+          padding-left: 20px !important;
+          }
+        }
+      }
+    }
     svg {
       path {
         transition: stroke 0.4s;
@@ -210,5 +219,15 @@
     padding: 8px 10px;
     justify-content: space-between;
     background-color: rgb(240, 242, 245);
+  }
+}
+.ant-menu-submenu-popup {
+  .ant-menu-sub {
+    .ant-menu-submenu:hover,
+    .ant-menu-item:hover {
+      .ant-menu-title-content {
+        color: $primary !important;
+      }
+    }
   }
 }

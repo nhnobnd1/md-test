@@ -6,6 +6,7 @@ import Link from "antd/es/typography/Link";
 import classNames from "classnames";
 import { useState } from "react";
 import { useQuery } from "react-query";
+import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import { Table } from "src/components/UI/Table";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { getTodoList } from "src/modules/dashboard/api/api";
@@ -71,13 +72,17 @@ export const TodoList = () => {
   ];
   return (
     <div className={styles.wrapTodoList}>
-      <Table
-        dataSource={todoList?.data?.data}
-        columns={columns}
-        pagination={false}
-        scroll={{ x: 500 }}
-        rowKey={(record) => record._id}
-      />
+      {isLoading ? (
+        <MDSkeleton lines={15} />
+      ) : (
+        <Table
+          dataSource={todoList?.data?.data}
+          columns={columns}
+          pagination={false}
+          scroll={{ x: 500 }}
+          rowKey={(record) => record._id}
+        />
+      )}
       <Button
         size="large"
         className={styles.loadMoreButton}

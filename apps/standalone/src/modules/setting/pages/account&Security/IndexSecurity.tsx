@@ -9,6 +9,7 @@ import { MDButton } from "src/components/UI/Button/MDButton";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
 import { MDInput } from "src/components/UI/Input";
+import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import useViewport from "src/hooks/useViewport";
@@ -89,87 +90,110 @@ export default function IndexAccountManager() {
           <div className={styles.formTitle}>
             <Header subTitle="Change Password" />
           </div>
-          <Form
-            form={form}
-            onFinish={updatePasswordMutate}
-            onReset={handleResetForm}
-            layout="vertical"
-            enableReinitialize
-          >
-            <Form.Item
-              name="currentPassword"
-              label="Current Password"
-              rules={[
-                ...rulesValidatePassword,
-                {
-                  required: true,
-                  message: "The Current Password is required",
-                },
-              ]}
-            >
-              <MDInput
-                autoComplete="off"
-                type="password"
-                placeholder="Current Password"
-              />
-            </Form.Item>
-            <Form.Item
-              name="newPassword"
-              label="New Password"
-              rules={[
-                ...rulesValidatePassword,
-                {
-                  required: true,
-                  message: "The New Password is required",
-                },
-              ]}
-            >
-              <MDInput
-                minLength={8}
-                type="password"
-                autoComplete="off"
-                placeholder="New Password"
-              />
-            </Form.Item>
-            <Form.Item
-              name="confirmNewPassword"
-              dependencies={["newPassword"]}
-              label="Confirm New Password"
-              rules={[
-                {
-                  required: true,
-                  message: "The Confirm New Password is required",
-                },
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    if (!value || getFieldValue("newPassword") === value) {
-                      return Promise.resolve();
-                    }
-                    return Promise.reject(
-                      new Error("The confirmation password is not match!")
-                    );
-                  },
-                }),
-              ]}
-            >
-              <MDInput
-                minLength={8}
-                type="password"
-                autoComplete="off"
-                placeholder="Confirm New Password"
-              />
-            </Form.Item>
-            <div
-              className={classNames(
-                styles.groupButton,
-                isMobile ? "text-left-button" : "text-right"
-              )}
-            >
-              <MDButton htmlType="submit" type="primary" loading={updating}>
-                Update Password
-              </MDButton>
+          {isLoading ? (
+            <div>
+              <div className="mb-3">
+                <MDSkeleton lines={1} width={120} />
+                <br />
+                <MDSkeleton lines={1} />
+              </div>
+              <div className="mb-3">
+                <MDSkeleton lines={1} width={120} />
+                <br />
+                <MDSkeleton lines={1} />
+              </div>
+              <div className="mb-3">
+                <MDSkeleton lines={1} width={120} />
+                <br />
+                <MDSkeleton lines={1} />
+              </div>
+              <div className="mt-4 flex justify-end">
+                <MDSkeleton lines={1} width={150} />
+              </div>
             </div>
-          </Form>
+          ) : (
+            <Form
+              form={form}
+              onFinish={updatePasswordMutate}
+              onReset={handleResetForm}
+              layout="vertical"
+              enableReinitialize
+            >
+              <Form.Item
+                name="currentPassword"
+                label="Current Password"
+                rules={[
+                  ...rulesValidatePassword,
+                  {
+                    required: true,
+                    message: "The Current Password is required",
+                  },
+                ]}
+              >
+                <MDInput
+                  autoComplete="off"
+                  type="password"
+                  placeholder="Current Password"
+                />
+              </Form.Item>
+              <Form.Item
+                name="newPassword"
+                label="New Password"
+                rules={[
+                  ...rulesValidatePassword,
+                  {
+                    required: true,
+                    message: "The New Password is required",
+                  },
+                ]}
+              >
+                <MDInput
+                  minLength={8}
+                  type="password"
+                  autoComplete="off"
+                  placeholder="New Password"
+                />
+              </Form.Item>
+              <Form.Item
+                name="confirmNewPassword"
+                dependencies={["newPassword"]}
+                label="Confirm New Password"
+                rules={[
+                  {
+                    required: true,
+                    message: "The Confirm New Password is required",
+                  },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (!value || getFieldValue("newPassword") === value) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(
+                        new Error("The confirmation password is not match!")
+                      );
+                    },
+                  }),
+                ]}
+              >
+                <MDInput
+                  minLength={8}
+                  type="password"
+                  autoComplete="off"
+                  placeholder="Confirm New Password"
+                />
+              </Form.Item>
+              <div
+                className={classNames(
+                  styles.groupButton,
+                  isMobile ? "text-left-button" : "text-right"
+                )}
+              >
+                <MDButton htmlType="submit" type="primary" loading={updating}>
+                  Update Password
+                </MDButton>
+              </div>
+            </Form>
+          )}
         </div>
         <div className={styles.wrapSubForm}>
           <div className={styles.formTitle}>
@@ -182,69 +206,87 @@ export default function IndexAccountManager() {
             />
           </div>
 
-          <div className={classNames(styles.status, "flex items-center")}>
-            <div className="mr-4">
-              {status ? (
-                <Typography.Text>Status :</Typography.Text>
-              ) : (
-                <Typography.Text type="secondary">Status :</Typography.Text>
-              )}
-            </div>
-            <div>
-              <Typography.Text
-                type={
-                  method.show
-                    ? status
-                      ? "success"
-                      : "secondary"
-                    : status
-                    ? "danger"
-                    : "secondary"
-                }
-                strong
-              >
-                {method.show ? "Active" : "InActive"}
-              </Typography.Text>
-            </div>
-          </div>
-          {method.show ? (
-            <div className="flex items-center mt-2">
+          {isLoading ? (
+            <MDSkeleton lines={1} width={200} />
+          ) : (
+            <div className={classNames(styles.status, "flex items-center")}>
               <div className="mr-4">
                 {status ? (
-                  <Typography.Text>Method :</Typography.Text>
+                  <Typography.Text>Status :</Typography.Text>
                 ) : (
-                  <Typography.Text type="secondary">Method :</Typography.Text>
+                  <Typography.Text type="secondary">Status :</Typography.Text>
                 )}
               </div>
               <div>
-                {status ? (
-                  <Typography.Text strong>
-                    {method.method === "Email"
-                      ? "Email OTP"
-                      : method.method === "Authenticator"
-                      ? "External Authentication Application"
-                      : method.method}
-                  </Typography.Text>
-                ) : (
-                  <Typography.Text strong type="secondary">
-                    {method.method === "Email"
-                      ? "Email OTP"
-                      : method.method === "Authenticator"
-                      ? "External Authentication Application"
-                      : method.method}
-                  </Typography.Text>
-                )}
+                <Typography.Text
+                  type={
+                    method.show
+                      ? status
+                        ? "success"
+                        : "secondary"
+                      : status
+                      ? "danger"
+                      : "secondary"
+                  }
+                  strong
+                >
+                  {method.show ? "Active" : "InActive"}
+                </Typography.Text>
               </div>
             </div>
+          )}
+          {method.show ? (
+            <>
+              {isLoading ? (
+                <div className="mt-2">
+                  <MDSkeleton lines={1} width={200} />
+                </div>
+              ) : (
+                <div className="flex items-center mt-2">
+                  <div className="mr-4">
+                    {status ? (
+                      <Typography.Text>Method :</Typography.Text>
+                    ) : (
+                      <Typography.Text type="secondary">
+                        Method :
+                      </Typography.Text>
+                    )}
+                  </div>
+                  <div>
+                    {status ? (
+                      <Typography.Text strong>
+                        {method.method === "Email"
+                          ? "Email OTP"
+                          : method.method === "Authenticator"
+                          ? "External Authentication Application"
+                          : method.method}
+                      </Typography.Text>
+                    ) : (
+                      <Typography.Text strong type="secondary">
+                        {method.method === "Email"
+                          ? "Email OTP"
+                          : method.method === "Authenticator"
+                          ? "External Authentication Application"
+                          : method.method}
+                      </Typography.Text>
+                    )}
+                  </div>
+                </div>
+              )}
+            </>
           ) : null}
           <div className={styles.status}>
-            <MDButton
-              onClick={() => setOpen2FA(true)}
-              type="primary"
-              disabled={!status}
-            >
-              {method.show ? "Change 2FA Method" : "Enable 2FA"}
-            </MDButton>
+            {isLoading ? (
+              <MDSkeleton lines={1} width={80} />
+            ) : (
+              <MDButton
+                onClick={() => setOpen2FA(true)}
+                type="primary"
+                disabled={!status}
+              >
+                {method.show ? "Change 2FA Method" : "Enable 2FA"}
+              </MDButton>
+            )}
           </div>
         </div>
       </section>

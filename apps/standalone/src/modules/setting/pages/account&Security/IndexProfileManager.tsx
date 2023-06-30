@@ -1,6 +1,6 @@
 import { TokenManager } from "@moose-desk/core";
 import { Agent } from "@moose-desk/repo";
-import { Col, Input, Row, Skeleton } from "antd";
+import { Col, Input, Row } from "antd";
 import classNames from "classnames";
 import * as jose from "jose";
 import { useState } from "react";
@@ -11,6 +11,7 @@ import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
 import { MDInput } from "src/components/UI/Input";
 import InputPhone from "src/components/UI/InputPhone/InputPhone";
+import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { getProfile, updateProfile } from "src/modules/setting/api/api";
@@ -59,12 +60,30 @@ export default function IndexProfileManager() {
   return (
     <div>
       <Header title="Profile" />
-      {isLoadingProfile || !dataProfile ? (
-        <>
-          <Skeleton />
-        </>
-      ) : (
-        <div className={styles.wrapForm}>
+
+      <div className={styles.wrapForm}>
+        {isLoadingProfile || !dataProfile ? (
+          <div>
+            <div className="mb-3">
+              <MDSkeleton lines={1} width={120} />
+              <br />
+              <MDSkeleton lines={1} />
+            </div>
+            <div className="mb-3">
+              <MDSkeleton lines={1} width={120} />
+              <br />
+              <MDSkeleton lines={1} />
+            </div>
+            <div className="mb-3">
+              <MDSkeleton lines={1} width={120} />
+              <br />
+              <MDSkeleton lines={1} />
+            </div>
+            <div className="mt-4 flex justify-end">
+              <MDSkeleton lines={1} width={150} />
+            </div>
+          </div>
+        ) : (
           <Form
             form={form}
             onFinish={submitMutate}
@@ -148,8 +167,8 @@ export default function IndexProfileManager() {
               </MDButton>
             </div>
           </Form>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
