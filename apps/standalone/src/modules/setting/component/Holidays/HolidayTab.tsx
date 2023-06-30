@@ -12,9 +12,15 @@ interface HolidayTabProps {
   value?: Holidays[];
   onChange?: (value: Holidays[]) => void;
   dataAutoReply: AutoReply[];
+  loading: boolean;
 }
 
-const HolidayTab = ({ value, onChange, dataAutoReply }: HolidayTabProps) => {
+const HolidayTab = ({
+  value,
+  onChange,
+  dataAutoReply,
+  loading,
+}: HolidayTabProps) => {
   const notification = useNotification();
   const { t } = useTranslation();
 
@@ -145,7 +151,11 @@ const HolidayTab = ({ value, onChange, dataAutoReply }: HolidayTabProps) => {
       />
       {valueListHolidays.length ? (
         <div>
-          <Table dataSource={valueListHolidays} rowKey={"name"}>
+          <Table
+            dataSource={valueListHolidays}
+            rowKey={"name"}
+            loading={loading}
+          >
             <Table.Column
               key="nameHoliday"
               title="Name"

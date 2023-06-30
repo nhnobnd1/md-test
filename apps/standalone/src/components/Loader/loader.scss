@@ -1,3 +1,4 @@
+@import "../../styles/variables.scss";
 .container-loader {
   display: flex;
   flex-direction: column;
@@ -34,7 +35,7 @@
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  background: conic-gradient(#0000 10%, #fa7d00);
+  background: conic-gradient(#0000 10%, $primary);
   -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 8px), #000 0);
   animation: s3 0.5s infinite linear;
 }
@@ -88,5 +89,21 @@
 
   100% {
     transform: scale(0.7);
+  }
+}
+.md_small-loader {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background:
+    radial-gradient(farthest-side, $primary 94%, #0000) top/4px 4px no-repeat,
+    conic-gradient(#0000 30%, $primary);
+  -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 4px), #000 0);
+  animation: s3 0.5s infinite linear;
+}
+
+@keyframes s3 {
+  100% {
+    transform: rotate(1turn)
   }
 }

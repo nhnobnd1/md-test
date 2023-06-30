@@ -1,4 +1,5 @@
 import { Empty, Table as ATable, TableProps as ATableProps } from "antd";
+import { Loading } from "src/components/Loading";
 import styles from "./style.module.scss";
 
 interface TableProps extends ATableProps<any> {}
@@ -22,6 +23,7 @@ export const Table = (props: TableProps) => {
       {...props}
       rowKey={props.rowKey ?? "_id"}
       showSorterTooltip={false}
+      loading={{ indicator: <Loading />, spinning: props.loading as boolean }}
     />
   );
 };

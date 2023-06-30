@@ -1,6 +1,7 @@
 import { Spin, SpinProps } from "antd";
 import classNames from "classnames";
 import { Loader } from "src/components/Loader/Loader";
+import SmallLoader from "src/components/Loader/SmallLoader";
 import "./Loading.scss";
 
 interface LoadingProps extends SpinProps {
@@ -39,6 +40,7 @@ export const Loading = ({
               >
                 <Spin
                   className={classNames({ "pt-[30%]": !center })}
+                  indicator={<SmallLoader />}
                   {...props}
                 >
                   {children}
@@ -46,7 +48,9 @@ export const Loading = ({
               </div>
             </>
           ) : (
-            <Spin {...props}>{children}</Spin>
+            <Spin indicator={<SmallLoader />} {...props}>
+              {children}
+            </Spin>
           )}
         </>
       )}

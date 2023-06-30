@@ -162,7 +162,10 @@ const BusinessHours = () => {
                     label: `Holidays`,
                     children: (
                       <Form.Item name="holidays">
-                        <HolidayTab dataAutoReply={dataAutoReply} />
+                        <HolidayTab
+                          dataAutoReply={dataAutoReply}
+                          loading={processing}
+                        />
                       </Form.Item>
                     ),
                   },
@@ -172,6 +175,7 @@ const BusinessHours = () => {
                     children: (
                       <Form.Item name="autoReply">
                         <AutoReplyTab
+                          loading={processing}
                           dataHolidays={dataHolidays}
                           dataBusinessHoursAutoReplyCode={
                             dataBusinessHoursAutoReplyCode

@@ -5,6 +5,9 @@
   padding-right: 20px;
   transition: all 0.5s;
   width: 100%;
+  @include breakpoints(zero, lg) {
+    padding-right: 0;
+  }
 }
 .container {
   // display: flex;
@@ -15,9 +18,9 @@
   top: 0;
   z-index: 1;
   @include breakpoints(zero, lg) {
-  display: flex;
-  gap: 8px;
- 
+    display: flex;
+    gap: 8px;
+    right: 0;
     top: 2px;
   }
 }

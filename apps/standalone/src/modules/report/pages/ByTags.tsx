@@ -238,7 +238,7 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
           <Table
             dataSource={memoChartData}
             columns={columns}
-            loading={isFetching}
+            loading={isLoading}
             onChange={onChangeTable}
             scroll={{ x: 1024 }}
             rowKey={(record) => record}
