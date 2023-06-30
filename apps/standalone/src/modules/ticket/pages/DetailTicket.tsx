@@ -16,6 +16,7 @@ const DetailTicket = () => {
       setVisible(false);
     };
   }, []);
+
   return (
     <section className={classNames(styles.container, { "d-flex": visible })}>
       <div

@@ -807,25 +807,19 @@ const DetailTicket = (props: DetailTicketProps) => {
                             ) : (
                               <div className="flex items-center gap-2">
                                 <Button
-                                  primary
-                                  icon={
-                                    <div className="flex justify-center items-center">
-                                      <span className="mr-2">
-                                        <FaMailReply fontSize={14} />
-                                      </span>
-                                      <span>Reply</span>
-                                    </div>
-                                  }
-                                  onClick={() => {
-                                    onFinish(formRef.current?.values);
-                                  }}
-                                  disabled={!isChanged || loadingButton}
-                                ></Button>
-                                <Button
                                   disabled={!isChanged || loadingButton}
                                   onClick={handleCloseTicket}
                                 >
                                   Reply & Close Ticket
+                                </Button>
+                                <Button
+                                  primary
+                                  onClick={() => {
+                                    onFinish(formRef.current?.values);
+                                  }}
+                                  disabled={!isChanged || loadingButton}
+                                >
+                                  Reply
                                 </Button>
                               </div>
                             )}

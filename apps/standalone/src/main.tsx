@@ -11,9 +11,8 @@ import { Suspense, lazy } from "react";
 import ReactDOM from "react-dom";
 import ReactGA from "react-ga4";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { persistQueryClient } from "react-query/persistQueryClient-experimental";
 import { createWebStoragePersistor } from "react-query/createWebStoragePersistor-experimental";
-import ErrorBoundary from "src/ErrorBoundary";
+import { persistQueryClient } from "react-query/persistQueryClient-experimental";
 import { Loading } from "src/components/Loading";
 import env from "src/core/env";
 import ModuleLoader from "src/core/utilities/ModuleLoader";
@@ -83,17 +82,15 @@ ReactDOM.render(
                   })
                 }
               >
-                <ErrorBoundary>
-                  <StoreProviders>
-                    <AppConfigProviders>
-                      <ModuleLoader>
-                        <LazyComponent
-                          component={lazy(() => import("src/App"))}
-                        />
-                      </ModuleLoader>
-                    </AppConfigProviders>
-                  </StoreProviders>
-                </ErrorBoundary>
+                <StoreProviders>
+                  <AppConfigProviders>
+                    <ModuleLoader>
+                      <LazyComponent
+                        component={lazy(() => import("src/App"))}
+                      />
+                    </ModuleLoader>
+                  </AppConfigProviders>
+                </StoreProviders>
               </AuthProvider>
             </InitApp>
           </ApiLoadingHandlerProvider>

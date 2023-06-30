@@ -1,4 +1,6 @@
 import { Component, ReactNode } from "react";
+import Images from "src/assets/images";
+import { MDButton } from "src/components/UI/Button/MDButton";
 
 interface ErrorBoundaryProps {
   children?: ReactNode;
@@ -34,7 +36,28 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, any> {
 
   render() {
     if (this.state.hasError) {
-      return <h1>Something went wrong.</h1>;
+      return (
+        <div className="h-[100vh] flex justify-center items-center">
+          <div className="flex flex-col justify-center items-center gap-2">
+            <img src={Images.Logo.ReportError} alt="report-error" />
+            <h1 className="mt-5 text-center">Something went wrong</h1>
+            <span className="text-sm text-gray-400 text-center">
+              Please try again or report an issue to support
+            </span>
+            <div className="flex gap-2 flex-wrap mt-5">
+              <MDButton
+                onClick={() => {
+                  window.location.reload();
+                }}
+                type="primary"
+              >
+                Try again
+              </MDButton>
+              <MDButton>Issue to support</MDButton>
+            </div>
+          </div>
+        </div>
+      );
     }
 
     return <>{this.props.children}</>;

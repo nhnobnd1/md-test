@@ -1,5 +1,6 @@
 import {
   createdDatetimeFormat,
+  priorityToTag,
   upperCaseFirst,
   useJob,
   useParams,
@@ -11,7 +12,7 @@ import {
   TagRepository,
   Ticket,
 } from "@moose-desk/repo";
-import { TableProps } from "antd";
+import { TableProps, Tag as TagAntd } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { FC, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -188,7 +189,9 @@ const ViewTicket: FC<ViewTicketProps> = () => {
           key="priority"
           title="Priority"
           render={(_, record: Ticket) => (
-            <span>{`${upperCaseFirst(record.priority)}`}</span>
+            <TagAntd color={priorityToTag(record.priority)}>{`${upperCaseFirst(
+              record.priority
+            )}`}</TagAntd>
           )}
           sorter={{
             compare: (a: any, b: any) => a.priority - b.priority,

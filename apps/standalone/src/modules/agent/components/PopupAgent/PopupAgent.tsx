@@ -430,11 +430,11 @@ export const PopupAgent = ({
           title={
             dataForm?._id ? (
               <div className="flex items-center gap-2">
-                <span>{`${dataForm.firstName} ${dataForm.lastName}`}</span>
+                <h1 className="m-0">{`${dataForm.firstName} ${dataForm.lastName}`}</h1>
                 <Tag color={agentStatus.color}>{agentStatus.label}</Tag>
               </div>
             ) : (
-              <span>Create new agent</span>
+              <h1 className="m-0">Create new agent</h1>
             )
           }
         ></Header>

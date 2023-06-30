@@ -52,7 +52,6 @@ import {
   getTagsTicket,
 } from "src/modules/ticket/helper/api";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
-import FaMailReply from "~icons/fa/mail-reply";
 import BackIcon from "~icons/mingcute/back-2-fill";
 import "./BoxReply.scss";
 
@@ -784,22 +783,17 @@ const DetailTicketForm = () => {
                         ) : (
                           <div className="flex items-center gap-2">
                             <MDButton
-                              type="primary"
-                              icon={
-                                <span className="mr-2 translate-y-[3px]">
-                                  <FaMailReply fontSize={14} />
-                                </span>
-                              }
-                              htmlType="submit"
-                              disabled={!isChanged || loadingButton}
-                            >
-                              Reply
-                            </MDButton>
-                            <MDButton
                               disabled={!isChanged || loadingButton}
                               onClick={handleCloseTicket}
                             >
                               Reply & Close Ticket
+                            </MDButton>
+                            <MDButton
+                              type="primary"
+                              htmlType="submit"
+                              disabled={!isChanged || loadingButton}
+                            >
+                              Reply
                             </MDButton>
                           </div>
                         )}
