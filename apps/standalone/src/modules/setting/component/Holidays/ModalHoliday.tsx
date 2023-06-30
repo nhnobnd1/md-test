@@ -100,8 +100,6 @@ const ModalHoliday = ({
       onOk={() => form.submit()}
       cancelText="Cancel"
       okText="Save"
-      // cancelButtonProps={{ size: isMobile ? "middle" : "large" }}
-      // okButtonProps={{ size: isMobile ? "middle" : "large" }}
     >
       <div className="mt-4">
         <Form

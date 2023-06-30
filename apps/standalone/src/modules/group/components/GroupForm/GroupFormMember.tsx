@@ -237,21 +237,23 @@ const GroupFormMember = memo(
 
     return (
       <div>
-        <div className="mb-5">
-          <Select.Ajax
-            className="w-full"
-            placeholder="+ Add member"
-            onChange={handleSelectAgent}
-            value={null}
-            virtual
-            disableValues={groupIds}
-            loadMore={fetchAgents}
-          />
-        </div>
-        <div>
-          <div className="mb-5">
+        <div className="flex gap-3 xs:flex-col md:flex-row">
+          <div className="mb-5  flex-1">
+            <Select.Ajax
+              className="w-full"
+              placeholder="+ Add member"
+              onChange={handleSelectAgent}
+              value={null}
+              virtual
+              disableValues={groupIds}
+              loadMore={fetchAgents}
+            />
+          </div>
+          <div className="mb-5 flex-1">
             <MDSearchInput onTypeSearch={handleFiltersQueryChange} />
           </div>
+        </div>
+        <div>
           <Table
             dataSource={groupMembersTable}
             loading={loadingGetList}

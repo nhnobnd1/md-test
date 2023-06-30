@@ -1,6 +1,7 @@
 import { InputProps, Select } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import timeZoneList from "src/constaint/timeZone";
+import useViewport from "src/hooks/useViewport";
 interface SelectTimeZoneProps
   extends Omit<InputProps, "value" | "onChange" | "disabled"> {
   value?: string;
@@ -11,6 +12,7 @@ interface SelectTimeZoneProps
 const SelectTimeZone = ({ value, onChange }: SelectTimeZoneProps) => {
   // init data
   const optionSelectTimeZone = timeZoneList.timeZone;
+  const { isMobile } = useViewport();
 
   const deselectedOptions = useMemo(() => {
     return optionSelectTimeZone.map((item) => ({
@@ -45,6 +47,7 @@ const SelectTimeZone = ({ value, onChange }: SelectTimeZoneProps) => {
 
   return (
     <Select
+      size={isMobile ? "middle" : "large"}
       showSearch
       value={selectedOption}
       onChange={onChange}
