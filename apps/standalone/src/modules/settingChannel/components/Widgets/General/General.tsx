@@ -21,7 +21,7 @@ export default function General() {
   );
   const [allowCaptcha, setAllowCaptcha] = useState(data.allowCaptcha);
   const [allowAttach, setAllowAttach] = useState(data.allowAttach);
-  const [loading] = useState(data.isFormContact);
+
   const cancelState = useUpdateSave((state) => state.cancel);
 
   const onFinish = (values: any) => {
@@ -123,7 +123,7 @@ export default function General() {
                 {/* <Switch checked={loading} onChange={onChangeToggle} /> */}
               </div>
               <Divider />
-              <div style={{ display: loading ? "block" : "none" }}>
+              <div>
                 <Row gutter={20} justify="space-between" align="bottom">
                   <Col span={22}>
                     <Form.Item

@@ -69,13 +69,13 @@ export const UIWidget: FC<UIWidgetProps> = () => {
     },
   };
   const flexWithButton = useMemo(() => {
-    if (data.widgetHeader.length < 5) {
+    if (data?.widgetHeader?.length < 5) {
       return 150;
     }
-    if (data.widgetHeader.length < 10 && data.widgetHeader.length >= 5) {
+    if (data?.widgetHeader?.length < 10 && data?.widgetHeader?.length >= 5) {
       return 200;
     }
-    if (data.widgetHeader.length >= 10) {
+    if (data?.widgetHeader?.length >= 10) {
       return 250;
     }
   }, [data]);
