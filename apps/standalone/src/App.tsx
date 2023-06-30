@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import { Provider } from "react-redux";
 import { AppRoutes } from "src/routes";
 import { store } from "./redux";
+import ErrorBoundary from "src/ErrorBoundary";
 
 function App() {
   const { i18n } = useTranslation();
@@ -25,9 +26,11 @@ function App() {
 
   return (
     <ConfigProvider {...config} locale={enUS}>
-      <Provider store={store}>
-        <AppRoutes />
-      </Provider>
+      <ErrorBoundary>
+        <Provider store={store}>
+          <AppRoutes />
+        </Provider>
+      </ErrorBoundary>
     </ConfigProvider>
   );
 }

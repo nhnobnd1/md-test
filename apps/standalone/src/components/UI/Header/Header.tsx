@@ -1,7 +1,7 @@
-import { LeftOutlined } from "@ant-design/icons";
 import { useNavigate } from "@moose-desk/core";
-import { Button } from "antd";
 import classNames from "classnames";
+import { MDButton } from "src/components/UI/Button/MDButton";
+import Icon from "src/components/UI/Icon";
 import styles from "./style.module.scss";
 interface HeaderProps {
   back?: boolean;
@@ -32,12 +32,12 @@ export const Header = ({
         ])}
       >
         {back && (
-          <Button
-            className="w-9 h-9 mr-4 flex justify-center items-center"
+          <MDButton
+            className="  mr-2 flex justify-center items-center"
+            type="text"
             onClick={() => (backAction ? backAction() : navigate(-1))}
-          >
-            <LeftOutlined />
-          </Button>
+            icon={<Icon name="back" />}
+          />
         )}
         {title && <h1 className="m-0">{title}</h1>}
         {subTitle && <h2>{subTitle}</h2>}

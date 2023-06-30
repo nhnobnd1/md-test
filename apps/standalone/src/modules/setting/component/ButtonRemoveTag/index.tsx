@@ -1,5 +1,6 @@
 import { Button } from "antd";
 import { FC, useState } from "react";
+import { MDButton } from "src/components/UI/Button/MDButton";
 import { ModalDelete } from "src/components/UI/Modal/ModalDelete";
 
 interface ButtonTicketProps {
@@ -31,9 +32,9 @@ export const ButtonRemoveTag: FC<ButtonTicketProps> = ({
   };
   return (
     <>
-      <Button onClick={showModal} danger type="primary">
+      <MDButton onClick={showModal} danger type="primary">
         Remove all
-      </Button>
+      </MDButton>
       <ModalDelete
         title={title}
         open={isModalOpen}
