@@ -7,13 +7,14 @@ import {
   GetListBusinessCalendarResponse,
   Holidays,
 } from "@moose-desk/repo";
-import { Card, Input, Skeleton, Space, Tabs } from "antd";
+import { Card, Input, Space, Tabs } from "antd";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "react-query";
 import { MDButton } from "src/components/UI/Button/MDButton";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
+import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import timeZoneList from "src/constaint/timeZone";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
@@ -128,7 +129,7 @@ const BusinessHours = () => {
       ></Header>
       {processing ? (
         <>
-          <Skeleton />
+          <MDSkeleton lines={10} />
         </>
       ) : (
         <>
