@@ -54,7 +54,7 @@ export default function Enable2FAModal({
   // submit enable 2fa
 
   const [dataSubmit2FA, setDataSubmit2FA] = useState<any>();
-  const { run: submit2FA } = useJob((dataSubmit: any) => {
+  const { run: submit2FA, processing } = useJob((dataSubmit: any) => {
     return UserSettingRepository()
       .setupOtp({ method: dataSubmit })
       .pipe(
@@ -94,70 +94,74 @@ export default function Enable2FAModal({
   // submit OTP Email
 
   const [dataSubmitEmailOTP, setDataSubmitEmailOTP] = useState<any>();
-  const { run: submitEmailOTP } = useJob((dataSubmit: any) => {
-    message.loading.show(t("messages:loading.updating_two_factor"));
+  const { run: submitEmailOTP, processing: submittingEmail } = useJob(
+    (dataSubmit: any) => {
+      message.loading.show(t("messages:loading.updating_two_factor"));
 
-    return UserSettingRepository()
-      .verifySetupOTP({
-        method: MethodOTP.Email,
-        code: dataSubmit,
-      })
-      .pipe(
-        map(({ data }) => {
-          message.loading.hide();
-          if (data.statusCode === 200) {
-            notification.success(t("messages:success.enable_two_factor"));
-            handleCloseModal();
-            fetch2FAStatus();
-          } else {
-            //
-            setErrorMessage("The input OTP is incorrect!");
-            notification.error(t("messages:error.input_otp"));
-          }
-        }),
-        catchError((error) => {
-          message.loading.hide();
-          notification.error(t("messages:error.input_otp"));
-
-          setErrorMessage("The input OTP is incorrect!");
-          return of(error);
+      return UserSettingRepository()
+        .verifySetupOTP({
+          method: MethodOTP.Email,
+          code: dataSubmit,
         })
-      );
-  });
+        .pipe(
+          map(({ data }) => {
+            message.loading.hide();
+            if (data.statusCode === 200) {
+              notification.success(t("messages:success.enable_two_factor"));
+              handleCloseModal();
+              fetch2FAStatus();
+            } else {
+              //
+              setErrorMessage("The input OTP is incorrect!");
+              notification.error(t("messages:error.input_otp"));
+            }
+          }),
+          catchError((error) => {
+            message.loading.hide();
+            notification.error(t("messages:error.input_otp"));
+
+            setErrorMessage("The input OTP is incorrect!");
+            return of(error);
+          })
+        );
+    }
+  );
 
   // submit External Auth
 
   const [dataSubmitExternalAuth, setDataSubmitExternalAuth] = useState<any>();
-  const { run: submitExternalAuth } = useJob((dataSubmit: any) => {
-    return UserSettingRepository()
-      .verifySetupOTP({
-        method: MethodOTP.Authenticator,
-        code: dataSubmit,
-      })
-      .pipe(
-        map(({ data }) => {
-          message.loading.hide();
-          if (data.statusCode === 200) {
-            notification.success(t("messages:success.enable_two_factor"));
+  const { run: submitExternalAuth, processing: submitting } = useJob(
+    (dataSubmit: any) => {
+      return UserSettingRepository()
+        .verifySetupOTP({
+          method: MethodOTP.Authenticator,
+          code: dataSubmit,
+        })
+        .pipe(
+          map(({ data }) => {
+            message.loading.hide();
+            if (data.statusCode === 200) {
+              notification.success(t("messages:success.enable_two_factor"));
 
-            handleCloseModal();
-            fetch2FAStatus();
-          } else {
-            //
+              handleCloseModal();
+              fetch2FAStatus();
+            } else {
+              //
+              notification.error(t("messages:error.input_otp"));
+
+              setErrorMessage("The input OTP is incorrect!");
+            }
+          }),
+          catchError((error) => {
+            message.loading.hide();
+            setErrorMessage("The input OTP is incorrect!");
             notification.error(t("messages:error.input_otp"));
 
-            setErrorMessage("The input OTP is incorrect!");
-          }
-        }),
-        catchError((error) => {
-          message.loading.hide();
-          setErrorMessage("The input OTP is incorrect!");
-          notification.error(t("messages:error.input_otp"));
-
-          return of(error);
-        })
-      );
-  });
+            return of(error);
+          })
+        );
+    }
+  );
 
   // submit close modal
   const handleCloseModal = useCallback(() => {
@@ -232,7 +236,12 @@ export default function Enable2FAModal({
           {step === 1 ? null : (
             <MDButton onClick={handleBackStep}>Cancel</MDButton>
           )}
-          <MDButton onClick={handleSubmitModal} type="primary" className="ml-4">
+          <MDButton
+            loading={processing || submitting || submittingEmail}
+            onClick={handleSubmitModal}
+            type="primary"
+            className="ml-4"
+          >
             {saveText}
           </MDButton>
         </div>

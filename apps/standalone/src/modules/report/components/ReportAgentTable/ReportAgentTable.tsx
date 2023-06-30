@@ -45,7 +45,7 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
         ...filterData,
         ...rangeTime,
       }),
-    // keepPreviousData: true,
+    keepPreviousData: true,
     enabled: !isAgent && !!rangeTime.startTime && !!rangeTime.endTime,
   });
 

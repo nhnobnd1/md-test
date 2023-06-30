@@ -4,6 +4,7 @@ import useSaveDataGlobal from "@moose-desk/core/hooks/useSaveDataGlobal";
 import { Collapse } from "antd";
 import React, { useImperativeHandle, useMemo } from "react";
 import { useQuery } from "react-query";
+import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import { getDetailShopifyCustomer } from "src/modules/ticket/api/api";
 import { DetailOrderCustomer } from "src/modules/ticket/components/DrawerShopifySearch/DetailOrderCustomer";
 import ListShopifyCustomerRes from "src/modules/ticket/helper/interface";
@@ -77,7 +78,9 @@ const ResultShopifySearch = React.forwardRef(({ id }: IProps, ref) => {
   };
   const _renderListOrder = () => {
     return isLoading ? (
-      <div>Loading Orders...</div>
+      <div>
+        <MDSkeleton lines={3} />
+      </div>
     ) : (
       <div>{_renderTableOrDetailOrder()}</div>
     );
@@ -86,8 +89,14 @@ const ResultShopifySearch = React.forwardRef(({ id }: IProps, ref) => {
     <div className={styles.wrapListOrder}>
       {!!convertDataTable?.length && (
         <div className={styles.tableHead}>
-          <div>#Order ID</div>
-          <div>Amount</div>
+          {isLoading ? (
+            <MDSkeleton lines={1} />
+          ) : (
+            <>
+              <div>#Order ID</div>
+              <div>Amount</div>
+            </>
+          )}
         </div>
       )}
       {_renderListOrder()}

@@ -15,6 +15,7 @@ interface AutoReplyTabProps {
   onChange?: (value: AutoReply[]) => void;
   dataHolidays: Holidays[];
   dataBusinessHoursAutoReplyCode: string;
+  loading: boolean;
 }
 
 const AutoReplyTab = ({
@@ -22,6 +23,7 @@ const AutoReplyTab = ({
   onChange,
   dataHolidays,
   dataBusinessHoursAutoReplyCode,
+  loading,
 }: AutoReplyTabProps) => {
   const notification = useNotification();
   const [isDetail, setIsDetail] = useState<boolean>(false);
@@ -189,7 +191,11 @@ const AutoReplyTab = ({
       />
       {valueListAutoReplys.length ? (
         <div>
-          <Table dataSource={valueTableAutoReply} rowKey={"code"}>
+          <Table
+            dataSource={valueTableAutoReply}
+            rowKey={"code"}
+            loading={loading}
+          >
             <Table.Column
               key="name"
               title="Name"

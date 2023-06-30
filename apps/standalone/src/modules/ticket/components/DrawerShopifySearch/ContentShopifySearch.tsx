@@ -8,6 +8,7 @@ import { useQuery, useQueryClient } from "react-query";
 import { MDButton } from "src/components/UI/Button/MDButton";
 import Icon from "src/components/UI/Icon";
 import { MDSearchInput } from "src/components/UI/MDSearchInput";
+import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import useViewport from "src/hooks/useViewport";
 import { getListShopifyCustomer } from "src/modules/ticket/api/api";
 import ResultShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ResultShopifySearch";
@@ -23,7 +24,7 @@ const ContentShopifySearch = () => {
   const { setDataSaved } = useSaveDataGlobal();
   const [querySearch, setQuerySearch] = useState<string>("");
   const [selectedId, setSelectedId] = useState<number | null>(null);
-  const { data: listCustomerOrdered } = useQuery({
+  const { data: listCustomerOrdered, isLoading } = useQuery({
     queryKey: [QUERY_KEY.LIST_CUSTOMER_SHOPIFY, querySearch],
     queryFn: () => getListShopifyCustomer({ query: querySearch }),
     keepPreviousData: true,
@@ -63,32 +64,51 @@ const ContentShopifySearch = () => {
             key={item.id}
             showArrow={false}
             header={
-              <div className={styles.searchItemHeader}>
-                <h5>
-                  {item.first_name} {item.last_name}
-                </h5>
-                <div className={styles.email}>
-                  <Icon name="email" />
-                  <span>{item.email}</span>
-                </div>
-                <div className={styles.phone}>
-                  <Icon name="phone" />
-                  <span>{item.phone || "No Phone Number"}</span>
-                </div>
-                <div className={styles.detailOrder}>
-                  <div className={styles.item}>
-                    Orders: <span>{item.orders_count}</span>
+              isLoading ? (
+                <div>
+                  <div className="mb-1">
+                    <MDSkeleton lines={1} width={100} />
                   </div>
+                  <div>
+                    <MDSkeleton lines={2} />
+                  </div>
+                  <div className="d-flex justify-between">
+                    <MDSkeleton lines={1} width={100} />
+                    <MDSkeleton lines={1} width={80} />
+                  </div>
+                  <div className="d-flex justify-between">
+                    <MDSkeleton lines={1} width={100} />
+                    <MDSkeleton lines={1} width={80} />
+                  </div>
+                </div>
+              ) : (
+                <div className={styles.searchItemHeader}>
+                  <h5>
+                    {item.first_name} {item.last_name}
+                  </h5>
+                  <div className={styles.email}>
+                    <Icon name="email" />
+                    <span>{item.email}</span>
+                  </div>
+                  <div className={styles.phone}>
+                    <Icon name="phone" />
+                    <span>{item.phone || "No Phone Number"}</span>
+                  </div>
+                  <div className={styles.detailOrder}>
+                    <div className={styles.item}>
+                      Orders: <span>{item.orders_count}</span>
+                    </div>
 
-                  <div className={styles.item}>
-                    Amount:{" "}
-                    <span>
-                      {item.total_spent}
-                      {item.currency}
-                    </span>
+                    <div className={styles.item}>
+                      Amount:{" "}
+                      <span>
+                        {item.total_spent}
+                        {item.currency}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )
             }
           >
             {selectedId && selectedId === item.id ? (
