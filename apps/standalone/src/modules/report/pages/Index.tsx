@@ -7,6 +7,7 @@ import { useQueries } from "react-query";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
 import Icon from "src/components/UI/Icon";
+import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import SummaryBlock from "src/components/UI/SummaryBlock/SummaryBlock";
 import { usePermission } from "src/hooks/usePerrmisson";
 import { useSubdomain } from "src/hooks/useSubdomain";
@@ -73,16 +74,19 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
     {
       queryKey: [QUERY_KEY.REPORT_SUPPORT_VOLUME, filter],
       queryFn: () => getSupportVolume(filter),
+      keepPreviousData: true,
       enabled: !isAgent && !!filter.startTime && !!filter.endTime,
     },
     {
       queryKey: [QUERY_KEY.REPORT_RESOLUTION_TIME, filter],
       queryFn: () => getResolutionTime(filter),
+      keepPreviousData: true,
       enabled: !isAgent && !!filter.startTime && !!filter.endTime,
     },
     {
       queryKey: [QUERY_KEY.REPORT_FIRST_RESPONSE_TIME, filter],
       queryFn: () => getFirstResponseTime(filter),
+      keepPreviousData: true,
       enabled: !isAgent && !!filter.startTime && !!filter.endTime,
     },
   ]);
@@ -102,7 +106,6 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
     },
     [form.getFieldValue("to")]
   );
-
   const disabledEndDate = useCallback(
     (current) => {
       return form.getFieldValue("from")
@@ -162,28 +165,43 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
       <div className={styles.summary}>
         <SummaryBlock
           data={memoData[ChartReportData.SUMMARY] || initialSummary}
+          loading={queries[ChartReportData.SUMMARY].isLoading}
         />
       </div>
       <div className={styles.wrapChart}>
         <div className={styles.title}>Support Volume</div>
         <div className="w-full h-[450px]">
-          <ChartSupportVolume data={memoData[ChartReportData.SUPPORT_VOLUME]} />
+          {queries[ChartReportData.SUPPORT_VOLUME].isLoading ? (
+            <MDSkeleton lines={10} />
+          ) : (
+            <ChartSupportVolume
+              data={memoData[ChartReportData.SUPPORT_VOLUME]}
+            />
+          )}
         </div>
       </div>
       <div className={styles.wrapChart}>
         <div className={styles.title}>Resolution Time (Median)</div>
         <div className="w-full h-[450px]">
-          <ChartResolutionTime
-            data={memoData[ChartReportData.RESOLUTION_TIME]}
-          />
+          {queries[ChartReportData.RESOLUTION_TIME].isLoading ? (
+            <MDSkeleton lines={10} />
+          ) : (
+            <ChartResolutionTime
+              data={memoData[ChartReportData.RESOLUTION_TIME]}
+            />
+          )}
         </div>
       </div>
       <div className={styles.wrapChart}>
         <div className={styles.title}>First Response Time (Median)</div>
         <div className="w-full h-[450px]">
-          <ChartFirstResponseTime
-            data={memoData[ChartReportData.FIRST_RESPONSE_TIME]}
-          />
+          {queries[ChartReportData.FIRST_RESPONSE_TIME].isLoading ? (
+            <MDSkeleton lines={10} />
+          ) : (
+            <ChartFirstResponseTime
+              data={memoData[ChartReportData.FIRST_RESPONSE_TIME]}
+            />
+          )}
         </div>
       </div>
     </>

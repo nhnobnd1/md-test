@@ -6,6 +6,7 @@ import { useQuery } from "react-query";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
 import Icon from "src/components/UI/Icon";
+import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import { usePermission } from "src/hooks/usePerrmisson";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import useViewport from "src/hooks/useViewport";
@@ -43,7 +44,7 @@ const ByAgentPage = () => {
       endTime: String(current?.tz(timezone).endOf("day").unix()),
     });
   }, [timezone]);
-  const { data: reportTopFiveData } = useQuery({
+  const { data: reportTopFiveData, isLoading } = useQuery({
     queryKey: [QUERY_KEY.REPORT_TOP_FIVE, filter],
     queryFn: () => getReportTopFive(filter),
     keepPreviousData: true,
@@ -125,12 +126,22 @@ const ByAgentPage = () => {
           Ticket closed per agent per day (Top 5 Agents)
         </div>
         <div className="w-full h-[450px]">
-          <ChartAgentsTicket data={memoChartData} />
+          {isLoading ? (
+            <MDSkeleton lines={10} />
+          ) : (
+            <ChartAgentsTicket data={memoChartData} />
+          )}
         </div>
       </div>
 
       <div className={styles.wrapChart}>
-        <ReportAgentTable rangeTime={filter} />
+        {isLoading ? (
+          <div className="p-6">
+            <MDSkeleton lines={3} />
+          </div>
+        ) : (
+          <ReportAgentTable rangeTime={filter} />
+        )}
       </div>
     </>
   );

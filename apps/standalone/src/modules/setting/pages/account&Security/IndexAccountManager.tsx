@@ -7,6 +7,7 @@ import { useMutation, useQuery } from "react-query";
 import { MDButton } from "src/components/UI/Button/MDButton";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
+import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { usePermission } from "src/hooks/usePerrmisson";
@@ -229,24 +230,34 @@ export default function IndexAccountManager({ props }: any) {
             <Header subTitle="Two-Factor Authentication (2FA)" />
           </div>
 
-          <div className="flex">
-            <div className="flex items-center">
-              <Form.Item name="twoFactorAuthEnabled">
-                <SwitchForm />
-              </Form.Item>
+          {isLoading ? (
+            <MDSkeleton lines={1} width={300} />
+          ) : (
+            <div className="flex">
+              <div className="flex items-center">
+                <Form.Item name="twoFactorAuthEnabled">
+                  <SwitchForm />
+                </Form.Item>
+              </div>
+              <div className="ml-4">
+                <p className="mt-1">Toggle 2FA for all users.</p>
+              </div>
             </div>
-            <div className="ml-4">
-              <p className="mt-1">Toggle 2FA for all users.</p>
+          )}
+          {isLoading ? (
+            <div className="mt-4 flex justify-end">
+              <MDSkeleton lines={1} width={150} />
             </div>
-          </div>
-          <div className={classNames(styles.groupButton, "text-right")}>
-            <MDButton onClick={handleResetForm} disabled={updating}>
-              Cancel
-            </MDButton>
-            <MDButton htmlType="submit" type="primary" loading={updating}>
-              Save
-            </MDButton>
-          </div>
+          ) : (
+            <div className={classNames(styles.groupButton, "text-right")}>
+              <MDButton onClick={handleResetForm} disabled={updating}>
+                Cancel
+              </MDButton>
+              <MDButton htmlType="submit" type="primary" loading={updating}>
+                Save
+              </MDButton>
+            </div>
+          )}
         </Form>
       </div>
     </div>
