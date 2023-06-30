@@ -1,7 +1,7 @@
 import {
-  MediaScreen,
   createdDatetimeFormat,
   generatePath,
+  MediaScreen,
   upperCaseFirst,
   useJob,
   useNavigate,
@@ -274,7 +274,6 @@ const TrashTicket: FC<TrashTicketProps> = () => {
   }, []);
 
   useDeepEffect(() => {
-    console.log("vaoday");
     getListTrashApi(filterData);
   }, [filterData]);
 

@@ -68,8 +68,6 @@ const AgentsIndex = () => {
     return dataAgents.metadata;
   }, [dataAgents?.metadata]);
 
-  console.log({ agents, meta });
-
   const getLabelRole = useCallback(
     (role: Role) => {
       switch (role) {

@@ -27,9 +27,12 @@ export const ChartSupportVolume = ({ data }: ChartSupportVolumeProps) => {
       cd: item?.ticketsResolved,
     };
   });
-
   return (
-    <ResponsiveContainer width="100%" height="100%">
+    <ResponsiveContainer
+      className="flex-center justify-center"
+      width="100%"
+      height="100%"
+    >
       <BarChart
         // width={500}
         height={450}

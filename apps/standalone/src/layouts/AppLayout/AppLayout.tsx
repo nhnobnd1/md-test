@@ -329,7 +329,6 @@ export const AppLayout = () => {
       breadCrumb: atk.breadCrumb,
     };
   }, [caseTopMenu, location.pathname, getDefaultOpenKeys]);
-  console.log(keys, "keys");
   // useEffect(() => {
   //   setBreadCrumb({
   //     items: keys.breadCrumb.map((bread) => {

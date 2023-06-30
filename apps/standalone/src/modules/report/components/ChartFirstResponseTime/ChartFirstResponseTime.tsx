@@ -51,7 +51,11 @@ export const ChartFirstResponseTime = ({
 
   // const maxYValue = 0;
   return (
-    <ResponsiveContainer width="100%" height="100%">
+    <ResponsiveContainer
+      className="flex-center justify-center"
+      width="100%"
+      height="100%"
+    >
       <AreaChart
         data={chartData}
         margin={{

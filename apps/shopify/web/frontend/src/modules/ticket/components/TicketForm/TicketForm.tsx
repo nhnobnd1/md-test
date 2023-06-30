@@ -20,7 +20,7 @@ import { map } from "rxjs";
 import Form, { FormProps } from "src/components/Form";
 import FormItem from "src/components/Form/Item";
 import BoxSelectFilter from "src/components/Modal/ModalFilter/BoxSelectFilter";
-import { Select as ComboSelect, LoadMoreValue } from "src/components/Select";
+import { LoadMoreValue, Select as ComboSelect } from "src/components/Select";
 import SelectAddEmail from "src/components/SelectAddEmail/SelectAddEmail";
 import SelectAddTag from "src/components/SelectAddTag/SelectAddTag";
 import { TextEditorTicket } from "src/components/TextEditorTicket";
@@ -258,12 +258,9 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
   // };
   const onFinish = () => {
     const values = (props.innerRef as any)?.current.values;
-    console.log({ emailIntegrations });
-    console.log("??", values.from);
     const findEmailIntegration = emailIntegrations.find(
       (item) => item._id === values.from
     );
-    console.log({ findEmailIntegration });
     const findCustomer = customers.find((item) => item.email === values.to);
     const dataCreate: any = {
       fromEmail: {

@@ -53,7 +53,11 @@ export const ChartResolutionTime = ({ data }: ChartResolutionTimeProps) => {
   const maxYValue = Math.max(...(listTime || [0, 0]));
 
   return (
-    <ResponsiveContainer width="100%" height="100%">
+    <ResponsiveContainer
+      className="flex-center justify-center"
+      width="100%"
+      height="100%"
+    >
       <AreaChart
         // width={500}
         // height={400}

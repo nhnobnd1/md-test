@@ -43,7 +43,6 @@ const ViewTicket: FC<ViewTicketProps> = () => {
     useState<BaseListTagRequest>(defaultFilter);
   const onPagination = useCallback(
     ({ page, limit }: { page: number; limit: number }) => {
-      console.log("change page", { page, limit });
       setFilterData((value) => {
         return {
           ...value,
