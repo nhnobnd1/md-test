@@ -2,21 +2,17 @@
 @import "../../../styles/mixin.scss";
 .dateWrap {
   margin-top: 20px;
+
   .groupDatePicker {
     display: flex;
     align-items: center;
     margin-bottom: 24px;
-    &:first-child {
-        margin-right: 24px;
-        @include mq(md, "max") {
-                margin-right: 12px;
-            }
+
+    .infoPicker {
+      margin-left: 10px;
     }
     @include mq(md, "max") {
-           margin-bottom: 16px;
-        }
-    span {
-        margin-right: 10px;
+      margin-bottom: 16px;
     }
   }
   :global {
@@ -24,13 +20,13 @@
       display: flex;
       .ant-form-item:first-child {
         margin-right: 24px;
-        @include mq(md, "max") { 
-            margin-right: 0;
+        @include mq(md, "max") {
+          margin-right: 0;
         }
       }
     }
     .ant-form-item {
-        margin-bottom: 0;
+      margin-bottom: 0;
     }
     .ant-form-item-label {
       display: flex;
@@ -44,13 +40,12 @@
       .ant-form {
         justify-content: space-between;
       }
-      
     }
-        .ant-picker-suffix,
-        .ant-picker-clear {
-            margin-right: 0 !important;
-            background: transparent;
-        }
+    .ant-picker-suffix,
+    .ant-picker-clear {
+      margin-right: 0 !important;
+      background: transparent;
+    }
   }
 }
 .summary {
@@ -106,8 +101,8 @@
   border-radius: 8px;
   background-color: $white-color;
   padding: 24px;
-//   box-shadow: 0px 2px 16px 0px rgba(33, 43, 54, 0.08),
-//     0px 0px 0px 1px rgba(6, 44, 82, 0.1);
+  //   box-shadow: 0px 2px 16px 0px rgba(33, 43, 54, 0.08),
+  //     0px 0px 0px 1px rgba(6, 44, 82, 0.1);
   @include mq(md, "max") {
     padding: 16px;
     margin: 0 -16px 16px;

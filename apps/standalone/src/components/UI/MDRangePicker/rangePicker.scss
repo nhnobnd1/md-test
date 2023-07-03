@@ -1,0 +1,17 @@
+@import "../../../styles/mixin.scss";
+.md-range-picker {
+  height: 40px;
+  @include mq(md, "max") {
+    height: 32px;
+  }
+}
+@include mq(md, "max") {
+  .md-popup-range-picker {
+    
+      .ant-picker-panels {
+        display: flex;
+        flex-direction: column !important;
+      }
+    
+  }
+}
