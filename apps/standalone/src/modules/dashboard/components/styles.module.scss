@@ -111,9 +111,11 @@
   from {
     height: 0;
     overflow-y: hidden;
+    opacity: 0;
   }
   to {
     height: calc(100vh - 360px);
     overflow-y: hidden;
+    opacity: 1;
   }
 }
