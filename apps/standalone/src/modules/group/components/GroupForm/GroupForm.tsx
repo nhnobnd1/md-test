@@ -3,6 +3,7 @@ import { Card, Checkbox, Input } from "antd";
 import classNames from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Form, FormProps } from "src/components/UI/Form";
+import { MDInput } from "src/components/UI/Input";
 import GroupFormMember from "src/modules/group/components/GroupForm/GroupFormMember";
 import "./GroupForm.scss";
 
@@ -77,7 +78,7 @@ export const GroupForm = ({ id, ...props }: GroupFormProps) => {
               },
             ]}
           >
-            <Input placeholder="Enter name" />
+            <MDInput placeholder="Enter name" />
           </Form.Item>
           <Form.Item name="description" label="Description">
             <Input.TextArea
@@ -86,14 +87,6 @@ export const GroupForm = ({ id, ...props }: GroupFormProps) => {
             ></Input.TextArea>
           </Form.Item>
           <div className="flex items-baseline gap-4">
-            {/* <div className="label">Group members</div> */}
-            {/* <Button
-              type="primary"
-              danger={viewAddMember}
-              onClick={toggleViewAddMember}
-            >
-              {!viewAddMember ? "Add group member" : "Close add group member"}
-            </Button> */}
             <Checkbox checked={viewAddMember} onChange={toggleViewAddMember}>
               Add group member
             </Checkbox>

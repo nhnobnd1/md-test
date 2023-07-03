@@ -140,7 +140,14 @@ const BusinessHours = () => {
             onFinish={handleSubmit}
             onValuesChange={handleChangeValues}
           >
-            <Form.Item name="timezone" label="Time zone">
+            <Form.Item
+              name="timezone"
+              label={
+                <div className="flex xs:h-[32px] md:h-[40px] items-center">
+                  Time zone
+                </div>
+              }
+            >
               <SelectTimeZone />
             </Form.Item>
             <Card>

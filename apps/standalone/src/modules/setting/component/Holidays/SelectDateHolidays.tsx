@@ -58,6 +58,7 @@ const SelectDateHolidays = ({
   return (
     <div>
       <RangePicker
+        className="xs:h-[32px] md:h-[40px]"
         size={isMobile ? "middle" : "large"}
         disabledDate={disabledDate}
         value={selectedDates}

@@ -2,6 +2,7 @@ import { Input } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { useMemo } from "react";
 import Form, { FormProps } from "src/components/UI/Form/Form";
+import { MDInput } from "src/components/UI/Input";
 
 export interface TagFormValues {
   _id?: string;
@@ -44,7 +45,7 @@ export const TagForm = ({ ...props }: TagFormProps) => {
           },
         ]}
       >
-        <Input placeholder="Enter tag name" />
+        <MDInput placeholder="Enter tag name" />
       </Form.Item>
       <Form.Item label="Description" name="description">
         <TextArea rows={10} placeholder="Enter description" />

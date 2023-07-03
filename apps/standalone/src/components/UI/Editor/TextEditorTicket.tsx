@@ -8,6 +8,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
+import SmallLoader from "src/components/Loader/SmallLoader";
 import useMessage from "src/hooks/useMessage";
 import ImageZoom from "src/modules/ticket/components/DetailTicketForm/ImageZoom";
 import "./editor.scss";
@@ -281,7 +282,7 @@ const TextEditorTicket = ({
         zIndex={999999}
       >
         <div className="flex justify-center items-center ">
-          <Spin size="large" className="mt-3" />
+          <Spin indicator={<SmallLoader />} size="large" className="mt-3" />
         </div>
       </Modal>
       <div id="my-editor">

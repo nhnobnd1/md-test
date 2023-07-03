@@ -1466,6 +1466,68 @@ class Icon extends React.Component<IconProps> {
         />
       </svg>
     ),
+    emailIntegration: (
+      <svg
+        width={24}
+        height={24}
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M17 20.5H7C4 20.5 2 19 2 15.5V8.5C2 5 4 3.5 7 3.5H17C20 3.5 22 5 22 8.5V15.5C22 19 20 20.5 17 20.5Z"
+          stroke="#595959"
+          strokeWidth={1.5}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M17 9L13.87 11.5C13.3265 11.8995 12.6696 12.1149 11.995 12.1149C11.3204 12.1149 10.6635 11.8995 10.12 11.5L7 9"
+          stroke="#595959"
+          strokeWidth={1.5}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
+    webForm: (
+      <svg
+        width={24}
+        height={24}
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M7 12.0002C3 12.0002 3 13.7902 3 16.0002V17.0002C3 19.7602 3 22.0002 8 22.0002H16C20 22.0002 21 19.7602 21 17.0002V16.0002C21 13.7902 21 12.0002 17 12.0002C16.6748 11.9702 16.3469 12.0081 16.0371 12.1114C15.7272 12.2147 15.4422 12.3811 15.2 12.6002L14.18 13.6802C13.8995 13.9783 13.5609 14.2159 13.1852 14.3783C12.8094 14.5407 12.4044 14.6245 11.995 14.6245C11.5856 14.6245 11.1806 14.5407 10.8048 14.3783C10.4291 14.2159 10.0905 13.9783 9.81 13.6802L8.8 12.6002C8.55778 12.3811 8.27275 12.2147 7.96292 12.1114C7.6531 12.0081 7.32521 11.9702 7 12.0002V12.0002Z"
+          stroke="#595959"
+          strokeWidth={1.5}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M19 12V6C19 3.79 19 2 15 2H9C5 2 5 3.79 5 6V12"
+          stroke="#595959"
+          strokeWidth={1.5}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M10.55 9.23047H13.88"
+          stroke="#595959"
+          strokeWidth={1.5}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M9.71997 6.23047H14.72"
+          stroke="#595959"
+          strokeWidth={1.5}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
   };
 
   getProperty(property: keyof IconProps, value: any): any {

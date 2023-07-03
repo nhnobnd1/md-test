@@ -5,10 +5,10 @@ import {
   useNavigate,
 } from "@moose-desk/core";
 import { CreateUserGroupRequest, UserGroupRepository } from "@moose-desk/repo";
-import { Button } from "antd";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
+import { MDButton } from "src/components/UI/Button/MDButton";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
 import useMessage from "src/hooks/useMessage";
@@ -82,16 +82,18 @@ const GroupChildPage: PageComponent<GroupChildPageProps> = () => {
     <div>
       <Header className="mb-5" title="New Group" back>
         <div className="flex justify-end items-center flex-1 gap-2">
-          <Button onClick={() => navigate(generatePath(GroupRoutePaths.Index))}>
+          <MDButton
+            onClick={() => navigate(generatePath(GroupRoutePaths.Index))}
+          >
             Cancel
-          </Button>
-          <Button
+          </MDButton>
+          <MDButton
             type="primary"
             loading={loadingAddGroup}
             onClick={() => form.submit()}
           >
             Save
-          </Button>
+          </MDButton>
         </div>
       </Header>
       <GroupForm id={undefined} form={form} onFinish={handleSubmit} />

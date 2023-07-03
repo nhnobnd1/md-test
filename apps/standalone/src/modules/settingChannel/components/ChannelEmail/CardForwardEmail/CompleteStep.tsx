@@ -2,6 +2,7 @@
 import { Result, Spin, Typography } from "antd";
 import { FormInstance } from "antd/lib/form/Form";
 import React, { Dispatch, FC, SetStateAction, useEffect } from "react";
+import SmallLoader from "src/components/Loader/SmallLoader";
 import { MDButton } from "src/components/UI/Button/MDButton";
 import { SenderVerifyStep } from "src/modules/settingChannel/components/ChannelEmail/CardForwardEmail/SenderVerifyStep";
 interface ContentWaitProps {
@@ -42,7 +43,7 @@ export const CompleteStep: FC<ContentWaitProps> = React.memo(
               <p className="text-center">This may take up to a minute</p>
             </div>
           </div>
-          <Spin size="large" className="mt-2" />
+          <Spin indicator={<SmallLoader />} size="large" className="mt-2" />
         </div>
       );
     }

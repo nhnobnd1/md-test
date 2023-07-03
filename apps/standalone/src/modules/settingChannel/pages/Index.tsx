@@ -1,10 +1,9 @@
 import { ReactNode, useMemo } from "react";
 import { Header } from "src/components/UI/Header";
+import Icon from "src/components/UI/Icon";
 import { ChannelTitle } from "src/constaint/SettingChannel";
 import CategoryChannel from "src/modules/settingChannel/components/CategoryChannel/CategoryChannel";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
-import MdiEmailOpenOutline from "~icons/mdi/email-open-outline";
-import TablerCheckupList from "~icons/tabler/checkup-list";
 
 const ChannelIndexPage = () => {
   const listCategory = useMemo<
@@ -21,25 +20,15 @@ const ChannelIndexPage = () => {
         description:
           "Configure the email addresses used for communication with your customers in MooseDesk",
         link: SettingChannelRoutePaths.ChannelEmail.Index,
-        icon: <MdiEmailOpenOutline />,
+        icon: <Icon name="emailIntegration" />,
       },
       {
         title: ChannelTitle.WebFormConfiguration,
         description:
           "Configure the web form widget that can be added to your website",
         link: SettingChannelRoutePaths.Widgets.Index,
-        icon: <TablerCheckupList />,
+        icon: <Icon name="webForm" />,
       },
-      // {
-      //   title: ChannelTitle.LiveChatConfiguration,
-      //   link: "",
-      //   icon: <MaterialSymbolsChat />,
-      // },
-      // {
-      //   title: ChannelTitle.SocialConfiguration,
-      //   link: "",
-      //   icon: <EntypoSocialFacebook />,
-      // },
     ],
     []
   );

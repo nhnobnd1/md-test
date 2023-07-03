@@ -6,6 +6,7 @@ import { FormInstance } from "antd/lib/form/Form";
 import React, { FC, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
+import SmallLoader from "src/components/Loader/SmallLoader";
 import { MDButton } from "src/components/UI/Button/MDButton";
 import useMessage from "src/hooks/useMessage";
 import useMailSetting from "src/modules/settingChannel/store/useMailSetting";
@@ -158,7 +159,7 @@ export const SenderVerifyStep: FC<ContentWaitProps> = React.memo(
             <p className="text-center"></p>
           </div>
         </div>
-        <Spin size="large" className="mt-2" />
+        <Spin indicator={<SmallLoader />} size="large" className="mt-2" />
       </div>
     );
   }
