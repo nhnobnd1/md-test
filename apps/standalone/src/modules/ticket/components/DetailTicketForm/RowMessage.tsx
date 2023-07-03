@@ -1,4 +1,3 @@
-import { CloudDownloadOutlined } from "@ant-design/icons";
 import { Button, Collapse, Popover } from "antd";
 import { filesize } from "filesize";
 import parse, { Element } from "html-react-parser";
@@ -89,12 +88,12 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
   }, [quote, heightQuote, toggleQuote]);
   const css = `
   .ant-collapse-header{
-    padding:12px 0px !important;
+    padding:12px 16px !important;
   }
   `;
   return (
     <div className="">
-      <style scoped>{css}</style>
+      {/* <style scoped>{css}</style> */}
       <div className=" items-center gap-3 mx-2">
         <div className="flex items-end gap-3 ">
           {/* <h2 style={{ color: "black", margin: 0 }}>{item.name}</h2> */}
@@ -254,7 +253,15 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
                 >
                   <div className="flex justify-center items-start gap-2 ">
                     <Popover title={item.name}>
-                      <div className="flex flex-col h-[150px] file-item relative justify-between">
+                      <div
+                        onClick={async () => {
+                          const response = await axios.get(item.attachmentUrl, {
+                            responseType: "blob",
+                          });
+                          fileDownload(response.data, item.name);
+                        }}
+                        className="flex flex-col h-[150px] file-item relative justify-between"
+                      >
                         <div
                           className={`${
                             item.thumbUrl ? "hidden" : "block"
@@ -285,20 +292,6 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
                         >
                           {filesize(item.size, { base: 2, standard: "jedec" })}
                         </span>
-                        <div className="justify-center items-center file-download mb-2">
-                          <Button
-                            onClick={async () => {
-                              const response = await axios.get(
-                                item.attachmentUrl,
-                                {
-                                  responseType: "blob",
-                                }
-                              );
-                              fileDownload(response.data, item.name);
-                            }}
-                            icon={<CloudDownloadOutlined />}
-                          ></Button>
-                        </div>
                       </div>
                     </Popover>
                   </div>

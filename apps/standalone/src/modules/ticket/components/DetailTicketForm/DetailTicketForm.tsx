@@ -631,7 +631,7 @@ const DetailTicketForm = () => {
                         <CollapseMessage listChat={listChat} />
                       ) : (
                         <>
-                          <Skeleton />
+                          <MDSkeleton lines={5} />
                         </>
                       )}
                     </div>

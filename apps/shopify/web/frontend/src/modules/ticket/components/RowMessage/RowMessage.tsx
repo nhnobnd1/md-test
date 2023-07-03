@@ -290,7 +290,18 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
                       }}
                     >
                       <div className="flex justify-center items-start gap-2 ">
-                        <div className="flex flex-col h-[150px] file-item relative justify-between">
+                        <div
+                          className="flex flex-col h-[150px] file-item relative justify-between"
+                          onClick={async () => {
+                            const response = await axios.get(
+                              item.attachmentUrl,
+                              {
+                                responseType: "blob",
+                              }
+                            );
+                            fileDownload(response.data, item.name);
+                          }}
+                        >
                           <div
                             className={`${
                               item.thumbUrl ? "hidden" : "block"
@@ -324,7 +335,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
                               standard: "jedec",
                             })}
                           </span>
-                          <div className="justify-center items-center file-download mb-2">
+                          {/* <div className="justify-center items-center file-download mb-2">
                             <Button
                               onClick={async () => {
                                 const response = await axios.get(
@@ -337,7 +348,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
                               }}
                               icon={<DownloadIcon style={{ fontSize: 16 }} />}
                             ></Button>
-                          </div>
+                          </div> */}
                         </div>
                       </div>
                     </div>
