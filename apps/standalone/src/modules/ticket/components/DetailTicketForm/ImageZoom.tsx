@@ -74,7 +74,7 @@ const ImageZoom: React.FC<Props> = ({ src, alt, style }) => {
                 onClick={handleDownloadClick}
                 type="default"
                 shape="round"
-                icon={<CloudDownloadOutlined className="text-xl" />}
+                icon={<CloudDownloadOutlined className="text-xl mt-1" />}
                 size="large"
               ></Button>
             </div>

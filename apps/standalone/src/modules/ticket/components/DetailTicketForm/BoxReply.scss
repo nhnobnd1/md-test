@@ -157,3 +157,11 @@
   white-space: normal;
   width: 100%;
 }
+.collapse-header {
+  > .ant-collapse-header {
+    padding: 12px 0px !important;
+  }
+}
+.ant-divider {
+  border-block-start: 1px solid #d9d9d9;
+}

@@ -1,14 +1,13 @@
 import { CloudUploadOutlined, DeleteOutlined } from "@ant-design/icons";
-import { useJob, useLocation, useToggle } from "@moose-desk/core";
+import { useJob, useLoading, useLocation, useToggle } from "@moose-desk/core";
 import { TicketRepository } from "@moose-desk/repo";
 import { Editor, IAllProps } from "@tinymce/tinymce-react";
-import { Button, FormInstance, Modal, Popover, Spin } from "antd";
+import { Button, FormInstance, Modal, Popover } from "antd";
 import { filesize } from "filesize";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
-import SmallLoader from "src/components/Loader/SmallLoader";
 import useMessage from "src/hooks/useMessage";
 import ImageZoom from "src/modules/ticket/components/DetailTicketForm/ImageZoom";
 import "./editor.scss";
@@ -37,7 +36,8 @@ const TextEditorTicket = ({
   const editorRef = useRef<Editor["editor"] | null>(null);
   const [isShowFile, setIsShowFile] = useState(false);
   const [idAttachments, setIdAttachments] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
+  const { state: loading, startLoading, stopLoading } = useLoading();
 
   const initEditor = useCallback((evt, editor: Editor["editor"]) => {
     editorRef.current = editor;
@@ -102,14 +102,14 @@ const TextEditorTicket = ({
   });
   const { run: postAttachmentApi } = useJob((dataSubmit: any) => {
     setLoadingButton(true);
-    setLoading(true);
+    startLoading();
     return TicketRepository()
       .postAttachment(dataSubmit)
       .pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
             setLoadingButton(false);
-            setLoading(false);
+            stopLoading();
 
             setIdAttachments((previousAttachs) => {
               return [...previousAttachs, ...data.data.ids];
@@ -119,7 +119,7 @@ const TextEditorTicket = ({
         }),
         catchError((err) => {
           setLoadingButton(false);
-          setLoading(false);
+          stopLoading();
 
           message.error(t("messages:error.file_upload"));
 
@@ -130,21 +130,21 @@ const TextEditorTicket = ({
 
   const { run: postImage } = useJob((dataSubmit: any, callback: any) => {
     setLoadingButton(true);
-    setLoading(true);
+    startLoading();
     return TicketRepository()
       .postAttachment(dataSubmit)
       .pipe(
         map(({ data }) => {
           if (data.statusCode === 200) {
             setLoadingButton(false);
-            setLoading(false);
+            stopLoading();
             callback(data.data);
             message.success(t("messages:success.file_upload"));
           }
         }),
         catchError((err) => {
           setLoadingButton(false);
-          setLoading(false);
+          stopLoading();
 
           message.error(t("messages:error.file_upload"));
 
@@ -164,18 +164,18 @@ const TextEditorTicket = ({
 
   const ListFileRow = useMemo(() => {
     return (
-      <div className="flex justify-start flex-row items-center gap-2">
+      <div className="flex flex-wrap justify-start flex-row items-center gap-2">
         {myFiles.map((item: any, index: number) => {
           return (
-            <div className="item-file" key={item.path}>
+            <div className="item-file flex gap-3" key={item.path}>
               <Popover title={item.path}>
                 <div style={{ flexGrow: 1, width: 0 }}>
                   <p style={{ wordBreak: "break-all" }} className="truncate">
                     {item.path}
                   </p>
-                  <span>
+                  <p style={{ wordBreak: "break-all" }} className="truncate">
                     {filesize(item.size, { base: 2, standard: "jedec" })}
-                  </span>
+                  </p>
                 </div>
               </Popover>
               {item.type.startsWith("image/") ? (
@@ -187,15 +187,15 @@ const TextEditorTicket = ({
               ) : (
                 <></>
               )}
-              <div style={{ marginLeft: 10 }}>
-                <Button
-                  disabled={loading}
-                  style={{ width: 75 }}
-                  onClick={removeFile(item, index)}
-                >
-                  <DeleteOutlined />
-                </Button>
-              </div>
+              {/* <div style={{ marginLeft: 10 }}> */}
+              <Button
+                disabled={loading}
+                style={{ width: 50 }}
+                onClick={removeFile(item, index)}
+              >
+                <DeleteOutlined />
+              </Button>
+              {/* </div> */}
             </div>
           );
         })}
@@ -273,7 +273,7 @@ const TextEditorTicket = ({
           </div>
         </div>
       </Modal>
-      <Modal
+      {/* <Modal
         closable={false}
         open={loading}
         width={100}
@@ -284,7 +284,7 @@ const TextEditorTicket = ({
         <div className="flex justify-center items-center ">
           <Spin indicator={<SmallLoader />} size="large" className="mt-3" />
         </div>
-      </Modal>
+      </Modal> */}
       <div id="my-editor">
         <Editor
           apiKey="t4mxpsmop8giuev4szkrl7etgn43rtilju95m2tnst9m9uod"

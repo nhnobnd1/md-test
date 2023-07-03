@@ -3,7 +3,7 @@ import { FC, useState } from "react";
 import { ChatItem } from "src/modules/ticket/components/DetailTicketForm/DetailTicketForm";
 import { RowMessage } from "src/modules/ticket/components/DetailTicketForm/RowMessage";
 import AttachIcon from "~icons/mingcute/attachment-2-line";
-
+import "./BoxReply.scss";
 interface CollapseMessageProps {
   listChat: any;
 }
@@ -14,6 +14,7 @@ export const CollapseMessage: FC<CollapseMessageProps> = ({ listChat }) => {
   const handleShowMiddleItems = () => {
     setShowMiddleItems(!showMiddleItems);
   };
+
   return listChat.length > 4 ? (
     <Collapse
       defaultActiveKey={listChat.slice(-2).map((item: ChatItem) => item.id)}
@@ -22,6 +23,7 @@ export const CollapseMessage: FC<CollapseMessageProps> = ({ listChat }) => {
     >
       {listChat.slice(0, 2).map((item: ChatItem, index: number) => (
         <Collapse.Panel
+          className="collapse-header"
           header={
             <div className="flex justify-between items-center flex-wrap">
               <div className="flex gap-2 items-center flex-wrap">
@@ -64,6 +66,7 @@ export const CollapseMessage: FC<CollapseMessageProps> = ({ listChat }) => {
       {showMiddleItems &&
         listChat.slice(2, listChat.length - 2).map((item: ChatItem) => (
           <Collapse.Panel
+            className="collapse-header"
             header={
               <div className="flex justify-between items-center flex-wrap">
                 <div className="flex gap-2 items-center flex-wrap">
@@ -90,6 +93,7 @@ export const CollapseMessage: FC<CollapseMessageProps> = ({ listChat }) => {
         .slice(listChat.length - 2, listChat.length)
         .map((item: ChatItem) => (
           <Collapse.Panel
+            className="collapse-header"
             header={
               <div className="flex justify-between items-center flex-wrap">
                 <div className="flex gap-2 items-center flex-wrap">
@@ -121,6 +125,7 @@ export const CollapseMessage: FC<CollapseMessageProps> = ({ listChat }) => {
     >
       {listChat.map((item: ChatItem) => (
         <Collapse.Panel
+          className="collapse-header"
           header={
             <div className="flex justify-between items-center flex-wrap">
               <div className="flex gap-2 items-center flex-wrap">

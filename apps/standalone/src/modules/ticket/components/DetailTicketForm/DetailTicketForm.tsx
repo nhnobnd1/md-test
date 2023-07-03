@@ -164,7 +164,8 @@ const DetailTicketForm = () => {
     return dataTags;
   }, [dataTags]);
   const { visible, setVisible } = useToggleGlobal();
-  const { isMobile } = useViewport(MediaScreen.LG);
+  const { isMobile: isTablet } = useViewport(MediaScreen.LG);
+  const { isMobile } = useViewport();
 
   const [isChanged, setIsChanged] = useState(false);
   const { data: dataPrimaryEmail } = useQuery({
@@ -526,14 +527,14 @@ const DetailTicketForm = () => {
               <h1 className="break-words overflow-hidden header-detail-ticket">{` Ticket ${ticket?.ticketId}: ${ticket?.subject}`}</h1>
               <div className="flex gap-2 ">
                 <MDButton
-                  className={isMobile ? "flex" : "hidden"}
+                  className={isTablet ? "flex" : "hidden"}
                   onClick={() => {
                     endPageRef?.current?.scrollIntoView({ behavior: "smooth" });
                   }}
                   icon={<Icon name="replyTicket" />}
                 />
                 <MDButton
-                  className={isMobile ? "flex" : "hidden"}
+                  className={isTablet ? "flex" : "hidden"}
                   onClick={() => openStatusModal()}
                   icon={<Icon name="statusTicket" />}
                 />
@@ -582,7 +583,7 @@ const DetailTicketForm = () => {
                     placeholder="Search agents"
                     className="w-full"
                     options={agentsOptions}
-                    size="large"
+                    size={isTablet ? "middle" : "large"}
                   ></AntSelect>
                 </Form.Item>
 
@@ -591,11 +592,18 @@ const DetailTicketForm = () => {
                   label={<span style={{ width: 60 }}>Tags</span>}
                   labelAlign="left"
                 >
-                  <AntSelect
+                  {/* <AntSelect
                     size="large"
                     className="w-full"
                     placeholder="Add tags"
                     mode="tags"
+                    options={tags.map((item: Tag) => ({
+                      value: item.name,
+                      label: item.name,
+                    }))}
+                  /> */}
+                  <SelectTag
+                    placeholder="Add tags"
                     options={tags.map((item: Tag) => ({
                       value: item.name,
                       label: item.name,
@@ -623,7 +631,7 @@ const DetailTicketForm = () => {
                         <CollapseMessage listChat={listChat} />
                       ) : (
                         <>
-                          <Skeleton />
+                          <MDSkeleton lines={5} />
                         </>
                       )}
                     </div>
@@ -864,7 +872,8 @@ const DetailTicketForm = () => {
                     placeholder="Search agents"
                     className="w-full"
                     options={agentsOptions}
-                    size="large"
+                    size={isMobile ? "middle" : "large"}
+                    // size="middle"
                   ></AntSelect>
                 </Form.Item>
 
@@ -873,11 +882,8 @@ const DetailTicketForm = () => {
                   label={<span style={{ width: 60 }}>Tags</span>}
                   labelAlign="left"
                 >
-                  <AntSelect
-                    size="large"
-                    className="w-full"
+                  <SelectTag
                     placeholder="Add tags"
-                    mode="tags"
                     options={tags.map((item: Tag) => ({
                       value: item.name,
                       label: item.name,

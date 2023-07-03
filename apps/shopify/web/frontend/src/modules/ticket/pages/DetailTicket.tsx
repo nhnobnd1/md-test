@@ -329,7 +329,8 @@ const DetailTicket = (props: DetailTicketProps) => {
             return of(err);
           })
         );
-    }
+    },
+    { showLoading: true }
   );
   const { run: fetchConversation, processing: isFetchConversation } = useJob(
     (id: string) => {
