@@ -1,4 +1,4 @@
-import { ButtonProps, Modal } from "antd";
+import { ButtonProps } from "antd";
 import { FC, ReactNode, useState } from "react";
 import { MDModalUI } from "src/components/MDModalUI";
 import { MDButton } from "src/components/UI/Button/MDButton";
@@ -50,6 +50,7 @@ export const ButtonTicket: FC<ButtonTicketProps> = ({
         okButtonProps={{
           type: "primary",
           danger: textAction === "Remove",
+          size: "large",
         }}
       >
         <p>{content}</p>

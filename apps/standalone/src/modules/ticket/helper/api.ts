@@ -3,6 +3,7 @@ import {
   AgentRepository,
   BaseDeleteList,
   BaseListTicketFilterRequest,
+  Conversation,
   Customer,
   CustomerRepository,
   EmailIntegration,
@@ -12,15 +13,18 @@ import {
   GetListEmailRequest,
   GetListTagRequest,
   GetListTicketRequest,
+  GetListTicketResponse,
   Tag,
   TagRepository,
+  Ticket,
   TicketRepository,
+  TicketStatistic,
   UpdateTicket,
 } from "@moose-desk/repo";
 import { useQueries } from "react-query";
 import { lastValueFrom } from "rxjs";
 import { ItemConversation } from "src/modules/ticket/helper/interface";
-export const getStatisticTicket = () => {
+export const getStatisticTicket = (): Promise<TicketStatistic> => {
   return new Promise((resolve, reject) => {
     lastValueFrom(TicketRepository().getStatistic())
       .then(({ data }) => resolve(data))
@@ -54,6 +58,34 @@ export const getListTrashApi = (payload: GetListTicketRequest) => {
   return new Promise((resolve, reject) => {
     lastValueFrom(TicketRepository().getListTrash(payload))
       .then(({ data }) => resolve(data))
+      .catch((error) => reject(error));
+  });
+};
+
+export const getListTicketFilter = (
+  payload: GetListTicketRequest
+): Promise<GetListTicketResponse> => {
+  return new Promise((resolve, reject) => {
+    lastValueFrom(TicketRepository().getListFilter(payload))
+      .then(({ data }) => resolve(data))
+      .catch((error) => reject(error));
+  });
+};
+
+export const getOneTicket = (payload: string): Promise<Ticket> => {
+  return new Promise((resolve, reject) => {
+    lastValueFrom(TicketRepository().getOne(payload))
+      .then(({ data }) => resolve(data.data))
+      .catch((error) => reject(error));
+  });
+};
+
+export const getListConversation = (
+  payload: string
+): Promise<Conversation[]> => {
+  return new Promise((resolve, reject) => {
+    lastValueFrom(TicketRepository().getConversations(payload))
+      .then(({ data }) => resolve(data.data))
       .catch((error) => reject(error));
   });
 };

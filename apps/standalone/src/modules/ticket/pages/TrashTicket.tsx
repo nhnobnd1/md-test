@@ -14,11 +14,10 @@ import {
   GetListTicketResponse,
   StatusTicket,
   Ticket,
-  TicketStatistic,
 } from "@moose-desk/repo";
 import { Button, Card, TableProps, Tag as TagAntd } from "antd";
 import { SorterResult } from "antd/es/table/interface";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { HeaderList } from "src/components/HeaderList";
@@ -88,15 +87,16 @@ const TrashTicket = () => {
     queryKey: ["getStatisticTicket"],
     queryFn: () => getStatisticTicket(),
     retry: 3,
-    onSuccess: (data: TicketStatistic) => {
-      setStatistic(data);
-    },
+
     onError: () => {
       message.error(t("messages:error.get_ticket"));
     },
   });
-  const [statistic, setStatistic] = useState<TicketStatistic>(
-    dataStatistic ?? {
+  const statistic = useMemo(() => {
+    if (dataStatistic) {
+      return dataStatistic;
+    }
+    return {
       statusCode: 200,
       data: {
         OPEN: 0,
@@ -105,8 +105,8 @@ const TrashTicket = () => {
         TRASH: 0,
         NEW: 0,
       },
-    }
-  );
+    };
+  }, [dataStatistic]);
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     setSelectedRowKeys(newSelectedRowKeys);

@@ -1,13 +1,13 @@
 import { MediaScreen } from "@moose-desk/core";
 import useToggleGlobal from "@moose-desk/core/hooks/useToggleGlobal";
 import { Priority } from "@moose-desk/repo";
-import { Skeleton } from "antd";
 import classNames from "classnames";
 import { useEffect, useMemo } from "react";
 import { useQuery } from "react-query";
 import { MDButton } from "src/components/UI/Button/MDButton";
 import { Header } from "src/components/UI/Header";
 import Icon from "src/components/UI/Icon";
+import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import useViewport from "src/hooks/useViewport";
 import ContentShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ContentShopifySearch";
 import DrawerShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/DrawerShopifySearch";
@@ -17,7 +17,6 @@ import {
   getListEmailIntegration,
 } from "src/modules/ticket/helper/api";
 import styles from "./styles.module.scss";
-import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 
 const CreateTicket = () => {
   const { isMobile } = useViewport(MediaScreen.LG);
@@ -27,18 +26,14 @@ const CreateTicket = () => {
     queryFn: () => emailIntegrationApi(),
     retry: 3,
     staleTime: 10000,
-    onError: () => {
-      // message.error(t("messages:error.get_customer"));
-    },
+    onError: () => {},
   });
   const { data: dataEmailIntegration, isLoading: loadingList } = useQuery({
     queryKey: ["getListEmailIntegration"],
     queryFn: () => getListEmailIntegration({ page: 1, limit: 500 }),
     retry: 3,
     staleTime: 10000,
-    onError: () => {
-      //  message.error(t("messages:error.get_customer"));
-    },
+    onError: () => {},
   });
 
   const primaryEmail = useMemo(() => {
