@@ -1,11 +1,12 @@
+import { InfoCircleTwoTone } from "@ant-design/icons";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
-import { DatePicker } from "antd";
+import { Tooltip } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
-import Icon from "src/components/UI/Icon";
+import MDRangePicker from "src/components/UI/MDRangePicker/MDRangePicker";
 import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import { usePermission } from "src/hooks/usePerrmisson";
 import { useSubdomain } from "src/hooks/useSubdomain";
@@ -16,8 +17,6 @@ import { ReportAgentTable } from "src/modules/report/components/ReportAgentTable
 import {
   convertTimeStamp,
   getTimeFilterDefault,
-  getTwoWeeksAfter,
-  getTwoWeeksBefore,
 } from "src/modules/report/helper/convert";
 import styles from "./styles.module.scss";
 
@@ -54,71 +53,35 @@ const ByAgentPage = () => {
     const convertData = (reportTopFiveData as any)?.data?.data;
     return convertData;
   }, [reportTopFiveData]);
-  const disabledStartDate = useCallback(
-    (current) => {
-      return form.getFieldValue("to")
-        ? current > form.getFieldValue("to") ||
-            current < getTwoWeeksBefore(form.getFieldValue("to"))
-        : false;
-    },
-    [form.getFieldValue("to")]
-  );
 
-  const disabledEndDate = useCallback(
-    (current) => {
-      return form.getFieldValue("from")
-        ? current < form.getFieldValue("from") ||
-            current > getTwoWeeksAfter(form.getFieldValue("from"))
-        : false;
+  const handleChangeTime = useCallback(
+    (dates: any) => {
+      if (!dates) {
+        setFilter({
+          endTime: "",
+          startTime: "",
+        });
+      } else {
+        setFilter({
+          startTime: String(convertTimeStamp(dates[0], timezone, "start")),
+          endTime: String(convertTimeStamp(dates[1], timezone, "end")),
+        });
+      }
     },
-    [form.getFieldValue("from")]
+    [timezone]
   );
-  const handleChangeStartTime = (date: any, values: string) => {
-    setFilter((pre) => ({
-      ...pre,
-      startTime: values
-        ? String(convertTimeStamp(date, timezone, "start"))
-        : "",
-    }));
-  };
-  const handleChangeEndTime = (date: any, values: string) => {
-    setFilter((pre) => ({
-      ...pre,
-      endTime: values ? String(convertTimeStamp(date, timezone, "end")) : "",
-    }));
-  };
   return (
     <>
       <Header title="Report By Agents" />
       <div className={styles.dateWrap}>
-        <Form form={form}>
-          <div className={styles.groupDatePicker}>
-            <span>From:</span>
-            <Form.Item name="from" label="">
-              <DatePicker
-                format={"MM/DD/YYYY"}
-                disabledDate={disabledStartDate}
-                onChange={handleChangeStartTime}
-                suffixIcon={<Icon name="calendar" />}
-                size={isMobile ? "middle" : "large"}
-                // defaultValue={twoWeekAgo}
-              />
-            </Form.Item>
-          </div>
-          <div className={styles.groupDatePicker}>
-            <span>To:</span>
-            <Form.Item name="to" label="">
-              <DatePicker
-                format={"MM/DD/YYYY"}
-                disabledDate={disabledEndDate}
-                onChange={handleChangeEndTime}
-                suffixIcon={<Icon name="calendar" />}
-                size={isMobile ? "middle" : "large"}
-                // defaultValue={current}
-              />
-            </Form.Item>
-          </div>
-        </Form>
+        <div className={styles.groupDatePicker}>
+          <MDRangePicker onFilterChange={handleChangeTime} />
+          <Tooltip title="Please select a maximum time period of 14 days (counting from the start date)">
+            <div className={styles.infoPicker}>
+              <InfoCircleTwoTone twoToneColor="#FA7D00" />
+            </div>
+          </Tooltip>
+        </div>
       </div>
 
       <div className={styles.wrapChart}>
