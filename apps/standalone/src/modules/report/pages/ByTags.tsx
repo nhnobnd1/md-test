@@ -1,13 +1,14 @@
+import { InfoCircleTwoTone } from "@ant-design/icons";
 import { PageComponent } from "@moose-desk/core";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
-import { DatePicker, Form, TableProps } from "antd";
+import { TableProps, Tooltip } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useForm } from "antd/lib/form/Form";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import { Header } from "src/components/UI/Header";
-import Icon from "src/components/UI/Icon";
+import MDRangePicker from "src/components/UI/MDRangePicker/MDRangePicker";
 import { MDSearchInput } from "src/components/UI/MDSearchInput";
 import Pagination from "src/components/UI/Pagination/Pagination";
 import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
@@ -20,8 +21,6 @@ import { getReportByTags } from "src/modules/report/api/api";
 import {
   convertTimeStamp,
   getTimeFilterDefault,
-  getTwoWeeksAfter,
-  getTwoWeeksBefore,
 } from "src/modules/report/helper/convert";
 import styles from "./styles.module.scss";
 
@@ -156,72 +155,33 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
     },
     []
   );
-  const disabledStartDate = useCallback(
-    (current) => {
-      return form.getFieldValue("to")
-        ? current > form.getFieldValue("to") ||
-            current < getTwoWeeksBefore(form.getFieldValue("to"))
-        : false;
+  const handleChangeTime = useCallback(
+    (dates: any) => {
+      if (!dates) {
+        setFilterData((pre) => ({ ...pre, endTime: "", startTime: "" }));
+      } else {
+        setFilterData((pre) => ({
+          ...pre,
+          startTime: String(convertTimeStamp(dates[0], timezone, "start")),
+          endTime: String(convertTimeStamp(dates[1], timezone, "end")),
+        }));
+      }
     },
-    [form.getFieldValue("to")]
+    [timezone]
   );
-
-  const disabledEndDate = useCallback(
-    (current) => {
-      return form.getFieldValue("from")
-        ? current < form.getFieldValue("from") ||
-            current > getTwoWeeksAfter(form.getFieldValue("from"))
-        : false;
-    },
-    [form.getFieldValue("from")]
-  );
-  const handleChangeStartTime = (date: any, values: string) => {
-    setFilterData((pre) => ({
-      ...pre,
-      startTime: values
-        ? String(convertTimeStamp(date, timezone, "start"))
-        : "",
-    }));
-  };
-  const handleChangeEndTime = (date: any, values: string) => {
-    setFilterData((pre) => ({
-      ...pre,
-      endTime: values ? String(convertTimeStamp(date, timezone, "end")) : "",
-    }));
-  };
   return (
     <>
       <Header title="Report By Tags" />
       <section className="flex-start">
         <div className={styles.dateWrap}>
-          <Form form={form}>
-            <div className={styles.groupDatePicker}>
-              <span>From:</span>
-              <Form.Item name="from" label="">
-                <DatePicker
-                  format={"MM/DD/YYYY"}
-                  disabledDate={disabledStartDate}
-                  onChange={handleChangeStartTime}
-                  suffixIcon={<Icon name="calendar" />}
-                  size={isMobile ? "middle" : "large"}
-                  // defaultValue={twoWeekAgo}
-                />
-              </Form.Item>
-            </div>
-            <div className={styles.groupDatePicker}>
-              <span>To:</span>
-              <Form.Item name="to" label="">
-                <DatePicker
-                  format={"MM/DD/YYYY"}
-                  disabledDate={disabledEndDate}
-                  onChange={handleChangeEndTime}
-                  suffixIcon={<Icon name="calendar" />}
-                  size={isMobile ? "middle" : "large"}
-                  // defaultValue={current}
-                />
-              </Form.Item>
-            </div>
-          </Form>
+          <div className={styles.groupDatePicker}>
+            <MDRangePicker onFilterChange={handleChangeTime} />
+            <Tooltip title="Please select a maximum time period of 14 days (counting from the start date)">
+              <div className={styles.infoPicker}>
+                <InfoCircleTwoTone twoToneColor="#FA7D00" />
+              </div>
+            </Tooltip>
+          </div>
         </div>
       </section>
       <section className={styles.reportTagTableWrap}>
