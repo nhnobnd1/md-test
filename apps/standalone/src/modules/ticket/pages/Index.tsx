@@ -22,7 +22,6 @@ import {
   Tag,
   Ticket,
   TicketRepository,
-  TicketStatistic,
   UpdateTicket,
 } from "@moose-desk/repo";
 import { Button, Card, TableProps, Tag as TagAntd } from "antd";
@@ -160,16 +159,16 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     queryKey: ["getStatisticTicket"],
     queryFn: () => getStatisticTicket(),
     retry: 3,
-    onSuccess: (data: TicketStatistic) => {
-      setStatistic(data);
-    },
     onError: () => {
       message.error(t("messages:error.get_ticket"));
     },
   });
 
-  const [statistic, setStatistic] = useState<TicketStatistic>(
-    dataStatistic ?? {
+  const statistic = useMemo(() => {
+    if (dataStatistic) {
+      return dataStatistic;
+    }
+    return {
       statusCode: 200,
       data: {
         OPEN: 0,
@@ -178,8 +177,9 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         TRASH: 0,
         NEW: 0,
       },
-    }
-  );
+    };
+  }, [dataStatistic]);
+
   const [conversations, loadingExport] = useExportTicket(
     selectedRowKeys as string[]
   );

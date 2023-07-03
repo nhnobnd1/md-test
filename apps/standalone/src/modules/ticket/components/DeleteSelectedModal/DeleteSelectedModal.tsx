@@ -1,5 +1,4 @@
 import { DeleteOutlined } from "@ant-design/icons";
-import { Modal } from "antd";
 import { FC, useState } from "react";
 import { MDModalUI } from "src/components/MDModalUI";
 import { MDButton } from "src/components/UI/Button/MDButton";
@@ -47,6 +46,7 @@ export const DeleteSelectedModal: FC<DeleteSelectedModalProps> = ({
         okButtonProps={{
           type: "primary",
           danger: true,
+          size: "large",
         }}
       >
         <p>

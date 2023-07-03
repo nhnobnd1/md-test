@@ -13,12 +13,9 @@ import {
   AttachFile,
   Conversation,
   CreateReplyTicketRequest,
-  EmailIntegration,
-  EmailIntegrationRepository,
   Priority,
   StatusTicket,
   Tag,
-  Ticket,
   TicketRepository,
   UpdateTicket,
   priorityOptions,
@@ -31,7 +28,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import useToggleGlobal from "@moose-desk/core/hooks/useToggleGlobal";
 import { useTranslation } from "react-i18next";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { catchError, map, of } from "rxjs";
 import { MDModalUI } from "src/components/MDModalUI";
 import { MDButton } from "src/components/UI/Button/MDButton";
@@ -47,9 +44,12 @@ import useViewport from "src/hooks/useViewport";
 import { CollapseMessage } from "src/modules/ticket/components/DetailTicketForm/CollapseMessage";
 import { SelectTag } from "src/modules/ticket/components/TicketForm/SelectTag";
 import {
+  emailIntegrationApi,
   getListAgentApi,
+  getListConversation,
   getListCustomerApi,
   getListEmailIntegration,
+  getOneTicket,
   getTagsTicket,
 } from "src/modules/ticket/helper/api";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
@@ -96,10 +96,49 @@ const DetailTicketForm = () => {
   const message = useMessage();
   const { id } = useParams();
   const navigate = useNavigate();
-  const [ticket, setTicket] = useState<Ticket>();
+  const queryClient = useQueryClient();
+
+  const [enableCC, setEnableCC] = useState(false);
+  const { data: dataTicket, isLoading: processing } = useQuery({
+    queryKey: ["getTicket", id],
+    queryFn: () => getOneTicket(id as string),
+    retry: 1,
+
+    onError: () => {
+      message.error(t("messages:error.get_ticket"));
+    },
+  });
+  const ticket = useMemo(() => {
+    if (dataTicket)
+      return {
+        ...dataTicket,
+      };
+    return undefined;
+  }, [dataTicket]);
+
+  const {
+    data: dataConversations,
+    isLoading: isLoadingConversation,
+    isFetching: isFetchConversation,
+    refetch: refetchConversation,
+  } = useQuery({
+    queryKey: ["getListConversation", id],
+    queryFn: () => getListConversation(id as string),
+    retry: 1,
+    onSuccess: (data) => {
+      setConversationList(data);
+    },
+
+    onError: () => {
+      message.error(t("messages:error.get_ticket"));
+    },
+  });
+
   const [form] = Form.useForm();
 
-  const [conversationList, setConversationList] = useState<Conversation[]>([]);
+  const [conversationList, setConversationList] = useState<Conversation[]>(
+    dataConversations || []
+  );
   const { data: dataTags } = useQuery({
     queryKey: [
       "getTagsTicket",
@@ -126,9 +165,24 @@ const DetailTicketForm = () => {
   }, [dataTags]);
   const { visible, setVisible } = useToggleGlobal();
   const { isMobile } = useViewport(MediaScreen.LG);
-  const [enableCC, setEnableCC] = useState(false);
+
   const [isChanged, setIsChanged] = useState(false);
-  const [primaryEmail, setPrimaryEmail] = useState<EmailIntegration>();
+  const { data: dataPrimaryEmail } = useQuery({
+    queryKey: ["emailIntegrationApi"],
+    queryFn: () => emailIntegrationApi(),
+    retry: 3,
+    staleTime: 10000,
+    onError: () => {},
+  });
+  const primaryEmail = useMemo(() => {
+    if (dataPrimaryEmail?._id) {
+      return dataPrimaryEmail;
+    }
+    if (!dataPrimaryEmail) {
+      return undefined;
+    }
+  }, [dataPrimaryEmail]);
+
   const [files, setFiles] = useState<any>([]);
   const [loadingButton, setLoadingButton] = useState(false);
   const { t } = useTranslation();
@@ -171,14 +225,12 @@ const DetailTicketForm = () => {
       endPageRef?.current?.scrollIntoView();
     }
   }, [loadingApi]);
-  const { data: dataEmailIntegration, isLoading: loadingList } = useQuery({
+  const { data: dataEmailIntegration } = useQuery({
     queryKey: ["getListEmailIntegration"],
     queryFn: () => getListEmailIntegration({ page: 1, limit: 500 }),
     retry: 3,
     staleTime: 10000,
-    onError: () => {
-      //  message.error(t("messages:error.get_customer"));
-    },
+    onError: () => {},
   });
   const emailIntegrationOptions = useMemo(() => {
     if (!dataEmailIntegration) return [];
@@ -327,23 +379,6 @@ const DetailTicketForm = () => {
     });
     return mapping;
   }, [agents]);
-  const { run: getTicketApi, processing } = useJob((id: string) => {
-    return TicketRepository()
-      .getOne(id)
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            if (data.data.createdViaWidget || data.data.incoming) {
-              getPrimaryEmail();
-            }
-            setTicket(data.data);
-            setEnableCC(data.data.ccEmails.length > 0);
-          } else {
-            message.error(t("messages:error.get_ticket"));
-          }
-        })
-      );
-  });
 
   const { run: postReplyApi } = useJob((payload: CreateReplyTicketRequest) => {
     return TicketRepository()
@@ -354,6 +389,10 @@ const DetailTicketForm = () => {
             message.success(t("messages:success.send_mail"));
             stopLoading();
             setConversationList([...conversationList, data.data]);
+            queryClient.setQueryData(
+              ["getListConversation", id],
+              [...conversationList, data.data]
+            );
           }
         }),
         catchError((err) => {
@@ -364,43 +403,11 @@ const DetailTicketForm = () => {
       );
   });
 
-  const { run: getPrimaryEmail } = useJob(() => {
-    return EmailIntegrationRepository()
-      .getPrimaryEmail()
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            setPrimaryEmail(data.data);
-          }
-        }),
-        catchError((err) => {
-          return of(err);
-        })
-      );
-  });
-  const { run: fetchConversation, processing: isFetchConversation } = useJob(
-    (id: string) => {
-      return TicketRepository()
-        .getConversations(id)
-        .pipe(
-          map(({ data }) => {
-            stopLoading();
-            setConversationList(data.data);
-          }),
-          catchError((err) => {
-            stopLoading();
-
-            return of(err);
-          })
-        );
-    }
-  );
   const { run: updateTicketApi } = useJob((data: UpdateTicket) => {
     return TicketRepository()
       .update(data)
       .pipe(
         map(({ data }) => {
-          // console.log("update ticket success", data);
           if (data.statusCode === 200) {
             stopLoading();
             message.success(t("messages:success.update_ticket"));
@@ -413,13 +420,6 @@ const DetailTicketForm = () => {
         })
       );
   });
-
-  useEffect(() => {
-    if (id) {
-      getTicketApi(id);
-      fetchConversation(id);
-    }
-  }, [id]);
 
   const onFinish = (values: ValueForm, closeTicket = false) => {
     startLoading();
@@ -468,18 +468,23 @@ const DetailTicketForm = () => {
   const handleCloseTicket = () => {
     startLoading();
     form.setFieldValue("status", "RESOLVED");
-    setTicket((previous: any) => {
-      return { ...previous, status: "RESOLVED" };
-    });
+    queryClient.setQueryData(["getTicket", id], (oldData: any) => ({
+      ...oldData,
+      status: "RESOLVED",
+    }));
+
     onFinish(form.getFieldsValue(), true);
   };
   const handleReopenTicket = () => {
     startLoading();
     const values = form.getFieldsValue();
     form.setFieldValue("status", "OPEN");
-    setTicket((previous: any) => {
-      return { ...previous, status: "OPEN" };
-    });
+
+    queryClient.setQueryData(["getTicket", id], (oldData: any) => ({
+      ...oldData,
+      status: "OPEN",
+    }));
+
     updateTicketApi({
       status: "OPEN",
       priority: values.priority,
@@ -505,15 +510,13 @@ const DetailTicketForm = () => {
 
   return (
     <>
-      {processing ? (
+      {processing || isLoadingConversation ? (
         <>
           <MDSkeleton lines={10} />
         </>
       ) : (
         <div className="wrapContainer">
           <Header
-            // className="mr-10"
-            // title={`  Ticket ${ticket?.ticketId}: ${ticket?.subject}`}
             back
             backAction={() => {
               navigate(TicketRoutePaths.Index);
