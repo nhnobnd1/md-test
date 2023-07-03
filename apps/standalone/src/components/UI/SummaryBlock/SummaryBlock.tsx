@@ -1,4 +1,5 @@
 import { Row } from "antd";
+import CountUp from "react-countup";
 import Icon from "src/components/UI/Icon";
 import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import { convertSecondsToHoursMinutes } from "src/modules/report/helper/convert";
@@ -32,12 +33,12 @@ export default function SummaryBlock({ data, loading }: IProps) {
     },
     {
       labels: "First Response Time",
-      value: convertSecondsToHoursMinutes(data.avgFirstResponseTime),
+      value: data.avgFirstResponseTime,
       iconName: "firstResponseTime",
     },
     {
       labels: "Resolution Time",
-      value: convertSecondsToHoursMinutes(data.avgResolutionTime),
+      value: data.avgResolutionTime,
       iconName: "resolutionTime",
     },
   ];
@@ -52,7 +53,21 @@ export default function SummaryBlock({ data, loading }: IProps) {
           <div className={styles.description}>
             <p className={styles.label}>{block.labels}</p>
             <p className={styles.value}>
-              {loading ? <MDSkeleton lines={1} width={80} /> : block.value}
+              {loading ? (
+                <MDSkeleton lines={1} width={80} />
+              ) : (
+                <CountUp
+                  end={block.value}
+                  start={0}
+                  duration={3 + (index + 1) * 0.3}
+                  useEasing={true}
+                  formattingFn={
+                    [3, 4].includes(index)
+                      ? convertSecondsToHoursMinutes
+                      : undefined
+                  }
+                />
+              )}
             </p>
           </div>
         </div>

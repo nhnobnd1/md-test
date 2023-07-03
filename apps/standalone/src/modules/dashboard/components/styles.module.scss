@@ -10,9 +10,10 @@
   height: calc(100vh - 360px);
   overflow-y: scroll;
   padding: 0 24px 56px;
+  animation: heightUp 0.75s;
   @include mq(md, "max") {
     padding: 16px 16px 56px;
-    // padding-bottom: 16px;
+    animation: unset;
   }
 }
 .loadMoreButton {
@@ -104,5 +105,15 @@
 
   span {
     margin-left: 12px;
+  }
+}
+@keyframes heightUp {
+  from {
+    height: 0;
+    overflow-y: hidden;
+  }
+  to {
+    height: calc(100vh - 360px);
+    overflow-y: hidden;
   }
 }

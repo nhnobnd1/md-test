@@ -59,6 +59,8 @@ export const ChartSupportVolume = ({ data }: ChartSupportVolumeProps) => {
           fill="#FA7D00"
           radius={[2, 2, 0, 0]}
           barSize={32}
+          animationDuration={2000}
+          isAnimationActive={true}
         />
         <Bar
           name="Ticket Responded"
@@ -66,6 +68,8 @@ export const ChartSupportVolume = ({ data }: ChartSupportVolumeProps) => {
           fill="#2C6ECB"
           radius={[2, 2, 0, 0]}
           barSize={32}
+          animationDuration={2000}
+          isAnimationActive={true}
         />
         <Bar
           name="Ticket Closed"
@@ -73,6 +77,8 @@ export const ChartSupportVolume = ({ data }: ChartSupportVolumeProps) => {
           fill="#D72C0D"
           radius={[2, 2, 0, 0]}
           barSize={32}
+          animationDuration={2000}
+          isAnimationActive={true}
         />
         <Legend
           align="left"
