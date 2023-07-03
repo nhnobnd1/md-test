@@ -63,6 +63,8 @@ const ChartAgentsTicket = ({ data }: ChartAgentsTicketProps) => {
         name={`${agent.agentEmail}`}
         dataKey={agent.agentObjectId}
         fill={LIST_CHART_ITEM_COLOR[index]}
+        animationDuration={2000}
+        isAnimationActive={true}
       />
     ));
   };

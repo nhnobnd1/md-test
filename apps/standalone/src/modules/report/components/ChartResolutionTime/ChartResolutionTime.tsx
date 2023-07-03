@@ -83,6 +83,8 @@ export const ChartResolutionTime = ({ data }: ChartResolutionTimeProps) => {
           fill="none"
           strokeWidth={2}
           dot={{ r: 4, fill: "#FA7D00" }}
+          animationDuration={2000}
+          isAnimationActive={true}
         />
       </AreaChart>
     </ResponsiveContainer>
