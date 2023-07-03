@@ -7,5 +7,12 @@ interface SelectTagProps extends SelectProps {}
 export const SelectTag: FC<SelectTagProps> = ({ ...props }) => {
   const { isMobile } = useViewport();
 
-  return <Select mode="tags" size={isMobile ? "middle" : "large"} {...props} />;
+  return (
+    <Select
+      maxTagCount="responsive"
+      mode="tags"
+      size={isMobile ? "middle" : "large"}
+      {...props}
+    />
+  );
 };
