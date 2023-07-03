@@ -99,7 +99,6 @@ const DetailTicketForm = () => {
   const queryClient = useQueryClient();
 
   const [enableCC, setEnableCC] = useState(false);
-  const [statusTicket, setStatusTicket] = useState<string>();
   const { data: dataTicket, isLoading: processing } = useQuery({
     queryKey: ["getTicket", id],
     queryFn: () => getOneTicket(id as string),
@@ -110,14 +109,12 @@ const DetailTicketForm = () => {
     },
   });
   const ticket = useMemo(() => {
-    console.log("update ticket", statusTicket);
     if (dataTicket)
       return {
         ...dataTicket,
-        status: statusTicket || dataTicket.status,
       };
     return undefined;
-  }, [dataTicket, statusTicket]);
+  }, [dataTicket]);
 
   const {
     data: dataConversations,
@@ -471,7 +468,10 @@ const DetailTicketForm = () => {
   const handleCloseTicket = () => {
     startLoading();
     form.setFieldValue("status", "RESOLVED");
-    setStatusTicket("RESOLVED");
+    queryClient.setQueryData(["getTicket", id], (oldData: any) => ({
+      ...oldData,
+      status: "RESOLVED",
+    }));
 
     onFinish(form.getFieldsValue(), true);
   };
@@ -479,7 +479,11 @@ const DetailTicketForm = () => {
     startLoading();
     const values = form.getFieldsValue();
     form.setFieldValue("status", "OPEN");
-    setStatusTicket("OPEN");
+
+    queryClient.setQueryData(["getTicket", id], (oldData: any) => ({
+      ...oldData,
+      status: "OPEN",
+    }));
 
     updateTicketApi({
       status: "OPEN",
