@@ -95,7 +95,7 @@ export const ModalFilter: FC<ModalFilterProps> = ({
           activator={activator}
           open={active}
           onClose={handleChange}
-          title="FILTER"
+          title="Filter"
           primaryAction={{
             content: "Apply",
             onAction: () => {

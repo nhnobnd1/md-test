@@ -66,7 +66,7 @@ const ModalFilter = ({
   };
   return (
     <MDModalUI
-      title="FILTER"
+      title="Filter"
       {...props}
       onOk={handleApplySubmit}
       footer={[
