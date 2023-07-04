@@ -1,7 +1,6 @@
 import { Drawer, Modal, ModalProps } from "antd";
 import { FC } from "react";
 import { MDButton } from "src/components/UI/Button/MDButton";
-import Icon from "src/components/UI/Icon";
 import useViewport from "src/hooks/useViewport";
 
 interface MDModalUIProps extends ModalProps {}
@@ -14,7 +13,9 @@ export const MDModalUI: FC<MDModalUIProps> = ({ children, ...props }) => {
       cancelButtonProps={{ size: "large", className: "text-sm" }}
       destroyOnClose
       // closeIcon={<Icon name="close" />}
+
       {...props}
+      title={<div className="mb-5">{props.title}</div>}
     >
       {children}
     </Modal>

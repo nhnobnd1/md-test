@@ -13,6 +13,7 @@ import {
   Button,
   ButtonGroup,
   Card,
+  ContextualSaveBar,
   Layout,
   LegacyCard,
   Page,
@@ -121,7 +122,7 @@ const BusinessHours = (props: BusinessHoursProps) => {
     { showLoading: false }
   );
   // update business calendar
-  const { run: updateBusinessCalendar } = useJob(
+  const { run: updateBusinessCalendar, processing: isLoadingUpdate } = useJob(
     (dataSubmit: any) => {
       const { _id } = dataSubmit;
       return BusinessCalendarRepository()
@@ -179,6 +180,20 @@ const BusinessHours = (props: BusinessHoursProps) => {
   useMount(() => fetchListBusinessCalendar());
   return (
     <>
+      {formRef.current?.dirty && (
+        <ContextualSaveBar
+          fullWidth
+          message={"Unsaved changes"}
+          saveAction={{
+            onAction: () => formRef.current?.submitForm(),
+            disabled: !formRef.current?.dirty,
+            loading: isLoadingUpdate,
+          }}
+          discardAction={{
+            onAction: () => formRef.current?.resetForm(),
+          }}
+        />
+      )}
       {processing ? (
         <Page fullWidth>
           <SkeletonPage />
@@ -291,7 +306,7 @@ const BusinessHours = (props: BusinessHoursProps) => {
                         </div>
                       </Card>
                     </Layout.Section>
-                    <Layout.Section>
+                    {/* <Layout.Section>
                       <Stack distribution="trailing">
                         <ButtonGroup>
                           <Button onClick={() => formRef.current?.resetForm()}>
@@ -305,7 +320,7 @@ const BusinessHours = (props: BusinessHoursProps) => {
                           </Button>
                         </ButtonGroup>
                       </Stack>
-                    </Layout.Section>
+                    </Layout.Section> */}
                   </Layout>
                 </Card>
               </Form>

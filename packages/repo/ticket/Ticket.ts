@@ -175,6 +175,7 @@ export interface BaseListTicketFilterRequest extends BaseListRequest {
 	tags?: string;
 	status?: string;
 	priority?: string;
+	agentObjectId?: string;
 }
 export type GetListTicketRequest = BaseListTicketRequest;
 export type GetListTicketResponse = BaseListResponse<Ticket>;

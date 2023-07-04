@@ -1,5 +1,6 @@
 import { useNavigate } from "@moose-desk/core";
 import {
+  Agent,
   Customer,
   Tag,
   Ticket,
@@ -16,6 +17,7 @@ import Select from "src/components/UI/Select/Select";
 interface ModalFilterProps extends ModalProps {
   tags: Tag[];
   customers: Customer[];
+  agents: Agent[];
   setTickets: Dispatch<SetStateAction<Ticket[]>>;
   closeFilterModal: () => void;
   handleResetModal: () => void;
@@ -25,6 +27,7 @@ interface ModalFilterProps extends ModalProps {
 const ModalFilter = ({
   tags,
   customers,
+  agents,
   closeFilterModal,
   handleResetModal,
   handleApply,
@@ -47,12 +50,23 @@ const ModalFilter = ({
     });
     return customersOption;
   }, [customers]);
+  const agentsOptions = useMemo(() => {
+    const mapping = agents.map((item: Agent) => {
+      return {
+        value: item._id,
+        label: item.lastName.includes("admin")
+          ? `${item.firstName} - ${item.email}`
+          : `${item.firstName} ${item.lastName} - ${item.email}`,
+      };
+    });
+    return mapping;
+  }, [agents]);
   const handleApplySubmit = () => {
     handleApply(form.getFieldsValue());
   };
   return (
     <MDModalUI
-      title="FILTER"
+      title="Filter"
       {...props}
       onOk={handleApplySubmit}
       footer={[
@@ -80,8 +94,11 @@ const ModalFilter = ({
         closeFilterModal();
       }}
     >
-      <div className="pt-4">
+      <div>
         <Form layout="vertical" form={form}>
+          <Form.Item label="Agent" name="agentObjectId">
+            <Select options={agentsOptions} />
+          </Form.Item>
           <Form.Item label="Customer" name="customer">
             <Select options={customersOptions} />
           </Form.Item>
