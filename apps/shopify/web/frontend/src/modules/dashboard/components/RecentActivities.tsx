@@ -9,6 +9,8 @@ export const RecentActivities = React.memo(() => {
   const [page, setPage] = useState({
     page: 1,
     limit: 15,
+    sortBy: "performedDatetime",
+    sortOrder: -1,
   });
   const {
     data: listActivities,
