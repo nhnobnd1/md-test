@@ -78,6 +78,7 @@ export interface FilterObject {
   tags: string;
   status: string;
   priority: string;
+  agentObjectId: string;
 }
 const defaultFilter = () => ({
   page: 1,
@@ -250,27 +251,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         })
       );
   });
-  const { run: getListTicketApi, processing: loadingList } = useJob(
-    (payload: GetListTicketRequest) => {
-      return TicketRepository()
-        .getList(payload)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              const tickets = data.data.map((item) => ({
-                ...item,
-                id: item._id,
-              }));
-              setTickets(tickets);
-              setMeta(data.metadata);
-            } else {
-              // message.error("Get data ticket failed");
-              show(t("messages:error.get_ticket"), { isError: true });
-            }
-          })
-        );
-    }
-  );
+
   const { run: getListTagApi } = useJob((payload: GetListTagRequest) => {
     return TagRepository()
       .getList(payload)
@@ -345,7 +326,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
               getListTicketFilter({ ...filterData, ...filterObject });
               return;
             }
-            getListTicketApi(filterData);
+            getListTicketFilter(filterData);
             setFilterData((old: any) => {
               return {
                 ...old,
@@ -368,6 +349,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         tags: "",
         customer: "",
         priority: "",
+        agentObjectId: "",
       });
       history.replaceState(null, "", window.location.href);
       return;
@@ -376,7 +358,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       getListTicketFilter({ ...filterData, ...filterObject });
       return;
     }
-    getListTicketApi(filterData);
+    getListTicketFilter(filterData);
   }, [filterData]);
 
   const handleResetModal = useCallback(() => {
@@ -394,12 +376,14 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       status: values.status || undefined,
       customer: values.customer || undefined,
       tags: values.tags?.toString() || undefined,
+      agentObjectId: values?.agentObjectId,
     });
     setFilterObject({
       priority: values.priority,
       status: values.status,
       customer: values.customer,
       tags: values.tags?.toString(),
+      agentObjectId: values?.agentObjectId,
     });
     setActiveButtonIndex(values.status || "ALL");
   };
@@ -627,6 +611,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                 }}
               >
                 <ModalFilter
+                  agents={agents}
                   handleResetModal={handleResetModal}
                   customers={customers}
                   tags={tags}
@@ -727,7 +712,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
           </div>
           <div className="grid grid-cols-5 gap-6">
             <div className="col-span-5">
-              {(loadingList || loadingFilter) && <Loading />}
+              {loadingFilter && <Loading />}
               <>
                 <div className="flex mb-2 ticket-statistic">
                   <ButtonGroup segmented spacing="loose">
@@ -812,7 +797,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                   }
                   // lastColumnSticky
                   onSelectionChange={handleSelectionChange}
-                  loading={loadingList || loadingFilter}
+                  loading={loadingFilter}
                   emptyState={
                     <EmptySearchResult
                       title={

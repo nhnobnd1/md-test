@@ -1,5 +1,6 @@
 import { useNavigate } from "@moose-desk/core";
 import {
+  Agent,
   Customer,
   Tag,
   priorityOptions,
@@ -23,6 +24,8 @@ import { FilterObject } from "src/modules/ticket/pages/Index";
 interface ModalFilterProps {
   customers: Customer[];
   tags: Tag[];
+  agents: Agent[];
+
   handleApply: (values: any) => void;
   handleResetModal: () => void;
   filterObject: FilterObject | null;
@@ -31,6 +34,7 @@ interface ModalFilterProps {
 export const ModalFilter: FC<ModalFilterProps> = ({
   customers,
   tags,
+  agents,
   handleResetModal,
   handleApply,
   filterObject,
@@ -45,6 +49,17 @@ export const ModalFilter: FC<ModalFilterProps> = ({
     });
     return optionsTag;
   }, [tags]);
+  const agentsOptions = useMemo(() => {
+    const mapping = agents.map((item: Agent) => {
+      return {
+        value: item._id,
+        label: item.lastName.includes("admin")
+          ? `${item.firstName} - ${item.email}`
+          : `${item.firstName} ${item.lastName} - ${item.email}`,
+      };
+    });
+    return mapping;
+  }, [agents]);
   const customerOptions = useMemo(() => {
     const customersOption = customers.map((item: Customer) => {
       return {
@@ -115,6 +130,9 @@ export const ModalFilter: FC<ModalFilterProps> = ({
                 onSubmit={handleSubmitValue}
               >
                 <FormLayout>
+                  <FormItem name="agentObjectId">
+                    <BoxSelectFilter data={agentsOptions} label="Agent" />
+                  </FormItem>
                   <FormItem name="customer">
                     <BoxSelectFilter data={customerOptions} label="Customer" />
                   </FormItem>

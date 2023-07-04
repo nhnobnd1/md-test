@@ -72,6 +72,7 @@ interface FilterObject {
   tags: string;
   status: string;
   priority: string;
+  agentObjectId: string;
 }
 
 const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
@@ -359,6 +360,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         tags: "",
         customer: "",
         priority: "",
+        agentObjectId: "",
       });
       history.replaceState(null, "", window.location.href);
 
@@ -412,12 +414,14 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       status: values.status,
       customer: values.customer,
       tags: values.tags?.toString(),
+      agentObjectId: values?.agentObjectId,
     });
     setFilterObject({
       priority: values.priority,
       status: values.status,
       customer: values.customer,
       tags: values.tags?.toString(),
+      agentObjectId: values?.agentObjectId,
     });
     closeFilterModal();
   };
@@ -427,6 +431,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       <ModalFilter
         customers={customers}
         tags={tags}
+        agents={agents}
         open={filterModal}
         handleResetModal={handleResetModal}
         cancelText="Reset"
