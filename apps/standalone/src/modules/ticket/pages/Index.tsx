@@ -410,11 +410,11 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     getListTicketFilter({
       page: 1,
       limit: 10,
-      priority: values.priority,
-      status: values.status,
-      customer: values.customer,
-      tags: values.tags?.toString(),
-      agentObjectId: values?.agentObjectId,
+      priority: values.priority || undefined,
+      status: values.status || undefined,
+      customer: values.customer || undefined,
+      tags: values.tags?.toString() || undefined,
+      agentObjectId: values?.agentObjectId || undefined,
     });
     setFilterObject({
       priority: values.priority,
@@ -423,6 +423,8 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       tags: values.tags?.toString(),
       agentObjectId: values?.agentObjectId,
     });
+    setActiveButtonIndex(values.status || "ALL");
+
     closeFilterModal();
   };
 

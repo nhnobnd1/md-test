@@ -292,7 +292,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
               setTickets(tickets);
               setMeta(data.metadata);
             } else {
-              // message.error("Get data ticket failed");
               show(t("messages:error.get_ticket"), { isError: true });
             }
           })
@@ -369,6 +368,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     setIdDelete(id);
   }, []);
   const handleApply = (values: any) => {
+    console.log({ values });
     getListTicketFilter({
       page: 1,
       limit: 10,
@@ -376,7 +376,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       status: values.status || undefined,
       customer: values.customer || undefined,
       tags: values.tags?.toString() || undefined,
-      agentObjectId: values?.agentObjectId,
+      agentObjectId: values?.agentObjectId || undefined,
     });
     setFilterObject({
       priority: values.priority,
