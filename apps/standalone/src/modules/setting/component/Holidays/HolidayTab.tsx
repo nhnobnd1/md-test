@@ -6,7 +6,7 @@ import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
 import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
 import TableAction from "src/components/UI/Table/TableAction/TableAction";
-import useNotification from "src/hooks/useNotification";
+import useMessage from "src/hooks/useMessage";
 import ModalHoliday from "src/modules/setting/component/Holidays/ModalHoliday";
 interface HolidayTabProps {
   value?: Holidays[];
@@ -21,7 +21,7 @@ const HolidayTab = ({
   dataAutoReply,
   loading,
 }: HolidayTabProps) => {
-  const notification = useNotification();
+  const message = useMessage();
   const { t } = useTranslation();
 
   const [valueListHolidays, setValueListHolidays] = useState<Holidays[]>([]);
@@ -82,13 +82,13 @@ const HolidayTab = ({
         setValueListHolidays((init: Holidays[]) => {
           init.splice(dataForm.index, 1, value);
           onChange && onChange([...init]);
-          notification.success(t("messages:success.edit_holiday"));
+          message.success(t("messages:success.edit_holiday"));
           return init;
         });
       } else {
         setValueListHolidays((init: Holidays[]) => {
           onChange && onChange([...init, { ...value }]);
-          notification.success(t("messages:success.create_holiday"));
+          message.success(t("messages:success.create_holiday"));
 
           return [...init, { ...value }];
         });

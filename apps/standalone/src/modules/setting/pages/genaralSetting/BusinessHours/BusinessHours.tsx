@@ -124,9 +124,18 @@ const BusinessHours = () => {
   return (
     <>
       <Header
-        className="xs:h-[32px] md:h-[40px] flex items-center mb-5"
+        className="xs:h-[32px] md:h-[40px] flex items-center mb-5 "
         title="Business Hours"
-      ></Header>
+      >
+        <div className=" flex justify-end flex-1">
+          <Space>
+            <MDButton onClick={() => form.resetFields()}>Cancel</MDButton>
+            <MDButton type="primary" onClick={() => form.submit()}>
+              Save
+            </MDButton>
+          </Space>
+        </div>
+      </Header>
       {processing ? (
         <>
           <MDSkeleton lines={10} />
@@ -198,14 +207,6 @@ const BusinessHours = () => {
               <Input placeholder="" />
             </Form.Item>
           </Form>
-          <div className="flex-1 text-right mt-4">
-            <Space>
-              <MDButton onClick={() => form.resetFields()}>Cancel</MDButton>
-              <MDButton type="primary" onClick={() => form.submit()}>
-                Save
-              </MDButton>
-            </Space>
-          </div>
         </>
       )}
     </>

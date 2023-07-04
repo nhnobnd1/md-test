@@ -7,7 +7,7 @@ import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
 import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
 import TableAction from "src/components/UI/Table/TableAction/TableAction";
-import useNotification from "src/hooks/useNotification";
+import useMessage from "src/hooks/useMessage";
 import ModalAutoReply from "src/modules/setting/component/AutoReply/ModalAutoReply";
 
 interface AutoReplyTabProps {
@@ -25,7 +25,7 @@ const AutoReplyTab = ({
   dataBusinessHoursAutoReplyCode,
   loading,
 }: AutoReplyTabProps) => {
-  const notification = useNotification();
+  const message = useMessage();
   const [isDetail, setIsDetail] = useState<boolean>(false);
   const [valueListAutoReplys, setValueListAutoReplys] = useState<AutoReply[]>(
     []
@@ -75,12 +75,7 @@ const AutoReplyTab = ({
           return init;
         });
       } else {
-        notification.error(t("messages:error.delete_auto_reply"), {
-          description: "Update failed!",
-          style: {
-            width: 450,
-          },
-        });
+        message.error(t("messages:error.delete_auto_reply"));
       }
     },
     [valueListAutoReplys, dataHolidays, dataBusinessHoursAutoReplyCode]
@@ -98,17 +93,11 @@ const AutoReplyTab = ({
           ) {
             init.splice(dataForm.index, 1, value);
             onChange && onChange([...init]);
-            notification.success(t("messages:success.edit_auto_reply"));
+            message.success(t("messages:success.edit_auto_reply"));
             return init;
           } else {
-            notification.error(
-              `Auto Reply name ${value.name} already exists. Please try again!`,
-              {
-                description: `Auto Reply name ${value.name} already exists. Please try again!`,
-                style: {
-                  width: 450,
-                },
-              }
+            message.error(
+              `Auto Reply name ${value.name} already exists. Please try again!`
             );
             return init;
           }
@@ -117,17 +106,11 @@ const AutoReplyTab = ({
         setValueListAutoReplys((init: AutoReply[]) => {
           if (!init.find((data) => data.name === value.name)) {
             onChange && onChange([...init, { ...value }]);
-            notification.success(t("messages:success.create_auto_reply"));
+            message.success(t("messages:success.create_auto_reply"));
             return [...init, { ...value }];
           } else {
-            notification.error(
-              `Auto Reply name ${value.name} already exists. Please try again!`,
-              {
-                description: `Auto Reply name ${value.name} already exists. Please try again!`,
-                style: {
-                  width: 450,
-                },
-              }
+            message.error(
+              `Auto Reply name ${value.name} already exists. Please try again!`
             );
             return init;
           }
