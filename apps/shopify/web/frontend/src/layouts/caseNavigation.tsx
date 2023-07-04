@@ -62,7 +62,7 @@ const caseNavigation: NavigationItems[] = [
     icon: () => <ReportMinor />,
     subNavigationItems: [
       {
-        label: "Over view",
+        label: "Overview",
         url: ReportRoutePaths.Overview,
       },
       {
