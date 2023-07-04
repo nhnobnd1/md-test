@@ -78,7 +78,7 @@ const ChartAgentsTicket = ({ data }: ChartAgentsTicketProps) => {
         <div className="text-center">
           <Icon name="emptyChartData" />
           <p className="md_text--secondary">
-            Sorry!, There is no records matched with your criteria.
+            Sorry! There is no records matched with your criteria.
           </p>
         </div>
       ) : (

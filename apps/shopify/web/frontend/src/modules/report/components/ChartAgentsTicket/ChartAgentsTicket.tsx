@@ -11,6 +11,7 @@ import {
 import { CustomTooltip } from "src/modules/report/components/Customize/CustomTooltip";
 import { CustomXAxisTick } from "src/modules/report/components/Customize/CustomXAxisTick";
 import { CustomYAxisTick } from "src/modules/report/components/Customize/CustomYAxisTick";
+import EmptyChartData from "src/modules/report/components/EmptyChartData";
 import ChartTopFiveRes from "src/modules/report/helper/interface";
 
 interface ChartAgentsTicketProps {
@@ -72,21 +73,37 @@ const ChartAgentsTicket = ({
   };
 
   return (
-    <ResponsiveContainer width="100%" height="100%">
-      <BarChart data={memoChartData}>
-        {/* <CartesianGrid strokeDasharray="3 3" /> */}
-        <XAxis
-          dataKey="name"
-          color="black"
-          axisLine={false}
-          tickLine={false}
-          tick={<CustomXAxisTick />}
-        />
-        <YAxis axisLine={false} tickLine={false} tick={<CustomYAxisTick />} />
-        <Tooltip content={<CustomTooltip />} />
-        <Legend />
-        {_renderListBarChart()}
-      </BarChart>
+    <ResponsiveContainer
+      width="100%"
+      height="100%"
+      className="flex-center justify-center"
+    >
+      {!convertTopFiveAgents[0]?.length ? (
+        <div className="flex-column-center">
+          <EmptyChartData />
+          <p
+            className="md_text--secondary"
+            style={{ color: "rgba(109, 113, 117, 1)" }}
+          >
+            Sorry! There is no records matched with your criteria.
+          </p>
+        </div>
+      ) : (
+        <BarChart data={memoChartData}>
+          {/* <CartesianGrid strokeDasharray="3 3" /> */}
+          <XAxis
+            dataKey="name"
+            color="black"
+            axisLine={false}
+            tickLine={false}
+            tick={<CustomXAxisTick />}
+          />
+          <YAxis axisLine={false} tickLine={false} tick={<CustomYAxisTick />} />
+          <Tooltip content={<CustomTooltip />} />
+          <Legend />
+          {_renderListBarChart()}
+        </BarChart>
+      )}
     </ResponsiveContainer>
   );
 };
