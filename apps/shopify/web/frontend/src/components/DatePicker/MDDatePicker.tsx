@@ -61,8 +61,8 @@ const MDDatePicker = ({
   const handleApplyDates = () => {
     if (
       !selectedDates?.start ||
-      !selectedDates?.end ||
-      selectedDates.start === selectedDates.end
+      !selectedDates?.end
+      // selectedDates.start === selectedDates.end
     )
       return;
     onSubmitTime({
@@ -122,11 +122,7 @@ const MDDatePicker = ({
               </div>
               <div className={styles.submitBtn}>
                 <Button
-                  disabled={
-                    !selectedDates?.start ||
-                    !selectedDates?.end ||
-                    selectedDates.start === selectedDates.end
-                  }
+                  disabled={!selectedDates?.start || !selectedDates?.end}
                   onClick={handleApplyDates}
                 >
                   Apply
