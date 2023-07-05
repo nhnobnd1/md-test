@@ -1,4 +1,4 @@
-import { useToggle } from "@moose-desk/core";
+import { useToggle, useUser } from "@moose-desk/core";
 import { Button, Icon, Text, TopBar } from "@shopify/polaris";
 import {
   CancelMajor,
@@ -23,7 +23,8 @@ const MainLayoutTopBar = ({
   setShowMainLayout,
 }: MainLayoutTopBarProps) => {
   const [expandedMenu, setExpendedMenu] = useState(true);
-
+  const user = useUser();
+  console.log({ user });
   const fullScreenState = useFullScreen((state) => state.fullScreen);
   const { state: fullScreen, toggle: toggleFullScreen } =
     useToggle(fullScreenState);
@@ -40,24 +41,56 @@ const MainLayoutTopBar = ({
   const SecondaryMenu = () => {
     return (
       <div className="Md-TopBar__Wrapper">
-        <div className="Md-TopBar__Title">
-          <div className="Md-Toggle__Navigation">
+        <div className="flex">
+          <div className="Md-TopBar__Title">
+            <div className="Md-Toggle__Navigation ">
+              <Button
+                plain
+                onClick={() => {
+                  setExpendedMenu(() => {
+                    return !expandedMenu;
+                  });
+                  setShowMainLayout(!expandedMenu);
+                }}
+                icon={
+                  <Icon
+                    source={() => (
+                      <>
+                        {expandedMenu ? (
+                          <CancelMajor />
+                        ) : (
+                          <MobileHamburgerMajor />
+                        )}
+                      </>
+                    )}
+                    color="base"
+                  />
+                }
+              />
+            </div>
+            <img src={Images.Logo.LogoMooseDesk} alt="" width={175} />
+          </div>
+          <div className="mr-10 flex items-center w-full gap-2">
+            <div className="md:flex hidden ">
+              <Text as="span" variant="headingSm">
+                {user?.subdomain}
+              </Text>
+              <span>&nbsp;/&nbsp;</span>
+              <Text as="span" variant="headingSm">
+                {user?.email}
+              </Text>
+            </div>
             <Button
               plain
-              onClick={() => {
-                setExpendedMenu(() => {
-                  return !expandedMenu;
-                });
-                setShowMainLayout(!expandedMenu);
-              }}
+              onClick={toggleFullScreen}
               icon={
                 <Icon
                   source={() => (
                     <>
-                      {expandedMenu ? (
-                        <CancelMajor />
+                      {fullScreen ? (
+                        <MinimizeMinor style={{ fontSize: 24 }} />
                       ) : (
-                        <MobileHamburgerMajor />
+                        <MaximizeMinor style={{ fontSize: 24 }} />
                       )}
                     </>
                   )}
@@ -66,32 +99,6 @@ const MainLayoutTopBar = ({
               }
             />
           </div>
-          <img src={Images.Logo.LogoMooseDesk} alt="" width={175} />
-          <div className="Md-TopBar__TextBrand">
-            <Text as="p" variant="headingLg" fontWeight="semibold">
-              {/* MooseDesk */}
-            </Text>
-          </div>
-        </div>
-        <div className="mr-10 flex items-center">
-          <Button
-            plain
-            onClick={toggleFullScreen}
-            icon={
-              <Icon
-                source={() => (
-                  <>
-                    {fullScreen ? (
-                      <MinimizeMinor style={{ fontSize: 24 }} />
-                    ) : (
-                      <MaximizeMinor style={{ fontSize: 24 }} />
-                    )}
-                  </>
-                )}
-                color="base"
-              />
-            }
-          />
         </div>
       </div>
     );
