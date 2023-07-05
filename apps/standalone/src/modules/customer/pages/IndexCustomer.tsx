@@ -114,8 +114,11 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
         const { data: customerData }: any = await getOneCustomer(
           querySearchCustomer
         );
-        if (customerData) {
+        if (customerData?.data && Object.keys(customerData?.data).length > 0) {
           handleEdit(customerData?.data);
+        } else {
+          notification.error("Customer not found");
+          navigate("/customers");
         }
       } catch (error) {
         console.log(error, "error");
