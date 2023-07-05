@@ -3,6 +3,7 @@ import {
   generatePath,
   MediaScreen,
   useJob,
+  useNavigate,
   useParams,
   useToggle,
   useUnMount,
@@ -103,7 +104,7 @@ const DetailTicket = (props: DetailTicketProps) => {
   const { show } = useToast();
   const { t, i18n } = useTranslation();
   const endPageRef = useRef<any>(null);
-
+  const navigate = useNavigate();
   const [conversationList, setConversationList] = useState<Conversation[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [enableCC, setEnableCC] = useState(false);
@@ -307,9 +308,15 @@ const DetailTicket = (props: DetailTicketProps) => {
               })
             );
           } else {
-            // message.error("Get ticket failed");
             show(t("messages:error.get_ticket"), { isError: true });
           }
+        }),
+        catchError((err) => {
+          console.log("error");
+          navigate("/404");
+          show(t("messages:error.get_ticket"), { isError: true });
+
+          return of(err);
         })
       );
   });
@@ -374,6 +381,11 @@ const DetailTicket = (props: DetailTicketProps) => {
             // message.error("Get data ticket failed");
             show(t("messages:error.get_tag"), { isError: true });
           }
+        }),
+        catchError((err) => {
+          show(t("messages:error.get_tag"), { isError: true });
+
+          return of(err);
         })
       );
   });

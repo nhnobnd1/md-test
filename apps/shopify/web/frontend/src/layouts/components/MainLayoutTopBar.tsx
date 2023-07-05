@@ -24,7 +24,6 @@ const MainLayoutTopBar = ({
 }: MainLayoutTopBarProps) => {
   const [expandedMenu, setExpendedMenu] = useState(true);
   const user = useUser();
-  console.log({ user });
   const fullScreenState = useFullScreen((state) => state.fullScreen);
   const { state: fullScreen, toggle: toggleFullScreen } =
     useToggle(fullScreenState);
@@ -71,7 +70,7 @@ const MainLayoutTopBar = ({
             <img src={Images.Logo.LogoMooseDesk} alt="" width={175} />
           </div>
           <div className="mr-10 flex items-center w-full gap-2">
-            <div className="md:flex hidden ">
+            <div className="md:flex hidden w-[500px] max-h-[56px] justify-end overflow-x-scroll">
               <Text as="span" variant="headingSm">
                 {user?.subdomain}
               </Text>
