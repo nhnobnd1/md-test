@@ -95,8 +95,11 @@ export default function CustomerIndexPage() {
         const { data: customerData }: any = await getOneCustomer(
           querySearchCustomer
         );
-        if (customerData) {
+        if (customerData?.data && Object.keys(customerData?.data).length > 0) {
           handleOpenPopup(customerData?.data);
+        } else {
+          show("Customer not found", { isError: true });
+          navigate("/customers");
         }
       } catch (error) {
         console.log(error, "error");
