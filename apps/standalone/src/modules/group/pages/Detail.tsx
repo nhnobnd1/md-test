@@ -1,25 +1,23 @@
 import {
   generatePath,
   useJob,
-  useMount,
   useNavigate,
   useParams,
   useToggle,
 } from "@moose-desk/core";
-import {
-  UpdateUserGroupRequest,
-  UserGroup,
-  UserGroupRepository,
-} from "@moose-desk/repo";
+import { UpdateUserGroupRequest, UserGroupRepository } from "@moose-desk/repo";
 import { Button } from "antd";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { useQuery, useQueryClient } from "react-query";
 import { catchError, map, of } from "rxjs";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
+import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { GroupForm } from "src/modules/group/components/GroupForm";
+import { getOneGroup } from "src/modules/group/helper/api";
 import GroupRoutePaths from "src/modules/group/routes/paths";
 
 const DetailGroup = () => {
@@ -28,22 +26,27 @@ const DetailGroup = () => {
   const notification = useNotification();
   const { toggle: updateForm } = useToggle();
   const navigate = useNavigate();
-  const [group, setGroup] = useState<UserGroup>();
   const { id } = useParams();
-  const { t } = useTranslation();
+  const queryClient = useQueryClient();
 
-  const { run: getGroupApi } = useJob(() => {
-    return UserGroupRepository()
-      .getOne(id ?? "")
-      .pipe(
-        map(({ data }) => {
-          setGroup(data.data);
-        }),
-        catchError((err) => {
-          return of(err);
-        })
-      );
+  const {
+    data: dataGroup,
+    isLoading: processing,
+    refetch,
+  } = useQuery({
+    queryKey: ["getGroup", id],
+    queryFn: () => getOneGroup(id as string),
+    // retry: 1,
+
+    onError: () => {
+      navigate("/404");
+    },
   });
+
+  const group = useMemo(() => {
+    return dataGroup;
+  }, [dataGroup]);
+  const { t } = useTranslation();
 
   const { run: updateGroupApi, processing: loadingUpdateGroup } = useJob(
     (id: string, payload: UpdateUserGroupRequest) => {
@@ -56,6 +59,7 @@ const DetailGroup = () => {
             if (data.statusCode === 200) {
               message.loading.hide().then(() => {
                 notification.success(t("messages:success.update_group"));
+                queryClient.setQueryData(["getGroup", id], data.data);
                 navigate(generatePath(GroupRoutePaths.Index));
               });
             } else {
@@ -97,9 +101,9 @@ const DetailGroup = () => {
     [id]
   );
 
-  useMount(() => {
-    getGroupApi();
-  });
+  // useMount(() => {
+  //   getGroupApi();
+  // });
 
   return (
     <div>
@@ -124,13 +128,17 @@ const DetailGroup = () => {
           </div>
         </div>
       </Header>
-      <GroupForm
-        id={id}
-        form={form}
-        initialValues={initialValues}
-        onValuesChange={updateForm}
-        onFinish={handleSubmit}
-      />
+      {processing ? (
+        <MDSkeleton lines={10} />
+      ) : (
+        <GroupForm
+          id={id}
+          form={form}
+          initialValues={initialValues}
+          onValuesChange={updateForm}
+          onFinish={handleSubmit}
+        />
+      )}
     </div>
   );
 };

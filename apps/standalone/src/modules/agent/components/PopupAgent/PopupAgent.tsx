@@ -17,7 +17,6 @@ import { MDModalUI } from "src/components/MDModalUI";
 import { ButtonModalDelete } from "src/components/UI/Button/ButtonModalDelete";
 import { MDButton } from "src/components/UI/Button/MDButton";
 import Form from "src/components/UI/Form/Form";
-import { Header } from "src/components/UI/Header";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { usePermission } from "src/hooks/usePerrmisson";
@@ -423,21 +422,22 @@ export const PopupAgent = ({
           )}
         </Space>
       }
+      title={
+        dataForm?._id ? (
+          <div className="flex items-center gap-2">
+            <span className="m-0">{`${dataForm.firstName} ${dataForm.lastName}`}</span>
+            <Tag color={agentStatus.color}>{agentStatus.label}</Tag>
+          </div>
+        ) : (
+          <span className="m-0">Create new agent</span>
+        )
+      }
     >
       <div>
-        <Header
+        {/* <Header
           className="xs:h-[32px] md:h-[40px] flex items-center mb-5"
-          title={
-            dataForm?._id ? (
-              <div className="flex items-center gap-2">
-                <h1 className="m-0">{`${dataForm.firstName} ${dataForm.lastName}`}</h1>
-                <Tag color={agentStatus.color}>{agentStatus.label}</Tag>
-              </div>
-            ) : (
-              <h1 className="m-0">Create new agent</h1>
-            )
-          }
-        ></Header>
+         
+        ></Header> */}
         <Loading spinning={loadingSentMail || loadingUpdate || loadingCreate}>
           <AgentForm
             initialValues={dataForm}

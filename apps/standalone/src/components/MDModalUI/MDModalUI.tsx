@@ -7,18 +7,26 @@ interface MDModalUIProps extends ModalProps {}
 
 export const MDModalUI: FC<MDModalUIProps> = ({ children, ...props }) => {
   const { isMobile } = useViewport();
+  const css = `
+  .ant-modal-header{
+    margin-bottom:0!important
+  }
+  `;
   return !isMobile ? (
-    <Modal
-      okButtonProps={{ size: "large", className: "text-sm" }}
-      cancelButtonProps={{ size: "large", className: "text-sm" }}
-      destroyOnClose
-      // closeIcon={<Icon name="close" />}
+    <>
+      <style scoped>{css}</style>
+      <Modal
+        okButtonProps={{ size: "large", className: "text-sm" }}
+        cancelButtonProps={{ size: "large", className: "text-sm" }}
+        destroyOnClose
+        // closeIcon={<Icon name="close" />}
 
-      {...props}
-      title={<div className="mb-5">{props.title}</div>}
-    >
-      {children}
-    </Modal>
+        {...props}
+        title={<div className="mb-5">{props.title}</div>}
+      >
+        {children}
+      </Modal>
+    </>
   ) : (
     <Drawer
       destroyOnClose

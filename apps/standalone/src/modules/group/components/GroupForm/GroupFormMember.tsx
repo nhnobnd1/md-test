@@ -12,15 +12,19 @@ import {
 } from "@moose-desk/repo";
 import { uniqBy } from "lodash-es";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useQuery } from "react-query";
 import { map } from "rxjs";
 import { MDSearchInput } from "src/components/UI/MDSearchInput";
-import Select, {
-  LoadMoreValue,
-  OptionType,
-} from "src/components/UI/Select/Select";
+import { LoadMoreValue, OptionType } from "src/components/UI/Select/Select";
 import { Table } from "src/components/UI/Table";
 import TableAction from "src/components/UI/Table/TableAction/TableAction";
 import env from "src/core/env";
+import useDeepEffect from "src/hooks/useDeepEffect";
+import useMessage from "src/hooks/useMessage";
+import { SelectList } from "src/modules/ticket/components/TicketForm/SelectList";
+import { getListAgentApi } from "src/modules/ticket/helper/api";
+import { defaultFilter } from "src/utils/localValue";
 // import PhUserPlusFill from "~icons/ph/user-plus-fill";
 
 interface GroupFormMemberProps {
@@ -31,27 +35,58 @@ interface GroupFormMemberProps {
 
 const GroupFormMember = memo(
   ({ value, groupId, onChange }: GroupFormMemberProps) => {
-    const defaultFilter: () => GetMembersGroupRequest = () => ({
-      page: 1,
-      limit: 5,
-      query: "",
-    });
     const [groupMembers, setGroupMembers] = useState<GroupMembers[]>([]);
     const [groupMembersTable, setGroupMembersTable] = useState<GroupMembers[]>(
       []
     );
     const { toggle: updateTable } = useToggle();
+    const message = useMessage();
 
     const [groupIds, setGroupIds] = useState<string[]>(value ?? []);
-
-    const [filterData, setFilterData] = useState<GetMembersGroupRequest>(
-      defaultFilter()
-    );
+    console.log({ value });
+    const [filterData, setFilterData] =
+      useState<GetMembersGroupRequest>(defaultFilter);
     const prevFilter = usePrevious<GetMembersGroupRequest>(filterData);
+    const { t } = useTranslation();
 
     const isDetail = useMemo(() => {
       return !!groupId;
     }, [groupId]);
+
+    const { data: dataAgents } = useQuery({
+      queryKey: [
+        "getAgents",
+        {
+          page: 1,
+          limit: 500,
+        },
+      ],
+      queryFn: () =>
+        getListAgentApi({
+          page: 1,
+          limit: 500,
+        }),
+      staleTime: 10000,
+      retry: 1,
+
+      onError: () => {
+        message.error(t("messages:error.get_agent"));
+      },
+    });
+    const agentsOptions = useMemo(() => {
+      if (!dataAgents) return [];
+      return (
+        dataAgents
+          // .filter((item) => item.isActive && item.emailConfirmed)
+          .map((item) => ({
+            label: item.lastName.includes("admin")
+              ? `${item.firstName} - ${item.email}`
+              : `${item.firstName} ${item.lastName} - ${item.email}`,
+            value: `${item._id},${item.email}`,
+            obj: item,
+          }))
+      );
+    }, [dataAgents]);
 
     const fetchAgents = useCallback(
       (params: LoadMoreValue) => {
@@ -208,8 +243,8 @@ const GroupFormMember = memo(
       }
     }, [groupMembers]);
 
-    useEffect(() => {
-      if (isDetail && groupId) {
+    useDeepEffect(() => {
+      if (isDetail && groupId && groupIds.length > 0) {
         if (prevFilter?.query !== filterData.query && filterData.query) {
           getListMemberGroupDebounce(groupId, filterData);
         } else {
@@ -229,7 +264,7 @@ const GroupFormMember = memo(
           setGroupMembersTable(groupMembers);
         }
       }
-    }, [filterData]);
+    }, [filterData, groupIds.length]);
 
     useEffect(() => {
       value && setGroupIds(value);
@@ -239,7 +274,7 @@ const GroupFormMember = memo(
       <div>
         <div className="flex gap-3 xs:flex-col md:flex-row">
           <div className="mb-5  flex-1">
-            <Select.Ajax
+            {/* <Select.Ajax
               className="w-full"
               placeholder="+ Add member"
               onChange={handleSelectAgent}
@@ -247,6 +282,11 @@ const GroupFormMember = memo(
               virtual
               disableValues={groupIds}
               loadMore={fetchAgents}
+            /> */}
+            <SelectList
+              className="w-full"
+              placeholder="+ Add member"
+              options={agentsOptions}
             />
           </div>
           <div className="mb-5 flex-1">

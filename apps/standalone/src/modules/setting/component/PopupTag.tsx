@@ -139,12 +139,13 @@ export const PopupTag = ({
         </Space>
       }
       width={1000}
+      title={dataForm?._id ? `Edit tag` : "New tag"}
     >
       <div>
-        <Header
+        {/* <Header
           title={dataForm?._id ? `Edit tag` : "New tag"}
           className="mb-5"
-        ></Header>
+        ></Header> */}
         <TagForm
           initialValues={dataForm}
           enableLoadForm

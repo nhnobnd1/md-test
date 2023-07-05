@@ -16,7 +16,7 @@ import {
 } from "@moose-desk/repo";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { catchError, map } from "rxjs";
+import { catchError, map, of } from "rxjs";
 import { MDButton } from "src/components/UI/Button/MDButton";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
@@ -136,6 +136,12 @@ const ChannelEmailUpdate = () => {
             } else {
               message.error(t("messages:error.get_email"));
             }
+          }),
+          catchError((err) => {
+            navigate("/404");
+            message.error(t("messages:error.get_email"));
+
+            return of(err);
           })
         );
     },
