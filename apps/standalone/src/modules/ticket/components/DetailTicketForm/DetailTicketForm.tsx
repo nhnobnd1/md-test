@@ -105,6 +105,8 @@ const DetailTicketForm = () => {
     retry: 1,
 
     onError: () => {
+      navigate("/404");
+
       message.error(t("messages:error.get_ticket"));
     },
   });
