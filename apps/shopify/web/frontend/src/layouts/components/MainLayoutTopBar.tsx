@@ -72,8 +72,7 @@ const MainLayoutTopBar = ({
           <div className="mr-10 flex items-center w-full gap-2">
             <div className="md:flex hidden max-w-[500px]  max-h-[56px] justify-end overflow-x-scroll">
               <Text truncate as="span" variant="headingSm">
-                {user?.subdomain} qwe qwe qweqw qwe qweq w qw qe qwe qwe q qwe
-                qwe qw qw e qwe qe qwe qwe jqw jeiqjw eiqwje iqji je
+                {user?.subdomain}
               </Text>
               <span>&nbsp;/&nbsp;</span>
               <Text truncate as="span" variant="headingSm">
