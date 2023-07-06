@@ -1,4 +1,4 @@
-import { MediaScreen, generatePath, useJob, useToggle } from "@moose-desk/core";
+import { generatePath, useJob, useToggle } from "@moose-desk/core";
 import {
   BaseListHelpWidgetRequest,
   GetListHelpWidgetRequest,
@@ -27,7 +27,6 @@ import { Banner } from "src/components/Banner";
 import Form from "src/components/Form";
 import env from "src/core/env";
 import { useBanner } from "src/hooks/useBanner";
-import usePreventNav from "src/hooks/usePreventNav";
 import Appearance from "src/modules/settingChannel/components/widgets/Appearance/Appearance";
 import General from "src/modules/settingChannel/components/widgets/General/General";
 import Integration from "src/modules/settingChannel/components/widgets/Integration/Integration";
@@ -107,6 +106,10 @@ const Widgets = (props: WidgetsProps) => {
                 isError: true,
               });
             }
+          }),
+          catchError((err) => {
+            show(t("messages:error.something_went_wrong"), { isError: true });
+            return of(err);
           })
         );
     },

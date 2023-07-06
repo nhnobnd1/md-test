@@ -68,6 +68,10 @@ const ResetPassword = () => {
             } else {
               notification.error(t("messages:error.get_store"));
             }
+          }),
+          catchError((err) => {
+            message.error(t("messages:error.something_went_wrong"));
+            return of(err);
           })
         );
     },

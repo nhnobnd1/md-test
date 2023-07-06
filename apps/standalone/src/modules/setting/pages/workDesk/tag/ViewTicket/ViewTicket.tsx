@@ -2,21 +2,15 @@ import {
   createdDatetimeFormat,
   priorityToTag,
   upperCaseFirst,
-  useJob,
   useParams,
 } from "@moose-desk/core";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
-import {
-  BaseListTagRequest,
-  BaseMetaDataListResponse,
-  TagRepository,
-  Ticket,
-} from "@moose-desk/repo";
+import { BaseListTagRequest, Ticket } from "@moose-desk/repo";
 import { TableProps, Tag as TagAntd } from "antd";
 import { SorterResult } from "antd/es/table/interface";
-import { FC, useCallback, useEffect, useState } from "react";
+import { FC, useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { map } from "rxjs";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Header } from "src/components/UI/Header";
 import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
@@ -25,6 +19,10 @@ import useMessage from "src/hooks/useMessage";
 import { usePermission } from "src/hooks/usePerrmisson";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { ButtonRemoveTag } from "src/modules/setting/component/ButtonRemoveTag";
+import {
+  deleteForceTag,
+  getListTicketByTag,
+} from "src/modules/setting/helper/api";
 import { defaultFilter } from "src/utils/localValue";
 import "./ViewTicket.scss";
 interface ViewTicketProps {}
@@ -32,15 +30,47 @@ interface ViewTicketProps {}
 const ViewTicket: FC<ViewTicketProps> = () => {
   const { id } = useParams();
   const message = useMessage();
-  const [tickets, setTickets] = useState<Ticket[]>([]);
-  const [meta, setMeta] = useState<BaseMetaDataListResponse>();
+  const [filterData, setFilterData] =
+    useState<BaseListTagRequest>(defaultFilter);
+  const { data: dataTicket, isLoading: processing } = useQuery({
+    queryKey: ["getListTicketByTagResponse", id, filterData],
+    queryFn: () => getListTicketByTag(id as string, filterData),
+
+    onError: () => {
+      message.error(t("messages:error.get_ticket"));
+    },
+  });
+  const queryClient = useQueryClient();
+
+  const tickets = useMemo(() => {
+    if (dataTicket) return dataTicket.data;
+    return [];
+  }, [dataTicket]);
+  const meta = useMemo(() => {
+    if (dataTicket) return dataTicket.metadata;
+    return undefined;
+  }, [dataTicket]);
+
+  const mutateDelete = useMutation({
+    mutationFn: (id: string) => deleteForceTag(id),
+    onSuccess: () => {
+      message.success(t("messages:success.deleted"));
+
+      queryClient.setQueryData(
+        ["getListTicketByTagResponse", id, filterData],
+        (oldData: any) => ({ ...oldData, data: [] })
+      );
+    },
+    onError: () => {
+      message.error(t("messages:error.deleted"));
+    },
+  });
+
   const { isAgent } = usePermission();
   const { subDomain } = useSubdomain();
   const { timezone } = useGlobalData(false, subDomain || "");
   const { t } = useTranslation();
 
-  const [filterData, setFilterData] =
-    useState<BaseListTagRequest>(defaultFilter);
   const onPagination = useCallback(
     ({ page, limit }: { page: number; limit: number }) => {
       setFilterData((value) => {
@@ -71,46 +101,12 @@ const ViewTicket: FC<ViewTicketProps> = () => {
     },
     [setFilterData]
   ) as TableProps<any>["onChange"];
-  const { run: getTicketByTagApi, processing } = useJob(
-    (id: string, params: BaseListTagRequest) => {
-      return TagRepository()
-        .getListTicket(id, params)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              setTickets(data.data);
-              setMeta(data.metadata);
-            } else {
-              message.error(t("messages:error.get_ticket"));
-            }
-          })
-        );
-    }
-  );
-  const { run: deleteForceApi } = useJob((id: string) => {
-    return TagRepository()
-      .deleteForce(id)
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            getTicketByTagApi(id, filterData);
-            message.success(t("messages:success.deleted"));
-          } else {
-            message.error(t("messages:error.deleted"));
-          }
-        })
-      );
-  });
+
   const handleDelete = useCallback(() => {
     if (id) {
-      deleteForceApi(id);
+      mutateDelete.mutate(id);
     }
   }, [id]);
-  useEffect(() => {
-    if (id) {
-      getTicketByTagApi(id, filterData);
-    }
-  }, [filterData, id]);
 
   return (
     <>

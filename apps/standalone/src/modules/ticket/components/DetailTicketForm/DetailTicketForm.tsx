@@ -399,6 +399,8 @@ const DetailTicketForm = () => {
           }
         }),
         catchError((err) => {
+          message.error(t("messages:error.something_went_wrong"));
+
           stopLoading();
 
           return of(err);
@@ -417,6 +419,8 @@ const DetailTicketForm = () => {
           }
         }),
         catchError((err) => {
+          message.error(t("messages:error.something_went_wrong"));
+
           stopLoading();
 
           return of(err);

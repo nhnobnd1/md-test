@@ -56,6 +56,10 @@ export default function DetailsTag() {
             setTitle(`${data.data.name}`);
             setDataTag(data.data);
             return data.data;
+          }),
+          catchError((err) => {
+            show(t("messages:error.something_went_wrong"), { isError: true });
+            return of(err);
           })
         );
     },

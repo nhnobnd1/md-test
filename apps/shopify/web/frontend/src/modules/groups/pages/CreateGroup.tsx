@@ -5,7 +5,7 @@ import { Card, ContextualSaveBar, Layout, Page } from "@shopify/polaris";
 import { FormikProps } from "formik";
 import { useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { map } from "rxjs";
+import { catchError, map, of } from "rxjs";
 import { Banner } from "src/components/Banner";
 import { useBanner } from "src/hooks/useBanner";
 import {
@@ -53,6 +53,11 @@ const CreateGroup = (props: CreateGroupProps) => {
                 });
               }
             }
+          }),
+          catchError((err) => {
+            show(t("messages:error.something_went_wrong"), { isError: true });
+
+            return of(err);
           })
         );
     },

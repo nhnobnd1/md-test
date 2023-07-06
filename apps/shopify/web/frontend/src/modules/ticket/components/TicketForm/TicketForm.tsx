@@ -16,11 +16,11 @@ import { useToast } from "@shopify/app-bridge-react";
 import { Button, FormLayout, Link, Select, TextField } from "@shopify/polaris";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { map } from "rxjs";
+import { catchError, map, of } from "rxjs";
 import Form, { FormProps } from "src/components/Form";
 import FormItem from "src/components/Form/Item";
 import BoxSelectFilter from "src/components/Modal/ModalFilter/BoxSelectFilter";
-import { LoadMoreValue, Select as ComboSelect } from "src/components/Select";
+import { Select as ComboSelect, LoadMoreValue } from "src/components/Select";
 import SelectAddEmail from "src/components/SelectAddEmail/SelectAddEmail";
 import SelectAddTag from "src/components/SelectAddTag/SelectAddTag";
 import { TextEditorTicket } from "src/components/TextEditorTicket";
@@ -144,6 +144,10 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
           } else {
             // message.error("Get data ticket failed");
           }
+        }),
+        catchError((err) => {
+          show(t("messages:error.something_went_wrong"), { isError: true });
+          return of(err);
         })
       );
   });
@@ -164,6 +168,10 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
           } else {
             show(t("messages:error.create_ticket"), { isError: true });
           }
+        }),
+        catchError((err) => {
+          show(t("messages:error.something_went_wrong"), { isError: true });
+          return of(err);
         })
       );
   });
@@ -191,6 +199,10 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
             } else {
               // message.error("Get data ticket failed");
             }
+          }),
+          catchError((err) => {
+            show(t("messages:error.something_went_wrong"), { isError: true });
+            return of(err);
           })
         );
     }
@@ -220,6 +232,10 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
             } else {
               // message.error("Get data ticket failed");
             }
+          }),
+          catchError((err) => {
+            show(t("messages:error.something_went_wrong"), { isError: true });
+            return of(err);
           })
         );
     }

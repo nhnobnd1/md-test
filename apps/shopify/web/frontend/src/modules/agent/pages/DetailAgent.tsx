@@ -73,25 +73,23 @@ const DetailAgent = (props: CreateAgentProps) => {
       return AgentRepository()
         .getOne(id)
         .pipe(
-          map(
-            ({ data }) => {
-              if (data.statusCode === 200) {
-                setAgentSaved(data.data);
-              } else {
-                showBanner("critical", {
-                  message: t("messages:error.get_agent"),
-                });
-                show(t("messages:error.get_agent"), { isError: true });
-              }
-            },
-            catchError((err) => {
+          map(({ data }) => {
+            if (data.statusCode === 200) {
+              setAgentSaved(data.data);
+            } else {
               showBanner("critical", {
                 message: t("messages:error.get_agent"),
               });
               show(t("messages:error.get_agent"), { isError: true });
-              return of(err);
-            })
-          )
+            }
+          }),
+          catchError((err) => {
+            showBanner("critical", {
+              message: t("messages:error.get_agent"),
+            });
+            show(t("messages:error.get_agent"), { isError: true });
+            return of(err);
+          })
         );
     },
     { showLoading: true }
@@ -122,32 +120,30 @@ const DetailAgent = (props: CreateAgentProps) => {
       return AgentRepository()
         .update(id, payload)
         .pipe(
-          map(
-            ({ data }) => {
-              if (data.statusCode === 200) {
-                showBanner("success", {
-                  title: `Update ${data.data?.firstName} ${data.data?.lastName}`,
-                  message: t("messages:success.agent_update"),
-                });
-                setAgentSaved(data.data);
-                show(t("messages:success.agent_update"));
-              } else {
-                showBanner("critical", {
-                  title: `Update ${agentSaved?.firstName} ${agentSaved?.lastName}`,
-                  message: t("messages:error.agent_update"),
-                });
-                show(t("messages:error.agent_update"), { isError: true });
-              }
-            },
-            catchError((err) => {
+          map(({ data }) => {
+            if (data.statusCode === 200) {
+              showBanner("success", {
+                title: `Update ${data.data?.firstName} ${data.data?.lastName}`,
+                message: t("messages:success.agent_update"),
+              });
+              setAgentSaved(data.data);
+              show(t("messages:success.agent_update"));
+            } else {
               showBanner("critical", {
                 title: `Update ${agentSaved?.firstName} ${agentSaved?.lastName}`,
                 message: t("messages:error.agent_update"),
               });
               show(t("messages:error.agent_update"), { isError: true });
-              return of(err);
-            })
-          )
+            }
+          }),
+          catchError((err) => {
+            showBanner("critical", {
+              title: `Update ${agentSaved?.firstName} ${agentSaved?.lastName}`,
+              message: t("messages:error.agent_update"),
+            });
+            show(t("messages:error.agent_update"), { isError: true });
+            return of(err);
+          })
         );
     },
     {
@@ -160,35 +156,32 @@ const DetailAgent = (props: CreateAgentProps) => {
       return AgentRepository()
         .resendEmailInvitation(payload)
         .pipe(
-          map(
-            ({ data }) => {
-              if (data.statusCode === 200) {
-                initCountdown(agentSaved?._id ?? id ?? "");
-                showBanner("success", {
-                  title: `Resend invitation ${payload.email}`,
-                  message: t("messages:success.resend_invitation_email"),
-                });
-                show(t("messages:success.resend_invitation_email"));
-              } else {
-                showBanner("critical", {
-                  message: t("messages:error.resend_invitation_email"),
-                });
-                show(t("messages:error.resend_invitation_email"), {
-                  isError: true,
-                });
-              }
-            },
-
-            catchError((err) => {
+          map(({ data }) => {
+            if (data.statusCode === 200) {
+              initCountdown(agentSaved?._id ?? id ?? "");
+              showBanner("success", {
+                title: `Resend invitation ${payload.email}`,
+                message: t("messages:success.resend_invitation_email"),
+              });
+              show(t("messages:success.resend_invitation_email"));
+            } else {
               showBanner("critical", {
                 message: t("messages:error.resend_invitation_email"),
               });
               show(t("messages:error.resend_invitation_email"), {
                 isError: true,
               });
-              return of(err);
-            })
-          )
+            }
+          }),
+          catchError((err) => {
+            showBanner("critical", {
+              message: t("messages:error.resend_invitation_email"),
+            });
+            show(t("messages:error.resend_invitation_email"), {
+              isError: true,
+            });
+            return of(err);
+          })
         );
     },
     { showLoading: true }
@@ -199,29 +192,27 @@ const DetailAgent = (props: CreateAgentProps) => {
       return AgentRepository()
         .reActiveAgent(id)
         .pipe(
-          map(
-            ({ data }) => {
-              if (data.statusCode === 200) {
-                showBanner("success", {
-                  message: "Agent has been activated successfully.",
-                });
-                show(t("messages:success.active_agent"));
-                getDetailAgentApi(id);
-              } else {
-                showBanner("critical", {
-                  message: t("messages:error.active_agent"),
-                });
-                show(t("messages:error.active_agent"), { isError: true });
-              }
-            },
-            catchError((err) => {
+          map(({ data }) => {
+            if (data.statusCode === 200) {
+              showBanner("success", {
+                message: "Agent has been activated successfully.",
+              });
+              show(t("messages:success.active_agent"));
+              getDetailAgentApi(id);
+            } else {
               showBanner("critical", {
                 message: t("messages:error.active_agent"),
               });
               show(t("messages:error.active_agent"), { isError: true });
-              return of(err);
-            })
-          )
+            }
+          }),
+          catchError((err) => {
+            showBanner("critical", {
+              message: t("messages:error.active_agent"),
+            });
+            show(t("messages:error.active_agent"), { isError: true });
+            return of(err);
+          })
         );
     },
     { showLoading: true }
@@ -232,29 +223,27 @@ const DetailAgent = (props: CreateAgentProps) => {
       return AgentRepository()
         .deActiveAgent(id)
         .pipe(
-          map(
-            ({ data }) => {
-              if (data.statusCode === 200) {
-                showBanner("success", {
-                  message: t("messages:success.deactivate_agent"),
-                });
-                show(t("messages:success.deactivate_agent"));
-                getDetailAgentApi(id);
-              } else {
-                showBanner("critical", {
-                  message: t("messages:error.deactivate_agent"),
-                });
-                show(t("messages:error.deactivate_agent"), { isError: true });
-              }
-            },
-            catchError((err) => {
+          map(({ data }) => {
+            if (data.statusCode === 200) {
+              showBanner("success", {
+                message: t("messages:success.deactivate_agent"),
+              });
+              show(t("messages:success.deactivate_agent"));
+              getDetailAgentApi(id);
+            } else {
               showBanner("critical", {
                 message: t("messages:error.deactivate_agent"),
               });
               show(t("messages:error.deactivate_agent"), { isError: true });
-              return of(err);
-            })
-          )
+            }
+          }),
+          catchError((err) => {
+            showBanner("critical", {
+              message: t("messages:error.deactivate_agent"),
+            });
+            show(t("messages:error.deactivate_agent"), { isError: true });
+            return of(err);
+          })
         );
     },
     { showLoading: true }

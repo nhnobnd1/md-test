@@ -6,7 +6,8 @@ export function usePermission() {
 
   return {
     role,
-    isAdmin: role === Role.Admin,
+    isAdmin:
+      role === Role.Admin || localStorage.getItem("login_redirect") === "true",
     isLead: role === Role.AgentLeader,
     isAgent: role === Role.BasicAgent,
   };

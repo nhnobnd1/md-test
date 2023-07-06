@@ -5,7 +5,6 @@ import {
   useToggle,
 } from "@moose-desk/core";
 import {
-  AgentRepository,
   GetMembersGroupRequest,
   GroupMembers,
   UserGroupRepository,
@@ -14,12 +13,10 @@ import { uniqBy } from "lodash-es";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
-import { map } from "rxjs";
+import { catchError, map, of } from "rxjs";
 import { MDSearchInput } from "src/components/UI/MDSearchInput";
-import { LoadMoreValue, OptionType } from "src/components/UI/Select/Select";
 import { Table } from "src/components/UI/Table";
 import TableAction from "src/components/UI/Table/TableAction/TableAction";
-import env from "src/core/env";
 import useDeepEffect from "src/hooks/useDeepEffect";
 import useMessage from "src/hooks/useMessage";
 import { SelectList } from "src/modules/ticket/components/TicketForm/SelectList";
@@ -43,7 +40,6 @@ const GroupFormMember = memo(
     const message = useMessage();
 
     const [groupIds, setGroupIds] = useState<string[]>(value ?? []);
-    console.log({ value });
     const [filterData, setFilterData] =
       useState<GetMembersGroupRequest>(defaultFilter);
     const prevFilter = usePrevious<GetMembersGroupRequest>(filterData);
@@ -75,48 +71,17 @@ const GroupFormMember = memo(
     });
     const agentsOptions = useMemo(() => {
       if (!dataAgents) return [];
-      return (
-        dataAgents
-          // .filter((item) => item.isActive && item.emailConfirmed)
-          .map((item) => ({
-            label: item.lastName.includes("admin")
-              ? `${item.firstName} - ${item.email}`
-              : `${item.firstName} ${item.lastName} - ${item.email}`,
-            value: `${item._id},${item.email}`,
-            obj: item,
-          }))
-      );
+      return dataAgents.map((item) => ({
+        label: item.lastName.includes("admin")
+          ? `${item.firstName} - ${item.email}`
+          : `${item.firstName} ${item.lastName} - ${item.email}`,
+        value: `${item._id}`,
+        obj: item,
+      }));
     }, [dataAgents]);
 
-    const fetchAgents = useCallback(
-      (params: LoadMoreValue) => {
-        const limit = env.DEFAULT_PAGE_SIZE;
-        return AgentRepository()
-          .getList({
-            page: params.page,
-            limit: limit,
-            query: params.searchText,
-          })
-          .pipe(
-            map(({ data }) => {
-              return {
-                options: data.data.map((item) => ({
-                  label: item.lastName.includes("admin")
-                    ? `${item.firstName} - ${item.email}`
-                    : `${item.firstName} ${item.lastName} - ${item.email}`,
-                  value: item._id,
-                  obj: item,
-                })),
-                canLoadMore: params.page < data.metadata.totalPage,
-              };
-            })
-          );
-      },
-      [AgentRepository, groupMembers]
-    );
-
     const handleSelectAgent = useCallback(
-      (value: string, option: OptionType | OptionType[]) => {
+      (value: string, option: any) => {
         if (!Array.isArray(option) && value) {
           if (isDetail) {
             setGroupIds([...groupIds, value]);
@@ -170,6 +135,10 @@ const GroupFormMember = memo(
                   uniqBy([...groupMembers, ...dataMember], "_id")
                 );
               }
+            }),
+            catchError((err) => {
+              message.error(t("messages:error.something_went_wrong"));
+              return of(err);
             })
           );
       }
@@ -264,7 +233,7 @@ const GroupFormMember = memo(
           setGroupMembersTable(groupMembers);
         }
       }
-    }, [filterData, groupIds.length]);
+    }, [filterData]);
 
     useEffect(() => {
       value && setGroupIds(value);
@@ -274,19 +243,12 @@ const GroupFormMember = memo(
       <div>
         <div className="flex gap-3 xs:flex-col md:flex-row">
           <div className="mb-5  flex-1">
-            {/* <Select.Ajax
-              className="w-full"
-              placeholder="+ Add member"
-              onChange={handleSelectAgent}
-              value={null}
-              virtual
-              disableValues={groupIds}
-              loadMore={fetchAgents}
-            /> */}
             <SelectList
+              showSearch
               className="w-full"
               placeholder="+ Add member"
               options={agentsOptions}
+              onChange={handleSelectAgent}
             />
           </div>
           <div className="mb-5 flex-1">

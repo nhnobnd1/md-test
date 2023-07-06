@@ -11,6 +11,7 @@ import {
   EmailIntegrationRepository,
   Priority,
 } from "@moose-desk/repo";
+import { useToast } from "@shopify/app-bridge-react";
 import {
   Button,
   Layout,
@@ -24,9 +25,9 @@ import {
 import { PriceLookupMinor } from "@shopify/polaris-icons";
 import { FormikProps } from "formik";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import { useBanner } from "src/hooks/useBanner";
-import usePreventNav from "src/hooks/usePreventNav";
 import useSaveDataGlobal from "src/hooks/useSaveDataGlobal";
 import useScreenType from "src/hooks/useScreenType";
 import useToggleGlobal from "src/hooks/useToggleGlobal";
@@ -55,6 +56,9 @@ const CreateTicket = (props: CreateTicketProps) => {
       subject: "",
     };
   }, [primaryEmail?._id]);
+  const { show } = useToast();
+  const { t, i18n } = useTranslation();
+
   const { run: getListEmailApi, processing: loadingList } = useJob(
     (payload: any) => {
       return EmailIntegrationRepository()
@@ -64,6 +68,10 @@ const CreateTicket = (props: CreateTicketProps) => {
             if (data.statusCode === 200) {
               setPrimaryEmail(data.data[0]);
             }
+          }),
+          catchError((err) => {
+            show(t("messages:error.something_went_wrong"), { isError: true });
+            return of(err);
           })
         );
     }
@@ -82,6 +90,8 @@ const CreateTicket = (props: CreateTicketProps) => {
           }
         }),
         catchError((err) => {
+          show(t("messages:error.something_went_wrong"), { isError: true });
+
           return of(err);
         })
       );

@@ -30,5 +30,5 @@ export declare type CreateTagRequest = Omit<Tag, 'id'>;
 export declare type CreateTagResponse = BaseResponse<Tag>;
 export declare type UpdateTagRequest = Tag;
 export declare type UpdateTagResponse = BaseResponse<Tag>;
-export declare type DeleteTagResponse = BaseListResponse<Tag>;
+export declare type DeleteTagResponse = BaseResponse<Tag>;
 //# sourceMappingURL=Tag.d.ts.map

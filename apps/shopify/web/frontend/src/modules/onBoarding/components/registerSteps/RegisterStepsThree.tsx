@@ -1,5 +1,6 @@
 import { useJob } from "@moose-desk/core";
 import { GetTourGuideRequest, TourGuideRepository } from "@moose-desk/repo";
+import { useToast } from "@shopify/app-bridge-react";
 import {
   Button,
   Card,
@@ -10,7 +11,8 @@ import {
 } from "@shopify/polaris";
 import classNames from "classnames";
 import { useCallback } from "react";
-import { map } from "rxjs";
+import { useTranslation } from "react-i18next";
+import { catchError, map, of } from "rxjs";
 import StorageManager from "src/core/utilities/StorageManager";
 import useAuth from "src/hooks/useAuth";
 import { useSubdomain } from "src/hooks/useSubdomain";
@@ -29,6 +31,8 @@ const RegisterStepsThree = ({
   const { user } = useAuth();
   const { getSubDomain, getDomainStandalone } = useSubdomain();
   const { storeId } = useStore();
+  const { show } = useToast();
+  const { t, i18n } = useTranslation();
 
   const TitleCard = () => {
     return (
@@ -46,6 +50,11 @@ const RegisterStepsThree = ({
             if (data.statusCode === 200) {
               console.log("done tour guild", data);
             }
+          }),
+          catchError((err) => {
+            show(t("messages:error.something_went_wrong"), { isError: true });
+
+            return of(err);
           })
         );
     },

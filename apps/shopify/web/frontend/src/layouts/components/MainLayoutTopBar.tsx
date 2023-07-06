@@ -70,12 +70,13 @@ const MainLayoutTopBar = ({
             <img src={Images.Logo.LogoMooseDesk} alt="" width={175} />
           </div>
           <div className="mr-10 flex items-center w-full gap-2">
-            <div className="md:flex hidden w-[500px] max-h-[56px] justify-end overflow-x-scroll">
-              <Text as="span" variant="headingSm">
-                {user?.subdomain}
+            <div className="md:flex hidden max-w-[500px]  max-h-[56px] justify-end overflow-x-scroll">
+              <Text truncate as="span" variant="headingSm">
+                {user?.subdomain} qwe qwe qweqw qwe qweq w qw qe qwe qwe q qwe
+                qwe qw qw e qwe qe qwe qwe jqw jeiqjw eiqwje iqji je
               </Text>
               <span>&nbsp;/&nbsp;</span>
-              <Text as="span" variant="headingSm">
+              <Text truncate as="span" variant="headingSm">
                 {user?.email}
               </Text>
             </div>

@@ -33,4 +33,4 @@ export type CreateTagRequest = Omit<Tag, 'id'>;
 export type CreateTagResponse = BaseResponse<Tag>;
 export type UpdateTagRequest = Tag;
 export type UpdateTagResponse = BaseResponse<Tag>;
-export type DeleteTagResponse = BaseListResponse<Tag>;
+export type DeleteTagResponse = BaseResponse<Tag>;

@@ -7,7 +7,7 @@ import {
 } from "@moose-desk/repo";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { map } from "rxjs";
+import { catchError, map, of } from "rxjs";
 
 import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
@@ -54,6 +54,10 @@ const Widgets = () => {
             } else {
               message.error(t("messages:error.get_customer"));
             }
+          }),
+          catchError((err) => {
+            message.error(t("messages:error.something_went_wrong"));
+            return of(err);
           })
         );
     }

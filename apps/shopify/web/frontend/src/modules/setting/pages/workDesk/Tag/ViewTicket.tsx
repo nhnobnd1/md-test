@@ -85,6 +85,10 @@ const ViewTicket: FC<ViewTicketProps> = () => {
               setTickets(data.data);
               setMeta(data.metadata);
             }
+          }),
+          catchError((err) => {
+            show(t("messages:error.something_went_wrong"), { isError: true });
+            return of(err);
           })
         );
     },
@@ -105,12 +109,12 @@ const ViewTicket: FC<ViewTicketProps> = () => {
               isError: true,
             });
           }
-          catchError((error) => {
-            show(t("messages:error.deleted"), {
-              isError: true,
-            });
-            return of(error);
+        }),
+        catchError((error) => {
+          show(t("messages:error.deleted"), {
+            isError: true,
           });
+          return of(error);
         })
       );
   });

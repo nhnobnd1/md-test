@@ -11,6 +11,7 @@ import {
   GroupMembers,
   UserGroupRepository,
 } from "@moose-desk/repo";
+import { useToast } from "@shopify/app-bridge-react";
 import {
   EmptySearchResult,
   Filters,
@@ -20,7 +21,8 @@ import {
 } from "@shopify/polaris";
 import { uniqBy } from "lodash-es";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { map } from "rxjs";
+import { useTranslation } from "react-i18next";
+import { catchError, map, of } from "rxjs";
 import { ButtonDelete } from "src/components/Button/ButtonDelete";
 import { ModalDelete } from "src/components/Modal/ModalDelete";
 import { Pagination } from "src/components/Pagination";
@@ -48,6 +50,9 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
   const [filterData, setFilterData] = useState<GetMembersGroupRequest>(
     defaultFilter()
   );
+  const { t, i18n } = useTranslation();
+  const { show } = useToast();
+
   const prevFilter = usePrevious<GetMembersGroupRequest>(filterData);
   // create onChange groupMembers, edit onChange groupIds
   const [groupMembers, setGroupMembers] = useState<GroupMembers[]>([]);
@@ -183,6 +188,11 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
               : setGroupMembers(uniqBy([...data.data, ...groupMembers], "_id"));
 
             setMeta(data.metadata);
+          }),
+          catchError((err) => {
+            show(t("messages:error.something_went_wrong"), { isError: true });
+
+            return of(err);
           })
         );
     },

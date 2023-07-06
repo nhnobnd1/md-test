@@ -148,6 +148,10 @@ const ChannelEmail = () => {
             } else {
               message.error(t("messages:error.get_agent"));
             }
+          }),
+          catchError((err) => {
+            message.error(t("messages:error.something_went_wrong"));
+            return of(err);
           })
         );
     }

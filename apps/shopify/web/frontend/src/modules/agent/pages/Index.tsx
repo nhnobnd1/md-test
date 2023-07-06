@@ -12,6 +12,7 @@ import {
   GetListAgentRequest,
   ScreenType,
 } from "@moose-desk/repo";
+import { useToast } from "@shopify/app-bridge-react";
 import {
   Badge,
   ButtonGroup,
@@ -25,7 +26,8 @@ import {
   useIndexResourceState,
 } from "@shopify/polaris";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { map } from "rxjs";
+import { useTranslation } from "react-i18next";
+import { catchError, map, of } from "rxjs";
 import { Banner } from "src/components/Banner";
 import { useBannerState } from "src/components/Banner/useBannerState";
 import { HeaderList } from "src/components/HeaderList";
@@ -64,6 +66,8 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
   const prevFilter = usePrevious<GetListAgentRequest>(filterData);
 
   const [meta, setMeta] = useState<BaseMetaDataListResponse>();
+  const { show } = useToast();
+  const { t } = useTranslation();
 
   const { selectedResources, allResourcesSelected, handleSelectionChange } =
     useIndexResourceState<any>(agents);
@@ -80,6 +84,10 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
           }));
           setAgents(listAgent);
           setMeta(data.metadata);
+        }),
+        catchError((err) => {
+          show(t("messages:error.get_agent"), { isError: true });
+          return of(err);
         })
       );
   });

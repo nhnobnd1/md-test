@@ -92,6 +92,10 @@ export const ChannelEmail = (props: ChannelEmailProps) => {
                 isError: true,
               });
             }
+          }),
+          catchError((err) => {
+            show(t("messages:error.something_went_wrong"), { isError: true });
+            return of(err);
           })
         );
     }

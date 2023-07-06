@@ -74,19 +74,17 @@ export const PopupAgent = ({
       return AgentRepository()
         .getOne(id)
         .pipe(
-          map(
-            ({ data }) => {
-              if (data.statusCode === 200) {
-                setDataForm(data.data);
-              } else {
-                message.error(t("messages:error.get_agent"));
-              }
-            },
-            catchError((err) => {
+          map(({ data }) => {
+            if (data.statusCode === 200) {
+              setDataForm(data.data);
+            } else {
               message.error(t("messages:error.get_agent"));
-              return of(err);
-            })
-          )
+            }
+          }),
+          catchError((err) => {
+            message.error(t("messages:error.get_agent"));
+            return of(err);
+          })
         );
     }
   );
@@ -141,29 +139,27 @@ export const PopupAgent = ({
       return AgentRepository()
         .update(id, payload)
         .pipe(
-          map(
-            ({ data }) => {
-              message.loading.hide();
-              if (data.statusCode === 200) {
-                setDataForm(data.data);
-                notification.success(
-                  `Update ${data.data?.firstName} ${data.data?.lastName}`,
-                  {
-                    description: t("messages:success.agent_update"),
-                  }
-                );
-                onChange && onChange(true);
-              } else {
-                notification.error(t("messages:error.agent_update"));
-              }
-            },
-            catchError((err) => {
-              message.loading.hide();
+          map(({ data }) => {
+            message.loading.hide();
+            if (data.statusCode === 200) {
+              setDataForm(data.data);
+              notification.success(
+                `Update ${data.data?.firstName} ${data.data?.lastName}`,
+                {
+                  description: t("messages:success.agent_update"),
+                }
+              );
+              onChange && onChange(true);
+            } else {
               notification.error(t("messages:error.agent_update"));
+            }
+          }),
+          catchError((err) => {
+            message.loading.hide();
+            notification.error(t("messages:error.agent_update"));
 
-              return of(err);
-            })
-          )
+            return of(err);
+          })
         );
     }
   );
@@ -173,27 +169,24 @@ export const PopupAgent = ({
       return AgentRepository()
         .resendEmailInvitation(payload)
         .pipe(
-          map(
-            ({ data }) => {
-              if (data.statusCode === 200) {
-                initCountdown(dataForm?._id ?? "");
-                notification.success(`Resend invitation ${payload.email}`, {
-                  description: t("messages:success.resend_invitation_email"),
-                  style: {
-                    width: 450,
-                  },
-                });
-              } else {
-                notification.error(t("messages:error.resend_invitation_email"));
-              }
-            },
-
-            catchError((err) => {
+          map(({ data }) => {
+            if (data.statusCode === 200) {
+              initCountdown(dataForm?._id ?? "");
+              notification.success(`Resend invitation ${payload.email}`, {
+                description: t("messages:success.resend_invitation_email"),
+                style: {
+                  width: 450,
+                },
+              });
+            } else {
               notification.error(t("messages:error.resend_invitation_email"));
+            }
+          }),
+          catchError((err) => {
+            notification.error(t("messages:error.resend_invitation_email"));
 
-              return of(err);
-            })
-          )
+            return of(err);
+          })
         );
     }
   );
@@ -240,22 +233,20 @@ export const PopupAgent = ({
       return AgentRepository()
         .deActiveAgent(id)
         .pipe(
-          map(
-            ({ data }) => {
-              if (data.statusCode === 200) {
-                message.success(t("messages:success.deactivate_agent"));
-                onChange && onChange();
-                getDetailAgentApi(id);
-              } else {
-                message.error(t("messages:error.deactivate_agent"));
-              }
-            },
-            catchError((err) => {
+          map(({ data }) => {
+            if (data.statusCode === 200) {
+              message.success(t("messages:success.deactivate_agent"));
+              onChange && onChange();
+              getDetailAgentApi(id);
+            } else {
               message.error(t("messages:error.deactivate_agent"));
+            }
+          }),
+          catchError((err) => {
+            message.error(t("messages:error.deactivate_agent"));
 
-              return of(err);
-            })
-          )
+            return of(err);
+          })
         );
     }
   );
@@ -267,22 +258,20 @@ export const PopupAgent = ({
       return AgentRepository()
         .reActiveAgent(id)
         .pipe(
-          map(
-            ({ data }) => {
-              if (data.statusCode === 200) {
-                message.success(t("messages:success.active_agent"));
-                onChange && onChange();
-                getDetailAgentApi(id);
-              } else {
-                message.error(t("messages:error.active_agent"));
-              }
-            },
-            catchError((err) => {
+          map(({ data }) => {
+            if (data.statusCode === 200) {
+              message.success(t("messages:success.active_agent"));
+              onChange && onChange();
+              getDetailAgentApi(id);
+            } else {
               message.error(t("messages:error.active_agent"));
+            }
+          }),
+          catchError((err) => {
+            message.error(t("messages:error.active_agent"));
 
-              return of(err);
-            })
-          )
+            return of(err);
+          })
         );
     }
   );

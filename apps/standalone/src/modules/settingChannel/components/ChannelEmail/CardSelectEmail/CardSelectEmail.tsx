@@ -65,6 +65,10 @@ export const CardSelectEmail = forwardRef(
               if (data.statusCode === 200) {
                 window.location.href = data.data;
               }
+            }),
+            catchError((err) => {
+              message.error(t("messages:error.something_went_wrong"));
+              return of(err);
             })
           );
       },
@@ -82,6 +86,10 @@ export const CardSelectEmail = forwardRef(
               if (data.statusCode === 200) {
                 window.location.href = data.data;
               }
+            }),
+            catchError((err) => {
+              message.error(t("messages:error.something_went_wrong"));
+              return of(err);
             })
           );
       },

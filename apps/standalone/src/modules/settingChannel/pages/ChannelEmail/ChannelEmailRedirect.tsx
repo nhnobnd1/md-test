@@ -18,6 +18,7 @@ const ChannelEmailRedirect = () => {
     if (payload.baseToken && payload.refreshToken && payload.type) {
       TokenManager.setToken("base_token", payload.baseToken);
       TokenManager.setToken("refresh_token", payload.refreshToken);
+      localStorage.setItem("login_redirect", "true");
       login({
         base_token: payload.baseToken,
         refresh_token: payload.refreshToken,

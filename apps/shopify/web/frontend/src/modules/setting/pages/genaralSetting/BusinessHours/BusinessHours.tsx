@@ -10,8 +10,6 @@ import { useToast } from "@shopify/app-bridge-react";
 import {
   Banner,
   BannerStatus,
-  Button,
-  ButtonGroup,
   Card,
   ContextualSaveBar,
   Layout,
@@ -20,7 +18,6 @@ import {
   SkeletonBodyText,
   SkeletonDisplayText,
   SkeletonPage,
-  Stack,
   Tabs,
   Text,
   TextContainer,
@@ -116,6 +113,13 @@ const BusinessHours = (props: BusinessHoursProps) => {
             setDataBusinessHoursAutoReplyCode(
               data.data[0].businessHoursAutoReplyCode
             );
+          }),
+          catchError((err) => {
+            show(t("messages:error.something_went_wrong"), {
+              isError: true,
+            });
+
+            return of(err);
           })
         );
     },

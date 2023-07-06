@@ -14,9 +14,11 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { map } from "rxjs";
+import { useTranslation } from "react-i18next";
+import { catchError, map, of } from "rxjs";
 import { Form, FormProps } from "src/components/UI/Form";
 import { MDInput } from "src/components/UI/Input";
+import useMessage from "src/hooks/useMessage";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { CardForwardEmail } from "src/modules/settingChannel/components/ChannelEmail/CardForwardEmail";
 import {
@@ -60,6 +62,8 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
   const [isLoggedServer, setIsLoggedServer] = useState<IsLoggedServer | null>(
     null
   );
+  const { t } = useTranslation();
+  const message = useMessage();
   const handleChangeMailSetting = useMailSetting((state) => state.changeUpdate);
   const mailSettingType = useMailSetting((state) => state.mailSettingType);
   const isForwardEmailCreated = useMailSetting(
@@ -220,6 +224,10 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
               (data.metadata as any)?.moosedeskEmailExists
             );
           }
+        }),
+        catchError((err) => {
+          message.error(t("messages:error.something_went_wrong"));
+          return of(err);
         })
       );
   });

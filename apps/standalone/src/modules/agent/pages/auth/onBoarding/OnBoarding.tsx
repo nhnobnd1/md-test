@@ -11,10 +11,12 @@ import {
 } from "@moose-desk/repo";
 import Link from "antd/es/typography/Link";
 import { useEffect, useState } from "react";
-import { map } from "rxjs";
+import { useTranslation } from "react-i18next";
+import { catchError, map, of } from "rxjs";
 import { Loading } from "src/components/Loading";
 import { MDButton } from "src/components/UI/Button/MDButton";
 import LayoutSignInPage from "src/components/UI/LayoutSignInPage/LayoutSignInPage";
+import useMessage from "src/hooks/useMessage";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { SetPassword } from "src/modules/agent/components/SetPassword";
 import RoutePaths from "src/routes/paths";
@@ -27,6 +29,9 @@ export const OnBoarding = () => {
     status: false,
     message: "",
   });
+  const message = useMessage();
+  const { t } = useTranslation();
+
   const [stepPage, setStepPage] = useState(1);
   const [account, setAccount] = useState({
     storeId: "",
@@ -73,6 +78,10 @@ export const OnBoarding = () => {
               default:
                 break;
             }
+          }),
+          catchError((err) => {
+            message.error(t("messages:error.something_went_wrong"));
+            return of(err);
           })
         );
     }
