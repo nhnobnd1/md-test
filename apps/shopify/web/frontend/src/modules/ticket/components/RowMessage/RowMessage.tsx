@@ -15,7 +15,6 @@ import ImageZoom from "src/components/TextEditorTicket/ImageZoom";
 import useHtmlStringHeight from "src/hooks/useHtmlStringHeight";
 import { ChatItem } from "src/modules/ticket/pages/DetailTicket";
 import CollapseIcon from "~icons/material-symbols/arrow-right";
-import DownloadIcon from "~icons/material-symbols/cloud-download-outline-rounded";
 import UserIcon from "~icons/material-symbols/person";
 import AgentIcon from "~icons/material-symbols/support-agent-sharp";
 import QuoteIcon from "~icons/octicon/ellipsis-16";
@@ -26,7 +25,7 @@ interface RowMessageProps {
 const regexQuote = /<div class="md_quote">[\s\S]*?<\/blockquote>/;
 
 const regexContent = /^.*(?=<div class="md_quote">)/s;
-
+// const isMobile = true;
 function splitText(fileName: string, maxLength: number) {
   if (fileName.length <= maxLength) {
     return fileName;
@@ -100,7 +99,6 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
     if (isMobile) return;
 
     const objectElement = iframeRef.current;
-
     objectElement.style.height = `${heightSortChat}px`;
   }, [sortChat, heightSortChat, isMobile]);
   useEffect(() => {
@@ -208,6 +206,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
 ::-webkit-scrollbar-thumb:hover {
   background-color:#FF9326;
 }
+
             </style>${sortChat}</div>`
             )}`}
             type="text/html"

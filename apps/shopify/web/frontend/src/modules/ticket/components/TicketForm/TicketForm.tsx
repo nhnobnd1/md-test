@@ -27,6 +27,7 @@ import { TextEditorTicket } from "src/components/TextEditorTicket";
 import useSaveDataGlobal from "src/hooks/useSaveDataGlobal";
 import BoxSelectCustomer from "src/modules/ticket/components/BoxSelectCustomer/BoxSelectCustomer";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
+import { wrapImageWithAnchorTag } from "src/utils/localValue";
 import * as Yup from "yup";
 
 interface TicketFormProps extends Partial<FormProps> {
@@ -298,7 +299,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
       ccEmails: values?.CC,
       bccEmails: values?.BCC,
       subject: values.subject,
-      description: values.content,
+      description: wrapImageWithAnchorTag(values.content),
       status: "OPEN",
       priority: values.priority,
       tags: values.tags,

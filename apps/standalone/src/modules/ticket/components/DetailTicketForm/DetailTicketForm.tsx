@@ -53,6 +53,7 @@ import {
   getTagsTicket,
 } from "src/modules/ticket/helper/api";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
+import { wrapImageWithAnchorTag } from "src/utils/localValue";
 import BackIcon from "~icons/mingcute/back-2-fill";
 import "./BoxReply.scss";
 
@@ -438,7 +439,7 @@ const DetailTicketForm = () => {
       id: ticket?._id,
       attachmentIds: files,
       bccEmails: values.BCC,
-      description: values.content,
+      description: wrapImageWithAnchorTag(values.content),
       ccEmails: values.CC,
       fromEmail: {
         name: findItemConfigEmail?.obj.name,

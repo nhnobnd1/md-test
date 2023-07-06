@@ -32,6 +32,7 @@ import {
   getTagsTicket,
 } from "src/modules/ticket/helper/api";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
+import { wrapImageWithAnchorTag } from "src/utils/localValue";
 
 interface TicketFormProps {
   primaryEmail?: EmailIntegration;
@@ -220,7 +221,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
       ccEmails: values?.CC,
       bccEmails: values?.BCC,
       subject: values.subject,
-      description: values.content,
+      description: wrapImageWithAnchorTag(values.content),
       status: "OPEN",
       priority: values.priority,
       tags: tags,

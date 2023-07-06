@@ -52,7 +52,6 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
   const [toggleQuote, setToggleQuote] = useState(true);
   const iframeRef = useRef<any>(null);
   const iframeRefQuote = useRef<any>(null);
-
   const sortChat = useMemo(() => {
     if (item.chat.match(regexContent)) {
       return item.chat.match(regexContent)?.[0] as string;
@@ -74,6 +73,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
     }
     return false;
   }, [quote]);
+
   useEffect(() => {
     const objectElement = iframeRef.current;
 

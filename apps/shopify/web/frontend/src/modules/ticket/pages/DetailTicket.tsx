@@ -67,6 +67,7 @@ import { CollapseList } from "src/modules/ticket/components/CollapseList";
 import ContentShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ContentShopifySearch";
 import { ModalInfoTicket } from "src/modules/ticket/components/ModalInfoTicket";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
+import { wrapImageWithAnchorTag } from "src/utils/localValue";
 import * as Yup from "yup";
 import FaMailReply from "~icons/fa/mail-reply";
 import BackIcon from "~icons/mingcute/back-2-fill";
@@ -296,7 +297,7 @@ const DetailTicket = (props: DetailTicketProps) => {
               getPrimaryEmail();
             }
             setTicket(data.data);
-            setEnableCC(data.data.ccEmails.length > 0);
+            setEnableCC(data.data.ccEmails?.length > 0);
             setCCDefault(
               data.data?.ccEmails?.map((item) => {
                 return item.replace(/.*<([^>]*)>.*/, "$1") || item;
@@ -312,7 +313,6 @@ const DetailTicket = (props: DetailTicketProps) => {
           }
         }),
         catchError((err) => {
-          console.log("error");
           navigate("/404");
           show(t("messages:error.get_ticket"), { isError: true });
 
@@ -527,7 +527,7 @@ const DetailTicket = (props: DetailTicketProps) => {
       id: ticket?._id,
       attachmentIds: files,
       bccEmails: values.BCC,
-      description: values.content,
+      description: wrapImageWithAnchorTag(values.content),
       ccEmails: values.CC,
       fromEmail: {
         name: findItemConfigEmail.obj.name,

@@ -188,6 +188,7 @@ const TextEditorTicket = ({
                 <></>
               )}
               {/* <div style={{ marginLeft: 10 }}> */}
+
               <Button
                 disabled={loading}
                 style={{ width: 50 }}
@@ -312,6 +313,8 @@ const TextEditorTicket = ({
               "code",
             ],
             toolbar_sticky: true,
+            // object_resizing: false,
+
             file_picker_types: "image",
             file_picker_callback: function (cb, value, meta) {
               if (meta.filetype === "image") {
@@ -323,7 +326,11 @@ const TextEditorTicket = ({
                   if (input.files?.length) {
                     const file = input.files[0];
                     postImage(file, (data: any) => {
-                      cb(data.urls[0], { title: file.name, alt: file.name });
+                      cb(data.urls[0], {
+                        title: file.name,
+                        alt: file.name,
+                        height: "200px",
+                      });
                     });
                   }
                 };
@@ -331,6 +338,7 @@ const TextEditorTicket = ({
                 input.click();
               }
             },
+
             setup: (editor) => {
               editor.ui.registry.addButton("importfile", {
                 text: "Upload file",
