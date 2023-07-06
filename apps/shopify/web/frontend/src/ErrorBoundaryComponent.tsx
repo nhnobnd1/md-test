@@ -42,14 +42,14 @@ function ErrorBoundaryComponent() {
         {hasPermission ? (
           <div>
             <div className="my-5">
-              <Text variant="headingLg" as="h5">
+              <Text alignment="center" variant="headingLg" as="h5">
                 Something went wrong
               </Text>
             </div>
             <p>Please try again or report an issue to support</p>
           </div>
         ) : (
-          <div>
+          <div className="my-5">
             <Text variant="headingLg" as="h5" alignment="center">
               You are using a private (incognito) browsing window
             </Text>
