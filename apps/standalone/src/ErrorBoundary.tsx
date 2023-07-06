@@ -53,7 +53,13 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, any> {
               >
                 Try again
               </MDButton>
-              <MDButton>Issue to support</MDButton>
+              <MDButton
+                onClick={() => {
+                  window.open("mailto:support@moosedesk.com");
+                }}
+              >
+                Issue to support
+              </MDButton>
             </div>
           </div>
         </div>
