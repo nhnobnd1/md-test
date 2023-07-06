@@ -7,18 +7,22 @@ import {
 } from "@moose-desk/core";
 import { useCallback, useEffect } from "react";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
+import useCheckAdminRedirect from "src/store/useCheckAdminRedirect";
 
 const ChannelEmailRedirect = () => {
   const [searchParams] = useSearchParams();
   const { login, isLoggedIn } = useAuthContext();
   const navigate = useNavigate();
+  const updateStatusRedirect = useCheckAdminRedirect(
+    (state) => state.updateStatusRedirect
+  );
 
   useEffect(() => {
     const payload = getDataSearchParams();
     if (payload.baseToken && payload.refreshToken && payload.type) {
       TokenManager.setToken("base_token", payload.baseToken);
       TokenManager.setToken("refresh_token", payload.refreshToken);
-      localStorage.setItem("login_redirect", "true");
+      updateStatusRedirect(true);
       login({
         base_token: payload.baseToken,
         refresh_token: payload.refreshToken,

@@ -250,6 +250,7 @@ export const AppLayout = () => {
     RoutePaths,
     isMobile,
     // screenType,
+    isAdmin,
   ]);
 
   // useEffect(() => {
