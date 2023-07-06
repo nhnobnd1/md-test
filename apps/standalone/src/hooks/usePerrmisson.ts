@@ -9,7 +9,7 @@ export function usePermission() {
   );
   return {
     role,
-    isAdmin: role === Role.Admin || updateStatusRedirect,
+    isAdmin: role === Role.Admin || (!role && updateStatusRedirect),
     isLead: role === Role.AgentLeader,
     isAgent: role === Role.BasicAgent,
   };
