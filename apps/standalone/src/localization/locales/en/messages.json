@@ -9,7 +9,7 @@
     "get_ticket_customer": "Failed to get details from customer's tickets",
     "get_customer": "Failed to get customer's details",
     "get_tag": "Failed to get Tag's details",
-    "get_ticket": "Failed to get Ticket's details",
+    "get_ticket": "The ticket has been permanently deleted or does not exist",
     "deleted": "Failed to delete",
     "update_ticket": "Failed to update tickets",
     "connection": "Failed to establish connection",

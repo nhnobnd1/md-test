@@ -313,7 +313,7 @@ const DetailTicket = (props: DetailTicketProps) => {
           }
         }),
         catchError((err) => {
-          navigate("/404");
+          navigate("/dashboard");
           show(t("messages:error.get_ticket"), { isError: true });
 
           return of(err);
