@@ -1,12 +1,36 @@
 import { useNavigate } from "@moose-desk/core";
 import { Button, Image, Text } from "@shopify/polaris";
+import { useEffect, useState } from "react";
 import { errorPage } from "src/assets";
 
 interface ErrorBoundaryComponentProps {}
 
 function ErrorBoundaryComponent() {
   const navigate = useNavigate();
-  const offlineToken = localStorage.getItem("offlineToken");
+  const [hasPermission, setHasPermission] = useState<boolean>(false);
+  useEffect(() => {
+    const checkLocalStorage = () => {
+      try {
+        const testKey = "testLocalStoragePermission";
+        const testValue = "testValue";
+
+        localStorage.setItem(testKey, testValue);
+        const storedValue = localStorage.getItem(testKey);
+
+        if (storedValue !== testValue) {
+          throw new Error("Lỗi khi đọc giá trị từ localStorage.");
+        }
+
+        localStorage.removeItem(testKey);
+        return true;
+      } catch (error) {
+        return false;
+      }
+    };
+
+    const permission = checkLocalStorage();
+    setHasPermission(permission);
+  }, []);
   return (
     <div className="flex justify-center items-center h-[100vh] flex-col">
       <div className="flex flex-col items-center justify-center">
@@ -15,7 +39,7 @@ function ErrorBoundaryComponent() {
           alt="Nice work on building a Shopify app"
           width={120}
         />
-        {offlineToken ? (
+        {hasPermission ? (
           <div>
             <div className="my-5">
               <Text variant="headingLg" as="h5">
