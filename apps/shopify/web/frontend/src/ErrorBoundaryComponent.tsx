@@ -50,11 +50,11 @@ function ErrorBoundaryComponent() {
           </div>
         ) : (
           <div>
-            <Text variant="headingLg" as="h5">
+            <Text variant="headingLg" as="h5" alignment="center">
               You are using a private (incognito) browsing window
             </Text>
-            <p>{`Please open a new tab and turn off the 'Block third-party cookies' option, then reload the app`}</p>
-            <p>{`If you still encounter errors, please contact our support for assistance`}</p>
+            <p className="text-center">{`Please open a new tab and turn off the 'Block third-party cookies' option, then reload the app`}</p>
+            <p className="text-center">{`If you still encounter errors, please contact our support for assistance`}</p>
           </div>
         )}
       </div>
