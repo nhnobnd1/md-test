@@ -82,11 +82,7 @@ export default function CustomerIndexPage() {
       customerData();
       show(t("messages:success.delete_customer"));
     },
-    onError: () => {
-      // show(t("messages:error.delete_customer"), {
-      //   isError: true,
-      // });
-    },
+    onError: () => {},
   });
   useEffect(() => {
     if (!querySearchCustomer) return;
@@ -127,9 +123,6 @@ export default function CustomerIndexPage() {
         </IndexTable.Cell>
         <IndexTable.Cell className="py-3">{records?.email}</IndexTable.Cell>
         <IndexTable.Cell className="py-3">
-          {/* <Text variant="bodyMd" alignment="center" as="span">
-            {records?.ticketsCount}
-          </Text> */}
           {records?.ticketsCount}
         </IndexTable.Cell>
         <IndexTable.Cell className="py-3">
