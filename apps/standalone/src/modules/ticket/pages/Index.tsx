@@ -14,9 +14,7 @@ import {
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import {
   Agent,
-  BaseListTicketFilterRequest,
   BaseListTicketRequest,
-  BaseMetaDataListResponse,
   statusOptions,
   StatusTicket,
   Tag,
@@ -59,6 +57,7 @@ import useScreenType from "src/hooks/useScreenType";
 import {
   getListAgentApi,
   getListCustomerApi,
+  getListTicketApi,
   getStatisticTicket,
   getTagsTicket,
   useExportTicket,
@@ -76,7 +75,30 @@ interface FilterObject {
 }
 
 const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
-  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [filterData, setFilterData] =
+    useState<BaseListTicketRequest>(defaultFilter);
+
+  const [filterObject, setFilterObject] = useState<FilterObject | null>(null);
+  const [mappingFilter, setMappingFilter] = useState<any>(filterData);
+  const {
+    data: dataTicket,
+    isLoading: loadingFilter,
+    refetch: refetchTicket,
+  } = useQuery({
+    queryKey: ["getListTickets", mappingFilter],
+    queryFn: () => getListTicketApi(mappingFilter),
+    onError: () => {
+      message.error(t("messages:error.get_ticket"));
+    },
+  });
+  const tickets = useMemo(() => {
+    if (dataTicket?.data) return dataTicket.data;
+    return [];
+  }, [dataTicket]);
+  const meta = useMemo(() => {
+    if (dataTicket?.metadata) return dataTicket.metadata;
+    return undefined;
+  }, [dataTicket]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const { data: dataTags } = useQuery({
     queryKey: [
@@ -207,17 +229,13 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const notification = useNotification();
   const location = useLocation();
   const [statusFromTrash, setStatusFromTrash] = useState(location.state);
-  const [filterObject, setFilterObject] = useState<FilterObject | null>(null);
   const exportPdfRef = useRef<any>(null);
   const [showTitle, setShowTitle] = useState(true);
 
   const [activeButtonIndex, setActiveButtonIndex] = useState(
     statusFromTrash || "ALL"
   );
-  const [filterData, setFilterData] =
-    useState<BaseListTicketRequest>(defaultFilter);
 
-  const [meta, setMeta] = useState<BaseMetaDataListResponse>();
   const handleButtonClick = useCallback(
     (index: string) => {
       if (activeButtonIndex === index) return;
@@ -227,26 +245,26 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   );
   const [screenType, screenWidth] = useScreenType();
 
-  const { run: getListTicketFilter, processing: loadingFilter } = useJob(
-    (payload: BaseListTicketFilterRequest) => {
-      return TicketRepository()
-        .getListFilter(payload)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              const tickets = data.data.map((item) => ({
-                ...item,
-                id: item._id,
-              }));
-              setTickets(tickets);
-              setMeta(data.metadata);
-            } else {
-              message.error(t("messages:error.get_ticket"));
-            }
-          })
-        );
-    }
-  );
+  // const { run: getListTicketFilter, processing: loadingFilter } = useJob(
+  //   (payload: BaseListTicketFilterRequest) => {
+  //     return TicketRepository()
+  //       .getListFilter(payload)
+  //       .pipe(
+  //         map(({ data }) => {
+  //           if (data.statusCode === 200) {
+  //             const tickets = data.data.map((item) => ({
+  //               ...item,
+  //               id: item._id,
+  //             }));
+  //             setTickets(tickets);
+  //             setMeta(data.metadata);
+  //           } else {
+  //             message.error(t("messages:error.get_ticket"));
+  //           }
+  //         })
+  //       );
+  //   }
+  // );
 
   const onChangeTable = useCallback(
     (pagination: any, filters: any, sorter: SorterResult<any>) => {
@@ -287,11 +305,8 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
           if (data.statusCode === 200) {
             notification.success(t("messages:success.delete_ticket"));
             refetchStatistic();
-            if (filterObject) {
-              getListTicketFilter({ ...filterData, ...filterObject });
-              return;
-            }
-            getListTicketFilter(filterData);
+
+            refetchTicket();
           } else {
             notification.error(t("messages:error.delete_ticket"), {
               description: "Remove Ticket failed",
@@ -319,6 +334,8 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         map(({ data }) => {
           if (data.statusCode === 200) {
             refetchStatistic();
+            refetchTicket();
+            setSelectedRowKeys([]);
             message.success(t("messages:success.update_ticket"));
           }
         }),
@@ -353,7 +370,10 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
 
   useDeepEffect(() => {
     if (statusFromTrash) {
-      getListTicketFilter({ ...filterData, status: statusFromTrash });
+      // getListTicketFilter({ ...filterData, status: statusFromTrash });
+
+      setMappingFilter({ ...filterData, status: statusFromTrash });
+
       setStatusFromTrash("");
       setFilterObject({
         status: statusFromTrash,
@@ -367,10 +387,12 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       return;
     }
     if (filterObject) {
-      getListTicketFilter({ ...filterData, ...filterObject });
+      setMappingFilter({ ...filterData, ...filterObject });
+
       return;
     }
-    getListTicketFilter(filterData);
+
+    setMappingFilter({ ...filterData });
   }, [filterData]);
 
   const handleEdit = (record: Ticket) => {
@@ -407,15 +429,17 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   }, [filterData]);
 
   const handleApply = (values: any) => {
-    getListTicketFilter({
-      page: 1,
-      limit: 10,
+    setMappingFilter({
+      ...filterData,
+      // page: 1,
+      // limit: 10,
       priority: values.priority || undefined,
       status: values.status || undefined,
       customer: values.customer || undefined,
       tags: values.tags?.toString() || undefined,
       agentObjectId: values?.agentObjectId || undefined,
     });
+
     setFilterObject({
       priority: values.priority,
       status: values.status,
@@ -438,7 +462,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         handleResetModal={handleResetModal}
         cancelText="Reset"
         okText="Apply"
-        setTickets={setTickets}
         closeFilterModal={closeFilterModal}
         handleApply={handleApply}
         centered

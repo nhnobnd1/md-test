@@ -10,8 +10,6 @@ import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import {
   BaseDeleteList,
   BaseListTicketRequest,
-  BaseMetaDataListResponse,
-  GetListTicketResponse,
   StatusTicket,
   Ticket,
 } from "@moose-desk/repo";
@@ -45,14 +43,10 @@ import "./ListTicket.scss";
 const TrashTicket = () => {
   const [filterData, setFilterData] =
     useState<BaseListTicketRequest>(defaultFilter);
-  const { data: trashTicket, isFetching: loadingList } = useQuery({
+  const { data: dataTicket, isLoading: loadingList } = useQuery({
     queryKey: ["getListTrash", filterData],
     queryFn: () => getListTrashApi(filterData),
     retry: 1,
-    onSuccess: (data: GetListTicketResponse) => {
-      setTickets(data.data);
-      setMeta(data.metadata);
-    },
 
     onError: () => {
       message.error(t("messages:error.get_ticket"));
@@ -61,10 +55,16 @@ const TrashTicket = () => {
   });
   const [showTitle, setShowTitle] = useState(true);
 
-  const [tickets, setTickets] = useState<Ticket[]>(trashTicket?.data ?? []);
+  const tickets = useMemo(() => {
+    if (dataTicket?.data) return dataTicket.data;
+    return [];
+  }, [dataTicket]);
+  const meta = useMemo(() => {
+    if (dataTicket?.metadata) return dataTicket.metadata;
+    return undefined;
+  }, [dataTicket]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
-  const [meta, setMeta] = useState<BaseMetaDataListResponse>();
   const message = useMessage();
   const navigate = useNavigate();
 

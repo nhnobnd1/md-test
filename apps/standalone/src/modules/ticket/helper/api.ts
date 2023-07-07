@@ -97,9 +97,11 @@ export const restoreTicketApi = (payload: BaseDeleteList) => {
   });
 };
 
-export const getListTicketApi = (payload: GetListTicketRequest) => {
+export const getListTicketApi = (
+  payload: GetListTicketRequest
+): Promise<GetListTicketResponse> => {
   return new Promise((resolve, reject) => {
-    lastValueFrom(TicketRepository().getList(payload))
+    lastValueFrom(TicketRepository().getListFilter(payload))
       .then(({ data }) => resolve(data))
       .catch((error) => reject(error));
   });
