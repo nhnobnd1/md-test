@@ -249,10 +249,6 @@ export default function CustomerIndexPage() {
               resourceName={resourceName}
               itemCount={convertCustomerData?.data?.length || 0}
               selectable={false}
-              // selectedItemsCount={
-              //   allResourcesSelected ? "All" : selectedResources.length
-              // }
-              // onSelectionChange={handleSelectionChange}
               headings={[
                 { title: "Customer name" },
                 { title: "Email address" },
