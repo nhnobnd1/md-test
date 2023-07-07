@@ -48,9 +48,7 @@ const shopify = shopifyApp({
 	},
 	// This should be replaced with your preferred storage strategy
 
-	sessionStorage: new RedisSessionStorage(
-		'redis://default:5ao2NF1eTDqXmdtdsfq4KmvgTpsfoclb@redis-16592.c292.ap-southeast-1-1.ec2.cloud.redislabs.com:16592'
-	),
+	sessionStorage: new RedisSessionStorage(process.env.REDIS_URL),
 	useOnlineTokens: false,
 	exitIframePath: '/exit-iframe',
 });
