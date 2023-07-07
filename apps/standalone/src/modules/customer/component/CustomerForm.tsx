@@ -1,4 +1,5 @@
 import { Col, Row } from "antd";
+import { useTranslation } from "react-i18next";
 import Form, { FormProps } from "src/components/UI/Form/Form";
 import { MDInput } from "src/components/UI/Input";
 import InputPhone from "src/components/UI/InputPhone/InputPhone";
@@ -14,6 +15,8 @@ export const CustomerForm = ({
   data = undefined,
   ...props
 }: CustomerFormProps) => {
+  const { t } = useTranslation();
+
   return (
     <Form
       {...props}
@@ -24,66 +27,91 @@ export const CustomerForm = ({
       <Row gutter={16} justify="space-between">
         <Col lg={12} xl={12} sm={24} xs={24}>
           <Form.Item
-            label="First name"
+            label={t("common:customers.first_name")}
             name="firstName"
             rules={[
-              { required: true, message: "First name is required!" },
+              {
+                required: true,
+                message: t("common:regex.required", {
+                  name: t("common:customers.first_name"),
+                }),
+              },
               {
                 max: 255,
-                message: "First name up to 255 characters",
+                message: t("common:regex.length_255", {
+                  name: t("common:customers.first_name"),
+                }),
               },
-              {
-                pattern: /[^\s]/,
-                message: "First name is required!",
-              },
+              // {
+              //   pattern: /[^\s]/,
+              //   message: "First name is required!",
+              // },
             ]}
           >
-            <MDInput disabled={disabled} placeholder="First name" />
+            <MDInput
+              disabled={disabled}
+              placeholder={t("common:customers.first_name")}
+            />
           </Form.Item>
         </Col>
         <Col lg={12} xl={12} sm={24} xs={24}>
           <Form.Item
-            label="Last name"
+            label={t("common:customers.last_name")}
             name="lastName"
             rules={[
-              { required: true, message: "Last name is required!" },
+              {
+                required: true,
+                message: t("common:regex.required", {
+                  name: t("common:customers.last_name"),
+                }),
+              },
               {
                 max: 255,
-                message: "Last name up to 255 characters",
+                message: t("common:regex.length_255", {
+                  name: t("common:customers.last_name"),
+                }),
               },
-              {
-                pattern: /[^\s]/,
-                message: "Last name is required!",
-              },
+              // {
+              //   pattern: /[^\s]/,
+              //   message: "Last name is required!",
+              // },
             ]}
           >
-            <MDInput disabled={disabled} placeholder="Last name" />
+            <MDInput
+              disabled={disabled}
+              placeholder={t("common:customers.last_name")}
+            />
           </Form.Item>
         </Col>
       </Row>
 
       <Form.Item
-        label="Email"
+        label={t("common:customers.email")}
         name="email"
         rules={[
-          { required: true, message: "Email address is required!" },
-          { type: "email", message: "The email address is not valid" },
+          {
+            required: true,
+            message: t("common:regex.required", {
+              name: t("common:customers.email"),
+            }),
+          },
+          { type: "email", message: t("common:regex.email") },
         ]}
       >
         <MDInput disabled={disabled} placeholder="example@example.com" />
       </Form.Item>
 
       <Form.Item
-        label="Phone"
+        label={t("common:customers.phone_number")}
         name="phoneNumber"
         rules={[
           {
             pattern: /^(?:[0-9]{1,4})+-(?:[0-9]{3,15})$/,
-            message: "The input phone number is not valid",
+            message: t("common:regex.phone"),
           },
         ]}
       >
-        <InputPhone placeholder="Phone" />
+        <InputPhone placeholder={t("common:customers.phone_number")} />
       </Form.Item>
     </Form>
   );

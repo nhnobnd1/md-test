@@ -2,6 +2,7 @@ import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { memo, useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import { MDSearchInput } from "src/components/UI/MDSearchInput";
 import Pagination from "src/components/UI/Pagination/Pagination";
@@ -27,6 +28,7 @@ interface ITableFilter {
   query: string;
 }
 export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
+  const { t } = useTranslation();
   const [filterData, setFilterData] = useState<ITableFilter>({
     page: 1,
     limit: env.DEFAULT_PAGE_SIZE,
@@ -53,7 +55,7 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
   const memoChartData: ListAgentTableRes[] = convertData;
   const columns = [
     {
-      title: "Agent Name",
+      title: t("common:reporting.agent_name"),
       dataIndex: "agentFirstName",
       width: "30%",
       sorter: {
@@ -66,7 +68,7 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
       ),
     },
     {
-      title: "Email",
+      title: t("common:reporting.email"),
       dataIndex: "agentEmail",
       width: "30%",
       sorter: {
@@ -76,7 +78,7 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
       },
     },
     {
-      title: "Ticket Assigned",
+      title: t("common:reporting.ticket_assigned"),
       dataIndex: "ticketAssigned",
       width: "20%",
       sorter: {
@@ -86,7 +88,7 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
       },
     },
     {
-      title: "Ticket Closed",
+      title: t("common:reporting.ticket_closed"),
       dataIndex: "ticketClosed",
       sorter: {
         compare: (a: any, b: any) => {
@@ -96,7 +98,7 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
       width: "20%",
     },
     {
-      title: "Percentage (Resolved)",
+      title: t("common:reporting.percentage_resolved"),
       dataIndex: "percentage",
       sorter: {
         compare: (a: any, b: any) => {
@@ -143,7 +145,9 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
   return (
     <>
       <div className={styles.wrapTopFilter}>
-        <div className={styles.title}>Tickets By Agents</div>
+        <div className={styles.title}>
+          {t("common:reporting.ticket_by_agent")}
+        </div>
         <div className={styles.searchWrap}>
           <MDSearchInput onTypeSearch={handleSearchInput} />
         </div>
