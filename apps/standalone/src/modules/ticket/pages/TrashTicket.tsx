@@ -51,7 +51,6 @@ const TrashTicket = () => {
     onError: () => {
       message.error(t("messages:error.get_ticket"));
     },
-    initialData: [],
   });
   const [showTitle, setShowTitle] = useState(true);
 
