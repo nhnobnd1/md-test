@@ -72,12 +72,12 @@
     "auto_reply": "Choose your auto-reply outside of business hours. You can set up new message in the “Auto-Reply” Tab"
   },
   "regex": {
-    "required": "{name} is required!",
+    "required": "{{name}} is required!",
     "email": "The email address is not valid",
     "phone": "The input phone number is not valid",
     "phone_format": "Invalid number phone format.`",
     "message_ticket": "Please input your message!",
-    "length_255": "{name} up to 255 characters",
+    "length_255": "{{name}} up to 255 characters",
     "confirm_password": "The confirmation password is not match!",
     "password_rules": "The password must be 8 characters long and must be a combination of uppercase letters, lowercase letters, numbers, and symbols"
   },
@@ -152,6 +152,9 @@
   },
   "reporting": {
     "page_header": "Reporting",
+    "page_header_tag": "Reporting By Tags",
+    "page_header_agent": "Reporting By Agents",
+    "tooltip_14days": "Please select a maximum time period of 14 days (counting from the start date)",
     "ticket_assigned": "Ticket Assigned",
     "ticket_created": "Ticket Created",
     "tickets_created": "Tickets Created",
@@ -168,6 +171,7 @@
     "ticket_by_agent": "Tickets by Agents",
     "agent_name": "Agent Name",
     "percentage": "Percentage",
+    "email": "Email",
     "percentage_resolved": "Percentage (Resolved)",
     "percentage_closed": "Percentage Closed",
     "tag": "Tag",

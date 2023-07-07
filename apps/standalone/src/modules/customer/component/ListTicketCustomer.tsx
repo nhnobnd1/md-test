@@ -60,12 +60,12 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
   }, [dataSource]);
   const columns = [
     {
-      title: "Ticket title",
+      title: t("common:customers.ticket_title"),
       dataIndex: "subject",
       width: "45%",
     },
     {
-      title: "Date request",
+      title: t("common:customers.date_request"),
       dataIndex: "createdDatetime",
       sorter: {
         compare: (a: any, b: any) => {
@@ -84,7 +84,7 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
       width: "11%",
     },
     {
-      title: "Last updated",
+      title: t("common:customers.last_update"),
       dataIndex: "updatedDatetime",
       sorter: {
         compare: (a: any, b: any) => a?.updatedDatetime - b?.updatedDatetime,
@@ -105,7 +105,7 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
       width: "11%",
     },
     {
-      title: "Status",
+      title: t("common:customers.status"),
       dataIndex: "status",
       sorter: {
         compare: (a: any, b: any) => a.status - b.status,
@@ -113,7 +113,7 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
       width: "11%",
     },
     {
-      title: "Priority",
+      title: t("common:customers.priority"),
       dataIndex: "priority",
       sorter: {
         compare: (a: any, b: any) => a.priority - b.priority,
@@ -121,7 +121,7 @@ export const ListTicketCustomer = ({ customerId }: IProps) => {
       width: "11%",
     },
     {
-      title: "Assignee",
+      title: t("common:customers.assignee"),
       dataIndex: "agentEmail",
       width: "11%",
     },

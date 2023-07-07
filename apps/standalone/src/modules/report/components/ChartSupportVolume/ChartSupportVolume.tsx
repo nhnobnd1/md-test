@@ -1,5 +1,6 @@
 import { formatTimeDDMMYY } from "@moose-desk/core/helper/format";
 import { memo } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Bar,
   BarChart,
@@ -19,6 +20,7 @@ interface ChartSupportVolumeProps {
 }
 
 export const ChartSupportVolume = ({ data }: ChartSupportVolumeProps) => {
+  const { t } = useTranslation();
   const chartData = data?.map((item: ChartSupportVolumeRes) => {
     return {
       name: formatTimeDDMMYY(item?.date),
@@ -54,7 +56,7 @@ export const ChartSupportVolume = ({ data }: ChartSupportVolumeProps) => {
         <YAxis tick={<CustomYAxisTick />} />
         <Tooltip content={<CustomTooltip />} />
         <Bar
-          name="Ticket Created"
+          name={t("common:reporting.ticket_created")}
           dataKey="uv"
           fill="#FA7D00"
           radius={[2, 2, 0, 0]}
@@ -63,7 +65,7 @@ export const ChartSupportVolume = ({ data }: ChartSupportVolumeProps) => {
           isAnimationActive={true}
         />
         <Bar
-          name="Ticket Responded"
+          name={t("common:reporting.ticket_responded")}
           dataKey="pv"
           fill="#2C6ECB"
           radius={[2, 2, 0, 0]}
@@ -72,7 +74,7 @@ export const ChartSupportVolume = ({ data }: ChartSupportVolumeProps) => {
           isAnimationActive={true}
         />
         <Bar
-          name="Ticket Closed"
+          name={t("common:reporting.tickets_closed")}
           dataKey="cd"
           fill="#D72C0D"
           radius={[2, 2, 0, 0]}
