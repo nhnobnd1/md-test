@@ -44,7 +44,12 @@ persistQueryClient({
 ReactGA.initialize(env.TRACKING_ID);
 Sentry.init({
   dsn: env.DSN_SENTRY,
-  integrations: [new Sentry.BrowserTracing(), new Sentry.Replay()],
+  integrations: [
+    new Sentry.BrowserTracing({
+      tracePropagationTargets: [/^https:\/\/([\w-]+\.)+moosedesk\.net$/],
+    }),
+    new Sentry.Replay(),
+  ],
   // Performance Monitoring
   tracesSampleRate: 1.0, // Capture 100% of the transactions, reduce in production!
   // Session Replay

@@ -118,8 +118,8 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
         }
       : {
           name: signInCallback.name || (getSubDomain() as string).toLowerCase(),
-          mailSettingType: MailSettingType.FORWARD,
-          mailboxType: MailBoxType.OTHER,
+          mailSettingType: MailSettingType.CUSTOM,
+          mailboxType: MailBoxType.GMAIL,
           accessType: AccessType.Both,
           refKey: signInCallback.refKey || undefined,
           supportEmail: signInCallback.supportEmail || "",
@@ -260,11 +260,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
             }}
             disabled={!!id || !!signInCallback.refKey || isForwardEmailCreated}
           >
-            {getSubDomain() === "moose-for-test" ? (
-              <Radio value={MailSettingType.CUSTOM}>Use your Gmail</Radio>
-            ) : (
-              <></>
-            )}
+            <Radio value={MailSettingType.CUSTOM}>Use your Gmail</Radio>
             <Tooltip
               title={`${
                 haveMooseDeskEmail ? "Email has been set up in the system" : ""
