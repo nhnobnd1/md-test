@@ -19,6 +19,7 @@ import ModuleLoader from "src/core/utilities/ModuleLoader";
 import AppConfigProviders from "src/providers/AppConfigProviders";
 import InitApp from "src/providers/InitAppProviders";
 import { StoreProviders } from "src/providers/StoreProviders";
+import { sentryRegex } from "src/regex";
 import { getBaseToken, getRefreshToken } from "src/utils/localValue";
 import("src/styles/tailwind.scss").then(() =>
   import("antd/dist/reset.css").then(() => import("src/styles/index.scss"))
@@ -44,6 +45,11 @@ persistQueryClient({
 ReactGA.initialize(env.TRACKING_ID);
 Sentry.init({
   dsn: env.DSN_SENTRY,
+  beforeSend(event) {
+    // console.log("{ event }", event.request);
+    if (sentryRegex.test(event.request?.url as string)) return event;
+    return null;
+  },
   integrations: [
     new Sentry.BrowserTracing({
       tracePropagationTargets: [/^https:\/\/([\w-]+\.)+moosedesk\.net$/],

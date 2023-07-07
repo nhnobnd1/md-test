@@ -18,3 +18,4 @@ export const rulesValidatePassword = [
       "The password must be 8 characters long and must be a combination of uppercase letters, lowercase letters, numbers, and symbols",
   },
 ];
+export const sentryRegex = /^https:\/\/([\w-]+\.)+moosedesk\.net.*$/;
