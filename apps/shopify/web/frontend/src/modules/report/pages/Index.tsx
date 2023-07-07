@@ -112,7 +112,6 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
           className={styles.groupFilter}
           style={!isMobile ? { marginBottom: 0 } : {}}
         >
-          {/* <div className={styles.dateTime}> */}
           <MDDatePicker
             defaultRangeTime={{
               start: formatDefaultTimeRangePicker(filter.startTime, timezone),
@@ -121,7 +120,6 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
             onSubmitTime={handleSubmitDate}
             datePickerClassName={styles.datePickerCustomer}
           />
-          {/* </div> */}
         </div>
         <div className={styles.statistic}>
           <Statistic
