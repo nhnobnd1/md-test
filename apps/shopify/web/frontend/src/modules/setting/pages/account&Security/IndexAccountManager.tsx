@@ -286,7 +286,7 @@ export default function IndexAccountManager({ props }: any) {
 
                     <div className={styles.note}>
                       <Text variant="bodyMd" as="span">
-                        Toggle 2FA for all users
+                        Enable 2FA for all users
                       </Text>
                     </div>
                   </div>

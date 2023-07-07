@@ -219,7 +219,7 @@
     "auto_join": "Auto-Join Settings",
     "allow_with_email": "Allow users with email addresses from an approved email domain to use the sign up link.",
     "email_domain": "Email domain",
-    "2fa_toggle": "Toggle 2FA for all users.",
+    "2fa_toggle": "Enable 2FA for all users.",
     "enable_2fa_title": "Enable Two-Factor Authentication",
     "off": "Off",
     "off_note": "You will login normally with your email and password without any additional verifycation steps. This method will have higher risks for any security breach.",

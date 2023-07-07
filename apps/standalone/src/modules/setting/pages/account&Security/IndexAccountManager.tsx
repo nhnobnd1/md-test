@@ -240,7 +240,7 @@ export default function IndexAccountManager({ props }: any) {
                 </Form.Item>
               </div>
               <div className="ml-4">
-                <p className="mt-1">Toggle 2FA for all users.</p>
+                <p className="mt-1">Enable 2FA for all users.</p>
               </div>
             </div>
           )}
