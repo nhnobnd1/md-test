@@ -20,7 +20,8 @@ ENV SHOPIFY_API_KEY=$SHOPIFY_API_KEY \
     BACKEND_PORT=3680 \
     VITE_API_VERSION=v1 \
     VITE_DEFAULT_PAGE_SIZE=10 \
-    SCOPES=read_customers,read_orders
+    SCOPES=read_customers,read_orders \
+    REDIS_URL=redis://default:5eY3FMm4UdQoylTyoL6Uui75QCNxP0n2@redis-10649.c8.us-east-1-4.ec2.cloud.redislabs.com:10649
 
 RUN echo SHOPIFY_API_KEY: $SHOPIFY_API_KEY
 RUN echo SHOPIFY_API_SECRET: $SHOPIFY_API_SECRET
