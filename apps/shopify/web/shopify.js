@@ -1,6 +1,7 @@
 import { BillingInterval, LATEST_API_VERSION } from "@shopify/shopify-api";
 import { shopifyApp } from "@shopify/shopify-app-express";
 import { SQLiteSessionStorage } from "@shopify/shopify-app-session-storage-sqlite";
+import { RedisSessionStorage } from '@shopify/shopify-app-session-storage-redis';
 let { restResources } = await import(
   `@shopify/shopify-api/rest/admin/${LATEST_API_VERSION}`
 );
@@ -21,35 +22,37 @@ const billingConfig = {
 };
 
 const shopify = shopifyApp({
-  apiKey: process.env.SHOPIFY_API_KEY,
-  apiSecretKey: process.env.SHOPIFY_API_SECRET,
-  scopes: process.env.SCOPES.split(","),
-  hostName: process.env.HOST
-     ? process.env.HOST.replace(/https?:\/\//, "")
-     : "localhost",
-  hostScheme: process.env.HOST.split("://")[0],
-  apiVersion: LATEST_API_VERSION,
-  isEmbeddedApp: true,
-  // sessionStorage: new Shopify.Session.SQLiteSessionStorage(DB_PATH),
-  // ...(process.env.SHOP_CUSTOM_DOMAIN && {
-  // 	CUSTOM_SHOP_DOMAINS: [process.env.SHOP_CUSTOM_DOMAIN],
-  // }),
-  api: {
-    apiVersion: LATEST_API_VERSION,
-    restResources,
-    billing: undefined, // or replace with billingConfig above to enable example billing
-  },
-  auth: {
-    path: "/api/auth",
-    callbackPath: "/api/auth/callback",
-  },
-  webhooks: {
-    path: "/api/webhooks",
-  },
-  // This should be replaced with your preferred storage strategy
-  sessionStorage: new SQLiteSessionStorage(DB_PATH),
-  useOnlineTokens: false,
-  exitIframePath: "/exit-iframe",
+	apiKey: process.env.SHOPIFY_API_KEY,
+	apiSecretKey: process.env.SHOPIFY_API_SECRET,
+	scopes: process.env.SCOPES.split(','),
+	hostName: process.env.HOST
+		? process.env.HOST.replace(/https?:\/\//, '')
+		: 'localhost',
+	hostScheme: process.env.HOST.split('://')[0],
+	apiVersion: LATEST_API_VERSION,
+	isEmbeddedApp: true,
+	// sessionStorage: new Shopify.Session.SQLiteSessionStorage(DB_PATH),
+	// ...(process.env.SHOP_CUSTOM_DOMAIN && {
+	// 	CUSTOM_SHOP_DOMAINS: [process.env.SHOP_CUSTOM_DOMAIN],
+	// }),
+	api: {
+		apiVersion: LATEST_API_VERSION,
+		restResources,
+		billing: undefined, // or replace with billingConfig above to enable example billing
+	},
+	auth: {
+		path: '/api/auth',
+		callbackPath: '/api/auth/callback',
+	},
+	webhooks: {
+		path: '/api/webhooks',
+	},
+	// This should be replaced with your preferred storage strategy
+	sessionStorage: new RedisSessionStorage(
+		'redis://default:5ao2NF1eTDqXmdtdsfq4KmvgTpsfoclb@redis-16592.c292.ap-southeast-1-1.ec2.cloud.redislabs.com:16592'
+	),
+	useOnlineTokens: false,
+	exitIframePath: '/exit-iframe',
 });
 
 export default shopify;
