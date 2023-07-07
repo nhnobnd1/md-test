@@ -1,9 +1,8 @@
-import { BillingInterval, LATEST_API_VERSION } from "@shopify/shopify-api";
-import { shopifyApp } from "@shopify/shopify-app-express";
-import { SQLiteSessionStorage } from "@shopify/shopify-app-session-storage-sqlite";
+import { BillingInterval, LATEST_API_VERSION } from '@shopify/shopify-api';
+import { shopifyApp } from '@shopify/shopify-app-express';
 import { RedisSessionStorage } from '@shopify/shopify-app-session-storage-redis';
 let { restResources } = await import(
-  `@shopify/shopify-api/rest/admin/${LATEST_API_VERSION}`
+	`@shopify/shopify-api/rest/admin/${LATEST_API_VERSION}`
 );
 // If you want IntelliSense for the rest resources, you should import them directly
 // import { restResources } from "@shopify/shopify-api/rest/admin/2022-10";
@@ -13,12 +12,12 @@ const DB_PATH = `${process.cwd()}/database.sqlite`;
 // The transactions with Shopify will always be marked as test transactions, unless NODE_ENV is production.
 // See the ensureBilling helper to learn more about billing in this template.
 const billingConfig = {
-  "My Shopify One-Time Charge": {
-    // This is an example configuration that would do a one-time charge for $5 (only USD is currently supported)
-    amount: 5.0,
-    currencyCode: "USD",
-    interval: BillingInterval.OneTime,
-  },
+	'My Shopify One-Time Charge': {
+		// This is an example configuration that would do a one-time charge for $5 (only USD is currently supported)
+		amount: 5.0,
+		currencyCode: 'USD',
+		interval: BillingInterval.OneTime,
+	},
 };
 
 const shopify = shopifyApp({
@@ -48,6 +47,8 @@ const shopify = shopifyApp({
 		path: '/api/webhooks',
 	},
 	// This should be replaced with your preferred storage strategy
+
+	// test
 	sessionStorage: new RedisSessionStorage(
 		'redis://default:5ao2NF1eTDqXmdtdsfq4KmvgTpsfoclb@redis-16592.c292.ap-southeast-1-1.ec2.cloud.redislabs.com:16592'
 	),
