@@ -6,6 +6,7 @@ import { TableProps, Tooltip } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useForm } from "antd/lib/form/Form";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import { Header } from "src/components/UI/Header";
 import MDRangePicker from "src/components/UI/MDRangePicker/MDRangePicker";
@@ -16,7 +17,6 @@ import { Table } from "src/components/UI/Table";
 import env from "src/core/env";
 import { usePermission } from "src/hooks/usePerrmisson";
 import { useSubdomain } from "src/hooks/useSubdomain";
-import useViewport from "src/hooks/useViewport";
 import { getReportByTags } from "src/modules/report/api/api";
 import {
   convertTimeStamp,
@@ -38,7 +38,7 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
   const { subDomain } = useSubdomain();
 
   const { timezone } = useGlobalData(false, subDomain || "");
-  const { isMobile } = useViewport();
+  const { t } = useTranslation();
 
   const [form] = useForm();
   const { isAgent } = usePermission();
@@ -82,9 +82,9 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
   }, [listReportTags]);
   const columns = [
     {
-      title: "Tag",
+      title: t("common:reporting.tag"),
       dataIndex: "tagName",
-      width: "30%",
+      width: "40%",
       sorter: {
         compare: (a: any, b: any) => {
           return a.tagName - b.tagName;
@@ -92,7 +92,7 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
       },
     },
     {
-      title: "Total Tickets",
+      title: t("common:reporting.total_ticket"),
       dataIndex: "totalTicket",
       width: "20%",
       sorter: {
@@ -102,24 +102,24 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
       },
     },
     {
-      title: "Percentage",
+      title: t("common:reporting.percentage"),
       dataIndex: "percentage",
       sorter: {
         compare: (a: any, b: any) => {
           return a.percentage - b.percentage;
         },
       },
-      width: "20%%",
+      width: "20%",
     },
     {
-      title: "Percentage Closed",
+      title: t("common:reporting.percentage_closed"),
       dataIndex: "percentageClosed",
       sorter: {
         compare: (a: any, b: any) => {
           return a.percentageClosed - b.percentageClosed;
         },
       },
-      width: "20%%",
+      width: "20%",
     },
   ];
   const onChangeTable = useCallback(
@@ -171,12 +171,12 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
   );
   return (
     <>
-      <Header title="Report By Tags" />
+      <Header title={t("common:reporting.page_header_tag")} />
       <section className="flex-start">
         <div className={styles.dateWrap}>
           <div className={styles.groupDatePicker}>
             <MDRangePicker onFilterChange={handleChangeTime} />
-            <Tooltip title="Please select a maximum time period of 14 days (counting from the start date)">
+            <Tooltip title={t("common:reporting.tooltip_14days")}>
               <div className={styles.infoPicker}>
                 <InfoCircleTwoTone twoToneColor="#FA7D00" />
               </div>

@@ -98,7 +98,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       message.error(t("messages:error.get_tag"));
     },
   });
-
   const tags = useMemo(() => {
     if (!dataTags) return [];
     return dataTags;

@@ -100,7 +100,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
     },
     onError: () => {
       notification.error(t("messages:error.delete_customer"), {
-        description: "Remove customer failed",
+        // description: t("messages:error.delete_customer"),
         style: {
           width: 450,
         },
@@ -128,7 +128,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
   }, [querySearchCustomer, listCustomer]);
   const columns: any = [
     {
-      title: "Customer name",
+      title: t("common:customers.name"),
       dataIndex: "name",
       width: "25%",
       sorter: {
@@ -143,7 +143,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
       ),
     },
     {
-      title: "Email address",
+      title: t("common:customers.email_address"),
       dataIndex: "email",
       sorter: {
         compare: (a: any, b: any) => {
@@ -153,7 +153,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
       width: "45%",
     },
     {
-      title: "Number of tickets",
+      title: t("common:customers.ticket_count"),
       dataIndex: "ticketsCount",
       sorter: {
         compare: (a: any, b: any) => a.numberOfTicket - b.numberOfTicket,
@@ -161,7 +161,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
       width: "20%",
     },
     {
-      title: "Action",
+      title: t("common:table.action"),
       dataIndex: "",
       width: "10%",
       align: "center",
@@ -174,9 +174,8 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
           specialDelete={
             isAdmin
               ? {
-                  title: "Are you sure that you want to remove this customer?",
-                  description:
-                    "This customer will be removed permanently. All customer's tickets and his profile will no longer accessible.",
+                  title: t("common:customers.delete_popup_title"),
+                  description: t("common:customers.delete_popup_warning"),
                   textDelete: "Remove",
                 }
               : null

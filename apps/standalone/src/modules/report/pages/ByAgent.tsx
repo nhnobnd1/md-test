@@ -2,6 +2,7 @@ import { InfoCircleTwoTone } from "@ant-design/icons";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import { Tooltip } from "antd";
+import { t } from "i18next";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import { Form } from "src/components/UI/Form";
@@ -72,11 +73,11 @@ const ByAgentPage = () => {
   );
   return (
     <>
-      <Header title="Report By Agents" />
+      <Header title={t("common:reporting.page_header_agent")} />
       <div className={styles.dateWrap}>
         <div className={styles.groupDatePicker}>
           <MDRangePicker onFilterChange={handleChangeTime} />
-          <Tooltip title="Please select a maximum time period of 14 days (counting from the start date)">
+          <Tooltip title={t("common:reporting.tooltip_14days")}>
             <div className={styles.infoPicker}>
               <InfoCircleTwoTone twoToneColor="#FA7D00" />
             </div>
@@ -86,7 +87,7 @@ const ByAgentPage = () => {
 
       <div className={styles.wrapChart}>
         <div className={styles.title}>
-          Ticket closed per agent per day (Top 5 Agents)
+          {t("common:reporting.ticket_close_by_agent")}
         </div>
         <div className="w-full h-[450px]">
           {isLoading ? (
