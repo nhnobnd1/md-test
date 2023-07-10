@@ -2,9 +2,9 @@ import { AutoReply, Holidays } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
   ButtonGroup,
-  Card,
   EmptySearchResult,
   IndexTable,
+  LegacyCard,
   Link,
   Text,
 } from "@shopify/polaris";
@@ -220,7 +220,7 @@ const AutoReplyTab = ({
             }
             deleteAction={() => handleRemoveAutoReply(deleteAutoReply)}
           />
-          <Card>
+          <LegacyCard>
             <IndexTable
               resourceName={resourceName}
               itemCount={valueListAutoReplys.length}
@@ -237,7 +237,7 @@ const AutoReplyTab = ({
             >
               {rowMarkup}
             </IndexTable>
-          </Card>
+          </LegacyCard>
           <div className="flex items-center justify-center mt-4">
             <Pagination
               total={valueListAutoReplys ? valueListAutoReplys.length : 1}

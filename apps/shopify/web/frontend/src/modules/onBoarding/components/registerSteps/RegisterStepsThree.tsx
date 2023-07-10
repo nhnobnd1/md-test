@@ -3,7 +3,7 @@ import { GetTourGuideRequest, TourGuideRepository } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Button,
-  Card,
+  LegacyCard,
   Link,
   Page,
   Text,
@@ -68,7 +68,7 @@ const RegisterStepsThree = ({
   }, []);
   return (
     <Page>
-      <Card
+      <LegacyCard
         title={<TitleCard />}
         // primaryFooterAction={{
         //   content: "Back",
@@ -119,7 +119,7 @@ const RegisterStepsThree = ({
             Click here to start using your portal
           </Link>
         </div>
-      </Card>
+      </LegacyCard>
     </Page>
   );
 };

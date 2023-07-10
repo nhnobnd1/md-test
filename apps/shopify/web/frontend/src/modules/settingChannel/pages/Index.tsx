@@ -1,5 +1,5 @@
 import { PageComponent, TokenManager, useNavigate } from "@moose-desk/core";
-import { Card, Icon, Layout, Page, Text } from "@shopify/polaris";
+import { Icon, Layout, LegacyCard, Page, Text } from "@shopify/polaris";
 import {
   ChecklistAlternateMajor,
   EmailNewsletterMajor,
@@ -73,7 +73,7 @@ const SettingChannelIndexPage: PageComponent<
               className="mb-6 hover:cursor-pointer"
               key={`category-${index}`}
             >
-              <Card sectioned>
+              <LegacyCard sectioned>
                 <div className="flex justify-between items-center">
                   <div className="flex flex-col gap-6">
                     <div className="flex gap-2 items-center">
@@ -93,7 +93,7 @@ const SettingChannelIndexPage: PageComponent<
                     <RightIcon style={{ fontSize: 32 }} />
                   </div>
                 </div>
-              </Card>
+              </LegacyCard>
             </div>
           ))}
         </Layout.Section>

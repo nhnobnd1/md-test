@@ -1,16 +1,15 @@
-import { useJob, useMount, useToggle } from "@moose-desk/core";
+import { useToggle } from "@moose-desk/core";
 import {
   AutoReply,
   BusinessCalendar,
   BusinessHoursType,
+  GetListBusinessCalendarResponse,
   Holidays,
 } from "@moose-desk/repo";
-import BusinessCalendarRepository from "@moose-desk/repo/businessCalendar/BusinessCalendarRepository";
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Banner,
   BannerStatus,
-  Card,
   ContextualSaveBar,
   Layout,
   LegacyCard,
@@ -25,7 +24,7 @@ import {
 import { FormikProps } from "formik";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { catchError, map, of } from "rxjs";
+import { useMutation, useQuery } from "react-query";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
 import useGlobalData from "src/hooks/useGlobalData";
@@ -36,6 +35,10 @@ import BusinessHoursTab from "src/modules/setting/component/BusinessHours/Busine
 import HolidayTab from "src/modules/setting/component/Holidays/HolidayTab";
 import SelectTimeZone from "src/modules/setting/component/SelectTimeZone/SelectTimeZone";
 import { tabs } from "src/modules/setting/constaint/constaint";
+import {
+  getListBusinessCalendar,
+  updateListBusinessCalendar,
+} from "src/modules/setting/helper/api";
 import "./BusinessHours.scss";
 interface BusinessHoursProps {}
 
@@ -52,16 +55,71 @@ const BusinessHours = (props: BusinessHoursProps) => {
   });
   const { show } = useToast();
   const { t, i18n } = useTranslation();
-
   const { subDomain } = useSubdomain();
+
   const { refetchGlobal } = useGlobalData(false, subDomain || ""); // main code
-  const [dataBusinessCalendar, setDataBusinessCalendar] =
-    useState<BusinessCalendar>();
+
+  const {
+    data,
+    refetch: refetchBusinessCalendar,
+    isLoading: processing,
+  } = useQuery({
+    queryKey: ["getListBusinessCalendar"],
+    queryFn: () => getListBusinessCalendar(),
+    retry: 3,
+
+    onSuccess: (data: GetListBusinessCalendarResponse) => {
+      setDataBusinessCalendar({ ...data.data[0] });
+      setDataAutoReply([...data.data[0].autoReply]);
+      setDataHolidays([...data.data[0].holidays]);
+      setDataBusinessHoursAutoReplyCode(
+        data.data[0].businessHoursAutoReplyCode
+      );
+    },
+    onError: () => {
+      show(t("messages:error.something_went_wrong"), {
+        isError: true,
+      });
+    },
+  });
+
+  const update = useMutation({
+    mutationFn: (payload) => updateListBusinessCalendar(payload),
+    onSuccess: () => {
+      refetchBusinessCalendar();
+      setBanner({
+        isShow: true,
+        message: t("messages:success.update_business_calendar"),
+        type: "success",
+      });
+      refetchGlobal();
+      show(t("messages:success.update_business_calendar"));
+    },
+
+    onError: () => {
+      setBanner({
+        isShow: true,
+        type: "critical",
+        message: t("messages:success.update_business_calendar"),
+      });
+      show(t("messages:success.update_business_calendar"), {
+        isError: true,
+      });
+    },
+  });
+
+  const [dataBusinessCalendar, setDataBusinessCalendar] = useState<
+    BusinessCalendar | undefined
+  >(data ? { ...data.data[0] } : undefined);
   const { toggle: updateForm } = useToggle();
-  const [dataAutoReply, setDataAutoReply] = useState<AutoReply[]>([]);
-  const [dataHolidays, setDataHolidays] = useState<Holidays[]>([]);
+  const [dataAutoReply, setDataAutoReply] = useState<AutoReply[]>(
+    data ? [...data.data[0].autoReply] : []
+  );
+  const [dataHolidays, setDataHolidays] = useState<Holidays[]>(
+    data ? [...data.data[0].holidays] : []
+  );
   const [dataBusinessHoursAutoReplyCode, setDataBusinessHoursAutoReplyCode] =
-    useState("");
+    useState(data ? data.data[0].businessHoursAutoReplyCode : "");
   const [selected, setSelected] = useState(0);
   const formRef = useRef<FormikProps<any>>(null);
   const [disabled, setDisabled] = useState(false);
@@ -97,91 +155,14 @@ const BusinessHours = (props: BusinessHoursProps) => {
       ? setDisabled(true)
       : setDisabled(false);
   }, [dataBusinessCalendar]);
-  // fetch business calendar
-  const { run: fetchListBusinessCalendar, processing } = useJob(
-    () => {
-      return BusinessCalendarRepository()
-        .getListBusinessCalendar({
-          page: 1,
-          limit: 10,
-        })
-        .pipe(
-          map(({ data }) => {
-            setDataBusinessCalendar({ ...data.data[0] });
-            setDataAutoReply([...data.data[0].autoReply]);
-            setDataHolidays([...data.data[0].holidays]);
-            setDataBusinessHoursAutoReplyCode(
-              data.data[0].businessHoursAutoReplyCode
-            );
-          }),
-          catchError((err) => {
-            show(t("messages:error.something_went_wrong"), {
-              isError: true,
-            });
-
-            return of(err);
-          })
-        );
-    },
-    { showLoading: false }
-  );
-  // update business calendar
-  const { run: updateBusinessCalendar, processing: isLoadingUpdate } = useJob(
-    (dataSubmit: any) => {
-      const { _id } = dataSubmit;
-      return BusinessCalendarRepository()
-        .updateBusinessCalendar(_id, dataSubmit)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              setDataBusinessCalendar({ ...data.data });
-              setDataAutoReply([...data.data.autoReply]);
-              setDataHolidays([...data.data.holidays]);
-              setDataBusinessHoursAutoReplyCode(
-                data.data.businessHoursAutoReplyCode
-              );
-              setBanner({
-                isShow: true,
-                message: t("messages:success.update_business_calendar"),
-                type: "success",
-              });
-              refetchGlobal();
-              show(t("messages:success.update_business_calendar"));
-            } else {
-              setBanner({
-                isShow: true,
-                type: "critical",
-                message: t("messages:error.update_business_calendar"),
-              });
-              show(t("messages:error.update_business_calendar"), {
-                isError: true,
-              });
-            }
-          }),
-          catchError((error) => {
-            setBanner({
-              isShow: true,
-              type: "critical",
-              message: t("messages:success.update_business_calendar"),
-            });
-            show(t("messages:success.update_business_calendar"), {
-              isError: true,
-            });
-            return of(error);
-          })
-        );
-    },
-    {
-      showLoading: true,
-    }
-  );
 
   const handleSubmit = useCallback((data: any) => {
-    updateBusinessCalendar(data);
+    // updateBusinessCalendar(data);
+    update.mutate(data);
   }, []);
 
   // handle Effect
-  useMount(() => fetchListBusinessCalendar());
+  // useMount(() => fetchListBusinessCalendar());
   return (
     <>
       {formRef.current?.dirty && (
@@ -191,7 +172,7 @@ const BusinessHours = (props: BusinessHoursProps) => {
           saveAction={{
             onAction: () => formRef.current?.submitForm(),
             disabled: !formRef.current?.dirty,
-            loading: isLoadingUpdate,
+            loading: update.isLoading,
           }}
           discardAction={{
             onAction: () => formRef.current?.resetForm(),
@@ -234,7 +215,7 @@ const BusinessHours = (props: BusinessHoursProps) => {
                 onValuesChange={handleChangeValues}
                 enableReinitialize
               >
-                <Card sectioned>
+                <LegacyCard sectioned>
                   <Layout>
                     <Layout.Section>
                       <div className="flex items-center content-between">
@@ -249,7 +230,7 @@ const BusinessHours = (props: BusinessHoursProps) => {
                       </div>
                     </Layout.Section>
                     <Layout.Section>
-                      <Card>
+                      <LegacyCard>
                         <Tabs
                           tabs={tabs}
                           selected={selected}
@@ -285,7 +266,7 @@ const BusinessHours = (props: BusinessHoursProps) => {
                             !disabled && selected === 0 ? "" : "hidden"
                           }
                         >
-                          <Card.Section>
+                          <LegacyCard.Section>
                             <div className="flex items-start content-between">
                               <div className="mr-4 w-[100px] mt-2">
                                 <Text as="span" variant="bodyMd">
@@ -306,27 +287,12 @@ const BusinessHours = (props: BusinessHoursProps) => {
                                 </span>
                               </div>
                             </div>
-                          </Card.Section>
+                          </LegacyCard.Section>
                         </div>
-                      </Card>
+                      </LegacyCard>
                     </Layout.Section>
-                    {/* <Layout.Section>
-                      <Stack distribution="trailing">
-                        <ButtonGroup>
-                          <Button onClick={() => formRef.current?.resetForm()}>
-                            Cancel
-                          </Button>
-                          <Button
-                            onClick={() => formRef.current?.submitForm()}
-                            primary
-                          >
-                            Save
-                          </Button>
-                        </ButtonGroup>
-                      </Stack>
-                    </Layout.Section> */}
                   </Layout>
-                </Card>
+                </LegacyCard>
               </Form>
             </Layout.Section>
           </Layout>

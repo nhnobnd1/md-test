@@ -10,9 +10,9 @@ import { useToast } from "@shopify/app-bridge-react";
 import {
   Button,
   ButtonGroup,
-  Card,
   EmptySearchResult,
   IndexTable,
+  LegacyCard,
   Link,
   Loading,
   Text,
@@ -243,7 +243,7 @@ export default function CustomerIndexPage() {
         {isLoading ? (
           <SkeletonTable columnsCount={4} rowsCount={5} />
         ) : (
-          <Card>
+          <LegacyCard>
             {(loadingCustomer || deleting) && <Loading />}
             <IndexTable
               resourceName={resourceName}
@@ -291,7 +291,7 @@ export default function CustomerIndexPage() {
                 />
               </div>
             ) : null}
-          </Card>
+          </LegacyCard>
         )}
       </section>
     </>

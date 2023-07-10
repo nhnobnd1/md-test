@@ -13,9 +13,9 @@ import {
 } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
-  Card,
   EmptySearchResult,
   IndexTable,
+  LegacyCard,
   Link,
   Loading,
   Page,
@@ -229,7 +229,7 @@ export default function TagIndexPage() {
           deleteAction={() => handleRemoveTag([deleteTag])}
           textConfirm="Remove"
         />
-        <Card>
+        <LegacyCard>
           {loadTag && <Loading />}
           <IndexTable
             resourceName={resourceName}
@@ -259,7 +259,7 @@ export default function TagIndexPage() {
           >
             {rowMarkup}
           </IndexTable>
-        </Card>
+        </LegacyCard>
         {result && result.metadata.totalCount ? (
           <div className="flex items-center justify-center mt-4">
             <Pagination

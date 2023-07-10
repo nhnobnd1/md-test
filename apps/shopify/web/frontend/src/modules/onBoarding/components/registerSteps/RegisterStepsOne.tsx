@@ -1,8 +1,8 @@
 import {
   Button,
   ButtonGroup,
-  Card,
   Layout,
+  LegacyCard,
   Page,
   Stack,
   TextContainer,
@@ -21,7 +21,7 @@ const RegisterStepsOne = ({ nextStep }: RegisterStepsOneProps) => {
 
   return (
     <Page fullWidth>
-      <Card sectioned>
+      <LegacyCard sectioned>
         <Layout>
           <Layout.Section oneThird>
             <div className="flex items-center justify-center">
@@ -63,7 +63,7 @@ const RegisterStepsOne = ({ nextStep }: RegisterStepsOneProps) => {
             </Layout>
           </Layout.Section>
         </Layout>
-      </Card>
+      </LegacyCard>
     </Page>
   );
 };

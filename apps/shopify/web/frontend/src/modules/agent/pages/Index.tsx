@@ -16,9 +16,9 @@ import { useToast } from "@shopify/app-bridge-react";
 import {
   Badge,
   ButtonGroup,
-  Card,
   EmptySearchResult,
   IndexTable,
+  LegacyCard,
   Link,
   Loading,
   Page,
@@ -203,7 +203,7 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
             <Banner banner={banner} onDismiss={closeBanner}></Banner>
           </div>
         )}
-        <Card>
+        <LegacyCard>
           {/* <div className="flex-1 px-4 pt-4 pb-2">
           <Filters
             queryValue={filterData.query}
@@ -330,7 +330,7 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
               )}
             </div>
           ) : null}
-        </Card>
+        </LegacyCard>
       </Page>
     </>
   );

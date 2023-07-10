@@ -1,5 +1,11 @@
 import { TitleBar } from "@shopify/app-bridge-react";
-import { Card, Heading, Layout, Page, TextContainer } from "@shopify/polaris";
+import {
+  Heading,
+  Layout,
+  LegacyCard,
+  Page,
+  TextContainer,
+} from "@shopify/polaris";
 
 export default function PageName() {
   return (
@@ -17,26 +23,26 @@ export default function PageName() {
       />
       <Layout>
         <Layout.Section>
-          <Card sectioned>
+          <LegacyCard sectioned>
             <Heading>Heading</Heading>
             <TextContainer>
               <p>Body</p>
             </TextContainer>
-          </Card>
-          <Card sectioned>
+          </LegacyCard>
+          <LegacyCard sectioned>
             <Heading>Heading</Heading>
             <TextContainer>
               <p>Body</p>
             </TextContainer>
-          </Card>
+          </LegacyCard>
         </Layout.Section>
         <Layout.Section secondary>
-          <Card sectioned>
+          <LegacyCard sectioned>
             <Heading>Heading</Heading>
             <TextContainer>
               <p>Body</p>
             </TextContainer>
-          </Card>
+          </LegacyCard>
         </Layout.Section>
       </Layout>
     </Page>

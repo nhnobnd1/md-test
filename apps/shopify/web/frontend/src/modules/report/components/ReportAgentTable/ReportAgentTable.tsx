@@ -1,7 +1,7 @@
 import {
-  Card,
   EmptySearchResult,
   IndexTable,
+  LegacyCard,
   Loading,
   Text,
 } from "@shopify/polaris";
@@ -126,7 +126,7 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
         {isLoading ? (
           <SkeletonTable rowsCount={4} columnsCount={5} />
         ) : (
-          <Card>
+          <LegacyCard>
             <IndexTable
               resourceName={resourceName}
               itemCount={memoData?.data?.length || 0}
@@ -174,7 +174,7 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
                 />
               </div>
             ) : null}
-          </Card>
+          </LegacyCard>
         )}
       </div>
     </div>

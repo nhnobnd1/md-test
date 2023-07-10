@@ -1,9 +1,9 @@
 import { TitleBar } from "@shopify/app-bridge-react";
 import {
-  Card,
   Heading,
   Image,
   Layout,
+  LegacyCard,
   Link,
   Page,
   Stack,
@@ -20,7 +20,7 @@ export default function HomePage() {
       <TitleBar title="App name" primaryAction={undefined} />
       <Layout>
         <Layout.Section>
-          <Card sectioned>
+          <LegacyCard sectioned>
             <Stack
               wrap={false}
               spacing="extraTight"
@@ -75,7 +75,7 @@ export default function HomePage() {
                 </div>
               </Stack.Item>
             </Stack>
-          </Card>
+          </LegacyCard>
         </Layout.Section>
         <Layout.Section>
           <ProductsCard />

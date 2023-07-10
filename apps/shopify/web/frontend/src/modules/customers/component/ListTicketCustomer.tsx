@@ -2,9 +2,9 @@ import { useNavigate } from "@moose-desk/core";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { useToast } from "@shopify/app-bridge-react";
 import {
-  Card,
   EmptySearchResult,
   IndexTable,
+  LegacyCard,
   Loading,
   SkeletonBodyText,
 } from "@shopify/polaris";
@@ -189,7 +189,7 @@ export const ListTicketCustomer = memo(({ customerId }: IProps) => {
         {isLoading ? (
           <SkeletonTable columnsCount={6} rowsCount={5} />
         ) : (
-          <Card>
+          <LegacyCard>
             <>
               <IndexTable
                 resourceName={resourceName}
@@ -234,7 +234,7 @@ export const ListTicketCustomer = memo(({ customerId }: IProps) => {
                 />
               </div>
             </>
-          </Card>
+          </LegacyCard>
         )}
       </section>
 

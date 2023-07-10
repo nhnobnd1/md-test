@@ -1,7 +1,13 @@
 import { TokenManager, useJob, useToggle } from "@moose-desk/core";
 import { Agent, AgentRepository } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
-import { Banner, BannerStatus, Button, Card, Text } from "@shopify/polaris";
+import {
+  Banner,
+  BannerStatus,
+  Button,
+  LegacyCard,
+  Text,
+} from "@shopify/polaris";
 import { FormikProps } from "formik";
 import * as jose from "jose";
 import { useCallback, useRef, useState } from "react";
@@ -134,7 +140,7 @@ export default function IndexProfileManager() {
                 </Banner>
               ) : null}
 
-              <Card sectioned>{profileProfile}</Card>
+              <LegacyCard sectioned>{profileProfile}</LegacyCard>
             </>
           )}
         </div>

@@ -1,5 +1,5 @@
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
-import { Card } from "@shopify/polaris";
+import { LegacyCard } from "@shopify/polaris";
 import React, { useImperativeHandle } from "react";
 import { useQuery } from "react-query";
 import SkeletonCard from "src/components/Skelaton/SkeletonCard";
@@ -50,15 +50,15 @@ const ResultShopifySearch = React.forwardRef(({ id }: IProps, ref) => {
   // };
   const _renderInfoCustomer = () => {
     return isLoading ? (
-      <Card sectioned>
+      <LegacyCard sectioned>
         <SkeletonCard />
         <SkeletonCard noHeading count={5} lines={1} />
-      </Card>
+      </LegacyCard>
     ) : (
-      <Card sectioned>
+      <LegacyCard sectioned>
         <OrderOverview detail={convertResult?.customerInfo} />
         {_renderTableOrDetailOrder()}
-      </Card>
+      </LegacyCard>
     );
   };
   const _renderTableOrDetailOrder = () => {
