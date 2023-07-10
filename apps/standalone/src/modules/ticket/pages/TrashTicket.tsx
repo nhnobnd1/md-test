@@ -247,7 +247,7 @@ const TrashTicket = () => {
                     padding: 8,
                     paddingTop: 8,
                     paddingBottom: 8,
-                    overflow: "scroll",
+                    overflow: "auto",
                   }}
                 >
                   <div className="flex gap-2">
