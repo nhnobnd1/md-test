@@ -80,12 +80,12 @@ export const EmailIntegrationRepository = createRepository(
 		},
 		sendVerifyEmailSes(api, email: string) {
 			return api.get<BaseResponse<{ isVerified: boolean }>>(
-				`/send-verification-email-ses?email=${email}`
+				`/send-verification-sender-sg?email=${email}`
 			);
 		},
 		checkVerifyEmailSes(api, email: string) {
 			return api.get<BaseResponse<any>>(
-				`/check-verification-email-ses?email=${email}`
+				`/check-verification-sender-sg?email=${email}`
 			);
 		},
 		primaryEmail(api, id: string, payload: any) {

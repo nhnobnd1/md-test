@@ -1,17 +1,10 @@
 import {
   generatePath,
   PageComponent,
-  useDebounceFn,
-  useJob,
   useNavigate,
   usePrevious,
 } from "@moose-desk/core";
-import {
-  Agent,
-  AgentRepository,
-  GetListAgentRequest,
-  ScreenType,
-} from "@moose-desk/repo";
+import { GetListAgentRequest, ScreenType } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Badge,
@@ -25,37 +18,33 @@ import {
   Text,
   useIndexResourceState,
 } from "@shopify/polaris";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { catchError, map, of } from "rxjs";
+import { useQuery } from "react-query";
 import { Banner } from "src/components/Banner";
 import { useBannerState } from "src/components/Banner/useBannerState";
 import { HeaderList } from "src/components/HeaderList";
 import Pagination from "src/components/Pagination/Pagination";
-import env from "src/core/env";
 import { useBanner } from "src/hooks/useBanner";
 import useScreenType from "src/hooks/useScreenType";
-import { BaseMetaDataListResponse } from "src/models/Request";
 import { Role } from "src/models/Rule";
 import { ModalAddNewAgent } from "src/modules/agent/components/Modal/ModalAddNewAgent";
 import { ModalDetailAgent } from "src/modules/agent/components/Modal/ModalDetailAgent";
 import { getStatusAgent } from "src/modules/agent/constant";
+import { getListAgentFilter } from "src/modules/agent/helper/api";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
+import { defaultFilter } from "src/utils/localValue";
 
 interface AgentIndexPageProps {}
 
 const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
-  const [agents, setAgents] = useState<Agent[]>([]);
+  // const [agents, setAgents] = useState<Agent[]>([]);
   const { banner, show: showBanner, close: closeBanner } = useBanner();
   const navigate = useNavigate();
 
   useBannerState(showBanner);
   const [screenType] = useScreenType();
 
-  const defaultFilter: () => GetListAgentRequest = () => ({
-    page: 1,
-    limit: env.DEFAULT_PAGE_SIZE,
-  });
   const [direction, setDirection] = useState<"descending" | "ascending">(
     "descending"
   );
@@ -64,8 +53,31 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
     useState<GetListAgentRequest>(defaultFilter);
 
   const prevFilter = usePrevious<GetListAgentRequest>(filterData);
+  const {
+    data: dataAgents,
+    isLoading: loadingList,
+    refetch,
+  } = useQuery({
+    queryKey: ["getAgents", filterData],
+    queryFn: () => getListAgentFilter(filterData),
+    retry: 1,
 
-  const [meta, setMeta] = useState<BaseMetaDataListResponse>();
+    onError: () => {
+      // message.error(t("messages:error.get_agent"));
+      show(t("messages:error.get_agent"), { isError: true });
+    },
+  });
+  const agents = useMemo(() => {
+    if (!dataAgents?.data) return [];
+    return dataAgents.data;
+  }, [dataAgents?.data]);
+  const meta = useMemo(() => {
+    if (!dataAgents?.metadata)
+      return { page: 0, totalPage: 0, totalCount: 0, resultsPerPage: 0 };
+    return dataAgents.metadata;
+  }, [dataAgents?.metadata]);
+
+  // const [meta, setMeta] = useState<BaseMetaDataListResponse>();
   const { show } = useToast();
   const { t } = useTranslation();
 
@@ -73,31 +85,31 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
     useIndexResourceState<any>(agents);
   const [showTitle, setShowTitle] = useState(true);
 
-  const { run: getListAgentApi, processing: loadingList } = useJob(() => {
-    return AgentRepository()
-      .getList(filterData)
-      .pipe(
-        map(({ data }) => {
-          const listAgent = data.data.map((item) => ({
-            ...item,
-            id: item._id,
-          }));
-          setAgents(listAgent);
-          setMeta(data.metadata);
-        }),
-        catchError((err) => {
-          show(t("messages:error.get_agent"), { isError: true });
-          return of(err);
-        })
-      );
-  });
+  // const { run: getListAgentApi, processing: loadingList } = useJob(() => {
+  //   return AgentRepository()
+  //     .getList(filterData)
+  //     .pipe(
+  //       map(({ data }) => {
+  //         const listAgent = data.data.map((item) => ({
+  //           ...item,
+  //           id: item._id,
+  //         }));
+  //         setAgents(listAgent);
+  //         setMeta(data.metadata);
+  //       }),
+  //       catchError((err) => {
+  //         show(t("messages:error.get_agent"), { isError: true });
+  //         return of(err);
+  //       })
+  //     );
+  // });
 
-  const { run: getListDebounce } = useDebounceFn(
-    () => {
-      getListAgentApi();
-    },
-    { wait: 300 }
-  );
+  // const { run: getListDebounce } = useDebounceFn(
+  //   () => {
+  //     getListAgentApi();
+  //   },
+  //   { wait: 300 }
+  // );
 
   const handleFiltersQueryChange = useCallback((queryValue: string) => {
     setFilterData((old) => {
@@ -158,13 +170,13 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
       sortOrder: direction === "ascending" ? 1 : -1,
     }));
   };
-  useEffect(() => {
-    if (prevFilter?.query !== filterData.query && filterData.query) {
-      getListDebounce();
-    } else {
-      getListAgentApi();
-    }
-  }, [filterData]);
+  // useEffect(() => {
+  //   if (prevFilter?.query !== filterData.query && filterData.query) {
+  //     getListDebounce();
+  //   } else {
+  //     getListAgentApi();
+  //   }
+  // }, [filterData]);
   const css = `
   .Polaris-Page-Header__RightAlign ,.Polaris-Page-Header__PrimaryActionWrapper{
     width:100%!important;
@@ -192,7 +204,7 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
               setShowTitle={setShowTitle}
               handleSearch={handleFiltersQueryChange}
             >
-              <ModalAddNewAgent getListAgentApi={getListAgentApi} />
+              <ModalAddNewAgent getListAgentApi={refetch} />
             </HeaderList>
           </div>
         }
@@ -306,7 +318,7 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
                 <IndexTable.Cell className="py-3">
                   <ButtonGroup>
                     <ModalDetailAgent
-                      getListAgentApi={getListAgentApi}
+                      getListAgentApi={refetch}
                       agentSaved={agentItem}
                     />
                   </ButtonGroup>

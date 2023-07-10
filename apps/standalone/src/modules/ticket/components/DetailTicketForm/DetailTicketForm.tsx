@@ -373,7 +373,6 @@ const DetailTicketForm = () => {
       };
     }
   }, [ticket, primaryEmail, conversationList, dataEmailIntegration]);
-  console.log({ initialValues });
   const agentsOptions = useMemo(() => {
     const mapping = agents.map((item: Agent) => {
       return {

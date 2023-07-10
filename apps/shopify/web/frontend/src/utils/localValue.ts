@@ -1,3 +1,5 @@
+import env from "src/core/env";
+
 function wrapImageWithAnchorTag(htmlString: string) {
   const parser = new DOMParser();
   const doc = parser.parseFromString(htmlString, "text/html");
@@ -15,4 +17,9 @@ function wrapImageWithAnchorTag(htmlString: string) {
 
   return doc.body.innerHTML;
 }
-export { wrapImageWithAnchorTag };
+const defaultFilter = () => ({
+  page: 1,
+  limit: env.DEFAULT_PAGE_SIZE,
+  query: "",
+});
+export { defaultFilter, wrapImageWithAnchorTag };
