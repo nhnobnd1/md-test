@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Bar,
   BarChart,
@@ -35,6 +36,7 @@ const LIST_CHART_ITEM_COLOR = [
   "#FFEB3B",
 ];
 const ChartAgentsTicket = ({ data }: ChartAgentsTicketProps) => {
+  const { t } = useTranslation();
   const convertTopFiveAgents: any =
     data?.map((item: ChartTopFiveRes | any) => item?.agentClosed) || [];
 
@@ -77,9 +79,7 @@ const ChartAgentsTicket = ({ data }: ChartAgentsTicketProps) => {
       {!convertTopFiveAgents[0]?.length ? (
         <div className="text-center">
           <Icon name="emptyChartData" />
-          <p className="md_text--secondary">
-            Sorry! There is no records matched with your criteria.
-          </p>
+          <p className="md_text--secondary">{t("common:table.empty")} </p>
         </div>
       ) : (
         <BarChart data={memoChartData}>

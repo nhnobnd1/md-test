@@ -54,7 +54,9 @@ export const forceDeleteApi = (payload: BaseDeleteList) => {
       .catch((error) => reject(error));
   });
 };
-export const getListTrashApi = (payload: GetListTicketRequest) => {
+export const getListTrashApi = (
+  payload: GetListTicketRequest
+): Promise<GetListTicketResponse> => {
   return new Promise((resolve, reject) => {
     lastValueFrom(TicketRepository().getListTrash(payload))
       .then(({ data }) => resolve(data))
@@ -97,9 +99,11 @@ export const restoreTicketApi = (payload: BaseDeleteList) => {
   });
 };
 
-export const getListTicketApi = (payload: GetListTicketRequest) => {
+export const getListTicketApi = (
+  payload: GetListTicketRequest
+): Promise<GetListTicketResponse> => {
   return new Promise((resolve, reject) => {
-    lastValueFrom(TicketRepository().getList(payload))
+    lastValueFrom(TicketRepository().getListFilter(payload))
       .then(({ data }) => resolve(data))
       .catch((error) => reject(error));
   });

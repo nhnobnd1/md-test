@@ -105,7 +105,7 @@ export const PopupCustomer = ({
         items={[
           {
             key: "1",
-            label: `Customer profile`,
+            label: t("common:customers.profile"),
             children: (
               <CustomerForm
                 enableLoadForm
@@ -118,7 +118,7 @@ export const PopupCustomer = ({
           },
           {
             key: "2",
-            label: `List ticket`,
+            label: t("common:customers.ticket_list"),
             children: <ListTicketCustomer customerId={dataForm?._id || ""} />,
           },
         ]}

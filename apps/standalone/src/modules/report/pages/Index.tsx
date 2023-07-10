@@ -4,6 +4,7 @@ import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import { Tooltip } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useQueries } from "react-query";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
@@ -12,7 +13,6 @@ import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import SummaryBlock from "src/components/UI/SummaryBlock/SummaryBlock";
 import { usePermission } from "src/hooks/usePerrmisson";
 import { useSubdomain } from "src/hooks/useSubdomain";
-import useViewport from "src/hooks/useViewport";
 import {
   getFirstResponseTime,
   getReportSummaryReport,
@@ -46,7 +46,7 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
   const { subDomain } = useSubdomain();
   const { timezone } = useGlobalData(false, subDomain || "");
   const { isAgent } = usePermission();
-  const { isMobile } = useViewport();
+  const { t } = useTranslation();
   const { current, twoWeekAgo } = getTimeFilterDefault();
   const [filter, setFilter] = useState({
     startTime: "",
@@ -97,56 +97,6 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
     return convertListDataQueries;
   }, [queries]);
 
-  // const disabledStartDate = useCallback(
-  //   (current) => {
-  //     return form.getFieldValue("to")
-  //       ? current > form.getFieldValue("to") ||
-  //           current < getTwoWeeksBefore(form.getFieldValue("to"))
-  //       : false;
-  //   },
-  //   [form.getFieldValue("to")]
-  // );
-  // const disabledEndDate = useCallback(
-  //   (current) => {
-  //     return form.getFieldValue("from")
-  //       ? current < form.getFieldValue("from") ||
-  //           current > getTwoWeeksAfter(form.getFieldValue("from"))
-  //       : false;
-  //   },
-  //   [form.getFieldValue("from")]
-  // );
-  // const handleChangeStartTime = (date: any, values: string) => {
-  //   if (!values) {
-  //     form.setFieldsValue({ to: null });
-  //     setFilter({
-  //       endTime: "",
-  //       startTime: "",
-  //     });
-  //     return;
-  //   }
-
-  //   setFilter((pre) => ({
-  //     ...pre,
-  //     startTime: values
-  //       ? String(convertTimeStamp(date, timezone, "start"))
-  //       : "",
-  //   }));
-  // };
-  // const handleChangeEndTime = (date: any, values: string) => {
-  //   // el?.focus();
-  //   if (!values) {
-  //     form.setFieldsValue({ from: null });
-  //     setFilter({
-  //       endTime: "",
-  //       startTime: "",
-  //     });
-  //     return;
-  //   }
-  //   setFilter((pre) => ({
-  //     ...pre,
-  //     endTime: values ? String(convertTimeStamp(date, timezone, "end")) : "",
-  //   }));
-  // };
   const handleChangeTime = useCallback(
     (dates: any) => {
       if (!dates) {
@@ -165,11 +115,11 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
   );
   return (
     <>
-      <Header title="Reporting" />
+      <Header title={t("common:reporting.page_header")} />
       <div className={styles.dateWrap}>
         <div className={styles.groupDatePicker}>
           <MDRangePicker onFilterChange={handleChangeTime} />
-          <Tooltip title="Please select a maximum time period of 14 days (counting from the start date)">
+          <Tooltip title={t("common:reporting.tooltip_14days")}>
             <div className={styles.infoPicker}>
               <InfoCircleTwoTone twoToneColor="#FA7D00" />
             </div>
@@ -183,7 +133,9 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
         />
       </div>
       <div className={styles.wrapChart}>
-        <div className={styles.title}>Support Volume</div>
+        <div className={styles.title}>
+          {t("common:reporting.support_volume")}
+        </div>
         <div className="w-full h-[450px]">
           {queries[ChartReportData.SUPPORT_VOLUME].isLoading ? (
             <MDSkeleton lines={10} />
@@ -195,7 +147,9 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
         </div>
       </div>
       <div className={styles.wrapChart}>
-        <div className={styles.title}>Resolution Time (Median)</div>
+        <div className={styles.title}>
+          {t("common:reporting.resolution_time_title")}
+        </div>
         <div className="w-full h-[450px]">
           {queries[ChartReportData.RESOLUTION_TIME].isLoading ? (
             <MDSkeleton lines={10} />
@@ -207,7 +161,9 @@ const ReportIndexPage: PageComponent<ReportIndexPageProps> = () => {
         </div>
       </div>
       <div className={styles.wrapChart}>
-        <div className={styles.title}>First Response Time (Median)</div>
+        <div className={styles.title}>
+          {t("common:reporting.first_response_time_title")}
+        </div>
         <div className="w-full h-[450px]">
           {queries[ChartReportData.FIRST_RESPONSE_TIME].isLoading ? (
             <MDSkeleton lines={10} />

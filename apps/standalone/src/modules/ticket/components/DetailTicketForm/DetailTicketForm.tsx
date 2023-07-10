@@ -327,6 +327,12 @@ const DetailTicketForm = () => {
 
   const initialValues = useMemo(() => {
     const condition = ticket?.incoming || ticket?.createdViaWidget;
+    const from = ticket?.senderConfigId
+      ? ticket.senderConfigId
+      : primaryEmail?._id;
+    const fromValidate = dataEmailIntegration?.find(
+      (item) => item._id === from
+    );
     if (conversationList.length === 0) {
       return {
         status: ticket?.status,
@@ -335,9 +341,7 @@ const DetailTicketForm = () => {
         to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
         tags: ticket?.tags,
         content: "",
-        from: ticket?.senderConfigId
-          ? ticket.senderConfigId
-          : primaryEmail?._id,
+        from: fromValidate ? from : "",
         ccEmails: ticket?.ccEmails,
         CC: ticket?.ccEmails?.map((item) => {
           return item.replace(/.*<([^>]*)>.*/, "$1") || item;
@@ -354,9 +358,7 @@ const DetailTicketForm = () => {
         to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
         tags: ticket?.tags,
         content: "",
-        from: ticket?.senderConfigId
-          ? ticket.senderConfigId
-          : primaryEmail?._id,
+        from: fromValidate ? from : "",
         ccEmails: ticket?.ccEmails,
         CC: conversationList[conversationList.length - 1]?.ccEmails?.map(
           (item) => {
@@ -370,8 +372,8 @@ const DetailTicketForm = () => {
         ),
       };
     }
-  }, [ticket, primaryEmail, conversationList]);
-
+  }, [ticket, primaryEmail, conversationList, dataEmailIntegration]);
+  console.log({ initialValues });
   const agentsOptions = useMemo(() => {
     const mapping = agents.map((item: Agent) => {
       return {
