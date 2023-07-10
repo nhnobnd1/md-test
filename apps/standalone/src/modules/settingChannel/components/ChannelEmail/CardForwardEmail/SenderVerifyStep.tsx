@@ -20,6 +20,7 @@ export const SenderVerifyStep: FC<ContentWaitProps> = React.memo(
   ({ email, formEmail }) => {
     const [isVerifySender, setIsVerifySender] = useState("Pending");
     const [retrySenderCount, setRetrySenderCount] = useState(0);
+    const [disableRecheck, setDisableReCheck] = useState(false);
     const message = useMessage();
     const { t } = useTranslation();
     const createForwardEmail = useMailSetting(
@@ -60,16 +61,22 @@ export const SenderVerifyStep: FC<ContentWaitProps> = React.memo(
                 setIsVerifySender("Success");
                 createForwardEmail(true);
               } else {
-                setRetrySenderCount(retrySenderCount + 1);
+                setTimeout(() => {
+                  setRetrySenderCount(retrySenderCount + 1);
+                }, 3000);
               }
             } else {
-              setRetrySenderCount(retrySenderCount + 1);
+              setTimeout(() => {
+                setRetrySenderCount(retrySenderCount + 1);
+              }, 3000);
             }
           }),
           catchError((err) => {
             message.error(t("messages:error.something_went_wrong"));
 
-            setRetrySenderCount(retrySenderCount + 1);
+            setTimeout(() => {
+              setRetrySenderCount(retrySenderCount + 1);
+            }, 3000);
 
             return of(err);
           })
@@ -79,11 +86,13 @@ export const SenderVerifyStep: FC<ContentWaitProps> = React.memo(
       checkVerifyEmailFirstTime(email);
       setRetrySenderCount(0);
       setIsVerifySender("Pending");
+      setDisableReCheck(true);
     };
     useEffect(() => {
-      if (retrySenderCount === 5) {
+      if (retrySenderCount === 6) {
         setIsVerifySender("Fail");
         setRetrySenderCount(0);
+
         return;
       }
       if (retrySenderCount > 0 && isVerifySender !== "Success") {
@@ -110,20 +119,23 @@ export const SenderVerifyStep: FC<ContentWaitProps> = React.memo(
     if (isVerifySender === "Fail") {
       return (
         <div className="flex flex-col items-center">
-          <Result
-            status="error"
-            // title="Your setup has been failure"
-            subTitle="Cannot be verified yet. Click on the re-check button to check the verification status again"
-            extra={[
-              <MDButton
-                onClick={handleClickButtonCheck}
-                type="primary"
-                key="console"
-              >
-                Re-check
-              </MDButton>,
-            ]}
-          />
+          {disableRecheck ? (
+            <Result status="error" title="Your setup has been failure" />
+          ) : (
+            <Result
+              status="error"
+              subTitle="Cannot be verified yet. Click on the re-check button to check the verification status again"
+              extra={[
+                <MDButton
+                  onClick={handleClickButtonCheck}
+                  type="primary"
+                  key="console"
+                >
+                  Re-check
+                </MDButton>,
+              ]}
+            />
+          )}
         </div>
       );
     }
