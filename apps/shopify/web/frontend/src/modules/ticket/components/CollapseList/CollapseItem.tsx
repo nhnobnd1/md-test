@@ -1,4 +1,4 @@
-import { Button, Card, Collapsible } from "@shopify/polaris";
+import { Button, Collapsible, LegacyCard } from "@shopify/polaris";
 import { FC, useCallback, useState } from "react";
 import { RowMessage } from "src/modules/ticket/components/RowMessage";
 import { ChatItem } from "src/modules/ticket/pages/DetailTicket";
@@ -19,7 +19,7 @@ export const CollapseItem: FC<CollapseItemProps> = ({
 
   return (
     <div>
-      <Card>
+      <LegacyCard>
         <div
           className="flex min-h-[54px] mb-3 hover:cursor-pointer px-2"
           onClick={handleToggle}
@@ -48,7 +48,7 @@ export const CollapseItem: FC<CollapseItemProps> = ({
             </div>
           </div>
         </div>
-      </Card>
+      </LegacyCard>
       <Collapsible
         open={open}
         id="basic-collapsible"

@@ -1,5 +1,5 @@
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
-import { Button, Card } from "@shopify/polaris";
+import { Button, LegacyCard } from "@shopify/polaris";
 // import { Select } from "antd";
 import { memo, useMemo, useRef, useState } from "react";
 import { useQuery } from "react-query";
@@ -57,9 +57,9 @@ const ContentShopifySearch = () => {
           onClick={() => handleSelectCustomer(item?.id)}
           key={index}
         >
-          <Card sectioned>
+          <LegacyCard sectioned>
             <OrderOverview detail={item} />
-          </Card>
+          </LegacyCard>
         </div>
       ))
     );
@@ -88,14 +88,14 @@ const ContentShopifySearch = () => {
       {_renderResultSearch()}
     </div>
   ) : (
-    <Card sectioned>
+    <LegacyCard sectioned>
       <div className={styles.wrapSearchInput}>
         <Search onTypeSearch={handleSearch} />
 
         {!selectedId && _renderListOption()}
         {_renderResultSearch()}
       </div>
-    </Card>
+    </LegacyCard>
   );
 };
 export default memo(ContentShopifySearch);

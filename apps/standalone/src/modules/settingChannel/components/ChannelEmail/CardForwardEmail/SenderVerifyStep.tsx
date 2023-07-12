@@ -20,32 +20,16 @@ export const SenderVerifyStep: FC<ContentWaitProps> = React.memo(
   ({ email, formEmail }) => {
     const [isVerifySender, setIsVerifySender] = useState("Pending");
     const [retrySenderCount, setRetrySenderCount] = useState(0);
+    const [disableRecheck, setDisableReCheck] = useState(false);
     const message = useMessage();
     const { t } = useTranslation();
     const createForwardEmail = useMailSetting(
       (state) => state.createForwardEmail
     );
 
-    const { run: verifyFinish } = useJob((payload: string) => {
-      return EmailIntegrationRepository()
-        .sendVerifyEmailSes(payload)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              setRetrySenderCount(1);
-            }
-          }),
-          catchError((err) => {
-            message.error(t("messages:error.something_went_wrong"));
-
-            return of(err);
-          })
-        );
-    });
-
     const { run: checkVerifyEmailFirstTime } = useJob((payload: string) => {
       return EmailIntegrationRepository()
-        .checkVerifyEmailSes(payload)
+        .sendVerifyEmailSes(payload)
         .pipe(
           map(({ data }) => {
             if (data.statusCode === 200) {
@@ -54,7 +38,7 @@ export const SenderVerifyStep: FC<ContentWaitProps> = React.memo(
                 setIsVerifySender("Success");
                 createForwardEmail(true);
               } else {
-                verifyFinish(payload);
+                setRetrySenderCount(1);
               }
             }
           }),
@@ -81,23 +65,34 @@ export const SenderVerifyStep: FC<ContentWaitProps> = React.memo(
                   setRetrySenderCount(retrySenderCount + 1);
                 }, 3000);
               }
+            } else {
+              setTimeout(() => {
+                setRetrySenderCount(retrySenderCount + 1);
+              }, 3000);
             }
           }),
           catchError((err) => {
             message.error(t("messages:error.something_went_wrong"));
+
+            setTimeout(() => {
+              setRetrySenderCount(retrySenderCount + 1);
+            }, 3000);
 
             return of(err);
           })
         );
     });
     const handleClickButtonCheck = () => {
-      setRetrySenderCount(2);
+      checkVerifyEmailFirstTime(email);
+      setRetrySenderCount(0);
       setIsVerifySender("Pending");
+      setDisableReCheck(true);
     };
     useEffect(() => {
-      if (retrySenderCount === 20) {
+      if (retrySenderCount === 6) {
         setIsVerifySender("Fail");
         setRetrySenderCount(0);
+
         return;
       }
       if (retrySenderCount > 0 && isVerifySender !== "Success") {
@@ -124,20 +119,23 @@ export const SenderVerifyStep: FC<ContentWaitProps> = React.memo(
     if (isVerifySender === "Fail") {
       return (
         <div className="flex flex-col items-center">
-          <Result
-            status="error"
-            // title="Your setup has been failure"
-            subTitle="Cannot be verified yet. Please check your email and click on the link to verify. Click on the re-check button to check the verification status again"
-            extra={[
-              <MDButton
-                onClick={handleClickButtonCheck}
-                type="primary"
-                key="console"
-              >
-                Re-check
-              </MDButton>,
-            ]}
-          />
+          {disableRecheck ? (
+            <Result status="error" title="Your setup has been failure" />
+          ) : (
+            <Result
+              status="error"
+              subTitle="Cannot be verified yet. Click on the re-check button to check the verification status again"
+              extra={[
+                <MDButton
+                  onClick={handleClickButtonCheck}
+                  type="primary"
+                  key="console"
+                >
+                  Re-check
+                </MDButton>,
+              ]}
+            />
+          )}
         </div>
       );
     }
@@ -149,12 +147,11 @@ export const SenderVerifyStep: FC<ContentWaitProps> = React.memo(
         </Typography.Title>
         <div className="flex justify-start items-start gap-2  mt-5">
           <div className="flex flex-col">
-            <p className="text-center">
+            {/* <p className="text-center">
               We have sent a verification email to the address {email}
-            </p>
+            </p> */}
             <p className="text-center">
-              Please check your inbox and click on the verification link to
-              complete the verification process
+              Please wait a bit for the verification process to complete.
             </p>
             <p className="text-center"></p>
           </div>

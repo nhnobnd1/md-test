@@ -1,8 +1,8 @@
 import { AutoReply, Holidays } from "@moose-desk/repo";
 import {
-  Card,
   EmptySearchResult,
   IndexTable,
+  LegacyCard,
   Link,
   Text,
 } from "@shopify/polaris";
@@ -189,7 +189,7 @@ const HolidayTab = ({
             }
             deleteAction={() => handleRemoveHoliday(deleteHoliday)}
           />
-          <Card>
+          <LegacyCard>
             <IndexTable
               resourceName={resourceName}
               itemCount={valueListHolidays.length}
@@ -210,7 +210,7 @@ const HolidayTab = ({
             >
               {rowMarkup}
             </IndexTable>
-          </Card>
+          </LegacyCard>
           <div className="flex items-center justify-center mt-4">
             <Pagination
               total={valueListHolidays ? valueListHolidays.length : 1}

@@ -120,13 +120,15 @@ export const ViewWidget = (props: ViewWidgetProps) => {
                   </FormLayout>
                   <div className="flex justify-end  mt-6">
                     <button
-                      className="px-4 py-2 rounded-[20px]"
+                      className="px-4 py-2 rounded-[20px] flex items-center"
                       style={{
                         color: data?.textButtonAppearanceColor,
                         backgroundColor: data?.buttonAppearanceColor,
                       }}
                     >
-                      {data.buttonText}
+                      <span className="max-w-[150px] truncate inline-block">
+                        {data.buttonText}
+                      </span>
                     </button>
                   </div>
                 </Form>

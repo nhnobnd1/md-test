@@ -1,4 +1,4 @@
-import { Card } from "@shopify/polaris";
+import { LegacyCard } from "@shopify/polaris";
 import FormItem from "src/components/Form/Item";
 import RadioGroup from "src/components/RadioGroup/RadioGroup";
 import RowCheckbox from "src/modules/setting/component/BusinessHours/RowCheckbox";
@@ -28,11 +28,11 @@ const BusinessHoursTab = ({ disabled, ...props }: BusinessHoursTabProps) => {
           ></RadioGroup>
         </FormItem>
       </div>
-      <Card title="Working Hours" subdued={disabled} sectioned>
+      <LegacyCard title="Working Hours" subdued={disabled} sectioned>
         <FormItem name="businessHours">
           <RowCheckbox disabled={disabled} />
         </FormItem>
-      </Card>
+      </LegacyCard>
     </div>
   );
 };

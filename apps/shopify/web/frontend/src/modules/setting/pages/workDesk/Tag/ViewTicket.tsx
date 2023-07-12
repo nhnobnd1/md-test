@@ -14,9 +14,9 @@ import {
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Button,
-  Card,
   EmptySearchResult,
   IndexTable,
+  LegacyCard,
   Page,
 } from "@shopify/polaris";
 
@@ -150,7 +150,7 @@ const ViewTicket: FC<ViewTicketProps> = () => {
         compactTitle
         title={`Tickets tagged with "${id}"`}
       >
-        <Card>
+        <LegacyCard>
           <div className="flex-1 px-4 pt-4 pb-2 mt-5">
             <IndexTable
               resourceName={{ singular: "ticket", plural: "tickets" }}
@@ -200,7 +200,7 @@ const ViewTicket: FC<ViewTicketProps> = () => {
               ))}
             </IndexTable>
           </div>
-        </Card>
+        </LegacyCard>
         {meta?.totalCount
           ? meta && (
               <div className="flex items-center justify-center mt-4">

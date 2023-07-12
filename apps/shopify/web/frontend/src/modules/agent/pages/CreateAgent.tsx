@@ -8,8 +8,8 @@ import { useToast } from "@shopify/app-bridge-react";
 import {
   Button,
   ButtonGroup,
-  Card,
   Layout,
+  LegacyCard,
   Page,
   Stack,
 } from "@shopify/polaris";
@@ -118,8 +118,8 @@ const CreateAgent = (props: CreateAgentProps) => {
         )}
 
         <Layout.Section>
-          <Card>
-            <Card.Section>
+          <LegacyCard>
+            <LegacyCard.Section>
               <AgentForm
                 innerRef={formRef}
                 onSubmit={handleSubmit}
@@ -141,8 +141,8 @@ const CreateAgent = (props: CreateAgentProps) => {
                   </ButtonGroup>
                 </Stack>
               </div>
-            </Card.Section>
-          </Card>
+            </LegacyCard.Section>
+          </LegacyCard>
         </Layout.Section>
       </Layout>
     </Page>

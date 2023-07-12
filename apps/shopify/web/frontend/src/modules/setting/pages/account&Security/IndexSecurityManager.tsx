@@ -6,9 +6,9 @@ import {
   Banner,
   Button,
   ButtonGroup,
-  Card,
   FormLayout,
   Layout,
+  LegacyCard,
   Stack,
   Text,
   TextField,
@@ -210,7 +210,7 @@ export default function IndexAccountManager() {
                     onReset={handleResetForm}
                     enableReinitialize
                   >
-                    <Card title="Change Password" sectioned>
+                    <LegacyCard title="Change Password" sectioned>
                       <Layout>
                         <Layout.Section>
                           <FormLayout>
@@ -249,7 +249,7 @@ export default function IndexAccountManager() {
                           </Stack>
                         </Layout.Section>
                       </Layout>
-                    </Card>
+                    </LegacyCard>
                   </Form>
                 </Layout.Section>
               </div>
@@ -258,7 +258,7 @@ export default function IndexAccountManager() {
                   {isLoading ? (
                     <SkeletonCard lines={3} />
                   ) : (
-                    <Card subdued={!status} sectioned>
+                    <LegacyCard subdued={!status} sectioned>
                       <Layout>
                         <Layout.Section>
                           {status ? (
@@ -385,7 +385,7 @@ export default function IndexAccountManager() {
                           </Stack>
                         </Layout.Section>
                       </Layout>
-                    </Card>
+                    </LegacyCard>
                   )}
                 </Layout.Section>
               </div>

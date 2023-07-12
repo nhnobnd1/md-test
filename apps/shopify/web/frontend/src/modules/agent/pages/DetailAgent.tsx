@@ -19,9 +19,9 @@ import {
   Badge,
   Button,
   ButtonGroup,
-  Card,
   ContextualSaveBar,
   Layout,
+  LegacyCard,
   Link,
   Page,
   Stack,
@@ -392,8 +392,8 @@ const DetailAgent = (props: CreateAgentProps) => {
             )}
 
             <Layout.Section>
-              <Card>
-                <Card.Section>
+              <LegacyCard>
+                <LegacyCard.Section>
                   <AgentForm
                     innerRef={formRef}
                     initialValues={agentSaved}
@@ -510,8 +510,8 @@ const DetailAgent = (props: CreateAgentProps) => {
                       )}
                     </Stack>
                   </div>
-                </Card.Section>
-              </Card>
+                </LegacyCard.Section>
+              </LegacyCard>
             </Layout.Section>
           </Layout>
         </Page>

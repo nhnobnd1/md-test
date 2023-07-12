@@ -17,10 +17,10 @@ import {
 import { useToast } from "@shopify/app-bridge-react";
 import {
   ButtonGroup,
-  Card,
   EmptySearchResult,
   Filters,
   IndexTable,
+  LegacyCard,
   Link,
   Page,
   Text,
@@ -239,7 +239,7 @@ export const ChannelEmail = (props: ChannelEmailProps) => {
           loadingConfirm={loadingDelete}
           deleteAction={() => idDelete && deleteEmail(idDelete)}
         />
-        <Card>
+        <LegacyCard>
           <div className="flex-1 px-4 pt-4 pb-2">
             <Filters
               queryValue={filterData.query}
@@ -343,7 +343,7 @@ export const ChannelEmail = (props: ChannelEmailProps) => {
               )}
             </div>
           ) : null}
-        </Card>
+        </LegacyCard>
       </Page>
     </>
   );

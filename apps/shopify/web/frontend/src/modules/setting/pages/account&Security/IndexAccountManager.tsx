@@ -4,8 +4,8 @@ import { useToast } from "@shopify/app-bridge-react";
 import {
   Banner,
   Button,
-  Card,
   FormLayout,
+  LegacyCard,
   SkeletonBodyText,
   Stack,
   Tag,
@@ -185,7 +185,7 @@ export default function IndexAccountManager({ props }: any) {
           Access Manager
         </Text>
         <div className={styles.wrapForm}>
-          <Card sectioned>
+          <LegacyCard sectioned>
             <Form
               initialValues={accountFormValues || initialValues}
               ref={formRef}
@@ -307,7 +307,7 @@ export default function IndexAccountManager({ props }: any) {
                 Save
               </Button>
             </div>
-          </Card>
+          </LegacyCard>
         </div>
       </div>
     </section>

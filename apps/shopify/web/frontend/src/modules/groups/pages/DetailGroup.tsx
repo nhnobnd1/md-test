@@ -13,7 +13,6 @@ import {
 } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
-  Card,
   ContextualSaveBar,
   Layout,
   LegacyCard,
@@ -161,8 +160,8 @@ const DetailGroup = (props: DetailGroupProps) => {
                 </Layout.Section>
               )}
               <Layout.Section>
-                <Card>
-                  <Card.Section>
+                <LegacyCard>
+                  <LegacyCard.Section>
                     <GroupForm
                       initialValues={initialValues}
                       enableReinitialize
@@ -171,8 +170,8 @@ const DetailGroup = (props: DetailGroupProps) => {
                       innerRef={formRef}
                       onSubmit={handleSubmit}
                     />
-                  </Card.Section>
-                </Card>
+                  </LegacyCard.Section>
+                </LegacyCard>
               </Layout.Section>
             </Layout>
           </Page>

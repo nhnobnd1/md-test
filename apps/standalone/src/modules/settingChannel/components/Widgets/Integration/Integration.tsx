@@ -1,6 +1,7 @@
 import { Button, Card, Divider, Row } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
 import useWidgetSetting from "src/modules/settingChannel/store/useSetting";
 import { useStore } from "src/providers/StoreProviders";
@@ -38,27 +39,27 @@ export default function Integration({ idWidget }: IntegrationProps) {
       return ` 
     	<script>
 			window.mdSettings = {
-				widget_id: "https://md-help-widget.s3.amazonaws.com/${storeId}/${data?.id}.json",
+				widget_id: "${env.HELP_WIDGET_URL}/${storeId}/${data?.id}.json",
 			};
 		</script>
 		<script
     async
 		defer
 		type="text/javascript"
-    src="https://md-help-widget.s3.amazonaws.com/moosedesk.js"></script>
+    src="${env.HELP_WIDGET_URL}/moosedesk.js"></script>
 
     `;
     return ` 
     	<script>
 			window.mdSettings = {
-				widget_id: "https://md-help-widget.s3.amazonaws.com/${storeId}/${idWidget}.json",
+				widget_id: "${env.HELP_WIDGET_URL}/${storeId}/${idWidget}.json",
 			};
 		</script>
 		<script
     async
 		defer
 		type="text/javascript"
-    src="https://md-help-widget.s3.amazonaws.com/moosedesk.js"></script>
+    src="${env.HELP_WIDGET_URL}/moosedesk.js"></script>
 
     `;
   }, [data?.id, idWidget, storeId]);

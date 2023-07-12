@@ -2,9 +2,9 @@ import { MediaScreen, PageComponent, useToggle } from "@moose-desk/core";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import {
   Button,
-  Card,
   EmptySearchResult,
   IndexTable,
+  LegacyCard,
   Loading,
   Text,
 } from "@shopify/polaris";
@@ -179,7 +179,7 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
       {isLoading ? (
         <SkeletonTable rowsCount={5} columnsCount={5} />
       ) : (
-        <Card>
+        <LegacyCard>
           <IndexTable
             resourceName={resourceName}
             itemCount={memoData?.data?.length || 0}
@@ -223,7 +223,7 @@ export const ByTags: PageComponent<ByTagsProps> = () => {
               />
             </div>
           ) : null}
-        </Card>
+        </LegacyCard>
       )}
     </section>
   );

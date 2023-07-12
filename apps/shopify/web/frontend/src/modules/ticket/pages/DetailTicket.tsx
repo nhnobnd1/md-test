@@ -391,6 +391,10 @@ const DetailTicket = (props: DetailTicketProps) => {
   });
   const initialValues = useMemo(() => {
     const condition = ticket?.incoming || ticket?.createdViaWidget;
+
+    const from = ticket?.senderConfigId
+      ? ticket.senderConfigId
+      : primaryEmail?._id;
     if (conversationList.length === 0) {
       return {
         status: ticket?.status,
@@ -399,9 +403,7 @@ const DetailTicket = (props: DetailTicketProps) => {
         to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
         tags: ticket?.tags,
         content: "",
-        from: ticket?.senderConfigId
-          ? ticket.senderConfigId
-          : primaryEmail?._id,
+        from: from,
         ccEmails: ticket?.ccEmails,
         CC: ticket?.ccEmails?.map((item) => {
           return item.replace(/.*<([^>]*)>.*/, "$1") || item;
@@ -418,9 +420,7 @@ const DetailTicket = (props: DetailTicketProps) => {
         to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
         tags: ticket?.tags,
         content: "",
-        from: ticket?.senderConfigId
-          ? ticket.senderConfigId
-          : primaryEmail?._id,
+        from: from,
         ccEmails: ticket?.ccEmails,
         CC: conversationList[conversationList.length - 1]?.ccEmails?.map(
           (item) => {

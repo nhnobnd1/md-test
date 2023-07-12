@@ -1,7 +1,7 @@
 import { generatePath, useJob, useNavigate, useToggle } from "@moose-desk/core";
 import { CreateUserGroupRequest, UserGroupRepository } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
-import { Card, ContextualSaveBar, Layout, Page } from "@shopify/polaris";
+import { ContextualSaveBar, Layout, LegacyCard, Page } from "@shopify/polaris";
 import { FormikProps } from "formik";
 import { useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
@@ -112,16 +112,16 @@ const CreateGroup = (props: CreateGroupProps) => {
           )}
 
           <Layout.Section>
-            <Card>
-              <Card.Section>
+            <LegacyCard>
+              <LegacyCard.Section>
                 <GroupForm
                   innerRef={formRef}
                   enableReinitialize
                   onValuesChange={toggle}
                   onSubmit={handleSubmit}
                 />
-              </Card.Section>
-            </Card>
+              </LegacyCard.Section>
+            </LegacyCard>
           </Layout.Section>
         </Layout>
       </Page>

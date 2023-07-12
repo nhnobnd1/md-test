@@ -18,9 +18,9 @@ import {
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Button,
-  Card,
   EmptySearchResult,
   IndexTable,
+  LegacyCard,
   Link,
   Loading,
   Page,
@@ -242,7 +242,7 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
           loadingConfirm={loadingDelete}
           deleteAction={() => idDelete && deleteGroup(idDelete)}
         />
-        <Card>
+        <LegacyCard>
           {loadingList && <Loading />}
           <IndexTable
             resourceName={{ singular: "group", plural: "groups" }}
@@ -337,7 +337,7 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
               )}
             </div>
           ) : null}
-        </Card>
+        </LegacyCard>
       </Page>
     </>
   );

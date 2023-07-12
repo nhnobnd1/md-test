@@ -57,6 +57,7 @@ export const UIWidget: FC<UIWidgetProps> = () => {
       alignItems: "center",
       padding: 2,
       backgroundColor: data?.buttonAppearanceColor,
+      maxWidth: 150,
     },
     iconQuestion: {
       fontSize: 20,
@@ -66,6 +67,12 @@ export const UIWidget: FC<UIWidgetProps> = () => {
       fontSize: 20,
       marginLeft: 10,
       color: `${data?.textButtonAppearanceColor}`,
+      maxWidth: 150,
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      display: "inline-block",
+      height: 20,
     },
   };
   const flexWithButton = useMemo(() => {
@@ -194,7 +201,17 @@ export const UIWidget: FC<UIWidgetProps> = () => {
 
             <div className="flex justify-end">
               <Button style={commonStyles.buttonCaptcha} type="primary">
-                {data.buttonText}
+                <span
+                  style={{
+                    maxWidth: 150,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    display: "inline-block",
+                  }}
+                >
+                  {data.buttonText}
+                </span>
               </Button>
             </div>
           </Card>
@@ -209,12 +226,24 @@ export const UIWidget: FC<UIWidgetProps> = () => {
               width: flexWithButton,
               position: "relative",
               backgroundColor: data?.buttonAppearanceColor,
-              borderRadius: 20,
+              borderRadius: "50px!important",
             }}
             description={
               <div style={commonStyles.description}>
                 <QuestionCircleOutlined style={commonStyles.iconQuestion} />
-                <span style={commonStyles.widgetHeader}>
+                <span
+                  style={{
+                    fontSize: 20,
+                    marginLeft: 10,
+                    color: `${data?.textButtonAppearanceColor}`,
+                    maxWidth: 150,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    display: "inline-block",
+                    height: 20,
+                  }}
+                >
                   {data?.widgetHeader}
                 </span>
               </div>

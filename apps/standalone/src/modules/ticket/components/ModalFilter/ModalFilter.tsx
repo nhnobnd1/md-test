@@ -3,12 +3,11 @@ import {
   Agent,
   Customer,
   Tag,
-  Ticket,
   priorityOptions,
   statusOptions,
 } from "@moose-desk/repo";
 import { ModalProps } from "antd";
-import { Dispatch, SetStateAction, useMemo } from "react";
+import { useMemo } from "react";
 import { MDModalUI } from "src/components/MDModalUI";
 import { MDButton } from "src/components/UI/Button/MDButton";
 import { Form } from "src/components/UI/Form";
@@ -18,7 +17,6 @@ interface ModalFilterProps extends ModalProps {
   tags: Tag[];
   customers: Customer[];
   agents: Agent[];
-  setTickets: Dispatch<SetStateAction<Ticket[]>>;
   closeFilterModal: () => void;
   handleResetModal: () => void;
   handleApply: (values: any) => void;

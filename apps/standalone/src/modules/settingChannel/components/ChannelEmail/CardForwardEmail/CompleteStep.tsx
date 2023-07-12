@@ -55,7 +55,7 @@ export const CompleteStep: FC<ContentWaitProps> = React.memo(
         <Result
           status="error"
           title="Couldn't complete setup"
-          subTitle="Cannot be verified yet. Please check your email and click on the link to verify. Click on the re-check button to check the verification status again"
+          subTitle="Cannot be verified yet. Click on the re-check button to check the verification status again"
           extra={[
             <MDButton
               onClick={() => {
