@@ -38,6 +38,10 @@
 }
 .wrapLink {
   margin-top: 16px;
+  cursor: pointer;
+  p {
+    margin-bottom: 0;
+  }
   @include mq(md, "max") {
     margin-top: 12px;
   }

@@ -1,8 +1,7 @@
-import { createdDatetimeFormat } from "@moose-desk/core";
+import { createdDatetimeFormat, Link } from "@moose-desk/core";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import { Ticket } from "@moose-desk/repo";
 import { Button } from "antd";
-import Link from "antd/es/typography/Link";
 import classNames from "classnames";
 import { useState } from "react";
 import { useQuery } from "react-query";
@@ -40,7 +39,7 @@ export const TodoList = () => {
       render: (_: string, record: Ticket) => (
         <Link
           className={classNames(styles.actionLink, "one-line")}
-          href={`/ticket/${record._id}`}
+          to={`/ticket/${record._id}`}
         >
           {record.ticketId}
         </Link>
@@ -54,7 +53,7 @@ export const TodoList = () => {
       render: (_: string, record: Ticket) => (
         <Link
           className={classNames(styles.actionLink, "one-line")}
-          href={`/ticket/${record._id}`}
+          to={`/ticket/${record._id}`}
         >{`${record.subject}`}</Link>
       ),
       width: "50%",

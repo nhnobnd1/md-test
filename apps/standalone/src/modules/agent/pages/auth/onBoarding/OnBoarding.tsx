@@ -1,5 +1,6 @@
 import {
   generatePath,
+  Link as MDLink,
   useJob,
   useNavigate,
   useSearchParams,
@@ -10,6 +11,7 @@ import {
   TypeCheckTokenNewAgent,
 } from "@moose-desk/repo";
 import Link from "antd/es/typography/Link";
+
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
@@ -125,13 +127,13 @@ export const OnBoarding = () => {
                           below to login to your portal next time
                         </div>
                         <div className="">
-                          <Link
-                            href={RoutePaths.Login}
+                          <MDLink
+                            to={RoutePaths.Login}
                             className="onboarding-link font-medium"
                           >
                             https://{getSubDomain()}
                             {getDomain()}/login
-                          </Link>
+                          </MDLink>
 
                           <div className="onboarding-button">
                             <MDButton
@@ -170,9 +172,9 @@ export const OnBoarding = () => {
               }
               content={
                 <div className="onboard-wrap-link">
-                  <Link href={RoutePaths.Login} className="link-to-login">
+                  <MDLink to={RoutePaths.Login} className="link-to-login">
                     Back to login page
-                  </Link>
+                  </MDLink>
                 </div>
               }
             />

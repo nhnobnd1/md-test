@@ -1,5 +1,6 @@
 import {
   generatePath,
+  Link,
   MediaScreen,
   Outlet,
   useJob,
@@ -9,13 +10,19 @@ import {
 } from "@moose-desk/core";
 import { AccountRepository } from "@moose-desk/repo";
 import { Layout, Menu } from "antd";
+import classNames from "classnames";
 import { Suspense, useCallback, useMemo, useState } from "react";
 import { map } from "rxjs";
 import Images from "src/assets/images";
 import { Loading } from "src/components/Loading";
+import { MDButton } from "src/components/UI/Button/MDButton";
+import Icon from "src/components/UI/Icon";
+import { MenuIcon } from "src/components/UI/Icon/MenuIcon";
 import LayoutPageContent from "src/components/UI/LayoutPageContent/LayoutPageContent";
 import useAuth from "src/hooks/useAuth";
 import { usePermission } from "src/hooks/usePerrmisson";
+import useScreenType from "src/hooks/useScreenType";
+import useViewport from "src/hooks/useViewport";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
 import CustomersRoutePaths from "src/modules/customer/routes/paths";
 import DashboardRoutePaths from "src/modules/dashboard/routes/paths";
@@ -26,14 +33,6 @@ import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import { useAppConfig } from "src/providers/AppConfigProviders";
 import RoutePaths from "src/routes/paths";
-
-import Link from "antd/es/typography/Link";
-import classNames from "classnames";
-import { MDButton } from "src/components/UI/Button/MDButton";
-import Icon from "src/components/UI/Icon";
-import { MenuIcon } from "src/components/UI/Icon/MenuIcon";
-import useScreenType from "src/hooks/useScreenType";
-import useViewport from "src/hooks/useViewport";
 import "./AppLayout.scss";
 
 export const AppLayout = () => {
@@ -410,7 +409,7 @@ export const AppLayout = () => {
               type="text"
               onClick={handleToggleMenu}
             ></MDButton>
-            <Link href="/dashboard">
+            <Link to="/dashboard">
               <img
                 src={Images.Logo.LogoMooseDesk}
                 width="130"
@@ -423,7 +422,7 @@ export const AppLayout = () => {
               <div className="md:flex hidden">
                 <Link
                   className="md-link-ant"
-                  href="/setting/account&security/profile"
+                  to="/setting/account&security/profile"
                 >
                   {user?.subdomain} / {user?.email}
                 </Link>

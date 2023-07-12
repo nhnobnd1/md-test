@@ -1,5 +1,6 @@
 import {
   generatePath,
+  Link,
   useJob,
   useNavigate,
   useSearchParams,
@@ -10,7 +11,6 @@ import {
   ForgotPasswordRequest,
 } from "@moose-desk/repo";
 import { Button, Form } from "antd";
-import Link from "antd/es/typography/Link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
@@ -225,7 +225,7 @@ const ResetPassword = () => {
                     </div>
                   ) : (
                     <div className={styles.wrapLink}>
-                      <Link href={RoutePaths.Login} className={styles.link}>
+                      <Link to={RoutePaths.Login} className={styles.link}>
                         Back to login page
                       </Link>
                     </div>
@@ -244,7 +244,7 @@ const ResetPassword = () => {
               }
               content={
                 <div className={styles.wrapLink}>
-                  <Link href={RoutePaths.Login} className={styles.link}>
+                  <Link to={RoutePaths.Login} className={styles.link}>
                     Back to login page
                   </Link>
                 </div>
