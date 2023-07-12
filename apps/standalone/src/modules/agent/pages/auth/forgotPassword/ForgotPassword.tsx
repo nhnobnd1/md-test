@@ -1,7 +1,6 @@
-import { useJob, useNavigate } from "@moose-desk/core";
+import { Link, useJob, useNavigate } from "@moose-desk/core";
 import { AccountRepository } from "@moose-desk/repo";
 import { Button, Form } from "antd";
-import Link from "antd/es/typography/Link";
 import { useCallback, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useTranslation } from "react-i18next";
@@ -128,7 +127,7 @@ export const ForgotPassword = () => {
             </div>
           ) : (
             <div className={styles.wrapLink}>
-              <Link href={RoutePaths.Login} className={styles.link}>
+              <Link to={RoutePaths.Login} className={styles.link}>
                 Back to login page
               </Link>
             </div>

@@ -1,4 +1,5 @@
 import {
+  Link,
   useAuthContext,
   useJob,
   useMount,
@@ -6,7 +7,7 @@ import {
 } from "@moose-desk/core";
 import { AccountRepository, SignInAccountAgentRequest } from "@moose-desk/repo";
 import { Button, Form } from "antd";
-import Link from "antd/es/typography/Link";
+
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -200,10 +201,7 @@ export const SignIn = () => {
                   />
                 </Form.Item>
                 <div className={styles.wrapLink}>
-                  <Link
-                    href={RoutePaths.ForgotPassword}
-                    className={styles.link}
-                  >
+                  <Link to={RoutePaths.ForgotPassword} className={styles.link}>
                     Forgot Password?
                   </Link>
                 </div>
@@ -232,9 +230,9 @@ export const SignIn = () => {
               }
               content={
                 <div className={styles.wrapLink}>
-                  <Link href={RoutePaths.Login} className={styles.link}>
+                  <p onClick={() => setView("login")} className={styles.link}>
                     Back to login page
-                  </Link>
+                  </p>
                 </div>
               }
             />

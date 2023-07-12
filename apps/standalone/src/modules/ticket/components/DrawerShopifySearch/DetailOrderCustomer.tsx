@@ -171,7 +171,7 @@ export const DetailOrderCustomer = memo(({ dataOrder }: IProps) => {
             <span className={styles.labels}>Track url:</span>
             <span className={styles.link}>
               {trackingAddress?.tracking_url ? (
-                <Link href={trackingAddress?.tracking_url}>
+                <Link href={trackingAddress?.tracking_url} target="_blank">
                   {trackingAddress?.tracking_url}
                 </Link>
               ) : (
