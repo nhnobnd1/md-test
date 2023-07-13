@@ -1,5 +1,6 @@
 export declare class StorageManager<Types> {
-    getToken(type: Types): string | undefined;
+    tokens: any;
+    getToken(type: Types): any;
     setToken(type: Types, token: string): void;
     getPrefix(): string;
 }

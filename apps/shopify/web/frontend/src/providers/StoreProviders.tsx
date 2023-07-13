@@ -4,7 +4,6 @@ import { useToast } from "@shopify/app-bridge-react";
 import { ReactNode, createContext, useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
-import StorageManager from "src/core/utilities/StorageManager";
 import { useSubdomain } from "src/hooks/useSubdomain";
 
 interface StoreContextType {
@@ -33,10 +32,6 @@ export const StoreProviders = ({ children }: StoreProvidersProps) => {
           map(({ data }) => {
             if (data.statusCode === 200) {
               setGeneralInfo(data.data);
-              StorageManager.setToken(
-                "isAcceptUsing",
-                data.data.isOnboardingComplete ? "accepted" : ""
-              );
             }
           }),
           catchError((err) => {

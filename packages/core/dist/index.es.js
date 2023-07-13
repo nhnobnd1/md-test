@@ -1,6 +1,6 @@
 var Go = Object.defineProperty;
 var Uo = (M, z, b) => z in M ? Go(M, z, { enumerable: !0, configurable: !0, writable: !0, value: b }) : M[z] = b;
-var v0 = (M, z, b) => (Uo(M, typeof z != "symbol" ? z + "" : z, b), b);
+var E0 = (M, z, b) => (Uo(M, typeof z != "symbol" ? z + "" : z, b), b);
 import * as h from "react";
 import _2, { useState as T0, useRef as G1, useEffect as j0, useCallback as u0, useMemo as t2, createContext as lO, useContext as zb, memo as RO, isValidElement as jo, createElement as Op } from "react";
 /**
@@ -2257,7 +2257,7 @@ function V4(M, z) {
 var yz = /* @__PURE__ */ ((M) => (M.Json = "application/json", M.UrlEncoded = "application/x-www-form-urlencoded", M))(yz || {});
 class K4 {
   constructor() {
-    v0(this, "listeners");
+    E0(this, "listeners");
     this.listeners = {};
   }
   trigger(z, ...b) {
@@ -2281,8 +2281,8 @@ class K4 {
 }
 class J4 {
   constructor() {
-    v0(this, "modeEnv");
-    v0(this, "subdomain");
+    E0(this, "modeEnv");
+    E0(this, "subdomain");
   }
   setConfig({ modeEnv: z, subdomain: b }) {
     this.modeEnv = z || void 0, this.subdomain = b || void 0;
@@ -2296,13 +2296,15 @@ class J4 {
 }
 const Ez = new J4();
 class z3 {
+  constructor() {
+    E0(this, "tokens", {});
+  }
   getToken(z) {
     if (this.getPrefix())
-      return localStorage.getItem(`${this.getPrefix()}_${z}`) || "";
+      return this.tokens[`${this.getPrefix()}_${z}`];
   }
   setToken(z, b) {
-    if (this.getPrefix())
-      return localStorage.setItem(`${this.getPrefix()}_${z}`, b);
+    this.getPrefix() && (this.tokens[`${this.getPrefix()}_${z}`] = b);
   }
   getPrefix() {
     const z = Ez.getConfig().modEnv, b = Ez.getConfig().subdomain;
@@ -4998,7 +5000,7 @@ const bi = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
         f.hasOwnProperty(D) && m.push(c[D]);
       return m;
     }
-    function E0() {
+    function v0() {
       try {
         var a = Intl.DateTimeFormat().resolvedOptions().timeZone;
         if (a && a.length > 3) {
@@ -5018,7 +5020,7 @@ const bi = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
       return O0.sort(K), O0.length > 0 ? O0[0].zone.name : void 0;
     }
     function k0(a) {
-      return (!e || a) && (e = E0()), e;
+      return (!e || a) && (e = v0()), e;
     }
     function C(a) {
       return (a || "").toLowerCase().replace(/\//g, "_");
@@ -7879,8 +7881,8 @@ function R2(M, z) {
 }
 class Hb {
   constructor(z) {
-    v0(this, "config");
-    v0(this, "axios");
+    E0(this, "config");
+    E0(this, "axios");
     z && (this.config = z), this.axios = Wo.create(this.config);
   }
   get interceptors() {
@@ -7957,12 +7959,12 @@ function CW(M) {
 }
 const m0 = class {
   constructor(z, b) {
-    v0(this, "axiosInstance");
-    v0(this, "defaultConfig", {
+    E0(this, "axiosInstance");
+    E0(this, "defaultConfig", {
       contentType: "json",
       cache: !1
     });
-    v0(this, "tokenType");
+    E0(this, "tokenType");
     this.axiosInstance = CW(z), this.setupInterceptor(), b && (this.defaultConfig = {
       ...this.defaultConfig,
       ...b
@@ -8094,7 +8096,7 @@ const m0 = class {
   }
 };
 let O1 = m0;
-v0(O1, "tokenType", "base_token"), v0(O1, "globalParams", {}), v0(O1, "globalData", {}), v0(O1, "globalHeaders", {}), v0(O1, "interceptors", /* @__PURE__ */ new Set());
+E0(O1, "tokenType", "base_token"), E0(O1, "globalParams", {}), E0(O1, "globalData", {}), E0(O1, "globalHeaders", {}), E0(O1, "interceptors", /* @__PURE__ */ new Set());
 var S2 = {}, PW = {
   get exports() {
     return S2;
@@ -8232,7 +8234,7 @@ function kW() {
         }
       }
       var F = !1;
-      function E0(t) {
+      function v0(t) {
         return !!(typeof t == "string" || typeof t == "function" || t === M.Fragment || t === c || t === X || t === o || t === n || t === r || t === j || F || typeof t == "object" && t !== null && (t.$$typeof === s || t.$$typeof === i || t.$$typeof === A || t.$$typeof === e || t.$$typeof === q || t.$$typeof === S || t.$$typeof === d || t[0] === W));
       }
       function k0(t, R, y) {
@@ -8718,7 +8720,7 @@ Check the top-level render call using <` + y + ">.");
       }
       function bp(t, R, y, U, q0, n0) {
         {
-          var b0 = E0(t);
+          var b0 = v0(t);
           if (!b0) {
             var Z = "";
             (t === void 0 || typeof t == "object" && t !== null && Object.keys(t).length === 0) && (Z += " You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.");
@@ -8800,7 +8802,7 @@ var Zz = {}, xW = {
     } }, w = "en", _ = {};
     _[w] = j;
     var J = function(C) {
-      return C instanceof E0;
+      return C instanceof v0;
     }, K = function C(B, N, k) {
       var g;
       if (!B)
@@ -8820,12 +8822,12 @@ var Zz = {}, xW = {
       if (J(C))
         return C.clone();
       var N = typeof B == "object" ? B : {};
-      return N.date = C, N.args = arguments, new E0(N);
+      return N.date = C, N.args = arguments, new v0(N);
     }, F = x;
     F.l = K, F.i = J, F.w = function(C, B) {
       return $(C, { locale: B.$L, utc: B.$u, x: B.$x, $offset: B.$offset });
     };
-    var E0 = function() {
+    var v0 = function() {
       function C(N) {
         this.$L = K(N.locale, null, !0), this.parse(N);
       }
@@ -8968,13 +8970,13 @@ var Zz = {}, xW = {
       }, B.toString = function() {
         return this.$d.toUTCString();
       }, C;
-    }(), k0 = E0.prototype;
+    }(), k0 = v0.prototype;
     return $.prototype = k0, [["$ms", o], ["$s", c], ["$m", A], ["$H", e], ["$W", q], ["$M", r], ["$y", s], ["$D", d]].forEach(function(C) {
       k0[C[1]] = function(B) {
         return this.$g(B, C[0], C[1]);
       };
     }), $.extend = function(C, B) {
-      return C.$i || (C(B, E0, $), C.$i = !0), $;
+      return C.$i || (C(B, v0, $), C.$i = !0), $;
     }, $.locale = K, $.isDayjs = J, $.unix = function(C) {
       return $(1e3 * C);
     }, $.en = _[w], $.Ls = _, $.p = {}, $;
@@ -9190,12 +9192,12 @@ function FW() {
         s($) && F({
           inst: $
         });
-        var E0 = function() {
+        var v0 = function() {
           s($) && F({
             inst: $
           });
         };
-        return v(E0);
+        return v(v0);
       }, [v]), q(_), _;
     }
     function s(v) {
@@ -9221,8 +9223,8 @@ const HW = () => !0;
 class YW extends K4 {
   constructor() {
     super(...arguments);
-    v0(this, "middlewareHandler", HW);
-    v0(this, "_routes", []);
+    E0(this, "middlewareHandler", HW);
+    E0(this, "_routes", []);
   }
   get routes() {
     return this._routes;
@@ -9487,8 +9489,8 @@ const ho = lO(void 0), ps = ({
           return Promise.reject(w);
         if (K.status === 401) {
           if (console.log("Refresh Token..."), W)
-            return new Promise(function(F, E0) {
-              X.push({ resolve: F, reject: E0 });
+            return new Promise(function(F, v0) {
+              X.push({ resolve: F, reject: v0 });
             }).then(() => R2(_.request(J))).catch((F) => F);
           S(!0);
           const $ = O2.getToken("refresh_token");
@@ -9499,25 +9501,25 @@ const ho = lO(void 0), ps = ({
               storeId: JSON.parse(localStorage.getItem("shop")).id + ""
             };
             if (console.log({ payload: F }), O)
-              return new Promise((E0, k0) => {
+              return new Promise((v0, k0) => {
                 R2(O(F)).then(({ data: C }) => {
                   S(!1), v(null, C.data.accessToken), s({
                     base_token: C.data.accessToken,
                     refresh_token: C.data.refreshToken
-                  }), E0(R2(_.request(J)));
+                  }), v0(R2(_.request(J)));
                 }).catch((C) => {
                   S(!0), k0(C);
                 });
               });
           }
-          return $ ? p ? new Promise((F, E0) => {
+          return $ ? p ? new Promise((F, v0) => {
             R2(p($)).then(({ data: k0 }) => {
               S(!1), v(null, k0.data.accessToken), s({
                 base_token: k0.data.accessToken,
                 refresh_token: k0.data.refreshToken
               }), F(R2(_.request(J)));
             }).catch((k0) => {
-              S(!0), E0(k0);
+              S(!0), v0(k0);
             });
           }) : Promise.reject(w) : (console.log("Not found refresh token app"), Promise.reject(w));
         }

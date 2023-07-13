@@ -7,8 +7,8 @@ export function useSubdomain() {
   const shop = useShopDomain();
 
   const getSubDomain = useCallback(() => {
-    return localStorage.getItem("subdomain") as string;
-  }, [process.env.HOST, shop]);
+    return "md-dev-nam-01";
+  }, []);
 
   useMount(() => {
     setSubDomain(getSubDomain());
