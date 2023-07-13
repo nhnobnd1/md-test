@@ -16,6 +16,10 @@
     animation: unset;
   }
 }
+// .wrapActivities { // đảo chiều infinite scroll để check phần tử cuối cùng sẽ nằm ở trên cùng
+//   display: flex;
+//   flex-direction: column-reverse;
+// }
 .loadMoreButton {
   position: absolute;
   bottom: 0;
