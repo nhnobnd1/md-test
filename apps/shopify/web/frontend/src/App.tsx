@@ -1,4 +1,4 @@
-import { TokenManager, useRoutes } from "@moose-desk/core";
+import { useRoutes } from "@moose-desk/core";
 import {
   NavigationMenu,
   useAppBridge,
@@ -7,6 +7,7 @@ import {
 import { Fullscreen } from "@shopify/app-bridge/actions";
 
 import { NavigationLink } from "@shopify/app-bridge-react/components/NavigationMenu/NavigationMenu";
+import CryptoJS from "crypto-js";
 import { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import env from "src/core/env";
@@ -17,7 +18,6 @@ import { LoginResponse } from "src/models/Auth";
 import { useStore } from "src/providers/StoreProviders";
 import { AppRoutes } from "src/routes";
 import useFullScreen from "src/store/useFullScreen";
-
 export default function App() {
   const { routes } = useRoutes();
   const app = useAppBridge();
@@ -37,49 +37,39 @@ export default function App() {
       ? fullscreen.dispatch(Fullscreen.Action.ENTER)
       : fullscreen.dispatch(Fullscreen.Action.EXIT);
   }, [fullscreen, fullScreen]);
-
+  // console.log({ subDomain, storeId, shop });
   useEffect(() => {
-    if ((shop && !isLoggedIn) || (!user && shop)) {
-      const payload = {
-        email: localStorage.getItem("email"),
-        offlineToken: localStorage.getItem("offlineToken"),
-        shop: JSON.parse(localStorage.getItem("shop") as string),
-      };
-      if (payload && payload.email && payload.offlineToken && storeId) {
-        api
-          .request<LoginResponse>({
-            url: "/v1/account/shopify/sign-in",
-            method: "POST",
-            baseURL: env.API_URL + "/api",
-            data: {
-              email: payload.email,
-              password: payload.offlineToken,
-              storeId: storeId,
-            },
-          })
-          .subscribe({
-            next({ data }) {
-              TokenManager.setToken("base_token", data.data.accessToken);
-              TokenManager.setToken("refresh_token", data.data.refreshToken);
-              login(
-                {
-                  base_token: data.data.accessToken,
-                  refresh_token: data.data.refreshToken,
-                },
-                payload.shop
-              );
-            },
-            error() {
-              show(t("messages:error.login"), {
-                isError: true,
-              });
-              TokenManager.setToken("refresh_token", "");
-              TokenManager.setToken("base_token", "");
-            },
-          });
-      }
+    if (subDomain) {
+      api
+        .request<LoginResponse>({
+          url: "/v1/account/shopify/sign-in",
+          method: "POST",
+          baseURL: env.API_URL + "/api",
+          data: {
+            store: CryptoJS.AES.encrypt(
+              JSON.stringify(subDomain as string),
+              "MOOSE2023DESK"
+            ).toString(),
+          },
+        })
+        .subscribe({
+          next({ data }) {
+            login(
+              {
+                base_token: data.data.accessToken,
+                refresh_token: data.data.refreshToken,
+              },
+              data.data
+            );
+          },
+          error() {
+            show(t("messages:error.login"), {
+              isError: true,
+            });
+          },
+        });
     }
-  }, [shop, isLoggedIn, user, storeId]);
+  }, [subDomain]);
 
   const navigationLinks = useMemo((): NavigationLink[] => {
     return routes
