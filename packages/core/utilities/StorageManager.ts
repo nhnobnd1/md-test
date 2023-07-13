@@ -1,18 +1,23 @@
 import config from "../config";
 
 export class StorageManager<Types> {
+  tokens: any = {};
+
   getToken(type: Types) {
     if (!this.getPrefix()) {
       return;
     }
-    return localStorage.getItem(`${this.getPrefix()}_${type}`) || "";
+
+    return this.tokens[`${this.getPrefix()}_${type}`];
   }
 
   setToken(type: Types, token: string) {
     if (!this.getPrefix()) {
       return;
     }
-    return localStorage.setItem(`${this.getPrefix()}_${type}`, token);
+    this.tokens[`${this.getPrefix()}_${type}`] = token;
+    return;
+    // return localStorage.setItem(`${this.getPrefix()}_${type}`, token);
   }
 
   getPrefix() {

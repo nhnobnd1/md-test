@@ -74,10 +74,10 @@ ReactDOM.render(
                 <ApiLoadingHandlerProvider>
                   <InitApp>
                     <AuthProvider
-                      defaultTokens={() => ({
-                        base_token: TokenManager.getToken("base_token"),
-                        refresh_token: TokenManager.getToken("refresh_token"),
-                      })}
+                      // defaultTokens={() => ({
+                      //   base_token: TokenManager.getToken("base_token"),
+                      //   refresh_token: TokenManager.getToken("refresh_token"),
+                      // })}
                       fetchRefreshToken={(refreshToken: string) =>
                         AccountRepository().refreshToken({
                           refreshToken,
