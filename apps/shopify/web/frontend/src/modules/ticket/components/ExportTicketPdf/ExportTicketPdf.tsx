@@ -1,8 +1,4 @@
-import {
-  createdDatetimeFormat,
-  upperCaseFirst,
-  useUser,
-} from "@moose-desk/core";
+import { createdDatetimeFormat, upperCaseFirst } from "@moose-desk/core";
 import { Agent, Conversation, Ticket } from "@moose-desk/repo";
 import {
   Document,
@@ -14,6 +10,7 @@ import {
 } from "@react-pdf/renderer";
 import moment from "moment";
 import { FC, useMemo } from "react";
+import useUser from "src/store/useUser";
 interface ItemConversation {
   id: string;
   conversations: Conversation[];
@@ -68,7 +65,7 @@ export const ExportTicketPdf: FC<ExportTicketPdfProps> = ({
   conversations,
   timezone,
 }) => {
-  const user: any = useUser();
+  const user = useUser((state) => state.user);
 
   const filterItem = useMemo(() => {
     return tickets.filter((item) => selectedRowKeys.includes(item._id));

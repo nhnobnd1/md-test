@@ -1,8 +1,4 @@
-import {
-  createdDatetimeFormat,
-  upperCaseFirst,
-  useUser,
-} from "@moose-desk/core";
+import { createdDatetimeFormat, upperCaseFirst } from "@moose-desk/core";
 import { Agent, Conversation, Ticket } from "@moose-desk/repo";
 import { Divider, IndexTable, Text } from "@shopify/polaris";
 
@@ -10,6 +6,7 @@ import moment from "moment";
 import { FC, useMemo } from "react";
 import { ItemConversation } from "src/modules/ticket/helper/interface";
 import useTicketSelected from "src/modules/ticket/store/useTicketSelected";
+import useUser from "src/store/useUser";
 
 interface ExportTicketProps {
   // tickets: Ticket[];
@@ -26,7 +23,8 @@ export const ExportTicket: FC<ExportTicketProps> = ({
   timezone,
 }) => {
   const tickets = useTicketSelected((state) => state.needTicket);
-  const user: any = useUser();
+  const user = useUser((state) => state.user);
+
   const filterItem = useMemo(() => {
     return tickets.filter((item) => selectedRowKeys.includes(item._id));
   }, [selectedRowKeys, tickets]);

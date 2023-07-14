@@ -1,4 +1,4 @@
-import { useToggle, useUser } from "@moose-desk/core";
+import { useToggle } from "@moose-desk/core";
 import { Button, Icon, Text, TopBar } from "@shopify/polaris";
 import {
   CancelMajor,
@@ -12,6 +12,7 @@ import Images from "src/assets/images";
 import "src/assets/styles/layouts/components/main-layout-topbar.scss";
 import useToggleGlobal from "src/hooks/useToggleGlobal";
 import useFullScreen from "src/store/useFullScreen";
+import useUser from "src/store/useUser";
 
 interface MainLayoutTopBarProps {
   navigationToggle: () => void;
@@ -23,10 +24,11 @@ const MainLayoutTopBar = ({
   setShowMainLayout,
 }: MainLayoutTopBarProps) => {
   const [expandedMenu, setExpendedMenu] = useState(true);
-  const user = useUser();
+  // const user = useUser();
   const fullScreenState = useFullScreen((state) => state.fullScreen);
   const { state: fullScreen, toggle: toggleFullScreen } =
     useToggle(fullScreenState);
+  const user = useUser((state) => state.user);
 
   const changeUpdateScreen = useFullScreen((state) => state.changeUpdateScreen);
   useEffect(() => {

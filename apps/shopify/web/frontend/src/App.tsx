@@ -18,6 +18,7 @@ import { LoginResponse } from "src/models/Auth";
 import { useStore } from "src/providers/StoreProviders";
 import { AppRoutes } from "src/routes";
 import useFullScreen from "src/store/useFullScreen";
+import useUser from "src/store/useUser";
 export default function App() {
   const { routes } = useRoutes();
   const app = useAppBridge();
@@ -30,7 +31,7 @@ export default function App() {
   const { storeId } = useStore();
   const fullScreen = useFullScreen((state) => state.fullScreen);
   const { t, i18n } = useTranslation();
-
+  const changeUser = useUser((state) => state.changeUser);
   // useGlobalData(isLoggedIn);
   useEffect(() => {
     fullScreen
@@ -54,6 +55,7 @@ export default function App() {
         })
         .subscribe({
           next({ data }) {
+            changeUser(data.data.accessToken);
             login(
               {
                 base_token: data.data.accessToken,
