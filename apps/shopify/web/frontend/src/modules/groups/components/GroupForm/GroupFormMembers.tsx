@@ -19,7 +19,6 @@ import {
   Loading,
   Text,
 } from "@shopify/polaris";
-import { uniqBy } from "lodash-es";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
@@ -61,12 +60,7 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
     []
   );
   const [meta, setMeta] = useState<BaseMetaDataListResponse>();
-  const [sortValue, setSortValue] = useState<string[]>([]);
-  const {
-    state: btnSort,
-    toggle: toggleBtnSort,
-    off: closeBtnSort,
-  } = useToggle();
+  const [disablePagination, setDisablePagination] = useState(false);
   const {
     state: modalRemoveMember,
     on: openModalRemoveMember,
@@ -152,6 +146,7 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
   const handleSelectAgent = useCallback(
     (value: SelectedObj | SelectedObj[]) => {
       if (!Array.isArray(value) && value) {
+        setDisablePagination(true);
         if (isDetail) {
           setGroupIds([...groupIds, value.key]);
         }
@@ -183,9 +178,7 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
         .getListMembers(id, payload)
         .pipe(
           map(({ data }) => {
-            option?.reset
-              ? setGroupMembers(data.data)
-              : setGroupMembers(uniqBy([...data.data, ...groupMembers], "_id"));
+            setGroupMembers(data.data);
 
             setMeta(data.metadata);
           }),
@@ -275,7 +268,6 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
   useEffect(() => {
     value && setGroupIds(value);
   }, [value]);
-
   return (
     <>
       <ModalDelete
@@ -364,7 +356,7 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
         ))}
       </IndexTable>
       <div className="flex items-center justify-center py-8">
-        {filterData.page && filterData.limit && (
+        {filterData.page && filterData.limit && !disablePagination && (
           <Pagination
             total={isDetail && meta ? meta.totalCount : groupMembers.length}
             pageSize={filterData.limit ?? 0}

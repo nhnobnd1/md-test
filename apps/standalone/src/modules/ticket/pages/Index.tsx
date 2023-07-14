@@ -244,27 +244,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   );
   const [screenType, screenWidth] = useScreenType();
 
-  // const { run: getListTicketFilter, processing: loadingFilter } = useJob(
-  //   (payload: BaseListTicketFilterRequest) => {
-  //     return TicketRepository()
-  //       .getListFilter(payload)
-  //       .pipe(
-  //         map(({ data }) => {
-  //           if (data.statusCode === 200) {
-  //             const tickets = data.data.map((item) => ({
-  //               ...item,
-  //               id: item._id,
-  //             }));
-  //             setTickets(tickets);
-  //             setMeta(data.metadata);
-  //           } else {
-  //             message.error(t("messages:error.get_ticket"));
-  //           }
-  //         })
-  //       );
-  //   }
-  // );
-
   const onChangeTable = useCallback(
     (pagination: any, filters: any, sorter: SorterResult<any>) => {
       if (sorter.order && sorter.columnKey) {
@@ -302,26 +281,17 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         map(({ data }) => {
           message.loading.hide();
           if (data.statusCode === 200) {
-            notification.success(t("messages:success.delete_ticket"));
+            message.success(t("messages:success.delete_ticket"));
             refetchStatistic();
 
             refetchTicket();
+            setSelectedRowKeys([]);
           } else {
-            notification.error(t("messages:error.delete_ticket"), {
-              description: "Remove Ticket failed",
-              style: {
-                width: 450,
-              },
-            });
+            message.error(t("messages:error.delete_ticket"));
           }
         }),
         catchError((err) => {
-          notification.error(t("messages:error.delete_ticket"), {
-            description: "Remove Ticket failed",
-            style: {
-              width: 450,
-            },
-          });
+          message.error(t("messages:error.delete_ticket"));
           return of(err);
         })
       );

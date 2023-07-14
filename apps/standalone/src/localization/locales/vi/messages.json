@@ -45,7 +45,8 @@
     "get_store": "Failed to fetch the store's data",
     "delete_auto_reply": "Auto Reply is being used during a holiday or business hours. Please check again",
     "input_otp": "Incorrect OTP entered ",
-    "delete_ticket": "There is an error while removing the ticket"
+    "delete_ticket": "There is an error while removing the ticket",
+    "restore_ticket": "There is an error while restore the ticket"
   },
   "success": {
     "file_upload": "File uploaded successfully",
@@ -89,7 +90,8 @@
     "account_forgot_password_reset": "Password reset successful",
     "agent_update": "Agent has been updated successfully",
     "resend_invitation_email": "Invitation email has been resent successfully",
-    "delete_ticket": "The selected ticket has been successfully removed"
+    "delete_ticket": "The selected ticket has been successfully removed",
+    "restore_ticket": "The selected ticket has been successfully restore"
   },
   "loading": {
     "creating_agent": "Creating an agent",

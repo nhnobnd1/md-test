@@ -54,6 +54,14 @@ export const forceDeleteApi = (payload: BaseDeleteList) => {
       .catch((error) => reject(error));
   });
 };
+
+export const deleteAllTicket = () => {
+  return new Promise((resolve, reject) => {
+    lastValueFrom(TicketRepository().deletePermanentlyAll())
+      .then(({ data }) => resolve(data.data))
+      .catch((error) => reject(error));
+  });
+};
 export const getListTrashApi = (
   payload: GetListTicketRequest
 ): Promise<GetListTicketResponse> => {

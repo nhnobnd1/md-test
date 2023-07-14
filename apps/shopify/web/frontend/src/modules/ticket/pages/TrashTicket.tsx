@@ -15,6 +15,7 @@ import {
   TicketRepository,
   TicketStatistic,
 } from "@moose-desk/repo";
+import { useToast } from "@shopify/app-bridge-react";
 import {
   Button,
   ButtonGroup,
@@ -27,6 +28,7 @@ import {
   useIndexResourceState,
 } from "@shopify/polaris";
 import { FC, useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { map } from "rxjs";
 
 import { Pagination } from "src/components/Pagination";
@@ -55,6 +57,7 @@ const TrashTicket: FC<TrashTicketProps> = () => {
   );
   const [screenType, screenWidth] = useScreenType();
   const [indexSort, setIndexSort] = useState<number | undefined>(undefined);
+  const { show } = useToast();
 
   const [filterData, setFilterData] = useState<GetListTicketRequest>(
     defaultFilter()
@@ -68,7 +71,10 @@ const TrashTicket: FC<TrashTicketProps> = () => {
     allResourcesSelected,
     handleSelectionChange,
     removeSelectedResources,
+    clearSelection,
   } = useIndexResourceState(tickets);
+  const { t, i18n } = useTranslation();
+
   const [statistic, setStatistic] = useState<TicketStatistic>({
     statusCode: 200,
     data: {
@@ -128,6 +134,8 @@ const TrashTicket: FC<TrashTicketProps> = () => {
           if (data.statusCode === 200) {
             getListTrashApi(filterData);
             getStatisticTicket();
+            clearSelection();
+            show(t("messages:success.restore_ticket"));
           }
         })
       );
@@ -169,6 +177,23 @@ const TrashTicket: FC<TrashTicketProps> = () => {
           if (data.statusCode === 200) {
             getListTrashApi(filterData);
             getStatisticTicket();
+            clearSelection();
+            show(t("messages:success.delete_ticket"));
+          }
+        })
+      );
+  });
+
+  const { run: deleteAllTicket } = useJob(() => {
+    return TicketRepository()
+      .deletePermanentlyAll()
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            getListTrashApi(filterData);
+            getStatisticTicket();
+            clearSelection();
+            show(t("messages:success.delete_ticket"));
           }
         })
       );
@@ -182,6 +207,9 @@ const TrashTicket: FC<TrashTicketProps> = () => {
     forceDeleteApi({
       ids,
     });
+  };
+  const handleDeleteAll = () => {
+    deleteAllTicket();
   };
   const rowMarkup = tickets.map(
     (
@@ -300,7 +328,7 @@ const TrashTicket: FC<TrashTicketProps> = () => {
         }
         fullWidth
         primaryAction={
-          selectedResources.length === 0 || screenWidth <= MediaScreen.LG ? (
+          selectedResources.length === 0 ? (
             <div className="flex gap-2">
               <div className="w-full">
                 <div className="flex gap-2 items-center justify-end">
@@ -314,8 +342,33 @@ const TrashTicket: FC<TrashTicketProps> = () => {
                 </div>
               </div>
             </div>
+          ) : screenWidth <= MediaScreen.LG ? (
+            <div className="flex justify-end items-center h-[36px]">
+              <ButtonTrashTicket
+                title={`Are you sure that you want to permanently remove ${
+                  statistic.data.TRASH
+                } ticket${statistic.data.TRASH > 1 ? "s" : ""}?`}
+                content="These tickets will be remove permanently. This action cannot be undone."
+                action={handleDeleteAll}
+                primaryContent="Remove"
+                text={`Delete all ${statistic.data.TRASH} tickets`}
+                // destructive
+                plain
+              />
+            </div>
           ) : (
-            <div className="flex gap-2">
+            <div className="flex gap-3 items-center">
+              <ButtonTrashTicket
+                title={`Are you sure that you want to permanently remove ${
+                  statistic.data.TRASH
+                } ticket${statistic.data.TRASH > 1 ? "s" : ""}?`}
+                content="These tickets will be remove permanently. This action cannot be undone."
+                action={handleDeleteAll}
+                primaryContent="Remove"
+                text={`Delete all ${statistic.data.TRASH} tickets`}
+                // destructive
+                plain
+              />
               <ButtonTrashTicket
                 title="Are you sure that you want to permanently remove these tickets?"
                 content="These tickets will be remove permanently. This action cannot be undone."
