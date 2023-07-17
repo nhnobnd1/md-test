@@ -4,6 +4,7 @@ import {
   generatePath,
   priorityToTag,
   upperCaseFirst,
+  useLoading,
   useNavigate,
 } from "@moose-desk/core";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
@@ -29,6 +30,7 @@ import useScreenType from "src/hooks/useScreenType";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { ButtonTicket } from "src/modules/ticket/components/ButtonTicket";
 import {
+  deleteAllTicket,
   forceDeleteApi,
   getListTrashApi,
   getStatisticTicket,
@@ -43,6 +45,8 @@ import "./ListTicket.scss";
 const TrashTicket = () => {
   const [filterData, setFilterData] =
     useState<BaseListTicketRequest>(defaultFilter);
+  const message = useMessage();
+
   const { data: dataTicket, isLoading: loadingList } = useQuery({
     queryKey: ["getListTrash", filterData],
     queryFn: () => getListTrashApi(filterData),
@@ -64,8 +68,8 @@ const TrashTicket = () => {
   }, [dataTicket]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
-  const message = useMessage();
   const navigate = useNavigate();
+  const { startLoading, stopLoading } = useLoading();
 
   const queryClient = useQueryClient();
   const [screenType, screenWidth] = useScreenType();
@@ -142,6 +146,14 @@ const TrashTicket = () => {
         queryKey: ["getListTrash"],
       });
       queryClient.invalidateQueries({ queryKey: ["getStatisticTicket"] });
+      setSelectedRowKeys([]);
+      message.success(t("messages:success.restore_ticket"));
+    },
+    onError: () => {
+      message.error(t("messages:error.restore_ticket"));
+    },
+    onSettled: () => {
+      stopLoading();
     },
   });
   const forceDelete = useMutation({
@@ -151,6 +163,34 @@ const TrashTicket = () => {
         queryKey: ["getListTrash"],
       });
       queryClient.invalidateQueries({ queryKey: ["getStatisticTicket"] });
+      stopLoading();
+      setSelectedRowKeys([]);
+      message.success(t("messages:success.delete_ticket"));
+    },
+    onError: () => {
+      message.error(t("messages:error.delete_ticket"));
+    },
+    onSettled: () => {
+      stopLoading();
+    },
+  });
+
+  const deleteAll = useMutation({
+    mutationFn: () => deleteAllTicket(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["getListTrash"],
+      });
+      queryClient.invalidateQueries({ queryKey: ["getStatisticTicket"] });
+      stopLoading();
+      setSelectedRowKeys([]);
+      message.success(t("messages:success.delete_ticket"));
+    },
+    onError: () => {
+      message.error(t("messages:error.delete_ticket"));
+    },
+    onSettled: () => {
+      stopLoading();
     },
   });
 
@@ -168,20 +208,29 @@ const TrashTicket = () => {
   );
 
   const handleRestore = (ids: string[]): void => {
+    startLoading();
     restore.mutate({
       ids,
     });
   };
   const handleDelete = (ids: string[]) => {
+    startLoading();
+
     forceDelete.mutate({
       ids,
     });
   };
 
+  const handleDeleteAll = () => {
+    startLoading();
+
+    deleteAll.mutate();
+  };
+
   return (
     <>
-      <Header title={showTitle ? "Tickets" : ""}>
-        {selectedRowKeys.length === 0 || screenWidth <= MediaScreen.LG ? (
+      <Header title={showTitle ? "Trash" : ""}>
+        {selectedRowKeys.length === 0 ? (
           <div className="flex items-center justify-end flex-1 gap-4">
             <HeaderList
               setShowTitle={setShowTitle}
@@ -200,9 +249,46 @@ const TrashTicket = () => {
               </ButtonAdd>
             </HeaderList>
           </div>
+        ) : screenWidth <= MediaScreen.LG ? (
+          <div className="flex justify-end w-full gap-2">
+            <ButtonTicket
+              title={`Are you sure that you want to permanently remove ${
+                statistic.data.TRASH
+              } ticket${statistic.data.TRASH > 1 ? "s" : ""}?`}
+              content="These tickets will be remove permanently. This action cannot be undone."
+              action={handleDeleteAll}
+              textAction="Remove"
+              danger
+              type="text"
+              icon={
+                <div className="flex items-center gap-2">
+                  <span className="text-blue-500">
+                    Delete all {statistic.data.TRASH} tickets
+                  </span>
+                </div>
+              }
+            />
+          </div>
         ) : (
           <>
             <div className="flex justify-end w-full gap-2">
+              <ButtonTicket
+                title={`Are you sure that you want to permanently remove ${
+                  statistic.data.TRASH
+                } ticket${statistic.data.TRASH > 1 ? "s" : ""}?`}
+                content="These tickets will be remove permanently. This action cannot be undone."
+                action={handleDeleteAll}
+                textAction="Remove"
+                danger
+                type="text"
+                icon={
+                  <div className="flex items-center gap-2">
+                    <span className="text-blue-500">
+                      Delete all {statistic.data.TRASH} tickets
+                    </span>
+                  </div>
+                }
+              />
               <ButtonTicket
                 title="Are you sure that you want to permanently remove these tickets?"
                 content="These tickets will be remove permanently. This action cannot be undone."

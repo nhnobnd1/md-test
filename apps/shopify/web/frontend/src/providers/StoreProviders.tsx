@@ -1,10 +1,11 @@
-import { useJob, useMount } from "@moose-desk/core";
+import { generatePath, useJob, useMount, useNavigate } from "@moose-desk/core";
 import { GetStoreIdRequest, StoreRepository } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
-import { ReactNode, createContext, useContext, useState } from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import { useSubdomain } from "src/hooks/useSubdomain";
+import OnBoardingRoutePaths from "src/modules/onBoarding/routes/paths";
 
 interface StoreContextType {
   storeId: string;
@@ -23,6 +24,7 @@ export const StoreProviders = ({ children }: StoreProvidersProps) => {
   const { getSubDomain } = useSubdomain();
   const { show } = useToast();
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
 
   const { run: fetchStoreId } = useJob(
     (payload: GetStoreIdRequest) => {
@@ -32,6 +34,9 @@ export const StoreProviders = ({ children }: StoreProvidersProps) => {
           map(({ data }) => {
             if (data.statusCode === 200) {
               setGeneralInfo(data.data);
+              if (!data.data.isOnboardingComplete) {
+                navigate(generatePath(OnBoardingRoutePaths.Index));
+              }
             }
           }),
           catchError((err) => {

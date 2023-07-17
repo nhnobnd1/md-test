@@ -1,10 +1,10 @@
-import { Button, Modal, TextContainer } from "@shopify/polaris";
+import { Button, ButtonProps, Modal, TextContainer } from "@shopify/polaris";
 import { ReactElement, useCallback, useState } from "react";
 
-export interface ModalDelete {
+export interface ModalDelete extends ButtonProps {
   action: () => void;
   text?: string;
-  icon: ReactElement;
+  icon?: ReactElement;
   title: string;
   content: string;
   primaryContent: string;
@@ -18,6 +18,7 @@ export const ButtonTrashTicket = ({
   content,
   primaryContent,
   destructive,
+  ...props
 }: ModalDelete) => {
   const [active, setActive] = useState(false);
   const activator = (
@@ -28,6 +29,7 @@ export const ButtonTrashTicket = ({
         setActive(true);
       }}
       icon={icon}
+      {...props}
     >
       {text}
     </Button>

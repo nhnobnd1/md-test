@@ -2,13 +2,13 @@ import config from "../config";
 
 export class StorageManager<Types> {
   tokens: any = {};
-
   getToken(type: Types) {
     if (!this.getPrefix()) {
       return;
     }
-
-    return this.tokens[`${this.getPrefix()}_${type}`];
+    if (config.getConfig().app)
+      return this.tokens[`${this.getPrefix()}_${type}`];
+    return localStorage.getItem(`${this.getPrefix()}_${type}`);
   }
 
   setToken(type: Types, token: string) {
@@ -16,8 +16,8 @@ export class StorageManager<Types> {
       return;
     }
     this.tokens[`${this.getPrefix()}_${type}`] = token;
-    return;
-    // return localStorage.setItem(`${this.getPrefix()}_${type}`, token);
+    if (config.getConfig().app) return;
+    return localStorage.setItem(`${this.getPrefix()}_${type}`, token);
   }
 
   getPrefix() {

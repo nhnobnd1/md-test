@@ -172,11 +172,12 @@ const DetailTicketForm = () => {
 
   const [isChanged, setIsChanged] = useState(false);
   const { data: dataPrimaryEmail } = useQuery({
-    queryKey: ["emailIntegrationApi"],
+    queryKey: ["emailIntegrationApi", id],
     queryFn: () => emailIntegrationApi(),
     retry: 3,
     staleTime: 10000,
     onError: () => {},
+    enabled: !!(dataTicket?.createdViaWidget || dataTicket?.incoming),
   });
   const primaryEmail = useMemo(() => {
     if (dataPrimaryEmail?._id) {
