@@ -6,9 +6,10 @@ import enUS from "antd/lib/locale/en_US";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Provider } from "react-redux";
+import ErrorBoundary from "src/ErrorBoundary";
+import TextEditor from "src/components/UI/Editor/TextEditor";
 import { AppRoutes } from "src/routes";
 import { store } from "./redux";
-import ErrorBoundary from "src/ErrorBoundary";
 
 function App() {
   const { i18n } = useTranslation();
@@ -29,6 +30,9 @@ function App() {
       <ErrorBoundary>
         <Provider store={store}>
           <AppRoutes />
+          <div className="hidden">
+            <TextEditor />
+          </div>
         </Provider>
       </ErrorBoundary>
     </ConfigProvider>

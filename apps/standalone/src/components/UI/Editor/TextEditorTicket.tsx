@@ -1,13 +1,15 @@
 import { CloudUploadOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useJob, useLoading, useLocation, useToggle } from "@moose-desk/core";
-import { TicketRepository } from "@moose-desk/repo";
+import { TicketRepository, UploadFileResponse } from "@moose-desk/repo";
 import { Editor, IAllProps } from "@tinymce/tinymce-react";
 import { Button, FormInstance, Modal, Popover } from "antd";
 import { filesize } from "filesize";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useTranslation } from "react-i18next";
+import { useMutation } from "react-query";
 import { catchError, map, of } from "rxjs";
+import { postImageApi } from "src/components/UI/Editor/api";
 import useMessage from "src/hooks/useMessage";
 import ImageZoom from "src/modules/ticket/components/DetailTicketForm/ImageZoom";
 import "./editor.scss";
@@ -38,7 +40,6 @@ const TextEditorTicket = ({
   const [idAttachments, setIdAttachments] = useState<string[]>([]);
   // const [loading, setLoading] = useState(false);
   const { state: loading, startLoading, stopLoading } = useLoading();
-
   const initEditor = useCallback((evt, editor: Editor["editor"]) => {
     editorRef.current = editor;
   }, []);
@@ -54,11 +55,27 @@ const TextEditorTicket = ({
     }
   };
   const { t } = useTranslation();
-
   const [myFiles, setMyFiles] = useState<any>([]);
   const location = useLocation();
 
   const [errorText, setErrorText] = useState("");
+
+  const uploadInsert = useMutation({
+    mutationFn: (data: any) => postImageApi(data),
+    onSuccess: (data: UploadFileResponse) => {
+      message.success(t("messages:success.file_upload"));
+
+      editorRef.current?.insertContent(
+        '<img height="200px" src="' + data.data.urls[0] + '" />'
+      );
+    },
+    onError: () => {
+      message.error(t("messages:error.file_upload"));
+    },
+    onSettled: () => {
+      stopLoading();
+    },
+  });
 
   const onDrop = useCallback(
     (acceptedFiles, rejectedFiles) => {
@@ -128,7 +145,7 @@ const TextEditorTicket = ({
       );
   });
 
-  const { run: postImage } = useJob((dataSubmit: any, callback: any) => {
+  const { run: postImage } = useJob((dataSubmit: any, callback = () => {}) => {
     setLoadingButton(true);
     startLoading();
     return TicketRepository()
@@ -274,18 +291,7 @@ const TextEditorTicket = ({
           </div>
         </div>
       </Modal>
-      {/* <Modal
-        closable={false}
-        open={loading}
-        width={100}
-        centered
-        footer={[]}
-        zIndex={999999}
-      >
-        <div className="flex justify-center items-center ">
-          <Spin indicator={<SmallLoader />} size="large" className="mt-3" />
-        </div>
-      </Modal> */}
+
       <div id="my-editor">
         <Editor
           apiKey="t4mxpsmop8giuev4szkrl7etgn43rtilju95m2tnst9m9uod"
@@ -318,6 +324,7 @@ const TextEditorTicket = ({
             file_picker_types: "image",
             file_picker_callback: function (cb, value, meta) {
               if (meta.filetype === "image") {
+                console.log("vaoday", meta);
                 const input = document.createElement("input");
                 input.setAttribute("type", "file");
                 input.setAttribute("accept", "image/*");
@@ -346,6 +353,24 @@ const TextEditorTicket = ({
                 onAction: () => {
                   openModal();
                 },
+              });
+              editor.on("paste", function (e) {
+                const clipboardData = e.clipboardData;
+                if (!clipboardData) {
+                  return;
+                }
+                const items = clipboardData.items;
+                for (let i = 0; i < items.length; i++) {
+                  const item = items[i];
+                  const file = item.getAsFile();
+                  if (item.kind === "file" && item.type.startsWith("image/")) {
+                    e.preventDefault();
+
+                    startLoading();
+                    uploadInsert.mutate(file);
+                  }
+                }
+                return e;
               });
             },
 
