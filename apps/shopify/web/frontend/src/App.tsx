@@ -10,6 +10,7 @@ import { NavigationLink } from "@shopify/app-bridge-react/components/NavigationM
 import CryptoJS from "crypto-js";
 import { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { RichText } from "src/components/RichText";
 import env from "src/core/env";
 import { useApi, useShopDomain } from "src/hooks";
 import useAuth from "src/hooks/useAuth";
@@ -88,6 +89,9 @@ export default function App() {
     <>
       <NavigationMenu navigationLinks={navigationLinks} />
       <AppRoutes />
+      <div className="hidden">
+        <RichText />
+      </div>
     </>
   );
 }
