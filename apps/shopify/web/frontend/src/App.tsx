@@ -6,6 +6,7 @@ import {
 } from "@shopify/app-bridge-react";
 import { Fullscreen } from "@shopify/app-bridge/actions";
 
+import { LoginResponse } from "@moose-desk/repo";
 import { NavigationLink } from "@shopify/app-bridge-react/components/NavigationMenu/NavigationMenu";
 import CryptoJS from "crypto-js";
 import { useEffect, useMemo } from "react";

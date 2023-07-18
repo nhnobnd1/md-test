@@ -33,7 +33,7 @@ export const TodoList = () => {
   };
   const columns = [
     {
-      title: "#",
+      title: "Ticket ID",
       dataIndex: "ticketId",
       key: "ticketId",
       render: (_: string, record: Ticket) => (

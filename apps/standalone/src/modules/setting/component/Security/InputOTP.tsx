@@ -38,7 +38,7 @@ const InputOTP = ({
         <MDInput
           value={value}
           onChange={handleChangeValueInput}
-          type="phone"
+          type="tel"
           autoComplete="off"
           maxLength={6}
           placeholder="OTP Code"

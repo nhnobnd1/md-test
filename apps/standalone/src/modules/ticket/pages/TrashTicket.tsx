@@ -466,7 +466,7 @@ const TrashTicket = () => {
                 >
                   <Table.Column
                     key="ticketId"
-                    title="#"
+                    title="Ticket ID"
                     render={(_, record: Ticket) => (
                       <span className="">{`${record.ticketId}`}</span>
                     )}

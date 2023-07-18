@@ -179,7 +179,7 @@ export const ExportTicket: FC<ExportTicketProps> = ({
         resourceName={{ singular: "ticket", plural: "tickets" }}
         itemCount={tickets?.length}
         headings={[
-          { title: "#" },
+          { title: "Ticket ID" },
           { title: "Ticket Title" },
           { title: "Customer" },
           { title: "Tags" },
