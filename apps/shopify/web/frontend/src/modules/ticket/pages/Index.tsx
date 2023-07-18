@@ -489,6 +489,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         createdViaWidget,
         fromEmail,
         toEmails,
+        status,
       },
       index
     ) => (
@@ -506,7 +507,11 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
               navigate(generatePath(TicketRoutePaths.Detail, { id: _id }));
             }}
           >
-            <Text variant="bodyMd" fontWeight="bold" as="span">
+            <Text
+              variant="bodyMd"
+              fontWeight={status === StatusTicket.NEW ? "bold" : "medium"}
+              as="span"
+            >
               {ticketId}
             </Text>
           </div>
@@ -519,7 +524,11 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                 navigate(generatePath(TicketRoutePaths.Detail, { id: _id }));
               }}
             >
-              <Text variant="bodyMd" fontWeight="bold" as="span">
+              <Text
+                variant="bodyMd"
+                fontWeight={status === StatusTicket.NEW ? "bold" : "medium"}
+                as="span"
+              >
                 {subject}
               </Text>
             </div>

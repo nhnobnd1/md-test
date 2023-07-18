@@ -658,7 +658,9 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                     title="Ticket ID"
                     render={(_, record: Ticket) => (
                       <span
-                        className="cursor-pointer hover:underline hover:text-blue-500"
+                        className={`cursor-pointer hover:underline hover:text-blue-500 ${
+                          record.status === StatusTicket.NEW && "text-bold"
+                        }`}
                         onClick={() => handleEdit(record)}
                       >
                         {`${record.ticketId}`}
@@ -675,7 +677,9 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                     title="Ticket Title"
                     render={(_, record: Ticket) => (
                       <span
-                        className="cursor-pointer hover:underline hover:text-blue-500 subject"
+                        className={`cursor-pointer hover:underline hover:text-blue-500 subject  ${
+                          record.status === StatusTicket.NEW && "text-bold"
+                        }`}
                         onClick={() => handleEdit(record)}
                       >{`${record.subject}`}</span>
                     )}

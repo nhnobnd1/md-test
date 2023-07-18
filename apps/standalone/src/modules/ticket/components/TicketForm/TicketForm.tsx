@@ -22,6 +22,7 @@ import { MDInput } from "src/components/UI/Input";
 import Select from "src/components/UI/Select/Select";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
+import { ModalCustomer } from "src/modules/ticket/components/ModalCustomer";
 import { AutoSelect } from "src/modules/ticket/components/TicketForm/AutoSelect";
 import { SelectList } from "src/modules/ticket/components/TicketForm/SelectList";
 import { SelectTag } from "src/modules/ticket/components/TicketForm/SelectTag";
@@ -65,7 +66,8 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
   const [loadingButton, setLoadingButton] = useState(false);
   const { dataSaved }: any = useSaveDataGlobal();
   const { t } = useTranslation();
-  const { data: dataCustomers } = useQuery({
+  const [openModalCustomer, setOpenModalCustomer] = useState(false);
+  const { data: dataCustomers, refetch: refetchCustomer } = useQuery({
     queryKey: ["getCustomers"],
     queryFn: () => getListCustomerApi({ page: 1, limit: 500 }),
     retry: 3,
@@ -343,7 +345,16 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
                 )}
               </>
             </div>
-            <div className="mt-8 absolute right-10 top-[-10px]">
+            <div className="mt-8 absolute right-10 top-[-10px] flex gap-2">
+              <span
+                className="link"
+                onClick={() => {
+                  setOpenModalCustomer(true);
+                }}
+              >
+                Add new contact
+              </span>
+              <span>|</span>
               <span
                 className="link"
                 onClick={() => {
@@ -425,6 +436,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
           </div>
         </Card>
       </div>
+      <ModalCustomer open={openModalCustomer} setOpen={setOpenModalCustomer} />
     </Form>
   );
 };
