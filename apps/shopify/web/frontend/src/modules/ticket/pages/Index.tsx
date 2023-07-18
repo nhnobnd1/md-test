@@ -810,7 +810,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                   headings={
                     selectedResources?.length === 0
                       ? [
-                          { title: "#" },
+                          { title: "Ticket ID" },
                           { title: "Ticket Title" },
                           { title: "Customer" },
                           { title: "Tags" },

@@ -37,7 +37,7 @@ export const ExportTicket: FC<ExportTicketProps> = ({
 
   const columns = [
     {
-      title: "#",
+      title: "Ticket ID",
       dataIndex: "ticketId",
       key: "ticketId",
       render: (_: any, record: Ticket) => (
