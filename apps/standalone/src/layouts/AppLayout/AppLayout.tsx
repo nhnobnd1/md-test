@@ -89,11 +89,15 @@ export const AppLayout = () => {
         label: (
           <div className="flex items-center gap-2 justify-between">
             Tickets{" "}
-            <Badge
-              count={statistic.data.NEW}
-              color="rgba(242, 117, 34, 1)"
-              overflowCount={100000}
-            />
+            {statistic.data.NEW > 0 ? (
+              <Badge
+                count={statistic.data.NEW}
+                color="rgba(242, 117, 34, 1)"
+                overflowCount={100000}
+              />
+            ) : (
+              <></>
+            )}
           </div>
         ),
         link: TicketRoutePaths.Index,

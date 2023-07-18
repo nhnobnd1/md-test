@@ -42,7 +42,7 @@ export const getCaseNavigation = (badge = ""): NavigationItems[] => {
       label: "Tickets",
       url: TicketRoutePaths.Index,
       icon: () => <ReadTimeMinor />,
-      badge: badge || undefined,
+      badge: badge === "0" ? undefined : badge,
     },
     {
       label: "Customers",
