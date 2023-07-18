@@ -655,7 +655,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                 >
                   <Table.Column
                     key="ticketId"
-                    title="#"
+                    title="Ticket ID"
                     render={(_, record: Ticket) => (
                       <span
                         className="cursor-pointer hover:underline hover:text-blue-500"
