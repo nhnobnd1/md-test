@@ -52,7 +52,7 @@ export default function SummaryBlock({ data, loading }: IProps) {
           </div>
           <div className={styles.description}>
             <p className={styles.label}>{block.labels}</p>
-            <p className={styles.value}>
+            <div className={styles.value}>
               {loading ? (
                 <MDSkeleton lines={1} width={80} />
               ) : (
@@ -68,7 +68,7 @@ export default function SummaryBlock({ data, loading }: IProps) {
                   }
                 />
               )}
-            </p>
+            </div>
           </div>
         </div>
         // </Col>

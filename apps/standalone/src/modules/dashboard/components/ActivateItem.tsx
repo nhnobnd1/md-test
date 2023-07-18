@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "@moose-desk/core";
+import { Link } from "@moose-desk/core";
 import { Activities } from "@moose-desk/repo/dashboard/Dashboard";
 import moment from "moment";
 import { ACTIVATE_TYPE } from "src/modules/dashboard/helper";
@@ -6,8 +6,8 @@ import styles from "./styles.module.scss";
 interface IProps {
   data: Activities;
 }
-export default function ActivateItem({ data }: IProps) {
-  const navigate = useNavigate();
+// const ActivateItem = React.forwardRef(({ data }: IProps, ref) => {
+const ActivateItem = ({ data }: IProps) => {
   const renderName = (isAgent: boolean) => {
     return isAgent ? (
       <span className={styles.name}>{data.performer.name}</span>
@@ -82,6 +82,21 @@ export default function ActivateItem({ data }: IProps) {
         return null;
     }
   };
+  // const content: any = ref ? (
+  //   <div className={styles.activateWrap} ref={ref as any}>
+  //     {renderTypeTextActivate()}
+  //     <div className={styles.timeAgo}>
+  //       {moment.unix(data.performedTimestamp).local().fromNow()}
+  //     </div>
+  //   </div>
+  // ) : (
+  //   <div className={styles.activateWrap}>
+  //     {renderTypeTextActivate()}
+  //     <div className={styles.timeAgo}>
+  //       {moment.unix(data.performedTimestamp).local().fromNow()}
+  //     </div>
+  //   </div>
+  // );
   return (
     <div className={styles.activateWrap}>
       {renderTypeTextActivate()}
@@ -90,4 +105,6 @@ export default function ActivateItem({ data }: IProps) {
       </div>
     </div>
   );
-}
+};
+// });
+export default ActivateItem;

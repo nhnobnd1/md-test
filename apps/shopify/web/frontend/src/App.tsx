@@ -6,6 +6,7 @@ import {
 } from "@shopify/app-bridge-react";
 import { Fullscreen } from "@shopify/app-bridge/actions";
 
+import { LoginResponse } from "@moose-desk/repo";
 import { NavigationLink } from "@shopify/app-bridge-react/components/NavigationMenu/NavigationMenu";
 import CryptoJS from "crypto-js";
 import { useEffect, useMemo } from "react";
@@ -15,7 +16,6 @@ import env from "src/core/env";
 import { useApi, useShopDomain } from "src/hooks";
 import useAuth from "src/hooks/useAuth";
 import { useSubdomain } from "src/hooks/useSubdomain";
-import { LoginResponse } from "src/models/Auth";
 import { useStore } from "src/providers/StoreProviders";
 import { AppRoutes } from "src/routes";
 import useFullScreen from "src/store/useFullScreen";

@@ -44,7 +44,7 @@ const InputOTP = ({
       </Text>
       <div className="w-20 ml-4">
         <TextField
-          type="text"
+          type="tel"
           label="OTP code"
           labelHidden
           value={value}
