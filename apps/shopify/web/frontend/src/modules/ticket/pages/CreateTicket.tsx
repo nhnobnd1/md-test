@@ -1,16 +1,11 @@
 import {
   generatePath,
   MediaScreen,
-  useJob,
   useMount,
   useToggle,
   useUnMount,
 } from "@moose-desk/core";
-import {
-  EmailIntegration,
-  EmailIntegrationRepository,
-  Priority,
-} from "@moose-desk/repo";
+import { Priority } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Button,
@@ -24,29 +19,61 @@ import {
 } from "@shopify/polaris";
 import { PriceLookupMinor } from "@shopify/polaris-icons";
 import { FormikProps } from "formik";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { catchError, map, of } from "rxjs";
-import { useBanner } from "src/hooks/useBanner";
+import { useQuery } from "react-query";
 import useSaveDataGlobal from "src/hooks/useSaveDataGlobal";
 import useScreenType from "src/hooks/useScreenType";
 import useToggleGlobal from "src/hooks/useToggleGlobal";
 import ContentShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ContentShopifySearch";
 import { TicketForm } from "src/modules/ticket/components/TicketForm";
+import {
+  emailIntegrationApi,
+  getListEmailIntegration,
+} from "src/modules/ticket/helper/api";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import styles from "./style.module.scss";
 interface CreateTicketProps {}
 
 const CreateTicket = (props: CreateTicketProps) => {
-  const { banner, show: showBanner, close: closeBanner } = useBanner();
   const { toggle: updateForm } = useToggle();
   const { visible, setVisible } = useToggleGlobal();
   const { dataSaved, setDataSaved }: any = useSaveDataGlobal();
-  // usePreventNav(MediaScreen.XL);
   const [screenType, screenWidth] = useScreenType();
   const isMobileOrTablet = Boolean(screenWidth <= MediaScreen.LG);
   const formRef = useRef<FormikProps<any>>(null);
-  const [primaryEmail, setPrimaryEmail] = useState<EmailIntegration>();
+  // const [primaryEmail, setPrimaryEmail] = useState<EmailIntegration>();
+  const { data: dataPrimaryEmail, isLoading: processing } = useQuery({
+    queryKey: ["emailIntegrationApi"],
+    queryFn: () => emailIntegrationApi(),
+    retry: 3,
+    staleTime: 10000,
+    onError: () => {
+      show(t("messages:error.something_went_wrong"), { isError: true });
+    },
+  });
+  const { data: dataEmailIntegration, isLoading: loadingList } = useQuery({
+    queryKey: ["getListEmailIntegration"],
+    queryFn: () => getListEmailIntegration({ page: 1, limit: 500 }),
+    retry: 3,
+    staleTime: 10000,
+    onError: () => {
+      show(t("messages:error.something_went_wrong"), { isError: true });
+    },
+  });
+
+  const primaryEmail = useMemo(() => {
+    if (dataPrimaryEmail?._id) {
+      return dataPrimaryEmail;
+    }
+    if (!dataEmailIntegration) {
+      return undefined;
+    }
+    return dataEmailIntegration?.length > 0
+      ? dataEmailIntegration[0]
+      : undefined;
+  }, [dataPrimaryEmail, dataEmailIntegration]);
+
   const initialValuesForm = useMemo(() => {
     return {
       priority: Priority.MEDIUM,
@@ -59,44 +86,6 @@ const CreateTicket = (props: CreateTicketProps) => {
   const { show } = useToast();
   const { t, i18n } = useTranslation();
 
-  const { run: getListEmailApi, processing: loadingList } = useJob(
-    (payload: any) => {
-      return EmailIntegrationRepository()
-        .getListEmail(payload)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              setPrimaryEmail(data.data[0]);
-            }
-          }),
-          catchError((err) => {
-            show(t("messages:error.something_went_wrong"), { isError: true });
-            return of(err);
-          })
-        );
-    }
-  );
-  const { run: getPrimaryEmail, processing } = useJob(() => {
-    return EmailIntegrationRepository()
-      .getPrimaryEmail()
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            if (Object.keys(data.data).length) {
-              setPrimaryEmail(data.data);
-            } else {
-              getListEmailApi({ page: 1, limit: 10 });
-            }
-          }
-        }),
-        catchError((err) => {
-          show(t("messages:error.something_went_wrong"), { isError: true });
-
-          return of(err);
-        })
-      );
-  });
-
   useMount(() => {
     updateForm();
   });
@@ -104,9 +93,7 @@ const CreateTicket = (props: CreateTicketProps) => {
     setVisible(false);
     setDataSaved(undefined);
   });
-  useEffect(() => {
-    getPrimaryEmail();
-  }, []);
+
   const handleToggleSearch = () => {
     setVisible(!visible);
   };

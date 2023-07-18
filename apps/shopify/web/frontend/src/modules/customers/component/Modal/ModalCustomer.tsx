@@ -57,6 +57,7 @@ IModal) => {
     mutationFn: (payload: any) => createCustomer(payload),
     onSuccess: async () => {
       await queryClient.invalidateQueries(QUERY_KEY.LIST_CUSTOMER);
+      await queryClient.invalidateQueries("getCustomers");
       //   await refetchListCustomer();
       onClose();
       show(t("messages:success.create_customer"));

@@ -52,6 +52,7 @@ import { FormikProps } from "formik";
 import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useQueryClient } from "react-query";
 import { catchError, map, of } from "rxjs";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
@@ -100,6 +101,8 @@ interface DetailTicketProps {}
 const DetailTicket = (props: DetailTicketProps) => {
   const formRef = useRef<FormikProps<any>>(null);
   const { toggle: updateForm } = useToggle();
+  const queryClient = useQueryClient();
+
   const { id } = useParams();
   const [ticket, setTicket] = useState<Ticket>();
   const { show } = useToast();
@@ -328,6 +331,8 @@ const DetailTicket = (props: DetailTicketProps) => {
           map(({ data }) => {
             if (data.statusCode === 200) {
               show(t("messages:success.update_ticket"));
+              queryClient.invalidateQueries("getStatisticTicket");
+
               // eslint-disable-next-line no-unused-expressions
               reload ? getTicketApi(id as string) : "";
             }

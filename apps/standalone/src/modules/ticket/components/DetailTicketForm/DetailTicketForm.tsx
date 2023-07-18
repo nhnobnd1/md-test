@@ -419,6 +419,7 @@ const DetailTicketForm = () => {
           if (data.statusCode === 200) {
             stopLoading();
             message.success(t("messages:success.update_ticket"));
+            queryClient.invalidateQueries("getStatisticTicket");
           }
         }),
         catchError((err) => {

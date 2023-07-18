@@ -156,6 +156,7 @@ const TrashTicket = () => {
       stopLoading();
     },
   });
+
   const forceDelete = useMutation({
     mutationFn: (payload: BaseDeleteList) => forceDeleteApi(payload),
     onSuccess: () => {

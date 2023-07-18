@@ -1,21 +1,15 @@
-import { generatePath, useJob, useNavigate } from "@moose-desk/core";
+import { generatePath, useJob, useNavigate, useToggle } from "@moose-desk/core";
 import {
   AgentRepository,
-  Customer,
-  CustomerRepository,
   EmailIntegration,
-  EmailIntegrationRepository,
-  GetListCustomerRequest,
-  GetListTagRequest,
   Priority,
-  Tag,
-  TagRepository,
   TicketRepository,
 } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import { Button, FormLayout, Link, Select, TextField } from "@shopify/polaris";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useQuery } from "react-query";
 import { catchError, map, of } from "rxjs";
 import Form, { FormProps } from "src/components/Form";
 import FormItem from "src/components/Form/Item";
@@ -25,7 +19,13 @@ import SelectAddEmail from "src/components/SelectAddEmail/SelectAddEmail";
 import SelectAddTag from "src/components/SelectAddTag/SelectAddTag";
 import { TextEditorTicket } from "src/components/TextEditorTicket";
 import useSaveDataGlobal from "src/hooks/useSaveDataGlobal";
+import { CustomModal } from "src/modules/customers/component/Modal";
 import BoxSelectCustomer from "src/modules/ticket/components/BoxSelectCustomer/BoxSelectCustomer";
+import {
+  getListCustomerApi,
+  getListEmailIntegration,
+  getTagsTicket,
+} from "src/modules/ticket/helper/api";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import { wrapImageWithAnchorTag } from "src/utils/localValue";
 import * as Yup from "yup";
@@ -58,17 +58,13 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
   const navigate = useNavigate();
   const { show } = useToast();
   const { t, i18n } = useTranslation();
+  const { state: visible, on: openPopup, off: closePopup } = useToggle();
 
   const { dataSaved }: any = useSaveDataGlobal();
   const [fromEmail, setFromEmail] = useState(props.primaryEmail);
   const [toEmail, setToEmail] = useState({ value: "", id: "" });
   const [files, setFiles] = useState<any>([]);
   const [loadingButton, setLoadingButton] = useState(false);
-  const [tags, setTags] = useState<Tag[]>([]);
-  const [customers, setCustomers] = useState<Customer[]>([]);
-  const [emailIntegrations, setEmailIntegration] = useState<EmailIntegration[]>(
-    []
-  );
 
   const TicketFormSchema = Yup.object().shape({
     to: Yup.string()
@@ -122,36 +118,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
     },
     [AgentRepository]
   );
-  const { run: getListTagApi } = useJob((payload: GetListTagRequest) => {
-    return TagRepository()
-      .getList(payload)
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            const tags = data.data.map((item) => ({
-              ...item,
-              id: item._id,
-            }));
-            setTags((prevTags) => {
-              return [...prevTags, ...tags];
-            });
 
-            if (data.metadata.totalPage > (payload.page as number)) {
-              getListTagApi({
-                page: (payload.page as number) + 1,
-                limit: payload.limit,
-              });
-            }
-          } else {
-            // message.error("Get data ticket failed");
-          }
-        }),
-        catchError((err) => {
-          show(t("messages:error.something_went_wrong"), { isError: true });
-          return of(err);
-        })
-      );
-  });
   const { run: CreateTicket } = useJob((dataSubmit: any) => {
     return TicketRepository()
       .create(dataSubmit)
@@ -176,113 +143,89 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
         })
       );
   });
-  const { run: getListEmailIntegration } = useJob(
-    (payload: GetListTagRequest) => {
-      return EmailIntegrationRepository()
-        .getListEmail(payload)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              const tags = data.data.map((item) => ({
-                ...item,
-                id: item._id,
-              }));
-              setEmailIntegration((prevTags) => {
-                return [...prevTags, ...tags];
-              });
 
-              if (data.metadata.totalPage > (payload.page as number)) {
-                getListEmailIntegration({
-                  page: (payload.page as number) + 1,
-                  limit: payload.limit,
-                });
-              }
-            } else {
-              // message.error("Get data ticket failed");
-            }
-          }),
-          catchError((err) => {
-            show(t("messages:error.something_went_wrong"), { isError: true });
-            return of(err);
-          })
-        );
-    }
-  );
+  const { data: dataTags } = useQuery({
+    queryKey: [
+      "getTagsTicket",
+      {
+        page: 1,
+        limit: 500,
+      },
+    ],
+    queryFn: () =>
+      getTagsTicket({
+        page: 1,
+        limit: 500,
+      }),
+    staleTime: 10000,
+    retry: 1,
 
-  const { run: getListCustomerApi } = useJob(
-    (payload: GetListCustomerRequest) => {
-      return CustomerRepository()
-        .getList(payload)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              const tags = data.data.map((item) => ({
-                ...item,
-                id: item._id,
-              }));
-              setCustomers((prevTags) => {
-                return [...prevTags, ...tags];
-              });
+    onError: () => {
+      show(t("messages:error.get_tag"), { isError: true });
+    },
+  });
 
-              if (data.metadata.totalPage > (payload.page as number)) {
-                getListCustomerApi({
-                  page: (payload.page as number) + 1,
-                  limit: payload.limit,
-                });
-              }
-            } else {
-              // message.error("Get data ticket failed");
-            }
-          }),
-          catchError((err) => {
-            show(t("messages:error.something_went_wrong"), { isError: true });
-            return of(err);
-          })
-        );
-    }
-  );
   const tagsOptions = useMemo(() => {
-    return tags.map((item) => ({ value: item.name, label: item.name }));
-  }, [tags]);
-  const emailIntegrationsOptions = useMemo(() => {
-    return emailIntegrations.map((item) => ({
-      value: item._id,
-      label: `${item.name} - ${item.supportEmail}`,
+    if (!dataTags) return [];
+    return dataTags.map((item) => ({
+      label: item.name,
+      value: item.name,
+      obj: item,
     }));
-  }, [emailIntegrations]);
+  }, [dataTags]);
+
+  const { data: dataEmailIntegration } = useQuery({
+    queryKey: ["getListEmailIntegration"],
+    queryFn: () => getListEmailIntegration({ page: 1, limit: 500 }),
+    retry: 3,
+    staleTime: 10000,
+    onError: () => {
+      show(t("messages:error.get_customer"), { isError: true });
+    },
+  });
+  const emailIntegrationOptions = useMemo(() => {
+    if (!dataEmailIntegration) return [];
+    return dataEmailIntegration.map((item) => {
+      return {
+        label: `${item.name} - ${item.supportEmail}`,
+        value: item._id,
+        obj: item,
+      };
+    });
+  }, [dataEmailIntegration]);
+
+  const { data: dataCustomers } = useQuery({
+    queryKey: ["getCustomers"],
+    queryFn: () => getListCustomerApi({ page: 1, limit: 500 }),
+    retry: 3,
+    staleTime: 10000,
+    onError: () => {
+      show(t("messages:error.get_customer"), { isError: true });
+    },
+  });
   const customersOptions = useMemo(() => {
-    return customers.map((item) => ({
-      label: `${item.firstName} ${item.lastName} - ${item.email}`,
-      value: item.email,
-    }));
-  }, [customers]);
-  useEffect(() => {
-    getListTagApi({
-      page: 1,
-      limit: 500,
+    if (!dataCustomers) return [];
+    return dataCustomers.map((item) => {
+      return {
+        label: `${item.firstName} ${item.lastName} - ${item.email}`,
+        value: item.email,
+        obj: item,
+      };
     });
-    getListEmailIntegration({
-      page: 1,
-      limit: 500,
-    });
-    getListCustomerApi({
-      page: 1,
-      limit: 500,
-    });
-  }, []);
-  // const handleValueChange = (value: any) => {
-  //   console.log({ value });
-  // };
+  }, [dataCustomers]);
+
   const onFinish = () => {
     const values = (props.innerRef as any)?.current.values;
-    const findEmailIntegration = emailIntegrations.find(
-      (item) => item._id === values.from
+    const findEmailIntegration = emailIntegrationOptions.find(
+      (item) => item.value === values.from
     );
-    const findCustomer = customers.find((item) => item.email === values.to);
+    const findCustomer = customersOptions.find(
+      (item) => item.value === values.to
+    );
     const dataCreate: any = {
       fromEmail: {
-        email: findEmailIntegration?.supportEmail,
-        name: findEmailIntegration?.name,
+        email: findEmailIntegration?.obj.supportEmail,
+        name: findEmailIntegration?.obj.name,
       },
       senderConfigId: values.from,
       agentObjectId: values.assignee ? values.assignee.value._id : undefined,
@@ -291,11 +234,11 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
         {
           email: values.to,
           name: findCustomer
-            ? `${findCustomer.firstName} ${findCustomer.lastName}`
+            ? `${findCustomer?.obj.firstName} ${findCustomer?.obj.lastName}`
             : values.to.split("@")[0],
         },
       ],
-      customerObjectId: findCustomer ? findCustomer._id : undefined,
+      customerObjectId: findCustomer ? findCustomer?.obj._id : undefined,
       ccEmails: values?.CC,
       bccEmails: values?.BCC,
       subject: values.subject,
@@ -307,6 +250,9 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
     };
     CreateTicket(dataCreate);
   };
+  const handleClosePopup = () => {
+    closePopup();
+  };
   const css = `
   .Polaris-Label{
     width: 100%;
@@ -316,7 +262,6 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
   return (
     <Form
       {...props}
-      // onValuesChange={handleValueChange}
       initialValues={props.initialValues}
       validationSchema={TicketFormSchema}
       onSubmit={() => {
@@ -333,7 +278,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
                   <BoxSelectFilter
                     // disabled={disabled}
                     label="From"
-                    data={emailIntegrationsOptions}
+                    data={emailIntegrationOptions}
                     placeholder="Defined Email address"
                   />
                 </FormItem>
@@ -351,7 +296,15 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
                         <span className="mr-1 text-red-500">*</span>
                         <span>To</span>
                       </div>
-                      <div className="">
+                      <div className="flex gap-2">
+                        <Link
+                          onClick={() => {
+                            openPopup();
+                          }}
+                        >
+                          Add new contact
+                        </Link>
+                        <span>|</span>
                         <Link
                           onClick={() => {
                             setEnableCC(!enableCC);
@@ -466,6 +419,16 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
           </Button>
         </div>
       </FormLayout>
+      <CustomModal
+        title={"New Customer"}
+        visible={visible}
+        onClose={handleClosePopup}
+        customerData={undefined}
+        primaryButtonLabel="Save"
+        secondaryButtonAction={handleClosePopup}
+        secondaryButtonLabel="Discard"
+        querySearchCustomer={null}
+      />
     </Form>
   );
 };

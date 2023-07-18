@@ -1,21 +1,30 @@
 import {
+  Agent,
   AgentRepository,
   BaseDeleteList,
   BaseListTicketFilterRequest,
+  Conversation,
+  Customer,
   CustomerRepository,
+  EmailIntegration,
   EmailIntegrationRepository,
   GetListAgentRequest,
   GetListCustomerRequest,
+  GetListEmailRequest,
   GetListTagRequest,
   GetListTicketRequest,
+  GetListTicketResponse,
+  Tag,
   TagRepository,
+  Ticket,
   TicketRepository,
+  TicketStatistic,
   UpdateTicket,
 } from "@moose-desk/repo";
 import { useQueries } from "react-query";
 import { lastValueFrom } from "rxjs";
 import { ItemConversation } from "src/modules/ticket/helper/interface";
-export const getStatisticTicket = () => {
+export const getStatisticTicket = (): Promise<TicketStatistic> => {
   return new Promise((resolve, reject) => {
     lastValueFrom(TicketRepository().getStatistic())
       .then(({ data }) => resolve(data))
@@ -31,10 +40,10 @@ export const fetchConversationApi = (id: string): Promise<ItemConversation> => {
   });
 };
 
-export const getTagsTicket = (payload: GetListTagRequest) => {
+export const getTagsTicket = (payload: GetListTagRequest): Promise<Tag[]> => {
   return new Promise((resolve, reject) => {
     lastValueFrom(TagRepository().getList(payload))
-      .then(({ data }) => resolve(data))
+      .then(({ data }) => resolve(data.data))
       .catch((error) => reject(error));
   });
 };
@@ -45,10 +54,48 @@ export const forceDeleteApi = (payload: BaseDeleteList) => {
       .catch((error) => reject(error));
   });
 };
-export const getListTrashApi = (payload: GetListTicketRequest) => {
+
+export const deleteAllTicket = () => {
+  return new Promise((resolve, reject) => {
+    lastValueFrom(TicketRepository().deletePermanentlyAll())
+      .then(({ data }) => resolve(data.data))
+      .catch((error) => reject(error));
+  });
+};
+export const getListTrashApi = (
+  payload: GetListTicketRequest
+): Promise<GetListTicketResponse> => {
   return new Promise((resolve, reject) => {
     lastValueFrom(TicketRepository().getListTrash(payload))
       .then(({ data }) => resolve(data))
+      .catch((error) => reject(error));
+  });
+};
+
+export const getListTicketFilter = (
+  payload: GetListTicketRequest
+): Promise<GetListTicketResponse> => {
+  return new Promise((resolve, reject) => {
+    lastValueFrom(TicketRepository().getListFilter(payload))
+      .then(({ data }) => resolve(data))
+      .catch((error) => reject(error));
+  });
+};
+
+export const getOneTicket = (payload: string): Promise<Ticket> => {
+  return new Promise((resolve, reject) => {
+    lastValueFrom(TicketRepository().getOne(payload))
+      .then(({ data }) => resolve(data.data))
+      .catch((error) => reject(error));
+  });
+};
+
+export const getListConversation = (
+  payload: string
+): Promise<Conversation[]> => {
+  return new Promise((resolve, reject) => {
+    lastValueFrom(TicketRepository().getConversations(payload))
+      .then(({ data }) => resolve(data.data))
       .catch((error) => reject(error));
   });
 };
@@ -60,9 +107,11 @@ export const restoreTicketApi = (payload: BaseDeleteList) => {
   });
 };
 
-export const getListTicketApi = (payload: GetListTicketRequest) => {
+export const getListTicketApi = (
+  payload: GetListTicketRequest
+): Promise<GetListTicketResponse> => {
   return new Promise((resolve, reject) => {
-    lastValueFrom(TicketRepository().getList(payload))
+    lastValueFrom(TicketRepository().getListFilter(payload))
       .then(({ data }) => resolve(data))
       .catch((error) => reject(error));
   });
@@ -86,25 +135,39 @@ export const getListTicketFilterApi = (
   });
 };
 
-export const getListCustomerApi = (payload: GetListCustomerRequest) => {
+export const getListCustomerApi = (
+  payload: GetListCustomerRequest
+): Promise<Customer[]> => {
   return new Promise((resolve, reject) => {
     lastValueFrom(CustomerRepository().getList(payload))
-      .then(({ data }) => resolve(data))
+      .then(({ data }) => resolve(data.data))
       .catch((error) => reject(error));
   });
 };
 
-export const getListAgentApi = (payload: GetListAgentRequest) => {
+export const getListAgentApi = (
+  payload: GetListAgentRequest
+): Promise<Agent[]> => {
   return new Promise((resolve, reject) => {
     lastValueFrom(AgentRepository().getList(payload))
-      .then(({ data }) => resolve(data))
+      .then(({ data }) => resolve(data.data))
       .catch((error) => reject(error));
   });
 };
-export const emailIntegrationApi = () => {
+export const emailIntegrationApi = (): Promise<EmailIntegration> => {
   return new Promise((resolve, reject) => {
     lastValueFrom(EmailIntegrationRepository().getPrimaryEmail())
-      .then(({ data }) => resolve(data))
+      .then(({ data }) => resolve(data.data))
+      .catch((error) => reject(error));
+  });
+};
+
+export const getListEmailIntegration = (
+  payload: GetListEmailRequest
+): Promise<EmailIntegration[]> => {
+  return new Promise((resolve, reject) => {
+    lastValueFrom(EmailIntegrationRepository().getListEmail(payload))
+      .then(({ data }) => resolve(data.data))
       .catch((error) => reject(error));
   });
 };

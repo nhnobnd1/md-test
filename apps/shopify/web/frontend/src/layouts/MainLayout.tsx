@@ -2,13 +2,16 @@ import { Outlet, useLocation, useRoutes } from "@moose-desk/core";
 import { Frame, Navigation } from "@shopify/polaris";
 import { TabDescriptor } from "@shopify/polaris/build/ts/latest/src/components/Tabs/types";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { useQuery } from "react-query";
 import "src/assets/styles/layouts/main-layout.scss";
 import useToggleGlobal from "src/hooks/useToggleGlobal";
-import caseNavigation, {
+import {
   NavigationItems,
   SubNavigation,
+  getCaseNavigation,
 } from "src/layouts/caseNavigation";
 import MainLayoutTopBar from "src/layouts/components/MainLayoutTopBar";
+import { getStatisticTicket } from "src/modules/ticket/helper/api";
 import useFullScreen from "src/store/useFullScreen";
 
 interface MainLayoutProps {
@@ -27,6 +30,33 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   useEffect(() => {
     setShowMainLayout(!visible); // set lại khi bấm nút show/hide shopify customer
   }, [visible]);
+  const { data: dataStatistic } = useQuery({
+    queryKey: ["getStatisticTicket"],
+    queryFn: () => getStatisticTicket(),
+    retry: 3,
+
+    onError: () => {
+      // show(t("messages:error.get_ticket"), { isError: true });
+    },
+  });
+  const statistic = useMemo(() => {
+    if (dataStatistic) {
+      return dataStatistic;
+    }
+    return {
+      statusCode: 200,
+      data: {
+        OPEN: 0,
+        PENDING: 0,
+        RESOLVED: 0,
+        TRASH: 0,
+        NEW: 0,
+      },
+    };
+  }, [dataStatistic]);
+  const caseNavigation = useMemo(() => {
+    return getCaseNavigation(statistic.data.NEW + "");
+  }, [statistic]);
   const getItemRouteNavigation = useCallback(
     (
       routesItem: NavigationItems | SubNavigation,
