@@ -83,7 +83,7 @@ export const Factor2Auth = ({
           label="OTP"
           rules={[{ required: true, message: "Please enter code OTP" }]}
         >
-          <MDInput type="text" placeholder="Enter OTP" />
+          <MDInput type="phone" placeholder="Enter OTP" />
         </Form.Item>
 
         <Button
