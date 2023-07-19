@@ -24,6 +24,7 @@ export const MoreActions = () => {
   const { isMobile } = useViewport();
   const { on: handleOpenModalImport, off, state: visible } = useToggle(false);
   const [file, setFile] = useState<any>();
+  const [processing, setProcessing] = useState(false);
   const {
     data: status,
     refetch: refetchingStatus,
@@ -31,11 +32,12 @@ export const MoreActions = () => {
   }: any = useQuery({
     queryKey: ["StatusImportAndSync"],
     queryFn: () => checkingSyncImport(),
-    // onError: () => {
-    //   message.error("");
-    // },
+    refetchInterval: processing ? 5000 : false,
+    onSuccess: (data: any) => {
+      setProcessing(data?.data?.data.isProcessing);
+    },
   });
-  const syncStatus = status?.data?.data?.isProcessing;
+
   const { mutate: syncCustomerMutate, isLoading: syncing } = useMutation({
     mutationFn: () => syncShopifyCustomers(),
     onSuccess: () => {
@@ -106,7 +108,7 @@ export const MoreActions = () => {
   const popoverContent = (
     <div className={styles.groupOptions}>
       <MDButton className={styles.syncBtn} onClick={handleOpenModalImport}>
-        Import CSV
+        Import using CSV
       </MDButton>
       <MDButton
         className={styles.syncBtn}
@@ -115,7 +117,7 @@ export const MoreActions = () => {
         }}
         loading={syncing}
       >
-        Sync Customers from Shopify
+        Synchorization from Shopify
       </MDButton>
     </div>
   );
@@ -175,7 +177,7 @@ export const MoreActions = () => {
           </div>
         </div>
       </MDModal>
-      {syncStatus ? (
+      {processing ? (
         <MDButton loading className={styles.syncingBtn}>
           {isMobile ? undefined : (
             <div className="d-flex align-center">

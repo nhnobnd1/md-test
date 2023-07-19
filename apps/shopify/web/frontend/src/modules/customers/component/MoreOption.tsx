@@ -30,6 +30,7 @@ export default function MoreOption() {
   const [screenType, screenWidth] = useScreenType();
   const isMobile = Boolean(screenWidth <= MediaScreen.LG);
   const [popoverActive, setPopoverActive] = useState(false);
+  const [processing, setProcessing] = useState(false);
   const [file, setFile] = useState<any>();
   const {
     data: status,
@@ -38,11 +39,11 @@ export default function MoreOption() {
   }: any = useQuery({
     queryKey: ["StatusImportAndSync"],
     queryFn: () => checkingSyncImport(),
-    // onError: () => {
-    //   message.error("");
-    // },
+    refetchInterval: processing ? 5000 : false,
+    onSuccess: (data: any) => {
+      setProcessing(data?.data?.data.isProcessing);
+    },
   });
-  const syncStatus = status?.data?.data?.isProcessing;
   const { mutate: syncCustomerMutate, isLoading: syncing } = useMutation({
     mutationFn: () => syncShopifyCustomers(),
     onSuccess: () => {
@@ -93,7 +94,7 @@ export default function MoreOption() {
   const handleSubmitImport = () => {
     importMutate(file);
   };
-  const activator = syncStatus ? (
+  const activator = processing ? (
     <Tooltip content="Currently in the process of syncing Shopify customer data or importing data from a file.">
       <Button
         onClick={togglePopoverActive}
@@ -122,11 +123,11 @@ export default function MoreOption() {
         onClose={togglePopoverActive}
       >
         <div className={styles.btnSync}>
-          <Button onClick={handleOpenModalImport}>Import CSV</Button>
+          <Button onClick={handleOpenModalImport}>Import using CSV</Button>
         </div>
         <div className={styles.btnSync}>
           <Button onClick={() => syncCustomerMutate()} loading={syncing}>
-            Sync Customers from Shopify
+            Synchorization from Shopify
           </Button>
         </div>
       </Popover>
