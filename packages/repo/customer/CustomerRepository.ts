@@ -35,6 +35,15 @@ export const CustomerRepository = createRepository(
     getListTicket(api, id: string, params: GetListCustomerRequest) {
       return api.get(`/all-tickets/${id}`, params);
     },
+    syncShopifyCustomers(api) {
+      return api.post("/sync-from-shopify", {});
+    },
+    checkingSyncImportCustomer(api) {
+      return api.get("/check-status-sync-or-import");
+    },
+    importCSV(api, data: any) {
+      return api.post("/import-from-csv", data);
+    },
   }
 );
 

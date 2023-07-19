@@ -53,10 +53,9 @@
   }
 
   .search {
-    width: 385px;
+    width: 300px;
     @include breakpoints(md, lg) {
-      // margin: 0 8xpx 0px;
-      width: 300px;
+      width: 200px;
     }
   }
 }

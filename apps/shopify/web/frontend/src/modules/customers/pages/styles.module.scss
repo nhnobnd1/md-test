@@ -2,14 +2,15 @@
 @import "../../../styles/mixin.scss";
 .groupTopPage {
   // margin-bottom: 16px;
-  .buttonAdd {
-    margin-left: 8px;
-  }
+  
+}
+.buttonAdd {
+  margin-left: 8px;
 }
 .searchInputWrap {
-  width: 448px;;
+  width: 300px;
   @include breakpoints(md, lg) {
-    width: 230px;
+    width: 200px;
   }
 }
 .topPage {
@@ -32,4 +33,39 @@
   .searchOnMobile {
     width: calc(100% - 50px);
   }
+}
+.groupButtonImport {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 16px;
+  @include mq(md, "max") {
+      padding: 0 16px;
+    }
+}
+.btnSync {
+  width: 100%;
+  button {
+    border: none;
+    width: 100%;
+  }
+}
+:global {
+  .Polaris-DropZone__Container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+.moreOption {
+  margin-left: 8px;
+}
+.wrapDropzone {
+  padding: 20px;
+}
+.groupButtonFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
