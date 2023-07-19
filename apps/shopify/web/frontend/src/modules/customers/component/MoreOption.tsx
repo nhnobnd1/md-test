@@ -55,7 +55,7 @@ export const MoreOption = React.memo(({ onReset }: IProps) => {
       onReset();
       setProcessing({
         status: false,
-        count: 0,
+        count: 1,
       });
     }
   }, [processing]);
