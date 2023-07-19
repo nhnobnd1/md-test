@@ -22,7 +22,7 @@ import {
   TicketRepository,
   UpdateTicket,
 } from "@moose-desk/repo";
-import { Button, Card, TableProps, Tag as TagAntd } from "antd";
+import { Button, Card, TableProps, Tag as TagAntd, Tooltip } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -450,11 +450,13 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                 });
               }}
             >
-              <MDButton
-                className=" flex justify-center items-center"
-                onClick={openFilterModal}
-                icon={<Icon name="filter" />}
-              ></MDButton>
+              <Tooltip title="Filter">
+                <MDButton
+                  className=" flex justify-center items-center"
+                  onClick={openFilterModal}
+                  icon={<Icon name="filter" />}
+                ></MDButton>
+              </Tooltip>
 
               <ButtonAdd onClick={() => navigate(TicketRoutePaths.Create)}>
                 Add new

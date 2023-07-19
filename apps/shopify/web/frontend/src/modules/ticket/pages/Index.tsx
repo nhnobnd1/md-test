@@ -30,6 +30,7 @@ import {
   Modal,
   Page,
   Text,
+  Tooltip,
   useIndexResourceState,
 } from "@shopify/polaris";
 import { catchError, map, of } from "rxjs";
@@ -581,14 +582,16 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                   navigate(generatePath(TicketRoutePaths.Create));
                 }}
               >
-                <ModalFilter
-                  agents={agents}
-                  handleResetModal={handleResetModal}
-                  customers={customers}
-                  tags={tags}
-                  handleApply={handleApply}
-                  filterObject={filterObject}
-                />
+                <Tooltip content="Filter">
+                  <ModalFilter
+                    agents={agents}
+                    handleResetModal={handleResetModal}
+                    customers={customers}
+                    tags={tags}
+                    handleApply={handleApply}
+                    filterObject={filterObject}
+                  />
+                </Tooltip>
               </HeaderListTicket>
             </div>
           ) : (
