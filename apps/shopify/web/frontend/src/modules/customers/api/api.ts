@@ -11,7 +11,7 @@ import env from "src/core/env";
 import { ListTicketCustomerFilter } from "./../helper/interface";
 const instance = axios.create({
   baseURL: `${env.API_URL}/api/${env.API_VERSION}`,
-  timeout: 10000,
+  timeout: 30000,
 });
 export const getListCustomer = (params: GetListCustomerRequest) => {
   return new Promise((resolve, reject) => {

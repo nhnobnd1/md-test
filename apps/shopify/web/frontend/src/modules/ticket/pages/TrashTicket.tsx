@@ -3,7 +3,6 @@ import {
   generatePath,
   MediaScreen,
   upperCaseFirst,
-  useJob,
   useNavigate,
 } from "@moose-desk/core";
 import {
@@ -11,9 +10,6 @@ import {
   GetListTicketRequest,
   ScreenType,
   StatusTicket,
-  Ticket,
-  TicketRepository,
-  TicketStatistic,
 } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
@@ -27,18 +23,24 @@ import {
   Text,
   useIndexResourceState,
 } from "@shopify/polaris";
-import { FC, useCallback, useEffect, useState } from "react";
+import { FC, useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { map } from "rxjs";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 
 import { Pagination } from "src/components/Pagination";
 import env from "src/core/env";
-import useDeepEffect from "src/hooks/useDeepEffect";
 import useGlobalData from "src/hooks/useGlobalData";
 import useScreenType from "src/hooks/useScreenType";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { ButtonTrashTicket } from "src/modules/ticket/components/ButtonTrashTicket";
 import { HeaderListTicket } from "src/modules/ticket/components/HeaderListTicket";
+import {
+  deleteAllTicket,
+  forceDeleteApi,
+  getListTrashApi,
+  getStatisticTicket,
+  restoreTicketApi,
+} from "src/modules/ticket/helper/api";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import CancelIcon from "~icons/mdi/cancel";
 import RestoreIcon from "~icons/mdi/restore";
@@ -50,7 +52,7 @@ const defaultFilter: () => any = () => ({
 });
 const TrashTicket: FC<TrashTicketProps> = () => {
   const navigate = useNavigate();
-  const [tickets, setTickets] = useState<Ticket[]>([]);
+  // const [tickets, setTickets] = useState<Ticket[]>([]);
 
   const [direction, setDirection] = useState<"descending" | "ascending">(
     "descending"
@@ -66,28 +68,92 @@ const TrashTicket: FC<TrashTicketProps> = () => {
   const { subDomain } = useSubdomain();
   const { timezone }: any = useGlobalData(false, subDomain || "");
 
-  const {
-    selectedResources,
-    allResourcesSelected,
-    handleSelectionChange,
-    removeSelectedResources,
-    clearSelection,
-  } = useIndexResourceState(tickets);
   const { t, i18n } = useTranslation();
 
-  const [statistic, setStatistic] = useState<TicketStatistic>({
-    statusCode: 200,
-    data: {
-      OPEN: 0,
-      PENDING: 0,
-      RESOLVED: 0,
-      TRASH: 0,
-      NEW: 0,
+  const { data: dataTicket, isLoading: loadingList } = useQuery({
+    queryKey: ["getListTrash", filterData],
+    queryFn: () => getListTrashApi(filterData),
+    retry: 1,
+
+    onError: () => {
+      show(t("messages:error.get_ticket"), { isError: true });
     },
   });
   const [showTitle, setShowTitle] = useState(true);
 
-  const [meta, setMeta] = useState<any>();
+  const tickets = useMemo(() => {
+    if (dataTicket?.data)
+      return dataTicket.data.map((item) => ({ ...item, id: item._id }));
+    return [];
+  }, [dataTicket]);
+  const meta = useMemo(() => {
+    if (dataTicket?.metadata) return dataTicket.metadata;
+    return undefined;
+  }, [dataTicket]);
+
+  const {
+    selectedResources,
+    allResourcesSelected,
+    handleSelectionChange,
+    clearSelection,
+  } = useIndexResourceState(tickets);
+
+  const { data: dataStatistic } = useQuery({
+    queryKey: ["getStatisticTicket"],
+    queryFn: () => getStatisticTicket(),
+    retry: 3,
+
+    onError: () => {
+      show(t("messages:error.get_ticket"), { isError: true });
+    },
+  });
+  const statistic = useMemo(() => {
+    if (dataStatistic) {
+      return dataStatistic;
+    }
+    return {
+      statusCode: 200,
+      data: {
+        OPEN: 0,
+        PENDING: 0,
+        RESOLVED: 0,
+        TRASH: 0,
+        NEW: 0,
+      },
+    };
+  }, [dataStatistic]);
+  const queryClient = useQueryClient();
+
+  const restore = useMutation({
+    mutationFn: (payload: BaseDeleteList) => restoreTicketApi(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["getListTrash"],
+      });
+      queryClient.invalidateQueries({ queryKey: ["getStatisticTicket"] });
+      clearSelection();
+      show(t("messages:success.restore_ticket"));
+    },
+    onError: () => {
+      show(t("messages:error.restore_ticket"), { isError: true });
+    },
+  });
+
+  const forceDelete = useMutation({
+    mutationFn: (payload: BaseDeleteList) => forceDeleteApi(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["getListTrash"],
+      });
+      queryClient.invalidateQueries({ queryKey: ["getStatisticTicket"] });
+      clearSelection();
+      show(t("messages:success.delete_ticket"));
+    },
+    onError: () => {
+      show(t("messages:error.delete_ticket"), { isError: true });
+    },
+  });
+
   const [activeButtonIndex, setActiveButtonIndex] = useState("TRASH");
   const listSort = [
     "ticketId",
@@ -126,90 +192,35 @@ const TrashTicket: FC<TrashTicketProps> = () => {
     });
   }, []);
 
-  const { run: restoreTicketApi } = useJob((payload: BaseDeleteList) => {
-    return TicketRepository()
-      .restore(payload)
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            getListTrashApi(filterData);
-            getStatisticTicket();
-            clearSelection();
-            show(t("messages:success.restore_ticket"));
-          }
-        })
-      );
-  });
-  const { run: getStatisticTicket } = useJob(() => {
-    return TicketRepository()
-      .getStatistic()
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            setStatistic(data);
-          }
-        })
-      );
-  });
-  const { run: getListTrashApi, processing: loadingList } = useJob(
-    (payload: GetListTicketRequest) => {
-      return TicketRepository()
-        .getListTrash(payload)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              const tickets = data.data.map((item) => ({
-                ...item,
-                id: item._id,
-              }));
-              setTickets(tickets);
-              setMeta(data.metadata);
-            }
-          })
-        );
-    }
-  );
-  const { run: forceDeleteApi } = useJob((payload: BaseDeleteList) => {
-    return TicketRepository()
-      .deletePermanently(payload)
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            getListTrashApi(filterData);
-            getStatisticTicket();
-            clearSelection();
-            show(t("messages:success.delete_ticket"));
-          }
-        })
-      );
+  const deleteAll = useMutation({
+    mutationFn: () => deleteAllTicket(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["getListTrash"],
+      });
+      queryClient.invalidateQueries({ queryKey: ["getStatisticTicket"] });
+
+      clearSelection();
+
+      show(t("messages:success.delete_ticket"));
+    },
+    onError: () => {
+      show(t("messages:error.delete_ticket"), { isError: true });
+    },
   });
 
-  const { run: deleteAllTicket } = useJob(() => {
-    return TicketRepository()
-      .deletePermanentlyAll()
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            getListTrashApi(filterData);
-            getStatisticTicket();
-            clearSelection();
-            show(t("messages:success.delete_ticket"));
-          }
-        })
-      );
-  });
   const handleRestore = (ids: string[]): void => {
-    restoreTicketApi({
+    restore.mutate({
       ids,
     });
   };
   const handleDelete = (ids: string[]) => {
-    forceDeleteApi({
+    forceDelete.mutate({
       ids,
     });
   };
   const handleDeleteAll = () => {
-    deleteAllTicket();
+    deleteAll.mutate();
   };
   const rowMarkup = tickets.map(
     (
@@ -296,14 +307,6 @@ const TrashTicket: FC<TrashTicketProps> = () => {
       </IndexTable.Row>
     )
   );
-
-  useEffect(() => {
-    getStatisticTicket();
-  }, []);
-
-  useDeepEffect(() => {
-    getListTrashApi(filterData);
-  }, [filterData]);
 
   const css = `
   .Polaris-Page-Header__RightAlign ,.Polaris-Page-Header__PrimaryActionWrapper{

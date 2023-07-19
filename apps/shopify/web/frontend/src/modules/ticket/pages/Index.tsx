@@ -13,22 +13,11 @@ import {
 } from "@moose-desk/core";
 import {
   Agent,
-  AgentRepository,
-  BaseListTicketFilterRequest,
-  Customer,
-  CustomerRepository,
-  GetListAgentRequest,
-  GetListCustomerRequest,
-  GetListTagRequest,
   GetListTicketRequest,
   ScreenType,
   statusOptions,
   StatusTicket,
-  Tag,
-  TagRepository,
-  Ticket,
   TicketRepository,
-  TicketStatistic,
   UpdateTicket,
 } from "@moose-desk/repo";
 import {
@@ -43,7 +32,7 @@ import {
   Text,
   useIndexResourceState,
 } from "@shopify/polaris";
-import { map } from "rxjs";
+import { catchError, map, of } from "rxjs";
 
 import { useToast } from "@shopify/app-bridge-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -64,9 +53,17 @@ import useGlobalData from "src/hooks/useGlobalData";
 import useScreenType from "src/hooks/useScreenType";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { HeaderListTicket } from "src/modules/ticket/components/HeaderListTicket";
-import { useExportTicket } from "src/modules/ticket/helper/api";
+import {
+  getListAgentApi,
+  getListCustomerApi,
+  getListTicketApi,
+  getStatisticTicket,
+  getTagsTicket,
+  useExportTicket,
+} from "src/modules/ticket/helper/api";
 import UilImport from "~icons/uil/import";
 
+import { useQuery } from "react-query";
 import useDeepEffect from "src/hooks/useDeepEffect";
 import { ExportTicket } from "src/modules/ticket/components/ExportTicket";
 import useTicketSelected from "src/modules/ticket/store/useTicketSelected";
@@ -119,37 +116,132 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const [filterData, setFilterData] = useState<GetListTicketRequest>(
     defaultFilter()
   );
+  const { data: dataStatistic, refetch: refetchStatistic } = useQuery({
+    queryKey: ["getStatisticTicket"],
+    queryFn: () => getStatisticTicket(),
+    retry: 3,
+    onError: () => {
+      show(t("messages:error.get_ticket"), { isError: true });
+    },
+  });
+  const statistic = useMemo(() => {
+    if (dataStatistic) {
+      return dataStatistic;
+    }
+    return {
+      statusCode: 200,
+      data: {
+        OPEN: 0,
+        PENDING: 0,
+        RESOLVED: 0,
+        TRASH: 0,
+        NEW: 0,
+      },
+    };
+  }, [dataStatistic]);
+
+  const { data: dataCustomers } = useQuery({
+    queryKey: ["getCustomers"],
+    queryFn: () => getListCustomerApi({ page: 1, limit: 500 }),
+    retry: 3,
+    staleTime: 10000,
+    onError: () => {
+      // message.error(t("messages:error.get_customer"));
+      show(t("messages:error.get_customer"), { isError: true });
+    },
+  });
+  const customers = useMemo(() => {
+    if (!dataCustomers) return [];
+    return dataCustomers;
+  }, [dataCustomers]);
 
   const [screenType, screenWidth] = useScreenType();
+  const { data: dataAgents } = useQuery({
+    queryKey: [
+      "getAgents",
+      {
+        page: 1,
+        limit: 500,
+      },
+    ],
+    queryFn: () =>
+      getListAgentApi({
+        page: 1,
+        limit: 500,
+      }),
+    staleTime: 10000,
+    retry: 1,
 
-  const [agents, setAgents] = useState<Agent[]>([]);
+    onError: () => {
+      show(t("messages:error.get_agent"), { isError: true });
+    },
+  });
 
-  const prevFilter = usePrevious<any>(filterData);
-  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const agents = useMemo(() => {
+    if (!dataAgents) return [];
+    return dataAgents.filter((item) => item.isActive && item.emailConfirmed);
+  }, [dataAgents]);
+
+  const { data: dataTags } = useQuery({
+    queryKey: [
+      "getTagsTicket",
+      {
+        page: 1,
+        limit: 500,
+      },
+    ],
+    queryFn: () =>
+      getTagsTicket({
+        page: 1,
+        limit: 500,
+      }),
+    staleTime: 10000,
+    retry: 1,
+
+    onError: () => {
+      show(t("messages:error.get_tag"), { isError: true });
+    },
+  });
+  const tags = useMemo(() => {
+    if (!dataTags) return [];
+    return dataTags;
+  }, [dataTags]);
+
+  const [mappingFilter, setMappingFilter] = useState<any>(filterData);
+
+  const {
+    data: dataTicket,
+    isLoading: loadingFilter,
+    refetch: refetchTicket,
+  } = useQuery({
+    queryKey: ["getListTickets", mappingFilter],
+    queryFn: () => getListTicketApi(mappingFilter),
+    onError: () => {
+      show(t("messages:error.get_ticket"), { isError: true });
+    },
+  });
+  const tickets = useMemo(() => {
+    if (dataTicket?.data)
+      return dataTicket.data.map((item) => ({ ...item, id: item._id }));
+    return [];
+  }, [dataTicket]);
+  const meta = useMemo(() => {
+    if (dataTicket?.metadata) return dataTicket.metadata;
+    return undefined;
+  }, [dataTicket]);
   const {
     selectedResources,
     allResourcesSelected,
     handleSelectionChange,
     removeSelectedResources,
+    clearSelection,
   } = useIndexResourceState(tickets);
   const [filterObject, setFilterObject] = useState<FilterObject | null>(null);
   const { subDomain } = useSubdomain();
   const { timezone }: any = useGlobalData(false, subDomain || "");
-  const [meta, setMeta] = useState<any>();
-  const [customers, setCustomers] = useState<Customer[]>([]);
-  const [tags, setTags] = useState<Tag[]>([]);
+
   const [showTitle, setShowTitle] = useState(true);
 
-  const [statistic, setStatistic] = useState<TicketStatistic>({
-    statusCode: 200,
-    data: {
-      OPEN: 0,
-      PENDING: 0,
-      RESOLVED: 0,
-      TRASH: 0,
-      NEW: 0,
-    },
-  });
   const [active, setActive] = useState(false);
 
   const [idDelete, setIdDelete] = useState<string | null>(null);
@@ -181,123 +273,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const getTicketSelected = useTicketSelected(
     (state) => state.getTicketSelected
   );
-  const { run: getListCustomerApi } = useJob(
-    (payload: GetListCustomerRequest) => {
-      return CustomerRepository()
-        .getList(payload)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              const tags = data.data.map((item) => ({
-                ...item,
-                id: item._id,
-              }));
-              setCustomers((prevTags) => {
-                return [...prevTags, ...tags];
-              });
 
-              if (data.metadata.totalPage > (payload.page as number)) {
-                getListCustomerApi({
-                  page: (payload.page as number) + 1,
-                  limit: payload.limit,
-                });
-              }
-            } else {
-              // message.error("Get data ticket failed");
-            }
-          })
-        );
-    }
-  );
-  const { run: getListAgentApi } = useJob((payload: GetListAgentRequest) => {
-    return AgentRepository()
-      .getList(payload)
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            const tags = data.data
-              .filter((item) => item.isActive && item.emailConfirmed)
-
-              .map((item) => ({
-                ...item,
-                id: item._id,
-              }));
-            setAgents((prevTags) => {
-              return [...prevTags, ...tags];
-            });
-
-            if (data.metadata.totalPage > (payload.page as number)) {
-              getListAgentApi({
-                page: (payload.page as number) + 1,
-                limit: payload.limit,
-              });
-            }
-          } else {
-            // message.error("Get data ticket failed");
-          }
-        })
-      );
-  });
-  const { run: getStatisticTicket } = useJob(() => {
-    return TicketRepository()
-      .getStatistic()
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            setStatistic(data);
-          } else {
-            // message.error("Get data ticket failed");
-          }
-        })
-      );
-  });
-
-  const { run: getListTagApi } = useJob((payload: GetListTagRequest) => {
-    return TagRepository()
-      .getList(payload)
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            const tags = data.data.map((item) => ({
-              ...item,
-              id: item._id,
-            }));
-            setTags((prevTags) => {
-              return [...prevTags, ...tags];
-            });
-
-            if (data.metadata.totalPage > (payload.page as number)) {
-              getListTagApi({
-                page: (payload.page as number) + 1,
-                limit: payload.limit,
-              });
-            }
-          } else {
-            // message.error("Get data ticket failed");
-          }
-        })
-      );
-  });
-  const { run: getListTicketFilter, processing: loadingFilter } = useJob(
-    (payload: BaseListTicketFilterRequest) => {
-      return TicketRepository()
-        .getListFilter(payload)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              const tickets = data.data.map((item) => ({
-                ...item,
-                id: item._id,
-              }));
-              setTickets(tickets);
-              setMeta(data.metadata);
-            } else {
-              show(t("messages:error.get_ticket"), { isError: true });
-            }
-          })
-        );
-    }
-  );
   const { run: updateTicketApi } = useJob((data: UpdateTicket) => {
     return TicketRepository()
       .update(data)
@@ -305,8 +281,15 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         map(({ data }) => {
           if (data.statusCode === 200) {
             show(t("messages:success.update_ticket"));
-            getStatisticTicket();
+            // getStatisticTicket();
+            refetchStatistic();
+            refetchTicket();
+            clearSelection();
           }
+        }),
+        catchError((err) => {
+          show(t("messages:error.update_ticket"), { isError: true });
+          return of(err);
         })
       );
   });
@@ -317,31 +300,24 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       })
       .pipe(
         map(({ data }) => {
-          // message.loading.hide();
           if (data.statusCode === 200) {
             show(t("messages:success.delete_ticket"));
-            getStatisticTicket();
-            if (filterObject) {
-              getListTicketFilter({ ...filterData, ...filterObject });
-              return;
-            }
-            getListTicketFilter(filterData);
-            setFilterData((old: any) => {
-              return {
-                ...old,
-                page: 1,
-              };
-            });
-          } else {
-            show(t("messages:error.delete_ticket"), { isError: true });
+            // getStatisticTicket();
+            refetchStatistic();
+            refetchTicket();
+            clearSelection();
           }
+        }),
+        catchError((err) => {
+          show(t("messages:error.delete_ticket"), { isError: true });
+          return of(err);
         })
       );
   });
 
   useDeepEffect(() => {
     if (statusFromTrash) {
-      getListTicketFilter({ ...filterData, status: statusFromTrash });
+      setMappingFilter({ ...filterData, status: statusFromTrash });
       setStatusFromTrash("");
       setFilterObject({
         status: statusFromTrash,
@@ -354,10 +330,11 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       return;
     }
     if (filterObject) {
-      getListTicketFilter({ ...filterData, ...filterObject });
+      setMappingFilter({ ...filterData, ...filterObject });
+
       return;
     }
-    getListTicketFilter(filterData);
+    setMappingFilter({ ...filterData });
   }, [filterData]);
 
   const handleResetModal = useCallback(() => {
@@ -368,10 +345,10 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     setIdDelete(id);
   }, []);
   const handleApply = (values: any) => {
-    console.log({ values });
-    getListTicketFilter({
-      page: 1,
-      limit: 10,
+    setMappingFilter({
+      ...filterData,
+      // page: 1,
+      // limit: 10,
       priority: values.priority || undefined,
       status: values.status || undefined,
       customer: values.customer || undefined,
@@ -393,21 +370,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       openModalDelete();
     }
   }, [idDelete]);
-  useEffect(() => {
-    getListCustomerApi({
-      page: 1,
-      limit: 500,
-    });
-    getListTagApi({
-      page: 1,
-      limit: 500,
-    });
-    getListAgentApi({
-      page: 1,
-      limit: 500,
-    });
-    getStatisticTicket();
-  }, []);
 
   useEffect(() => {
     const findTicket = tickets.filter((item) =>
@@ -489,6 +451,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         createdViaWidget,
         fromEmail,
         toEmails,
+        status,
       },
       index
     ) => (
@@ -506,7 +469,11 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
               navigate(generatePath(TicketRoutePaths.Detail, { id: _id }));
             }}
           >
-            <Text variant="bodyMd" fontWeight="bold" as="span">
+            <Text
+              variant="bodyMd"
+              fontWeight={status === StatusTicket.NEW ? "bold" : "medium"}
+              as="span"
+            >
               {ticketId}
             </Text>
           </div>
@@ -519,7 +486,11 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                 navigate(generatePath(TicketRoutePaths.Detail, { id: _id }));
               }}
             >
-              <Text variant="bodyMd" fontWeight="bold" as="span">
+              <Text
+                variant="bodyMd"
+                fontWeight={status === StatusTicket.NEW ? "bold" : "medium"}
+                as="span"
+              >
                 {subject}
               </Text>
             </div>

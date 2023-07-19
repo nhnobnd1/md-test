@@ -9,9 +9,10 @@ import {
   useUser,
 } from "@moose-desk/core";
 import { AccountRepository } from "@moose-desk/repo";
-import { Layout, Menu } from "antd";
+import { Badge, Layout, Menu } from "antd";
 import classNames from "classnames";
 import { Suspense, useCallback, useMemo, useState } from "react";
+import { useQuery } from "react-query";
 import { map } from "rxjs";
 import Images from "src/assets/images";
 import { Loading } from "src/components/Loading";
@@ -30,6 +31,7 @@ import GroupRoutePaths from "src/modules/group/routes/paths";
 import ReportRoutePaths from "src/modules/report/routes/paths";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
+import { getStatisticTicket } from "src/modules/ticket/helper/api";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import { useAppConfig } from "src/providers/AppConfigProviders";
 import RoutePaths from "src/routes/paths";
@@ -46,6 +48,30 @@ export const AppLayout = () => {
   const [screenType, screenWidth] = useScreenType();
   const { isMobile } = useViewport(MediaScreen.LG);
   const user = useUser();
+  const { data: dataStatistic } = useQuery({
+    queryKey: ["getStatisticTicket"],
+    queryFn: () => getStatisticTicket(),
+    retry: 3,
+
+    onError: () => {
+      // message.error(t("messages:error.get_ticket"));
+    },
+  });
+  const statistic = useMemo(() => {
+    if (dataStatistic) {
+      return dataStatistic;
+    }
+    return {
+      statusCode: 200,
+      data: {
+        OPEN: 0,
+        PENDING: 0,
+        RESOLVED: 0,
+        TRASH: 0,
+        NEW: 0,
+      },
+    };
+  }, [dataStatistic]);
   const caseTopMenu = useMemo<any["items"]>(() => {
     return [
       {
@@ -60,7 +86,20 @@ export const AppLayout = () => {
       },
       {
         key: `case-${TicketRoutePaths.Index}`,
-        label: "Tickets",
+        label: (
+          <div className="flex items-center gap-2 justify-between">
+            Tickets{" "}
+            {statistic.data.NEW > 0 ? (
+              <Badge
+                count={statistic.data.NEW}
+                color="rgba(242, 117, 34, 1)"
+                overflowCount={100000}
+              />
+            ) : (
+              <></>
+            )}
+          </div>
+        ),
         link: TicketRoutePaths.Index,
         icon: <Icon name="ticket" />,
         onClick: () => {
@@ -250,6 +289,7 @@ export const AppLayout = () => {
     isMobile,
     // screenType,
     isAdmin,
+    statistic.data.NEW,
   ]);
 
   // useEffect(() => {

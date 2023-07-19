@@ -1,8 +1,4 @@
-import {
-  IconSource,
-  NavigationItemProps,
-  SubNavigationItem,
-} from "@shopify/polaris";
+import { NavigationItemProps, SubNavigationItem } from "@shopify/polaris";
 import {
   BehaviorMinor,
   CustomersMinor,
@@ -30,130 +26,127 @@ export interface SubNavigation extends SubNavigationItem {
 
 export interface NavigationItems
   extends Omit<NavigationItemProps, "subNavigationItems" | "url"> {
-  subNavigationItems?: SubNavigation[] & { icon?: IconSource };
+  subNavigationItems?: any[];
   tabBarNavigation?: SubNavigation[];
   url: string;
 }
 
-const caseNavigation: NavigationItems[] = [
-  {
-    label: "Dashboard",
-    url: DashboardRoutePaths.Index,
-    icon: () => <HomeMinor />,
-  },
-  {
-    label: "Tickets",
-    url: TicketRoutePaths.Index,
-    icon: () => <ReadTimeMinor />,
-  },
-  {
-    label: "Customers",
-    url: CustomersRoutePaths.Index,
-    icon: () => <CustomersMinor />,
-  },
-  // {
-  //   label: "Organization",
-  //   url: "/organization",
-  //   icon: () => <FinancesMinor />,
-  // },
-  {
-    label: "Reporting",
-    url: ReportRoutePaths.Overview,
-    icon: () => <ReportMinor />,
-    subNavigationItems: [
-      {
-        label: "Overview",
-        url: ReportRoutePaths.Overview,
-      },
-      {
-        label: "By Agent",
-        url: ReportRoutePaths.ByAgent,
-      },
-      {
-        label: "By Tags",
-        url: ReportRoutePaths.ByTags,
-      },
-    ],
-    tabBarNavigation: [
-      // {
-      //   label: "Security",
-      //   url: SettingRoutePaths.AccountSecurity.Security.Index,
-      // },
-      // {
-      //   label: "Access Manager",
-      //   url: SettingRoutePaths.AccountSecurity.AccessManager.Index,
-      // },
-    ],
-  },
-  {
-    label: "Settings",
-    url: AgentRoutePaths.Index,
-    icon: () => <SettingsMinor />,
-    subNavigationItems: [
-      // { label: "General Settings", url: "/settings" },
-      // { label: "Account Profile", url: "/settings/account-profile" },
+export const getCaseNavigation = (badge = ""): NavigationItems[] => {
+  return [
+    {
+      label: "Dashboard",
+      url: DashboardRoutePaths.Index,
+      icon: () => <HomeMinor />,
+    },
+    {
+      label: "Tickets",
+      url: TicketRoutePaths.Index,
+      icon: () => <ReadTimeMinor />,
+      badge: badge === "0" ? undefined : badge,
+    },
+    {
+      label: "Customers",
+      url: CustomersRoutePaths.Index,
+      icon: () => <CustomersMinor />,
+    },
 
-      {
-        label: "General Settings",
-        url: SettingChannelRoutePaths.Index,
-        icon: () => <SettingsMajor />,
-        tabBarNavigation: [
-          {
-            label: "Channels",
-            url: SettingChannelRoutePaths.Index,
-          },
-          {
-            label: "Business Hours",
-            url: SettingRoutePaths.GenaralSetting.BusinessHours.Index,
-          },
-          // {
-          //   label: "Security",
-          //   url: SettingRoutePaths.AccountSecurity.Security.Index,
-          // },
-          // {
-          //   label: "Access Manager",
-          //   url: SettingRoutePaths.AccountSecurity.AccessManager.Index,
-          // },
-        ],
-      },
-      {
-        label: "People",
-        url: AgentRoutePaths.Index,
-        icon: () => <ProfileMinor />,
-        tabBarNavigation: [
-          { label: "Agents", url: AgentRoutePaths.Index },
-          { label: "Groups", url: GroupsRoutePaths.Index },
-        ],
-      },
-      {
-        label: "Workdesk",
-        url: SettingRoutePaths.Workdesk.Tag.Index,
-        icon: () => <BehaviorMinor />,
-        tabBarNavigation: [
-          { label: "Tags", url: SettingRoutePaths.Workdesk.Tag.Index },
-        ],
-      },
-      {
-        label: "Account & Security",
-        url: SettingRoutePaths.AccountSecurity.Profile.Index,
-        icon: () => <FraudProtectMinor />,
-        tabBarNavigation: [
-          {
-            label: "Profile",
-            url: SettingRoutePaths.AccountSecurity.Profile.Index,
-          },
-          {
-            label: "Security",
-            url: SettingRoutePaths.AccountSecurity.Security.Index,
-          },
-          {
-            label: "Access Manager",
-            url: SettingRoutePaths.AccountSecurity.AccessManager.Index,
-          },
-        ],
-      },
-    ],
-  },
-];
+    {
+      label: "Reporting",
+      url: ReportRoutePaths.Overview,
+      icon: () => <ReportMinor />,
+      subNavigationItems: [
+        {
+          label: "Overview",
+          url: ReportRoutePaths.Overview,
+        },
+        {
+          label: "By Agent",
+          url: ReportRoutePaths.ByAgent,
+        },
+        {
+          label: "By Tags",
+          url: ReportRoutePaths.ByTags,
+        },
+      ],
+      tabBarNavigation: [
+        // {
+        //   label: "Security",
+        //   url: SettingRoutePaths.AccountSecurity.Security.Index,
+        // },
+        // {
+        //   label: "Access Manager",
+        //   url: SettingRoutePaths.AccountSecurity.AccessManager.Index,
+        // },
+      ],
+    },
+    {
+      label: "Settings",
+      url: AgentRoutePaths.Index,
+      icon: () => <SettingsMinor />,
+      subNavigationItems: [
+        // { label: "General Settings", url: "/settings" },
+        // { label: "Account Profile", url: "/settings/account-profile" },
 
-export default caseNavigation;
+        {
+          label: "General Settings",
+          url: SettingChannelRoutePaths.Index,
+          icon: () => <SettingsMajor />,
+          tabBarNavigation: [
+            {
+              label: "Channels",
+              url: SettingChannelRoutePaths.Index,
+            },
+            {
+              label: "Business Hours",
+              url: SettingRoutePaths.GenaralSetting.BusinessHours.Index,
+            },
+            // {
+            //   label: "Security",
+            //   url: SettingRoutePaths.AccountSecurity.Security.Index,
+            // },
+            // {
+            //   label: "Access Manager",
+            //   url: SettingRoutePaths.AccountSecurity.AccessManager.Index,
+            // },
+          ],
+        },
+        {
+          label: "People",
+          url: AgentRoutePaths.Index,
+          icon: () => <ProfileMinor />,
+          tabBarNavigation: [
+            { label: "Agents", url: AgentRoutePaths.Index },
+            { label: "Groups", url: GroupsRoutePaths.Index },
+          ],
+        },
+        {
+          label: "Workdesk",
+          url: SettingRoutePaths.Workdesk.Tag.Index,
+          icon: () => <BehaviorMinor />,
+          tabBarNavigation: [
+            { label: "Tags", url: SettingRoutePaths.Workdesk.Tag.Index },
+          ],
+        },
+        {
+          label: "Account & Security",
+          url: SettingRoutePaths.AccountSecurity.Profile.Index,
+          icon: () => <FraudProtectMinor />,
+          tabBarNavigation: [
+            {
+              label: "Profile",
+              url: SettingRoutePaths.AccountSecurity.Profile.Index,
+            },
+            {
+              label: "Security",
+              url: SettingRoutePaths.AccountSecurity.Security.Index,
+            },
+            {
+              label: "Access Manager",
+              url: SettingRoutePaths.AccountSecurity.AccessManager.Index,
+            },
+          ],
+        },
+      ],
+    },
+  ];
+};

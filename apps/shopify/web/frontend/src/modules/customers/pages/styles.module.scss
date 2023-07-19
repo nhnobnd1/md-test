@@ -45,33 +45,27 @@
     }
 }
 .btnSync {
+  width: 100%;
   button {
     border: none;
+    width: 100%;
   }
 }
-.importButton {
-  // margin-left: 8px;
-  font-weight: 500;
-  :global {
-    .Polaris-Labelled--hidden {
-      height: 36px !important;
-    }
-    .Polaris-DropZone {
-      height: 36px !important;
-      min-height: unset;
-      padding: 0 16px;
-      &__Container {
-        display: flex;
-        align-items: center;
-      }
-    }
-    .Polaris-DropZone--hasOutline:not(.Polaris-DropZone--focused)::after {
-      border: none;
-
-      border-radius: 4px;
-    }
+:global {
+  .Polaris-DropZone__Container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 .moreOption {
   margin-left: 8px;
+}
+.wrapDropzone {
+  padding: 20px;
+}
+.groupButtonFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }

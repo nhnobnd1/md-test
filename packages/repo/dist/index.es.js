@@ -8373,7 +8373,7 @@ const Wa = I0(
       return M.get(`/all-tickets/${b}`, z);
     },
     syncShopifyCustomers(M) {
-      return M.post("/sync-customers-shopify", {});
+      return M.post("/sync-from-shopify", {});
     },
     checkingSyncImportCustomer(M) {
       return M.get("/check-status-sync-or-import");

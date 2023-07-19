@@ -23,7 +23,7 @@ import {
 } from "@moose-desk/repo";
 import { Select as AntSelect, Card, Divider, Skeleton } from "antd";
 import moment from "moment";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import useToggleGlobal from "@moose-desk/core/hooks/useToggleGlobal";
@@ -225,11 +225,11 @@ const DetailTicketForm = () => {
   const { state: loadingApi, startLoading, stopLoading } = useLoading();
   const endPageRef = useRef<any>(null);
 
-  useEffect(() => {
-    if (!loadingApi) {
-      endPageRef?.current?.scrollIntoView();
-    }
-  }, [loadingApi]);
+  // useEffect(() => {
+  //   if (!loadingApi) {
+  // endPageRef?.current?.scrollIntoView();
+  //   }
+  // }, [loadingApi]);
   const { data: dataEmailIntegration } = useQuery({
     queryKey: ["getListEmailIntegration"],
     queryFn: () => getListEmailIntegration({ page: 1, limit: 500 }),
@@ -419,6 +419,7 @@ const DetailTicketForm = () => {
           if (data.statusCode === 200) {
             stopLoading();
             message.success(t("messages:success.update_ticket"));
+            queryClient.invalidateQueries("getStatisticTicket");
           }
         }),
         catchError((err) => {

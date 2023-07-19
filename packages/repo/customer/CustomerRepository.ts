@@ -36,7 +36,7 @@ export const CustomerRepository = createRepository(
       return api.get(`/all-tickets/${id}`, params);
     },
     syncShopifyCustomers(api) {
-      return api.post("/sync-customers-shopify", {});
+      return api.post("/sync-from-shopify", {});
     },
     checkingSyncImportCustomer(api) {
       return api.get("/check-status-sync-or-import");

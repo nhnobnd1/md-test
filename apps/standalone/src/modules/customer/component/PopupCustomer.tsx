@@ -3,6 +3,7 @@ import { ModalProps, Tabs } from "antd";
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQueryClient } from "react-query";
+
 import { MDButton } from "src/components/UI/Button/MDButton";
 import Form from "src/components/UI/Form/Form";
 import { Header } from "src/components/UI/Header";
@@ -31,7 +32,6 @@ export const PopupCustomer = ({
   const queryClient = useQueryClient();
   const { storeId } = useStore();
   const message = useMessage();
-
   const notification = useNotification();
   const { t } = useTranslation();
   const [activeKey, setActiveKey] = useState("1");
@@ -39,6 +39,8 @@ export const PopupCustomer = ({
     mutationFn: (payload: any) => createCustomer(payload),
     onSuccess: async () => {
       await queryClient.invalidateQueries(QUERY_KEY.LIST_CUSTOMER);
+      await queryClient.invalidateQueries("getCustomers");
+
       form.resetFields();
       onCancel && onCancel();
       message.loading.hide();
