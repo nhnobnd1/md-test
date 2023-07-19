@@ -3,6 +3,9 @@
 .groupTopPage {
   .buttonAdd {
     margin-left: 12px;
+    @include mq(md, 'max') {
+      margin-left: 8px;
+    }
   }
 }
 
@@ -54,3 +57,45 @@
     // justify-content: center;
   }
 }
+.wrapMoreActions {
+  margin-left: 12px;
+  
+    @include mq(md, 'max') {
+      margin-left: 8px;
+    }
+}
+.groupOptions {
+  display: flex;
+  flex-direction: column;
+}
+.syncBtn {
+  border: none;
+}
+.syncingBtn {
+  display: flex;
+  align-items: center;
+  .infoPicker {
+    margin-left: 5px;
+    height: fit-content;
+  }
+}
+.wrapEmpty {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.groupButtonTableEmpty {
+  display: flex;
+  align-items: center;
+}
+
+.fileName {
+    padding: 2px 4px;
+    background-color: #faad14;
+    color: $white-color;
+    border-radius: 5px;
+    width: fit-content;
+    margin: 0 auto;
+  }
+

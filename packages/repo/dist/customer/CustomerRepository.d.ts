@@ -7,6 +7,9 @@ export declare const CustomerRepository: () => {
     create: (data: CreateCustomerRequest) => import("rxjs").Observable<import("axios").AxiosResponse<CreateCustomerResponse, any>>;
     update: (id: string, data: import("./Customer").Customer) => import("rxjs").Observable<import("axios").AxiosResponse<UpdateCustomerResponse, any>>;
     getListTicket: (id: string, params: import("./Customer").BaseListCustomerRequest) => import("rxjs").Observable<import("axios").AxiosResponse<any, any>>;
+    syncShopifyCustomers: () => import("rxjs").Observable<import("axios").AxiosResponse<any, any>>;
+    checkingSyncImportCustomer: () => import("rxjs").Observable<import("axios").AxiosResponse<any, any>>;
+    importCSV: (data: any) => import("rxjs").Observable<import("axios").AxiosResponse<any, any>>;
 };
 export default CustomerRepository;
 //# sourceMappingURL=CustomerRepository.d.ts.map

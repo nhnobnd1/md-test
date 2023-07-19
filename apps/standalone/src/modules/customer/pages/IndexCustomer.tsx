@@ -34,6 +34,7 @@ import {
   getListCustomer,
   getOneCustomer,
 } from "src/modules/customer/api/api";
+import { MoreActions } from "src/modules/customer/component/MoreActions";
 import PopupCustomer from "src/modules/customer/component/PopupCustomer";
 import { QUERY_KEY } from "src/modules/customer/helper/constant";
 import styles from "./style.module.scss";
@@ -48,6 +49,7 @@ const defaultFilter: () => GetListCustomerRequest = () => ({
 });
 const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
   const message = useMessage();
+
   const notification = useNotification();
   const navigate = useNavigate();
   const { state: isSearch, toggle: onToggleSearch } = useToggle(false);
@@ -92,6 +94,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
       message.error(t("messages:error.get_customer"));
     },
   });
+
   const { mutate: deleteCustomerMutate } = useMutation({
     mutationFn: (payload: { ids: string[] }) => deleteCustomer(payload),
     onSuccess: () => {
@@ -231,6 +234,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
     },
     []
   ) as TableProps<Customer>["onChange"];
+
   return (
     <div>
       <PopupCustomer
@@ -256,6 +260,9 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
                 <MDSearchInput onTypeSearch={handleSearchInput} />
               </div>
             )}
+            <div className={styles.wrapMoreActions}>
+              <MoreActions />
+            </div>
             <div
               className={classNames(styles.buttonAdd, "md-btn md-btn-primary")}
             >
@@ -287,6 +294,59 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
             onChange={handleChangeTable}
             columns={columns}
             scroll={{ x: 1024 }}
+            // locale={{
+            //   emptyText: (
+            //     <div className={styles.wrapEmpty}>
+            //       <Empty
+            //         image={Empty.PRESENTED_IMAGE_SIMPLE}
+            //         description="Sorry!, There is no records matched with your search
+            //       criteria."
+            //       />
+            //       <div className={styles.groupButtonTableEmpty}>
+            //         <Dragger
+            //           height={isMobile ? 32 : 40}
+            //           className={styles.uploadBtn}
+            //           name="file"
+            //           accept=".csv, .xlsx"
+            //           onChange={handleUploadFile}
+            //           showUploadList={false}
+            //           beforeUpload={(file: any) => {
+            //             return false;
+            //           }}
+            //           disabled={syncStatus}
+            //         >
+            //           {syncStatus ? (
+            //             <div className="d-flex align-center">
+            //               <span>Processing</span>
+            //               <Tooltip
+            //                 title={
+            //                   "Currently in the process of syncing Shopify customer data or importing data from a file."
+            //                 }
+            //               >
+            //                 <div className={styles.infoPicker}>
+            //                   <InfoCircleTwoTone twoToneColor="#FA7D00" />
+            //                 </div>
+            //               </Tooltip>
+            //             </div>
+            //           ) : (
+            //             <MDButton>Import CSV</MDButton>
+            //           )}
+            //         </Dragger>
+            //         <div
+            //           className={classNames(
+            //             styles.buttonAdd,
+            //             "md-btn md-btn-primary"
+            //           )}
+            //           style={{ marginLeft: 15 }}
+            //         >
+            //           <ButtonAdd onClick={handleAddCustomer}>
+            //             Add customer
+            //           </ButtonAdd>
+            //         </div>
+            //       </div>
+            //     </div>
+            //   ),
+            // }}
           />
         )}
 

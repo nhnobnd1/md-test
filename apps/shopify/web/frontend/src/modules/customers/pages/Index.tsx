@@ -37,6 +37,7 @@ import {
   getOneCustomer,
 } from "src/modules/customers/api/api";
 import { CustomModal } from "src/modules/customers/component/Modal";
+import MoreOption from "src/modules/customers/component/MoreOption";
 import styles from "./styles.module.scss";
 const resourceName = {
   singular: "customer",
@@ -51,6 +52,10 @@ export default function CustomerIndexPage() {
   const navigate = useNavigate();
   const [screenType, screenWidth] = useScreenType();
   const isMobile = Boolean(screenWidth < MediaScreen.MD);
+  const isTablet = Boolean(
+    screenWidth >= MediaScreen.MD && screenWidth <= MediaScreen.LG
+  );
+
   const { t } = useTranslation();
   const { show } = useToast();
   const [searchParams] = useSearchParams();
@@ -106,7 +111,6 @@ export default function CustomerIndexPage() {
   const convertCustomerData = useMemo(() => {
     return listCustomers?.data;
   }, [listCustomers]);
-
   const rowMarkup = convertCustomerData?.data?.map(
     (records: any, index: number) => (
       <IndexTable.Row id={records?._id} key={records?._id} position={index}>
@@ -189,6 +193,9 @@ export default function CustomerIndexPage() {
                   <Search onTypeSearch={handleSearch} />
                 </div>
               )}
+              <div className={styles.moreOption}>
+                <MoreOption />
+              </div>
               <div
                 className={classNames(
                   styles.buttonAdd,
@@ -210,6 +217,11 @@ export default function CustomerIndexPage() {
             </div>
           </div>
         )}
+        {/* {(isMobile || isTablet) && (
+          <div className={styles.moreOption}>
+            <MoreOption />
+          </div>
+        )} */}
         <ModalDelete
           title="Remove this customer?"
           open={isOpen}
