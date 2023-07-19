@@ -177,7 +177,6 @@ export default function CustomerIndexPage() {
     navigate("/customers");
   };
   const resetData = useCallback(() => {
-    setFilterData(defaultFilter);
     refetchListCustomer();
   }, []);
   return (
