@@ -235,7 +235,6 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
     []
   ) as TableProps<Customer>["onChange"];
   const resetData = useCallback(() => {
-    setFilterData(defaultFilter);
     refetchListCustomer();
   }, []);
   return (
