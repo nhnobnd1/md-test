@@ -3,6 +3,9 @@
 .groupTopPage {
   .buttonAdd {
     margin-left: 12px;
+    @include mq(md, 'max') {
+      margin-left: 8px;
+    }
   }
 }
 
@@ -53,4 +56,46 @@
   @include mq(md, "max") {
     // justify-content: center;
   }
+}
+.wrapMoreActions {
+  margin-left: 12px;
+  
+    @include mq(md, 'max') {
+      margin-left: 8px;
+    }
+}
+.uploadBtn {
+  :global {
+    .ant-upload {
+      padding: 0 !important;
+      border: none;
+      background: $white-color;
+      &:hover {
+        .ant-upload-drag-container {
+          color: $primary;
+        }
+      }
+    }
+  }
+}
+.syncBtn {
+  border: none;
+}
+.syncingBtn {
+  display: flex;
+  align-items: center;
+  .infoPicker {
+    margin-left: 5px;
+    height: fit-content;
+  }
+}
+.wrapEmpty {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.groupButtonTableEmpty {
+  display: flex;
+  align-items: center;
 }

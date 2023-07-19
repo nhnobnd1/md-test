@@ -1,3 +1,4 @@
+import { InfoCircleTwoTone, MoreOutlined } from "@ant-design/icons";
 import {
   PageComponent,
   useNavigate,
@@ -9,7 +10,7 @@ import {
   Customer,
   GetListCustomerRequest,
 } from "@moose-desk/repo";
-import { TableProps } from "antd";
+import { Popover, TableProps, Tooltip, Upload } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import classNames from "classnames";
 import { useCallback, useEffect, useState } from "react";
@@ -30,9 +31,12 @@ import useNotification from "src/hooks/useNotification";
 import { usePermission } from "src/hooks/usePerrmisson";
 import useViewport from "src/hooks/useViewport";
 import {
+  checkingSyncImport,
   deleteCustomer,
   getListCustomer,
   getOneCustomer,
+  importCSV,
+  syncShopifyCustomers,
 } from "src/modules/customer/api/api";
 import PopupCustomer from "src/modules/customer/component/PopupCustomer";
 import { QUERY_KEY } from "src/modules/customer/helper/constant";
@@ -48,6 +52,8 @@ const defaultFilter: () => GetListCustomerRequest = () => ({
 });
 const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
   const message = useMessage();
+  const { Dragger } = Upload;
+
   const notification = useNotification();
   const navigate = useNavigate();
   const { state: isSearch, toggle: onToggleSearch } = useToggle(false);
@@ -92,6 +98,14 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
       message.error(t("messages:error.get_customer"));
     },
   });
+  const { data: status, isLoading: checkingStatus }: any = useQuery({
+    queryKey: ["StatusImportAndSync"],
+    queryFn: () => checkingSyncImport(),
+    // onError: () => {
+    //   message.error("");
+    // },
+  });
+  const syncStatus = status?.data?.data?.isProcessing;
   const { mutate: deleteCustomerMutate } = useMutation({
     mutationFn: (payload: { ids: string[] }) => deleteCustomer(payload),
     onSuccess: () => {
@@ -101,6 +115,44 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
     onError: () => {
       notification.error(t("messages:error.delete_customer"), {
         // description: t("messages:error.delete_customer"),
+        style: {
+          width: 450,
+        },
+      });
+    },
+  });
+  const { mutate: syncCustomerMutate, isLoading: syncing } = useMutation({
+    mutationFn: () => syncShopifyCustomers(),
+    onSuccess: () => {
+      notification.success(
+        "The data synchronization process is currently underway",
+        {
+          description:
+            "You will receive an email once the synchronization process is complete.",
+        }
+      );
+    },
+    onError: () => {
+      notification.error("Failed to sync customers from shopify", {
+        style: {
+          width: 450,
+        },
+      });
+    },
+  });
+  const { mutate: importMutate, isLoading: importing } = useMutation({
+    mutationFn: (payload: any) => importCSV(payload),
+    onSuccess: () => {
+      notification.success(
+        "Currently in the process of importing data from a file",
+        {
+          description:
+            "You will receive an email once the import process is complete.",
+        }
+      );
+    },
+    onError: () => {
+      notification.error("Failed to import from file", {
         style: {
           width: 450,
         },
@@ -212,7 +264,21 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
   const handleDeleteCustomer = (customer: Customer) => {
     deleteCustomerMutate({ ids: [customer._id] });
   };
-
+  const handleUploadFile = ({ file }: any) => {
+    const listAcceptType = [
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "text/csv",
+    ];
+    if (!listAcceptType?.includes(file?.type)) {
+      notification.error("Please import a file in CSV or XLSX format.", {
+        style: {
+          width: 450,
+        },
+      });
+      return;
+    }
+    importMutate(file);
+  };
   const handleChangeTable = useCallback(
     (_: any, __: any, sorter: SorterResult<Customer>) => {
       if (sorter.order && sorter.field) {
@@ -231,6 +297,32 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
     },
     []
   ) as TableProps<Customer>["onChange"];
+  const popoverContent = (
+    <div>
+      <Dragger
+        height={isMobile ? 32 : 40}
+        className={styles.uploadBtn}
+        name="file"
+        accept=".csv, .xlsx"
+        onChange={handleUploadFile}
+        showUploadList={false}
+        beforeUpload={(file: any) => {
+          return false;
+        }}
+      >
+        Import CSV
+      </Dragger>
+      <MDButton
+        className={styles.syncBtn}
+        onClick={() => {
+          syncCustomerMutate();
+        }}
+        loading={syncing}
+      >
+        Sync Customers from Shopify
+      </MDButton>
+    </div>
+  );
   return (
     <div>
       <PopupCustomer
@@ -256,6 +348,34 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
                 <MDSearchInput onTypeSearch={handleSearchInput} />
               </div>
             )}
+            <div className={styles.wrapMoreActions}>
+              <Popover content={popoverContent} trigger="click">
+                <MDButton
+                  icon={isMobile ? <MoreOutlined /> : undefined}
+                  loading={syncStatus}
+                  className={syncStatus ? styles.syncingBtn : ""}
+                >
+                  {isMobile ? (
+                    ""
+                  ) : syncStatus ? (
+                    <div className="d-flex align-center">
+                      <span>Processing</span>
+                      <Tooltip
+                        title={
+                          "Currently in the process of syncing Shopify customer data or importing data from a file."
+                        }
+                      >
+                        <div className={styles.infoPicker}>
+                          <InfoCircleTwoTone twoToneColor="#FA7D00" />
+                        </div>
+                      </Tooltip>
+                    </div>
+                  ) : (
+                    "More actions"
+                  )}
+                </MDButton>
+              </Popover>
+            </div>
             <div
               className={classNames(styles.buttonAdd, "md-btn md-btn-primary")}
             >
@@ -287,6 +407,59 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
             onChange={handleChangeTable}
             columns={columns}
             scroll={{ x: 1024 }}
+            // locale={{
+            //   emptyText: (
+            //     <div className={styles.wrapEmpty}>
+            //       <Empty
+            //         image={Empty.PRESENTED_IMAGE_SIMPLE}
+            //         description="Sorry!, There is no records matched with your search
+            //       criteria."
+            //       />
+            //       <div className={styles.groupButtonTableEmpty}>
+            //         <Dragger
+            //           height={isMobile ? 32 : 40}
+            //           className={styles.uploadBtn}
+            //           name="file"
+            //           accept=".csv, .xlsx"
+            //           onChange={handleUploadFile}
+            //           showUploadList={false}
+            //           beforeUpload={(file: any) => {
+            //             return false;
+            //           }}
+            //           disabled={syncStatus}
+            //         >
+            //           {syncStatus ? (
+            //             <div className="d-flex align-center">
+            //               <span>Processing</span>
+            //               <Tooltip
+            //                 title={
+            //                   "Currently in the process of syncing Shopify customer data or importing data from a file."
+            //                 }
+            //               >
+            //                 <div className={styles.infoPicker}>
+            //                   <InfoCircleTwoTone twoToneColor="#FA7D00" />
+            //                 </div>
+            //               </Tooltip>
+            //             </div>
+            //           ) : (
+            //             <MDButton>Import CSV</MDButton>
+            //           )}
+            //         </Dragger>
+            //         <div
+            //           className={classNames(
+            //             styles.buttonAdd,
+            //             "md-btn md-btn-primary"
+            //           )}
+            //           style={{ marginLeft: 15 }}
+            //         >
+            //           <ButtonAdd onClick={handleAddCustomer}>
+            //             Add customer
+            //           </ButtonAdd>
+            //         </div>
+            //       </div>
+            //     </div>
+            //   ),
+            // }}
           />
         )}
 

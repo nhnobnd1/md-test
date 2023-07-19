@@ -8371,6 +8371,15 @@ const Wa = I0(
     },
     getListTicket(M, b, z) {
       return M.get(`/all-tickets/${b}`, z);
+    },
+    syncShopifyCustomers(M) {
+      return M.post("/sync-customers-shopify", {});
+    },
+    checkingSyncImportCustomer(M) {
+      return M.get("/check-status-sync-or-import");
+    },
+    importCSV(M, b) {
+      return M.post("/import-from-csv", b);
     }
   }
 );
