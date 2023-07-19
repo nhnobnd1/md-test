@@ -19,7 +19,7 @@ import {
 } from "@shopify/polaris";
 import { MobileBackArrowMajor, SearchMinor } from "@shopify/polaris-icons";
 import classNames from "classnames";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 // import { isMobile } from "react-device-detect";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "react-query";
@@ -37,7 +37,7 @@ import {
   getOneCustomer,
 } from "src/modules/customers/api/api";
 import { CustomModal } from "src/modules/customers/component/Modal";
-import MoreOption from "src/modules/customers/component/MoreOption";
+import { MoreOption } from "src/modules/customers/component/MoreOption";
 import styles from "./styles.module.scss";
 const resourceName = {
   singular: "customer",
@@ -176,7 +176,10 @@ export default function CustomerIndexPage() {
     setCustomerData(undefined);
     navigate("/customers");
   };
-
+  const resetData = useCallback(() => {
+    setFilterData(defaultFilter);
+    refetchListCustomer();
+  }, []);
   return (
     <>
       <section className="page-wrap">
@@ -194,7 +197,7 @@ export default function CustomerIndexPage() {
                 </div>
               )}
               <div className={styles.moreOption}>
-                <MoreOption />
+                <MoreOption onReset={resetData} />
               </div>
               <div
                 className={classNames(

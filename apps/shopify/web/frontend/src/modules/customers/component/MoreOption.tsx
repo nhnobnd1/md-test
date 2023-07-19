@@ -13,7 +13,7 @@ import {
   Tooltip,
 } from "@shopify/polaris";
 import { MobileVerticalDotsMajor } from "@shopify/polaris-icons";
-import { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import useScreenType from "src/hooks/useScreenType";
 import {
@@ -23,27 +23,42 @@ import {
 } from "src/modules/customers/api/api";
 import { FileSize } from "src/modules/customers/helper/enum";
 import styles from "../pages/styles.module.scss";
-export default function MoreOption() {
+
+interface IProps {
+  onReset: () => void;
+}
+export const MoreOption = React.memo(({ onReset }: IProps) => {
   const { show } = useToast();
   const { on: handleOpenModalImport, off, state: visible } = useToggle(false);
-
   const [screenType, screenWidth] = useScreenType();
   const isMobile = Boolean(screenWidth <= MediaScreen.LG);
   const [popoverActive, setPopoverActive] = useState(false);
-  const [processing, setProcessing] = useState(false);
+  const [processing, setProcessing] = useState({
+    status: false,
+    count: 0,
+  });
   const [file, setFile] = useState<any>();
-  const {
-    data: status,
-    refetch: refetchingStatus,
-    isLoading: checkingStatus,
-  }: any = useQuery({
+  const { refetch: refetchingStatus }: any = useQuery({
     queryKey: ["StatusImportAndSync"],
     queryFn: () => checkingSyncImport(),
-    refetchInterval: processing ? 5000 : false,
+    refetchInterval: processing.status ? 5000 : false,
     onSuccess: (data: any) => {
-      setProcessing(data?.data?.data.isProcessing);
+      setProcessing((pre) => ({
+        status: data?.data?.data.isProcessing,
+        count: pre.count + 1,
+      }));
     },
   });
+  useEffect(() => {
+    const { status, count } = processing;
+    if (!status && count > 1) {
+      onReset();
+      setProcessing({
+        status: false,
+        count: 0,
+      });
+    }
+  }, [processing]);
   const { mutate: syncCustomerMutate, isLoading: syncing } = useMutation({
     mutationFn: () => syncShopifyCustomers(),
     onSuccess: () => {
@@ -94,7 +109,7 @@ export default function MoreOption() {
   const handleSubmitImport = () => {
     importMutate(file);
   };
-  const activator = processing ? (
+  const activator = processing.status ? (
     <Tooltip content="Currently in the process of syncing Shopify customer data or importing data from a file.">
       <Button
         onClick={togglePopoverActive}
@@ -174,4 +189,4 @@ export default function MoreOption() {
       </Modal>
     </div>
   );
-}
+});
