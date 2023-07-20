@@ -72,6 +72,7 @@ export interface EmailIntegration {
     };
     storeId: string;
     isLive?: boolean;
+    signature?: string;
 }
 export interface GetEmailGoogleAuthRequest {
     subdomainForTest?: string;

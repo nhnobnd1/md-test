@@ -1,6 +1,14 @@
+import { useJob, useLoading } from "@moose-desk/core";
+import { TicketRepository, UploadFileResponse } from "@moose-desk/repo";
 import { Editor, IAllProps } from "@tinymce/tinymce-react";
 import { FormInstance } from "antd";
 import { useCallback, useRef } from "react";
+import { useTranslation } from "react-i18next";
+import { useMutation } from "react-query";
+import { catchError, map, of } from "rxjs";
+import { postImageApi } from "src/components/UI/Editor/api";
+import useMessage from "src/hooks/useMessage";
+
 interface TextEditorProps extends Omit<IAllProps, "onChange" | "value"> {
   value?: any;
   onChange?: (value: any) => void;
@@ -17,13 +25,32 @@ const TextEditor = ({
   ...props
 }: TextEditorProps) => {
   const editorRef = useRef<Editor["editor"] | null>(null);
+  const { state: loading, startLoading, stopLoading } = useLoading();
+  const message = useMessage();
+  const { t } = useTranslation();
 
   const initEditor = useCallback((evt, editor: Editor["editor"]) => {
     editorRef.current = editor;
   }, []);
+  const uploadInsert = useMutation({
+    mutationFn: (data: any) => postImageApi(data),
+    onSuccess: (data: UploadFileResponse) => {
+      message.success(t("messages:success.file_upload"));
+
+      editorRef.current?.insertContent(
+        '<img max-height="200px" src="' + data.data.urls[0] + '" />'
+      );
+    },
+    onError: () => {
+      message.error(t("messages:error.file_upload"));
+    },
+    onSettled: () => {
+      stopLoading();
+    },
+  });
 
   const handleEditorChange = (content: string) => {
-    // onChange && onChange(content);
+    onChange && onChange(content);
     form?.setFieldValue("content", content);
 
     // setContent(content);
@@ -31,6 +58,27 @@ const TextEditor = ({
       setIsChanged(content);
     }
   };
+  const { run: postImage } = useJob((dataSubmit: any, callback = () => {}) => {
+    startLoading();
+    return TicketRepository()
+      .postAttachment(dataSubmit)
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            stopLoading();
+            callback(data.data);
+            message.success(t("messages:success.file_upload"));
+          }
+        }),
+        catchError((err) => {
+          stopLoading();
+
+          message.error(t("messages:error.file_upload"));
+
+          return of(err);
+        })
+      );
+  });
 
   return (
     <div>
@@ -48,8 +96,8 @@ const TextEditor = ({
           toolbar_mode: "sliding",
           fontsize_formats:
             "8pt 9pt 10pt 11pt 12pt 14pt 18pt 24pt 30pt 36pt 48pt 60pt 72pt 96pt",
-          // content_style:
-          //   "body { font-family:Helvetica,Arial,sans-serif; font-size:12pt }",
+          content_style:
+            "body { font-family:Helvetica,Arial,sans-serif; font-size:14px}",
           toolbar:
             "undo redo | bold italic underline align | blocks fontfamily fontsizeinput | link image code past blockquote backcolor forecolor indent lineheight strikethrough",
           plugins: [
@@ -71,19 +119,13 @@ const TextEditor = ({
               input.onchange = function () {
                 if (input.files?.length) {
                   const file = input.files[0];
-                  const reader = new FileReader();
-                  reader.onload = function () {
-                    const id = "blobid" + new Date().getTime();
-                    const blobCache = editorRef.current?.editorUpload.blobCache;
-
-                    const base64 = reader.result?.toString().split(",")[1];
-                    if (base64 && blobCache) {
-                      const blobInfo = blobCache.create(id, file, base64);
-                      blobCache.add(blobInfo);
-                      cb(blobInfo.blobUri(), { title: file.name });
-                    }
-                  };
-                  reader.readAsDataURL(file);
+                  postImage(file, (data: any) => {
+                    cb(data.urls[0], {
+                      title: file.name,
+                      alt: file.name,
+                      height: "200px",
+                    });
+                  });
                 }
               };
 
@@ -91,12 +133,23 @@ const TextEditor = ({
             }
           },
           setup: (editor) => {
-            editor.on("init", (ed) => {
-              ed.target.editorCommands.execCommand(
-                "fontName",
-                false,
-                "Helvetica"
-              );
+            editor.on("paste", function (e) {
+              const clipboardData = e.clipboardData;
+              if (!clipboardData) {
+                return;
+              }
+              const items = clipboardData.items;
+              for (let i = 0; i < items.length; i++) {
+                const item = items[i];
+                const file = item.getAsFile();
+                if (item.kind === "file" && item.type.startsWith("image/")) {
+                  e.preventDefault();
+
+                  startLoading();
+                  uploadInsert.mutate(file);
+                }
+              }
+              return e;
             });
           },
           statusbar: false,

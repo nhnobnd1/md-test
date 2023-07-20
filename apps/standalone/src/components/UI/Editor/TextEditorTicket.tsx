@@ -66,7 +66,7 @@ const TextEditorTicket = ({
       message.success(t("messages:success.file_upload"));
 
       editorRef.current?.insertContent(
-        '<img height="200px" src="' + data.data.urls[0] + '" />'
+        '<img max-height="200px" src="' + data.data.urls[0] + '" />'
       );
     },
     onError: () => {
@@ -324,7 +324,6 @@ const TextEditorTicket = ({
             file_picker_types: "image",
             file_picker_callback: function (cb, value, meta) {
               if (meta.filetype === "image") {
-                console.log("vaoday", meta);
                 const input = document.createElement("input");
                 input.setAttribute("type", "file");
                 input.setAttribute("accept", "image/*");

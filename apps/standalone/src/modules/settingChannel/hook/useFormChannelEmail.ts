@@ -48,6 +48,7 @@ export function useFormChannelEmail() {
     (values: ValuesForm) => {
       return {
         name: values.name,
+        signature: values.signature,
         supportEmail: values.supportEmail,
         isPrimaryEmail: values.isPrimaryEmail,
         mailboxType: values.mailboxType,
@@ -68,6 +69,7 @@ export function useFormChannelEmail() {
     (values: Required<ValuesForm>) => {
       return {
         name: values.name,
+        signature: values.signature,
         isPrimaryEmail: values.isPrimaryEmail,
         supportEmail: values.supportEmail,
         mailboxType: values.mailboxType,
@@ -89,6 +91,7 @@ export function useFormChannelEmail() {
     (values: ValuesForm) => {
       return {
         name: values.name,
+        signature: values.signature,
         supportEmail: values.supportEmail,
         isPrimaryEmail: values.isPrimaryEmail,
         mailboxType: MailBoxType.MOOSEDESK,
@@ -105,6 +108,7 @@ export function useFormChannelEmail() {
     (values: ValuesForm) => {
       return {
         name: values.name,
+        signature: values.signature,
         supportEmail: values.supportEmail,
         isPrimaryEmail: values.isPrimaryEmail,
         mailboxType: MailBoxType.OTHER,
