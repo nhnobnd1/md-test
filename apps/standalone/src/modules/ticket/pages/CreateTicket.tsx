@@ -1,6 +1,5 @@
 import { MediaScreen } from "@moose-desk/core";
 import useToggleGlobal from "@moose-desk/core/hooks/useToggleGlobal";
-import { Priority } from "@moose-desk/repo";
 import classNames from "classnames";
 import { useEffect, useMemo } from "react";
 import { useQuery } from "react-query";
@@ -16,11 +15,14 @@ import {
   emailIntegrationApi,
   getListEmailIntegration,
 } from "src/modules/ticket/helper/api";
+import useFormCreateTicket from "src/modules/ticket/store/useFormCreateTicket";
 import styles from "./styles.module.scss";
 
 const CreateTicket = () => {
   const { isMobile } = useViewport(MediaScreen.LG);
   const { visible, setVisible } = useToggleGlobal();
+  const stateCreate = useFormCreateTicket((state) => state);
+
   const { data: dataPrimaryEmail, isLoading: processing } = useQuery({
     queryKey: ["emailIntegrationApi"],
     queryFn: () => emailIntegrationApi(),
@@ -50,10 +52,13 @@ const CreateTicket = () => {
 
   const initialValues = useMemo(() => {
     return {
-      priority: Priority.MEDIUM,
+      priority: stateCreate.priority,
       from: primaryEmail?._id,
-      content: "",
-      to: "",
+      content: stateCreate.content,
+      to: stateCreate.to,
+      tags: stateCreate.tags,
+      subject: stateCreate.subject,
+      assignee: stateCreate.assignee,
     };
   }, [primaryEmail?._id]);
 
