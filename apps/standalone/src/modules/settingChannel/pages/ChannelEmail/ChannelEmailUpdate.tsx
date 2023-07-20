@@ -95,6 +95,7 @@ const ChannelEmailUpdate = () => {
             accessType: AccessType.Both,
             deleteFromServer: mailBoxConfig.incoming.deleteFromServer,
             isLive: email.isLive,
+            signature: email.signature,
           };
 
         case MailBoxType.MOOSEDESK:
@@ -104,6 +105,7 @@ const ChannelEmailUpdate = () => {
             mailSettingType: MailSettingType.MOOSEDESK,
             mailboxType: email.mailboxType,
             isPrimaryEmail: email.isPrimaryEmail,
+            signature: email.signature,
           };
 
         case MailBoxType.OTHER:
@@ -115,6 +117,7 @@ const ChannelEmailUpdate = () => {
             isPrimaryEmail: email.isPrimaryEmail,
             incoming: mailBoxConfig.incoming,
             outgoing: mailBoxConfig.outgoing,
+            signature: email.signature,
           };
 
         default:

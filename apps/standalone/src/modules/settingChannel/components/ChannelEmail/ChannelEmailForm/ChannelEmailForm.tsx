@@ -16,6 +16,7 @@ import React, {
 } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
+import TextEditor from "src/components/UI/Editor/TextEditor";
 import { Form, FormProps } from "src/components/UI/Form";
 import { MDInput } from "src/components/UI/Input";
 import useMessage from "src/hooks/useMessage";
@@ -46,6 +47,7 @@ export interface ValuesForm {
   deleteFromServer?: boolean;
   incoming?: MailSetting;
   outgoing?: MailSetting;
+  signature?: string;
 }
 
 export interface IsLoggedServer {
@@ -125,6 +127,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
           supportEmail: signInCallback.supportEmail || "",
           isPrimaryEmail: false,
           deleteFromServer: false,
+          signature: "",
         };
   }, [props.initialValues, signInCallback]);
 
@@ -322,6 +325,17 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
               <Checkbox>Mask as Primary Email</Checkbox>
             </Form.Item>
           </div>
+          <Form.Item name="signature" label="Signature">
+            <TextEditor
+              form={form}
+              init={{
+                menubar: false,
+                height: 200,
+                toolbar:
+                  "undo redo blocks fontfamily fontsizeinput bold italic underline strikethrough link image media table mergetags addcomment showcomments spellcheckdialog a11ycheck typography align lineheight ",
+              }}
+            />
+          </Form.Item>
         </div>
       </div>
     </Form>
