@@ -67,6 +67,9 @@
 .groupOptions {
   display: flex;
   flex-direction: column;
+  button {
+    text-align: start;
+  }
 }
 .syncBtn {
   border: none;

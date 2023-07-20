@@ -2,7 +2,7 @@ import { InfoCircleTwoTone, MoreOutlined } from "@ant-design/icons";
 import { useToggle } from "@moose-desk/core";
 import { Popover, Tooltip, Upload } from "antd";
 import Link from "antd/es/typography/Link";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { MDButton } from "src/components/UI/Button/MDButton";
 import { Header } from "src/components/UI/Header";
@@ -18,24 +18,40 @@ import { FileSize } from "src/modules/customer/helper/constant";
 import styles from "../pages/style.module.scss";
 import stylesModal from "./styles.module.scss";
 
-export const MoreActions = () => {
+interface IProps {
+  onReset: () => void;
+}
+export const MoreActions = React.memo(({ onReset }: IProps) => {
   const notification = useNotification();
   const { Dragger } = Upload;
   const { isMobile } = useViewport();
   const { on: handleOpenModalImport, off, state: visible } = useToggle(false);
   const [file, setFile] = useState<any>();
-  const {
-    data: status,
-    refetch: refetchingStatus,
-    isLoading: checkingStatus,
-  }: any = useQuery({
+  const [processing, setProcessing] = useState({
+    status: false,
+    count: 0,
+  });
+  const { refetch: refetchingStatus }: any = useQuery({
     queryKey: ["StatusImportAndSync"],
     queryFn: () => checkingSyncImport(),
-    // onError: () => {
-    //   message.error("");
-    // },
+    refetchInterval: processing.status ? 5000 : false,
+    onSuccess: (data: any) => {
+      setProcessing((pre) => ({
+        status: data?.data?.data.isProcessing,
+        count: pre.count + 1,
+      }));
+    },
   });
-  const syncStatus = status?.data?.data?.isProcessing;
+  useEffect(() => {
+    const { status, count } = processing;
+    if (!status && count > 1) {
+      onReset();
+      setProcessing({
+        status: false,
+        count: 1,
+      });
+    }
+  }, [processing]);
   const { mutate: syncCustomerMutate, isLoading: syncing } = useMutation({
     mutationFn: () => syncShopifyCustomers(),
     onSuccess: () => {
@@ -106,7 +122,7 @@ export const MoreActions = () => {
   const popoverContent = (
     <div className={styles.groupOptions}>
       <MDButton className={styles.syncBtn} onClick={handleOpenModalImport}>
-        Import CSV
+        Import using CSV
       </MDButton>
       <MDButton
         className={styles.syncBtn}
@@ -115,7 +131,7 @@ export const MoreActions = () => {
         }}
         loading={syncing}
       >
-        Sync Customers from Shopify
+        Synchorization from Shopify
       </MDButton>
     </div>
   );
@@ -175,7 +191,7 @@ export const MoreActions = () => {
           </div>
         </div>
       </MDModal>
-      {syncStatus ? (
+      {processing.status ? (
         <MDButton loading className={styles.syncingBtn}>
           {isMobile ? undefined : (
             <div className="d-flex align-center">
@@ -201,4 +217,4 @@ export const MoreActions = () => {
       )}
     </div>
   );
-};
+});

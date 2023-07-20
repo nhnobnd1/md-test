@@ -234,7 +234,9 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
     },
     []
   ) as TableProps<Customer>["onChange"];
-
+  const resetData = useCallback(() => {
+    refetchListCustomer();
+  }, []);
   return (
     <div>
       <PopupCustomer
@@ -261,7 +263,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
               </div>
             )}
             <div className={styles.wrapMoreActions}>
-              <MoreActions />
+              <MoreActions onReset={resetData} />
             </div>
             <div
               className={classNames(styles.buttonAdd, "md-btn md-btn-primary")}

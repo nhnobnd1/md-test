@@ -49,6 +49,13 @@
   button {
     border: none;
     width: 100%;
+    span {
+      justify-content: flex-start;
+      span {
+        text-align: start;
+      }
+    }
+    
   }
 }
 :global {
