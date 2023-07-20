@@ -67,3 +67,23 @@
   }
   //  padding-right: 16px;
 }
+.honorific {
+  height: 40px;
+  @include mq("md", "max") {
+    height: 32px;
+  }
+  :global {
+    .ant-select-selector {
+      height: 100% !important;
+      .ant-select-selection-item {
+        display: flex;
+        align-items: center;
+      }
+    }
+    .ant-select-selection-search-input, .ant-select-selection-placeholder {
+      height: 100% !important;
+      display: flex;
+        align-items: center;
+    }
+  }
+}

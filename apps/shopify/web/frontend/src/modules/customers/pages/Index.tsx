@@ -55,7 +55,6 @@ export default function CustomerIndexPage() {
   const isTablet = Boolean(
     screenWidth >= MediaScreen.MD && screenWidth <= MediaScreen.LG
   );
-
   const { t } = useTranslation();
   const { show } = useToast();
   const [searchParams] = useSearchParams();
@@ -114,6 +113,9 @@ export default function CustomerIndexPage() {
   const rowMarkup = convertCustomerData?.data?.map(
     (records: any, index: number) => (
       <IndexTable.Row id={records?._id} key={records?._id} position={index}>
+        <IndexTable.Cell className={classNames("py-3", styles.honorific)}>
+          {records?.honorific || ""}
+        </IndexTable.Cell>
         <IndexTable.Cell className="py-3">
           <Link
             monochrome
@@ -151,7 +153,7 @@ export default function CustomerIndexPage() {
     setIsOpen(true);
     setCustomerData(records);
   };
-  const listSort = ["firstName", "email", "ticketsCount"];
+  const listSort = ["honorific", "firstName", "email", "ticketsCount"];
   const handleSort = (
     headingIndex: number,
     direction: "descending" | "ascending"
@@ -264,6 +266,7 @@ export default function CustomerIndexPage() {
               itemCount={convertCustomerData?.data?.length || 0}
               selectable={false}
               headings={[
+                { title: "Honorific" },
                 { title: "Customer name" },
                 { title: "Email address" },
                 { title: "Number of tickets" },
@@ -272,7 +275,7 @@ export default function CustomerIndexPage() {
               sortDirection={direction}
               sortColumnIndex={indexSort}
               onSort={handleSort}
-              sortable={[true, true, true, false]}
+              sortable={[true, true, true, true, false]}
               loading={loadingCustomer}
               emptyState={
                 <EmptySearchResult

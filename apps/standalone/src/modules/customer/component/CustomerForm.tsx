@@ -1,4 +1,4 @@
-import { Col, Row } from "antd";
+import { Col, Row, Select } from "antd";
 import { useTranslation } from "react-i18next";
 import Form, { FormProps } from "src/components/UI/Form/Form";
 import { MDInput } from "src/components/UI/Input";
@@ -9,7 +9,7 @@ interface CustomerFormProps extends FormProps {
   disabled?: boolean;
   data?: CustomerRequestData;
 }
-
+const LIST_HONORIFIC = ["Mr", "Mrs", "Miss", "Ms"];
 export const CustomerForm = ({
   disabled = false,
   data = undefined,
@@ -25,7 +25,22 @@ export const CustomerForm = ({
       initialValues={data}
     >
       <Row gutter={16} justify="space-between">
-        <Col lg={12} xl={12} sm={24} xs={24}>
+        <Col lg={6} xl={6} sm={6} xs={24}>
+          <Form.Item label={t("common:customers.honorific")} name="honorific">
+            <Select
+              className={styles.honorific}
+              placeholder="Honorific"
+              allowClear
+            >
+              {LIST_HONORIFIC.map((ho: string, i: number) => (
+                <Select.Option key={i} value={ho}>
+                  {ho}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+        </Col>
+        <Col lg={9} xl={9} sm={9} xs={24}>
           <Form.Item
             label={t("common:customers.first_name")}
             name="firstName"
@@ -54,7 +69,7 @@ export const CustomerForm = ({
             />
           </Form.Item>
         </Col>
-        <Col lg={12} xl={12} sm={24} xs={24}>
+        <Col lg={9} xl={9} sm={9} xs={24}>
           <Form.Item
             label={t("common:customers.last_name")}
             name="lastName"
