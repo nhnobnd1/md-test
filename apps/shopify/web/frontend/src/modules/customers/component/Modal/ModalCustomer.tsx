@@ -64,17 +64,14 @@ IModal) => {
       show(t("messages:success.create_customer"));
       // onCancel && onCancel();
     },
-    onError: () => {
-      // if (error.response.status === 409) {
-      //   setMessageError(`Email is ${dataSubmit.email} already exists.`);
-      //   show(`Email is ${dataSubmit.email} already exists.`, {
-      //     isError: true,
-      //   });
-      // } else {
+    onError: ({ response }) => {
+      if (response.status === 409) {
+        formRef.current?.setErrors({ email: "Email has already been taken" });
+        return;
+      }
       show(t("messages:error.create_customer"), {
         isError: true,
       });
-      // }
     },
   });
   const { mutate: updateCustomerMutate, isLoading: isUpdating } = useMutation({
