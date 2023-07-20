@@ -23,7 +23,7 @@ import {
 } from "@moose-desk/repo";
 import { Select as AntSelect, Card, Divider, Skeleton } from "antd";
 import moment from "moment";
-import { useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import useToggleGlobal from "@moose-desk/core/hooks/useToggleGlobal";
@@ -53,6 +53,7 @@ import {
   getTagsTicket,
 } from "src/modules/ticket/helper/api";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
+import useDetailTicketContent from "src/modules/ticket/store/useDetailTicketContent";
 import { wrapImageWithAnchorTag } from "src/utils/localValue";
 import BackIcon from "~icons/mingcute/back-2-fill";
 import "./BoxReply.scss";
@@ -169,7 +170,7 @@ const DetailTicketForm = () => {
   const { visible, setVisible } = useToggleGlobal();
   const { isMobile: isTablet } = useViewport(MediaScreen.LG);
   const { isMobile } = useViewport();
-
+  const stateContent = useDetailTicketContent((state) => state);
   const [isChanged, setIsChanged] = useState(false);
   const { data: dataPrimaryEmail } = useQuery({
     queryKey: ["emailIntegrationApi", id],
@@ -341,7 +342,7 @@ const DetailTicketForm = () => {
         priority: ticket?.priority,
         to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
         tags: ticket?.tags,
-        content: "",
+        content: stateContent.content[id as string] || "",
         from: fromValidate ? from : "",
         ccEmails: ticket?.ccEmails,
         CC: ticket?.ccEmails?.map((item) => {
@@ -518,7 +519,14 @@ const DetailTicketForm = () => {
       ids: [ticket?._id as string],
     });
   };
-
+  const handleChangeForm = useCallback(
+    (changedValue) => {
+      if (changedValue.content) {
+        stateContent.updateContent({ [id as string]: changedValue.content });
+      }
+    },
+    [id]
+  );
   return (
     <>
       {processing || isLoadingConversation ? (
@@ -566,6 +574,7 @@ const DetailTicketForm = () => {
             enableLoadForm
             enableReinitialize
             onFinish={onFinish}
+            onValuesChange={handleChangeForm}
             className="flex flex-wrap md:flex-row-reverse xs:flex-col justify-between gap-2"
           >
             <Card className=" mt-5 w-[300px] xs:hidden lg:block">
