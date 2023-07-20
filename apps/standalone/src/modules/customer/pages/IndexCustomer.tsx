@@ -65,6 +65,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
 
   const [dataPopup, setDataPopup] = useState<
     | {
+        honorific: string;
         email: string;
         firstName: string;
         lastName: string;
@@ -72,6 +73,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
       }
     | undefined
   >({
+    honorific: "",
     email: "",
     firstName: "",
     lastName: "",
@@ -131,6 +133,14 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
   }, [querySearchCustomer, listCustomer]);
   const columns: any = [
     {
+      title: t("common:customers.honorific"),
+      dataIndex: "honorific",
+      width: "5%",
+      sorter: {
+        compare: (a: any, b: any) => a.honorific - b.honorific,
+      },
+    },
+    {
       title: t("common:customers.name"),
       dataIndex: "name",
       width: "25%",
@@ -153,7 +163,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
           return a.email - b.email;
         },
       },
-      width: "45%",
+      width: "40%",
     },
     {
       title: t("common:customers.ticket_count"),

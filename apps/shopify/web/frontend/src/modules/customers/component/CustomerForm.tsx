@@ -1,4 +1,4 @@
-import { FormLayout, Grid, TextField } from "@shopify/polaris";
+import { FormLayout, Grid, Select, TextField } from "@shopify/polaris";
 import { FormikProps } from "formik";
 import { ForwardedRef, forwardRef, useCallback } from "react";
 import Form from "src/components/Form";
@@ -10,6 +10,15 @@ export interface RefProperties {
   save: () => Promise<void> | undefined;
   reset: () => void | undefined;
 }
+const LIST_HONORIFIC = [
+  { label: "--", value: "" },
+  { label: "Mr", value: "Mr" },
+  { label: "Mrs", value: "Mrs" },
+
+  { label: "Miss", value: "Miss" },
+
+  { label: "Ms", value: "Ms" },
+];
 
 const CustomerForm = (
   { initialValues, submit }: any,
@@ -43,8 +52,18 @@ const CustomerForm = (
     >
       <FormLayout>
         <FormItem name="_id" />
-        <Grid columns={{ xs: 1, sm: 2, lg: 2, xl: 2 }}>
-          <Grid.Cell>
+        <Grid columns={{ xs: 1, sm: 5, lg: 5, xl: 5 }}>
+          <Grid.Cell columnSpan={{ xs: 1, sm: 1, lg: 1, xl: 1 }}>
+            <FormItem name="honorific">
+              <Select
+                label="Honorific"
+                options={LIST_HONORIFIC}
+                // onChange={handleSelectChange}
+                // value={selected}
+              />
+            </FormItem>
+          </Grid.Cell>
+          <Grid.Cell columnSpan={{ xs: 1, sm: 2, lg: 2, xl: 2 }}>
             <FormItem name="firstName">
               <TextField
                 type="text"
@@ -54,7 +73,7 @@ const CustomerForm = (
               />
             </FormItem>
           </Grid.Cell>
-          <Grid.Cell>
+          <Grid.Cell columnSpan={{ xs: 1, sm: 2, lg: 2, xl: 2 }}>
             <FormItem name="lastName">
               <TextField
                 type="text"
