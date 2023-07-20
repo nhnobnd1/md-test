@@ -68,7 +68,7 @@ export const TodoList = React.memo(() => {
           itemCount={totalItem || 0}
           selectable={false}
           headings={[
-            { title: "#" },
+            { title: "Ticket ID" },
             { title: "Ticket Title" },
 
             { title: "Date Requested" },
