@@ -46,7 +46,16 @@ export const PopupCustomer = ({
       message.loading.hide();
       notification.success(t("messages:success.create_customer"));
     },
-    onError: () => {
+    onError: ({ response }) => {
+      if (response.status === 409) {
+        form.setFields([
+          {
+            name: "email",
+            errors: ["Email has already been taken"],
+          },
+        ]);
+        return;
+      }
       notification.error(t("messages:error.create_customer"));
     },
   });
