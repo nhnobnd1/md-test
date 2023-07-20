@@ -75,8 +75,15 @@ export const PopupCustomer = ({
     (values: any) => {
       if (dataForm?._id) {
         // update
-        const { firstName, lastName, email, phoneNumber } = values;
+        const {
+          honorific = "",
+          firstName,
+          lastName,
+          email,
+          phoneNumber,
+        } = values;
         updateCustomerMutate({
+          honorific,
           firstName,
           lastName,
           email,
