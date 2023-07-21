@@ -87,6 +87,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
   const {
     data: listCustomer,
     refetch: refetchListCustomer,
+    isFetching,
     isLoading: isFetchingListCustomer,
   }: any = useQuery({
     queryKey: [QUERY_KEY.LIST_CUSTOMER, filterData],
@@ -302,7 +303,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
         ) : (
           <Table
             dataSource={(listCustomer as any)?.data?.data}
-            loading={isFetchingListCustomer}
+            loading={isFetching}
             onChange={handleChangeTable}
             columns={columns}
             scroll={{ x: 1024 }}

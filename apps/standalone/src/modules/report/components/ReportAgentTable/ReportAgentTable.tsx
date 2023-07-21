@@ -40,7 +40,7 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
   });
   const { isAgent } = usePermission();
 
-  const { data: listAgentData, isLoading } = useQuery({
+  const { data: listAgentData, isFetching } = useQuery({
     queryKey: [QUERY_KEY.LIST_AGENT, filterData, rangeTime],
     queryFn: () =>
       getListAgent({
@@ -156,7 +156,7 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
         <Table
           dataSource={memoChartData}
           columns={columns}
-          loading={isLoading}
+          loading={isFetching}
           onChange={onChangeTable}
           scroll={{ x: 1024 }}
           rowKey={(record) => record}
