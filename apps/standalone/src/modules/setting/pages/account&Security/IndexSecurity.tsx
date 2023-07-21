@@ -1,8 +1,13 @@
-import { MediaScreen } from "@moose-desk/core";
+import {
+  MediaScreen,
+  useNavigate,
+  useSearchParams,
+  useToggle,
+} from "@moose-desk/core";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { Typography } from "antd";
 import classNames from "classnames";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "react-query";
 import { MDButton } from "src/components/UI/Button/MDButton";
@@ -14,17 +19,45 @@ import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import useViewport from "src/hooks/useViewport";
 import { getStatus2FA, updatePassword } from "src/modules/setting/api/api";
-import Enable2FAModal from "src/modules/setting/component/Security/Enable2FAModal";
+import { Enable2FAModal } from "src/modules/setting/component/Security/Enable2FAModal";
 import { RequestPasswordPayload } from "src/modules/setting/helper/interface";
+import { ModalRecoveryCode } from "src/modules/setting/pages/account&Security/ModalRecoveryCode";
 import { rulesValidatePassword } from "src/regex";
 import styles from "./styles.module.scss";
 
+const LIST_CODE = [
+  "3773733",
+  "0989762",
+  "2311233",
+  "6655888",
+  "2341787",
+  "3773733",
+  "0989762",
+  "2311233",
+  "6655888",
+  "2341787",
+];
 export default function IndexAccountManager() {
   const { t } = useTranslation();
   const notification = useNotification();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const querySearch = searchParams.get("recovery");
   const { isMobile } = useViewport(MediaScreen.LG);
   const message = useMessage();
   const [form] = Form.useForm();
+  const {
+    state: visibleRecoveryCodeModal,
+    off: handleCloseRecoveryCodeModal,
+    on: handleOpenRecoveryCodeModal,
+  } = useToggle(false);
+
+  useEffect(() => {
+    if (!querySearch) return;
+    if (querySearch === "true") {
+      handleOpenRecoveryCodeModal();
+    }
+  }, [querySearch]);
   const {
     data: statusSecurity,
     isLoading,
@@ -74,11 +107,16 @@ export default function IndexAccountManager() {
   }, []);
   // modal
   const [open2FA, setOpen2FA] = useState(false);
+  const handleCloseRecoveryCodes = () => {
+    handleCloseRecoveryCodeModal();
+    navigate("/setting/account&security/security");
+  };
   return (
     <>
       <Header title="Security" />
       {open2FA ? (
         <Enable2FAModal
+          onOpenRecoveryCode={handleOpenRecoveryCodeModal}
           open={open2FA}
           setOpen={setOpen2FA}
           initialValue={{ ...method, status }}
@@ -290,6 +328,10 @@ export default function IndexAccountManager() {
           </div>
         </div>
       </section>
+      <ModalRecoveryCode
+        visible={visibleRecoveryCodeModal}
+        onClose={handleCloseRecoveryCodes}
+      />
     </>
   );
 }

@@ -12,6 +12,7 @@ interface InputPhoneProps
   disabled?: boolean;
   onChange?: (value: any) => void;
 }
+// const DUPLICATE_PHONE_PREFIX = [1, 7, 39, 47, 61, 64, 212, 358, 500, 599];
 const optionSelectPhone = constaint.countryList.country.map((item: Country) => {
   return {
     countryName: item.name,
@@ -35,7 +36,6 @@ const InputPhone = ({
       value ? onChange(`${flagValue}-${value}`) : onChange("");
     }
   };
-
   const handleChangeValueSelect = (value: string) => {
     const getPhonePrefix = optionSelectPhone.find(
       (option) => option.code === value

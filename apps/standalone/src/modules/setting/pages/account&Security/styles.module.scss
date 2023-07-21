@@ -57,7 +57,7 @@
   align-items: flex-start;
   justify-content: space-between;
 
-@include breakpoints(zero, lg) {
+  @include breakpoints(zero, lg) {
     flex-direction: column;
   }
 
@@ -92,4 +92,72 @@
       margin-top: 16px;
     }
   }
+}
+.recoveryCodeModal {
+  width: 400px !important;
+  :global {
+    .ant-modal-content {
+      padding: 0;
+    }
+    .ant-modal-footer {
+      margin-top: 0;
+    }
+  }
+
+  .title {
+    padding: 20px;
+    border-bottom: 1px solid $border-form;
+
+    @include mq(md, "max") {
+      padding: 16px;
+    }
+  }
+  .content {
+    padding: 10px 20px 20px;
+    
+    .listCode {
+      border: 1px solid $gray-border;
+      border-radius: 2px;
+      padding: 16px 0 0 0;
+      height: 220px;
+      @include mq(md, "max") {
+          height: 190px;
+        }
+      p {
+        font-size: 16px;
+        text-align: center;
+        letter-spacing: 0;
+      }
+    }
+  }
+  .groupButton {
+    margin-top: 16px;
+    display: flex;
+    button {
+      margin-right: 12px;
+      color: $link;
+      height: 30px;
+      padding: 0 10px;
+    }
+    @include mq(md, "max") {
+      padding: 16px;
+      width: 100%;
+    }
+  }
+  @include mq(md, "max") {
+    width: 100% !important;
+  }
+}
+.blockLoading {
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  @include mq(md, "max") {
+      height: 190px;
+    }
+}
+.successfully {
+  color: #28a745 !important;
 }

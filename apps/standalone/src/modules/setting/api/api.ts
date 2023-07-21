@@ -1,3 +1,4 @@
+import { TokenManager } from "@moose-desk/core";
 import {
   AccountRepository,
   AgentRepository,
@@ -7,6 +8,7 @@ import {
   UserSettingRepository,
 } from "@moose-desk/repo";
 import { lastValueFrom } from "rxjs";
+import instance from "src/api";
 import {
   RequestPasswordPayload,
   RequestProfile,
@@ -60,6 +62,22 @@ export const getListTagFilter = (
 ): Promise<GetListTagResponse> => {
   return new Promise((resolve, reject) => {
     lastValueFrom(TagRepository().getList(payload))
+      .then(({ data }) => resolve(data))
+      .catch((error) => reject(error));
+  });
+};
+export const getRecoveryCodes = () => {
+  return new Promise((resolve, reject) => {
+    return instance
+      .get(
+        `/account/2fa-backup-code`,
+
+        {
+          headers: {
+            Authorization: `Bearer ${TokenManager.getToken("base_token")}`,
+          },
+        }
+      )
       .then(({ data }) => resolve(data))
       .catch((error) => reject(error));
   });
