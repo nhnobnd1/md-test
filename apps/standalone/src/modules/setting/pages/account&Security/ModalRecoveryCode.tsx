@@ -44,12 +44,14 @@ export const ModalRecoveryCode = React.memo(({ visible, onClose }: IProps) => {
   });
   const listRecoveryCodes: RecoveryCodes = data?.data || [];
   const handleCopyCodes = () => {
-    const listCopyCodes = listRecoveryCodes.join(",");
-    navigator.clipboard.writeText(listCopyCodes);
+    if (!listRecoveryCodes.length) return;
+    const listCopyCodes = listRecoveryCodes?.join(",");
+    navigator.clipboard?.writeText(listCopyCodes);
     setStatus((pre) => ({ ...pre, copy: true }));
     notification.success("Copied!");
   };
   const handleDownloadTxt = () => {
+    if (!listRecoveryCodes.length) return;
     const listCopyCodes = listRecoveryCodes.map((code: string, i: number) => {
       if (i % 2 === 0) {
         return `${code}    `;
@@ -138,6 +140,7 @@ export const ModalRecoveryCode = React.memo(({ visible, onClose }: IProps) => {
             icon={status.copy ? <CheckOutlined /> : <CopyOutlined />}
             onClick={handleCopyCodes}
             className={status.copy ? styles.successfully : ""}
+            disabled={isFetching || !listRecoveryCodes.length}
           >
             {status.copy ? "Copied" : "Copy"}
           </MDButton>
@@ -145,6 +148,7 @@ export const ModalRecoveryCode = React.memo(({ visible, onClose }: IProps) => {
             icon={status.download ? <CheckOutlined /> : <DownloadOutlined />}
             onClick={handleDownloadTxt}
             className={status.download ? styles.successfully : ""}
+            disabled={isFetching || !listRecoveryCodes.length}
           >
             {status.download ? "Downloaded" : "Download"}
           </MDButton>
