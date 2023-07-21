@@ -25,18 +25,6 @@ import { ModalRecoveryCode } from "src/modules/setting/pages/account&Security/Mo
 import { rulesValidatePassword } from "src/regex";
 import styles from "./styles.module.scss";
 
-const LIST_CODE = [
-  "3773733",
-  "0989762",
-  "2311233",
-  "6655888",
-  "2341787",
-  "3773733",
-  "0989762",
-  "2311233",
-  "6655888",
-  "2341787",
-];
 export default function IndexAccountManager() {
   const { t } = useTranslation();
   const notification = useNotification();

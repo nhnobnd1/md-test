@@ -18,6 +18,7 @@ import { Select as ComboSelect, LoadMoreValue } from "src/components/Select";
 import SelectAddEmail from "src/components/SelectAddEmail/SelectAddEmail";
 import SelectAddTag from "src/components/SelectAddTag/SelectAddTag";
 import { TextEditorTicket } from "src/components/TextEditorTicket";
+import useDeepEffect from "src/hooks/useDeepEffect";
 import useSaveDataGlobal from "src/hooks/useSaveDataGlobal";
 import { CustomModal } from "src/modules/customers/component/Modal";
 import BoxSelectCustomer from "src/modules/ticket/components/BoxSelectCustomer/BoxSelectCustomer";
@@ -27,6 +28,7 @@ import {
   getTagsTicket,
 } from "src/modules/ticket/helper/api";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
+import useSelectFrom from "src/modules/ticket/store/useSelectFrom";
 import { wrapImageWithAnchorTag } from "src/utils/localValue";
 import * as Yup from "yup";
 
@@ -65,11 +67,24 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
   const [toEmail, setToEmail] = useState({ value: "", id: "" });
   const [files, setFiles] = useState<any>([]);
   const [loadingButton, setLoadingButton] = useState(false);
+  const selectedFrom = useSelectFrom((state) => state.selected);
 
   const TicketFormSchema = Yup.object().shape({
     to: Yup.string()
       .required("Email address is required")
-      .email("The email address is not valid"),
+      .email("The email address is not valid")
+      .test(
+        "test",
+        "The recipient's email must not be the same as the sender's email",
+        (value, context) => {
+          const findFromEmail = emailIntegrationOptions.find(
+            (item) => item.value === context.parent.from
+          )?.obj?.supportEmail;
+
+          return value !== findFromEmail;
+        }
+      ),
+
     content: Yup.string()
       .required("Please input your message!")
       .test("is-blank", "Content is required", (value) => {
@@ -86,6 +101,32 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
         }
         return true;
       }),
+    CC: Yup.array().test(
+      "is-blank",
+      "The recipient's email must not be the same as the sender's email",
+      (value, context) => {
+        const findFromEmail = emailIntegrationOptions.find(
+          (item) => item.value === context.parent.from
+        )?.obj?.supportEmail;
+        if (value?.includes(findFromEmail)) {
+          return false;
+        }
+        return true;
+      }
+    ),
+    BCC: Yup.array().test(
+      "is-blank",
+      "The recipient's email must not be the same as the sender's email",
+      (value, context) => {
+        const findFromEmail = emailIntegrationOptions.find(
+          (item) => item.value === context.parent.from
+        )?.obj?.supportEmail;
+        if (value?.includes(findFromEmail)) {
+          return false;
+        }
+        return true;
+      }
+    ),
   });
 
   const fetchAgents = useCallback(
@@ -258,6 +299,16 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
     width: 100%;
   }
   `;
+
+  useDeepEffect(() => {
+    const signature = emailIntegrationOptions.find(
+      (item) => item.value === selectedFrom
+    )?.obj.signature;
+    (props?.innerRef as any)?.current.setFieldValue(
+      "content",
+      ` <div class='signature'> <br/> <br/> <br/> ${signature}</div>`
+    );
+  }, [selectedFrom, emailIntegrationOptions]);
 
   return (
     <Form

@@ -33,7 +33,6 @@ import {
   getTagsTicket,
 } from "src/modules/ticket/helper/api";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
-import useFormCreateTicket from "src/modules/ticket/store/useFormCreateTicket";
 import { wrapImageWithAnchorTag } from "src/utils/localValue";
 
 interface TicketFormProps {
@@ -246,7 +245,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
 
     form.setFieldValue(
       "content",
-      `${result} <div class='signature'> <br/> <br/> <br/> ${options?.obj?.signature}</div>`
+      ` <div class='signature'> <br/> <br/> <br/> ${options?.obj?.signature}</div>`
     );
     setFromEmail(options.obj);
     form.validateFields();

@@ -77,10 +77,15 @@ const CreateTicket = (props: CreateTicketProps) => {
   const initialValuesForm = useMemo(() => {
     return {
       priority: Priority.MEDIUM,
-      from: primaryEmail?._id,
-      content: "",
+      content: primaryEmail?.signature
+        ? `<div class='signature'> <br/> <br/> <br/> ${primaryEmail?.signature}</div>`
+        : "",
       to: "",
+      tags: [],
       subject: "",
+      assignee: "",
+      signature: primaryEmail?.signature,
+      from: primaryEmail?._id,
     };
   }, [primaryEmail?._id]);
   const { show } = useToast();

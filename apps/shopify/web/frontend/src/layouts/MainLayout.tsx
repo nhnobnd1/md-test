@@ -13,6 +13,7 @@ import {
 import MainLayoutTopBar from "src/layouts/components/MainLayoutTopBar";
 import { getStatisticTicket } from "src/modules/ticket/helper/api";
 import useFullScreen from "src/store/useFullScreen";
+import useUser from "src/store/useUser";
 
 interface MainLayoutProps {
   children?: ReactNode;
@@ -30,11 +31,14 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   useEffect(() => {
     setShowMainLayout(!visible); // set lại khi bấm nút show/hide shopify customer
   }, [visible]);
+
+  const user = useUser((state) => state.user);
+
   const { data: dataStatistic } = useQuery({
     queryKey: ["getStatisticTicket"],
     queryFn: () => getStatisticTicket(),
     retry: 3,
-
+    enabled: !!user,
     onError: () => {
       // show(t("messages:error.get_ticket"), { isError: true });
     },

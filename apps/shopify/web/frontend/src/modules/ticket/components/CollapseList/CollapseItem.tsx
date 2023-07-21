@@ -52,7 +52,7 @@ export const CollapseItem: FC<CollapseItemProps> = ({
       <Collapsible
         open={open}
         id="basic-collapsible"
-        transition={{ duration: "500ms", timingFunction: "ease-in-out" }}
+        transition={{ duration: "200ms", timingFunction: "ease-in-out" }}
         expandOnPrint
       >
         <RowMessage item={item} />

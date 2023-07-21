@@ -343,9 +343,9 @@ const DetailTicketForm = () => {
         priority: ticket?.priority,
         to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
         tags: ticket?.tags,
-        content:
-          ` <div class='signature'> <br/> <br/> <br/> ${fromValidate?.signature}</div>` ||
-          "",
+        content: fromValidate?.signature
+          ? `<div class='signature'> <br/> <br/> <br/> ${fromValidate?.signature}</div>`
+          : "",
         from: fromValidate ? from : "",
         ccEmails: ticket?.ccEmails,
         CC: ticket?.ccEmails?.map((item) => {
@@ -362,9 +362,9 @@ const DetailTicketForm = () => {
         priority: ticket?.priority,
         to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
         tags: ticket?.tags,
-        content:
-          ` <div class='signature'> <br/> <br/> <br/> ${fromValidate?.signature}</div>` ||
-          "",
+        content: fromValidate?.signature
+          ? `<div class='signature'> <br/> <br/> <br/> ${fromValidate?.signature}</div>`
+          : "",
         from: fromValidate ? from : "",
         ccEmails: ticket?.ccEmails,
         CC: conversationList[conversationList.length - 1]?.ccEmails?.map(

@@ -56,10 +56,12 @@ import { useQueryClient } from "react-query";
 import { catchError, map, of } from "rxjs";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
+import BoxSelectAssignee from "src/components/Modal/ModalFilter/BoxSelectAssignee";
 import BoxSelectFilter from "src/components/Modal/ModalFilter/BoxSelectFilter";
 import SelectAddEmail from "src/components/SelectAddEmail/SelectAddEmail";
 import SelectAddTag from "src/components/SelectAddTag/SelectAddTag";
 import { TextEditorTicket } from "src/components/TextEditorTicket";
+import useDeepEffect from "src/hooks/useDeepEffect";
 import useGlobalData from "src/hooks/useGlobalData";
 import useScreenType from "src/hooks/useScreenType";
 import { useSubdomain } from "src/hooks/useSubdomain";
@@ -68,6 +70,7 @@ import { CollapseList } from "src/modules/ticket/components/CollapseList";
 import ContentShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ContentShopifySearch";
 import { ModalInfoTicket } from "src/modules/ticket/components/ModalInfoTicket";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
+import useSelectFrom from "src/modules/ticket/store/useSelectFrom";
 import { wrapImageWithAnchorTag } from "src/utils/localValue";
 import * as Yup from "yup";
 import FaMailReply from "~icons/fa/mail-reply";
@@ -121,7 +124,7 @@ const DetailTicket = (props: DetailTicketProps) => {
   );
   const [screenType, screenWidth] = useScreenType();
   const isMobileOrTablet = Boolean(screenWidth <= MediaScreen.LG);
-
+  const selectedFrom = useSelectFrom((state) => state.selected);
   // detail ticket
   const [agents, setAgents] = useState<Agent[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
@@ -389,6 +392,10 @@ const DetailTicket = (props: DetailTicketProps) => {
     const from = ticket?.senderConfigId
       ? ticket.senderConfigId
       : primaryEmail?._id;
+
+    const fromValidate = emailIntegrationOptions?.find(
+      (item: any) => item.value === from
+    );
     if (conversationList.length === 0) {
       return {
         status: ticket?.status,
@@ -396,7 +403,9 @@ const DetailTicket = (props: DetailTicketProps) => {
         priority: ticket?.priority,
         to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
         tags: ticket?.tags,
-        content: "",
+        content: fromValidate?.obj?.signature
+          ? ` <div class='signature'> <br/> <br/> <br/> ${fromValidate?.obj?.signature}</div>`
+          : "",
         from: from,
         ccEmails: ticket?.ccEmails,
         CC: ticket?.ccEmails?.map((item) => {
@@ -413,7 +422,9 @@ const DetailTicket = (props: DetailTicketProps) => {
         priority: ticket?.priority,
         to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
         tags: ticket?.tags,
-        content: "",
+        content: fromValidate?.obj?.signature
+          ? ` <div class='signature'> <br/> <br/> <br/> ${fromValidate?.obj?.signature}</div>`
+          : "",
         from: from,
         ccEmails: ticket?.ccEmails,
         CC: conversationList[conversationList.length - 1]?.ccEmails?.map(
@@ -428,15 +439,52 @@ const DetailTicket = (props: DetailTicketProps) => {
         ),
       };
     }
-  }, [ticket, primaryEmail, conversationList]);
+  }, [ticket, primaryEmail, conversationList, emailIntegrationOptions]);
   const DetailTicketFormSchema = Yup.object().shape({
     to: Yup.string()
       .required("Email address is required")
-      .email("The email address is not valid"),
+      .email("The email address is not valid")
+      .test(
+        "test",
+        "The recipient's email must not be the same as the sender's email",
+        (value, context) => {
+          const findFromEmail = emailIntegrationOptions.find(
+            (item: any) => item.value === context.parent.from
+          )?.obj?.supportEmail;
+
+          return value !== findFromEmail;
+        }
+      ),
     from: Yup.string()
       .required("Email address is required")
       // .email("The email address is not valid")
       .nullable(),
+    CC: Yup.array().test(
+      "is-blank",
+      "The recipient's email must not be the same as the sender's email",
+      (value, context) => {
+        const findFromEmail = emailIntegrationOptions.find(
+          (item: any) => item.value === context.parent.from
+        )?.obj?.supportEmail;
+        if (value?.includes(findFromEmail)) {
+          return false;
+        }
+        return true;
+      }
+    ),
+    BCC: Yup.array().test(
+      "is-blank",
+      "The recipient's email must not be the same as the sender's email",
+      (value, context) => {
+        const findFromEmail = emailIntegrationOptions.find(
+          (item: any) => item.value === context.parent.from
+        )?.obj?.supportEmail;
+        if (value?.includes(findFromEmail)) {
+          return false;
+        }
+        return true;
+      }
+    ),
   });
 
   // useMount(() => {
@@ -563,6 +611,17 @@ const DetailTicket = (props: DetailTicketProps) => {
   useUnMount(() => {
     setVisible(false);
   });
+
+  useDeepEffect(() => {
+    const signature = emailIntegrationOptions.find(
+      (item: any) => item.value === selectedFrom
+    )?.obj.signature;
+    formRef?.current?.setFieldValue(
+      "content",
+      ` <div class='signature'> <br/> <br/> <br/> ${signature}</div>`
+    );
+  }, [selectedFrom, emailIntegrationOptions]);
+
   return (
     <div className="relative">
       {processing || isFetchConversation ? (
@@ -668,7 +727,7 @@ const DetailTicket = (props: DetailTicketProps) => {
                                 />
                               </FormItem>
                               <FormItem name="assignee">
-                                <BoxSelectFilter
+                                <BoxSelectAssignee
                                   disabled={disabled}
                                   label="Assignee"
                                   data={agentsOptions}
@@ -822,6 +881,9 @@ const DetailTicket = (props: DetailTicketProps) => {
                                 <Button
                                   primary
                                   onClick={() => {
+                                    if (!formRef.current?.isValid) {
+                                      return;
+                                    }
                                     onFinish(formRef.current?.values);
                                   }}
                                   disabled={!isChanged || loadingButton}
