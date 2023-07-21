@@ -1,4 +1,8 @@
-import { InfoCircleTwoTone, MoreOutlined } from "@ant-design/icons";
+import {
+  InfoCircleTwoTone,
+  MoreOutlined,
+  PaperClipOutlined,
+} from "@ant-design/icons";
 import { useToggle } from "@moose-desk/core";
 import { Popover, Tooltip, Upload } from "antd";
 import Link from "antd/es/typography/Link";
@@ -186,7 +190,13 @@ export const MoreActions = React.memo(({ onReset }: IProps) => {
               }}
               className={styles.draggerCustomer}
             >
-              <p className={styles.fileName}>{file ? file.name : "Add file"}</p>
+              {file ? (
+                <div className={styles.fileName}>
+                  <PaperClipOutlined /> <span>{file.name}</span>
+                </div>
+              ) : (
+                <p className={styles.fileName}>Add file</p>
+              )}
             </Dragger>
           </div>
         </div>
