@@ -48,6 +48,8 @@ const TextEditorTicket = ({
   const message = useMessage();
 
   const handleEditorChange = (content: string) => {
+    onChange && onChange(content);
+
     form?.setFieldValue("content", content);
 
     if (setIsChanged) {

@@ -33,6 +33,7 @@ import {
   getTagsTicket,
 } from "src/modules/ticket/helper/api";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
+import useFormCreateTicket from "src/modules/ticket/store/useFormCreateTicket";
 import { wrapImageWithAnchorTag } from "src/utils/localValue";
 
 interface TicketFormProps {
@@ -67,6 +68,8 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
   const { dataSaved }: any = useSaveDataGlobal();
   const { t } = useTranslation();
   const [openModalCustomer, setOpenModalCustomer] = useState(false);
+  const stateCreate = useFormCreateTicket((state) => state);
+
   const { data: dataCustomers, refetch: refetchCustomer } = useQuery({
     queryKey: ["getCustomers"],
     queryFn: () => getListCustomerApi({ page: 1, limit: 500 }),
@@ -202,8 +205,8 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
       );
   });
 
-  const handleChangeForm = useCallback(() => {
-    // console.log('asdasd',changedValue.);
+  const handleChangeForm = useCallback((changedValue) => {
+    stateCreate.updateState(changedValue);
   }, []);
   const onFinish = (values: any) => {
     const tags: string[] = values.tags;
@@ -425,6 +428,8 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
           <div className="flex-1 flex justify-end items-center gap-2 mt-10 ">
             <MDButton
               onClick={() => {
+                // createState
+                stateCreate.resetState();
                 navigate(TicketRoutePaths.Index);
               }}
             >
