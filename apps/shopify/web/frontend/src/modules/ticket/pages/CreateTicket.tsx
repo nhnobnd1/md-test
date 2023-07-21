@@ -77,9 +77,9 @@ const CreateTicket = (props: CreateTicketProps) => {
   const initialValuesForm = useMemo(() => {
     return {
       priority: Priority.MEDIUM,
-      content:
-        ` <div class='signature'> <br/> <br/> <br/> ${primaryEmail?.signature}</div>` ||
-        "",
+      content: primaryEmail?.signature
+        ? `<div class='signature'> <br/> <br/> <br/> ${primaryEmail?.signature}</div>`
+        : "",
       to: "",
       tags: [],
       subject: "",

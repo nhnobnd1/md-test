@@ -403,9 +403,9 @@ const DetailTicket = (props: DetailTicketProps) => {
         priority: ticket?.priority,
         to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
         tags: ticket?.tags,
-        content:
-          ` <div class='signature'> <br/> <br/> <br/> ${fromValidate?.obj?.signature}</div>` ||
-          "",
+        content: fromValidate?.obj?.signature
+          ? ` <div class='signature'> <br/> <br/> <br/> ${fromValidate?.obj?.signature}</div>`
+          : "",
         from: from,
         ccEmails: ticket?.ccEmails,
         CC: ticket?.ccEmails?.map((item) => {
@@ -422,9 +422,9 @@ const DetailTicket = (props: DetailTicketProps) => {
         priority: ticket?.priority,
         to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
         tags: ticket?.tags,
-        content:
-          ` <div class='signature'> <br/> <br/> <br/> ${fromValidate?.obj?.signature}</div>` ||
-          "",
+        content: fromValidate?.obj?.signature
+          ? ` <div class='signature'> <br/> <br/> <br/> ${fromValidate?.obj?.signature}</div>`
+          : "",
         from: from,
         ccEmails: ticket?.ccEmails,
         CC: conversationList[conversationList.length - 1]?.ccEmails?.map(
