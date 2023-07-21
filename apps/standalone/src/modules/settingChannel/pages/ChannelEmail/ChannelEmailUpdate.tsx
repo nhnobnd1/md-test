@@ -28,6 +28,7 @@ import {
 } from "src/modules/settingChannel/components/ChannelEmail/ChannelEmailForm";
 import { useFormChannelEmail } from "src/modules/settingChannel/hook/useFormChannelEmail";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
+import useFormCreateTicket from "src/modules/ticket/store/useFormCreateTicket";
 import { useAppSelector } from "src/redux/hook";
 
 const ChannelEmailUpdate = () => {
@@ -38,7 +39,7 @@ const ChannelEmailUpdate = () => {
   const notification = useNotification();
   const { id } = useParams();
   const { t } = useTranslation();
-
+  // const resetCreateTicket = useFormCreateTicket((state) => state.resetState);
   const { toggle: updateForm } = useToggle();
   const signCallback = useAppSelector(
     (state) => state.channelEmail.signInCallback
@@ -212,6 +213,7 @@ const ChannelEmailUpdate = () => {
       } else {
         createMailMooseDesk(values);
       }
+      // resetCreateTicket();
     },
     [signCallback]
   );

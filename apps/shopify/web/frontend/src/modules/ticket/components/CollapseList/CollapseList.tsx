@@ -19,7 +19,7 @@ export const CollapseList: FC<CollapseListProps> = ({ listChat }) => {
         <CollapseItem key={item.id} item={item} />
       ))}
       {!showMiddleItems && (
-        <div className=" m-2 flex  items-center w-full ">
+        <div className="mb-2 flex  items-center w-full ">
           <div
             onClick={handleShowMiddleItems}
             className="w-[40px] h-[36px] rounded-3xl flex justify-center items-center  hover:cursor-pointer text-white overflow-hidden"

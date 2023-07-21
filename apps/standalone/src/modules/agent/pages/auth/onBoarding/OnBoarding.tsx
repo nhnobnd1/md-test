@@ -167,7 +167,7 @@ export const OnBoarding = () => {
               title="Oops!"
               subTitle={
                 <p className="onboard-error">
-                  {pageError.message || "Something went wrong"}
+                  {pageError.message || "Something went wrong!"}
                 </p>
               }
               content={

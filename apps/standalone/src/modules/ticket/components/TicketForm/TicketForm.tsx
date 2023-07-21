@@ -41,10 +41,14 @@ interface TicketFormProps {
   initialValues?: any;
 }
 
-const validateCCEmail = (value: string[]): boolean => {
+const validateCCEmail = (value: string[], fromEmail = ""): boolean => {
   if (!value) return true;
   let checked = true;
   for (const item of value) {
+    if (item === fromEmail) {
+      checked = false;
+      break;
+    }
     if (!emailRegex.test(item)) {
       checked = false;
       break;
@@ -59,7 +63,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
   const message = useMessage();
   const notification = useNotification();
   const navigate = useNavigate();
-  const initialValues = props.initialValues;
+
   const [fromEmail, setFromEmail] = useState(primaryEmail);
   const [toEmail, setToEmail] = useState({ value: "", id: "" });
   const [form] = Form.useForm();
@@ -68,7 +72,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
   const { dataSaved }: any = useSaveDataGlobal();
   const { t } = useTranslation();
   const [openModalCustomer, setOpenModalCustomer] = useState(false);
-  const stateCreate = useFormCreateTicket((state) => state);
+  // const stateCreate = useFormCreateTicket((state) => state);
 
   const { data: dataCustomers, refetch: refetchCustomer } = useQuery({
     queryKey: ["getCustomers"],
@@ -206,7 +210,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
   });
 
   const handleChangeForm = useCallback((changedValue) => {
-    stateCreate.updateState(changedValue);
+    // stateCreate.updateState(changedValue);
   }, []);
   const onFinish = (values: any) => {
     const tags: string[] = values.tags;
@@ -236,7 +240,16 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
   };
 
   const onChangeEmailIntegration = (value: string, options: any) => {
+    const regex = /^.*?(?=<div class="signature">)/s;
+    const html = form.getFieldValue("content");
+    const result = html.match(regex) ? html.match(regex)[0] : html;
+
+    form.setFieldValue(
+      "content",
+      `${result} <div class='signature'> <br/> <br/> <br/> ${options?.obj?.signature}</div>`
+    );
     setFromEmail(options.obj);
+    form.validateFields();
   };
 
   const onChangeEmail = (value: string, options: any) => {
@@ -261,7 +274,6 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
       form={form}
       layout={"vertical"}
       enableReinitialize
-      initialValues={initialValues}
       onFinish={onFinish}
       onValuesChange={handleChangeForm}
       {...props}
@@ -283,6 +295,22 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
                     type: "email",
                     message: "The email address is not valid",
                   },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (
+                        emailIntegrationOptions.find(
+                          (item) => item.value === getFieldValue("from")
+                        )?.obj.supportEmail === value
+                      ) {
+                        return Promise.reject(
+                          new Error(
+                            "The recipient's email must not be the same as the sender's email"
+                          )
+                        );
+                      }
+                      return Promise.resolve();
+                    },
+                  }),
                 ]}
               >
                 <AutoSelect
@@ -297,9 +325,16 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
                     label="CC"
                     name="CC"
                     rules={[
-                      () => ({
+                      ({ getFieldValue }) => ({
                         validator(_, value) {
-                          if (validateCCEmail(value)) {
+                          if (
+                            validateCCEmail(
+                              value,
+                              emailIntegrationOptions.find(
+                                (item) => item.value === getFieldValue("from")
+                              )?.obj.supportEmail
+                            )
+                          ) {
                             return Promise.resolve();
                           } else {
                             return Promise.reject(
@@ -429,7 +464,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
             <MDButton
               onClick={() => {
                 // createState
-                stateCreate.resetState();
+                // stateCreate.resetState();
                 navigate(TicketRoutePaths.Index);
               }}
             >

@@ -33,7 +33,7 @@ const WidgetDetail = () => {
     retry: 1,
 
     onError: () => {
-      message.error("Something went wrong");
+      message.error("Something went wrong!");
     },
     initialData: undefined,
   });

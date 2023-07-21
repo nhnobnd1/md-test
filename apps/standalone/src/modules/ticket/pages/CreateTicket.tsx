@@ -1,5 +1,6 @@
 import { MediaScreen } from "@moose-desk/core";
 import useToggleGlobal from "@moose-desk/core/hooks/useToggleGlobal";
+import { Priority } from "@moose-desk/repo";
 import classNames from "classnames";
 import { useEffect, useMemo } from "react";
 import { useQuery } from "react-query";
@@ -15,13 +16,12 @@ import {
   emailIntegrationApi,
   getListEmailIntegration,
 } from "src/modules/ticket/helper/api";
-import useFormCreateTicket from "src/modules/ticket/store/useFormCreateTicket";
 import styles from "./styles.module.scss";
 
 const CreateTicket = () => {
   const { isMobile } = useViewport(MediaScreen.LG);
   const { visible, setVisible } = useToggleGlobal();
-  const stateCreate = useFormCreateTicket((state) => state);
+  // const stateCreate = useFormCreateTicket((state) => state);
 
   const { data: dataPrimaryEmail, isLoading: processing } = useQuery({
     queryKey: ["emailIntegrationApi"],
@@ -50,17 +50,30 @@ const CreateTicket = () => {
       : undefined;
   }, [dataPrimaryEmail, dataEmailIntegration]);
 
+  // const renderContent = useMemo(() => {
+  //   if (stateCreate.content.includes("signature")) {
+  //     if (!primaryEmail?.signature) return "";
+  //     return stateCreate.content;
+  //   } else {
+  //     if (!primaryEmail?.signature) return stateCreate.content;
+  //     return `${stateCreate.content} <div class='signature'> <br/> <br/> <br/> ${primaryEmail?.signature}</div>`;
+  //   }
+  // }, [primaryEmail?._id, stateCreate]);
+
   const initialValues = useMemo(() => {
     return {
-      priority: stateCreate.priority,
-      from: primaryEmail?._id,
-      content: stateCreate.content,
-      to: stateCreate.to,
-      tags: stateCreate.tags,
-      subject: stateCreate.subject,
-      assignee: stateCreate.assignee,
+      priority: Priority.MEDIUM,
+      content:
+        ` <div class='signature'> <br/> <br/> <br/> ${primaryEmail?.signature}</div>` ||
+        "",
+      to: "",
+      tags: [],
+      subject: "",
+      assignee: "",
+      signature: primaryEmail?.signature,
+      from: primaryEmail?.supportEmail,
     };
-  }, [primaryEmail?._id]);
+  }, [primaryEmail]);
 
   useEffect(() => {
     return () => {
