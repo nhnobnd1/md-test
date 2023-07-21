@@ -1,4 +1,4 @@
-import { useToggle } from "@moose-desk/core";
+import { MediaScreen, useNavigate, useToggle } from "@moose-desk/core";
 import { Button, Icon, Text, TopBar } from "@shopify/polaris";
 import {
   CancelMajor,
@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import Images from "src/assets/images";
 
 import "src/assets/styles/layouts/components/main-layout-topbar.scss";
+import useScreenType from "src/hooks/useScreenType";
 import useToggleGlobal from "src/hooks/useToggleGlobal";
 import useFullScreen from "src/store/useFullScreen";
 import useUser from "src/store/useUser";
@@ -23,6 +24,9 @@ const MainLayoutTopBar = ({
   navigationToggle,
   setShowMainLayout,
 }: MainLayoutTopBarProps) => {
+  const navigate = useNavigate();
+  const [screenType, screenWidth] = useScreenType();
+  const isMobile = Boolean(screenWidth < MediaScreen.MD);
   const [expandedMenu, setExpendedMenu] = useState(true);
   // const user = useUser();
   const fullScreenState = useFullScreen((state) => state.fullScreen);
@@ -69,7 +73,13 @@ const MainLayoutTopBar = ({
                 }
               />
             </div>
-            <img src={Images.Logo.LogoMooseDesk} alt="" width={175} />
+            <img
+              src={Images.Logo.LogoMooseDesk}
+              alt="logo"
+              style={{ cursor: "pointer" }}
+              onClick={() => navigate("/dashboard")}
+              width={isMobile ? 150 : 175}
+            />
           </div>
           <div className="mr-10 flex items-center w-full gap-2">
             <div className="md:flex hidden max-w-[500px]  max-h-[56px] justify-end overflow-x-scroll">
