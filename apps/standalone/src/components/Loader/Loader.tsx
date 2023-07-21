@@ -1,4 +1,4 @@
-import icon from "src/assets/images/logo/logoBase.svg";
+import icon from "src/assets/images/logo/logo.png";
 import "./loader.scss";
 export const Loader = () => {
   return (
