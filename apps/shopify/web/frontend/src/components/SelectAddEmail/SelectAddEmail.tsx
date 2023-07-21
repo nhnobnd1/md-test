@@ -13,7 +13,7 @@ interface BoxSelectAutoReplyProps {
   onChange?: (value: any) => void;
   disabled?: boolean;
   data: Data[];
-  defaultTag: string[];
+  defaultTag?: string[];
 }
 
 const SelectAddEmail = (props: BoxSelectAutoReplyProps) => {
@@ -143,13 +143,9 @@ const SelectAddEmail = (props: BoxSelectAutoReplyProps) => {
           </div>
         }
       >
-        <>
-          {props.disabled ? (
-            <></>
-          ) : (
-            <Listbox onSelect={updateSelection}>{optionsMarkup}</Listbox>
-          )}
-        </>
+        {props.disabled || options.length === 0 ? null : (
+          <Listbox onSelect={updateSelection}>{optionsMarkup}</Listbox>
+        )}
       </Combobox>
       <div className="mt-1">
         <LegacyStack spacing="tight">{tagMarkup}</LegacyStack>

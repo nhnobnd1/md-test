@@ -15,7 +15,7 @@
     "connection": "Failed to establish connection",
     "get_email": "Failed to get email",
     "get_business_calendar": "Failed to get data for business calendar. Please try again",
-    "something_went_wrong": "Something went wrong !",
+    "something_went_wrong": "Something went wrong!",
     "logout": "Logout failed",
     "deleted_agent": "There is an error while removing the selected agent",
     "account_activation": "Account activation unsuccessful",
