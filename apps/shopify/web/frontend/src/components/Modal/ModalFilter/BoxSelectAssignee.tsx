@@ -1,6 +1,5 @@
 import { Combobox, EmptySearchResult, Listbox } from "@shopify/polaris";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
-import useSelectFrom from "src/modules/ticket/store/useSelectFrom";
 interface Data {
   value: string;
   label: string;
@@ -15,7 +14,7 @@ interface BoxSelectAutoReplyProps {
   data: Data[];
 }
 
-const BoxSelectFilter = (props: BoxSelectAutoReplyProps) => {
+const BoxSelectAssignee = (props: BoxSelectAutoReplyProps) => {
   // config UI
 
   // init data
@@ -31,7 +30,6 @@ const BoxSelectFilter = (props: BoxSelectAutoReplyProps) => {
       value: string;
     }[]
   >(deselectedOptions);
-  const changeSelected = useSelectFrom((state) => state.changeSelected);
   const updateText = useCallback(
     (value) => {
       setInputValue(value);
@@ -52,7 +50,6 @@ const BoxSelectFilter = (props: BoxSelectAutoReplyProps) => {
 
   const updateSelection = useCallback(
     (selected) => {
-      changeSelected(selected);
       const matchedOption = options.find((option) => {
         return option.value === selected;
       });
@@ -136,4 +133,4 @@ const BoxSelectFilter = (props: BoxSelectAutoReplyProps) => {
   );
 };
 
-export default memo(BoxSelectFilter);
+export default memo(BoxSelectAssignee);
