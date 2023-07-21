@@ -87,6 +87,10 @@ export const ModalRecoveryCode = React.memo(({ visible, onClose }: IProps) => {
     if (countDown) return;
     await refetch();
     startCountDown("countdownRecoveryCode");
+    setStatus({
+      copy: false,
+      download: false,
+    });
   };
   useUnMount(() => clearCountDown("countdownRecoveryCode"));
   return (

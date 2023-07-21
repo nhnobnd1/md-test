@@ -94,7 +94,7 @@
   }
 }
 .recoveryCodeModal {
-  width: 400px !important;
+  // width: 400px !important;
   :global {
     .ant-modal-content {
       padding: 0;
@@ -143,9 +143,6 @@
       padding: 16px;
       width: 100%;
     }
-  }
-  @include mq(md, "max") {
-    width: 100% !important;
   }
 }
 .blockLoading {
