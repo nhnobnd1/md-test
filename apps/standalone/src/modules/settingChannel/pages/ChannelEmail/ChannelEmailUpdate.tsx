@@ -182,6 +182,9 @@ const ChannelEmailUpdate = () => {
                 notification.error(`${payload.supportEmail} is exist`);
               });
             }
+            message.loading.hide().then(() => {
+              notification.error(t("messages:error.something_went_wrong"));
+            });
             return of(err);
           })
         );
