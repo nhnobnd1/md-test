@@ -32,7 +32,7 @@
 .text-scroll {
   // max-height: 400px !important;
 
-  overflow: scroll !important;
+  overflow: auto !important;
 }
 
 .text-scroll::-webkit-scrollbar {

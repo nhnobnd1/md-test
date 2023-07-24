@@ -9,7 +9,6 @@ import axios from "axios";
 import { filesize } from "filesize";
 import fileDownload from "js-file-download";
 import { FC, useCallback, useMemo, useRef, useState } from "react";
-import useHtmlStringHeight from "src/hooks/useHtmlStringHeight";
 import { ChatItem } from "src/modules/ticket/pages/DetailTicket";
 import CollapseIcon from "~icons/material-symbols/arrow-right";
 import UserIcon from "~icons/material-symbols/person";
@@ -19,10 +18,8 @@ import "./RowMessage.scss";
 interface RowMessageProps {
   item: ChatItem;
 }
-const regexQuote = /<div class="md_quote">[\s\S]*?<\/blockquote>/;
 
 const regexContent = /^.*(?=<div class="md_quote">)/s;
-// const isMobile = true;
 function splitText(fileName: string, maxLength: number) {
   if (fileName.length <= maxLength) {
     return fileName;
@@ -44,15 +41,15 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
     }
     return item.chat;
   }, [item.chat]);
-  const heightSortChat = useHtmlStringHeight(sortChat);
-  const quote = useMemo(() => {
-    if (item.chat.match(regexQuote)) {
-      return item.chat.match(regexQuote)?.[0] as string;
-    }
 
+  const quote = useMemo(() => {
+    const startIndex = item.chat.indexOf('<div class="md_quote">');
+    if (startIndex !== -1) {
+      const remainingHTML = item.chat.slice(startIndex);
+      return remainingHTML;
+    }
     return "";
   }, [item.chat]);
-  const heightQuote = useHtmlStringHeight(quote);
 
   const disableQuote = useMemo(() => {
     if (quote === "") {
@@ -76,7 +73,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
 
   return (
     <div className="">
-      <div className=" items-center gap-3 mx-2">
+      <div className=" items-center gap-3 ">
         <div className="flex items-end gap-3 ">
           {/* <Text variant="headingXl" as="h4">
             {item.name}

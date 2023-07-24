@@ -617,7 +617,9 @@ const DetailTicket = (props: DetailTicketProps) => {
     )?.obj.signature;
     formRef?.current?.setFieldValue(
       "content",
-      ` <div class='signature'> <br/> <br/> <br/> ${signature}</div>`
+      signature
+        ? `<div class='signature'> <br/> <br/> <br/> ${signature}</div>`
+        : ""
     );
   }, [selectedFrom, emailIntegrationOptions]);
 

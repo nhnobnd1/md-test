@@ -1,16 +1,13 @@
 import { Button, Collapse, Popover } from "antd";
 import { filesize } from "filesize";
-import parse, { Element } from "html-react-parser";
-import { FC, useMemo, useRef, useState } from "react";
+import { FC, useMemo, useState } from "react";
 import { ChatItem } from "src/modules/ticket/components/DetailTicketForm/DetailTicketForm";
-import ImageZoom from "src/modules/ticket/components/DetailTicketForm/ImageZoom";
 import UserIcon from "~icons/material-symbols/person";
 import AgentIcon from "~icons/material-symbols/support-agent-sharp";
 import QuoteIcon from "~icons/octicon/ellipsis-16";
 
 import axios from "axios";
 import fileDownload from "js-file-download";
-import useHtmlStringHeight from "src/hooks/useHtmlStringHeight";
 import "./BoxReply.scss";
 interface RowMessageProps {
   item: ChatItem;
@@ -26,47 +23,27 @@ function splitText(fileName: string, maxLength: number) {
   return shortName;
 }
 
-const regexQuote = /<div class="md_quote">[\s\S]*?<\/blockquote>/;
-
 const regexContent = /^.*(?=<div class="md_quote">)/s;
-
-const parseHtml = (html: string): React.ReactNode => {
-  const options: any = {
-    replace: (domNode: Element): React.ReactNode => {
-      if (domNode.name === "img") {
-        return (
-          <ImageZoom
-            key={domNode.attribs.src}
-            src={domNode.attribs.src}
-            alt={domNode.attribs.alt}
-          />
-        );
-      }
-      return undefined; // Return undefined if we don't want to replace the node
-    },
-  };
-  return parse(html, options);
-};
 
 export const RowMessage: FC<RowMessageProps> = ({ item }) => {
   const [toggleQuote, setToggleQuote] = useState(true);
-  const iframeRef = useRef<any>(null);
-  const iframeRefQuote = useRef<any>(null);
+
   const sortChat = useMemo(() => {
     if (item.chat.match(regexContent)) {
       return item.chat.match(regexContent)?.[0] as string;
     }
     return item.chat;
   }, [item.chat]);
-  const quote = useMemo(() => {
-    if (item.chat.match(regexQuote)) {
-      return item.chat.match(regexQuote)?.[0] as string;
-    }
 
+  const quote = useMemo(() => {
+    const startIndex = item.chat.indexOf('<div class="md_quote">');
+    if (startIndex !== -1) {
+      const remainingHTML = item.chat.slice(startIndex);
+      return remainingHTML;
+    }
     return "";
   }, [item.chat]);
-  const heightSortChat = useHtmlStringHeight(sortChat);
-  const heightQuote = useHtmlStringHeight(quote);
+
   const disableQuote = useMemo(() => {
     if (quote === "") {
       return true;
@@ -74,27 +51,10 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
     return false;
   }, [quote]);
 
-  // useEffect(() => {
-  //   const objectElement = iframeRef.current;
-
-  //   objectElement.style.height = `${heightSortChat}px`;
-  // }, [sortChat, heightSortChat]);
-  // useEffect(() => {
-  //   if (!toggleQuote) {
-  //     const objectElement = iframeRefQuote.current;
-
-  //     objectElement.style.height = `${heightQuote}px`;
-  //   }
-  // }, [quote, heightQuote, toggleQuote]);
-  const css = `
-  .ant-collapse-header{
-    padding:12px 16px !important;
-  }
-  `;
   return (
     <div className="">
       {/* <style scoped>{css}</style> */}
-      <div className=" items-center gap-3 mx-2">
+      <div className=" items-center gap-3 ">
         <div className="flex items-end gap-3 ">
           {/* <h2 style={{ color: "black", margin: 0 }}>{item.name}</h2> */}
           {item?.incoming ? (
@@ -159,7 +119,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
         </div>
       </div>
       <div
-        className="text-black text-scroll mt-5"
+        className="text-black text-scroll mt-5 "
         dangerouslySetInnerHTML={{
           __html: `<div style="font-family:Helvetica;font-size:14px">${sortChat}</div>`,
         }}
@@ -195,7 +155,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
       {disableQuote ? (
         <></>
       ) : (
-        <div className="mt-10">
+        <div className="">
           <Popover content={<>Quote</>} className="mt-2 mb-5">
             <Button
               type="text"

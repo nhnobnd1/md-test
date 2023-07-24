@@ -380,7 +380,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
                               emailIntegrationOptions.find(
                                 (item) => item.value === getFieldValue("from")
                               )?.obj.supportEmail
-                            )
+                            ) === true
                           ) {
                             return Promise.resolve();
                           } else if (

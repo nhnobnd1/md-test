@@ -531,8 +531,11 @@ const DetailTicketForm = () => {
     const result = html.match(regex) ? html.match(regex)[0] : html;
     form.setFieldValue(
       "content",
-      `${result} <div class='signature'><br/> <br/> <br/>  ${options?.obj?.signature}</div>`
+      options?.obj?.signature
+        ? `${result} <div class='signature'><br/> <br/> <br/>  ${options?.obj?.signature}</div>`
+        : ""
     );
+    form.validateFields();
   };
 
   return (
@@ -809,7 +812,7 @@ const DetailTicketForm = () => {
                                               item.value ===
                                               getFieldValue("from")
                                           )?.obj.supportEmail
-                                        )
+                                        ) === true
                                       ) {
                                         return Promise.resolve();
                                       } else if (

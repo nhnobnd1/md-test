@@ -33,7 +33,6 @@ const EmailOTP = ({
   }, []);
   const handleChangeValueForm = useCallback((value: { code: string }) => {
     handleChange(value.code);
-    console.log(value);
   }, []);
   // resend Email
   const handleResendEmail = () => {

@@ -38,7 +38,7 @@ const TextEditor = ({
       message.success(t("messages:success.file_upload"));
 
       editorRef.current?.insertContent(
-        '<img max-height="200px" src="' + data.data.urls[0] + '" />'
+        '<img width="200px" src="' + data.data.urls[0] + '" />'
       );
     },
     onError: () => {
@@ -123,7 +123,7 @@ const TextEditor = ({
                     cb(data.urls[0], {
                       title: file.name,
                       alt: file.name,
-                      height: "200px",
+                      width: "200px",
                     });
                   });
                 }
