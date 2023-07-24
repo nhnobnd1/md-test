@@ -1,10 +1,7 @@
 import { useToggle } from "@moose-desk/core";
-import { Typography } from "antd";
-import classNames from "classnames";
+import { Button, ButtonGroup, Modal, Text } from "@shopify/polaris";
 import React from "react";
-import { MDButton } from "src/components/UI/Button/MDButton";
-import { Header } from "src/components/UI/Header";
-import { MDModal } from "src/components/UI/Modal/MDModal";
+
 import styles from "./styles.module.scss";
 interface IProps {
   onOpenModalRecoveryCode: () => void;
@@ -31,42 +28,42 @@ export const ResetModalRecoveryCode = React.memo(
     return (
       <div className="d-flex align-center">
         {!countDown ? null : (
-          <Typography.Text type="success" className="mr-2">
-            ({countDown}s)
-          </Typography.Text>
+          <div className="mr-2">
+            <Text as="span" variant="bodyMd">
+              ({countDown}s)
+            </Text>
+          </div>
         )}
-        <MDButton
-          type="link"
+        <Button
+          plain
+          disabled={!!countDown}
           onClick={handleOpenModalConfirm}
           loading={loading}
-          disabled={!!countDown}
         >
           {buttonTitle}
-        </MDButton>
+        </Button>
 
-        <MDModal
+        <Modal
           open={visible}
-          onCancel={off}
+          title="Are you sure you want to request new recovery codes?"
           onClose={off}
-          className={styles.confirmRecoveryCodeModal}
-          footer={
-            <div className={classNames(styles.footerButton, "text-right")}>
-              <MDButton onClick={off}>Cancel</MDButton>
-
-              <MDButton onClick={handleAccept} type="primary" className="ml-4">
-                OK
-              </MDButton>
-            </div>
-          }
+          small
         >
-          <div className={styles.title}>
-            <Header subTitle="Are you sure you want to request new recovery codes?" />
-          </div>
           <div className={styles.content}>
             Your previous recovery codes will be replaced and will no longer be
             valid.
           </div>
-        </MDModal>
+          {/* <Card sectioned> */}
+          <div className="group-button-footer">
+            <ButtonGroup>
+              <Button onClick={off}>Cancel</Button>
+              <Button primary onClick={handleAccept}>
+                OK
+              </Button>
+            </ButtonGroup>
+          </div>
+          {/* </Card> */}
+        </Modal>
       </div>
     );
   }

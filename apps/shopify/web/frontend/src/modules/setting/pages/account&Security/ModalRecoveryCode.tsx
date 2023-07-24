@@ -1,17 +1,21 @@
+import { useLocation } from "@moose-desk/core";
+import { useToast } from "@shopify/app-bridge-react";
 import {
-  CheckOutlined,
-  CopyOutlined,
-  DownloadOutlined,
-} from "@ant-design/icons";
-import { Col, Row } from "antd";
+  Button,
+  Grid,
+  Icon,
+  LegacyCard,
+  Modal,
+  Spinner,
+} from "@shopify/polaris";
+import {
+  ClipboardMinor,
+  PageDownMajor,
+  TickMinor,
+} from "@shopify/polaris-icons";
 import classNames from "classnames";
 import React, { useEffect, useState } from "react";
 import { useQueryClient } from "react-query";
-import { Loading } from "src/components/Loading";
-import { MDButton } from "src/components/UI/Button/MDButton";
-import { Header } from "src/components/UI/Header";
-import { MDModal } from "src/components/UI/Modal/MDModal";
-import useNotification from "src/hooks/useNotification";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { ResetModalRecoveryCode } from "src/modules/setting/pages/account&Security/ResetModalRecoveryCode";
 import styles from "./styles.module.scss";
@@ -38,16 +42,16 @@ export const ModalRecoveryCode = React.memo(
       copy: false,
       download: false,
     });
-
-    const { subDomain, getDomain } = useSubdomain();
-    const notification = useNotification();
+    const location = useLocation();
+    const { subDomain } = useSubdomain();
+    const { show } = useToast();
 
     const handleCopyCodes = () => {
       if (!listRecoveryCodes.length) return;
       const listCopyCodes = listRecoveryCodes?.join(",");
       navigator.clipboard?.writeText(listCopyCodes);
       setStatus((pre) => ({ ...pre, copy: true }));
-      notification.success("Copied!");
+      show("Copied!");
     };
     const handleDownloadTxt = () => {
       if (!listRecoveryCodes.length) return;
@@ -63,7 +67,11 @@ export const ModalRecoveryCode = React.memo(
           "Your recovery codes:\n\n",
           ...listCopyCodes,
           "\n* You can only use each code once.",
-          `\n* If you need to request a new code, please access: https://${subDomain}${getDomain()}/setting/account&security/security?recovery=true`,
+          `\n* If you need to request a new code, please access: https://${subDomain}${
+            import.meta.env.MODE === "development"
+              ? ".moosedesk.net"
+              : ".moosedesk.com"
+          }/setting/account&security/security?recovery=true`,
         ],
         {
           type: "text/plain",
@@ -96,16 +104,11 @@ export const ModalRecoveryCode = React.memo(
       });
     }, [visible]);
     return (
-      <MDModal
+      <Modal
         open={visible}
-        onCancel={onClose}
         onClose={onClose}
-        className={styles.recoveryCodeModal}
-        footer={null}
+        title="Don't forget to save your recovery codes!"
       >
-        <div className={styles.title}>
-          <Header subTitle="Don't forget to save your recovery codes!" />
-        </div>
         <div className={styles.content}>
           <div
             className={classNames(
@@ -123,40 +126,58 @@ export const ModalRecoveryCode = React.memo(
             />
           </div>
           <div className={styles.listCode}>
-            <Row>
-              {isFetching ? (
-                <div className={styles.blockLoading}>
-                  <Loading />
-                </div>
-              ) : (
-                listRecoveryCodes.map((code: string, i: number) => (
-                  <Col key={i} xs={12} sm={12} lg={12} xl={12}>
-                    <p>{code}</p>
-                  </Col>
-                ))
-              )}
-            </Row>
+            <LegacyCard sectioned>
+              <Grid columns={{ xs: 2, sm: 2, md: 2, lg: 2, xl: 2 }}>
+                {isFetching ? (
+                  <div className={styles.blockLoading}>
+                    <Spinner />
+                  </div>
+                ) : (
+                  listRecoveryCodes.map((code: string, i: number) => (
+                    <Grid.Cell
+                      key={i}
+                      columnSpan={{ xs: 1, sm: 1, md: 1, lg: 1, xl: 1 }}
+                    >
+                      <p>{code}</p>
+                    </Grid.Cell>
+                  ))
+                )}
+              </Grid>
+            </LegacyCard>
           </div>
-          <div className={styles.groupButton}>
-            <MDButton
-              icon={status.copy ? <CheckOutlined /> : <CopyOutlined />}
+          <div className={styles.groupButton2}>
+            <Button
+              icon={
+                <Icon
+                  source={status.copy ? TickMinor : ClipboardMinor}
+                  color="base"
+                />
+              }
               onClick={handleCopyCodes}
-              className={status.copy ? styles.successfully : ""}
+              pressed={status.copy}
+              size="slim"
               disabled={isFetching || !listRecoveryCodes.length}
             >
               {status.copy ? "Copied" : "Copy"}
-            </MDButton>
-            <MDButton
-              icon={status.download ? <CheckOutlined /> : <DownloadOutlined />}
+            </Button>
+            <Button
+              icon={
+                <Icon
+                  source={status.download ? TickMinor : PageDownMajor}
+                  color="base"
+                />
+              }
               onClick={handleDownloadTxt}
-              className={status.download ? styles.successfully : ""}
+              // className={status.download ? styles.successfully : ""}
+              pressed={status.download}
+              size="slim"
               disabled={isFetching || !listRecoveryCodes.length}
             >
               {status.download ? "Downloaded" : "Download"}
-            </MDButton>
+            </Button>
           </div>
         </div>
-      </MDModal>
+      </Modal>
     );
   }
 );

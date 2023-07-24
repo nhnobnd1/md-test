@@ -1,4 +1,4 @@
-import { useMount } from "@moose-desk/core";
+import { useMount, useUnMount } from "@moose-desk/core";
 import { SignInAccountAgentRequest } from "@moose-desk/repo";
 import { Button, Form } from "antd";
 import classNames from "classnames";
@@ -30,6 +30,7 @@ export const Factor2Auth = ({
     state: countDown,
     initCountdown,
     checkTimerProcess,
+    clearCountDown,
   } = useCountDown({
     initValue: 300,
     key: "factor2auth",
@@ -45,7 +46,7 @@ export const Factor2Auth = ({
       initCountdown("factor2auth");
     }
   });
-
+  useUnMount(() => clearCountDown("factor2auth"));
   const handleFinish = useCallback(
     (values: { twoFactorCode: string }) => {
       onFinish({
