@@ -71,7 +71,7 @@ const CreateTicket = () => {
       subject: "",
       assignee: "",
       signature: primaryEmail?.signature,
-      from: primaryEmail?.supportEmail,
+      from: primaryEmail?._id,
     };
   }, [primaryEmail]);
 

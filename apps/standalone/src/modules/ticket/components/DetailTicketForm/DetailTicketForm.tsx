@@ -81,10 +81,13 @@ export interface ChatItem {
   ccEmails?: [];
   bccEmails?: [];
 }
-const validateCCEmail = (value: string[]): boolean => {
+const validateCCEmail = (value: string[], fromEmail = ""): boolean | string => {
   if (!value) return true;
   let checked = true;
   for (const item of value) {
+    if (item === fromEmail) {
+      return "false";
+    }
     if (!emailRegex.test(item)) {
       checked = false;
       break;
@@ -99,7 +102,7 @@ const DetailTicketForm = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const [enableCC, setEnableCC] = useState(false);
+  const [enableCC, setEnableCC] = useState(true);
   const { data: dataTicket, isLoading: processing } = useQuery({
     queryKey: ["getTicket", id],
     queryFn: () => getOneTicket(id as string),
@@ -225,11 +228,6 @@ const DetailTicketForm = () => {
   const { state: loadingApi, startLoading, stopLoading } = useLoading();
   const endPageRef = useRef<any>(null);
 
-  // useEffect(() => {
-  //   if (!loadingApi) {
-  // endPageRef?.current?.scrollIntoView();
-  //   }
-  // }, [loadingApi]);
   const { data: dataEmailIntegration } = useQuery({
     queryKey: ["getListEmailIntegration"],
     queryFn: () => getListEmailIntegration({ page: 1, limit: 500 }),
@@ -328,9 +326,11 @@ const DetailTicketForm = () => {
 
   const initialValues = useMemo(() => {
     const condition = ticket?.incoming || ticket?.createdViaWidget;
+
     const from = ticket?.senderConfigId
       ? ticket.senderConfigId
       : primaryEmail?._id;
+
     const fromValidate = dataEmailIntegration?.find(
       (item) => item._id === from
     );
@@ -447,9 +447,9 @@ const DetailTicketForm = () => {
       closedTicket: closeTicket,
       id: ticket?._id,
       attachmentIds: files,
-      bccEmails: values.BCC,
+      bccEmails: enableCC ? values.BCC : [],
       description: wrapImageWithAnchorTag(values.content),
-      ccEmails: values.CC,
+      ccEmails: enableCC ? values.CC : [],
       fromEmail: {
         name: findItemConfigEmail?.obj.name,
         email: findItemConfigEmail?.obj.supportEmail,
@@ -743,10 +743,34 @@ const DetailTicketForm = () => {
                                 name="CC"
                                 labelAlign="left"
                                 rules={[
-                                  () => ({
+                                  ({ getFieldValue }) => ({
                                     validator(_, value) {
-                                      if (validateCCEmail(value)) {
+                                      if (
+                                        validateCCEmail(
+                                          value,
+                                          emailIntegrationOptions.find(
+                                            (item) =>
+                                              item.value ===
+                                              getFieldValue("from")
+                                          )?.obj.supportEmail
+                                        ) === true
+                                      ) {
                                         return Promise.resolve();
+                                      } else if (
+                                        typeof validateCCEmail(
+                                          value,
+                                          emailIntegrationOptions.find(
+                                            (item) =>
+                                              item.value ===
+                                              getFieldValue("from")
+                                          )?.obj.supportEmail
+                                        ) === "string"
+                                      ) {
+                                        return Promise.reject(
+                                          new Error(
+                                            "The recipient's email must not be the same as the sender's email"
+                                          )
+                                        );
                                       } else {
                                         return Promise.reject(
                                           new Error(
@@ -775,10 +799,34 @@ const DetailTicketForm = () => {
                                 name="BCC"
                                 labelAlign="left"
                                 rules={[
-                                  () => ({
+                                  ({ getFieldValue }) => ({
                                     validator(_, value) {
-                                      if (validateCCEmail(value)) {
+                                      if (
+                                        validateCCEmail(
+                                          value,
+                                          emailIntegrationOptions.find(
+                                            (item) =>
+                                              item.value ===
+                                              getFieldValue("from")
+                                          )?.obj.supportEmail
+                                        )
+                                      ) {
                                         return Promise.resolve();
+                                      } else if (
+                                        typeof validateCCEmail(
+                                          value,
+                                          emailIntegrationOptions.find(
+                                            (item) =>
+                                              item.value ===
+                                              getFieldValue("from")
+                                          )?.obj.supportEmail
+                                        ) === "string"
+                                      ) {
+                                        return Promise.reject(
+                                          new Error(
+                                            "The recipient's email must not be the same as the sender's email"
+                                          )
+                                        );
                                       } else {
                                         return Promise.reject(
                                           new Error(
