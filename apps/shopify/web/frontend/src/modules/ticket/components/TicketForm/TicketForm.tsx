@@ -69,65 +69,101 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
   const [loadingButton, setLoadingButton] = useState(false);
   const selectedFrom = useSelectFrom((state) => state.selected);
 
-  const TicketFormSchema = Yup.object().shape({
-    to: Yup.string()
-      .required("Email address is required")
-      .email("The email address is not valid")
-      .test(
-        "test",
-        "The recipient's email must not be the same as the sender's email",
-        (value, context) => {
-          const findFromEmail = emailIntegrationOptions.find(
-            (item) => item.value === context.parent.from
-          )?.obj?.supportEmail;
+  const TicketFormSchema = useMemo(() => {
+    if (enableCC)
+      return Yup.object().shape({
+        to: Yup.string()
+          .required("Email address is required")
+          .email("The email address is not valid")
+          .test(
+            "test",
+            "The recipient's email must not be the same as the sender's email",
+            (value, context) => {
+              const findFromEmail = emailIntegrationOptions.find(
+                (item) => item.value === context.parent.from
+              )?.obj?.supportEmail;
 
-          return value !== findFromEmail;
-        }
-      ),
+              return value !== findFromEmail;
+            }
+          ),
 
-    content: Yup.string()
-      .required("Please input your message!")
-      .test("is-blank", "Content is required", (value) => {
-        if (value && value.trim().length === 0) {
-          return false;
-        }
-        return true;
-      }),
-    subject: Yup.string()
-      .required("Subject is required")
-      .test("is-blank", "Subject is required", (value) => {
-        if (value && value.trim().length === 0) {
-          return false;
-        }
-        return true;
-      }),
-    CC: Yup.array().test(
-      "is-blank",
-      "The recipient's email must not be the same as the sender's email",
-      (value, context) => {
-        const findFromEmail = emailIntegrationOptions.find(
-          (item) => item.value === context.parent.from
-        )?.obj?.supportEmail;
-        if (value?.includes(findFromEmail)) {
-          return false;
-        }
-        return true;
-      }
-    ),
-    BCC: Yup.array().test(
-      "is-blank",
-      "The recipient's email must not be the same as the sender's email",
-      (value, context) => {
-        const findFromEmail = emailIntegrationOptions.find(
-          (item) => item.value === context.parent.from
-        )?.obj?.supportEmail;
-        if (value?.includes(findFromEmail)) {
-          return false;
-        }
-        return true;
-      }
-    ),
-  });
+        content: Yup.string()
+          .required("Please input your message!")
+          .test("is-blank", "Content is required", (value) => {
+            if (value && value.trim().length === 0) {
+              return false;
+            }
+            return true;
+          }),
+        subject: Yup.string()
+          .required("Subject is required")
+          .test("is-blank", "Subject is required", (value) => {
+            if (value && value.trim().length === 0) {
+              return false;
+            }
+            return true;
+          }),
+        CC: Yup.array().test(
+          "is-blank",
+          "The recipient's email must not be the same as the sender's email",
+          (value, context) => {
+            const findFromEmail = emailIntegrationOptions.find(
+              (item) => item.value === context.parent.from
+            )?.obj?.supportEmail;
+            if (value?.includes(findFromEmail)) {
+              return false;
+            }
+            return true;
+          }
+        ),
+        BCC: Yup.array().test(
+          "is-blank",
+          "The recipient's email must not be the same as the sender's email",
+          (value, context) => {
+            const findFromEmail = emailIntegrationOptions.find(
+              (item) => item.value === context.parent.from
+            )?.obj?.supportEmail;
+            if (value?.includes(findFromEmail)) {
+              return false;
+            }
+            return true;
+          }
+        ),
+      });
+    return Yup.object().shape({
+      to: Yup.string()
+        .required("Email address is required")
+        .email("The email address is not valid")
+        .test(
+          "test",
+          "The recipient's email must not be the same as the sender's email",
+          (value, context) => {
+            const findFromEmail = emailIntegrationOptions.find(
+              (item) => item.value === context.parent.from
+            )?.obj?.supportEmail;
+
+            return value !== findFromEmail;
+          }
+        ),
+
+      content: Yup.string()
+        .required("Please input your message!")
+        .test("is-blank", "Content is required", (value) => {
+          if (value && value.trim().length === 0) {
+            return false;
+          }
+          return true;
+        }),
+      subject: Yup.string()
+        .required("Subject is required")
+        .test("is-blank", "Subject is required", (value) => {
+          if (value && value.trim().length === 0) {
+            return false;
+          }
+          return true;
+        }),
+    });
+  }, [enableCC]);
 
   const fetchAgents = useCallback(
     (params: LoadMoreValue) => {
@@ -280,8 +316,8 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
         },
       ],
       customerObjectId: findCustomer ? findCustomer?.obj._id : undefined,
-      ccEmails: values?.CC,
-      bccEmails: values?.BCC,
+      ccEmails: enableCC ? values?.CC : [],
+      bccEmails: enableCC ? values?.BCC : [],
       subject: values.subject,
       description: wrapImageWithAnchorTag(values.content),
       status: "OPEN",

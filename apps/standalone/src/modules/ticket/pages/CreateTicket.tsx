@@ -50,16 +50,6 @@ const CreateTicket = () => {
       : undefined;
   }, [dataPrimaryEmail, dataEmailIntegration]);
 
-  // const renderContent = useMemo(() => {
-  //   if (stateCreate.content.includes("signature")) {
-  //     if (!primaryEmail?.signature) return "";
-  //     return stateCreate.content;
-  //   } else {
-  //     if (!primaryEmail?.signature) return stateCreate.content;
-  //     return `${stateCreate.content} <div class='signature'> <br/> <br/> <br/> ${primaryEmail?.signature}</div>`;
-  //   }
-  // }, [primaryEmail?._id, stateCreate]);
-
   const initialValues = useMemo(() => {
     return {
       priority: Priority.MEDIUM,
