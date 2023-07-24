@@ -38,6 +38,7 @@ import { Header } from "src/components/UI/Header";
 import Icon from "src/components/UI/Icon";
 import Select from "src/components/UI/Select/Select";
 import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
+import useDeepEffect from "src/hooks/useDeepEffect";
 import useMessage from "src/hooks/useMessage";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import useViewport from "src/hooks/useViewport";
@@ -537,6 +538,13 @@ const DetailTicketForm = () => {
     );
     form.validateFields();
   };
+
+  useDeepEffect(() => {
+    if (!enableCC) {
+      form.setFieldValue("CC", []);
+      form.setFieldValue("BCC", []);
+    }
+  }, [enableCC]);
 
   return (
     <>

@@ -89,7 +89,10 @@ const ChannelEmail = () => {
               notification.error(`${payload.supportEmail} is exist`);
             });
           }
-          return err;
+          message.loading.hide().then(() => {
+            notification.error(t("messages:error.something_went_wrong"));
+          });
+          return of(err);
         })
       );
   });

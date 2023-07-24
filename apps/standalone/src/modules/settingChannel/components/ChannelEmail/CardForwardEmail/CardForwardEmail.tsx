@@ -399,6 +399,9 @@ Please check your inbox and click on the link within to use this email for sendi
                       onKeyPress={(e) => {
                         e.key === "Enter" && e.preventDefault();
                       }}
+                      onChange={(e) => {
+                        formEmail.setFieldValue("name", e.target.value);
+                      }}
                       placeholder="Name"
                     />
                   </Form.Item>

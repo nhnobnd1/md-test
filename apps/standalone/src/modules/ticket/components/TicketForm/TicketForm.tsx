@@ -20,6 +20,7 @@ import TextEditorTicket from "src/components/UI/Editor/TextEditorTicket";
 import { Form } from "src/components/UI/Form";
 import { MDInput } from "src/components/UI/Input";
 import Select from "src/components/UI/Select/Select";
+import useDeepEffect from "src/hooks/useDeepEffect";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { ModalCustomer } from "src/modules/ticket/components/ModalCustomer";
@@ -225,8 +226,8 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
       agentEmail: values.assignee ? values.assignee.split(",")[1] : undefined,
       toEmails: [{ email: values.to, name: values.to.split("@")[0] }],
       customerObjectId: toEmail.id,
-      ccEmails: values?.CC,
-      bccEmails: values?.BCC,
+      ccEmails: enableCC ? values?.CC : [],
+      bccEmails: enableCC ? values?.BCC : [],
       subject: values.subject,
       description: wrapImageWithAnchorTag(values.content),
       status: "OPEN",
@@ -269,6 +270,12 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
       queryClient.removeQueries(["saveData"]);
     };
   }, []);
+  useDeepEffect(() => {
+    if (!enableCC) {
+      form.setFieldValue("CC", []);
+      form.setFieldValue("BCC", []);
+    }
+  }, [enableCC]);
   return (
     <Form
       form={form}

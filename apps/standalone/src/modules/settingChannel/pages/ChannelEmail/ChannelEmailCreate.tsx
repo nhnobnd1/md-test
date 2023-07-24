@@ -7,7 +7,7 @@ import {
 } from "@moose-desk/repo";
 import { useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { catchError, map } from "rxjs";
+import { catchError, map, of } from "rxjs";
 import { MDButton } from "src/components/UI/Button/MDButton";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
@@ -66,7 +66,7 @@ const ChannelEmailCreate = () => {
                 notification.error(`${payload.supportEmail} is exist`);
               });
             }
-            return err;
+            return of(err);
           })
         );
     }
@@ -100,7 +100,10 @@ const ChannelEmailCreate = () => {
                 notification.error(`${payload.supportEmail} is exist`);
               });
             }
-            return err;
+            message.loading.hide().then(() => {
+              notification.error(t("messages:error.something_went_wrong"));
+            });
+            return of(err);
           })
         );
     },
@@ -223,10 +226,7 @@ const ChannelEmailCreate = () => {
           <MDButton
             type="primary"
             onClick={handleSubmit}
-            disabled={
-              mailSettingType === MailSettingType.CUSTOM &&
-              signCallback?.refKey === ""
-            }
+            disabled={!form.getFieldValue("supportEmail")}
           >
             Save
           </MDButton>
