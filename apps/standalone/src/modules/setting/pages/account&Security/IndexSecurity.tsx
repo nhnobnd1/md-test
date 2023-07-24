@@ -1,8 +1,10 @@
 import {
   MediaScreen,
+  useCountDown,
   useNavigate,
   useSearchParams,
   useToggle,
+  useUnMount,
 } from "@moose-desk/core";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { Typography } from "antd";
@@ -18,10 +20,15 @@ import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import useViewport from "src/hooks/useViewport";
-import { getStatus2FA, updatePassword } from "src/modules/setting/api/api";
+import {
+  getRecoveryCodes,
+  getStatus2FA,
+  updatePassword,
+} from "src/modules/setting/api/api";
 import { Enable2FAModal } from "src/modules/setting/component/Security/Enable2FAModal";
 import { RequestPasswordPayload } from "src/modules/setting/helper/interface";
 import { ModalRecoveryCode } from "src/modules/setting/pages/account&Security/ModalRecoveryCode";
+import { ResetModalRecoveryCode } from "src/modules/setting/pages/account&Security/ResetModalRecoveryCode";
 import { rulesValidatePassword } from "src/regex";
 import styles from "./styles.module.scss";
 
@@ -39,13 +46,28 @@ export default function IndexAccountManager() {
     off: handleCloseRecoveryCodeModal,
     on: handleOpenRecoveryCodeModal,
   } = useToggle(false);
-
+  const {
+    clearCountDown,
+    initCountdown: startCountDown,
+    state: countDown,
+  } = useCountDown({
+    initValue: 10,
+    key: "countdownRecoveryCode",
+  });
   useEffect(() => {
     if (!querySearch) return;
     if (querySearch === "true") {
       handleOpenRecoveryCodeModal();
     }
   }, [querySearch]);
+  useUnMount(() => clearCountDown("countdownRecoveryCode"));
+  const { data, isFetching }: any = useQuery({
+    queryKey: ["2faRecoveryCodes"],
+    queryFn: () => getRecoveryCodes(),
+    keepPreviousData: true,
+    enabled: visibleRecoveryCodeModal,
+    onSuccess: () => startCountDown("countdownRecoveryCode"),
+  });
   const {
     data: statusSecurity,
     isLoading,
@@ -76,7 +98,6 @@ export default function IndexAccountManager() {
     },
     onError: (error: any) => {
       message.loading.hide();
-
       if (error.response.status === 400) {
         if (error.response.data.error[0] === "PASSWORD_NOT_MATCH") {
           notification.error("Current Password not match! Please try again.");
@@ -88,17 +109,20 @@ export default function IndexAccountManager() {
   });
 
   // name method
-
   // reset form
   const handleResetForm = useCallback(() => {
     form.resetFields();
   }, []);
   // modal
   const [open2FA, setOpen2FA] = useState(false);
-  const handleCloseRecoveryCodes = () => {
+  const handleCloseRecoveryCodes = useCallback(() => {
     handleCloseRecoveryCodeModal();
     navigate("/setting/account&security/security");
-  };
+  }, []);
+  const handleAcceptRequestCodes = useCallback(() => {
+    handleOpenRecoveryCodeModal();
+  }, []);
+
   return (
     <>
       <Header title="Security" />
@@ -301,7 +325,11 @@ export default function IndexAccountManager() {
               )}
             </>
           ) : null}
-          <div className={styles.status}>
+          <div
+            className={classNames(styles.status, {
+              [styles.hasRequest]: method.show,
+            })}
+          >
             {isLoading ? (
               <MDSkeleton lines={1} width={80} />
             ) : (
@@ -313,12 +341,21 @@ export default function IndexAccountManager() {
                 {method.show ? "Change 2FA Method" : "Enable 2FA"}
               </MDButton>
             )}
+            {method.show ? (
+              <ResetModalRecoveryCode
+                onOpenModalRecoveryCode={handleAcceptRequestCodes}
+                countDown={countDown}
+              />
+            ) : null}
           </div>
         </div>
       </section>
       <ModalRecoveryCode
         visible={visibleRecoveryCodeModal}
         onClose={handleCloseRecoveryCodes}
+        isFetching={isFetching}
+        listRecoveryCodes={data?.data || []}
+        countDown={countDown}
       />
     </>
   );

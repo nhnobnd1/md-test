@@ -93,7 +93,8 @@
     }
   }
 }
-.recoveryCodeModal {
+.recoveryCodeModal,
+.confirmRecoveryCodeModal {
   // width: 400px !important;
   :global {
     .ant-modal-content {
@@ -114,15 +115,15 @@
   }
   .content {
     padding: 10px 20px 20px;
-    
+
     .listCode {
       border: 1px solid $gray-border;
       border-radius: 2px;
       padding: 16px 0 0 0;
       height: 220px;
       @include mq(md, "max") {
-          height: 190px;
-        }
+        height: 190px;
+      }
       p {
         font-size: 16px;
         text-align: center;
@@ -145,6 +146,12 @@
     }
   }
 }
+.confirmRecoveryCodeModal {
+  width: 500px !important;
+  @include mq(md, "max") {
+    width: 100% !important;
+  }
+}
 .blockLoading {
   height: 220px;
   display: flex;
@@ -152,9 +159,39 @@
   justify-content: center;
   width: 100%;
   @include mq(md, "max") {
-      height: 190px;
-    }
+    height: 190px;
+  }
 }
 .successfully {
   color: #28a745 !important;
+}
+.hasRequest {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  :global {
+    .ant-btn-link {
+      padding-left: 0;
+    }
+  }
+}
+.groupTop {
+  @include mq(md, "max") {
+    flex-direction: column;
+    align-items: flex-start;
+    :global {
+      .ant-btn-link {
+        padding-left: 0;
+      }
+    }
+  }
+}
+.footerButton {
+  padding: 20px;
+  border-top: 1px solid $border-form;
+
+  @include mq(md, "max") {
+    padding: 16px;
+  }
 }
