@@ -66,7 +66,8 @@ export const ModalRecoveryCode = React.memo(
           ...listCopyCodes,
           "\n* You can only use each code once.",
           `\n* If you need to request a new code, please access: https://${subDomain}${
-            import.meta.env.MODE === "development"
+            import.meta.env.MODE === "development" ||
+            import.meta.env.MODE === "staging"
               ? ".moosedesk.net"
               : ".moosedesk.com"
           }/setting/account&security/security?recovery=true`,
