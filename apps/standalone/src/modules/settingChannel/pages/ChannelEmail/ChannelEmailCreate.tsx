@@ -223,10 +223,7 @@ const ChannelEmailCreate = () => {
           <MDButton
             type="primary"
             onClick={handleSubmit}
-            disabled={
-              mailSettingType === MailSettingType.CUSTOM &&
-              signCallback?.refKey === ""
-            }
+            disabled={!form.getFieldValue("supportEmail")}
           >
             Save
           </MDButton>
