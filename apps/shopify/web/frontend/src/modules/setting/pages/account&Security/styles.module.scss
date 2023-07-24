@@ -90,11 +90,14 @@
     flex-direction: column;
     align-items: flex-start;
 
-    :global {
-      .Polaris-Button--plain {
-        background: none !important;
-        background-color: none !important;
-      }
+    
+  }
+}
+.buttonRequest {
+:global {
+    .Polaris-Button--plain {
+      background: none !important;
+      background-color: none !important;
     }
   }
 }

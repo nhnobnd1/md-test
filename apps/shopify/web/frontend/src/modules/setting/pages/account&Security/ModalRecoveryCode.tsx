@@ -1,4 +1,3 @@
-import { useLocation } from "@moose-desk/core";
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Button,
@@ -42,7 +41,6 @@ export const ModalRecoveryCode = React.memo(
       copy: false,
       download: false,
     });
-    const location = useLocation();
     const { subDomain } = useSubdomain();
     const { show } = useToast();
 
@@ -103,6 +101,7 @@ export const ModalRecoveryCode = React.memo(
         download: false,
       });
     }, [visible]);
+    console.log(import.meta.env.MODE, "env");
     return (
       <Modal
         open={visible}
