@@ -1,7 +1,7 @@
 import { Button, Collapse, Popover } from "antd";
 import { filesize } from "filesize";
 import parse, { Element } from "html-react-parser";
-import { FC, useMemo, useRef, useState } from "react";
+import { FC, useMemo, useState } from "react";
 import { ChatItem } from "src/modules/ticket/components/DetailTicketForm/DetailTicketForm";
 import ImageZoom from "src/modules/ticket/components/DetailTicketForm/ImageZoom";
 import UserIcon from "~icons/material-symbols/person";
@@ -10,7 +10,6 @@ import QuoteIcon from "~icons/octicon/ellipsis-16";
 
 import axios from "axios";
 import fileDownload from "js-file-download";
-import useHtmlStringHeight from "src/hooks/useHtmlStringHeight";
 import "./BoxReply.scss";
 interface RowMessageProps {
   item: ChatItem;
@@ -50,14 +49,14 @@ const parseHtml = (html: string): React.ReactNode => {
 
 export const RowMessage: FC<RowMessageProps> = ({ item }) => {
   const [toggleQuote, setToggleQuote] = useState(true);
-  const iframeRef = useRef<any>(null);
-  const iframeRefQuote = useRef<any>(null);
+
   const sortChat = useMemo(() => {
     if (item.chat.match(regexContent)) {
       return item.chat.match(regexContent)?.[0] as string;
     }
     return item.chat;
   }, [item.chat]);
+
   const quote = useMemo(() => {
     if (item.chat.match(regexQuote)) {
       return item.chat.match(regexQuote)?.[0] as string;
@@ -65,8 +64,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
 
     return "";
   }, [item.chat]);
-  const heightSortChat = useHtmlStringHeight(sortChat);
-  const heightQuote = useHtmlStringHeight(quote);
+
   const disableQuote = useMemo(() => {
     if (quote === "") {
       return true;
@@ -74,23 +72,6 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
     return false;
   }, [quote]);
 
-  // useEffect(() => {
-  //   const objectElement = iframeRef.current;
-
-  //   objectElement.style.height = `${heightSortChat}px`;
-  // }, [sortChat, heightSortChat]);
-  // useEffect(() => {
-  //   if (!toggleQuote) {
-  //     const objectElement = iframeRefQuote.current;
-
-  //     objectElement.style.height = `${heightQuote}px`;
-  //   }
-  // }, [quote, heightQuote, toggleQuote]);
-  const css = `
-  .ant-collapse-header{
-    padding:12px 16px !important;
-  }
-  `;
   return (
     <div className="">
       {/* <style scoped>{css}</style> */}
