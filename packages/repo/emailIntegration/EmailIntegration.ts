@@ -103,6 +103,7 @@ export interface CreateEmailIntegrationRequest {
 	isPrimaryEmail: boolean;
 	mailboxType: MailBoxType;
 	mailboxConfig: MailBoxConfig | { forwardEmail: string };
+	signature: string;
 }
 
 export type CreateEmailIntegrationResponse = BaseResponse<EmailIntegration>;

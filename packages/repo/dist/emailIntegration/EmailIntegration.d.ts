@@ -96,6 +96,7 @@ export interface CreateEmailIntegrationRequest {
     mailboxConfig: MailBoxConfig | {
         forwardEmail: string;
     };
+    signature: string;
 }
 export declare type CreateEmailIntegrationResponse = BaseResponse<EmailIntegration>;
 export interface UpdateEmailIntegrationRequest {

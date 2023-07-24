@@ -144,7 +144,14 @@ const ChannelEmailCreate = () => {
           }
           break;
         case MailSettingType.FORWARD:
-          createMailOther(values);
+          updateEmailIntegration({
+            isPrimaryEmail: values.isPrimaryEmail,
+            mailboxConfig: { forwardEmail: values.supportEmail },
+            mailboxType: MailBoxType.OTHER,
+            name: values.name,
+            signature: values.signature || "",
+            supportEmail: values.supportEmail,
+          });
           break;
         default:
           createMailMooseDesk(values);
@@ -214,11 +221,6 @@ const ChannelEmailCreate = () => {
       >
         <div className="flex-1 flex justify-end">
           <MDButton
-            className={
-              mailSettingType === MailSettingType.FORWARD
-                ? "opacity-0 pointer-events-none"
-                : ""
-            }
             type="primary"
             onClick={handleSubmit}
             disabled={

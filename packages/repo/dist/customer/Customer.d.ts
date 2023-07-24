@@ -18,6 +18,7 @@ export declare type Customer = {
     phoneNumber: string;
     storeId: string;
     ticketsCount?: number;
+    honorific: string;
 };
 export interface BaseListCustomerRequest extends BaseListRequest {
     sortBy?: string;

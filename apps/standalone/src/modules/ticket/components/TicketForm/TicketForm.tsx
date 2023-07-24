@@ -244,7 +244,9 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
 
     form.setFieldValue(
       "content",
-      ` <div class='signature'> <br/> <br/> <br/> ${options?.obj?.signature}</div>`
+      options?.obj?.signature
+        ? `<div class='signature'> <br/> <br/> <br/> ${options?.obj?.signature}</div>`
+        : ""
     );
     setFromEmail(options.obj);
     form.validateFields();
