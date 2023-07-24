@@ -114,7 +114,7 @@ const DetailTicket = (props: DetailTicketProps) => {
   const navigate = useNavigate();
   const [conversationList, setConversationList] = useState<Conversation[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
-  const [enableCC, setEnableCC] = useState(false);
+  const [enableCC, setEnableCC] = useState(true);
   const [isChanged, setIsChanged] = useState(false);
   const [primaryEmail, setPrimaryEmail] = useState<EmailIntegration>();
   const [files, setFiles] = useState<any>([]);
@@ -302,7 +302,6 @@ const DetailTicket = (props: DetailTicketProps) => {
               getPrimaryEmail();
             }
             setTicket(data.data);
-            setEnableCC(data.data.ccEmails?.length > 0);
           } else {
             show(t("messages:error.get_ticket"), { isError: true });
           }
@@ -568,9 +567,9 @@ const DetailTicket = (props: DetailTicketProps) => {
       closedTicket: closeTicket,
       id: ticket?._id,
       attachmentIds: files,
-      bccEmails: values.BCC,
+      bccEmails: enableCC ? values.BCC : [],
       description: wrapImageWithAnchorTag(values.content),
-      ccEmails: values.CC,
+      ccEmails: enableCC ? values.CC : [],
       fromEmail: {
         name: findItemConfigEmail.obj.name,
         email: findItemConfigEmail.obj.supportEmail,
@@ -762,7 +761,7 @@ const DetailTicket = (props: DetailTicketProps) => {
                             <CollapseList listChat={listChat} />
                           </div>
                           <div className="w-full flex justify-between gap-2 flex-wrap ">
-                            <div className="flex  flex-col ">
+                            <div className="flex  flex-col flex-1 ">
                               <div className="md:w-[400px] xs:w-[300px]">
                                 <FormItem name="from">
                                   <BoxSelectFilter
@@ -794,35 +793,39 @@ const DetailTicket = (props: DetailTicketProps) => {
                                 </FormItem>
                               </div>
                             </div>
-                            <div className="flex flex-1 flex-col">
-                              <div
-                                className={`min-w-[300px] max-w-[400px] md:w-[400px] xs:w-[300px] ${
-                                  enableCC ? "hidden" : "block"
-                                }`}
-                              >
-                                <FormItem name="CC">
-                                  <SelectAddEmail
-                                    defaultTag={initialValues.CC}
-                                    disabled={disabled}
-                                    label="CC"
-                                    data={customersOptions}
-                                  />
-                                </FormItem>
-                              </div>
-                              <div
-                                className={`min-w-[300px] max-w-[400px] md:w-[400px] xs:w-[300px] mt-5 mb-5 ${
-                                  enableCC ? "hidden" : "block"
-                                }`}
-                              >
-                                <FormItem name="BCC">
-                                  <SelectAddEmail
-                                    defaultTag={initialValues.BCC}
-                                    disabled={disabled}
-                                    label="BCC"
-                                    data={customersOptions}
-                                  />
-                                </FormItem>
-                              </div>
+                            <div className="flex  flex-col flex-1">
+                              {enableCC ? (
+                                <div
+                                  className={`min-w-[300px] max-w-[400px] md:w-[400px] xs:w-[300px] `}
+                                >
+                                  <FormItem name="CC">
+                                    <SelectAddEmail
+                                      defaultTag={initialValues.CC}
+                                      disabled={disabled}
+                                      label="CC"
+                                      data={customersOptions}
+                                    />
+                                  </FormItem>
+                                </div>
+                              ) : (
+                                <></>
+                              )}
+                              {enableCC ? (
+                                <div
+                                  className={`min-w-[300px] max-w-[400px] md:w-[400px] xs:w-[300px] mt-5 mb-5 h-[60px]`}
+                                >
+                                  <FormItem name="BCC">
+                                    <SelectAddEmail
+                                      defaultTag={initialValues.BCC}
+                                      disabled={disabled}
+                                      label="BCC"
+                                      data={customersOptions}
+                                    />
+                                  </FormItem>
+                                </div>
+                              ) : (
+                                <></>
+                              )}
                             </div>
                           </div>
 

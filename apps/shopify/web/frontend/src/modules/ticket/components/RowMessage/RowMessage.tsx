@@ -7,11 +7,8 @@ import {
 } from "@shopify/polaris";
 import axios from "axios";
 import { filesize } from "filesize";
-import parse, { Element } from "html-react-parser";
 import fileDownload from "js-file-download";
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { isMobile } from "react-device-detect";
-import ImageZoom from "src/components/TextEditorTicket/ImageZoom";
+import { FC, useCallback, useMemo, useRef, useState } from "react";
 import useHtmlStringHeight from "src/hooks/useHtmlStringHeight";
 import { ChatItem } from "src/modules/ticket/pages/DetailTicket";
 import CollapseIcon from "~icons/material-symbols/arrow-right";
@@ -35,24 +32,6 @@ function splitText(fileName: string, maxLength: number) {
     fileName.substr(0, maxLength - extension.length) + "..." + extension;
   return shortName;
 }
-
-const parseHtml = (html: string): React.ReactNode => {
-  const options: any = {
-    replace: (domNode: Element): React.ReactNode => {
-      if (domNode.name === "img") {
-        return (
-          <ImageZoom
-            key={domNode.attribs.src}
-            src={domNode.attribs.src}
-            alt={domNode.attribs.alt}
-          />
-        );
-      }
-      return undefined; // Return undefined if we don't want to replace the node
-    },
-  };
-  return parse(html, options);
-};
 
 export const RowMessage: FC<RowMessageProps> = ({ item }) => {
   const [toggleQuote, setToggleQuote] = useState(true);
@@ -95,20 +74,6 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
 
   const handleToggle = useCallback(() => setOpen((open) => !open), []);
 
-  useEffect(() => {
-    if (isMobile) return;
-
-    const objectElement = iframeRef.current;
-    objectElement.style.height = `${heightSortChat}px`;
-  }, [sortChat, heightSortChat, isMobile]);
-  useEffect(() => {
-    if (isMobile) return;
-    if (!toggleQuote) {
-      const objectElement = iframeRefQuote.current;
-
-      objectElement.style.height = `${heightQuote}px`;
-    }
-  }, [quote, heightQuote, toggleQuote, isMobile]);
   return (
     <div className="">
       <div className=" items-center gap-3 mx-2">
@@ -177,7 +142,11 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
           )}
         </div>
       </div>
-      {isMobile ? (
+      <div
+        className="text-black text-scroll mt-5"
+        dangerouslySetInnerHTML={{ __html: sortChat }}
+      />
+      {/* {isMobile ? (
         <div
           className="text-black text-scroll mt-5"
           dangerouslySetInnerHTML={{ __html: sortChat }}
@@ -212,7 +181,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
             type="text/html"
           ></object>
         </div>
-      )}
+      )} */}
 
       {disableQuote ? (
         <></>
@@ -232,7 +201,11 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
         <></>
       ) : (
         <div>
-          {isMobile ? (
+          <div
+            className="text-black mb-2 text-scroll mt-3"
+            dangerouslySetInnerHTML={{ __html: quote }}
+          />
+          {/* {isMobile ? (
             <div
               className="text-black mb-2 text-scroll mt-3"
               dangerouslySetInnerHTML={{ __html: quote }}
@@ -247,7 +220,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
                 type="text/html"
               ></object>
             </div>
-          )}
+          )} */}
         </div>
       )}
 

@@ -40,13 +40,12 @@ interface TicketFormProps {
   initialValues?: any;
 }
 
-const validateCCEmail = (value: string[], fromEmail = ""): boolean => {
+const validateCCEmail = (value: string[], fromEmail = ""): boolean | string => {
   if (!value) return true;
   let checked = true;
   for (const item of value) {
     if (item === fromEmail) {
-      checked = false;
-      break;
+      return "false";
     }
     if (!emailRegex.test(item)) {
       checked = false;
@@ -245,7 +244,9 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
 
     form.setFieldValue(
       "content",
-      ` <div class='signature'> <br/> <br/> <br/> ${options?.obj?.signature}</div>`
+      options?.obj?.signature
+        ? `<div class='signature'> <br/> <br/> <br/> ${options?.obj?.signature}</div>`
+        : ""
     );
     setFromEmail(options.obj);
     form.validateFields();
@@ -332,9 +333,22 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
                               emailIntegrationOptions.find(
                                 (item) => item.value === getFieldValue("from")
                               )?.obj.supportEmail
-                            )
+                            ) === true
                           ) {
                             return Promise.resolve();
+                          } else if (
+                            typeof validateCCEmail(
+                              value,
+                              emailIntegrationOptions.find(
+                                (item) => item.value === getFieldValue("from")
+                              )?.obj.supportEmail
+                            ) === "string"
+                          ) {
+                            return Promise.reject(
+                              new Error(
+                                "The recipient's email must not be the same as the sender's email"
+                              )
+                            );
                           } else {
                             return Promise.reject(
                               new Error("The email address is not valid")
@@ -358,10 +372,30 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
                     label="BCC"
                     name="BCC"
                     rules={[
-                      () => ({
+                      ({ getFieldValue }) => ({
                         validator(_, value) {
-                          if (validateCCEmail(value)) {
+                          if (
+                            validateCCEmail(
+                              value,
+                              emailIntegrationOptions.find(
+                                (item) => item.value === getFieldValue("from")
+                              )?.obj.supportEmail
+                            )
+                          ) {
                             return Promise.resolve();
+                          } else if (
+                            typeof validateCCEmail(
+                              value,
+                              emailIntegrationOptions.find(
+                                (item) => item.value === getFieldValue("from")
+                              )?.obj.supportEmail
+                            ) === "string"
+                          ) {
+                            return Promise.reject(
+                              new Error(
+                                "The recipient's email must not be the same as the sender's email"
+                              )
+                            );
                           } else {
                             return Promise.reject(
                               new Error("The email address is not valid")

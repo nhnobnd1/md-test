@@ -1,7 +1,7 @@
 import { Button, Collapse, Popover } from "antd";
 import { filesize } from "filesize";
 import parse, { Element } from "html-react-parser";
-import { FC, useEffect, useMemo, useRef, useState } from "react";
+import { FC, useMemo, useRef, useState } from "react";
 import { ChatItem } from "src/modules/ticket/components/DetailTicketForm/DetailTicketForm";
 import ImageZoom from "src/modules/ticket/components/DetailTicketForm/ImageZoom";
 import UserIcon from "~icons/material-symbols/person";
@@ -74,18 +74,18 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
     return false;
   }, [quote]);
 
-  useEffect(() => {
-    const objectElement = iframeRef.current;
+  // useEffect(() => {
+  //   const objectElement = iframeRef.current;
 
-    objectElement.style.height = `${heightSortChat}px`;
-  }, [sortChat, heightSortChat]);
-  useEffect(() => {
-    if (!toggleQuote) {
-      const objectElement = iframeRefQuote.current;
+  //   objectElement.style.height = `${heightSortChat}px`;
+  // }, [sortChat, heightSortChat]);
+  // useEffect(() => {
+  //   if (!toggleQuote) {
+  //     const objectElement = iframeRefQuote.current;
 
-      objectElement.style.height = `${heightQuote}px`;
-    }
-  }, [quote, heightQuote, toggleQuote]);
+  //     objectElement.style.height = `${heightQuote}px`;
+  //   }
+  // }, [quote, heightQuote, toggleQuote]);
   const css = `
   .ant-collapse-header{
     padding:12px 16px !important;
@@ -158,11 +158,13 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
           )}
         </div>
       </div>
-      {/* <div
+      <div
         className="text-black text-scroll mt-5"
-        dangerouslySetInnerHTML={{ __html: sortChat }}
-      /> */}
-      <div ref={iframeRef}>
+        dangerouslySetInnerHTML={{
+          __html: `<div style="font-family:Helvetica;font-size:14px">${sortChat}</div>`,
+        }}
+      />
+      {/* <div ref={iframeRef}>
         <object
           className="w-full h-full border-none mt-5 "
           data={`data:text/html;charset=utf-8,${encodeURIComponent(
@@ -189,7 +191,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
           )}`}
           type="text/html"
         ></object>
-      </div>
+      </div> */}
       {disableQuote ? (
         <></>
       ) : (
@@ -213,11 +215,13 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
         <></>
       ) : (
         <div>
-          {/* <div
+          <div
             className="text-black mb-2 text-scroll mt-3"
-            dangerouslySetInnerHTML={{ __html: quote }}
-          /> */}
-          <div ref={iframeRefQuote}>
+            dangerouslySetInnerHTML={{
+              __html: `<div style="font-family:Helvetica;font-size:14px">${quote}</div>`,
+            }}
+          />
+          {/* <div ref={iframeRefQuote}>
             <object
               className="w-full h-full border-none mt-5"
               data={`data:text/html;charset=utf-8,${encodeURIComponent(
@@ -225,7 +229,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
               )}`}
               type="text/html"
             ></object>
-          </div>
+          </div> */}
         </div>
       )}
 

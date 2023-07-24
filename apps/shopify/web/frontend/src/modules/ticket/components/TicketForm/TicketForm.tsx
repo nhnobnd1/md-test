@@ -306,7 +306,9 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
     )?.obj.signature;
     (props?.innerRef as any)?.current.setFieldValue(
       "content",
-      ` <div class='signature'> <br/> <br/> <br/> ${signature}</div>`
+      signature
+        ? `<div class='signature'> <br/> <br/> <br/> ${signature}</div>`
+        : ""
     );
   }, [selectedFrom, emailIntegrationOptions]);
 
