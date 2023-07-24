@@ -7,7 +7,7 @@ import {
 } from "@moose-desk/repo";
 import { useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { catchError, map } from "rxjs";
+import { catchError, map, of } from "rxjs";
 import { MDButton } from "src/components/UI/Button/MDButton";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
@@ -66,7 +66,7 @@ const ChannelEmailCreate = () => {
                 notification.error(`${payload.supportEmail} is exist`);
               });
             }
-            return err;
+            return of(err);
           })
         );
     }
@@ -100,7 +100,7 @@ const ChannelEmailCreate = () => {
                 notification.error(`${payload.supportEmail} is exist`);
               });
             }
-            return err;
+            return of(err);
           })
         );
     },

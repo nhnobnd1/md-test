@@ -28,7 +28,6 @@ import {
 } from "src/modules/settingChannel/components/ChannelEmail/ChannelEmailForm";
 import { useFormChannelEmail } from "src/modules/settingChannel/hook/useFormChannelEmail";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
-import useFormCreateTicket from "src/modules/ticket/store/useFormCreateTicket";
 import { useAppSelector } from "src/redux/hook";
 
 const ChannelEmailUpdate = () => {
@@ -183,7 +182,7 @@ const ChannelEmailUpdate = () => {
                 notification.error(`${payload.supportEmail} is exist`);
               });
             }
-            return err;
+            return of(err);
           })
         );
     },
