@@ -345,6 +345,7 @@ export default function IndexAccountManager() {
               <ResetModalRecoveryCode
                 onOpenModalRecoveryCode={handleAcceptRequestCodes}
                 countDown={countDown}
+                loading={isFetching}
               />
             ) : null}
           </div>

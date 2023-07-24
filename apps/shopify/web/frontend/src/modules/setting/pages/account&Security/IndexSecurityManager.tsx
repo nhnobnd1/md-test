@@ -1,4 +1,11 @@
-import { useJob } from "@moose-desk/core";
+import {
+  useCountDown,
+  useJob,
+  useNavigate,
+  useSearchParams,
+  useToggle,
+  useUnMount,
+} from "@moose-desk/core";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { AccountRepository } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
@@ -14,7 +21,7 @@ import {
   TextField,
 } from "@shopify/polaris";
 import { FormikProps } from "formik";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import { catchError, map, of } from "rxjs";
@@ -22,9 +29,11 @@ import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
 import SkeletonCard from "src/components/Skelaton/SkeletonCard";
 import { validateSchemaObjectPassword } from "src/constaint/regex";
-import { getStatus2FA } from "src/modules/setting/api/api";
+import { getRecoveryCodes, getStatus2FA } from "src/modules/setting/api/api";
 import Enable2FAModal from "src/modules/setting/component/Security/Enable2FAModal";
 import { BannerPropsAccessManager } from "src/modules/setting/modal/account&Security/AccountManager";
+import { ModalRecoveryCode } from "src/modules/setting/pages/account&Security/ModalRecoveryCode";
+import { ResetModalRecoveryCode } from "src/modules/setting/pages/account&Security/ResetModalRecoveryCode";
 import styles from "./styles.module.scss";
 
 const initialValues = {
@@ -37,34 +46,43 @@ export default function IndexAccountManager() {
   const validateObject = validateSchemaObjectPassword;
   const { show } = useToast();
   const { t, i18n } = useTranslation();
-
+  const navigate = useNavigate();
+  const formRef = useRef<FormikProps<any>>(null);
+  const [searchParams] = useSearchParams();
+  const querySearch = searchParams.get("recovery");
+  const {
+    state: visibleRecoveryCodeModal,
+    off: handleCloseRecoveryCodeModal,
+    on: handleOpenRecoveryCodeModal,
+  } = useToggle(false);
+  const {
+    clearCountDown,
+    initCountdown: startCountDown,
+    state: countDown,
+  } = useCountDown({
+    initValue: 10,
+    key: "countdownRecoveryCode",
+  });
+  useEffect(() => {
+    if (!querySearch) return;
+    if (querySearch === "true") {
+      handleOpenRecoveryCodeModal();
+    }
+  }, [querySearch]);
+  useUnMount(() => clearCountDown("countdownRecoveryCode"));
+  const { data, isFetching }: any = useQuery({
+    queryKey: ["2faRecoveryCodes"],
+    queryFn: () => getRecoveryCodes(),
+    keepPreviousData: true,
+    enabled: visibleRecoveryCodeModal,
+    onSuccess: () => startCountDown("countdownRecoveryCode"),
+  });
   const [banner, setBanner] = useState<BannerPropsAccessManager>({
     status: "success",
     message: "",
     isShowBanner: false,
   });
 
-  const formRef = useRef<FormikProps<any>>(null);
-  // fetch init data
-  // const token = jose.decodeJwt(TokenManager.getToken("base_token"));
-  // const { run: fetch2FAStatus, processing } = useJob(
-  //   () => {
-  //     return AccountRepository()
-  //       .userGet2FAStatus()
-  //       .pipe(
-  //         map(({ data }) => {
-  //           setMethod({
-  //             ...method,
-  //             show: data.data.twoFactorEnabled,
-  //             method: data.data.twoFactorMethod,
-  //           });
-  //           setStatus(data.data.twoFactorStoreEnabled);
-  //           return data.data;
-  //         })
-  //       );
-  //   },
-  //   { showLoading: false }
-  // );
   const {
     data: statusSecurity,
     isLoading,
@@ -72,6 +90,7 @@ export default function IndexAccountManager() {
   }: any = useQuery({
     queryKey: [QUERY_KEY.TWO_FA_STATUS],
     queryFn: () => getStatus2FA(),
+    keepPreviousData: true,
   });
   const method = useMemo(() => {
     return {
@@ -165,7 +184,13 @@ export default function IndexAccountManager() {
   // modal
   const [open2FA, setOpen2FA] = useState(false);
   // effect
-
+  const handleCloseRecoveryCodes = useCallback(() => {
+    handleCloseRecoveryCodeModal();
+    navigate("/setting/account&security/security");
+  }, []);
+  const handleAcceptRequestCodes = useCallback(() => {
+    handleOpenRecoveryCodeModal();
+  }, []);
   return (
     <section className="page-wrap">
       <div className={styles.pageContent}>
@@ -176,10 +201,8 @@ export default function IndexAccountManager() {
           <Enable2FAModal
             open={open2FA}
             setOpen={setOpen2FA}
-            initialValue={{ ...method, status }}
             fetch2FAStatus={fetchingStatus}
-            show={show}
-            setBanner={setBanner}
+            onOpenRecoveryCode={handleOpenRecoveryCodeModal}
           />
         ) : null}
 
@@ -321,7 +344,10 @@ export default function IndexAccountManager() {
                           <Layout.Section>
                             {status ? (
                               <div className="flex items-center">
-                                <div className="mr-4">
+                                <div
+                                  className="mr-4"
+                                  style={{ whiteSpace: "pre" }}
+                                >
                                   <Text variant="bodyMd" as="span">
                                     Method :
                                   </Text>
@@ -370,19 +396,30 @@ export default function IndexAccountManager() {
                           </Layout.Section>
                         ) : null}
                         <Layout.Section>
-                          <Stack distribution="equalSpacing">
-                            <ButtonGroup>
-                              <Button
-                                onClick={() => setOpen2FA(true)}
-                                primary
-                                disabled={!status}
-                              >
-                                {method.show
-                                  ? "Change 2FA Method"
-                                  : "Enable 2FA"}
-                              </Button>
-                            </ButtonGroup>
-                          </Stack>
+                          {/* <Stack distribution="equalSpacing"> */}
+                          <ButtonGroup>
+                            <Button
+                              onClick={() => setOpen2FA(true)}
+                              primary
+                              disabled={!status}
+                            >
+                              {method.show ? "Change 2FA Method" : "Enable 2FA"}
+                            </Button>
+                          </ButtonGroup>
+
+                          {method.show ? (
+                            <div className="mt-2">
+                              <ResetModalRecoveryCode
+                                onOpenModalRecoveryCode={
+                                  handleAcceptRequestCodes
+                                }
+                                countDown={countDown}
+                                loading={isFetching}
+                              />
+                            </div>
+                          ) : null}
+
+                          {/* </Stack> */}
                         </Layout.Section>
                       </Layout>
                     </LegacyCard>
@@ -391,6 +428,13 @@ export default function IndexAccountManager() {
               </div>
             </div>
           </div>
+          <ModalRecoveryCode
+            visible={visibleRecoveryCodeModal}
+            onClose={handleCloseRecoveryCodes}
+            isFetching={isFetching}
+            listRecoveryCodes={data?.data || []}
+            countDown={countDown}
+          />
         </Layout>
       </div>
     </section>
