@@ -307,7 +307,7 @@ export const TextEditorTicket = ({
                     cb(data.urls[0], {
                       title: file.name,
                       alt: file.name,
-                      height: "200px",
+                      width: "200px",
                     });
                   });
                 }
