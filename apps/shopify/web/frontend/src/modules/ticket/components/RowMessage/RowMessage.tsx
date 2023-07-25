@@ -2,18 +2,21 @@ import {
   Button,
   Collapsible,
   Divider,
+  Icon,
   TextContainer,
   Tooltip,
 } from "@shopify/polaris";
+import { ChevronRightMinor } from "@shopify/polaris-icons";
 import axios from "axios";
 import { filesize } from "filesize";
 import fileDownload from "js-file-download";
 import { FC, useCallback, useMemo, useRef, useState } from "react";
 import { ChatItem } from "src/modules/ticket/pages/DetailTicket";
-import CollapseIcon from "~icons/material-symbols/arrow-right";
 import UserIcon from "~icons/material-symbols/person";
 import AgentIcon from "~icons/material-symbols/support-agent-sharp";
 import QuoteIcon from "~icons/octicon/ellipsis-16";
+import CollapseIcon from "~icons/material-symbols/keyboard-arrow-down-rounded";
+
 import "./RowMessage.scss";
 interface RowMessageProps {
   item: ChatItem;
@@ -59,15 +62,6 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
   }, [quote]);
 
   const [open, setOpen] = useState(false);
-
-  function shortenFilename(text: string, length: number) {
-    if (text.length <= length) {
-      return text;
-    } else {
-      const [filename, extension] = text.split(".");
-      return `${filename.slice(0, length)}...${extension}`;
-    }
-  }
 
   const handleToggle = useCallback(() => setOpen((open) => !open), []);
 
@@ -229,8 +223,14 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
             ariaControls="basic-collapsible"
             fullWidth
             textAlign="left"
-            icon={<CollapseIcon />}
-            size="medium"
+            icon={
+              <div
+                className={!open ? `-rotate-90 duration-200` : ` duration-200`}
+              >
+                <CollapseIcon fontSize={20} />
+              </div>
+            }
+            size="large"
           >
             {`${item.attachments?.length} file${
               item.attachments?.length > 1 ? "s" : ""
@@ -239,7 +239,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
           <Collapsible
             open={open}
             id="basic-collapsible"
-            transition={{ duration: "500ms", timingFunction: "ease-in-out" }}
+            transition={{ duration: "200ms", timingFunction: "ease-in-out" }}
             expandOnPrint
           >
             <TextContainer>
