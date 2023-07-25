@@ -26,7 +26,7 @@ export const ResetModalRecoveryCode = React.memo(
       on();
     };
     return (
-      <div className="d-flex align-center">
+      <div className={"d-flex align-center"}>
         {!countDown ? null : (
           <div className="mr-2">
             <Text as="span" variant="bodyMd">
@@ -34,14 +34,16 @@ export const ResetModalRecoveryCode = React.memo(
             </Text>
           </div>
         )}
-        <Button
-          plain
-          disabled={!!countDown}
-          onClick={handleOpenModalConfirm}
-          loading={loading}
-        >
-          {buttonTitle}
-        </Button>
+        <div className={styles.buttonRequest}>
+          <Button
+            plain
+            disabled={!!countDown}
+            onClick={handleOpenModalConfirm}
+            loading={loading}
+          >
+            {buttonTitle}
+          </Button>
+        </div>
 
         <Modal
           open={visible}

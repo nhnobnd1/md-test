@@ -1,4 +1,3 @@
-import { useLocation } from "@moose-desk/core";
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Button,
@@ -42,7 +41,6 @@ export const ModalRecoveryCode = React.memo(
       copy: false,
       download: false,
     });
-    const location = useLocation();
     const { subDomain } = useSubdomain();
     const { show } = useToast();
 
@@ -68,7 +66,8 @@ export const ModalRecoveryCode = React.memo(
           ...listCopyCodes,
           "\n* You can only use each code once.",
           `\n* If you need to request a new code, please access: https://${subDomain}${
-            import.meta.env.MODE === "development"
+            import.meta.env.MODE === "development" ||
+            import.meta.env.MODE === "staging"
               ? ".moosedesk.net"
               : ".moosedesk.com"
           }/setting/account&security/security?recovery=true`,
@@ -103,6 +102,7 @@ export const ModalRecoveryCode = React.memo(
         download: false,
       });
     }, [visible]);
+    console.log(import.meta.env.MODE, "env");
     return (
       <Modal
         open={visible}
