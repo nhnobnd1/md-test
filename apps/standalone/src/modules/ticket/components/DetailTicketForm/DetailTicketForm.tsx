@@ -23,7 +23,7 @@ import {
 } from "@moose-desk/repo";
 import { Select as AntSelect, Card, Divider, Skeleton } from "antd";
 import moment from "moment";
-import { useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import useToggleGlobal from "@moose-desk/core/hooks/useToggleGlobal";
@@ -54,6 +54,7 @@ import {
   getTagsTicket,
 } from "src/modules/ticket/helper/api";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
+import useFormCreateTicket from "src/modules/ticket/store/useFormCreateTicket";
 import { wrapImageWithAnchorTag } from "src/utils/localValue";
 import BackIcon from "~icons/mingcute/back-2-fill";
 import "./BoxReply.scss";
@@ -174,6 +175,8 @@ const DetailTicketForm = () => {
   const { isMobile: isTablet } = useViewport(MediaScreen.LG);
   const { isMobile } = useViewport();
   // const stateContent = useDetailTicketContent((state) => state);
+  const contentCreate = useFormCreateTicket((state) => state.content);
+
   const [isChanged, setIsChanged] = useState(false);
   const { data: dataPrimaryEmail } = useQuery({
     queryKey: ["emailIntegrationApi", id],
@@ -248,6 +251,7 @@ const DetailTicketForm = () => {
   }, [dataEmailIntegration]);
 
   const { subDomain } = useSubdomain();
+  const updateContent = useFormCreateTicket((state) => state.updateState);
 
   const { timezone } = useGlobalData(false, subDomain || "");
 
@@ -345,7 +349,7 @@ const DetailTicketForm = () => {
         to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
         tags: ticket?.tags,
         content: fromValidate?.signature
-          ? `<div class='signature'> <br/> <br/> <br/> ${fromValidate?.signature}</div>`
+          ? `<br/> <div class='divide'> - - - - - - - </div><div class='signature'>${fromValidate?.signature}</div>`
           : "",
         from: fromValidate ? from : "",
         ccEmails: ticket?.ccEmails,
@@ -364,7 +368,7 @@ const DetailTicketForm = () => {
         to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
         tags: ticket?.tags,
         content: fromValidate?.signature
-          ? `<div class='signature'> <br/> <br/> <br/> ${fromValidate?.signature}</div>`
+          ? `<br/> <div class='divide'> - - - - - - - </div><div class='signature'>${fromValidate?.signature}</div>`
           : "",
         from: fromValidate ? from : "",
         ccEmails: ticket?.ccEmails,
@@ -438,6 +442,14 @@ const DetailTicketForm = () => {
         })
       );
   });
+  const handleChangeForm = useCallback((changedValue) => {
+    if (changedValue.content) {
+      const contentSplit = changedValue.content.split('<div class="divide">');
+      updateContent({ content: contentSplit[0] });
+    } else {
+      updateContent({ content: "" });
+    }
+  }, []);
 
   const onFinish = (values: ValueForm, closeTicket = false) => {
     startLoading();
@@ -527,14 +539,15 @@ const DetailTicketForm = () => {
   };
 
   const onChangeEmailIntegration = (value: string, options: any) => {
-    const regex = /^.*?(?=<div class="signature">)/s;
-    const html = form.getFieldValue("content");
-    const result = html.match(regex) ? html.match(regex)[0] : html;
     form.setFieldValue(
       "content",
       options?.obj?.signature
-        ? `${result} <div class='signature'><br/> <br/> <br/>  ${options?.obj?.signature}</div>`
-        : ""
+        ? `${
+            contentCreate || "<br/>"
+          }<div class='divide'> - - - - - - - </div><div class='signature'>${
+            options?.obj?.signature
+          }</div>`
+        : contentCreate
     );
     form.validateFields();
   };
@@ -594,6 +607,7 @@ const DetailTicketForm = () => {
             enableReinitialize
             onFinish={onFinish}
             // onValuesChange={handleChangeForm}
+            onValuesChange={handleChangeForm}
             className="flex flex-wrap md:flex-row-reverse xs:flex-col justify-between gap-2"
           >
             <Card className=" mt-5 w-[300px] xs:hidden lg:block">
@@ -682,36 +696,36 @@ const DetailTicketForm = () => {
                               label={<div style={{ width: 35 }}>From</div>}
                               name="from"
                               labelAlign="left"
-                              rules={[
-                                {
-                                  required: true,
-                                  message: "Please input your email!",
-                                },
-                                ({ getFieldValue }) => ({
-                                  validator(_, value) {
-                                    const supportEmail =
-                                      emailIntegrationOptions.find(
-                                        (item) => item.value === value
-                                      )?.obj.supportEmail;
-                                    if (
-                                      supportEmail === getFieldValue("to") ||
-                                      getFieldValue("CC")?.includes(
-                                        supportEmail
-                                      ) ||
-                                      getFieldValue("BCC")?.includes(
-                                        supportEmail
-                                      )
-                                    ) {
-                                      return Promise.reject(
-                                        new Error(
-                                          "The recipient's email must not be the same as the sender's email"
-                                        )
-                                      );
-                                    }
-                                    return Promise.resolve();
-                                  },
-                                }),
-                              ]}
+                              // rules={[
+                              //   {
+                              //     required: true,
+                              //     message: "Please input your email!",
+                              //   },
+                              //   ({ getFieldValue }) => ({
+                              //     validator(_, value) {
+                              //       const supportEmail =
+                              //         emailIntegrationOptions.find(
+                              //           (item) => item.value === value
+                              //         )?.obj.supportEmail;
+                              //       if (
+                              //         supportEmail === getFieldValue("to") ||
+                              //         getFieldValue("CC")?.includes(
+                              //           supportEmail
+                              //         ) ||
+                              //         getFieldValue("BCC")?.includes(
+                              //           supportEmail
+                              //         )
+                              //       ) {
+                              //         return Promise.reject(
+                              //           new Error(
+                              //             "The recipient's email must not be the same as the sender's email"
+                              //           )
+                              //         );
+                              //       }
+                              //       return Promise.resolve();
+                              //     },
+                              //   }),
+                              // ]}
                             >
                               <Select
                                 onChange={onChangeEmailIntegration}

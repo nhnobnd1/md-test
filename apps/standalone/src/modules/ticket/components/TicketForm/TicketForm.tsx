@@ -34,6 +34,7 @@ import {
   getTagsTicket,
 } from "src/modules/ticket/helper/api";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
+import useFormCreateTicket from "src/modules/ticket/store/useFormCreateTicket";
 import { wrapImageWithAnchorTag } from "src/utils/localValue";
 
 interface TicketFormProps {
@@ -62,6 +63,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
   const message = useMessage();
   const notification = useNotification();
   const navigate = useNavigate();
+  const updateContent = useFormCreateTicket((state) => state.updateState);
 
   const [fromEmail, setFromEmail] = useState(primaryEmail);
   const [toEmail, setToEmail] = useState({ value: "", id: "" });
@@ -71,7 +73,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
   const { dataSaved }: any = useSaveDataGlobal();
   const { t } = useTranslation();
   const [openModalCustomer, setOpenModalCustomer] = useState(false);
-  // const stateCreate = useFormCreateTicket((state) => state);
+  const contentCreate = useFormCreateTicket((state) => state.content);
 
   const { data: dataCustomers, refetch: refetchCustomer } = useQuery({
     queryKey: ["getCustomers"],
@@ -209,7 +211,12 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
   });
 
   const handleChangeForm = useCallback((changedValue) => {
-    // stateCreate.updateState(changedValue);
+    if (changedValue.content) {
+      const contentSplit = changedValue.content.split('<div class="divide">');
+      updateContent({ content: contentSplit[0] });
+    } else {
+      updateContent({ content: "" });
+    }
   }, []);
   const onFinish = (values: any) => {
     const tags: string[] = values.tags;
@@ -239,15 +246,15 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
   };
 
   const onChangeEmailIntegration = (value: string, options: any) => {
-    const regex = /^.*?(?=<div class="signature">)/s;
-    const html = form.getFieldValue("content");
-    const result = html.match(regex) ? html.match(regex)[0] : html;
-
     form.setFieldValue(
       "content",
       options?.obj?.signature
-        ? `<div class='signature'> <br/> <br/> <br/> ${options?.obj?.signature}</div>`
-        : ""
+        ? `${
+            contentCreate || "<br/>"
+          }<div class='divide'> - - - - - - - </div><div class='signature'>${
+            options?.obj?.signature
+          }</div>`
+        : contentCreate
     );
     setFromEmail(options.obj);
     form.validateFields();
