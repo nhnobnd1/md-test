@@ -1,0 +1,10 @@
+@import "../../../../../styles/mixin.scss";
+.md-card {
+    @include mq(md, 'max') {
+        border: none;
+    }
+    
+}
+.px-24-mb {
+    padding: 0 24px;
+}

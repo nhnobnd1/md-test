@@ -1,15 +1,42 @@
+@import "../../../../../styles/variables.scss";
 .General {
   .card-contact {
-    border-radius: 8px;
-    border: 1px solid #dcdcdc;
+    border-top: 1px solid #dcdcdc;
 
     .header {
-      padding: 8px 16px;
-      border-bottom: 1px solid #dcdcdc;
+      padding-top: 16px;
+      padding-bottom: 12px;
+      // padding: 8px 16px;
+      // border-bottom: 1px solid #dcdcdc;
     }
 
     .body {
-      padding: 16px;
+      // padding: 16px;
+      padding-bottom: 16px;
     }
   }
+  .change-logo {
+    .Polaris-Button--outline {
+      border-color: $primary;
+      color: $primary;
+    }
+  }
+  
+}
+.wrap-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-height: 300px;
+  img {
+    object-fit: contain;
+    max-height: 300px;
+    border-radius: 5px;
+  }
+}
+.wrap-spinner {
+  height: 300px;
+  display: flex;
+    align-items: center;
+    justify-content: center;
 }

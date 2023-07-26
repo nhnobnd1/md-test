@@ -60,8 +60,8 @@ const Widgets = (props: WidgetsProps) => {
   const [selected, setSelected] = useState(0);
   const { toggle: updateForm } = useToggle();
   const formRef = useRef<FormikProps<any>>(null);
-  const widgetSetting = useWidgetSetting((state) => state.widgetSetting);
   const { banner, show: showBanner, close: closeBanner } = useBanner();
+  const widgetSetting = useWidgetSetting((state) => state.widgetSetting);
   const updateWidgetSetting = useWidgetSetting(
     (state) => state.updateWidgetSetting
   );
@@ -117,7 +117,6 @@ const Widgets = (props: WidgetsProps) => {
       showLoading: true,
     }
   );
-
   const { run: updateHelpWidgetApi } = useJob(
     (id: string, object: any) => {
       return HelpWidgetRepository()
