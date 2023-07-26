@@ -21,7 +21,6 @@ import styles from "./styles.module.scss";
 const CreateTicket = () => {
   const { isMobile } = useViewport(MediaScreen.LG);
   const { visible, setVisible } = useToggleGlobal();
-  // const stateCreate = useFormCreateTicket((state) => state);
 
   const { data: dataPrimaryEmail, isLoading: processing } = useQuery({
     queryKey: ["emailIntegrationApi"],
@@ -54,7 +53,7 @@ const CreateTicket = () => {
     return {
       priority: Priority.MEDIUM,
       content: primaryEmail?.signature
-        ? `<div class='signature'> <br/> <br/> <br/> ${primaryEmail?.signature}</div>`
+        ? `<br/> <div class='divide'> - - - - - - - </div><div class='signature'>${primaryEmail?.signature}</div>`
         : "",
       to: "",
       tags: [],

@@ -7,7 +7,7 @@ import {
 } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import { Button, FormLayout, Link, Select, TextField } from "@shopify/polaris";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import { catchError, map, of } from "rxjs";
@@ -28,6 +28,7 @@ import {
   getTagsTicket,
 } from "src/modules/ticket/helper/api";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
+import useFormCreateTicket from "src/modules/ticket/store/useFormCreateTicket";
 import useSelectFrom from "src/modules/ticket/store/useSelectFrom";
 import { wrapImageWithAnchorTag } from "src/utils/localValue";
 import * as Yup from "yup";
@@ -68,7 +69,28 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
   const [files, setFiles] = useState<any>([]);
   const [loadingButton, setLoadingButton] = useState(false);
   const selectedFrom = useSelectFrom((state) => state.selected);
+  const contentCreate = useFormCreateTicket((state) => state.content);
+  const updateContent = useFormCreateTicket((state) => state.updateState);
 
+  const { data: dataEmailIntegration } = useQuery({
+    queryKey: ["getListEmailIntegration"],
+    queryFn: () => getListEmailIntegration({ page: 1, limit: 500 }),
+    retry: 3,
+    staleTime: 10000,
+    onError: () => {
+      show(t("messages:error.get_customer"), { isError: true });
+    },
+  });
+  const emailIntegrationOptions = useMemo(() => {
+    if (!dataEmailIntegration) return [];
+    return dataEmailIntegration.map((item) => {
+      return {
+        label: `${item.name} - ${item.supportEmail}`,
+        value: item._id,
+        obj: item,
+      };
+    });
+  }, [dataEmailIntegration]);
   const TicketFormSchema = useMemo(() => {
     if (enableCC)
       return Yup.object().shape({
@@ -163,7 +185,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
           return true;
         }),
     });
-  }, [enableCC]);
+  }, [enableCC, emailIntegrationOptions]);
 
   const fetchAgents = useCallback(
     (params: LoadMoreValue) => {
@@ -251,26 +273,6 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
     }));
   }, [dataTags]);
 
-  const { data: dataEmailIntegration } = useQuery({
-    queryKey: ["getListEmailIntegration"],
-    queryFn: () => getListEmailIntegration({ page: 1, limit: 500 }),
-    retry: 3,
-    staleTime: 10000,
-    onError: () => {
-      show(t("messages:error.get_customer"), { isError: true });
-    },
-  });
-  const emailIntegrationOptions = useMemo(() => {
-    if (!dataEmailIntegration) return [];
-    return dataEmailIntegration.map((item) => {
-      return {
-        label: `${item.name} - ${item.supportEmail}`,
-        value: item._id,
-        obj: item,
-      };
-    });
-  }, [dataEmailIntegration]);
-
   const { data: dataCustomers } = useQuery({
     queryKey: ["getCustomers"],
     queryFn: () => getListCustomerApi({ page: 1, limit: 500 }),
@@ -330,6 +332,15 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
   const handleClosePopup = () => {
     closePopup();
   };
+
+  const handleChangeForm = useCallback((changedValue) => {
+    if (changedValue.content) {
+      const contentSplit = changedValue.content.split('<div class="divide">');
+      updateContent({ content: contentSplit[0] });
+    } else {
+      updateContent({ content: undefined });
+    }
+  }, []);
   const css = `
   .Polaris-Label{
     width: 100%;
@@ -340,13 +351,21 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
     const signature = emailIntegrationOptions.find(
       (item) => item.value === selectedFrom
     )?.obj.signature;
+
     (props?.innerRef as any)?.current.setFieldValue(
       "content",
       signature
-        ? `<div class='signature'> <br/> <br/> <br/> ${signature}</div>`
-        : ""
+        ? `${
+            contentCreate || "<br/>"
+          }<div class='divide'> - - - - - - - </div><div class='signature'>${signature}</div>`
+        : contentCreate
     );
   }, [selectedFrom, emailIntegrationOptions]);
+  useEffect(() => {
+    return () => {
+      updateContent({ content: undefined });
+    };
+  }, []);
 
   return (
     <Form
@@ -356,6 +375,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
       onSubmit={() => {
         onFinish();
       }}
+      onValuesChange={handleChangeForm}
     >
       <style scoped>{css}</style>
       <FormLayout>

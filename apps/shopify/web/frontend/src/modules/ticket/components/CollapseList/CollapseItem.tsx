@@ -2,7 +2,7 @@ import { Button, Collapsible, LegacyCard } from "@shopify/polaris";
 import { FC, useCallback, useState } from "react";
 import { RowMessage } from "src/modules/ticket/components/RowMessage";
 import { ChatItem } from "src/modules/ticket/pages/DetailTicket";
-import CollapseIcon from "~icons/material-symbols/arrow-right";
+import CollapseIcon from "~icons/material-symbols/keyboard-arrow-down-rounded";
 import AttachIcon from "~icons/mingcute/attachment-2-line";
 
 interface CollapseItemProps {
@@ -26,13 +26,20 @@ export const CollapseItem: FC<CollapseItemProps> = ({
         >
           <Button
             plain
+            monochrome
             ariaExpanded={open}
             ariaControls="basic-collapsible"
             textAlign="left"
-            icon={<CollapseIcon />}
-            size="medium"
+            icon={
+              <div
+                className={!open ? `-rotate-90 duration-200` : ` duration-200`}
+              >
+                <CollapseIcon fontSize={20} />
+              </div>
+            }
+            size="large"
           ></Button>
-          <div className="flex justify-between items-center w-full flex-wrap overflow-scroll">
+          <div className="flex justify-between items-center w-full flex-wrap overflow-auto">
             <div className="flex gap-2 items-center flex-wrap">
               <span className="font-bold">{item.name}</span>
               <span className="text-gray-500 text-xs">({item.email})</span>

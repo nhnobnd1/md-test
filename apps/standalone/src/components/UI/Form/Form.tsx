@@ -48,7 +48,7 @@ export const Form = ({
       {loadForm && enableLoadForm ? (
         <Loading insteadView spinning={true} />
       ) : (
-        <AntForm {...(props as any)} form={form} />
+        <AntForm {...(props as any)} form={form} scrollToFirstError={true} />
       )}
     </div>
   );

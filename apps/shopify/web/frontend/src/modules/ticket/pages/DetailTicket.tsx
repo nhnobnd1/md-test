@@ -50,7 +50,7 @@ import { PriceLookupMinor } from "@shopify/polaris-icons";
 import classNames from "classnames";
 import { FormikProps } from "formik";
 import moment from "moment";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQueryClient } from "react-query";
 import { catchError, map, of } from "rxjs";
@@ -61,7 +61,6 @@ import BoxSelectFilter from "src/components/Modal/ModalFilter/BoxSelectFilter";
 import SelectAddEmail from "src/components/SelectAddEmail/SelectAddEmail";
 import SelectAddTag from "src/components/SelectAddTag/SelectAddTag";
 import { TextEditorTicket } from "src/components/TextEditorTicket";
-import useDeepEffect from "src/hooks/useDeepEffect";
 import useGlobalData from "src/hooks/useGlobalData";
 import useScreenType from "src/hooks/useScreenType";
 import { useSubdomain } from "src/hooks/useSubdomain";
@@ -75,6 +74,8 @@ import { wrapImageWithAnchorTag } from "src/utils/localValue";
 import * as Yup from "yup";
 import FaMailReply from "~icons/fa/mail-reply";
 
+import useDeepEffect from "src/hooks/useDeepEffect";
+import useFormCreateTicket from "src/modules/ticket/store/useFormCreateTicket";
 import BackIcon from "~icons/mingcute/back-2-fill";
 import styles from "./style.module.scss";
 export interface ChatItem {
@@ -127,6 +128,8 @@ const DetailTicket = (props: DetailTicketProps) => {
   const isMobileOrTablet = Boolean(screenWidth <= MediaScreen.LG);
   const selectedFrom = useSelectFrom((state) => state.selected);
   // detail ticket
+  const contentCreate = useFormCreateTicket((state) => state.content);
+  const updateContent = useFormCreateTicket((state) => state.updateState);
   const [agents, setAgents] = useState<Agent[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const { visible, setVisible } = useToggleGlobal();
@@ -403,9 +406,7 @@ const DetailTicket = (props: DetailTicketProps) => {
         priority: ticket?.priority,
         to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
         tags: ticket?.tags,
-        content: fromValidate?.obj?.signature
-          ? ` <div class='signature'> <br/> <br/> <br/> ${fromValidate?.obj?.signature}</div>`
-          : "",
+        content: "",
         from: from,
         ccEmails: ticket?.ccEmails,
         CC: ticket?.ccEmails?.map((item) => {
@@ -422,9 +423,7 @@ const DetailTicket = (props: DetailTicketProps) => {
         priority: ticket?.priority,
         to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
         tags: ticket?.tags,
-        content: fromValidate?.obj?.signature
-          ? ` <div class='signature'> <br/> <br/> <br/> ${fromValidate?.obj?.signature}</div>`
-          : "",
+        content: "",
         from: from,
         ccEmails: ticket?.ccEmails,
         CC: conversationList[conversationList.length - 1]?.ccEmails?.map(
@@ -509,7 +508,7 @@ const DetailTicket = (props: DetailTicketProps) => {
         // .email("The email address is not valid")
         .nullable(),
     });
-  }, [enableCC]);
+  }, [enableCC, emailIntegrationOptions]);
 
   // useMount(() => {
   //   updateForm();
@@ -632,8 +631,17 @@ const DetailTicket = (props: DetailTicketProps) => {
   const handleToggleSearch = () => {
     setVisible(!visible);
   };
+  const handleChangeForm = useCallback((changedValue) => {
+    if (changedValue.content) {
+      const contentSplit = changedValue.content.split('<div class="divide">');
+      updateContent({ content: contentSplit[0] });
+    } else {
+      updateContent({ content: undefined });
+    }
+  }, []);
   useUnMount(() => {
     setVisible(false);
+    updateContent({ content: undefined });
   });
 
   useDeepEffect(() => {
@@ -643,8 +651,10 @@ const DetailTicket = (props: DetailTicketProps) => {
     formRef?.current?.setFieldValue(
       "content",
       signature
-        ? `<div class='signature'> <br/> <br/> <br/> ${signature}</div>`
-        : ""
+        ? `${
+            contentCreate || "<br/>"
+          }<div class='divide'> - - - - - - - </div><div class='signature'>${signature}</div>`
+        : contentCreate
     );
   }, [selectedFrom, emailIntegrationOptions]);
 
@@ -727,6 +737,7 @@ const DetailTicket = (props: DetailTicketProps) => {
                       enableReinitialize
                       validationSchema={DetailTicketFormSchema}
                       onSubmit={() => {}}
+                      onValuesChange={handleChangeForm}
                     >
                       <div className="flex flex-wrap  md:flex-row-reverse xs:flex-col justify-between">
                         <div

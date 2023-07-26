@@ -1,13 +1,13 @@
 import { create } from "zustand";
 
 interface TicketCreateState {
-  content: string;
+  content: string | undefined;
   updateState(object: any): void;
   resetState(): void;
 }
 
 const useFormCreateTicket = create<TicketCreateState>()((set) => ({
-  content: "",
+  content: undefined,
 
   updateState: (object) =>
     set((state) => ({
