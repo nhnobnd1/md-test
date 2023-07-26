@@ -39,13 +39,18 @@ export const ViewWidget = (props: ViewWidgetProps) => {
   return (
     <div className="ViewWidget  xs:w-[300px] sm:w-[370px] md:w-[400px]">
       <div
-        className="header h-[150px]"
+        className="header"
         style={{ backgroundColor: data.headerBackgroundColor }}
       >
+        {data?.logo && (
+          <img className="logo" src={data?.logo} alt="logo-widget" />
+        )}
+
         <h1
           className="title"
           style={{
             color: data.headerTextColor,
+            fontSize: data?.logo ? 20 : 28,
           }}
         >
           {data.titleText}
