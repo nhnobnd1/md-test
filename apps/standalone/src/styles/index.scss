@@ -189,3 +189,14 @@ select {
 .ant-select-selection-placeholder {
   font-size: 14px !important;
 }
+.py-16-12 {
+  padding: 16px 0;
+  margin-bottom: 0;
+  @include mq(md, "max"){
+    padding: 12px 0;
+  }
+}
+.btn-outline {
+  border: 1px solid $primary;
+  color: $primary;
+}

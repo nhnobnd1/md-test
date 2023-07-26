@@ -39,13 +39,18 @@ export const ViewWidget = (props: ViewWidgetProps) => {
   return (
     <div className="ViewWidget  xs:w-[300px] sm:w-[370px] md:w-[400px]">
       <div
-        className="header h-[150px]"
+        className="header"
         style={{ backgroundColor: data.headerBackgroundColor }}
       >
+        {data?.logo && (
+          <img className="logo" src={data?.logo} alt="logo-widget" />
+        )}
+
         <h1
           className="title"
           style={{
             color: data.headerTextColor,
+            fontSize: data?.logo ? 20 : 28,
           }}
         >
           {data.titleText}
@@ -71,24 +76,31 @@ export const ViewWidget = (props: ViewWidgetProps) => {
                   <FormLayout>
                     <FormItem name="name">
                       <TextField
-                        label="Your name"
+                        label="Your Name"
                         autoComplete="off"
+                        placeholder="Your Name"
                       ></TextField>
                     </FormItem>
                     <FormItem name="email">
                       <TextField
                         label="Email Address"
                         autoComplete="off"
+                        placeholder="Email Address"
                       ></TextField>
                     </FormItem>
                     <FormItem name="subject">
-                      <TextField label="Subject" autoComplete="off"></TextField>
+                      <TextField
+                        label="Subject"
+                        autoComplete="off"
+                        placeholder="Subject"
+                      ></TextField>
                     </FormItem>
                     <FormItem name="description">
                       <TextField
                         label="Description"
                         autoComplete="off"
                         multiline={3}
+                        placeholder="Description"
                       ></TextField>
                     </FormItem>
                     {data.allowAttach && (

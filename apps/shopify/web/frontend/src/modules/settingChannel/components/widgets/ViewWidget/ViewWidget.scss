@@ -11,20 +11,28 @@
     top: 0;
     left: 0;
     right: 0;
+    padding: 24px;
+    height: 120px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    .logo {
+      height: 32px;
+      width: fit-content;
+    }
     .title {
       @apply whitespace-nowrap overflow-hidden truncate font-semibold;
-      padding-top: 20px;
-      padding-bottom: 10px;
-      padding-left: 20px;
       font-size: 20px;
       max-width: 350px;
+      line-height: initial;
+
     }
   }
 
   .content {
     padding-bottom: 16px;
     position: relative;
-    padding-top: 70px;
+    padding-top: 90px;
     .form-demo {
       max-width: 350px;
       margin: 20px;
@@ -44,4 +52,7 @@
       }
     }
   }
+}
+.header-title {
+  font-size: 20px;
 }

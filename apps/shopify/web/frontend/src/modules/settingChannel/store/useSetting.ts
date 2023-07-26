@@ -16,6 +16,7 @@ interface WidgetSetting {
   buttonAppearanceColor: string;
   textButtonAppearanceColor: string;
   isFormContact: boolean;
+  logo?: string;
 }
 
 interface SettingState {
@@ -39,6 +40,7 @@ export const initialDefaultWidget: WidgetSetting = {
   buttonAppearanceColor: "#10888f",
   textButtonAppearanceColor: "white",
   isFormContact: true,
+  logo: "https://md-ticket-file-upload.s3.amazonaws.com/74147922213/1690352625709-Group1.png",
 };
 
 const useWidgetSetting = create<SettingState>()((set) => ({

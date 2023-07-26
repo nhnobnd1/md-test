@@ -1,10 +1,21 @@
-import { Checkbox, FormLayout, Text, TextField } from "@shopify/polaris";
+import {
+  Button,
+  Checkbox,
+  FormLayout,
+  LegacyStack,
+  Text,
+  TextField,
+} from "@shopify/polaris";
+import { Crisp } from "crisp-sdk-web";
 import FormItem from "src/components/Form/Item";
 import "./General.scss";
-
 interface GeneralProps {}
 
 const General = (props: GeneralProps) => {
+  const handleContactSupport = () => {
+    Crisp.chat.open();
+    Crisp.message.send("text", "Hi, I'd like to add logo to widget header");
+  };
   return (
     <div className="General">
       <FormLayout>
@@ -43,6 +54,17 @@ const General = (props: GeneralProps) => {
           </div>
         </div>
       </FormLayout>
+      <div className="change-logo">
+        <LegacyStack vertical>
+          <Text variant="bodyMd" as="p">
+            Add your brand logo into MooseDesk Widget
+          </Text>
+          <Button outline onClick={handleContactSupport}>
+            Replace Logo
+          </Button>
+        </LegacyStack>
+      </div>
+      {/* <UploadLogo widget={widget} visible={visible} onClose={off} /> */}
     </div>
   );
 };
