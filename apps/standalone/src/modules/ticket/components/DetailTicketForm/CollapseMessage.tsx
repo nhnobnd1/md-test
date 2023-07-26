@@ -1,8 +1,12 @@
 import { Button, Collapse, Divider } from "antd";
 import { FC, useState } from "react";
+import { MDButton } from "src/components/UI/Button/MDButton";
 import { ChatItem } from "src/modules/ticket/components/DetailTicketForm/DetailTicketForm";
 import { RowMessage } from "src/modules/ticket/components/DetailTicketForm/RowMessage";
+import ForwardIcon from "~icons/ion/forward";
 import AttachIcon from "~icons/mingcute/attachment-2-line";
+
+import useForwardTicket from "src/modules/ticket/store/useForwardTicket";
 import "./BoxReply.scss";
 interface CollapseMessageProps {
   listChat: any;
@@ -14,7 +18,14 @@ export const CollapseMessage: FC<CollapseMessageProps> = ({ listChat }) => {
   const handleShowMiddleItems = () => {
     setShowMiddleItems(!showMiddleItems);
   };
-
+  const updateChatItem = useForwardTicket((state) => state.updateChatItem);
+  const handleForward = (e: any, item: ChatItem) => {
+    e.stopPropagation();
+    updateChatItem(item);
+    setTimeout(() => {
+      window.scrollTo(0, document.body.scrollHeight);
+    }, 0);
+  };
   return listChat.length > 4 ? (
     <Collapse
       defaultActiveKey={listChat.slice(-2).map((item: ChatItem) => item.id)}
@@ -38,6 +49,17 @@ export const CollapseMessage: FC<CollapseMessageProps> = ({ listChat }) => {
                 )}
 
                 <span>{item.time}</span>
+                <MDButton
+                  onClick={(e) => {
+                    handleForward(e, item);
+                  }}
+                  type="text"
+                  icon={
+                    <span className="translate-y-[3px]">
+                      <ForwardIcon fontSize={14} />
+                    </span>
+                  }
+                ></MDButton>
               </div>
             </div>
           }
@@ -81,6 +103,17 @@ export const CollapseMessage: FC<CollapseMessageProps> = ({ listChat }) => {
                   )}
 
                   <span>{item.time}</span>
+                  <MDButton
+                    onClick={(e) => {
+                      handleForward(e, item);
+                    }}
+                    type="text"
+                    icon={
+                      <span className="translate-y-[3px]">
+                        <ForwardIcon fontSize={14} />
+                      </span>
+                    }
+                  ></MDButton>
                 </div>
               </div>
             }
@@ -108,6 +141,17 @@ export const CollapseMessage: FC<CollapseMessageProps> = ({ listChat }) => {
                   )}
 
                   <span>{item.time}</span>
+                  <MDButton
+                    onClick={(e) => {
+                      handleForward(e, item);
+                    }}
+                    type="text"
+                    icon={
+                      <span className="translate-y-[3px]">
+                        <ForwardIcon fontSize={14} />
+                      </span>
+                    }
+                  ></MDButton>
                 </div>
               </div>
             }
@@ -140,6 +184,17 @@ export const CollapseMessage: FC<CollapseMessageProps> = ({ listChat }) => {
                 )}
 
                 <span>{item.time}</span>
+                <MDButton
+                  onClick={(e) => {
+                    handleForward(e, item);
+                  }}
+                  type="text"
+                  icon={
+                    <span className="translate-y-[3px]">
+                      <ForwardIcon fontSize={14} />
+                    </span>
+                  }
+                ></MDButton>
               </div>
             </div>
           }

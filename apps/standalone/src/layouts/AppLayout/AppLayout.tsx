@@ -516,7 +516,7 @@ export const AppLayout = () => {
         <div
           className="md-layout-content"
           style={{
-            maxHeight: "calc(100vh - 64px)",
+            // maxHeight: "calc(100vh - 64px)",
             overflow: !collapsed && isMobile ? "hidden" : "auto",
             background: "#F0F2F5",
           }}

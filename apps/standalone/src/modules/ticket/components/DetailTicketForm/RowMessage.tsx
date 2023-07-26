@@ -53,10 +53,8 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
 
   return (
     <div className="">
-      {/* <style scoped>{css}</style> */}
       <div className=" items-center gap-3 ">
         <div className="flex items-end gap-3 ">
-          {/* <h2 style={{ color: "black", margin: 0 }}>{item.name}</h2> */}
           {item?.incoming ? (
             <UserIcon fontSize={24} />
           ) : (
@@ -66,14 +64,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
             {item.typeChat ? item.typeChat : "replied"}
           </span>
         </div>
-        {/* <div className="flex gap-3 justify-between mt-2">
-          <span style={{ color: "black", fontSize: 12 }}>
-            From: {item.email}
-          </span>
-        </div> */}
-        {/* <div className="flex gap-3 justify-between mt-2">
-          <span className="text-xs">{item.time}</span>
-        </div> */}
+
         <div className="flex gap-3  mt-2 flex-wrap">
           <span style={{ color: "black", fontSize: 12 }}>
             <span style={{ fontWeight: "bold" }}>To </span>: {item.toEmail}
@@ -124,34 +115,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
           __html: `<div style="font-family:Helvetica;font-size:14px">${sortChat}</div>`,
         }}
       />
-      {/* <div ref={iframeRef}>
-        <object
-          className="w-full h-full border-none mt-5 "
-          data={`data:text/html;charset=utf-8,${encodeURIComponent(
-            `<div style="font-family:Helvetica;font-size:14px"><style>
-            ::-webkit-scrollbar {
-  width: 16px;
-}
 
-::-webkit-scrollbar-track {
-  background-color: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: #FA7D00;
-  border-radius: 20px;
-  border: 6px solid transparent;
-  background-clip: content-box;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background-color:#FF9326;
-}
-            </style>${sortChat}</div>`
-          )}`}
-          type="text/html"
-        ></object>
-      </div> */}
       {disableQuote ? (
         <></>
       ) : (
@@ -181,15 +145,6 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
               __html: `<div style="font-family:Helvetica;font-size:14px">${quote}</div>`,
             }}
           />
-          {/* <div ref={iframeRefQuote}>
-            <object
-              className="w-full h-full border-none mt-5"
-              data={`data:text/html;charset=utf-8,${encodeURIComponent(
-                `<div style="font-family:Helvetica;font-size:14px">${quote}</div>`
-              )}`}
-              type="text/html"
-            ></object>
-          </div> */}
         </div>
       )}
 

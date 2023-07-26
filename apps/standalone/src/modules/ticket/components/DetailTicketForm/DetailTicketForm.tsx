@@ -7,6 +7,7 @@ import {
   useNavigate,
   useParams,
   useToggle,
+  useUnMount,
 } from "@moose-desk/core";
 import {
   Agent,
@@ -21,12 +22,13 @@ import {
   priorityOptions,
   statusOptions,
 } from "@moose-desk/repo";
-import { Select as AntSelect, Card, Divider, Skeleton } from "antd";
+import { Select as AntSelect, Card, Divider, Skeleton, Upload } from "antd";
 import moment from "moment";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import useToggleGlobal from "@moose-desk/core/hooks/useToggleGlobal";
+import { uniqBy } from "lodash-es";
 import { useTranslation } from "react-i18next";
 import { useQuery, useQueryClient } from "react-query";
 import { catchError, map, of } from "rxjs";
@@ -43,6 +45,7 @@ import useMessage from "src/hooks/useMessage";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import useViewport from "src/hooks/useViewport";
 import { CollapseMessage } from "src/modules/ticket/components/DetailTicketForm/CollapseMessage";
+import { AutoSelect } from "src/modules/ticket/components/TicketForm/AutoSelect";
 import { SelectTag } from "src/modules/ticket/components/TicketForm/SelectTag";
 import {
   emailIntegrationApi,
@@ -55,7 +58,10 @@ import {
 } from "src/modules/ticket/helper/api";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import useFormCreateTicket from "src/modules/ticket/store/useFormCreateTicket";
+import useForwardTicket from "src/modules/ticket/store/useForwardTicket";
 import { wrapImageWithAnchorTag } from "src/utils/localValue";
+import ForwardIcon from "~icons/ion/forward";
+import ReplyIcon from "~icons/ion/reply";
 import BackIcon from "~icons/mingcute/back-2-fill";
 import "./BoxReply.scss";
 
@@ -68,6 +74,7 @@ interface ValueForm {
   content: string;
   tags?: string[];
   from?: string;
+  to?: string;
 }
 
 export interface ChatItem {
@@ -103,7 +110,8 @@ const DetailTicketForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-
+  const { state: send, on: openSend, off: closeSend } = useToggle();
+  const [isForward, setIsForward] = useState(false);
   const [enableCC, setEnableCC] = useState(true);
   const { data: dataTicket, isLoading: processing } = useQuery({
     queryKey: ["getTicket", id],
@@ -176,6 +184,9 @@ const DetailTicketForm = () => {
   const { isMobile } = useViewport();
   // const stateContent = useDetailTicketContent((state) => state);
   const contentCreate = useFormCreateTicket((state) => state.content);
+  const chatItemForward = useForwardTicket((state) => state.chatItem);
+  const clickForward = useForwardTicket((state) => state.clickForward);
+  const updateChatItem = useForwardTicket((state) => state.updateChatItem);
 
   const [isChanged, setIsChanged] = useState(false);
   const { data: dataPrimaryEmail } = useQuery({
@@ -196,6 +207,7 @@ const DetailTicketForm = () => {
   }, [dataPrimaryEmail]);
 
   const [files, setFiles] = useState<any>([]);
+  const [fileForward, setFileForward] = useState<any>([]);
   const [loadingButton, setLoadingButton] = useState(false);
   const { t } = useTranslation();
   const {
@@ -339,7 +351,6 @@ const DetailTicketForm = () => {
     const fromValidate = dataEmailIntegration?.find(
       (item) => item._id === from
     );
-    if (!fromValidate) return;
 
     if (conversationList.length === 0) {
       return {
@@ -453,13 +464,15 @@ const DetailTicketForm = () => {
 
   const onFinish = (values: ValueForm, closeTicket = false) => {
     startLoading();
+    closeSend();
+    setIsForward(false);
     const findItemConfigEmail = emailIntegrationOptions.find(
       (item: any) => item.value === values.from
     );
     const dataPost: any = {
       closedTicket: closeTicket,
       id: ticket?._id,
-      attachmentIds: files,
+      attachmentIds: [...files, ...fileForward],
       bccEmails: enableCC ? values.BCC : [],
       description: wrapImageWithAnchorTag(values.content),
       ccEmails: enableCC ? values.CC : [],
@@ -469,16 +482,23 @@ const DetailTicketForm = () => {
       },
       senderConfigId: values.from,
 
-      toEmails: [
-        {
-          name: primaryEmail
-            ? ticket?.fromEmail.name
-            : ticket?.toEmails[0].name,
-          email: primaryEmail
-            ? ticket?.fromEmail.email
-            : ticket?.toEmails[0].email,
-        },
-      ],
+      toEmails: isForward
+        ? [
+            {
+              name: "",
+              email: values.to,
+            },
+          ]
+        : [
+            {
+              name: primaryEmail
+                ? ticket?.fromEmail.name
+                : ticket?.toEmails[0].name,
+              email: primaryEmail
+                ? ticket?.fromEmail.email
+                : ticket?.toEmails[0].email,
+            },
+          ],
     };
     postReplyApi(dataPost);
 
@@ -493,20 +513,30 @@ const DetailTicketForm = () => {
       ids: [ticket?._id as string],
     });
     setFiles([]);
+    setFileForward([]);
     form.setFieldValue("content", "");
   };
-  const handleCloseTicket = () => {
-    startLoading();
-    form.setFieldValue("status", "RESOLVED");
-    queryClient.setQueryData(["getTicket", id], (oldData: any) => ({
-      ...oldData,
-      status: "RESOLVED",
-    }));
+  const handleCloseTicket = async () => {
+    try {
+      startLoading();
+      const test = await form.validateFields();
+      if (test) {
+        form.setFieldValue("status", "RESOLVED");
+        queryClient.setQueryData(["getTicket", id], (oldData: any) => ({
+          ...oldData,
+          status: "RESOLVED",
+        }));
 
-    onFinish(form.getFieldsValue(), true);
+        onFinish(form.getFieldsValue(), true);
+      }
+    } catch (e) {
+      message.error(t("messages:error.something_went_wrong"));
+      stopLoading();
+    }
   };
   const handleReopenTicket = () => {
     startLoading();
+
     const values = form.getFieldsValue();
     form.setFieldValue("status", "OPEN");
 
@@ -559,6 +589,41 @@ const DetailTicketForm = () => {
     }
   }, [enableCC]);
 
+  useEffect(() => {
+    if (chatItemForward) {
+      setIsForward(true);
+      setFileForward([
+        ...new Set(chatItemForward?.attachments?.map((item) => item?._id)),
+      ]);
+      form.setFieldValue(
+        "content",
+        `
+      <br/>
+      <br/>
+      <div class='md_forward'>
+         <h3>---- Forwarded message ----</h3>
+         <div>
+            <div class='md_attr' style='color:#888'>
+            From: <strong>${chatItemForward.name}</strong> (${chatItemForward.email})
+            <br/>
+            Date: ${chatItemForward.time}
+            <br/>
+              To: ${chatItemForward.toEmail}
+            </div>
+            <br/>
+            <br/>
+            <div>${chatItemForward.chat}</div>
+          </div>
+        </div>
+      `
+      );
+
+      openSend();
+    }
+  }, [chatItemForward, clickForward]);
+  useUnMount(() => {
+    updateChatItem(undefined);
+  });
   return (
     <>
       {processing || isLoadingConversation ? (
@@ -608,9 +673,9 @@ const DetailTicketForm = () => {
             onFinish={onFinish}
             // onValuesChange={handleChangeForm}
             onValuesChange={handleChangeForm}
-            className="flex flex-wrap md:flex-row-reverse xs:flex-col justify-between gap-2"
+            className="flex flex-wrap md:flex-row-reverse xs:flex-col justify-between gap-2 "
           >
-            <Card className=" mt-5 w-[300px] xs:hidden lg:block">
+            <Card className=" mt-5 w-[300px] xs:hidden lg:block h-[500px] ">
               <div>
                 <Form.Item
                   labelAlign="left"
@@ -688,254 +753,389 @@ const DetailTicketForm = () => {
                       )}
                     </div>
                     <Divider />
-                    <div className="box-comment">
-                      <div className="w-full flex justify-between gap-4 flex-wrap">
-                        <div className="flex flex-1 flex-col">
-                          <div className="xs:w-[300px] sm:w-[400px] ">
-                            <Form.Item
-                              label={<div style={{ width: 35 }}>From</div>}
-                              name="from"
-                              labelAlign="left"
-                              // rules={[
-                              //   {
-                              //     required: true,
-                              //     message: "Please input your email!",
-                              //   },
-                              //   ({ getFieldValue }) => ({
-                              //     validator(_, value) {
-                              //       const supportEmail =
-                              //         emailIntegrationOptions.find(
-                              //           (item) => item.value === value
-                              //         )?.obj.supportEmail;
-                              //       if (
-                              //         supportEmail === getFieldValue("to") ||
-                              //         getFieldValue("CC")?.includes(
-                              //           supportEmail
-                              //         ) ||
-                              //         getFieldValue("BCC")?.includes(
-                              //           supportEmail
-                              //         )
-                              //       ) {
-                              //         return Promise.reject(
-                              //           new Error(
-                              //             "The recipient's email must not be the same as the sender's email"
-                              //           )
-                              //         );
-                              //       }
-                              //       return Promise.resolve();
-                              //     },
-                              //   }),
-                              // ]}
-                            >
-                              <Select
-                                onChange={onChangeEmailIntegration}
-                                placeholder="Search email integration"
-                                virtual
-                                className=""
-                                options={emailIntegrationOptions}
-                              />
-                            </Form.Item>
-                          </div>
-                          <div className="xs:w-[300px] sm:w-[400px]">
-                            <Form.Item
-                              label={
-                                <div className="flex justify-between items-center xs:w-[300px] sm:w-[400px]">
-                                  <div style={{ width: 35 }}> To</div>
-                                  <div>
-                                    <span
-                                      className="link  inline-block"
-                                      onClick={() => {
-                                        setEnableCC(!enableCC);
-                                      }}
-                                    >
-                                      CC/BCC
-                                    </span>
-                                  </div>
-                                </div>
-                              }
-                              name="to"
-                              labelAlign="left"
-                            >
-                              <Select disabled placeholder="Customer Email" />
-                            </Form.Item>
-                          </div>
-                        </div>
-                        <div className="flex flex-1 flex-col">
-                          {enableCC ? (
-                            <div className="xs:w-[300px] sm:w-[400px] ">
-                              <Form.Item
-                                label={<div style={{ width: 35 }}> CC</div>}
-                                name="CC"
-                                labelAlign="left"
-                                rules={[
-                                  ({ getFieldValue }) => ({
-                                    validator(_, value) {
-                                      if (
-                                        validateCCEmail(
-                                          value,
-                                          emailIntegrationOptions.find(
-                                            (item) =>
-                                              item.value ===
-                                              getFieldValue("from")
-                                          )?.obj.supportEmail
-                                        ) === true
-                                      ) {
-                                        return Promise.resolve();
-                                      } else if (
-                                        typeof validateCCEmail(
-                                          value,
-                                          emailIntegrationOptions.find(
-                                            (item) =>
-                                              item.value ===
-                                              getFieldValue("from")
-                                          )?.obj.supportEmail
-                                        ) === "string"
-                                      ) {
-                                        return Promise.reject(
-                                          new Error(
-                                            "The recipient's email must not be the same as the sender's email"
-                                          )
-                                        );
-                                      } else {
-                                        return Promise.reject(
-                                          new Error(
-                                            "The email address is not valid"
-                                          )
-                                        );
-                                      }
-                                    },
-                                  }),
-                                ]}
-                              >
-                                <SelectTag
-                                  mode="tags"
-                                  placeholder="Type CC email..."
-                                  options={customersOptions}
-                                />
-                              </Form.Item>
-                            </div>
-                          ) : (
-                            <></>
-                          )}
-                          {enableCC ? (
-                            <div className="xs:w-[300px] sm:w-[400px] ">
-                              <Form.Item
-                                label={<div style={{ width: 35 }}> BCC</div>}
-                                name="BCC"
-                                labelAlign="left"
-                                rules={[
-                                  ({ getFieldValue }) => ({
-                                    validator(_, value) {
-                                      if (
-                                        validateCCEmail(
-                                          value,
-                                          emailIntegrationOptions.find(
-                                            (item) =>
-                                              item.value ===
-                                              getFieldValue("from")
-                                          )?.obj.supportEmail
-                                        ) === true
-                                      ) {
-                                        return Promise.resolve();
-                                      } else if (
-                                        typeof validateCCEmail(
-                                          value,
-                                          emailIntegrationOptions.find(
-                                            (item) =>
-                                              item.value ===
-                                              getFieldValue("from")
-                                          )?.obj.supportEmail
-                                        ) === "string"
-                                      ) {
-                                        return Promise.reject(
-                                          new Error(
-                                            "The recipient's email must not be the same as the sender's email"
-                                          )
-                                        );
-                                      } else {
-                                        return Promise.reject(
-                                          new Error(
-                                            "The email address is not valid"
-                                          )
-                                        );
-                                      }
-                                    },
-                                  }),
-                                ]}
-                              >
-                                <SelectTag
-                                  mode="tags"
-                                  placeholder="Type BCC email..."
-                                  options={customersOptions}
-                                />
-                              </Form.Item>
-                            </div>
-                          ) : (
-                            <></>
-                          )}
-                        </div>
-                      </div>
-
-                      <Form.Item
-                        name="content"
-                        rules={[
-                          {
-                            required: true,
-                            message: "Please input your message!",
-                          },
-                        ]}
+                    {form.getFieldValue("status") === StatusTicket.RESOLVED ? (
+                      <MDButton
+                        icon={
+                          <span className="mr-2 translate-y-[3px]">
+                            <BackIcon fontSize={14} />
+                          </span>
+                        }
+                        onClick={handleReopenTicket}
+                        disabled={false}
                       >
-                        <TextEditorTicket
-                          form={form}
-                          files={files}
-                          disabled={
-                            form.getFieldValue("status") ===
-                            StatusTicket.RESOLVED
+                        Reopen
+                      </MDButton>
+                    ) : (
+                      <div
+                        className={`flex gap-2 mb-4 ${send ? "hidden" : ""}`}
+                      >
+                        <MDButton
+                          icon={
+                            <span className="mr-2 translate-y-[3px]">
+                              <ReplyIcon fontSize={14} />
+                            </span>
                           }
-                          setFiles={setFiles}
-                          setIsChanged={setIsChanged}
-                          setLoadingButton={setLoadingButton}
-                          init={{
-                            menubar: false,
-                            placeholder: "Please input your message here......",
+                          onClick={() => {
+                            form.resetFields();
+                            setFiles([]);
+                            openSend();
+                            setIsForward(false);
                           }}
-                        />
-                      </Form.Item>
-                      <div className="flex justify-end">
-                        {form.getFieldValue("status") ===
-                        StatusTicket.RESOLVED ? (
-                          <>
-                            <MDButton
-                              icon={
-                                <span className="mr-2 translate-y-[3px]">
-                                  <BackIcon fontSize={14} />
-                                </span>
-                              }
-                              onClick={handleReopenTicket}
-                              disabled={false}
-                            >
-                              Reopen
-                            </MDButton>
-                          </>
-                        ) : (
-                          <div className="flex items-center gap-2">
-                            <MDButton
-                              disabled={!isChanged || loadingButton}
-                              onClick={handleCloseTicket}
-                            >
-                              Reply & Close Ticket
-                            </MDButton>
-                            <MDButton
-                              type="primary"
-                              htmlType="submit"
-                              disabled={!isChanged || loadingButton}
-                            >
-                              Reply
-                            </MDButton>
+                        >
+                          Reply
+                        </MDButton>
+                        <MDButton
+                          icon={
+                            <span className="mr-2 translate-y-[3px]">
+                              <ForwardIcon fontSize={14} />
+                            </span>
+                          }
+                          onClick={() => {
+                            setIsForward(true);
+                            updateChatItem(undefined);
+                            setFileForward([
+                              ...new Set(
+                                listChat
+                                  .map((item) => item.attachments)
+                                  .flat()
+                                  .map((item) => item?._id)
+                              ),
+                            ]);
+                            form.setFieldValue(
+                              "content",
+                              `
+                            <br/>
+                          <div class='md_forward'>
+                          <h3>Forwarded Conversation</h3>
+                          <h4>Subject: ${ticket.subject}</h4>
+                          <span>--------------------</span>
+                          <br/>
+                          <br/>
+                          
+                          ${listChat
+                            .map(
+                              (item) =>
+                                `<div>
+                                  <div class='md_attr' style='color:#888'>
+                                  From: <strong>${item.name}</strong> (${item.email})
+                                  <br/>
+                                  Date: ${item.time}
+                                  <br/>
+                                   To: ${item.toEmail}
+                                  </div>
+                                  <br/>
+                                  <br/>
+                                  <div>${item.chat}</div>
+                                </div>`
+                            )
+                            .join("<br/> --------------------")}
+                          
                           </div>
-                        )}
+                          `
+                            );
+                            openSend();
+                          }}
+                        >
+                          Forward
+                        </MDButton>
                       </div>
-                    </div>
+                    )}
+                    <Card
+                      className={send ? "" : "hidden"}
+                      extra={
+                        <MDButton
+                          onClick={closeSend}
+                          type="text"
+                          icon={<Icon name="close" />}
+                        ></MDButton>
+                      }
+                    >
+                      <div className="box-comment">
+                        <div className="w-full flex justify-between gap-4 flex-wrap">
+                          <div className="flex flex-1 flex-col">
+                            <div className="xs:w-[300px] sm:w-[400px] ">
+                              <Form.Item
+                                label={<div style={{ width: 35 }}>From</div>}
+                                name="from"
+                                labelAlign="left"
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: "From address is required",
+                                  },
+                                ]}
+                              >
+                                <Select
+                                  onChange={onChangeEmailIntegration}
+                                  placeholder="Search email integration"
+                                  virtual
+                                  className=""
+                                  options={emailIntegrationOptions}
+                                />
+                              </Form.Item>
+                            </div>
+                            <div className="xs:w-[300px] sm:w-[400px]">
+                              <Form.Item
+                                label={
+                                  <div className="flex justify-between items-center xs:w-[300px] sm:w-[400px]">
+                                    <div style={{ width: 35 }}> To</div>
+                                    <div>
+                                      <span
+                                        className="link  inline-block"
+                                        onClick={() => {
+                                          setEnableCC(!enableCC);
+                                        }}
+                                      >
+                                        CC/BCC
+                                      </span>
+                                    </div>
+                                  </div>
+                                }
+                                name="to"
+                                labelAlign="left"
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: "Email address is required",
+                                  },
+                                  {
+                                    type: "email",
+                                    message: "The email address is not valid",
+                                  },
+                                  ({ getFieldValue }) => ({
+                                    validator(_, value) {
+                                      if (
+                                        emailIntegrationOptions.find(
+                                          (item) =>
+                                            item.value === getFieldValue("from")
+                                        )?.obj.supportEmail === value
+                                      ) {
+                                        return Promise.reject(
+                                          new Error(
+                                            "The recipient's email must not be the same as the sender's email"
+                                          )
+                                        );
+                                      }
+                                      return Promise.resolve();
+                                    },
+                                  }),
+                                ]}
+                              >
+                                <AutoSelect
+                                  disabled={!isForward}
+                                  placeholder="Email"
+                                  options={customersOptions}
+                                />
+                              </Form.Item>
+                            </div>
+                          </div>
+                          <div className="flex flex-1 flex-col">
+                            {enableCC ? (
+                              <div className="xs:w-[300px] sm:w-[400px] ">
+                                <Form.Item
+                                  label={<div style={{ width: 35 }}> CC</div>}
+                                  name="CC"
+                                  labelAlign="left"
+                                  rules={[
+                                    ({ getFieldValue }) => ({
+                                      validator(_, value) {
+                                        if (
+                                          validateCCEmail(
+                                            value,
+                                            emailIntegrationOptions.find(
+                                              (item) =>
+                                                item.value ===
+                                                getFieldValue("from")
+                                            )?.obj.supportEmail
+                                          ) === true
+                                        ) {
+                                          return Promise.resolve();
+                                        } else if (
+                                          typeof validateCCEmail(
+                                            value,
+                                            emailIntegrationOptions.find(
+                                              (item) =>
+                                                item.value ===
+                                                getFieldValue("from")
+                                            )?.obj.supportEmail
+                                          ) === "string"
+                                        ) {
+                                          return Promise.reject(
+                                            new Error(
+                                              "The recipient's email must not be the same as the sender's email"
+                                            )
+                                          );
+                                        } else {
+                                          return Promise.reject(
+                                            new Error(
+                                              "The email address is not valid"
+                                            )
+                                          );
+                                        }
+                                      },
+                                    }),
+                                  ]}
+                                >
+                                  <SelectTag
+                                    mode="tags"
+                                    placeholder="Type CC email..."
+                                    options={customersOptions}
+                                  />
+                                </Form.Item>
+                              </div>
+                            ) : (
+                              <></>
+                            )}
+                            {enableCC ? (
+                              <div className="xs:w-[300px] sm:w-[400px] ">
+                                <Form.Item
+                                  label={<div style={{ width: 35 }}> BCC</div>}
+                                  name="BCC"
+                                  labelAlign="left"
+                                  rules={[
+                                    ({ getFieldValue }) => ({
+                                      validator(_, value) {
+                                        if (
+                                          validateCCEmail(
+                                            value,
+                                            emailIntegrationOptions.find(
+                                              (item) =>
+                                                item.value ===
+                                                getFieldValue("from")
+                                            )?.obj.supportEmail
+                                          ) === true
+                                        ) {
+                                          return Promise.resolve();
+                                        } else if (
+                                          typeof validateCCEmail(
+                                            value,
+                                            emailIntegrationOptions.find(
+                                              (item) =>
+                                                item.value ===
+                                                getFieldValue("from")
+                                            )?.obj.supportEmail
+                                          ) === "string"
+                                        ) {
+                                          return Promise.reject(
+                                            new Error(
+                                              "The recipient's email must not be the same as the sender's email"
+                                            )
+                                          );
+                                        } else {
+                                          return Promise.reject(
+                                            new Error(
+                                              "The email address is not valid"
+                                            )
+                                          );
+                                        }
+                                      },
+                                    }),
+                                  ]}
+                                >
+                                  <SelectTag
+                                    mode="tags"
+                                    placeholder="Type BCC email..."
+                                    options={customersOptions}
+                                  />
+                                </Form.Item>
+                              </div>
+                            ) : (
+                              <></>
+                            )}
+                          </div>
+                        </div>
+
+                        <Form.Item
+                          name="content"
+                          rules={[
+                            {
+                              required: true,
+                              message: "Please input your message!",
+                            },
+                          ]}
+                        >
+                          <TextEditorTicket
+                            form={form}
+                            files={files}
+                            disabled={
+                              form.getFieldValue("status") ===
+                              StatusTicket.RESOLVED
+                            }
+                            setFiles={setFiles}
+                            setIsChanged={setIsChanged}
+                            setLoadingButton={setLoadingButton}
+                            init={{
+                              menubar: false,
+                              placeholder:
+                                "Please input your message here......",
+                            }}
+                          />
+                        </Form.Item>
+                        {isForward ? (
+                          <Upload
+                            key={chatItemForward ? chatItemForward.id : "all"}
+                            defaultFileList={uniqBy(
+                              chatItemForward
+                                ? chatItemForward?.attachments?.map((item) => ({
+                                    uid: item?._id as string,
+                                    name: item?.name as string,
+                                    status: "done",
+                                    url: item?.attachmentUrl as string,
+                                  }))
+                                : listChat
+                                    .map((item) => item.attachments)
+                                    .flat()
+                                    .map((item) => ({
+                                      uid: item?._id as string,
+                                      name: item?.name as string,
+                                      status: "done",
+                                      url: item?.attachmentUrl as string,
+                                    })),
+                              "uid"
+                            )}
+                            onChange={({ file, fileList }) => {
+                              setFileForward(fileList.map((item) => item?.uid));
+                            }}
+                          />
+                        ) : (
+                          <></>
+                        )}
+                        <div className="flex justify-end">
+                          {form.getFieldValue("status") ===
+                          StatusTicket.RESOLVED ? (
+                            <>
+                              <MDButton
+                                icon={
+                                  <span className="mr-2 translate-y-[3px]">
+                                    <BackIcon fontSize={14} />
+                                  </span>
+                                }
+                                onClick={handleReopenTicket}
+                                disabled={false}
+                              >
+                                Reopen
+                              </MDButton>
+                            </>
+                          ) : (
+                            <div className="flex items-center gap-2">
+                              <MDButton
+                                disabled={!isChanged || loadingButton}
+                                onClick={handleCloseTicket}
+                              >
+                                Reply & Close Ticket
+                              </MDButton>
+                              <MDButton
+                                type="primary"
+                                htmlType="submit"
+                                disabled={!isChanged || loadingButton}
+                              >
+                                Reply
+                              </MDButton>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </Card>
                   </div>
                 </div>
               ) : (
@@ -1020,7 +1220,7 @@ const DetailTicketForm = () => {
           </Form>
         </div>
       )}
-      <div ref={endPageRef}></div>
+      <div ref={endPageRef} style={{ background: "red" }}></div>
     </>
   );
 };
