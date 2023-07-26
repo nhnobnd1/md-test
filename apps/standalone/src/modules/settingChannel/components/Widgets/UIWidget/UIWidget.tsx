@@ -30,19 +30,23 @@ export const UIWidget: FC<UIWidgetProps> = () => {
       width: isMobile ? "100%" : 400,
     },
     header: {
-      height: 200,
+      height: 120,
       backgroundColor: data?.headerBackgroundColor,
       borderRadius: 8,
+      padding: 24,
+      display: "flex",
+      justifyContent: "space-between",
     },
     mainTitle: {
       color: `${data?.headerTextColor}`,
-      paddingTop: 20,
-      paddingBottom: 10,
+
       maxWidth: 350,
-      paddingLeft: 20,
-      fontSize: "28px",
+
+      fontSize: data?.logo ? 20 : 28,
+      margin: 0,
+      lineHeight: "initial",
     },
-    card: { maxWidth: 350, top: -110, margin: 20 },
+    card: { maxWidth: 350, top: -30, margin: 20 },
     formCaptcha: {
       display: "flex",
       justifyContent: "flex-end",
@@ -66,7 +70,6 @@ export const UIWidget: FC<UIWidgetProps> = () => {
     },
     widgetHeader: {
       fontSize: 20,
-      marginLeft: 10,
       color: `${data?.textButtonAppearanceColor}`,
       maxWidth: 150,
       whiteSpace: "nowrap",
@@ -95,7 +98,17 @@ export const UIWidget: FC<UIWidgetProps> = () => {
     <div className="z-2 flex justify-center mt-5">
       <style scoped>{css}</style>
       <div style={commonStyles.wrap}>
-        <div className="header-bg" style={commonStyles.header}>
+        <div
+          className="header-bg"
+          style={{ ...commonStyles.header, flexDirection: "column" }}
+        >
+          {data?.logo && (
+            <img
+              style={{ height: 32, width: "fit-content" }}
+              src={data?.logo}
+              alt="logo-widget"
+            />
+          )}
           <h1
             className="whitespace-nowrap overflow-hidden truncate "
             style={commonStyles.mainTitle}
