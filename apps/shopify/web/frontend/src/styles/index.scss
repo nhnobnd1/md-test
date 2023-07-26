@@ -3,7 +3,9 @@
 @tailwind utilities;
 @import "./variables.scss";
 @import "./mixin.scss";
-
+body {
+  font-family: "Open Sans", Arial, sans-serif;
+}
 .unstyle-link a {
   text-decoration: none;
   color: #202223;
@@ -195,3 +197,6 @@
 // .Polaris-TextField--focus {
 //   outline: $primary !important;
 // }
+.Polaris-Icon__Svg {
+  // fill: yellow !important;
+}

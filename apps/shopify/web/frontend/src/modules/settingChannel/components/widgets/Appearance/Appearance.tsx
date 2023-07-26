@@ -1,4 +1,12 @@
-import { FormLayout, Text, TextField } from "@shopify/polaris";
+import {
+  Button,
+  FormLayout,
+  LegacyStack,
+  Text,
+  TextField,
+} from "@shopify/polaris";
+import { Crisp } from "crisp-sdk-web";
+
 import { ButtonColor } from "src/components/ButtonColor";
 import FormItem from "src/components/Form/Item";
 import RadioGroup from "src/components/Radio/RadioGroup";
@@ -6,6 +14,10 @@ import "./Appearance.scss";
 interface AppearanceProps {}
 
 const Appearance = (props: AppearanceProps) => {
+  const handleContactSupport = () => {
+    Crisp.chat.open();
+    Crisp.message.send("text", "Hi, I'd like to change font widget");
+  };
   return (
     <div className="Appearance">
       <div className="card-contact mb-4">
@@ -104,6 +116,16 @@ const Appearance = (props: AppearanceProps) => {
             </div>
           </FormLayout>
         </div>
+      </div>
+      <div className="change-font">
+        <LegacyStack vertical>
+          <Text variant="bodyMd" as="p">
+            Chat with us now to get this customization for free
+          </Text>
+          <Button outline onClick={handleContactSupport}>
+            Change font
+          </Button>
+        </LegacyStack>
       </div>
     </div>
   );

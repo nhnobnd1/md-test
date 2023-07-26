@@ -1,6 +1,8 @@
 import { Card, Checkbox, Col, Divider, Form, Row } from "antd";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
+import { Crisp } from "crisp-sdk-web";
 import { ChangeEvent, useEffect, useState } from "react";
+import { MDButton } from "src/components/UI/Button/MDButton";
 import { MDInput } from "src/components/UI/Input";
 import { UIWidget } from "src/modules/settingChannel/components/Widgets/UIWidget";
 import useUpdateSave from "src/modules/settingChannel/store/saveUpdateWidget";
@@ -31,7 +33,10 @@ export default function General() {
   const onFinishFailed = (errorInfo: any) => {
     console.log("Failed:", errorInfo);
   };
-
+  const handleContactSupport = () => {
+    Crisp.chat.open();
+    Crisp.message.send("text", "Hi, I'd like to add logo to widget header");
+  };
   const onChangeToggleCaptcha = (checked: CheckboxChangeEvent) => {
     setAllowCaptcha(checked.target.checked);
     updateWidgetSetting({
@@ -83,111 +88,123 @@ export default function General() {
   }, [data.id, cancelState]);
 
   return (
-    <div className="flex flex-row-reverse gap-10 flex-wrap justify-center">
-      <Form
-        labelCol={{ span: 10 }}
-        wrapperCol={{ span: 22 }}
-        initialValues={initialFormValues}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        form={form}
-        autoComplete="off"
-        layout="vertical"
-        className="flex-1 basis-3/6 mt-5"
-      >
-        <div>
-          <Card className="w-full ">
-            <Row gutter={16} justify="space-between" align="bottom">
-              <Col span={22}>
-                <Form.Item label="Title Text " name="title" labelAlign="left">
-                  <MDInput onChange={handleChangeTitleText} />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row gutter={16} justify="space-between" align="bottom">
-              <Col span={22}>
-                <Form.Item
-                  label="Widget Header "
-                  name="header"
-                  labelAlign="left"
-                >
-                  <MDInput onChange={handleUpdateSetting} />
-                </Form.Item>
-              </Col>
-            </Row>
-          </Card>
+    <>
+      <div className="flex flex-row-reverse gap-10 flex-wrap justify-center">
+        <Form
+          labelCol={{ span: 10 }}
+          wrapperCol={{ span: 22 }}
+          initialValues={initialFormValues}
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+          form={form}
+          autoComplete="off"
+          layout="vertical"
+          className="flex-1 basis-3/6 mt-5"
+        >
           <div>
-            <Card className=" mt-5">
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <h2>Contact Form</h2>
-                {/* <Switch checked={loading} onChange={onChangeToggle} /> */}
-              </div>
-              <Divider />
-              <div>
-                <Row gutter={20} justify="space-between" align="bottom">
-                  <Col span={22}>
-                    <Form.Item
-                      label="Form Title"
-                      name="form_title"
-                      labelAlign="left"
-                    >
-                      <MDInput onChange={handleChangeFormTitle} />
-                    </Form.Item>
-                  </Col>
-                </Row>
-                <Row gutter={20} justify="space-between" align="bottom">
-                  <Col span={22}>
-                    <Form.Item
-                      label="Button text"
-                      name="button_text"
-                      labelAlign="left"
-                    >
-                      <MDInput onChange={handleUpdateButton} />
-                    </Form.Item>
-                  </Col>
-                </Row>
-                <Row gutter={20} justify="space-between" align="bottom">
-                  <Col span={22}>
-                    <Form.Item
-                      label="Confirmation Message"
-                      name="confirm_message"
-                      labelAlign="left"
-                    >
-                      <MDInput onChange={handleChangeMessage} />
-                    </Form.Item>
-                  </Col>
-                </Row>
-                <Row gutter={20} justify="space-between" align="bottom">
-                  <Col span={24}>
-                    <Checkbox
-                      checked={allowAttach}
-                      onChange={onChangeToggleAttach}
-                    >
-                      Allow Attachments
-                    </Checkbox>
-                  </Col>
-                </Row>
-                <Row
-                  gutter={20}
-                  justify="space-between"
-                  align="bottom"
-                  className="mt-5"
-                >
-                  <Col span={30}>
-                    <Checkbox
-                      checked={allowCaptcha}
-                      onChange={onChangeToggleCaptcha}
-                    >
-                      Enable captcha verification
-                    </Checkbox>
-                  </Col>
-                </Row>
-              </div>
+            <Card className="w-full ">
+              <Row gutter={16} justify="space-between" align="bottom">
+                <Col span={22}>
+                  <Form.Item label="Title Text " name="title" labelAlign="left">
+                    <MDInput onChange={handleChangeTitleText} />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={16} justify="space-between" align="bottom">
+                <Col span={22}>
+                  <Form.Item
+                    label="Widget Header "
+                    name="header"
+                    labelAlign="left"
+                  >
+                    <MDInput onChange={handleUpdateSetting} />
+                  </Form.Item>
+                </Col>
+              </Row>
             </Card>
+            <div>
+              <Card className=" mt-5">
+                <div
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <h2>Contact Form</h2>
+                  {/* <Switch checked={loading} onChange={onChangeToggle} /> */}
+                </div>
+                <Divider />
+                <div>
+                  <Row gutter={20} justify="space-between" align="bottom">
+                    <Col span={22}>
+                      <Form.Item
+                        label="Form Title"
+                        name="form_title"
+                        labelAlign="left"
+                      >
+                        <MDInput onChange={handleChangeFormTitle} />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                  <Row gutter={20} justify="space-between" align="bottom">
+                    <Col span={22}>
+                      <Form.Item
+                        label="Button text"
+                        name="button_text"
+                        labelAlign="left"
+                      >
+                        <MDInput onChange={handleUpdateButton} />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                  <Row gutter={20} justify="space-between" align="bottom">
+                    <Col span={22}>
+                      <Form.Item
+                        label="Confirmation Message"
+                        name="confirm_message"
+                        labelAlign="left"
+                      >
+                        <MDInput onChange={handleChangeMessage} />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                  <Row gutter={20} justify="space-between" align="bottom">
+                    <Col span={24}>
+                      <Checkbox
+                        checked={allowAttach}
+                        onChange={onChangeToggleAttach}
+                      >
+                        Allow Attachments
+                      </Checkbox>
+                    </Col>
+                  </Row>
+                  <Row
+                    gutter={20}
+                    justify="space-between"
+                    align="bottom"
+                    className="mt-5"
+                  >
+                    <Col span={30}>
+                      <Checkbox
+                        checked={allowCaptcha}
+                        onChange={onChangeToggleCaptcha}
+                      >
+                        Enable captcha verification
+                      </Checkbox>
+                    </Col>
+                  </Row>
+                </div>
+              </Card>
+            </div>
           </div>
-        </div>
-      </Form>
-      <UIWidget />
-    </div>
+          <div>
+            <p className="py-16-12">
+              Add your brand logo into MooseDesk Widget
+            </p>
+            <MDButton className="btn-outline" onClick={handleContactSupport}>
+              Replace logo
+            </MDButton>
+          </div>
+        </Form>
+        <UIWidget />
+      </div>
+    </>
   );
 }

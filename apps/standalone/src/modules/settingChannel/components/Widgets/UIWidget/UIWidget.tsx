@@ -3,6 +3,7 @@ import { Button, Card, FloatButton, Form, Input } from "antd";
 import { FC, useEffect, useMemo } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import env from "src/core/env";
+import useViewport from "src/hooks/useViewport";
 import useUpdateSave from "src/modules/settingChannel/store/saveUpdateWidget";
 
 import useWidgetSetting from "src/modules/settingChannel/store/useSetting";
@@ -12,6 +13,7 @@ export const UIWidget: FC<UIWidgetProps> = () => {
   const data = useWidgetSetting((state) => state.widgetSetting);
   const [form] = Form.useForm();
   const updateState = useUpdateSave((state) => state.update);
+  const { isMobile } = useViewport();
 
   const { TextArea } = Input;
   const css = `
@@ -25,8 +27,7 @@ export const UIWidget: FC<UIWidgetProps> = () => {
     wrap: {
       backgroundColor: "#EFF2F5",
       borderRadius: 20,
-      width: 400,
-      // maxHeight: 800,
+      width: isMobile ? "100%" : 400,
     },
     header: {
       height: 200,
