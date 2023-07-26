@@ -125,7 +125,7 @@ export const UIWidget: FC<UIWidgetProps> = () => {
           >
             <Form form={form} layout="vertical">
               <Form.Item label="Your Name" name="name" labelAlign="left">
-                <Input />
+                <Input placeholder="Your Name" />
               </Form.Item>
               <Form.Item
                 label="Email Address"
@@ -142,7 +142,7 @@ export const UIWidget: FC<UIWidgetProps> = () => {
                 name="email"
                 labelAlign="left"
               >
-                <Input />
+                <Input placeholder="Email Address" />
               </Form.Item>
               <Form.Item
                 labelAlign="left"
@@ -156,7 +156,7 @@ export const UIWidget: FC<UIWidgetProps> = () => {
                 ]}
                 name="subject"
               >
-                <Input />
+                <Input placeholder="Subject" />
               </Form.Item>
               <Form.Item
                 labelAlign="left"
@@ -170,7 +170,7 @@ export const UIWidget: FC<UIWidgetProps> = () => {
                 ]}
                 name="description"
               >
-                <TextArea rows={4} />
+                <TextArea rows={4} placeholder="Description" />
               </Form.Item>
               {data?.allowAttach ? (
                 <Form.Item labelAlign="left" label="Attachment">
