@@ -41,7 +41,7 @@ const BusinessHoursTab = ({
           </Radio.Group>
         </Form.Item>
       </div>
-      <Card title="Working Hours" className="overflow-scroll">
+      <Card title="Working Hours" className="overflow-auto">
         <Form.Item name="businessHours">
           <CustomTimeWorkingCard disabled={disabled} />
         </Form.Item>

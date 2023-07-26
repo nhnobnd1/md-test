@@ -503,7 +503,7 @@ export const AppLayout = () => {
             theme="light"
             style={{
               height: "100%",
-              overflow: "scroll",
+              overflow: "auto",
 
               background: "#F0F2F5",
             }}

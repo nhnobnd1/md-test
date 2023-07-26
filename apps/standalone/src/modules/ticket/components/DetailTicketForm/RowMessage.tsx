@@ -201,7 +201,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
             } attached`}
             key={1}
           >
-            <div className="flex flex-wrap gap-5 overflow-scroll box-file mt-2 ">
+            <div className="flex flex-wrap gap-5 overflow-auto box-file mt-2 ">
               {item.attachments?.map((item) => (
                 <div
                   key={item._id}
