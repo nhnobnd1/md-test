@@ -95,6 +95,9 @@ export type Ticket = {
 	attachments: AttachFile[];
 	_id: string;
 	text: string;
+	meta: {
+		isSample: boolean;
+	};
 };
 
 export type Conversation = {

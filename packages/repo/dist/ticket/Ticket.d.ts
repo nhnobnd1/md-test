@@ -68,6 +68,9 @@ export declare type Ticket = {
     attachments: AttachFile[];
     _id: string;
     text: string;
+    meta: {
+        isSample: boolean;
+    };
 };
 export declare type Conversation = {
     id: string;

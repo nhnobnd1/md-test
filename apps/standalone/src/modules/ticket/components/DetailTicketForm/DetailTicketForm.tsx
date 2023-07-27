@@ -624,6 +624,25 @@ const DetailTicketForm = () => {
       openSend();
     }
   }, [chatItemForward, clickForward]);
+  useDeepEffect(() => {
+    if (ticket?.meta?.isSample && dataConversations?.length === 0) {
+      openSend();
+      setTimeout(() => {
+        form.setFieldValue(
+          "content",
+          `
+      Let's fill out the reply here! You might want to include those things:
+          <br/> <br/>
+- A great greeting <br/>
+- An attached image <br/>
+- Try bold, italic here and there 
+           <br/> <br/>
+Hit Send to see what your message will look like
+      `
+        );
+      }, 500);
+    }
+  }, [ticket, dataConversations]);
   useUnMount(() => {
     updateChatItem(undefined);
   });
