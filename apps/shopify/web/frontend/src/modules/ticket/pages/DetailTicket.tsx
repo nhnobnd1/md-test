@@ -10,24 +10,16 @@ import {
 } from "@moose-desk/core";
 import {
   Agent,
-  AgentRepository,
   AttachFile,
   Conversation,
   CreateReplyTicketRequest,
-  Customer,
-  CustomerRepository,
   EmailIntegration,
   EmailIntegrationRepository,
-  GetListAgentRequest,
-  GetListCustomerRequest,
-  GetListTagRequest,
   Priority,
   priorityOptions,
   ScreenType,
   statusOptions,
   StatusTicket,
-  Tag,
-  TagRepository,
   Ticket,
   TicketRepository,
   UpdateTicket,
@@ -38,6 +30,7 @@ import {
   FormLayout,
   Layout,
   LegacyCard,
+  Modal,
   Page,
   Select,
   SkeletonBodyText,
@@ -52,7 +45,7 @@ import { FormikProps } from "formik";
 import moment from "moment";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useQueryClient } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { catchError, map, of } from "rxjs";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
@@ -67,16 +60,29 @@ import { useSubdomain } from "src/hooks/useSubdomain";
 import useToggleGlobal from "src/hooks/useToggleGlobal";
 import { CollapseList } from "src/modules/ticket/components/CollapseList";
 import ContentShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ContentShopifySearch";
-import { ModalInfoTicket } from "src/modules/ticket/components/ModalInfoTicket";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import useSelectFrom from "src/modules/ticket/store/useSelectFrom";
 import { wrapImageWithAnchorTag } from "src/utils/localValue";
 import * as Yup from "yup";
 import FaMailReply from "~icons/fa/mail-reply";
+import InfoIcon from "~icons/material-symbols/info";
 
 import useDeepEffect from "src/hooks/useDeepEffect";
 import useFormCreateTicket from "src/modules/ticket/store/useFormCreateTicket";
+import ForwardIcon from "~icons/ion/forward";
+import ReplyIcon from "~icons/ion/reply";
 import BackIcon from "~icons/mingcute/back-2-fill";
+
+import { uniqBy } from "lodash-es";
+import BoxSelectCustomer from "src/modules/ticket/components/BoxSelectCustomer/BoxSelectCustomer";
+import {
+  getListAgentApi,
+  getListCustomerApi,
+  getListEmailIntegration,
+  getTagsTicket,
+} from "src/modules/ticket/helper/api";
+import { UploadForward } from "src/modules/ticket/pages/UploadForward";
+import useForwardTicket from "src/modules/ticket/store/useForwardTicket";
 import styles from "./style.module.scss";
 export interface ChatItem {
   id: string;
@@ -90,6 +96,7 @@ export interface ChatItem {
   incoming?: boolean;
   ccEmails?: [];
   bccEmails?: [];
+  datetime?: string;
 }
 interface ValueForm {
   status: StatusTicket;
@@ -100,41 +107,115 @@ interface ValueForm {
   content: string;
   tags?: string[];
   from?: string;
+  to?: string;
 }
-interface DetailTicketProps {}
 
-const DetailTicket = (props: DetailTicketProps) => {
+const DetailTicket = () => {
   const formRef = useRef<FormikProps<any>>(null);
-  const { toggle: updateForm } = useToggle();
   const queryClient = useQueryClient();
-
   const { id } = useParams();
   const [ticket, setTicket] = useState<Ticket>();
   const { show } = useToast();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const endPageRef = useRef<any>(null);
   const navigate = useNavigate();
   const [conversationList, setConversationList] = useState<Conversation[]>([]);
-  const [tags, setTags] = useState<Tag[]>([]);
+  const { data: dataTags } = useQuery({
+    queryKey: [
+      "getTagsTicket",
+      {
+        page: 1,
+        limit: 500,
+      },
+    ],
+    queryFn: () =>
+      getTagsTicket({
+        page: 1,
+        limit: 500,
+      }),
+    staleTime: 10000,
+    retry: 1,
+
+    onError: () => {
+      show(t("messages:error.get_tag"), { isError: true });
+    },
+  });
   const [enableCC, setEnableCC] = useState(true);
   const [isChanged, setIsChanged] = useState(false);
   const [primaryEmail, setPrimaryEmail] = useState<EmailIntegration>();
   const [files, setFiles] = useState<any>([]);
   const [loadingButton, setLoadingButton] = useState(false);
-  const [emailIntegrationOptions, setEmailIntegrationOptions] = useState<any>(
-    []
-  );
+  const { data: dataEmailIntegration } = useQuery({
+    queryKey: ["getListEmailIntegration"],
+    queryFn: () => getListEmailIntegration({ page: 1, limit: 500 }),
+    retry: 3,
+    staleTime: 10000,
+    onError: () => {},
+  });
+  const emailIntegrationOptions = useMemo(() => {
+    if (!dataEmailIntegration) return [];
+    return dataEmailIntegration.map((item) => {
+      return {
+        label: `${item.name} - ${item.supportEmail}`,
+        value: item._id,
+        obj: item,
+      };
+    });
+  }, [dataEmailIntegration]);
+
+  const {
+    state: statusModal,
+    on: openStatusModal,
+    off: closeStatusModal,
+  } = useToggle();
   const [screenType, screenWidth] = useScreenType();
   const isMobileOrTablet = Boolean(screenWidth <= MediaScreen.LG);
   const selectedFrom = useSelectFrom((state) => state.selected);
   // detail ticket
   const contentCreate = useFormCreateTicket((state) => state.content);
   const updateContent = useFormCreateTicket((state) => state.updateState);
-  const [agents, setAgents] = useState<Agent[]>([]);
-  const [customers, setCustomers] = useState<Customer[]>([]);
-  const { visible, setVisible } = useToggleGlobal();
+  const { data: dataAgents } = useQuery({
+    queryKey: [
+      "getAgents",
+      {
+        page: 1,
+        limit: 500,
+      },
+    ],
+    queryFn: () =>
+      getListAgentApi({
+        page: 1,
+        limit: 500,
+      }),
+    staleTime: 10000,
+    retry: 1,
 
-  // usePreventNav(MediaScreen.XL);
+    onError: () => {
+      // message.error(t("messages:error.get_agent"));
+    },
+  });
+  const agents = useMemo(() => {
+    if (!dataAgents) return [];
+    return dataAgents.filter((item) => item.isActive && item.emailConfirmed);
+  }, [dataAgents]);
+  const { data: dataCustomers } = useQuery({
+    queryKey: ["getCustomers"],
+    queryFn: () => getListCustomerApi({ page: 1, limit: 500 }),
+    retry: 3,
+    staleTime: 10000,
+    onError: () => {
+      show(t("messages:error.get_customer"), { isError: true });
+    },
+  });
+  const { visible, setVisible } = useToggleGlobal();
+  const { state: send, on: openSend, off: closeSend } = useToggle();
+  const [isForward, setIsForward] = useState(false);
+
+  const chatItemForward = useForwardTicket((state) => state.chatItem);
+  const clickForward = useForwardTicket((state) => state.clickForward);
+  const updateChatItem = useForwardTicket((state) => state.updateChatItem);
+  const [fileForward, setFileForward] = useState<any>([]);
+
   const { subDomain } = useSubdomain();
   const { timezone }: any = useGlobalData(false, subDomain || "");
   const listChat = useMemo<ChatItem[]>(() => {
@@ -157,6 +238,7 @@ const DetailTicket = (props: DetailTicketProps) => {
           incoming: item?.incoming,
           ccEmails: item?.ccEmails,
           bccEmails: item?.bccEmails,
+          datetime: createdDatetimeFormat(item.createdDatetime, timezone),
         };
       }
     );
@@ -186,61 +268,12 @@ const DetailTicket = (props: DetailTicketProps) => {
         incoming: ticket?.incoming || ticket?.createdViaWidget,
         ccEmails: ticket?.ccEmails,
         bccEmails: ticket?.bccEmails,
+        datetime: createdDatetimeFormat(ticket.createdDatetime, timezone),
       });
     }
     return conversationMapping;
   }, [ticket, conversationList, timezone]);
-  const { run: fetchEmailIntegrationApi } = useJob(() => {
-    return EmailIntegrationRepository()
-      .getListEmail({
-        page: 1,
-        limit: 500,
-      })
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            setEmailIntegrationOptions(
-              data.data.map((item: EmailIntegration) => ({
-                label: `${item.name} - ${item.supportEmail}`,
-                value: item._id,
-                obj: item,
-              }))
-            );
-          }
-        }),
-        catchError((err) => {
-          return of(err);
-        })
-      );
-  });
-  const { run: getListCustomerApi } = useJob(
-    (payload: GetListCustomerRequest) => {
-      return CustomerRepository()
-        .getList(payload)
-        .pipe(
-          map(({ data }) => {
-            if (data.statusCode === 200) {
-              const tags = data.data.map((item) => ({
-                ...item,
-                id: item._id,
-              }));
-              setCustomers((prevTags) => {
-                return [...prevTags, ...tags];
-              });
 
-              if (data.metadata.totalPage > (payload.page as number)) {
-                getListCustomerApi({
-                  page: (payload.page as number) + 1,
-                  limit: payload.limit,
-                });
-              }
-            } else {
-              // message.error("Get data ticket failed");
-            }
-          })
-        );
-    }
-  );
   const { run: getPrimaryEmail } = useJob(() => {
     return EmailIntegrationRepository()
       .getPrimaryEmail()
@@ -263,34 +296,6 @@ const DetailTicket = (props: DetailTicketProps) => {
           if (data.statusCode === 200) {
             show(t("messages:success.send_mail"));
             setConversationList([...conversationList, data.data]);
-          }
-        })
-      );
-  });
-  const { run: getListAgentApi } = useJob((payload: GetListAgentRequest) => {
-    return AgentRepository()
-      .getList(payload)
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            const tags = data.data
-              .filter((item) => item.isActive && item.emailConfirmed)
-              .map((item) => ({
-                ...item,
-                id: item._id,
-              }));
-            setAgents((prevTags) => {
-              return [...prevTags, ...tags];
-            });
-
-            if (data.metadata.totalPage > (payload.page as number)) {
-              getListAgentApi({
-                page: (payload.page as number) + 1,
-                limit: payload.limit,
-              });
-            }
-          } else {
-            // message.error("Get data ticket failed");
           }
         })
       );
@@ -345,10 +350,6 @@ const DetailTicket = (props: DetailTicketProps) => {
         .getConversations(id)
         .pipe(
           map(({ data }) => {
-            getListTagApi({
-              page: 1,
-              limit: 500,
-            });
             setConversationList(data.data);
           }),
           catchError((err) => {
@@ -357,38 +358,7 @@ const DetailTicket = (props: DetailTicketProps) => {
         );
     }
   );
-  const { run: getListTagApi } = useJob((payload: GetListTagRequest) => {
-    return TagRepository()
-      .getList(payload)
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            const tags = data.data.map((item) => ({
-              ...item,
-              id: item._id,
-            }));
-            setTags((prevTags) => {
-              return [...prevTags, ...tags];
-            });
 
-            if (data.metadata.totalPage > (payload.page as number)) {
-              getListTagApi({
-                page: (payload.page as number) + 1,
-                limit: payload.limit,
-              });
-            }
-          } else {
-            // message.error("Get data ticket failed");
-            show(t("messages:error.get_tag"), { isError: true });
-          }
-        }),
-        catchError((err) => {
-          show(t("messages:error.get_tag"), { isError: true });
-
-          return of(err);
-        })
-      );
-  });
   const initialValues = useMemo(() => {
     const condition = ticket?.incoming || ticket?.createdViaWidget;
 
@@ -510,22 +480,10 @@ const DetailTicket = (props: DetailTicketProps) => {
     });
   }, [enableCC, emailIntegrationOptions]);
 
-  // useMount(() => {
-  //   updateForm();
-  // });
   useEffect(() => {
     if (id) {
       getTicketApi(id);
       fetchConversation(id);
-      getListAgentApi({
-        page: 1,
-        limit: 500,
-      });
-      getListCustomerApi({
-        page: 1,
-        limit: 500,
-      });
-      fetchEmailIntegrationApi();
     }
   }, [id]);
   const disabled = useMemo(() => {
@@ -545,14 +503,24 @@ const DetailTicket = (props: DetailTicketProps) => {
     return mapping;
   }, [agents]);
   const tagsOptions = useMemo(() => {
-    return tags.map((item) => ({ value: item.name, label: item.name }));
-  }, [tags]);
-  const customersOptions = useMemo(() => {
-    return customers.map((item) => ({
-      label: `${item.firstName} ${item.lastName} - ${item.email}`,
-      value: item.email,
+    if (!dataTags) return [];
+    return dataTags.map((item) => ({
+      label: item.name,
+      value: item.name,
+      obj: item,
     }));
-  }, [customers]);
+  }, [dataTags]);
+
+  const customersOptions = useMemo(() => {
+    if (!dataCustomers) return [];
+    return dataCustomers.map((item) => {
+      return {
+        label: `${item.firstName} ${item.lastName} - ${item.email}`,
+        value: item.email,
+        obj: item,
+      };
+    });
+  }, [dataCustomers]);
 
   const handleReopenTicket = () => {
     const values = formRef.current?.values;
@@ -584,39 +552,54 @@ const DetailTicket = (props: DetailTicketProps) => {
     );
   };
   const onFinish = (values: ValueForm, closeTicket = false) => {
+    closeSend();
+    setIsForward(false);
+    if (isForward) {
+      updateContent({ content: undefined });
+      formRef.current?.resetForm();
+    }
     const findItemConfigEmail = emailIntegrationOptions.find(
       (item: any) => item.value === values.from
     );
+
     const dataPost: any = {
       closedTicket: closeTicket,
       id: ticket?._id,
-      attachmentIds: files,
+      attachmentIds: [...files, ...fileForward],
+
       bccEmails: enableCC ? values.BCC : [],
       description: wrapImageWithAnchorTag(values.content),
       ccEmails: enableCC ? values.CC : [],
       fromEmail: {
-        name: findItemConfigEmail.obj.name,
-        email: findItemConfigEmail.obj.supportEmail,
+        name: findItemConfigEmail?.obj.name,
+        email: findItemConfigEmail?.obj.supportEmail,
       },
       senderConfigId: values.from,
 
-      toEmails: [
-        {
-          name: primaryEmail
-            ? ticket?.fromEmail.name
-            : ticket?.toEmails[0].name,
-          email: primaryEmail
-            ? ticket?.fromEmail.email
-            : ticket?.toEmails[0].email,
-        },
-      ],
+      toEmails: isForward
+        ? [
+            {
+              name: "",
+              email: values.to,
+            },
+          ]
+        : [
+            {
+              name: primaryEmail
+                ? ticket?.fromEmail.name
+                : ticket?.toEmails[0].name,
+              email: primaryEmail
+                ? ticket?.fromEmail.email
+                : ticket?.toEmails[0].email,
+            },
+          ],
     };
 
     postReplyApi(dataPost);
 
     updateTicketApi({
       priority: values.priority,
-      status: values.status,
+      status: closeTicket ? StatusTicket.RESOLVED : values.status,
       tags: values.tags,
       agentObjectId: values.assignee
         ? values.assignee.split(",")[0]
@@ -625,6 +608,8 @@ const DetailTicket = (props: DetailTicketProps) => {
       ids: [ticket?._id as string],
     });
     setFiles([]);
+    setFileForward([]);
+
     formRef.current?.setFieldValue("content", "");
   };
 
@@ -639,12 +624,78 @@ const DetailTicket = (props: DetailTicketProps) => {
       updateContent({ content: undefined });
     }
   }, []);
+
+  const handleOpenReply = () => {
+    setFiles([]);
+    setFileForward([]);
+    openSend();
+    setIsForward(false);
+    setTimeout(() => {
+      window.scrollTo(0, document.body.scrollHeight);
+    }, 0);
+  };
+
   useUnMount(() => {
     setVisible(false);
     updateContent({ content: undefined });
+    updateChatItem(undefined);
   });
+  useDeepEffect(() => {
+    if (chatItemForward) {
+      setIsForward(true);
+      setFileForward([
+        ...new Set(chatItemForward?.attachments?.map((item) => item?._id)),
+      ]);
+
+      formRef.current?.setFieldValue(
+        "content",
+        `
+      <br/>
+      <br/>
+      <div class='md_forward'>
+         <h3>---- Forwarded message ----</h3>
+         <div>
+            <div class='md_attr' style='color:#888'>
+            From: <strong>${chatItemForward.name}</strong> (${chatItemForward.email})
+            <br/>
+            Date: ${chatItemForward.time}
+            <br/>
+              To: ${chatItemForward.toEmail}
+            </div>
+            <br/>
+            <br/>
+            <div>${chatItemForward.chat}</div>
+          </div>
+        </div>
+      `
+      );
+
+      openSend();
+    }
+  }, [chatItemForward, clickForward]);
 
   useDeepEffect(() => {
+    if (ticket?.meta?.isSample && conversationList?.length === 0) {
+      openSend();
+      setTimeout(() => {
+        formRef.current?.setFieldValue(
+          "content",
+          `
+      Let's fill out the reply here! You might want to include those things:
+          <br/> <br/>
+- A great greeting <br/>
+- An attached image <br/>
+- Try bold, italic here and there 
+           <br/> <br/>
+Hit Send to see what your message will look like
+      `
+        );
+      }, 500);
+    }
+  }, [ticket, conversationList]);
+
+  useDeepEffect(() => {
+    if (isForward) return;
     const signature = emailIntegrationOptions.find(
       (item: any) => item.value === selectedFrom
     )?.obj.signature;
@@ -656,7 +707,7 @@ const DetailTicket = (props: DetailTicketProps) => {
           }<div class='divide'> - - - - - - - </div><div class='signature'>${signature}</div>`
         : contentCreate
     );
-  }, [selectedFrom, emailIntegrationOptions]);
+  }, [selectedFrom, emailIntegrationOptions, isForward, send]);
 
   return (
     <div className="relative">
@@ -702,13 +753,10 @@ const DetailTicket = (props: DetailTicketProps) => {
                 }}
                 icon={<FaMailReply style={{ fontSize: 16 }} />}
               ></Button>
-              <ModalInfoTicket
-                formRef={formRef}
-                initialValues={initialValues}
-                agentsOptions={agentsOptions}
-                tagsOptions={tagsOptions}
-                handleSaveTicket={handleSaveTicket}
-              />
+              <Button
+                onClick={openStatusModal}
+                icon={<InfoIcon style={{ fontSize: 16 }} />}
+              ></Button>
               <Button
                 onClick={handleToggleSearch}
                 icon={PriceLookupMinor}
@@ -739,7 +787,7 @@ const DetailTicket = (props: DetailTicketProps) => {
                       onSubmit={() => {}}
                       onValuesChange={handleChangeForm}
                     >
-                      <div className="flex flex-wrap  md:flex-row-reverse xs:flex-col justify-between">
+                      <div className="flex flex-wrap  md:flex-row-reverse xs:flex-col justify-between overflow-auto">
                         <div
                           className={classNames(
                             styles.borderLeft,
@@ -795,144 +843,293 @@ const DetailTicket = (props: DetailTicketProps) => {
                         </div>
 
                         <div className="flex-1 px-4">
-                          <div className="">
-                            <CollapseList listChat={listChat} />
-                          </div>
-                          <div className="w-full flex justify-between gap-2 flex-wrap ">
-                            <div className="flex  flex-col flex-1 ">
-                              <div className="md:w-[400px] xs:w-[300px]">
-                                <FormItem name="from">
-                                  <BoxSelectFilter
-                                    label="From"
-                                    data={emailIntegrationOptions}
-                                    disabled={disabled}
-                                  />
-                                </FormItem>
-                              </div>
-                              <div className="md:w-[400px] xs:w-[300px] mt-5 mb-5">
-                                <FormItem name="to">
-                                  <TextField
-                                    label={
-                                      <div className="flex justify-between md:w-[400px] xs:w-[300px] ">
-                                        <span>To</span>
-                                        <span
-                                          className="link  inline-block hover:underline hover:cursor-pointer text-blue-500"
-                                          onClick={() => {
-                                            setEnableCC(!enableCC);
-                                          }}
-                                        >
-                                          CC/BCC
-                                        </span>
-                                      </div>
-                                    }
-                                    disabled
-                                    autoComplete="off"
-                                  />
-                                </FormItem>
-                              </div>
-                            </div>
-                            <div className="flex  flex-col flex-1">
-                              {enableCC ? (
-                                <div
-                                  className={`min-w-[300px] max-w-[400px] md:w-[400px] xs:w-[300px] `}
-                                >
-                                  <FormItem name="CC">
-                                    <SelectAddEmail
-                                      defaultTag={initialValues.CC}
-                                      disabled={disabled}
-                                      label="CC"
-                                      data={customersOptions}
-                                    />
-                                  </FormItem>
-                                </div>
-                              ) : (
-                                <></>
-                              )}
-                              {enableCC ? (
-                                <div
-                                  className={`min-w-[300px] max-w-[400px] md:w-[400px] xs:w-[300px] mt-5 mb-5 min-h-[60px]`}
-                                >
-                                  <FormItem name="BCC">
-                                    <SelectAddEmail
-                                      defaultTag={initialValues.BCC}
-                                      disabled={disabled}
-                                      label="BCC"
-                                      data={customersOptions}
-                                    />
-                                  </FormItem>
-                                </div>
-                              ) : (
-                                <></>
-                              )}
-                            </div>
-                          </div>
+                          <CollapseList listChat={listChat} />
 
-                          <div>
-                            <FormItem name="content">
-                              <TextEditorTicket
-                                files={files}
-                                setFiles={setFiles}
-                                formRef={formRef}
-                                disabled={
-                                  formRef.current?.values.status ===
-                                  StatusTicket.RESOLVED
-                                }
-                                setIsChanged={setIsChanged}
-                                setLoadingButton={setLoadingButton}
-                                labelProps={{
-                                  as: "span",
-                                  variant: "bodyMd",
-                                  children: "Content",
-                                }}
-                                init={{
-                                  placeholder:
-                                    "Please input your message here......",
-                                }}
-                              />
-                            </FormItem>
+                          {formRef.current?.values?.status ===
+                          StatusTicket.RESOLVED ? (
+                            <Button
+                              icon={<BackIcon fontSize={14} />}
+                              onClick={handleReopenTicket}
+                              disabled={false}
+                            >
+                              Reopen
+                            </Button>
+                          ) : (
+                            <div
+                              className={`flex gap-2 mb-4 ${
+                                send ? "hidden" : ""
+                              }`}
+                            >
+                              <Button
+                                icon={<ReplyIcon fontSize={14} />}
+                                onClick={handleOpenReply}
+                              >
+                                Reply
+                              </Button>
+                              <Button
+                                icon={<ForwardIcon fontSize={14} />}
+                                onClick={() => {
+                                  setIsForward(true);
+                                  updateChatItem(undefined);
+                                  setFileForward([
+                                    ...new Set(
+                                      listChat
+                                        .map((item) => item.attachments)
+                                        .flat()
+                                        .map((item) => item?._id)
+                                    ),
+                                  ]);
+                                  formRef.current?.setFieldValue(
+                                    "content",
+                                    `
+                            <br/>
+                          <div class='md_forward'>
+                          <h3>Forwarded Conversation</h3>
+                          <h4>Subject: ${ticket?.subject}</h4>
+                          <span>--------------------</span>
+                          <br/>
+                          <br/>
+                          
+                          ${listChat
+                            .map(
+                              (item) =>
+                                `<div>
+                                  <div class='md_attr' style='color:#888'>
+                                  From: <strong>${item.name}</strong> (${item.email})
+                                  <br/>
+                                  Date: ${item.datetime}
+                                  <br/>
+                                   To: ${item.toEmail}
+                                  </div>
+                                  <br/>
+                                  <br/>
+                                  <div>${item.chat}</div>
+                                </div>`
+                            )
+                            .join("<br/> --------------------")}
+                          
                           </div>
-                          <div
-                            ref={endPageRef}
-                            className="flex justify-end mt-5"
-                          >
-                            {formRef.current?.values.status ===
-                            StatusTicket.RESOLVED ? (
-                              <>
-                                <Button
-                                  icon={
-                                    <div className="flex">
-                                      <span className="mr-2 ">
-                                        <BackIcon fontSize={14} />
-                                      </span>
-                                      <span>Reopen</span>
-                                    </div>
-                                  }
-                                  onClick={handleReopenTicket}
-                                  disabled={false}
-                                ></Button>
-                              </>
-                            ) : (
-                              <div className="flex items-center gap-2">
-                                <Button
-                                  disabled={!isChanged || loadingButton}
-                                  onClick={handleCloseTicket}
-                                >
-                                  Reply & Close Ticket
-                                </Button>
-                                <Button
-                                  primary
-                                  onClick={() => {
-                                    if (!formRef.current?.isValid) {
-                                      return;
+                          `
+                                  );
+                                  openSend();
+                                  setTimeout(() => {
+                                    window.scrollTo(
+                                      0,
+                                      document.body.scrollHeight
+                                    );
+                                  }, 0);
+                                }}
+                              >
+                                Forward
+                              </Button>
+                            </div>
+                          )}
+                          <div className={send ? "" : "hidden"}>
+                            <LegacyCard
+                              sectioned
+                              actions={[
+                                {
+                                  content: `Close`,
+                                  onAction: () => {
+                                    closeSend();
+                                    setIsForward(false);
+                                    updateContent({ content: undefined });
+                                    if (isForward) {
+                                      formRef.current?.resetForm();
                                     }
-                                    onFinish(formRef.current?.values);
-                                  }}
-                                  disabled={!isChanged || loadingButton}
-                                >
-                                  Reply
-                                </Button>
+                                  },
+                                },
+                              ]}
+                            >
+                              <div className="w-full flex justify-between gap-2 flex-wrap ">
+                                <div className="flex  flex-col flex-1 ">
+                                  <div className="md:w-[400px] xs:w-[300px]">
+                                    <FormItem name="from">
+                                      <BoxSelectFilter
+                                        label="From"
+                                        data={emailIntegrationOptions}
+                                        disabled={disabled}
+                                      />
+                                    </FormItem>
+                                  </div>
+                                  <div className="md:w-[400px] xs:w-[300px] mt-5 mb-5">
+                                    <FormItem name="to">
+                                      {isForward ? (
+                                        <BoxSelectCustomer
+                                          form={formRef}
+                                          label={
+                                            <div className="flex justify-between md:w-[400px] xs:w-[300px] ">
+                                              <span>To</span>
+                                              <span
+                                                className="link  inline-block hover:underline hover:cursor-pointer text-blue-500"
+                                                onClick={() => {
+                                                  setEnableCC(!enableCC);
+                                                }}
+                                              >
+                                                CC/BCC
+                                              </span>
+                                            </div>
+                                          }
+                                          placeholder="Email"
+                                          data={customersOptions}
+                                        />
+                                      ) : (
+                                        <TextField
+                                          label={
+                                            <div className="flex justify-between md:w-[400px] xs:w-[300px] ">
+                                              <span>To</span>
+                                              <span
+                                                className="link  inline-block hover:underline hover:cursor-pointer text-blue-500"
+                                                onClick={() => {
+                                                  setEnableCC(!enableCC);
+                                                }}
+                                              >
+                                                CC/BCC
+                                              </span>
+                                            </div>
+                                          }
+                                          disabled
+                                          autoComplete="off"
+                                        />
+                                      )}
+                                    </FormItem>
+                                  </div>
+                                </div>
+                                <div className="flex  flex-col flex-1">
+                                  {enableCC ? (
+                                    <div
+                                      className={`min-w-[300px] max-w-[400px] md:w-[400px] xs:w-[300px] `}
+                                    >
+                                      <FormItem name="CC">
+                                        <SelectAddEmail
+                                          defaultTag={initialValues.CC}
+                                          disabled={disabled}
+                                          label="CC"
+                                          data={customersOptions}
+                                        />
+                                      </FormItem>
+                                    </div>
+                                  ) : (
+                                    <></>
+                                  )}
+                                  {enableCC ? (
+                                    <div
+                                      className={`min-w-[300px] max-w-[400px] md:w-[400px] xs:w-[300px] mt-5 mb-5 min-h-[60px]`}
+                                    >
+                                      <FormItem name="BCC">
+                                        <SelectAddEmail
+                                          defaultTag={initialValues.BCC}
+                                          disabled={disabled}
+                                          label="BCC"
+                                          data={customersOptions}
+                                        />
+                                      </FormItem>
+                                    </div>
+                                  ) : (
+                                    <></>
+                                  )}
+                                </div>
                               </div>
-                            )}
+
+                              <div>
+                                <FormItem name="content">
+                                  <TextEditorTicket
+                                    files={files}
+                                    setFiles={setFiles}
+                                    formRef={formRef}
+                                    disabled={
+                                      formRef.current?.values.status ===
+                                      StatusTicket.RESOLVED
+                                    }
+                                    setIsChanged={setIsChanged}
+                                    setLoadingButton={setLoadingButton}
+                                    labelProps={{
+                                      as: "span",
+                                      variant: "bodyMd",
+                                      children: "Content",
+                                    }}
+                                    init={{
+                                      placeholder:
+                                        "Please input your message here......",
+                                    }}
+                                  />
+                                </FormItem>
+                              </div>
+                              {isForward ? (
+                                <div
+                                  key={
+                                    chatItemForward ? chatItemForward.id : "all"
+                                  }
+                                  className="mt-5"
+                                >
+                                  <UploadForward
+                                    defaultFileList={uniqBy(
+                                      chatItemForward
+                                        ? chatItemForward?.attachments?.map(
+                                            (item) => ({
+                                              uid: item?._id as string,
+                                              name: item?.name as string,
+
+                                              url: item?.attachmentUrl as string,
+                                            })
+                                          )
+                                        : listChat
+                                            .map((item) => item.attachments)
+                                            .flat()
+                                            .map((item) => ({
+                                              uid: item?._id as string,
+                                              name: item?.name as string,
+
+                                              url: item?.attachmentUrl as string,
+                                            })),
+                                      "uid"
+                                    )}
+                                    setFileForward={setFileForward}
+                                  />
+                                </div>
+                              ) : (
+                                <></>
+                              )}
+                              <div className="flex justify-end mt-5">
+                                {formRef.current?.values.status ===
+                                StatusTicket.RESOLVED ? (
+                                  <>
+                                    <Button
+                                      icon={<BackIcon fontSize={14} />}
+                                      onClick={handleReopenTicket}
+                                      disabled={false}
+                                    >
+                                      Reopen
+                                    </Button>
+                                  </>
+                                ) : (
+                                  <div className="flex items-center gap-2">
+                                    <Button
+                                      disabled={!isChanged || loadingButton}
+                                      onClick={() => {
+                                        if (formRef.current?.isValid) {
+                                          handleCloseTicket();
+                                        }
+                                      }}
+                                    >
+                                      Reply & Close Ticket
+                                    </Button>
+                                    <Button
+                                      primary
+                                      onClick={() => {
+                                        if (!formRef.current?.isValid) {
+                                          return;
+                                        }
+                                        onFinish(formRef.current?.values);
+                                      }}
+                                      disabled={!isChanged || loadingButton}
+                                    >
+                                      Reply
+                                    </Button>
+                                  </div>
+                                )}
+                              </div>
+                            </LegacyCard>
                           </div>
                         </div>
                       </div>
@@ -943,10 +1140,65 @@ const DetailTicket = (props: DetailTicketProps) => {
                   <ContentShopifySearch />
                 </div>
               </div>
+              <Modal
+                open={statusModal}
+                onClose={closeStatusModal}
+                title=""
+                primaryAction={{
+                  content: "Save",
+                  onAction: () => {
+                    handleSaveTicket(true);
+                  },
+                }}
+                secondaryActions={[
+                  {
+                    content: "Cancel",
+                    onAction: () => {
+                      closeStatusModal();
+                    },
+                  },
+                ]}
+              >
+                <Modal.Section>
+                  <TextContainer>
+                    <Form
+                      initialValues={initialValues}
+                      ref={formRef}
+                      enableReinitialize
+                      onSubmit={() => {}}
+                    >
+                      <FormLayout>
+                        <FormItem name="status">
+                          <Select label="Status" options={statusOptions} />
+                        </FormItem>
+
+                        <FormItem name="priority">
+                          <Select label="Priority" options={priorityOptions} />
+                        </FormItem>
+                        <FormItem name="assignee">
+                          <BoxSelectFilter
+                            label="Assignee"
+                            data={agentsOptions}
+                            placeholder="Search agents"
+                          />
+                        </FormItem>
+                        <FormItem name="tags">
+                          <SelectAddTag
+                            label="Tags"
+                            data={tagsOptions}
+                            placeholder="Add Tags"
+                          />
+                        </FormItem>
+                      </FormLayout>
+                    </Form>
+                  </TextContainer>
+                </Modal.Section>
+              </Modal>
             </Layout.Section>
           </Layout>
         </Page>
       )}
+      <div ref={endPageRef}></div>
     </div>
   );
 };

@@ -7,7 +7,6 @@ import {
 import {
   Combobox,
   ComboboxProps,
-  EmptySearchResult,
   Listbox,
   Stack,
   Tag,
@@ -230,16 +229,7 @@ export const Select = ({
             ))}
             {loadingMarkup}
           </Listbox>
-        ) : (
-          <div className="p-3 h-[100px]">
-            <EmptySearchResult
-              title={
-                "Sorry! There is no records matched with your search criteria"
-              }
-              description={"Try changing the filters or search term"}
-            />
-          </div>
-        )}
+        ) : null}
       </Combobox>
     </div>
   );

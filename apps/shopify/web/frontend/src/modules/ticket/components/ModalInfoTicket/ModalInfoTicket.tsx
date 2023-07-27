@@ -34,7 +34,6 @@ export const ModalInfoTicket: FC<ModalInfoTicketProps> = ({
   const handleSubmitValue = (values: FormikValues) => {
     setActive(false);
   };
-
   const activator = (
     <Button
       onClick={() => {
@@ -71,7 +70,7 @@ export const ModalInfoTicket: FC<ModalInfoTicketProps> = ({
             <Form
               initialValues={initialValues}
               ref={formRef}
-              enableReinitialize
+              // enableReinitialize
               onSubmit={handleSubmitValue}
             >
               <FormLayout>

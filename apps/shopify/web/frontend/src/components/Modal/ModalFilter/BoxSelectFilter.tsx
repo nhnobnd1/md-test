@@ -1,4 +1,4 @@
-import { Combobox, EmptySearchResult, Listbox } from "@shopify/polaris";
+import { Combobox, Listbox } from "@shopify/polaris";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import useSelectFrom from "src/modules/ticket/store/useSelectFrom";
 interface Data {
@@ -93,7 +93,7 @@ const BoxSelectFilter = (props: BoxSelectAutoReplyProps) => {
   useEffect(() => {
     setOptions(props.data);
     updateSelection(props.value);
-  }, [props.data, props.value, props.onChange]);
+  }, [props.data, props.value]);
   return (
     <Combobox
       height={props.disabled ? "0" : ""}
@@ -122,16 +122,7 @@ const BoxSelectFilter = (props: BoxSelectAutoReplyProps) => {
         <div className="min-h-[100px]">
           <Listbox onSelect={updateSelection}>{optionsMarkup}</Listbox>
         </div>
-      ) : (
-        <div className="p-3 h-[100px]">
-          <EmptySearchResult
-            title={
-              "Sorry! There is no records matched with your search criteria"
-            }
-            description={"Try changing the filters or search term"}
-          />
-        </div>
-      )}
+      ) : null}
     </Combobox>
   );
 };

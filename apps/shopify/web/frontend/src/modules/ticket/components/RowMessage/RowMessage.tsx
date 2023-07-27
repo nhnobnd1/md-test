@@ -2,20 +2,18 @@ import {
   Button,
   Collapsible,
   Divider,
-  Icon,
   TextContainer,
   Tooltip,
 } from "@shopify/polaris";
-import { ChevronRightMinor } from "@shopify/polaris-icons";
 import axios from "axios";
 import { filesize } from "filesize";
 import fileDownload from "js-file-download";
-import { FC, useCallback, useMemo, useRef, useState } from "react";
+import { FC, useCallback, useMemo, useState } from "react";
 import { ChatItem } from "src/modules/ticket/pages/DetailTicket";
+import CollapseIcon from "~icons/material-symbols/keyboard-arrow-down-rounded";
 import UserIcon from "~icons/material-symbols/person";
 import AgentIcon from "~icons/material-symbols/support-agent-sharp";
 import QuoteIcon from "~icons/octicon/ellipsis-16";
-import CollapseIcon from "~icons/material-symbols/keyboard-arrow-down-rounded";
 
 import "./RowMessage.scss";
 interface RowMessageProps {
@@ -35,8 +33,6 @@ function splitText(fileName: string, maxLength: number) {
 
 export const RowMessage: FC<RowMessageProps> = ({ item }) => {
   const [toggleQuote, setToggleQuote] = useState(true);
-  const iframeRef = useRef<any>(null);
-  const iframeRefQuote = useRef<any>(null);
 
   const sortChat = useMemo(() => {
     if (item.chat.match(regexContent)) {
@@ -69,9 +65,6 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
     <div className="">
       <div className=" items-center gap-3 ">
         <div className="flex items-end gap-3 ">
-          {/* <Text variant="headingXl" as="h4">
-            {item.name}
-          </Text> */}
           {item?.incoming ? (
             <UserIcon fontSize={20} />
           ) : (
@@ -81,14 +74,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
             {item.typeChat ? item.typeChat : "replied"}
           </span>
         </div>
-        {/* <div className="flex gap-3 justify-between mt-2">
-          <span style={{ color: "black", fontSize: 12 }}>
-            From: {item.email}
-          </span>
-        </div> */}
-        {/* <div className="flex gap-3 justify-between mt-2">
-          <span className="text-xs text-stone-500">{item.time}</span>
-        </div> */}
+
         <div className="flex gap-3 flex-wrap mt-2">
           <span style={{ color: "black", fontSize: 12 }}>
             <span style={{ fontWeight: "bold" }}>To </span>: {item.toEmail}
@@ -134,45 +120,9 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
         </div>
       </div>
       <div
-        className="text-black text-scroll mt-5"
+        className="text-black text-scroll mt-5 w-full"
         dangerouslySetInnerHTML={{ __html: sortChat }}
       />
-      {/* {isMobile ? (
-        <div
-          className="text-black text-scroll mt-5"
-          dangerouslySetInnerHTML={{ __html: sortChat }}
-        />
-      ) : (
-        <div ref={iframeRef}>
-          <object
-            className="w-full h-full border-none mt-5"
-            data={`data:text/html;charset=utf-8,${encodeURIComponent(
-              `<div style="font-family:Helvetica;font-size:14px"><style>
-            ::-webkit-scrollbar {
-  width: 16px;
-}
-
-::-webkit-scrollbar-track {
-  background-color: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: #FA7D00;
-  border-radius: 20px;
-  border: 6px solid transparent;
-  background-clip: content-box;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background-color:#FF9326;
-}
-
-            </style>${sortChat}</div>`
-            )}`}
-            type="text/html"
-          ></object>
-        </div>
-      )} */}
 
       {disableQuote ? (
         <></>
@@ -196,27 +146,11 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
             className="text-black mb-2 text-scroll mt-3"
             dangerouslySetInnerHTML={{ __html: quote }}
           />
-          {/* {isMobile ? (
-            <div
-              className="text-black mb-2 text-scroll mt-3"
-              dangerouslySetInnerHTML={{ __html: quote }}
-            />
-          ) : (
-            <div ref={iframeRefQuote}>
-              <object
-                className="w-full h-full border-none mt-5"
-                data={`data:text/html;charset=utf-8,${encodeURIComponent(
-                  `<div style="font-family:Helvetica;font-size:14px">${quote}</div>`
-                )}`}
-                type="text/html"
-              ></object>
-            </div>
-          )} */}
         </div>
       )}
 
       {item.attachments?.length ? (
-        <div>
+        <div className="mt-5">
           <Button
             onClick={handleToggle}
             ariaExpanded={open}
@@ -304,20 +238,6 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
                               standard: "jedec",
                             })}
                           </span>
-                          {/* <div className="justify-center items-center file-download mb-2">
-                            <Button
-                              onClick={async () => {
-                                const response = await axios.get(
-                                  item.attachmentUrl,
-                                  {
-                                    responseType: "blob",
-                                  }
-                                );
-                                fileDownload(response.data, item.name);
-                              }}
-                              icon={<DownloadIcon style={{ fontSize: 16 }} />}
-                            ></Button>
-                          </div> */}
                         </div>
                       </div>
                     </div>

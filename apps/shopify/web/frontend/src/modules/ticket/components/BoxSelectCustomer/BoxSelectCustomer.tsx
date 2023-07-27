@@ -97,6 +97,9 @@ const BoxSelectCustomer = (props: BoxSelectAutoReplyProps) => {
   useEffect(() => {
     setOptions(props.data);
     updateSelection(props.value);
+    if (props.value) {
+      setInputValue(props.value);
+    }
   }, [props.data]);
   return (
     <Combobox

@@ -75,10 +75,12 @@ const SelectAddEmail = (props: BoxSelectAutoReplyProps) => {
   const handleKeyPress = (event: any) => {
     const enterKeyPressed = event.keyCode === 13;
     if (enterKeyPressed && emailRegex.test(inputValue)) {
+      if (options.length > 0) return;
       setSelectedTags((previousTags) => {
         if (previousTags.includes(inputValue)) return previousTags;
         return [...previousTags, inputValue];
       });
+      setInputValue("");
       event.preventDefault();
     }
   };

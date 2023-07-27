@@ -1,4 +1,4 @@
-import { Combobox, EmptySearchResult, Listbox } from "@shopify/polaris";
+import { Combobox, Listbox } from "@shopify/polaris";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 interface Data {
   value: string;
@@ -119,16 +119,7 @@ const BoxSelectAssignee = (props: BoxSelectAutoReplyProps) => {
         <div className="min-h-[100px]">
           <Listbox onSelect={updateSelection}>{optionsMarkup}</Listbox>
         </div>
-      ) : (
-        <div className="p-3 h-[100px]">
-          <EmptySearchResult
-            title={
-              "Sorry! There is no records matched with your search criteria"
-            }
-            description={"Try changing the filters or search term"}
-          />
-        </div>
-      )}
+      ) : null}
     </Combobox>
   );
 };
