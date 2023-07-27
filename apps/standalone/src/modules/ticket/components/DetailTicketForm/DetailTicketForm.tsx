@@ -89,6 +89,7 @@ export interface ChatItem {
   incoming?: boolean;
   ccEmails?: [];
   bccEmails?: [];
+  datetime?: string;
 }
 const validateCCEmail = (value: string[], fromEmail = ""): boolean | string => {
   if (!value) return true;
@@ -287,6 +288,7 @@ const DetailTicketForm = () => {
           incoming: item?.incoming,
           ccEmails: item?.ccEmails,
           bccEmails: item?.bccEmails,
+          datetime: createdDatetimeFormat(item.createdDatetime, timezone),
         };
       }
     );
@@ -316,10 +318,11 @@ const DetailTicketForm = () => {
         incoming: ticket?.incoming || ticket?.createdViaWidget,
         ccEmails: ticket?.ccEmails,
         bccEmails: ticket?.bccEmails,
+        datetime: createdDatetimeFormat(ticket.createdDatetime, timezone),
       });
     }
     return conversationMapping;
-  }, [ticket, conversationList]);
+  }, [ticket, conversationList, timezone]);
 
   const { data: dataCustomers } = useQuery({
     queryKey: ["getCustomers"],
@@ -340,7 +343,6 @@ const DetailTicketForm = () => {
       };
     });
   }, [dataCustomers]);
-
   const initialValues = useMemo(() => {
     const condition = ticket?.incoming || ticket?.createdViaWidget;
 
@@ -569,6 +571,8 @@ const DetailTicketForm = () => {
   };
 
   const onChangeEmailIntegration = (value: string, options: any) => {
+    form.validateFields();
+    if (isForward) return;
     form.setFieldValue(
       "content",
       options?.obj?.signature
@@ -579,7 +583,6 @@ const DetailTicketForm = () => {
           }</div>`
         : contentCreate
     );
-    form.validateFields();
   };
 
   useDeepEffect(() => {
@@ -606,7 +609,7 @@ const DetailTicketForm = () => {
             <div class='md_attr' style='color:#888'>
             From: <strong>${chatItemForward.name}</strong> (${chatItemForward.email})
             <br/>
-            Date: ${chatItemForward.time}
+            Date: ${chatItemForward.datetime}
             <br/>
               To: ${chatItemForward.toEmail}
             </div>
@@ -778,8 +781,12 @@ const DetailTicketForm = () => {
                           onClick={() => {
                             form.resetFields();
                             setFiles([]);
+                            setFileForward([]);
                             openSend();
                             setIsForward(false);
+                            setTimeout(() => {
+                              window.scrollTo(0, document.body.scrollHeight);
+                            }, 0);
                           }}
                         >
                           Reply
@@ -819,7 +826,7 @@ const DetailTicketForm = () => {
                                   <div class='md_attr' style='color:#888'>
                                   From: <strong>${item.name}</strong> (${item.email})
                                   <br/>
-                                  Date: ${item.time}
+                                  Date: ${item.datetime}
                                   <br/>
                                    To: ${item.toEmail}
                                   </div>
@@ -834,6 +841,9 @@ const DetailTicketForm = () => {
                           `
                             );
                             openSend();
+                            setTimeout(() => {
+                              window.scrollTo(0, document.body.scrollHeight);
+                            }, 0);
                           }}
                         >
                           Forward
@@ -844,7 +854,10 @@ const DetailTicketForm = () => {
                       className={send ? "" : "hidden"}
                       extra={
                         <MDButton
-                          onClick={closeSend}
+                          onClick={() => {
+                            closeSend();
+                            setIsForward(false);
+                          }}
                           type="text"
                           icon={<Icon name="close" />}
                         ></MDButton>

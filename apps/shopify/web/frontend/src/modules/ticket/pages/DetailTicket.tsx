@@ -189,7 +189,7 @@ const DetailTicket = (props: DetailTicketProps) => {
       });
     }
     return conversationMapping;
-  }, [ticket, conversationList]);
+  }, [ticket, conversationList, timezone]);
   const { run: fetchEmailIntegrationApi } = useJob(() => {
     return EmailIntegrationRepository()
       .getListEmail({
