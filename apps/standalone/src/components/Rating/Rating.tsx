@@ -33,7 +33,7 @@ export const Rating: FC<RatingProps> = () => {
     queryFn: () => getMerchantRatingApi(),
     retry: 3,
     onSuccess: (data) => {
-      if (data) {
+      if (data.star && data.comment) {
         ratingState.changeStar(data.star as number);
         ratingState.changeComment(data.comment as string);
       }
@@ -63,11 +63,11 @@ export const Rating: FC<RatingProps> = () => {
     ratingState.changeComment("");
     ratingState.changeStar(0);
   };
-  const handleSubmit = () => {
+  const handleSubmit = (values: any) => {
     if (ratingState.star > 0) {
       postMerchant.mutate({
         star: ratingState.star,
-        comment: ratingState.comment,
+        comment: values.comment,
       });
     }
   };
@@ -104,6 +104,7 @@ export const Rating: FC<RatingProps> = () => {
                   <h1 className="p-0 m-0">MooseDesk</h1>
                 ) : (
                   <StarsRating
+                    disabled={true}
                     allowHalf={false}
                     value={ratingState.star}
                     onChange={(value) => {
@@ -146,7 +147,7 @@ export const Rating: FC<RatingProps> = () => {
             {ratingState.star === 0 ? (
               <></>
             ) : (
-              <div className={`py-3`}>
+              <div className={`pt-3`}>
                 <Form.Item
                   name="comment"
                   rules={[
@@ -159,13 +160,13 @@ export const Rating: FC<RatingProps> = () => {
                   <Input.TextArea
                     className="w-full"
                     placeholder="Please tell us what MooseDesk can improve"
-                    onChange={handleChangeTextArea}
+                    // onChange={handleChangeTextArea}
                   />
                 </Form.Item>
               </div>
             )}
             {ratingState.star > 0 && (
-              <div className="flex justify-end gap-2 mt-2">
+              <div className="flex justify-end gap-2 ">
                 <MDButton onClick={handleCancel}>Cancel</MDButton>
                 <MDButton
                   type="primary"
