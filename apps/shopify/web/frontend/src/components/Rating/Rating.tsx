@@ -28,7 +28,7 @@ export const Rating: FC<RatingProps> = () => {
     initValue: 10,
     key: "rating",
   });
-//   console.log({ checkTimerProcess, countDown });
+  //   console.log({ checkTimerProcess, countDown });
   const handleCancel = () => {
     ratingState.changeComment("");
     ratingState.changeStar(0);
