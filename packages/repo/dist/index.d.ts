@@ -12,4 +12,5 @@ export * from './ticket';
 export * from './unty';
 export * from './userGroup';
 export * from './userSetting';
+export * from './MerchantRating';
 //# sourceMappingURL=index.d.ts.map

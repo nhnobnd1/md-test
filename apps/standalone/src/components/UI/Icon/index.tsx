@@ -1528,6 +1528,50 @@ class Icon extends React.Component<IconProps> {
         />
       </svg>
     ),
+    mooseRate: (
+      <svg
+        width={32}
+        height={32}
+        viewBox="0 0 32 32"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect
+          width={32}
+          height={32}
+          rx={16}
+          fill="url(#paint0_linear_180338_266132)"
+        />
+        <path
+          d="M9.00373 8.0438L7.8401 10.8759L17.1637 27.9124L18.6037 25.6204L9.00373 8.0438ZM14.0074 22.7445V27.0365L16.8874 28L14.0074 22.7445ZM18.5746 20L16.2619 15.7664L14.5746 12.6715L13.2074 15.1095L18.6183 25.0073V20.073L18.5746 20ZM19.2001 15.708L18.3128 14.0876L17.6001 12.7737L16.3928 15.5182L18.7056 19.7372L19.9128 16.9927L19.2001 15.708ZM23.2001 8L18.8946 14.4818L20.1746 16.8467L24.2765 10.6715L23.2001 8ZM20.5965 16.8029L24.2328 15.6204L26.4146 12.3358V8.0438L20.5965 16.8029ZM5.96373 8.07299L5.6001 12.3358L7.50555 15.7956L11.0256 17.2847L5.96373 8.07299ZM13.8765 22.8175V22.8467V22.8175Z"
+          fill="url(#paint1_linear_180338_266132)"
+        />
+        <defs>
+          <linearGradient
+            id="paint0_linear_180338_266132"
+            x1={16}
+            y1={0}
+            x2={16}
+            y2={32}
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stopColor="#FFE5CB" />
+            <stop offset={1} stopColor="#FFC58B" />
+          </linearGradient>
+          <linearGradient
+            id="paint1_linear_180338_266132"
+            x1={5.6001}
+            y1={18.0012}
+            x2={26.4046}
+            y2={18.0012}
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stopColor="#FFAA00" />
+            <stop offset={1} stopColor="#F97000" />
+          </linearGradient>
+        </defs>
+      </svg>
+    ),
   };
 
   getProperty(property: keyof IconProps, value: any): any {
