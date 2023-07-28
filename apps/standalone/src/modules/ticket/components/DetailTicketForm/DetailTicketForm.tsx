@@ -31,7 +31,7 @@ import {
   Upload,
 } from "antd";
 import moment from "moment";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import useToggleGlobal from "@moose-desk/core/hooks/useToggleGlobal";
@@ -250,7 +250,6 @@ const DetailTicketForm = () => {
   }, [dataAgents]);
 
   const { state: loadingApi, startLoading, stopLoading } = useLoading();
-  const endPageRef = useRef<any>(null);
 
   const { data: dataEmailIntegration } = useQuery({
     queryKey: ["getListEmailIntegration"],
@@ -701,7 +700,6 @@ Hit Send to see what your message will look like
       window.scrollTo(0, document.body.scrollHeight);
     }, 0);
   };
-  console.log("wwww", form.getFieldsValue());
   return (
     <>
       {processing || isLoadingConversation ? (
@@ -729,18 +727,25 @@ Hit Send to see what your message will look like
                     icon={<ForwardIcon fontSize={20} />}
                   />
                 </Tooltip>
-                <MDButton
-                  className={isTablet ? "flex" : "hidden"}
-                  onClick={() => {
-                    endPageRef?.current?.scrollIntoView({ behavior: "smooth" });
-                  }}
-                  icon={<Icon name="replyTicket" />}
-                />
-                <MDButton
-                  className={isTablet ? "flex" : "hidden"}
-                  onClick={() => openStatusModal()}
-                  icon={<Icon name="statusTicket" />}
-                />
+                <Tooltip title="Reply">
+                  <MDButton
+                    className={isTablet ? "flex" : "hidden"}
+                    onClick={() => {
+                      openSend();
+                      setTimeout(() => {
+                        window.scrollTo(0, document.body.scrollHeight);
+                      }, 0);
+                    }}
+                    icon={<Icon name="replyTicket" />}
+                  />
+                </Tooltip>
+                <Tooltip title="Status">
+                  <MDButton
+                    className={isTablet ? "flex" : "hidden"}
+                    onClick={() => openStatusModal()}
+                    icon={<Icon name="statusTicket" />}
+                  />
+                </Tooltip>
 
                 <Tooltip title="Search Shopify">
                   <MDButton
@@ -1264,7 +1269,6 @@ Hit Send to see what your message will look like
           </Form>
         </div>
       )}
-      <div ref={endPageRef} style={{ background: "red" }}></div>
     </>
   );
 };
