@@ -83,6 +83,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const {
     data: dataTicket,
     isLoading: loadingFilter,
+    isFetching: fetchingFilter,
     refetch: refetchTicket,
   } = useQuery({
     queryKey: ["getListTickets", mappingFilter],
@@ -652,7 +653,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                   rowSelection={rowSelection}
                   dataSource={tickets}
                   scroll={{ x: 1024 }}
-                  loading={loadingFilter}
+                  loading={fetchingFilter}
                   onChange={onChangeTable}
                 >
                   <Table.Column

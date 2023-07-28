@@ -27,7 +27,7 @@ export const Header = ({
     <div className={classNames(styles.MDHeader, className)}>
       <div
         className={classNames([
-          "flex items-center mb-0 pb-0 w-full",
+          "flex items-center mb-0 pb-0 w-full overflow-auto",
           { "justify-center": justify === "center" },
         ])}
       >

@@ -1,4 +1,4 @@
-import { Button, Collapsible } from "@shopify/polaris";
+import { Button, Collapsible, Tooltip } from "@shopify/polaris";
 import { FC, useCallback, useState } from "react";
 import { RowMessage } from "src/modules/ticket/components/RowMessage";
 import { ChatItem } from "src/modules/ticket/pages/DetailTicket";
@@ -60,13 +60,15 @@ export const CollapseItem: FC<CollapseItemProps> = ({
             )}
 
             <span>{item.time}</span>
-            <span
-              onClick={(e) => {
-                handleForward(e, item);
-              }}
-            >
-              <ForwardIcon fontSize={20} />
-            </span>
+            <Tooltip content="Forward" preferredPosition="above">
+              <span
+                onClick={(e) => {
+                  handleForward(e, item);
+                }}
+              >
+                <ForwardIcon fontSize={20} />
+              </span>
+            </Tooltip>
           </div>
         </div>
       </div>

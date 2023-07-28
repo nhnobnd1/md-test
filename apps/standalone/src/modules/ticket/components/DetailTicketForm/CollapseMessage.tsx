@@ -1,4 +1,4 @@
-import { Button, Collapse, Divider } from "antd";
+import { Button, Collapse, Divider, Tooltip } from "antd";
 import { FC, useState } from "react";
 import { MDButton } from "src/components/UI/Button/MDButton";
 import { ChatItem } from "src/modules/ticket/components/DetailTicketForm/DetailTicketForm";
@@ -55,9 +55,11 @@ export const CollapseMessage: FC<CollapseMessageProps> = ({ listChat }) => {
                   }}
                   type="text"
                   icon={
-                    <span className="translate-y-[3px]">
-                      <ForwardIcon fontSize={14} />
-                    </span>
+                    <Tooltip title="Forward">
+                      <span className="translate-y-[3px]">
+                        <ForwardIcon fontSize={14} />
+                      </span>
+                    </Tooltip>
                   }
                 ></MDButton>
               </div>
@@ -109,9 +111,11 @@ export const CollapseMessage: FC<CollapseMessageProps> = ({ listChat }) => {
                     }}
                     type="text"
                     icon={
-                      <span className="translate-y-[3px]">
-                        <ForwardIcon fontSize={14} />
-                      </span>
+                      <Tooltip title="Forward">
+                        <span className="translate-y-[3px]">
+                          <ForwardIcon fontSize={14} />
+                        </span>
+                      </Tooltip>
                     }
                   ></MDButton>
                 </div>
@@ -147,9 +151,11 @@ export const CollapseMessage: FC<CollapseMessageProps> = ({ listChat }) => {
                     }}
                     type="text"
                     icon={
-                      <span className="translate-y-[3px]">
-                        <ForwardIcon fontSize={14} />
-                      </span>
+                      <Tooltip title="Forward">
+                        <span className="translate-y-[3px]">
+                          <ForwardIcon fontSize={14} />
+                        </span>
+                      </Tooltip>
                     }
                   ></MDButton>
                 </div>
@@ -190,9 +196,11 @@ export const CollapseMessage: FC<CollapseMessageProps> = ({ listChat }) => {
                   }}
                   type="text"
                   icon={
-                    <span className="translate-y-[3px]">
-                      <ForwardIcon fontSize={14} />
-                    </span>
+                    <Tooltip title="Forward">
+                      <span className="translate-y-[3px]">
+                        <ForwardIcon fontSize={14} />
+                      </span>
+                    </Tooltip>
                   }
                 ></MDButton>
               </div>

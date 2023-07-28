@@ -13,14 +13,11 @@ import {
   AttachFile,
   Conversation,
   CreateReplyTicketRequest,
-  EmailIntegration,
-  EmailIntegrationRepository,
   Priority,
   priorityOptions,
   ScreenType,
   statusOptions,
   StatusTicket,
-  Ticket,
   TicketRepository,
   UpdateTicket,
 } from "@moose-desk/repo";
@@ -38,6 +35,7 @@ import {
   SkeletonPage,
   TextContainer,
   TextField,
+  Tooltip,
 } from "@shopify/polaris";
 import { PriceLookupMinor } from "@shopify/polaris-icons";
 import classNames from "classnames";
@@ -76,9 +74,12 @@ import BackIcon from "~icons/mingcute/back-2-fill";
 import { uniqBy } from "lodash-es";
 import BoxSelectCustomer from "src/modules/ticket/components/BoxSelectCustomer/BoxSelectCustomer";
 import {
+  emailIntegrationApi,
   getListAgentApi,
+  getListConversation,
   getListCustomerApi,
   getListEmailIntegration,
+  getOneTicket,
   getTagsTicket,
 } from "src/modules/ticket/helper/api";
 import { UploadForward } from "src/modules/ticket/pages/UploadForward";
@@ -114,12 +115,56 @@ const DetailTicket = () => {
   const formRef = useRef<FormikProps<any>>(null);
   const queryClient = useQueryClient();
   const { id } = useParams();
-  const [ticket, setTicket] = useState<Ticket>();
+  const {
+    data: dataTicket,
+    isLoading: processing,
+    refetch,
+  } = useQuery({
+    queryKey: ["getTicket", id],
+    queryFn: () => getOneTicket(id as string),
+    retry: 1,
+
+    onError: () => {
+      navigate("/dashboard");
+      show(t("messages:error.get_ticket"), { isError: true });
+
+      // message.error(t("messages:error.get_ticket"));
+    },
+  });
+  // const [ticket, setTicket] = useState<Ticket>();
+  const ticket = useMemo(() => {
+    if (dataTicket)
+      return {
+        ...dataTicket,
+      };
+    return undefined;
+  }, [dataTicket]);
   const { show } = useToast();
   const { t } = useTranslation();
   const endPageRef = useRef<any>(null);
   const navigate = useNavigate();
-  const [conversationList, setConversationList] = useState<Conversation[]>([]);
+  const {
+    data: dataConversations,
+    isLoading: isLoadingConversation,
+    isFetching: isFetchConversation,
+    refetch: refetchConversation,
+  } = useQuery({
+    queryKey: ["getListConversation", id],
+    queryFn: () => getListConversation(id as string),
+    retry: 1,
+    onSuccess: (data) => {
+      setConversationList(data);
+    },
+
+    onError: () => {
+      // message.error(t("messages:error.get_ticket"));
+    },
+  });
+
+  const [conversationList, setConversationList] = useState<Conversation[]>(
+    dataConversations || []
+  );
+  // const [conversationList, setConversationList] = useState<Conversation[]>([]);
   const { data: dataTags } = useQuery({
     queryKey: [
       "getTagsTicket",
@@ -142,7 +187,23 @@ const DetailTicket = () => {
   });
   const [enableCC, setEnableCC] = useState(true);
   const [isChanged, setIsChanged] = useState(false);
-  const [primaryEmail, setPrimaryEmail] = useState<EmailIntegration>();
+  const { data: dataPrimaryEmail } = useQuery({
+    queryKey: ["emailIntegrationApi", id],
+    queryFn: () => emailIntegrationApi(),
+    retry: 3,
+    staleTime: 10000,
+    onError: () => {},
+    enabled: !!(dataTicket?.createdViaWidget || dataTicket?.incoming),
+  });
+  const primaryEmail = useMemo(() => {
+    if (dataPrimaryEmail?._id) {
+      return dataPrimaryEmail;
+    }
+    if (!dataPrimaryEmail) {
+      return undefined;
+    }
+  }, [dataPrimaryEmail]);
+  // const [primaryEmail, setPrimaryEmail] = useState<EmailIntegration>();
   const [files, setFiles] = useState<any>([]);
   const [loadingButton, setLoadingButton] = useState(false);
   const { data: dataEmailIntegration } = useQuery({
@@ -274,20 +335,6 @@ const DetailTicket = () => {
     return conversationMapping;
   }, [ticket, conversationList, timezone]);
 
-  const { run: getPrimaryEmail } = useJob(() => {
-    return EmailIntegrationRepository()
-      .getPrimaryEmail()
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            setPrimaryEmail(data.data);
-          }
-        }),
-        catchError((err) => {
-          return of(err);
-        })
-      );
-  });
   const { run: postReplyApi } = useJob((payload: CreateReplyTicketRequest) => {
     return TicketRepository()
       .postReply(payload)
@@ -301,28 +348,6 @@ const DetailTicket = () => {
       );
   });
 
-  const { run: getTicketApi, processing } = useJob((id: string) => {
-    return TicketRepository()
-      .getOne(id)
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            if (data.data.createdViaWidget || data.data.incoming) {
-              getPrimaryEmail();
-            }
-            setTicket(data.data);
-          } else {
-            show(t("messages:error.get_ticket"), { isError: true });
-          }
-        }),
-        catchError((err) => {
-          navigate("/dashboard");
-          show(t("messages:error.get_ticket"), { isError: true });
-
-          return of(err);
-        })
-      );
-  });
   const { run: updateTicketApi } = useJob(
     (data: UpdateTicket, reload = false) => {
       return TicketRepository()
@@ -334,7 +359,7 @@ const DetailTicket = () => {
               queryClient.invalidateQueries("getStatisticTicket");
 
               // eslint-disable-next-line no-unused-expressions
-              reload ? getTicketApi(id as string) : "";
+              reload ? refetch() : "";
             }
           }),
           catchError((err) => {
@@ -343,20 +368,6 @@ const DetailTicket = () => {
         );
     },
     { showLoading: true }
-  );
-  const { run: fetchConversation, processing: isFetchConversation } = useJob(
-    (id: string) => {
-      return TicketRepository()
-        .getConversations(id)
-        .pipe(
-          map(({ data }) => {
-            setConversationList(data.data);
-          }),
-          catchError((err) => {
-            return of(err);
-          })
-        );
-    }
   );
 
   const initialValues = useMemo(() => {
@@ -482,8 +493,8 @@ const DetailTicket = () => {
 
   useEffect(() => {
     if (id) {
-      getTicketApi(id);
-      fetchConversation(id);
+      // getTicketApi(id);
+      // fetchConversation(id);
     }
   }, [id]);
   const disabled = useMemo(() => {
@@ -597,16 +608,19 @@ const DetailTicket = () => {
 
     postReplyApi(dataPost);
 
-    updateTicketApi({
-      priority: values.priority,
-      status: closeTicket ? StatusTicket.RESOLVED : values.status,
-      tags: values.tags,
-      agentObjectId: values.assignee
-        ? values.assignee.split(",")[0]
-        : undefined,
-      agentEmail: values.assignee ? values.assignee.split(",")[1] : undefined,
-      ids: [ticket?._id as string],
-    });
+    updateTicketApi(
+      {
+        priority: values.priority,
+        status: closeTicket ? StatusTicket.RESOLVED : values.status,
+        tags: values.tags,
+        agentObjectId: values.assignee
+          ? values.assignee.split(",")[0]
+          : undefined,
+        agentEmail: values.assignee ? values.assignee.split(",")[1] : undefined,
+        ids: [ticket?._id as string],
+      },
+      true
+    );
     setFiles([]);
     setFileForward([]);
 
@@ -630,6 +644,55 @@ const DetailTicket = () => {
     setFileForward([]);
     openSend();
     setIsForward(false);
+    setTimeout(() => {
+      window.scrollTo(0, document.body.scrollHeight);
+    }, 0);
+  };
+
+  const handleClickForwardAll = () => {
+    setIsForward(true);
+    updateChatItem(undefined);
+    setFileForward([
+      ...new Set(
+        listChat
+          .map((item) => item.attachments)
+          .flat()
+          .map((item) => item?._id)
+      ),
+    ]);
+    formRef.current?.setFieldValue(
+      "content",
+      `
+          <br/>
+        <div class='md_forward'>
+        <h3>Forwarded Conversation</h3>
+        <h4>Subject: ${ticket?.subject}</h4>
+        <span>--------------------</span>
+        <br/>
+        <br/>
+        
+        ${listChat
+          .map(
+            (item) =>
+              `<div>
+                <div class='md_attr' style='color:#888'>
+                From: <strong>${item.name}</strong> (${item.email})
+                <br/>
+                Date: ${item.datetime}
+                <br/>
+                  To: ${item.toEmail}
+                </div>
+                <br/>
+                <br/>
+                <div>${item.chat}</div>
+              </div>`
+          )
+          .join("<br/> --------------------")}
+        
+        </div>
+        `
+    );
+    openSend();
     setTimeout(() => {
       window.scrollTo(0, document.body.scrollHeight);
     }, 0);
@@ -740,7 +803,7 @@ Hit Send to see what your message will look like
           ]}
           title={
             (
-              <span className="truncate w-full  inline-block">{`Ticket ${ticket?.ticketId}: ${ticket?.subject}`}</span>
+              <span className="truncate w-full  inline-block header-detail-ticket">{`Ticket ${ticket?.ticketId}: ${ticket?.subject}`}</span>
             ) as unknown as string
           }
           fullWidth
@@ -748,8 +811,15 @@ Hit Send to see what your message will look like
           <div className={styles.fixedICon}>
             <div className="xs:flex flex-col gap-4 md:hidden">
               <Button
+                onClick={handleClickForwardAll}
+                icon={<ForwardIcon style={{ fontSize: 18 }} />}
+              ></Button>
+              <Button
                 onClick={() => {
-                  endPageRef.current.scrollIntoView({ behavior: "smooth" });
+                  openSend();
+                  setTimeout(() => {
+                    window.scrollTo(0, document.body.scrollHeight);
+                  }, 0);
                 }}
                 icon={<FaMailReply style={{ fontSize: 16 }} />}
               ></Button>
@@ -771,13 +841,21 @@ Hit Send to see what your message will look like
                     <div
                       className={classNames(
                         styles.wrapSearchToggle,
-                        `${screenType === ScreenType.SM && "hidden"}`
+                        `${screenType === ScreenType.SM && "hidden"} flex gap-2`
                       )}
                     >
-                      <Button
-                        icon={PriceLookupMinor}
-                        onClick={handleToggleSearch}
-                      />
+                      <Tooltip content="Forward all" preferredPosition="above">
+                        <Button
+                          onClick={handleClickForwardAll}
+                          icon={<ForwardIcon style={{ fontSize: 18 }} />}
+                        ></Button>
+                      </Tooltip>
+                      <Tooltip content="Search shopify">
+                        <Button
+                          icon={PriceLookupMinor}
+                          onClick={handleToggleSearch}
+                        />
+                      </Tooltip>
                     </div>
                     <Form
                       innerRef={formRef}
@@ -868,59 +946,9 @@ Hit Send to see what your message will look like
                               </Button>
                               <Button
                                 icon={<ForwardIcon fontSize={14} />}
-                                onClick={() => {
-                                  setIsForward(true);
-                                  updateChatItem(undefined);
-                                  setFileForward([
-                                    ...new Set(
-                                      listChat
-                                        .map((item) => item.attachments)
-                                        .flat()
-                                        .map((item) => item?._id)
-                                    ),
-                                  ]);
-                                  formRef.current?.setFieldValue(
-                                    "content",
-                                    `
-                            <br/>
-                          <div class='md_forward'>
-                          <h3>Forwarded Conversation</h3>
-                          <h4>Subject: ${ticket?.subject}</h4>
-                          <span>--------------------</span>
-                          <br/>
-                          <br/>
-                          
-                          ${listChat
-                            .map(
-                              (item) =>
-                                `<div>
-                                  <div class='md_attr' style='color:#888'>
-                                  From: <strong>${item.name}</strong> (${item.email})
-                                  <br/>
-                                  Date: ${item.datetime}
-                                  <br/>
-                                   To: ${item.toEmail}
-                                  </div>
-                                  <br/>
-                                  <br/>
-                                  <div>${item.chat}</div>
-                                </div>`
-                            )
-                            .join("<br/> --------------------")}
-                          
-                          </div>
-                          `
-                                  );
-                                  openSend();
-                                  setTimeout(() => {
-                                    window.scrollTo(
-                                      0,
-                                      document.body.scrollHeight
-                                    );
-                                  }, 0);
-                                }}
+                                onClick={handleClickForwardAll}
                               >
-                                Forward
+                                Forward all
                               </Button>
                             </div>
                           )}
@@ -934,9 +962,12 @@ Hit Send to see what your message will look like
                                     closeSend();
                                     setIsForward(false);
                                     updateContent({ content: undefined });
-                                    if (isForward) {
-                                      formRef.current?.resetForm();
-                                    }
+                                    // if (isForward) {
+                                    formRef.current?.setFieldValue(
+                                      "content",
+                                      ""
+                                    );
+                                    // }
                                   },
                                 },
                               ]}
@@ -962,7 +993,8 @@ Hit Send to see what your message will look like
                                               <span>To</span>
                                               <span
                                                 className="link  inline-block hover:underline hover:cursor-pointer text-blue-500"
-                                                onClick={() => {
+                                                onClick={(e) => {
+                                                  e.stopPropagation();
                                                   setEnableCC(!enableCC);
                                                 }}
                                               >

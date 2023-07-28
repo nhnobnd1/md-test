@@ -22,7 +22,14 @@ import {
   priorityOptions,
   statusOptions,
 } from "@moose-desk/repo";
-import { Select as AntSelect, Card, Divider, Skeleton, Upload } from "antd";
+import {
+  Select as AntSelect,
+  Card,
+  Divider,
+  Skeleton,
+  Tooltip,
+  Upload,
+} from "antd";
 import moment from "moment";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
@@ -646,6 +653,55 @@ Hit Send to see what your message will look like
   useUnMount(() => {
     updateChatItem(undefined);
   });
+  const handleClickForwardAll = () => {
+    setIsForward(true);
+    updateChatItem(undefined);
+    setFileForward([
+      ...new Set(
+        listChat
+          .map((item) => item.attachments)
+          .flat()
+          .map((item) => item?._id)
+      ),
+    ]);
+    form.setFieldValue(
+      "content",
+      `
+        <br/>
+      <div class='md_forward'>
+      <h3>Forwarded Conversation</h3>
+      <h4>Subject: ${ticket?.subject}</h4>
+      <span>--------------------</span>
+      <br/>
+      <br/>
+      
+      ${listChat
+        .map(
+          (item) =>
+            `<div>
+              <div class='md_attr' style='color:#888'>
+              From: <strong>${item.name}</strong> (${item.email})
+              <br/>
+              Date: ${item.datetime}
+              <br/>
+                To: ${item.toEmail}
+              </div>
+              <br/>
+              <br/>
+              <div>${item.chat}</div>
+            </div>`
+        )
+        .join("<br/> --------------------")}
+      
+      </div>
+      `
+    );
+    openSend();
+    setTimeout(() => {
+      window.scrollTo(0, document.body.scrollHeight);
+    }, 0);
+  };
+  console.log("wwww", form.getFieldsValue());
   return (
     <>
       {processing || isLoadingConversation ? (
@@ -660,9 +716,19 @@ Hit Send to see what your message will look like
               navigate(TicketRoutePaths.Index);
             }}
           >
-            <div className="flex justify-between w-full items-center">
-              <h1 className="break-words overflow-hidden header-detail-ticket">{` Ticket ${ticket?.ticketId}: ${ticket?.subject}`}</h1>
+            <div className="flex justify-between w-full items-center gap-2">
+              <div className="flex items-center gap-2">
+                <h1 className="break-words overflow-hidden header-detail-ticket">
+                  {` Ticket ${ticket?.ticketId}: ${ticket?.subject}`}
+                </h1>
+              </div>
               <div className="flex gap-2 ">
+                <Tooltip title="Forward all">
+                  <MDButton
+                    onClick={handleClickForwardAll}
+                    icon={<ForwardIcon fontSize={20} />}
+                  />
+                </Tooltip>
                 <MDButton
                   className={isTablet ? "flex" : "hidden"}
                   onClick={() => {
@@ -675,10 +741,13 @@ Hit Send to see what your message will look like
                   onClick={() => openStatusModal()}
                   icon={<Icon name="statusTicket" />}
                 />
-                <MDButton
-                  onClick={() => setVisible(!visible)}
-                  icon={<Icon name="findOrder" />}
-                />
+
+                <Tooltip title="Search Shopify">
+                  <MDButton
+                    onClick={() => setVisible(!visible)}
+                    icon={<Icon name="findOrder" />}
+                  />
+                </Tooltip>
               </div>
             </div>
           </Header>
@@ -731,16 +800,6 @@ Hit Send to see what your message will look like
                   label={<span style={{ width: 60 }}>Tags</span>}
                   labelAlign="left"
                 >
-                  {/* <AntSelect
-                    size="large"
-                    className="w-full"
-                    placeholder="Add tags"
-                    mode="tags"
-                    options={tags.map((item: Tag) => ({
-                      value: item.name,
-                      label: item.name,
-                    }))}
-                  /> */}
                   <SelectTag
                     placeholder="Add tags"
                     options={tags.map((item: Tag) => ({
@@ -816,56 +875,9 @@ Hit Send to see what your message will look like
                               <ForwardIcon fontSize={14} />
                             </span>
                           }
-                          onClick={() => {
-                            setIsForward(true);
-                            updateChatItem(undefined);
-                            setFileForward([
-                              ...new Set(
-                                listChat
-                                  .map((item) => item.attachments)
-                                  .flat()
-                                  .map((item) => item?._id)
-                              ),
-                            ]);
-                            form.setFieldValue(
-                              "content",
-                              `
-                            <br/>
-                          <div class='md_forward'>
-                          <h3>Forwarded Conversation</h3>
-                          <h4>Subject: ${ticket.subject}</h4>
-                          <span>--------------------</span>
-                          <br/>
-                          <br/>
-                          
-                          ${listChat
-                            .map(
-                              (item) =>
-                                `<div>
-                                  <div class='md_attr' style='color:#888'>
-                                  From: <strong>${item.name}</strong> (${item.email})
-                                  <br/>
-                                  Date: ${item.datetime}
-                                  <br/>
-                                   To: ${item.toEmail}
-                                  </div>
-                                  <br/>
-                                  <br/>
-                                  <div>${item.chat}</div>
-                                </div>`
-                            )
-                            .join("<br/> --------------------")}
-                          
-                          </div>
-                          `
-                            );
-                            openSend();
-                            setTimeout(() => {
-                              window.scrollTo(0, document.body.scrollHeight);
-                            }, 0);
-                          }}
+                          onClick={handleClickForwardAll}
                         >
-                          Forward
+                          Forward all
                         </MDButton>
                       </div>
                     )}
