@@ -25,6 +25,7 @@ import { useToast } from "@shopify/app-bridge-react";
 import {
   Button,
   FormLayout,
+  Icon,
   Layout,
   LegacyCard,
   Modal,
@@ -37,7 +38,7 @@ import {
   TextField,
   Tooltip,
 } from "@shopify/polaris";
-import { PriceLookupMinor } from "@shopify/polaris-icons";
+import { DeleteMinor, PriceLookupMinor } from "@shopify/polaris-icons";
 import classNames from "classnames";
 import { FormikProps } from "formik";
 import moment from "moment";
@@ -953,27 +954,35 @@ Hit Send to see what your message will look like
                             </div>
                           )}
                           <div className={send ? "" : "hidden"}>
-                            <LegacyCard
-                              sectioned
-                              actions={[
-                                {
-                                  content: `Close`,
-                                  onAction: () => {
-                                    closeSend();
-                                    setIsForward(false);
-                                    updateContent({ content: undefined });
-                                    // if (isForward) {
-                                    formRef.current?.setFieldValue(
-                                      "content",
-                                      ""
-                                    );
-                                    // }
-                                  },
-                                },
-                              ]}
-                            >
+                            <LegacyCard sectioned>
                               <div className="w-full flex justify-between gap-2 flex-wrap ">
                                 <div className="flex  flex-col flex-1 ">
+                                  <div className="mb-5 flex justify-end">
+                                    <Tooltip
+                                      content="Close"
+                                      preferredPosition="above"
+                                    >
+                                      <Button
+                                        onClick={() => {
+                                          closeSend();
+                                          setIsForward(false);
+                                          updateContent({ content: undefined });
+                                          formRef.current?.setFieldValue(
+                                            "content",
+                                            ""
+                                          );
+                                        }}
+                                        size="large"
+                                        plain
+                                        icon={
+                                          <Icon
+                                            source={DeleteMinor}
+                                            color="base"
+                                          />
+                                        }
+                                      />
+                                    </Tooltip>
+                                  </div>
                                   <div className="md:w-[400px] xs:w-[300px]">
                                     <FormItem name="from">
                                       <BoxSelectFilter

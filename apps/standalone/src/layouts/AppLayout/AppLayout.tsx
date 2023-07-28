@@ -16,6 +16,7 @@ import { useQuery } from "react-query";
 import { map } from "rxjs";
 import Images from "src/assets/images";
 import { Loading } from "src/components/Loading";
+import { Rating } from "src/components/Rating/Rating";
 import { MDButton } from "src/components/UI/Button/MDButton";
 import Icon from "src/components/UI/Icon";
 import { MenuIcon } from "src/components/UI/Icon/MenuIcon";
@@ -542,6 +543,7 @@ export const AppLayout = () => {
               <Outlet />
             </Suspense>
           </LayoutPageContent>
+          <Rating />
 
           {/* </div>
           </Layout.Content> */}
