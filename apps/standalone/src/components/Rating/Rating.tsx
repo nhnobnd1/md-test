@@ -28,7 +28,7 @@ export const Rating: FC<RatingProps> = () => {
     key: "rating",
   });
 
-  const { data: dataMerchantRating } = useQuery({
+  const { data: dataMerchantRating, isLoading } = useQuery({
     queryKey: ["getMerchantRatingApi"],
     queryFn: () => getMerchantRatingApi(),
     retry: 3,
@@ -81,7 +81,6 @@ export const Rating: FC<RatingProps> = () => {
       clearCountDown("rating");
     }
   }, [countDown]);
-
   return (
     <div
       className={`fixed bottom-10 sm:right-10 xs:right-5 z-100 ${
@@ -89,96 +88,101 @@ export const Rating: FC<RatingProps> = () => {
       }`}
     >
       <Card className="w-[320px]">
-        <Form
-          initialValues={{ comment: ratingState.comment }}
-          onFinish={handleSubmit}
-          enableReinitialize
-        >
-          <Space direction="vertical" className="w-full">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center gap-2">
-                <span>
-                  <Icon name="mooseRate" />
-                </span>
-                {ratingState.star === 0 ? (
-                  <h1 className="p-0 m-0">MooseDesk</h1>
-                ) : (
-                  <StarsRating
-                    disabled={true}
-                    allowHalf={false}
-                    value={ratingState.star}
-                    onChange={(value) => {
-                      ratingState.changeStar(value as number);
-                    }}
-                    classNamePrefix="text-2xl"
-                  />
-                )}
-              </div>
-              <MDButton
-                onClick={() => {
-                  ratingState.changeShow(false);
-                }}
-                type="text"
-                icon={<Icon name="close" />}
-              ></MDButton>
-            </div>
-            {ratingState.star === 0 ? (
-              <div className={"flex flex-col"}>
-                <Typography.Text>
-                  Rate your experience with MooseDesk.
-                </Typography.Text>
-                <Typography.Text>Let us hear your voice!</Typography.Text>
-              </div>
-            ) : (
-              <></>
-            )}
-            {ratingState.star === 0 ? (
-              <StarsRating
-                allowHalf={false}
-                value={ratingState.star}
-                onChange={(value) => {
-                  ratingState.changeStar(value as number);
-                }}
-                classNamePrefix="text-3xl"
-              />
-            ) : (
-              <></>
-            )}
-            {ratingState.star === 0 ? (
-              <></>
-            ) : (
-              <div className={`pt-3`}>
-                <Form.Item
-                  name="comment"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please tell us what MooseDesk can improve",
-                    },
-                  ]}
-                >
-                  <Input.TextArea
-                    className="w-full"
-                    placeholder="Please tell us what MooseDesk can improve"
-                    // onChange={handleChangeTextArea}
-                  />
-                </Form.Item>
-              </div>
-            )}
-            {ratingState.star > 0 && (
-              <div className="flex justify-end gap-2 ">
-                <MDButton onClick={handleCancel}>Cancel</MDButton>
+        {isLoading ? (
+          <></>
+        ) : (
+          <Form
+            initialValues={{ comment: dataMerchantRating?.comment }}
+            onFinish={handleSubmit}
+            // enableReinitialize
+          >
+            <Space direction="vertical" className="w-full">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <span>
+                    <Icon name="mooseRate" />
+                  </span>
+                  {ratingState.star === 0 ? (
+                    <h1 className="p-0 m-0">MooseDesk</h1>
+                  ) : (
+                    <StarsRating
+                      disabled={true}
+                      allowHalf={false}
+                      value={ratingState.star}
+                      onChange={(value) => {
+                        ratingState.changeStar(value as number);
+                      }}
+                      classNamePrefix="text-2xl"
+                    />
+                  )}
+                </div>
                 <MDButton
-                  type="primary"
-                  // onClick={handleSubmit}
-                  htmlType="submit"
-                >
-                  Submit
-                </MDButton>
+                  onClick={() => {
+                    ratingState.changeShow(false);
+                  }}
+                  type="text"
+                  icon={<Icon name="close" />}
+                ></MDButton>
               </div>
-            )}
-          </Space>
-        </Form>
+              {ratingState.star === 0 ? (
+                <div className={"flex flex-col"}>
+                  <Typography.Text>
+                    Rate your experience with MooseDesk.
+                  </Typography.Text>
+                  <Typography.Text>Let us hear your voice!</Typography.Text>
+                </div>
+              ) : (
+                <></>
+              )}
+              {ratingState.star === 0 ? (
+                <StarsRating
+                  allowHalf={false}
+                  value={ratingState.star}
+                  onChange={(value) => {
+                    ratingState.changeStar(value as number);
+                  }}
+                  classNamePrefix="text-3xl"
+                />
+              ) : (
+                <></>
+              )}
+              {ratingState.star === 0 ? (
+                <></>
+              ) : (
+                <div className={`pt-3`}>
+                  <Form.Item
+                    name="comment"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please tell us what MooseDesk can improve",
+                      },
+                    ]}
+                  >
+                    <Input.TextArea
+                      className="w-full"
+                      placeholder="Please tell us what MooseDesk can improve"
+                      onChange={handleChangeTextArea}
+                    />
+                  </Form.Item>
+                </div>
+              )}
+              {ratingState.star > 0 && (
+                <div className="flex justify-end gap-2 ">
+                  <MDButton onClick={handleCancel}>Cancel</MDButton>
+                  <MDButton
+                    type="primary"
+                    // onClick={handleSubmit}
+                    htmlType="submit"
+                    disabled={ratingState.comment === ""}
+                  >
+                    Submit
+                  </MDButton>
+                </div>
+              )}
+            </Space>
+          </Form>
+        )}
       </Card>
     </div>
   );

@@ -3,6 +3,7 @@ import { MerchantRating } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Button,
+  ButtonGroup,
   Icon,
   LegacyCard,
   Text,
@@ -10,7 +11,7 @@ import {
   Tooltip,
 } from "@shopify/polaris";
 import { CancelMinor } from "@shopify/polaris-icons";
-import { FC, useCallback, useEffect, useRef } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "react-query";
 import StarsRating from "react-star-rate";
@@ -27,7 +28,7 @@ interface RatingProps {}
 export const Rating: FC<RatingProps> = () => {
   const ratingState = useRating((state) => state);
   const formRef = useRef<FormikProps<any>>(null);
-
+  const [disableSubmit, setDisableSubmit] = useState(true);
   const { show } = useToast();
   const { t } = useTranslation();
 
@@ -82,10 +83,6 @@ export const Rating: FC<RatingProps> = () => {
       });
     }
   };
-  const handleChange = useCallback(
-    (newValue: string) => ratingState.changeComment(newValue),
-    []
-  );
 
   useEffect(() => {
     if (countDown === 0) {
@@ -97,10 +94,16 @@ export const Rating: FC<RatingProps> = () => {
   const validateForm = Yup.object().shape({
     comment: Yup.string().required("Please tell us what MooseDesk can improve"),
   });
-
+  const handleChangeValue = (change: any) => {
+    if (change?.comment) {
+      setDisableSubmit(false);
+      return;
+    }
+    setDisableSubmit(true);
+  };
   return (
     <div
-      className={`w-[320px] fixed bottom-10 sm:right-10 xs:right-5 z-50 ${
+      className={`w-[300px] fixed bottom-10 sm:right-10 xs:right-5 z-50 ${
         ratingState.show ? "block" : "hidden"
       }`}
     >
@@ -110,36 +113,9 @@ export const Rating: FC<RatingProps> = () => {
         onSubmit={handleSubmit}
         validationSchema={validateForm}
         enableReinitialize
+        onValuesChange={handleChangeValue}
       >
-        <LegacyCard
-          sectioned
-          secondaryFooterActions={
-            ratingState.star > 0
-              ? [
-                  {
-                    content: "Cancel",
-                    destructive: true,
-                    onAction: () => {
-                      handleCancel();
-                    },
-                  },
-                ]
-              : []
-          }
-          primaryFooterAction={
-            ratingState.star > 0
-              ? {
-                  content: "Submit",
-                  onAction: async () => {
-                    const validate = await formRef.current?.handleSubmit();
-                    if (validate) {
-                      handleSubmit(formRef.current?.values);
-                    }
-                  },
-                }
-              : undefined
-          }
-        >
+        <LegacyCard sectioned>
           <div className="mb-5 flex justify-between">
             <div className="flex gap-2 items-center">
               <span>
@@ -157,7 +133,7 @@ export const Rating: FC<RatingProps> = () => {
                   onChange={(value) => {
                     ratingState.changeStar(value as number);
                   }}
-                  classNamePrefix="text-3xl"
+                  classNamePrefix="text-2xl"
                 />
               )}
             </div>
@@ -201,7 +177,6 @@ export const Rating: FC<RatingProps> = () => {
               <TextField
                 label=""
                 value={ratingState.comment}
-                onChange={handleChange}
                 multiline={4}
                 autoComplete="off"
                 placeholder="Please tell us what MooseDesk can improve"
@@ -210,6 +185,18 @@ export const Rating: FC<RatingProps> = () => {
           )}
           {ratingState.star > 0 && (
             <div className="flex justify-end gap-2 mt-2"></div>
+          )}
+          {ratingState.star > 0 ? (
+            <div className="flex justify-end">
+              <ButtonGroup>
+                <Button onClick={handleCancel}>Cancel</Button>
+                <Button primary submit disabled={disableSubmit}>
+                  Submit
+                </Button>
+              </ButtonGroup>
+            </div>
+          ) : (
+            <></>
           )}
         </LegacyCard>
       </Form>

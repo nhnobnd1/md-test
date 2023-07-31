@@ -700,6 +700,16 @@ Hit Send to see what your message will look like
       window.scrollTo(0, document.body.scrollHeight);
     }, 0);
   };
+  const handleReply = () => {
+    form.resetFields();
+    setFiles([]);
+    setFileForward([]);
+    openSend();
+    setIsForward(false);
+    setTimeout(() => {
+      window.scrollTo(0, document.body.scrollHeight);
+    }, 0);
+  };
   return (
     <>
       {processing || isLoadingConversation ? (
@@ -730,12 +740,7 @@ Hit Send to see what your message will look like
                 <Tooltip title="Reply">
                   <MDButton
                     className={isTablet ? "flex" : "hidden"}
-                    onClick={() => {
-                      openSend();
-                      setTimeout(() => {
-                        window.scrollTo(0, document.body.scrollHeight);
-                      }, 0);
-                    }}
+                    onClick={handleReply}
                     icon={<Icon name="replyTicket" />}
                   />
                 </Tooltip>
@@ -861,20 +866,11 @@ Hit Send to see what your message will look like
                               <ReplyIcon fontSize={14} />
                             </span>
                           }
-                          onClick={() => {
-                            form.resetFields();
-                            setFiles([]);
-                            setFileForward([]);
-                            openSend();
-                            setIsForward(false);
-                            setTimeout(() => {
-                              window.scrollTo(0, document.body.scrollHeight);
-                            }, 0);
-                          }}
+                          onClick={handleReply}
                         >
                           Reply
                         </MDButton>
-                        <MDButton
+                        {/* <MDButton
                           icon={
                             <span className="mr-2 translate-y-[3px]">
                               <ForwardIcon fontSize={14} />
@@ -883,7 +879,7 @@ Hit Send to see what your message will look like
                           onClick={handleClickForwardAll}
                         >
                           Forward all
-                        </MDButton>
+                        </MDButton> */}
                       </div>
                     )}
                     <Card
@@ -1171,14 +1167,14 @@ Hit Send to see what your message will look like
                                 disabled={!isChanged || loadingButton}
                                 onClick={handleCloseTicket}
                               >
-                                Reply & Close Ticket
+                                Send & Close Ticket
                               </MDButton>
                               <MDButton
                                 type="primary"
                                 htmlType="submit"
                                 disabled={!isChanged || loadingButton}
                               >
-                                Reply
+                                Send
                               </MDButton>
                             </div>
                           )}

@@ -817,12 +817,7 @@ Hit Send to see what your message will look like
                 icon={<ForwardIcon style={{ fontSize: 18 }} />}
               ></Button>
               <Button
-                onClick={() => {
-                  openSend();
-                  setTimeout(() => {
-                    window.scrollTo(0, document.body.scrollHeight);
-                  }, 0);
-                }}
+                onClick={handleOpenReply}
                 icon={<FaMailReply style={{ fontSize: 16 }} />}
               ></Button>
               <Button
@@ -946,12 +941,12 @@ Hit Send to see what your message will look like
                               >
                                 Reply
                               </Button>
-                              <Button
+                              {/* <Button
                                 icon={<ForwardIcon fontSize={14} />}
                                 onClick={handleClickForwardAll}
                               >
                                 Forward all
-                              </Button>
+                              </Button> */}
                             </div>
                           )}
                           <div className={send ? "" : "hidden"}>
@@ -1068,30 +1063,29 @@ Hit Send to see what your message will look like
                                 </div>
                               </div>
 
-                              <div>
-                                <FormItem name="content">
-                                  <TextEditorTicket
-                                    files={files}
-                                    setFiles={setFiles}
-                                    formRef={formRef}
-                                    disabled={
-                                      formRef.current?.values.status ===
-                                      StatusTicket.RESOLVED
-                                    }
-                                    setIsChanged={setIsChanged}
-                                    setLoadingButton={setLoadingButton}
-                                    labelProps={{
-                                      as: "span",
-                                      variant: "bodyMd",
-                                      children: "Content",
-                                    }}
-                                    init={{
-                                      placeholder:
-                                        "Please input your message here......",
-                                    }}
-                                  />
-                                </FormItem>
-                              </div>
+                              <FormItem name="content">
+                                <TextEditorTicket
+                                  files={files}
+                                  setFiles={setFiles}
+                                  formRef={formRef}
+                                  disabled={
+                                    formRef.current?.values.status ===
+                                    StatusTicket.RESOLVED
+                                  }
+                                  setIsChanged={setIsChanged}
+                                  setLoadingButton={setLoadingButton}
+                                  labelProps={{
+                                    as: "span",
+                                    variant: "bodyMd",
+                                    children: "Content",
+                                  }}
+                                  init={{
+                                    placeholder:
+                                      "Please input your message here......",
+                                  }}
+                                />
+                              </FormItem>
+
                               {isForward ? (
                                 <div
                                   key={
@@ -1149,7 +1143,7 @@ Hit Send to see what your message will look like
                                         }
                                       }}
                                     >
-                                      Reply & Close Ticket
+                                      Send & Close Ticket
                                     </Button>
                                     <Button
                                       primary
@@ -1161,7 +1155,7 @@ Hit Send to see what your message will look like
                                       }}
                                       disabled={!isChanged || loadingButton}
                                     >
-                                      Reply
+                                      Send
                                     </Button>
                                   </div>
                                 )}
