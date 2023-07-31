@@ -271,7 +271,7 @@ const DetailTicket = () => {
     },
   });
   const { visible, setVisible } = useToggleGlobal();
-  const { state: send, on: openSend, off: closeSend } = useToggle(true);
+  const { state: send, on: openSend, off: closeSend } = useToggle();
   const [isForward, setIsForward] = useState(false);
 
   const chatItemForward = useForwardTicket((state) => state.chatItem);
@@ -1074,12 +1074,8 @@ Hit Send to see what your message will look like
                                   }
                                   setIsChanged={setIsChanged}
                                   setLoadingButton={setLoadingButton}
-                                  labelProps={{
-                                    as: "span",
-                                    variant: "bodyMd",
-                                    children: "Content",
-                                  }}
                                   init={{
+                                    menubar: false,
                                     placeholder:
                                       "Please input your message here......",
                                   }}

@@ -322,7 +322,6 @@ export const TextEditorTicket = ({
               icon: "upload",
               onAction: () => {
                 openModal();
-                console.log("open modal");
               },
             });
           },
