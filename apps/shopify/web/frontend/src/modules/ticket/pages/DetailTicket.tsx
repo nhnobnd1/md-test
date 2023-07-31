@@ -28,6 +28,7 @@ import {
   Icon,
   Layout,
   LegacyCard,
+  Link,
   Modal,
   Page,
   Select,
@@ -955,34 +956,31 @@ Hit Send to see what your message will look like
                           )}
                           <div className={send ? "" : "hidden"}>
                             <LegacyCard sectioned>
+                              <div className="mb-5 flex justify-end">
+                                <Tooltip
+                                  content="Close"
+                                  preferredPosition="above"
+                                >
+                                  <Button
+                                    onClick={() => {
+                                      closeSend();
+                                      setIsForward(false);
+                                      updateContent({ content: undefined });
+                                      formRef.current?.setFieldValue(
+                                        "content",
+                                        ""
+                                      );
+                                    }}
+                                    size="large"
+                                    plain
+                                    icon={
+                                      <Icon source={DeleteMinor} color="base" />
+                                    }
+                                  />
+                                </Tooltip>
+                              </div>
                               <div className="w-full flex justify-between gap-2 flex-wrap ">
                                 <div className="flex  flex-col flex-1 ">
-                                  <div className="mb-5 flex justify-end">
-                                    <Tooltip
-                                      content="Close"
-                                      preferredPosition="above"
-                                    >
-                                      <Button
-                                        onClick={() => {
-                                          closeSend();
-                                          setIsForward(false);
-                                          updateContent({ content: undefined });
-                                          formRef.current?.setFieldValue(
-                                            "content",
-                                            ""
-                                          );
-                                        }}
-                                        size="large"
-                                        plain
-                                        icon={
-                                          <Icon
-                                            source={DeleteMinor}
-                                            color="base"
-                                          />
-                                        }
-                                      />
-                                    </Tooltip>
-                                  </div>
                                   <div className="md:w-[400px] xs:w-[300px]">
                                     <FormItem name="from">
                                       <BoxSelectFilter
@@ -1000,15 +998,13 @@ Hit Send to see what your message will look like
                                           label={
                                             <div className="flex justify-between md:w-[400px] xs:w-[300px] ">
                                               <span>To</span>
-                                              <span
-                                                className="link  inline-block hover:underline hover:cursor-pointer text-blue-500"
-                                                onClick={(e) => {
-                                                  e.stopPropagation();
+                                              <Link
+                                                onClick={() => {
                                                   setEnableCC(!enableCC);
                                                 }}
                                               >
                                                 CC/BCC
-                                              </span>
+                                              </Link>
                                             </div>
                                           }
                                           placeholder="Email"

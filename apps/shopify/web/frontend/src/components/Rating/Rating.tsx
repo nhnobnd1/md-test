@@ -100,7 +100,7 @@ export const Rating: FC<RatingProps> = () => {
 
   return (
     <div
-      className={`w-[320px] fixed bottom-10 sm:right-10 xs:right-5 z-1000 ${
+      className={`w-[320px] fixed bottom-10 sm:right-10 xs:right-5 z-50 ${
         ratingState.show ? "block" : "hidden"
       }`}
     >
