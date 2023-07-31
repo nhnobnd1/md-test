@@ -28,7 +28,11 @@ export const Rating: FC<RatingProps> = () => {
     key: "rating",
   });
 
-  const { data: dataMerchantRating, isLoading } = useQuery({
+  const {
+    data: dataMerchantRating,
+    isLoading,
+    isFetching,
+  } = useQuery({
     queryKey: ["getMerchantRatingApi"],
     queryFn: () => getMerchantRatingApi(),
     retry: 3,
@@ -88,7 +92,7 @@ export const Rating: FC<RatingProps> = () => {
       }`}
     >
       <Card className="w-[320px]">
-        {isLoading ? (
+        {isFetching ? (
           <></>
         ) : (
           <Form
