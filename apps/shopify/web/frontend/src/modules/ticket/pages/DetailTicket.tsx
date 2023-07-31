@@ -271,7 +271,7 @@ const DetailTicket = () => {
     },
   });
   const { visible, setVisible } = useToggleGlobal();
-  const { state: send, on: openSend, off: closeSend } = useToggle();
+  const { state: send, on: openSend, off: closeSend } = useToggle(true);
   const [isForward, setIsForward] = useState(false);
 
   const chatItemForward = useForwardTicket((state) => state.chatItem);
