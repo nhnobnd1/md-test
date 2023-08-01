@@ -59,17 +59,17 @@ body {
 .text-default {
   color: $text-default !important;
   a {
-  color: $text-default !important;
-  word-break: break-word !important;
-  white-space: pre-wrap;
+    color: $text-default !important;
+    word-break: break-word !important;
+    white-space: pre-wrap;
   }
 }
 .max-width-200 {
   max-width: 200px;
 }
 .max-width-100-mobile {
-  @include mq(md, 'max') {
-  width: 100px;
+  @include mq(md, "max") {
+    width: 100px;
   }
 }
 .mb-9px {
@@ -199,4 +199,12 @@ body {
 // }
 .Polaris-Icon__Svg {
   // fill: yellow !important;
+}
+.Polaris-Navigation__Badge {
+  .Polaris-Badge.Polaris-Badge--statusNew {
+    background-color: $primary !important;
+    .Polaris-Text--root.Polaris-Text--bodySm.Polaris-Text--medium {
+      color: white;
+    }
+  }
 }
