@@ -56,12 +56,12 @@ const General = (props: GeneralProps) => {
       </FormLayout>
       <div className="change-logo">
         <LegacyStack vertical>
-          <Text variant="bodyMd" as="p">
-            Add your brand logo into MooseDesk Widget
-          </Text>
           <Button outline onClick={handleContactSupport}>
             Replace Logo
           </Button>
+          <p className="description">
+            Add your brand logo into MooseDesk Widget
+          </p>
         </LegacyStack>
       </div>
       {/* <UploadLogo widget={widget} visible={visible} onClose={off} /> */}

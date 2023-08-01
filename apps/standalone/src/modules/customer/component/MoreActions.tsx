@@ -126,7 +126,7 @@ export const MoreActions = React.memo(({ onReset }: IProps) => {
   const popoverContent = (
     <div className={styles.groupOptions}>
       <MDButton className={styles.syncBtn} onClick={handleOpenModalImport}>
-        Import using CSV
+        Import
       </MDButton>
       <MDButton
         className={styles.syncBtn}
@@ -135,7 +135,7 @@ export const MoreActions = React.memo(({ onReset }: IProps) => {
         }}
         loading={syncing}
       >
-        Synchorization from Shopify
+        Sync Shopify Customer
       </MDButton>
     </div>
   );
@@ -176,7 +176,7 @@ export const MoreActions = React.memo(({ onReset }: IProps) => {
       >
         <div>
           <div className={stylesModal.modalTitle}>
-            <Header subTitle={"Import customers"}></Header>
+            <Header subTitle={"Import customers by CSV"}></Header>
           </div>
           <div className={stylesModal.modalContent}>
             <Dragger

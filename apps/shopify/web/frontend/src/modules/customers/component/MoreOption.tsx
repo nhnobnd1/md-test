@@ -138,16 +138,16 @@ export const MoreOption = React.memo(({ onReset }: IProps) => {
         onClose={togglePopoverActive}
       >
         <div className={styles.btnSync}>
-          <Button onClick={handleOpenModalImport}>Import using CSV</Button>
+          <Button onClick={handleOpenModalImport}>Import</Button>
         </div>
         <div className={styles.btnSync}>
           <Button onClick={() => syncCustomerMutate()} loading={syncing}>
-            Synchorization from Shopify
+            Sync Shopify Customer
           </Button>
         </div>
       </Popover>
       <Modal
-        title={"Import customers"}
+        title={"Import customers by CSV"}
         open={visible}
         onClose={handleCloseModalImport}
       >

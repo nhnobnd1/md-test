@@ -17,6 +17,8 @@ interface WidgetSetting {
   textButtonAppearanceColor: string;
   isFormContact: boolean;
   logo?: string;
+  font?: string;
+  fontSrc?: string;
 }
 
 interface SettingState {
