@@ -26,7 +26,7 @@ export const ViewWidget = (props: ViewWidgetProps) => {
         ? data?.font
         : "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'"
     } !important;
-    .md-font-customize-widget>h4, .md-font-customize-widget>.Polaris-FormLayout>.Polaris-FormLayout__Item>div>.Polaris-Labelled__LabelWrapper>.Polaris-Label>label>span, .md-font-customize-widget>.Polaris-FormLayout>.Polaris-FormLayout__Item>div>.Polaris-Connected>.Polaris-Connected__Item>.Polaris-TextField>..Polaris-TextField__Input {
+    .md-font-customize-widget>h4, .md-font-customize-widget>.Polaris-FormLayout>.Polaris-FormLayout__Item>div>.Polaris-Labelled__LabelWrapper>.Polaris-Label>label>span, .md-font-customize-widget>.Polaris-FormLayout>.Polaris-FormLayout__Item>div>.Polaris-Connected>.Polaris-Connected__Item>.Polaris-TextField>.Polaris-TextField__Input {
       font-family: ${
         data?.font
           ? data?.font
