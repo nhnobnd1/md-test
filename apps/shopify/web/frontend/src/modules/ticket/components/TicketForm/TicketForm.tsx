@@ -125,32 +125,54 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
             }
             return true;
           }),
-        CC: Yup.array().test(
-          "is-blank",
-          "The recipient's email must not be the same as the sender's email",
-          (value, context) => {
-            const findFromEmail = emailIntegrationOptions.find(
-              (item) => item.value === context.parent.from
-            )?.obj?.supportEmail;
-            if (value?.includes(findFromEmail)) {
-              return false;
+        CC: Yup.array()
+          .test(
+            "same from",
+            "The recipient's email must not be the same as the sender's email",
+            (value, context) => {
+              const findFromEmail = emailIntegrationOptions.find(
+                (item: any) => item.value === context.parent.from
+              )?.obj?.supportEmail;
+              if (value?.includes(findFromEmail)) {
+                return false;
+              }
+              return true;
             }
-            return true;
-          }
-        ),
-        BCC: Yup.array().test(
-          "is-blank",
-          "The recipient's email must not be the same as the sender's email",
-          (value, context) => {
-            const findFromEmail = emailIntegrationOptions.find(
-              (item) => item.value === context.parent.from
-            )?.obj?.supportEmail;
-            if (value?.includes(findFromEmail)) {
-              return false;
+          )
+          .test(
+            "same to",
+            "The CC's email must not be the same as the to email",
+            (value, context) => {
+              if (value?.includes(context.parent.to)) {
+                return false;
+              }
+              return true;
             }
-            return true;
-          }
-        ),
+          ),
+        BCC: Yup.array()
+          .test(
+            "same from",
+            "The recipient's email must not be the same as the sender's email",
+            (value, context) => {
+              const findFromEmail = emailIntegrationOptions.find(
+                (item: any) => item.value === context.parent.from
+              )?.obj?.supportEmail;
+              if (value?.includes(findFromEmail)) {
+                return false;
+              }
+              return true;
+            }
+          )
+          .test(
+            "same to",
+            "The BCC's email must not be the same as the to email",
+            (value, context) => {
+              if (value?.includes(context.parent.to)) {
+                return false;
+              }
+              return true;
+            }
+          ),
       });
     return Yup.object().shape({
       to: Yup.string()

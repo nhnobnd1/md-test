@@ -42,12 +42,19 @@ interface TicketFormProps {
   initialValues?: any;
 }
 
-const validateCCEmail = (value: string[], fromEmail = ""): boolean | string => {
+const validateCCEmail = (
+  value: string[],
+  fromEmail = "",
+  toEmail = ""
+): boolean | string => {
   if (!value) return true;
   let checked = true;
   for (const item of value) {
     if (item === fromEmail) {
-      return "false";
+      return "fromEmail";
+    }
+    if (item === toEmail) {
+      return "toEmail";
     }
     if (!emailRegex.test(item)) {
       checked = false;
@@ -346,21 +353,37 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
                               value,
                               emailIntegrationOptions.find(
                                 (item) => item.value === getFieldValue("from")
-                              )?.obj.supportEmail
+                              )?.obj.supportEmail,
+                              getFieldValue("to")
                             ) === true
                           ) {
                             return Promise.resolve();
                           } else if (
-                            typeof validateCCEmail(
+                            validateCCEmail(
                               value,
                               emailIntegrationOptions.find(
                                 (item) => item.value === getFieldValue("from")
-                              )?.obj.supportEmail
-                            ) === "string"
+                              )?.obj.supportEmail,
+                              getFieldValue("to")
+                            ) === "fromEmail"
                           ) {
                             return Promise.reject(
                               new Error(
                                 "The recipient's email must not be the same as the sender's email"
+                              )
+                            );
+                          } else if (
+                            validateCCEmail(
+                              value,
+                              emailIntegrationOptions.find(
+                                (item) => item.value === getFieldValue("from")
+                              )?.obj.supportEmail,
+                              getFieldValue("to")
+                            ) === "toEmail"
+                          ) {
+                            return Promise.reject(
+                              new Error(
+                                "The CC's email must not be the same as the to email"
                               )
                             );
                           } else {
@@ -393,21 +416,37 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
                               value,
                               emailIntegrationOptions.find(
                                 (item) => item.value === getFieldValue("from")
-                              )?.obj.supportEmail
+                              )?.obj.supportEmail,
+                              getFieldValue("to")
                             ) === true
                           ) {
                             return Promise.resolve();
                           } else if (
-                            typeof validateCCEmail(
+                            validateCCEmail(
                               value,
                               emailIntegrationOptions.find(
                                 (item) => item.value === getFieldValue("from")
-                              )?.obj.supportEmail
-                            ) === "string"
+                              )?.obj.supportEmail,
+                              getFieldValue("to")
+                            ) === "fromEmail"
                           ) {
                             return Promise.reject(
                               new Error(
                                 "The recipient's email must not be the same as the sender's email"
+                              )
+                            );
+                          } else if (
+                            validateCCEmail(
+                              value,
+                              emailIntegrationOptions.find(
+                                (item) => item.value === getFieldValue("from")
+                              )?.obj.supportEmail,
+                              getFieldValue("to")
+                            ) === "toEmail"
+                          ) {
+                            return Promise.reject(
+                              new Error(
+                                "The BCC's email must not be the same as the to email"
                               )
                             );
                           } else {
