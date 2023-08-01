@@ -154,6 +154,9 @@
   align-items: center;
   justify-content: center;
 }
+.ant-btn-default {
+  box-shadow: unset;
+}
 .ant-form-item-required::before {
   position: absolute;
   font-size: 18px;
