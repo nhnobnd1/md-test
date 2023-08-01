@@ -72,6 +72,7 @@ import useFormCreateTicket from "src/modules/ticket/store/useFormCreateTicket";
 import ForwardIcon from "~icons/ion/forward";
 import ReplyIcon from "~icons/ion/reply";
 import BackIcon from "~icons/mingcute/back-2-fill";
+import { Crisp } from "crisp-sdk-web";
 
 import { uniqBy } from "lodash-es";
 import BoxSelectCustomer from "src/modules/ticket/components/BoxSelectCustomer/BoxSelectCustomer";
@@ -565,6 +566,22 @@ const DetailTicket = () => {
     );
   };
   const onFinish = (values: ValueForm, closeTicket = false) => {
+    if (isSampleEmail) {
+      Crisp.chat.open();
+      Crisp.message.send(
+        "text",
+        `
+      Let's fill out the reply here! You might want to include those things:
+      
+- A great greeting 
+- An attached image 
+- Try bold, italic here and there 
+    
+Hit Send to see what your message will look like
+      `
+      );
+      return;
+    }
     closeSend();
     setIsForward(false);
     if (isForward) {
@@ -739,13 +756,15 @@ const DetailTicket = () => {
     }
   }, [chatItemForward, clickForward]);
 
+  const isSampleEmail = useMemo(() => {
+    if (ticket?.meta?.isSample && dataConversations?.length === 0) {
+      return true;
+    }
+    return false;
+  }, [ticket, dataConversations, processing, isLoadingConversation]);
+
   useDeepEffect(() => {
-    if (
-      ticket?.meta?.isSample &&
-      conversationList?.length === 0 &&
-      !processing &&
-      !isLoadingConversation
-    ) {
+    if (isSampleEmail && !processing && !isLoadingConversation) {
       setTimeout(() => {
         openSend();
         formRef.current?.setFieldValue(
@@ -762,7 +781,7 @@ Hit Send to see what your message will look like
         );
       }, 500);
     }
-  }, [ticket, conversationList, processing, isFetchConversation]);
+  }, [isSampleEmail, processing, isFetchConversation]);
 
   useDeepEffect(() => {
     if (isForward) return;

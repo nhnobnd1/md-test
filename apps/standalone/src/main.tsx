@@ -38,10 +38,10 @@ const localStoragePersistor = createWebStoragePersistor({
   storage: window.localStorage,
 });
 
-persistQueryClient({
-  queryClient,
-  persistor: localStoragePersistor,
-});
+// persistQueryClient({
+//   queryClient,
+//   persistor: localStoragePersistor,
+// });
 ReactGA.initialize(env.TRACKING_ID);
 Sentry.init({
   dsn: env.DSN_SENTRY,

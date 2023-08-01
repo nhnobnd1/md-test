@@ -37,9 +37,8 @@ export const Rating: FC<RatingProps> = () => {
     queryFn: () => getMerchantRatingApi(),
     retry: 3,
     onSuccess: (data) => {
-      if (data.star && data.comment) {
-        ratingState.changeStar(data.star as number);
-        ratingState.changeComment(data.comment as string);
+      if (data.star) {
+        return;
       }
 
       initCountdown("rating");

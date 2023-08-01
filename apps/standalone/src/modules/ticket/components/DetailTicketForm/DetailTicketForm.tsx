@@ -35,6 +35,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import useToggleGlobal from "@moose-desk/core/hooks/useToggleGlobal";
+import { Crisp } from "crisp-sdk-web";
 import { uniqBy } from "lodash-es";
 import { useTranslation } from "react-i18next";
 import { useQuery, useQueryClient } from "react-query";
@@ -471,6 +472,22 @@ const DetailTicketForm = () => {
   }, []);
 
   const onFinish = (values: ValueForm, closeTicket = false) => {
+    if (isSampleEmail) {
+      Crisp.chat.open();
+      Crisp.message.send(
+        "text",
+        `
+      Let's fill out the reply here! You might want to include those things:
+      
+- A great greeting 
+- An attached image 
+- Try bold, italic here and there 
+    
+Hit Send to see what your message will look like
+      `
+      );
+      return;
+    }
     startLoading();
     closeSend();
     setIsForward(false);
@@ -630,13 +647,16 @@ const DetailTicketForm = () => {
       openSend();
     }
   }, [chatItemForward, clickForward]);
+
+  const isSampleEmail = useMemo(() => {
+    if (ticket?.meta?.isSample && dataConversations?.length === 0) {
+      return true;
+    }
+    return false;
+  }, [ticket, dataConversations, processing, isLoadingConversation]);
+
   useDeepEffect(() => {
-    if (
-      ticket?.meta?.isSample &&
-      dataConversations?.length === 0 &&
-      !processing &&
-      !isLoadingConversation
-    ) {
+    if (isSampleEmail && !processing && !isLoadingConversation) {
       setTimeout(() => {
         openSend();
         form.setFieldValue(
@@ -653,7 +673,7 @@ Hit Send to see what your message will look like
         );
       }, 1000);
     }
-  }, [ticket, dataConversations, processing, isLoadingConversation]);
+  }, [isSampleEmail, processing, isLoadingConversation]);
   useUnMount(() => {
     updateChatItem(undefined);
   });
