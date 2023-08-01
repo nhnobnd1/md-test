@@ -67,12 +67,12 @@ import * as Yup from "yup";
 import FaMailReply from "~icons/fa/mail-reply";
 import InfoIcon from "~icons/material-symbols/info";
 
+import { Crisp } from "crisp-sdk-web";
 import useDeepEffect from "src/hooks/useDeepEffect";
 import useFormCreateTicket from "src/modules/ticket/store/useFormCreateTicket";
 import ForwardIcon from "~icons/ion/forward";
 import ReplyIcon from "~icons/ion/reply";
 import BackIcon from "~icons/mingcute/back-2-fill";
-import { Crisp } from "crisp-sdk-web";
 
 import { uniqBy } from "lodash-es";
 import BoxSelectCustomer from "src/modules/ticket/components/BoxSelectCustomer/BoxSelectCustomer";
@@ -440,36 +440,55 @@ const DetailTicket = () => {
               return value !== findFromEmail;
             }
           ),
-        from: Yup.string()
-          .required("Email address is required")
-          // .email("The email address is not valid")
-          .nullable(),
-        CC: Yup.array().test(
-          "is-blank",
-          "The recipient's email must not be the same as the sender's email",
-          (value, context) => {
-            const findFromEmail = emailIntegrationOptions.find(
-              (item: any) => item.value === context.parent.from
-            )?.obj?.supportEmail;
-            if (value?.includes(findFromEmail)) {
-              return false;
+        from: Yup.string().required("Email address is required").nullable(),
+        CC: Yup.array()
+          .test(
+            "same from",
+            "The recipient's email must not be the same as the sender's email",
+            (value, context) => {
+              const findFromEmail = emailIntegrationOptions.find(
+                (item: any) => item.value === context.parent.from
+              )?.obj?.supportEmail;
+              if (value?.includes(findFromEmail)) {
+                return false;
+              }
+              return true;
             }
-            return true;
-          }
-        ),
-        BCC: Yup.array().test(
-          "is-blank",
-          "The recipient's email must not be the same as the sender's email",
-          (value, context) => {
-            const findFromEmail = emailIntegrationOptions.find(
-              (item: any) => item.value === context.parent.from
-            )?.obj?.supportEmail;
-            if (value?.includes(findFromEmail)) {
-              return false;
+          )
+          .test(
+            "same to",
+            "The CC's email must not be the same as the to email",
+            (value, context) => {
+              if (value?.includes(context.parent.to)) {
+                return false;
+              }
+              return true;
             }
-            return true;
-          }
-        ),
+          ),
+        BCC: Yup.array()
+          .test(
+            "same from",
+            "The recipient's email must not be the same as the sender's email",
+            (value, context) => {
+              const findFromEmail = emailIntegrationOptions.find(
+                (item: any) => item.value === context.parent.from
+              )?.obj?.supportEmail;
+              if (value?.includes(findFromEmail)) {
+                return false;
+              }
+              return true;
+            }
+          )
+          .test(
+            "same to",
+            "The BCC's email must not be the same as the to email",
+            (value, context) => {
+              if (value?.includes(context.parent.to)) {
+                return false;
+              }
+              return true;
+            }
+          ),
       });
     }
     return Yup.object().shape({
