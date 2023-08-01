@@ -740,7 +740,12 @@ const DetailTicket = () => {
   }, [chatItemForward, clickForward]);
 
   useDeepEffect(() => {
-    if (ticket?.meta?.isSample && conversationList?.length === 0) {
+    if (
+      ticket?.meta?.isSample &&
+      conversationList?.length === 0 &&
+      !processing &&
+      !isLoadingConversation
+    ) {
       setTimeout(() => {
         openSend();
         formRef.current?.setFieldValue(

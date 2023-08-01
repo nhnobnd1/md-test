@@ -631,7 +631,12 @@ const DetailTicketForm = () => {
     }
   }, [chatItemForward, clickForward]);
   useDeepEffect(() => {
-    if (ticket?.meta?.isSample && dataConversations?.length === 0) {
+    if (
+      ticket?.meta?.isSample &&
+      dataConversations?.length === 0 &&
+      !processing &&
+      !isLoadingConversation
+    ) {
       setTimeout(() => {
         openSend();
         form.setFieldValue(
@@ -646,9 +651,9 @@ const DetailTicketForm = () => {
 Hit Send to see what your message will look like
       `
         );
-      }, 500);
+      }, 1000);
     }
-  }, [ticket, dataConversations]);
+  }, [ticket, dataConversations, processing, isLoadingConversation]);
   useUnMount(() => {
     updateChatItem(undefined);
   });
