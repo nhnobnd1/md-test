@@ -119,12 +119,12 @@ const Appearance = (props: AppearanceProps) => {
       </div>
       <div className="change-font">
         <LegacyStack vertical>
-          <Text variant="bodyMd" as="p">
-            Chat with us now to get this customization for free
-          </Text>
           <Button outline onClick={handleContactSupport}>
             Change font
           </Button>
+          <p className="description">
+            Chat with us now to get this customization for free
+          </p>
         </LegacyStack>
       </div>
     </div>

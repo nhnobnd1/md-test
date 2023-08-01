@@ -14,9 +14,15 @@
     }
   }
     .change-font {
+      margin-top: 16px;
       .Polaris-Button--outline {
         border-color: $primary;
         color: $primary;
+      }
+      .description {
+        font-size: 13px;
+        opacity: 0.6;
+        // margin-top: 16px;
       }
     }
 }
