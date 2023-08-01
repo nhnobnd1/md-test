@@ -33,6 +33,13 @@ export const ViewWidget = (props: ViewWidgetProps) => {
           : "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'"
       } !important;
     }
+    .Polaris-TextField__Input {
+      font-family: ${
+        data?.font
+          ? data?.font
+          : "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'"
+      } !important;
+    }
   }
     `;
   const fontCss = `
@@ -64,7 +71,7 @@ export const ViewWidget = (props: ViewWidgetProps) => {
 
   return (
     <div className="ViewWidget  xs:w-[300px] sm:w-[370px] md:w-[400px]">
-      <style>{css}</style>
+      <style lang="scss">{css}</style>
       {data?.fontSrc && <style>{fontCss}</style>}
       <div
         className="header"
