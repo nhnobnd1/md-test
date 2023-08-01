@@ -9,7 +9,7 @@ import { config } from 'dotenv';
 import GDPRWebhookHandlers from './gdpr.js';
 import { getInformationShop } from './helpers/shop.js';
 import shopify from './shopify.js';
-
+import compression from 'compression';
 config();
 
 const PORT = parseInt(
@@ -23,7 +23,7 @@ const STATIC_PATH =
 		: `${process.cwd()}/frontend/`;
 
 const app = express();
-
+app.use(compression());
 // Set up Shopify authentication and webhook handling
 app.get(shopify.config.auth.path, shopify.auth.begin());
 
