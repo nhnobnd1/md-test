@@ -304,13 +304,13 @@ export default function Appearance() {
               </Row>
             </Card>
           </div>
-          <div className="px-24-mb">
-            <p className="py-16-12">
-              Chat with us now to get this customization for free
-            </p>
+          <div className=" m-top-16">
             <MDButton className="btn-outline" onClick={handleContactSupport}>
               Change font
             </MDButton>
+            <p className="py-16-12">
+              Chat with us now to get this customization for free
+            </p>
           </div>
         </Form>
         <UIWidget />

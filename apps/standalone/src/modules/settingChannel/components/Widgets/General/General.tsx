@@ -194,13 +194,13 @@ export default function General() {
               </Card>
             </div>
           </div>
-          <div>
-            <p className="py-16-12">
-              Add your brand logo into MooseDesk Widget
-            </p>
+          <div className="m-top-16">
             <MDButton className="btn-outline" onClick={handleContactSupport}>
               Replace logo
             </MDButton>
+            <p className="py-16-12">
+              Add your brand logo into MooseDesk Widget
+            </p>
           </div>
         </Form>
         <UIWidget />

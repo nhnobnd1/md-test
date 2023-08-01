@@ -17,12 +17,36 @@ export const UIWidget: FC<UIWidgetProps> = () => {
 
   const { TextArea } = Input;
   const css = `
- 
+  .md-font-customize-widget {
+    font-family: ${
+      data?.font
+        ? data?.font
+        : "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'"
+    };
+    .md-font-customize-widget>.ant-form-item-row>.ant-form-item-label>label {
+      font-family: ${
+        data?.font
+          ? data?.font
+          : "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'"
+      };
+    }
+  }
   .ant-float-btn-content, .ant-float-btn-body{
     background-color: ${data?.buttonAppearanceColor} !important;
 
   }
     `;
+  const fontCss = `
+  @font-face {
+    font-family: ${data?.font};
+    font-weight: 400;
+    src: url(${data?.fontSrc});
+  }
+  @font-face {
+    font-family: ${data?.font};
+    font-weight: 600;
+    src: url(${data?.fontSrc});
+  }`;
   const commonStyles = {
     wrap: {
       backgroundColor: "#EFF2F5",
@@ -95,8 +119,9 @@ export const UIWidget: FC<UIWidgetProps> = () => {
   }, [updateState]);
 
   return (
-    <div className="z-2 flex justify-center mt-5">
+    <div className="z-2 flex justify-center mt-5" id="wrap-form">
       <style scoped>{css}</style>
+      {data?.fontSrc && <style>{fontCss}</style>}
       <div style={commonStyles.wrap}>
         <div
           className="header-bg"
@@ -110,7 +135,7 @@ export const UIWidget: FC<UIWidgetProps> = () => {
             />
           )}
           <h1
-            className="whitespace-nowrap overflow-hidden truncate "
+            className="whitespace-nowrap overflow-hidden truncate md-font-customize-widget"
             style={commonStyles.mainTitle}
           >
             {data?.titleText}
@@ -121,11 +146,19 @@ export const UIWidget: FC<UIWidgetProps> = () => {
             style={commonStyles.card}
             title={data?.formTitle}
             bordered={false}
-            className="card"
+            className="card md-font-customize-widget"
           >
             <Form form={form} layout="vertical">
-              <Form.Item label="Your Name" name="name" labelAlign="left">
-                <Input placeholder="Your Name" />
+              <Form.Item
+                className="md-font-customize-widget"
+                label="Your Name"
+                name="name"
+                labelAlign="left"
+              >
+                <Input
+                  className="md-font-customize-widget"
+                  placeholder="Your Name"
+                />
               </Form.Item>
               <Form.Item
                 label="Email Address"
@@ -141,8 +174,12 @@ export const UIWidget: FC<UIWidgetProps> = () => {
                 ]}
                 name="email"
                 labelAlign="left"
+                className="md-font-customize-widget"
               >
-                <Input placeholder="Email Address" />
+                <Input
+                  className="md-font-customize-widget"
+                  placeholder="Email Address"
+                />
               </Form.Item>
               <Form.Item
                 labelAlign="left"
@@ -155,8 +192,12 @@ export const UIWidget: FC<UIWidgetProps> = () => {
                   },
                 ]}
                 name="subject"
+                className="md-font-customize-widget"
               >
-                <Input placeholder="Subject" />
+                <Input
+                  className="md-font-customize-widget"
+                  placeholder="Subject"
+                />
               </Form.Item>
               <Form.Item
                 labelAlign="left"
@@ -169,15 +210,24 @@ export const UIWidget: FC<UIWidgetProps> = () => {
                   },
                 ]}
                 name="description"
+                className="md-font-customize-widget"
               >
-                <TextArea rows={4} placeholder="Description" />
+                <TextArea
+                  className="md-font-customize-widget"
+                  rows={4}
+                  placeholder="Description"
+                />
               </Form.Item>
               {data?.allowAttach ? (
-                <Form.Item labelAlign="left" label="Attachment">
+                <Form.Item
+                  className="md-font-customize-widget"
+                  labelAlign="left"
+                  label="Attachment"
+                >
                   <div className="mb-5 rounded-md">
                     <section
                       style={{ backgroundColor: "#FAFAFA" }}
-                      className="p-2  border-2 border-dotted border-slate-50"
+                      className="p-2  border-2 border-dotted border-slate-50 md-font-customize-widget"
                     >
                       <div className="flex justify-center items-center flex-col p-3">
                         <CloudUploadOutlined style={{ fontSize: 32 }} />
@@ -223,6 +273,7 @@ export const UIWidget: FC<UIWidgetProps> = () => {
                     textOverflow: "ellipsis",
                     display: "inline-block",
                   }}
+                  className="md-font-customize-widget"
                 >
                   {data.buttonText}
                 </span>

@@ -154,6 +154,9 @@
   align-items: center;
   justify-content: center;
 }
+.ant-btn-default {
+  box-shadow: unset;
+}
 .ant-form-item-required::before {
   position: absolute;
   font-size: 18px;
@@ -192,9 +195,17 @@ select {
 .py-16-12 {
   padding: 16px 0;
   margin-bottom: 0;
-  @include mq(md, "max"){
+  font-size: 13px;
+  opacity: 0.6;
+  @include mq(md, "max") {
     padding: 12px 0;
   }
+}
+.m-top-16 {
+  margin-top: 16px;
+  @include mq(md, "max") {
+      margin-top: 12px;
+    }
 }
 .btn-outline {
   border: 1px solid $primary;
