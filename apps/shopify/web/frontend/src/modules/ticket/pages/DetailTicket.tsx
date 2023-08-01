@@ -741,8 +741,8 @@ const DetailTicket = () => {
 
   useDeepEffect(() => {
     if (ticket?.meta?.isSample && conversationList?.length === 0) {
-      openSend();
       setTimeout(() => {
+        openSend();
         formRef.current?.setFieldValue(
           "content",
           `
@@ -757,7 +757,7 @@ Hit Send to see what your message will look like
         );
       }, 500);
     }
-  }, [ticket, conversationList]);
+  }, [ticket, conversationList, processing, isFetchConversation]);
 
   useDeepEffect(() => {
     if (isForward) return;

@@ -56,7 +56,7 @@ export const Rating: FC<RatingProps> = () => {
       message.success("Thank you for your feedback!");
     },
     onError: () => {
-      message.success(t("messages:error.something_went_wrong"));
+      message.error(t("messages:error.something_went_wrong"));
     },
     onSettled: () => {
       ratingState.changeShow(false);
@@ -98,7 +98,6 @@ export const Rating: FC<RatingProps> = () => {
           <Form
             initialValues={{ comment: dataMerchantRating?.comment }}
             onFinish={handleSubmit}
-            // enableReinitialize
           >
             <Space direction="vertical" className="w-full">
               <div className="flex justify-between items-center">
@@ -110,7 +109,6 @@ export const Rating: FC<RatingProps> = () => {
                     <h1 className="p-0 m-0">MooseDesk</h1>
                   ) : (
                     <StarsRating
-                      disabled={true}
                       allowHalf={false}
                       value={ratingState.star}
                       onChange={(value) => {
@@ -154,15 +152,7 @@ export const Rating: FC<RatingProps> = () => {
                 <></>
               ) : (
                 <div className={`pt-3`}>
-                  <Form.Item
-                    name="comment"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please tell us what MooseDesk can improve",
-                      },
-                    ]}
-                  >
+                  <Form.Item name="comment">
                     <Input.TextArea
                       className="w-full"
                       placeholder="Please tell us what MooseDesk can improve"
@@ -178,7 +168,6 @@ export const Rating: FC<RatingProps> = () => {
                     type="primary"
                     // onClick={handleSubmit}
                     htmlType="submit"
-                    disabled={ratingState.comment === ""}
                   >
                     Submit
                   </MDButton>

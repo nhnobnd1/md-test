@@ -632,8 +632,8 @@ const DetailTicketForm = () => {
   }, [chatItemForward, clickForward]);
   useDeepEffect(() => {
     if (ticket?.meta?.isSample && dataConversations?.length === 0) {
-      openSend();
       setTimeout(() => {
+        openSend();
         form.setFieldValue(
           "content",
           `

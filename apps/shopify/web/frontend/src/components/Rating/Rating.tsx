@@ -11,14 +11,13 @@ import {
   Tooltip,
 } from "@shopify/polaris";
 import { CancelMinor } from "@shopify/polaris-icons";
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "react-query";
 import StarsRating from "react-star-rate";
 import Form from "src/components/Form";
 import IconUI from "src/components/UI/Icon";
 import { getMerchantRatingApi, postMerchantRatingApi } from "src/helper/api";
-import * as Yup from "yup";
 
 import { FormikProps } from "formik";
 import FormItem from "src/components/Form/Item";
@@ -28,7 +27,6 @@ interface RatingProps {}
 export const Rating: FC<RatingProps> = () => {
   const ratingState = useRating((state) => state);
   const formRef = useRef<FormikProps<any>>(null);
-  const [disableSubmit, setDisableSubmit] = useState(true);
   const { show } = useToast();
   const { t } = useTranslation();
 
@@ -91,16 +89,10 @@ export const Rating: FC<RatingProps> = () => {
     }
   }, [countDown]);
 
-  const validateForm = Yup.object().shape({
-    comment: Yup.string().required("Please tell us what MooseDesk can improve"),
-  });
-  const handleChangeValue = (change: any) => {
-    if (change?.comment) {
-      setDisableSubmit(false);
-      return;
-    }
-    setDisableSubmit(true);
-  };
+  // const validateForm = Yup.object().shape({
+  //   comment: Yup.string().required("Please tell us what MooseDesk can improve"),
+  // });
+
   return (
     <div
       className={`w-[300px] fixed bottom-10 sm:right-10 xs:right-5 z-50 ${
@@ -111,9 +103,8 @@ export const Rating: FC<RatingProps> = () => {
         innerRef={formRef}
         initialValues={{ comment: ratingState.comment }}
         onSubmit={handleSubmit}
-        validationSchema={validateForm}
+        // validationSchema={validateForm}
         enableReinitialize
-        onValuesChange={handleChangeValue}
       >
         <LegacyCard sectioned>
           <div className="mb-5 flex justify-between">
@@ -127,7 +118,6 @@ export const Rating: FC<RatingProps> = () => {
                 </Text>
               ) : (
                 <StarsRating
-                  disabled={true}
                   allowHalf={false}
                   value={ratingState.star}
                   onChange={(value) => {
@@ -190,7 +180,7 @@ export const Rating: FC<RatingProps> = () => {
             <div className="flex justify-end">
               <ButtonGroup>
                 <Button onClick={handleCancel}>Cancel</Button>
-                <Button primary submit disabled={disableSubmit}>
+                <Button primary submit>
                   Submit
                 </Button>
               </ButtonGroup>
