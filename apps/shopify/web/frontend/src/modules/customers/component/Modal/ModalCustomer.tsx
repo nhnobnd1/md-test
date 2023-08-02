@@ -49,11 +49,11 @@ IModal) => {
       honorific: "",
       firstName: "",
       lastName: "",
-      email: "",
+      email: customerData?.email ?? "",
       phoneNumber: "",
       storeId: auth.user?.id ?? "",
     };
-  }, [auth.user]);
+  }, [auth.user, customerData]);
   const { mutate: createCustomerMutate, isLoading: isCreating } = useMutation({
     mutationFn: (payload: any) => createCustomer(payload),
     onSuccess: async () => {

@@ -335,9 +335,11 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
                 ]}
               >
                 <AutoSelect
+                  notFoundContent={true}
                   placeholder="Email"
                   options={customersOptions}
                   onChange={onChangeEmail}
+                  setOpenModalCustomer={setOpenModalCustomer}
                 />
               </Form.Item>
               <>
@@ -473,15 +475,6 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
               <span
                 className="link"
                 onClick={() => {
-                  setOpenModalCustomer(true);
-                }}
-              >
-                Add new contact
-              </span>
-              <span>|</span>
-              <span
-                className="link"
-                onClick={() => {
                   setEnableCC(!enableCC);
                 }}
               >
@@ -562,7 +555,11 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
           </div>
         </Card>
       </div>
-      <ModalCustomer open={openModalCustomer} setOpen={setOpenModalCustomer} />
+      <ModalCustomer
+        open={openModalCustomer}
+        setOpen={setOpenModalCustomer}
+        email={toEmail.value}
+      />
     </Form>
   );
 };

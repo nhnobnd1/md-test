@@ -5,6 +5,8 @@
   z-index: 1;
   width: 100px;
   cursor: pointer;
+  display: flex;
+  justify-content: flex-end;
 }
 .wrapContent {
   max-width: calc(100% - 300px);

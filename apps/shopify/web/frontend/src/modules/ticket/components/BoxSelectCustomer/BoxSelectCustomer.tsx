@@ -1,4 +1,6 @@
-import { Combobox, Listbox } from "@shopify/polaris";
+import { emailRegex } from "@moose-desk/core";
+import { Button, Combobox, Icon, Listbox } from "@shopify/polaris";
+import { CustomerPlusMajor } from "@shopify/polaris-icons";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import useSaveDataGlobal from "src/hooks/useSaveDataGlobal";
 interface Data {
@@ -14,6 +16,7 @@ interface BoxSelectAutoReplyProps {
   disabled?: boolean;
   data: Data[];
   form: any;
+  openPopup?: any;
 }
 
 const BoxSelectCustomer = (props: BoxSelectAutoReplyProps) => {
@@ -117,6 +120,21 @@ const BoxSelectCustomer = (props: BoxSelectAutoReplyProps) => {
     >
       {options.length > 0 && !props.disabled ? (
         <Listbox onSelect={updateSelection}>{optionsMarkup}</Listbox>
+      ) : props.openPopup ? (
+        <Button
+          icon={<Icon source={CustomerPlusMajor} color="base" />}
+          plain
+          fullWidth
+          textAlign="left"
+          size="slim"
+          onClick={() => {
+            if (emailRegex.test(inputValue)) {
+              props.openPopup();
+            }
+          }}
+        >
+          Add new contact
+        </Button>
       ) : null}
     </Combobox>
   );

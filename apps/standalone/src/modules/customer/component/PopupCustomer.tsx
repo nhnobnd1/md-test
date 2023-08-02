@@ -146,6 +146,7 @@ export const PopupCustomer = ({
         enableLoadForm
         enableReinitialize
         form={form}
+        data={dataForm}
         onFinish={handleSubmitValue}
       />
     );

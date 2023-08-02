@@ -1,27 +1,28 @@
 import { Customer } from "@moose-desk/repo";
-import { FC, useState } from "react";
+import { FC, useMemo } from "react";
 import PopupCustomer from "src/modules/customer/component/PopupCustomer";
 
 interface ModalCustomerProps {
   open: boolean;
   setOpen: any;
+  email?: string;
 }
 
-export const ModalCustomer: FC<ModalCustomerProps> = ({ open, setOpen }) => {
-  const [dataPopup, setDataPopup] = useState<
-    | {
-        email: string;
-        firstName: string;
-        lastName: string;
-        phoneNumber: string;
-      }
-    | undefined
-  >({
-    email: "",
-    firstName: "",
-    lastName: "",
-    phoneNumber: "",
-  });
+export const ModalCustomer: FC<ModalCustomerProps> = ({
+  open,
+  setOpen,
+  email,
+}) => {
+  const dataPopup: any = useMemo(() => {
+    return (
+      {
+        email: email || "",
+        firstName: "",
+        lastName: "",
+        phoneNumber: "",
+      } || undefined
+    );
+  }, [email]);
   return (
     <PopupCustomer
       open={open}

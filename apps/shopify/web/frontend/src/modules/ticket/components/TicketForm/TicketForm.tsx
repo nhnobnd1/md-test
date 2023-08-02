@@ -65,7 +65,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
 
   const { dataSaved }: any = useSaveDataGlobal();
   const [fromEmail, setFromEmail] = useState(props.primaryEmail);
-  const [toEmail, setToEmail] = useState({ value: "", id: "" });
+  const [toEmail, setToEmail] = useState("");
   const [files, setFiles] = useState<any>([]);
   const [loadingButton, setLoadingButton] = useState(false);
   const selectedFrom = useSelectFrom((state) => state.selected);
@@ -356,6 +356,9 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
   };
 
   const handleChangeForm = useCallback((changedValue) => {
+    if (changedValue?.to) {
+      setToEmail(changedValue?.to);
+    }
     if (changedValue.content) {
       const contentSplit = changedValue.content.split('<div class="divide">');
       updateContent({ content: contentSplit[0] });
@@ -420,6 +423,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
             <FormItem name="to">
               <FormItem name="to">
                 <BoxSelectCustomer
+                  openPopup={openPopup}
                   form={props.innerRef}
                   label={
                     <div className="flex justify-between w-full">
@@ -428,14 +432,6 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
                         <span>To</span>
                       </div>
                       <div className="flex gap-2">
-                        <Link
-                          onClick={() => {
-                            openPopup();
-                          }}
-                        >
-                          Add new contact
-                        </Link>
-                        <span>|</span>
                         <Link
                           onClick={() => {
                             setEnableCC(!enableCC);
@@ -554,7 +550,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
         title={"New Customer"}
         visible={visible}
         onClose={handleClosePopup}
-        customerData={undefined}
+        customerData={{ email: toEmail }}
         primaryButtonLabel="Save"
         secondaryButtonAction={handleClosePopup}
         secondaryButtonLabel="Discard"
