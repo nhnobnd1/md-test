@@ -62,7 +62,7 @@ import { CollapseList } from "src/modules/ticket/components/CollapseList";
 import ContentShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ContentShopifySearch";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import useSelectFrom from "src/modules/ticket/store/useSelectFrom";
-import { wrapImageWithAnchorTag } from "src/utils/localValue";
+import { trimHtmlCssJs, wrapImageWithAnchorTag } from "src/utils/localValue";
 import * as Yup from "yup";
 import FaMailReply from "~icons/fa/mail-reply";
 import InfoIcon from "~icons/material-symbols/info";
@@ -589,15 +589,7 @@ const DetailTicket = () => {
       Crisp.chat.open();
       Crisp.message.send(
         "text",
-        `
-      Let's fill out the reply here! You might want to include those things:
-      
-- A great greeting 
-- An attached image 
-- Try bold, italic here and there 
-    
-Hit Send to see what your message will look like
-      `
+        trimHtmlCssJs(formRef.current?.values?.content)
       );
       return;
     }
@@ -798,7 +790,7 @@ Hit Send to see what your message will look like
 Hit Send to see what your message will look like
       `
         );
-      }, 500);
+      }, 1000);
     }
   }, [isSampleEmail, processing, isFetchConversation]);
 
