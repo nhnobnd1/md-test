@@ -119,7 +119,11 @@ export const UIWidget: FC<UIWidgetProps> = () => {
   }, [updateState]);
 
   return (
-    <div className="z-2 flex justify-center mt-5" id="wrap-form">
+    <div
+      className="z-2 flex justify-center mt-5"
+      id="wrap-form"
+      style={{ maxWidth: "100vw" }}
+    >
       <style scoped>{css}</style>
       {data?.fontSrc && <style>{fontCss}</style>}
       <div style={commonStyles.wrap}>
@@ -128,11 +132,25 @@ export const UIWidget: FC<UIWidgetProps> = () => {
           style={{ ...commonStyles.header, flexDirection: "column" }}
         >
           {data?.logo && (
-            <img
-              style={{ height: 32, width: "fit-content" }}
-              src={data?.logo}
-              alt="logo-widget"
-            />
+            <div
+              style={{
+                maxHeight: 32,
+                width: "max-content",
+                overflow: "hidden",
+              }}
+            >
+              <img
+                style={{
+                  maxHeight: "32px",
+                  width: "initial",
+                  display: "block",
+                  margin: "0 auto",
+                  objectFit: "contain",
+                }}
+                src={data?.logo}
+                alt="logo-widget"
+              />
+            </div>
           )}
           <h1
             className="whitespace-nowrap overflow-hidden truncate md-font-customize-widget"
