@@ -86,16 +86,11 @@ export const StoreProviders = ({ children }: StoreProvidersProps) => {
 
       Crisp.session.reset();
 
-      Crisp.session.setData({
-        mdId: `md_${uniqueId}`,
-      });
-
       Crisp.user.setEmail(user.email);
       Crisp.user.setNickname(user.given_name);
       Crisp.load();
     } else {
       if (Crisp.isCrispInjected()) {
-        console.log("reject");
         Crisp.chat.hide();
       }
     }

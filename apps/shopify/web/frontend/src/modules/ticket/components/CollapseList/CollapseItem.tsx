@@ -47,7 +47,7 @@ export const CollapseItem: FC<CollapseItemProps> = ({
           }
           size="large"
         ></Button>
-        <div className="flex justify-between items-center w-full flex-wrap overflow-auto">
+        <div className="flex justify-between items-center w-full flex-wrap">
           <div className="flex gap-2 items-center flex-wrap">
             <span className="font-bold">{item.name}</span>
             <span className="text-gray-500 text-xs">({item.email})</span>

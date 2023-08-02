@@ -804,7 +804,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
               </>
               <div>
                 {meta?.totalCount ? (
-                  <div className="grid grid-cols-3 py-8 relative">
+                  <div className="grid grid-cols-3 pt-3 relative">
                     {filterData.page &&
                       filterData.limit &&
                       meta?.totalCount && (

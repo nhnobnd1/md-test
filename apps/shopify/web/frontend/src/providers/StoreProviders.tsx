@@ -1,11 +1,15 @@
 import { generatePath, useJob, useMount, useNavigate } from "@moose-desk/core";
 import { GetStoreIdRequest, StoreRepository } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
-import { createContext, ReactNode, useContext, useState } from "react";
+import { Crisp } from "crisp-sdk-web";
+import CryptoJS from "crypto-js";
+import { ReactNode, createContext, useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
+import useDeepEffect from "src/hooks/useDeepEffect";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import OnBoardingRoutePaths from "src/modules/onBoarding/routes/paths";
+import useUser from "src/store/useUser";
 
 interface StoreContextType {
   storeId: string;
@@ -25,6 +29,31 @@ export const StoreProviders = ({ children }: StoreProvidersProps) => {
   const { show } = useToast();
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const user = useUser((state) => state.user);
+
+  useDeepEffect(() => {
+    if (user) {
+      const uniqueId = CryptoJS.SHA256(
+        `${user.storeId}-${user.email}`
+      ).toString();
+      Crisp.configure("facc2d77-0f93-4665-9530-430cc6aa3b4f", {
+        autoload: false,
+        tokenId: uniqueId,
+      });
+
+      Crisp.setTokenId(`md_${uniqueId}`);
+
+      Crisp.session.reset();
+
+      Crisp.user.setEmail(user.email);
+      Crisp.user.setNickname(user.given_name);
+      Crisp.load();
+    } else {
+      if (Crisp.isCrispInjected()) {
+        Crisp.chat.hide();
+      }
+    }
+  }, [user]);
 
   const { run: fetchStoreId } = useJob(
     (payload: GetStoreIdRequest) => {
