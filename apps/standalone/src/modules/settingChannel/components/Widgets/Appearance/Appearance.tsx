@@ -304,7 +304,7 @@ export default function Appearance() {
               </Row>
             </Card>
           </div>
-          <div className=" m-top-16">
+          <div className=" m-top-16 pl-mobile-24">
             <MDButton className="btn-outline" onClick={handleContactSupport}>
               Change font
             </MDButton>
