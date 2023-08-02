@@ -67,7 +67,7 @@ import {
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import useFormCreateTicket from "src/modules/ticket/store/useFormCreateTicket";
 import useForwardTicket from "src/modules/ticket/store/useForwardTicket";
-import { wrapImageWithAnchorTag } from "src/utils/localValue";
+import { trimHtmlCssJs, wrapImageWithAnchorTag } from "src/utils/localValue";
 import ForwardIcon from "~icons/ion/forward";
 import ReplyIcon from "~icons/ion/reply";
 import BackIcon from "~icons/mingcute/back-2-fill";
@@ -481,10 +481,7 @@ const DetailTicketForm = () => {
   const onFinish = (values: ValueForm, closeTicket = false) => {
     if (isSampleEmail) {
       Crisp.chat.open();
-      Crisp.message.send(
-        "text",
-        createTextVersion(form.getFieldValue("content"))
-      );
+      Crisp.message.send("text", trimHtmlCssJs(form.getFieldValue("content")));
       return;
     }
     startLoading();
