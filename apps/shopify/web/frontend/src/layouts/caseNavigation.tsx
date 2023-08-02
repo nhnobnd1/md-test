@@ -68,25 +68,12 @@ export const getCaseNavigation = (badge = ""): NavigationItems[] => {
           url: ReportRoutePaths.ByTags,
         },
       ],
-      tabBarNavigation: [
-        // {
-        //   label: "Security",
-        //   url: SettingRoutePaths.AccountSecurity.Security.Index,
-        // },
-        // {
-        //   label: "Access Manager",
-        //   url: SettingRoutePaths.AccountSecurity.AccessManager.Index,
-        // },
-      ],
     },
     {
       label: "Settings",
       url: AgentRoutePaths.Index,
       icon: () => <SettingsMinor />,
       subNavigationItems: [
-        // { label: "General Settings", url: "/settings" },
-        // { label: "Account Profile", url: "/settings/account-profile" },
-
         {
           label: "General Settings",
           url: SettingChannelRoutePaths.Index,
@@ -95,19 +82,14 @@ export const getCaseNavigation = (badge = ""): NavigationItems[] => {
             {
               label: "Channels",
               url: SettingChannelRoutePaths.Index,
+              tabBarNavigation: [
+                { label: "hello", url: SettingChannelRoutePaths.Widgets.Index },
+              ],
             },
             {
               label: "Business Hours",
               url: SettingRoutePaths.GenaralSetting.BusinessHours.Index,
             },
-            // {
-            //   label: "Security",
-            //   url: SettingRoutePaths.AccountSecurity.Security.Index,
-            // },
-            // {
-            //   label: "Access Manager",
-            //   url: SettingRoutePaths.AccountSecurity.AccessManager.Index,
-            // },
           ],
         },
         {
