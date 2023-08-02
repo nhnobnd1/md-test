@@ -1,6 +1,12 @@
 @import "./Button.scss";
 @import "./variables.scss";
 @import "./mixin.scss";
+
+.pl-mobile-24 {
+  @include mq(md, 'max') {
+    padding-left: 24px;
+  }
+}
 .unstyle-link a {
   text-decoration: none;
   color: #202223;
