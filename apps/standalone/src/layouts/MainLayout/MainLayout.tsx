@@ -4,10 +4,11 @@ import {
   useJob,
   useLocation,
   useNavigate,
+  useUser,
 } from "@moose-desk/core";
 import { AccountRepository } from "@moose-desk/repo";
 import { Layout, MenuProps } from "antd";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import useAuth from "src/hooks/useAuth";
@@ -23,6 +24,13 @@ export const MainLayout = () => {
   const { isLoggedIn, logout } = useAuth();
   const notification = useNotification();
   const { t } = useTranslation();
+  const user = useUser();
+  useEffect(() => {
+    console.log({ user });
+    if (user) {
+      navigate(generatePath(DashboardRoutePaths.Index));
+    }
+  }, [user]);
 
   const { run: signOut } = useJob(() => {
     return AccountRepository()

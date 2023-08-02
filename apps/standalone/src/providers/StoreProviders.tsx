@@ -6,16 +6,11 @@ import {
 } from "@moose-desk/repo";
 import { Crisp } from "crisp-sdk-web";
 import CryptoJS from "crypto-js";
-import {
-  ReactNode,
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { ReactNode, createContext, useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import { lastValueFrom } from "rxjs";
+import useDeepEffect from "src/hooks/useDeepEffect";
 import useNotification from "src/hooks/useNotification";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { getStoreId } from "src/utils/localValue";
@@ -77,12 +72,11 @@ export const StoreProviders = ({ children }: StoreProvidersProps) => {
     },
   });
 
-  useEffect(() => {
+  useDeepEffect(() => {
     if (user) {
       const uniqueId = CryptoJS.SHA256(
         `${user.storeId}-${user.email}`
       ).toString();
-      console.log({ uniqueId });
       Crisp.configure("facc2d77-0f93-4665-9530-430cc6aa3b4f", {
         autoload: false,
         tokenId: uniqueId,
