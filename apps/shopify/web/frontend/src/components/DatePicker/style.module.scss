@@ -13,6 +13,11 @@
   }
 }
 .wrapDatePicker {
+  display: flex;
+  align-items: center;
+  .note {
+    margin-left: 8px;
+  }
   :global {
     .Polaris-Box {
       display: none;

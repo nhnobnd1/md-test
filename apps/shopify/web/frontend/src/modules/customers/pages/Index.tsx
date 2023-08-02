@@ -206,7 +206,7 @@ export default function CustomerIndexPage() {
                   "md-btn md-btn-primary"
                 )}
               >
-                <Button onClick={openPopup}>Add new</Button>
+                <Button onClick={openPopup}>Add customer</Button>
               </div>
             </div>
           </div>
