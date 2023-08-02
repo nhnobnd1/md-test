@@ -67,7 +67,7 @@ const CustomerForm = (
             <FormItem name="firstName">
               <TextField
                 type="text"
-                placeholder="Your first name"
+                placeholder="Customer First Name"
                 label="First name"
                 autoComplete="cc-name"
               />
@@ -77,7 +77,7 @@ const CustomerForm = (
             <FormItem name="lastName">
               <TextField
                 type="text"
-                placeholder="Your last name"
+                placeholder="Customer Last Name"
                 label="Last name"
                 autoComplete="cc-name"
               />
@@ -88,13 +88,13 @@ const CustomerForm = (
         <FormItem name="email">
           <TextField
             type="email"
-            placeholder="Your email"
+            placeholder="Customer Email"
             label="Email"
             autoComplete="email"
           />
         </FormItem>
         <FormItem name="phoneNumber">
-          <InputPhone label="Phone" placeholder="Your phone number" />
+          <InputPhone label="Phone" placeholder="Customer Phone Number" />
         </FormItem>
 
         <FormItem name="storeId" />

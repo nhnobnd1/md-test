@@ -1,11 +1,21 @@
 @import "../../styles/variables.scss";
 @import "../../styles/mixin.scss";
 .app-layout {
+  overflow-y: hidden;
+  @include breakpoints(zero, lg) {
+    overflow: initial;
+  }
   .header {
     background-color: #fff;
     box-shadow: 0 0.125rem 0.125rem -0.0625rem #00000026;
     position: relative;
     transition: 200ms background-color cubic-bezier(0.42, 0, 0.58, 1);
+    @include breakpoints(zero, lg) {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 99;
+    }
   }
   .ant-layout-sider {
     background: rgb(240, 242, 245);
@@ -24,7 +34,7 @@
       .ant-menu-sub {
         .ant-menu-item {
           .ant-menu-title-content {
-          padding-left: 20px !important;
+            padding-left: 20px !important;
           }
         }
       }
@@ -187,6 +197,13 @@
 }
 .md-layout-content {
   width: 100% !important;
+  height: calc(100vh - 64px);
+  overflow-y: scroll;
+  @include breakpoints(zero, lg) {
+    height: initial;
+    overflow-y: initial;
+    padding-top: 64px;
+  }
 }
 .no-touch {
   touch-action: none;

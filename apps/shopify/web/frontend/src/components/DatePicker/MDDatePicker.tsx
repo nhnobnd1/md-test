@@ -1,5 +1,12 @@
-import { Button, DatePicker, DatePickerProps, Popover } from "@shopify/polaris";
-import { CalendarMinor } from "@shopify/polaris-icons";
+import {
+  Button,
+  DatePicker,
+  DatePickerProps,
+  Icon,
+  Popover,
+  Tooltip,
+} from "@shopify/polaris";
+import { CalendarMinor, CircleAlertMajor } from "@shopify/polaris-icons";
 import classNames from "classnames";
 import dayjs from "dayjs";
 import "dayjs/locale/en";
@@ -131,6 +138,11 @@ const MDDatePicker = ({
             </div>
           </div>
         </Popover>
+        <div className={styles.note}>
+          <Tooltip content="Please select a maximum time period of 14 days (counting from the start date)">
+            <Icon source={CircleAlertMajor} color="base" />
+          </Tooltip>
+        </div>
       </div>
     </div>
   );

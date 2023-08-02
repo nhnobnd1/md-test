@@ -49,7 +49,7 @@ const SettingChannelIndexPage: PageComponent<
         },
       },
       {
-        title: "Webform Configuration",
+        title: "Web Form Configuration",
         description:
           "Configure the web form widget that can be added to your website",
         link: "",

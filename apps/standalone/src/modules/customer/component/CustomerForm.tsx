@@ -65,7 +65,7 @@ export const CustomerForm = ({
           >
             <MDInput
               disabled={disabled}
-              placeholder={t("common:customers.first_name")}
+              placeholder={t("common:customers.first_name_placeholder")}
             />
           </Form.Item>
         </Col>
@@ -94,7 +94,7 @@ export const CustomerForm = ({
           >
             <MDInput
               disabled={disabled}
-              placeholder={t("common:customers.last_name")}
+              placeholder={t("common:customers.last_name_placeholder")}
             />
           </Form.Item>
         </Col>
@@ -113,7 +113,7 @@ export const CustomerForm = ({
           { type: "email", message: t("common:regex.email") },
         ]}
       >
-        <MDInput disabled={disabled} placeholder="example@example.com" />
+        <MDInput disabled={disabled} placeholder="Customer Email" />
       </Form.Item>
 
       <Form.Item
@@ -126,7 +126,9 @@ export const CustomerForm = ({
           },
         ]}
       >
-        <InputPhone placeholder={t("common:customers.phone_number")} />
+        <InputPhone
+          placeholder={t("common:customers.phone_number_placeholder")}
+        />
       </Form.Item>
     </Form>
   );
