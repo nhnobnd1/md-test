@@ -1,10 +1,18 @@
-import { useNavigate } from "@moose-desk/core";
+import { useNavigate, useUser } from "@moose-desk/core";
 import {
   GetStoreIdRequest,
   GetStoreIdResponse,
   StoreRepository,
 } from "@moose-desk/repo";
-import { ReactNode, createContext, useContext, useState } from "react";
+import { Crisp } from "crisp-sdk-web";
+import CryptoJS from "crypto-js";
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import { lastValueFrom } from "rxjs";
@@ -35,7 +43,7 @@ export const StoreProviders = ({ children }: StoreProvidersProps) => {
   const notification = useNotification();
   const { t } = useTranslation();
   const navigate = useNavigate();
-
+  const user = useUser();
   useQuery({
     queryKey: ["getStoreId"],
     queryFn: () =>
@@ -68,6 +76,38 @@ export const StoreProviders = ({ children }: StoreProvidersProps) => {
       return true;
     },
   });
+
+  useEffect(() => {
+    if (user) {
+      const uniqueId = CryptoJS.SHA256(
+        `${user.storeId}-${user.email}`
+      ).toString();
+      console.log({ uniqueId });
+      Crisp.configure("facc2d77-0f93-4665-9530-430cc6aa3b4f", {
+        autoload: false,
+        tokenId: uniqueId,
+      });
+
+      Crisp.setTokenId(`md_${uniqueId}`);
+
+      Crisp.session.reset();
+
+      Crisp.session.setData({
+        mdId: `md_${uniqueId}`,
+      });
+
+      Crisp.user.setEmail(user.email);
+      Crisp.user.setNickname(user.given_name);
+      Crisp.load();
+    } else {
+      if (Crisp.isCrispInjected()) {
+        console.log("reject");
+        Crisp.session.reset();
+        Crisp.chat.hide();
+      }
+    }
+  }, [user]);
+
   return (
     <StoreContext.Provider value={{ storeId: storeId }}>
       {children}
