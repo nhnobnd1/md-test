@@ -102,7 +102,6 @@ export const StoreProviders = ({ children }: StoreProvidersProps) => {
     } else {
       if (Crisp.isCrispInjected()) {
         console.log("reject");
-        Crisp.session.reset();
         Crisp.chat.hide();
       }
     }
