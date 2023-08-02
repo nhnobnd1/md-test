@@ -50,7 +50,7 @@ export function AppBridgeProvider({ children }: { children: ReactNode }) {
     return {
       host,
       apiKey: process.env.SHOPIFY_API_KEY ?? "",
-      forceRedirect: true,
+      forceRedirect: false,
     };
   });
 

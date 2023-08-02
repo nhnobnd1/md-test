@@ -483,15 +483,7 @@ const DetailTicketForm = () => {
       Crisp.chat.open();
       Crisp.message.send(
         "text",
-        `
-      Let's fill out the reply here! You might want to include those things:
-      
-- A great greeting 
-- An attached image 
-- Try bold, italic here and there 
-    
-Hit Send to see what your message will look like
-      `
+        createTextVersion(form.getFieldValue("content"))
       );
       return;
     }
