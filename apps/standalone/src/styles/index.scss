@@ -210,10 +210,28 @@ select {
 .m-top-16 {
   margin-top: 16px;
   @include mq(md, "max") {
-      margin-top: 12px;
-    }
+    margin-top: 12px;
+  }
 }
 .btn-outline {
   border: 1px solid $primary;
   color: $primary;
+}
+
+.ant-table-content::-webkit-scrollbar {
+  -webkit-appearance: none;
+}
+
+.ant-table-content::-webkit-scrollbar:vertical {
+  width: 11px;
+}
+
+.ant-table-content::-webkit-scrollbar:horizontal {
+  height: 11px;
+}
+
+.ant-table-content::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  border: 2px solid white;
+  background-color: #f1f2f3;
 }
