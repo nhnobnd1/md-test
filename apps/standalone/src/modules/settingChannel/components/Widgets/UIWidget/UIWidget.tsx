@@ -70,7 +70,7 @@ export const UIWidget: FC<UIWidgetProps> = () => {
       margin: 0,
       lineHeight: "initial",
     },
-    card: { maxWidth: 350, top: -30, margin: 20 },
+    card: { top: -30, margin: 20 },
     formCaptcha: {
       display: "flex",
       justifyContent: "flex-end",
