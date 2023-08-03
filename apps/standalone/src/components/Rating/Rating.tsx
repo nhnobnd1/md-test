@@ -90,6 +90,7 @@ export const Rating: FC<RatingProps> = () => {
       className={`fixed bottom-10 sm:right-10 xs:right-5 z-100 ${
         ratingState.show ? "block" : "hidden"
       }`}
+      style={{ zIndex: 100 }}
     >
       <Card className="w-[320px]">
         {isFetching ? (

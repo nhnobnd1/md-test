@@ -96,6 +96,7 @@ const Rating: FC<RatingProps> = () => {
       className={`w-[300px] fixed bottom-10 sm:right-10 xs:right-5 z-50 ${
         ratingState.show ? "block" : "hidden"
       }`}
+      style={{ zIndex: 100 }}
     >
       <Form
         initialValues={{ comment: "" }}
