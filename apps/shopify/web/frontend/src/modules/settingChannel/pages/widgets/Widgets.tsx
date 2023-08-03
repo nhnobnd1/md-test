@@ -265,7 +265,7 @@ const Widgets = (props: WidgetsProps) => {
                   <LegacyCard.Section>
                     <div className={classNames({ hidden: selected === 2 })}>
                       <div className="flex gap-[30px] flex-wrap-reverse xs:justify-center md:justify-start">
-                        <div className="view-widgets ">
+                        <div className="view-widgets">
                           <LegacyCard sectioned>
                             <ViewWidget />
                           </LegacyCard>
