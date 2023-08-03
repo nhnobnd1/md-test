@@ -28,10 +28,13 @@ import {
   getListBusinessCalendar,
   updateListBusinessCalendar,
 } from "src/modules/setting/helper/api";
+import useBusinessHour from "src/modules/setting/store/Businesshour";
 
 const BusinessHours = () => {
   const message = useMessage();
   const notification = useNotification();
+  const tabSelected = useBusinessHour((state) => state.tabSelected);
+  const updateTabSelected = useBusinessHour((state) => state.updateTabSelected);
   const { subDomain } = useSubdomain();
   const { refetchGlobal } = useGlobalData(false, subDomain || "");
   // main code
@@ -161,7 +164,10 @@ const BusinessHours = () => {
             </Form.Item>
             <Card>
               <Tabs
-                defaultActiveKey="1"
+                activeKey={tabSelected}
+                onChange={(e) => {
+                  updateTabSelected(e);
+                }}
                 items={[
                   {
                     key: "1",

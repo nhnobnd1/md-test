@@ -227,7 +227,9 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
   }, []);
   const onFinish = (values: any) => {
     const tags: string[] = values.tags;
-
+    const findCustomer = customersOptions.find(
+      (item) => item.value === values.to
+    );
     const dataCreate: any = {
       fromEmail: {
         email: fromEmail?.supportEmail,
@@ -239,7 +241,8 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
         : undefined,
       agentEmail: values.assignee ? values.assignee.split(",")[1] : undefined,
       toEmails: [{ email: values.to, name: values.to.split("@")[0] }],
-      customerObjectId: toEmail.id,
+      customerObjectId: findCustomer ? findCustomer?.obj._id : undefined,
+
       ccEmails: enableCC ? values?.CC : [],
       bccEmails: enableCC ? values?.BCC : [],
       subject: values.subject,

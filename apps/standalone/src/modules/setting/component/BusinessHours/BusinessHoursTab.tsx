@@ -3,6 +3,7 @@ import { Card, Radio, Typography } from "antd";
 import { Form } from "src/components/UI/Form";
 import BoxSelectAutoReply from "src/modules/setting/component/BoxSelectAutoReply/BoxSelectAutoReply";
 import CustomTimeWorkingCard from "src/modules/setting/component/BusinessHours/CustomTimeWorkingCard";
+import useBusinessHour from "src/modules/setting/store/Businesshour";
 
 interface BusinessHoursTabProps {
   disabled?: boolean;
@@ -13,6 +14,7 @@ const BusinessHoursTab = ({
   disabled,
   dataAutoReply,
 }: BusinessHoursTabProps) => {
+  const updateTabSelected = useBusinessHour((state) => state.updateTabSelected);
   return (
     <div className="p-2">
       <div className="mb-2 mt-2 ml-4">
@@ -51,7 +53,21 @@ const BusinessHoursTab = ({
         label="Auto-Reply"
         className="mb-0 mt-4"
         hidden={!!disabled}
-        help="Choose your auto-reply outside of business hours. You can set up new message in the “Auto-Reply” Tab"
+        help={
+          <span style={{ fontSize: 13, opacity: 0.6 }}>
+            Choose your auto-reply outside of business hours. You can set up new
+            message in the{" "}
+            <span
+              onClick={() => {
+                updateTabSelected("3");
+              }}
+              className="cursor-pointer hover:underline text-blue-500 opacity-1"
+            >
+              Auto-Reply
+            </span>{" "}
+            Tab
+          </span>
+        }
       >
         <BoxSelectAutoReply dataAutoReply={dataAutoReply} />
       </Form.Item>

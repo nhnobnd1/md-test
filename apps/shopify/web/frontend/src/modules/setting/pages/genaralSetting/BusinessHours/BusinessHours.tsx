@@ -280,10 +280,18 @@ const BusinessHours = (props: BusinessHoursProps) => {
                                     dataAutoReply={dataAutoReply}
                                   />
                                 </FormItem>
-                                <span>
+                                <span style={{ fontSize: 13, opacity: 0.6 }}>
                                   Choose your auto-reply outside of business
-                                  hours. You can set up new message in the
-                                  “Auto-Reply” Tab
+                                  hours. You can set up new message in the{" "}
+                                  <span
+                                    onClick={() => {
+                                      setSelected(2);
+                                    }}
+                                    className="cursor-pointer hover:underline text-blue-500 opacity-1"
+                                  >
+                                    Auto-Reply
+                                  </span>{" "}
+                                  Tab
                                 </span>
                               </div>
                             </div>
