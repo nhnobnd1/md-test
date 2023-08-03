@@ -18,7 +18,6 @@ export const Rating: FC<RatingProps> = () => {
   const ratingState = useRating((state) => state);
   const message = useMessage();
   const { t } = useTranslation();
-
   const {
     state: countDown,
     initCountdown,
@@ -37,12 +36,14 @@ export const Rating: FC<RatingProps> = () => {
     queryFn: () => getMerchantRatingApi(),
     retry: 3,
     onSuccess: (data) => {
+      ratingState.changeFetching(true);
+
       if (data.star) {
         return;
       }
-
       initCountdown("rating");
     },
+    enabled: !ratingState.isFetch,
 
     onError: () => {
       message.error(t("messages:error.something_went_wrong"));
@@ -94,10 +95,7 @@ export const Rating: FC<RatingProps> = () => {
         {isFetching ? (
           <></>
         ) : (
-          <Form
-            initialValues={{ comment: dataMerchantRating?.comment }}
-            onFinish={handleSubmit}
-          >
+          <Form initialValues={{ comment: "" }} onFinish={handleSubmit}>
             <Space direction="vertical" className="w-full">
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">

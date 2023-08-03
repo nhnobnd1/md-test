@@ -519,7 +519,7 @@ const TrashTicket: FC<TrashTicketProps> = () => {
                 </IndexTable>
                 <div>
                   {meta?.totalCount ? (
-                    <div className="flex items-center justify-center py-8">
+                    <div className="flex items-center justify-center pt-2">
                       {filterData.page &&
                         filterData.limit &&
                         meta?.totalCount && (

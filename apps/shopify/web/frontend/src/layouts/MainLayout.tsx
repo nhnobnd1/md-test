@@ -4,7 +4,7 @@ import { TabDescriptor } from "@shopify/polaris/build/ts/latest/src/components/T
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import "src/assets/styles/layouts/main-layout.scss";
-import { Rating } from "src/components/Rating/Rating";
+import Rating from "src/components/Rating/Rating";
 import useToggleGlobal from "src/hooks/useToggleGlobal";
 import {
   NavigationItems,

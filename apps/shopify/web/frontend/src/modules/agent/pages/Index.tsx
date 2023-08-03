@@ -216,16 +216,6 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
           </div>
         )}
         <LegacyCard>
-          {/* <div className="flex-1 px-4 pt-4 pb-2">
-          <Filters
-            queryValue={filterData.query}
-            onQueryChange={handleFiltersQueryChange}
-            onQueryClear={handleQueryValueRemove}
-            queryPlaceholder="Search"
-            filters={[]}
-            onClearAll={resetFilterData}
-          ></Filters>
-        </div> */}
           {loadingList && <Loading />}
           <IndexTable
             resourceName={{ singular: "agent", plural: "agents" }}
@@ -327,7 +317,7 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
             ))}
           </IndexTable>
           {meta?.totalCount ? (
-            <div className="flex items-center justify-center py-8">
+            <div className="flex items-center justify-center py-3">
               {filterData.page && filterData.limit && meta?.totalCount && (
                 <Pagination
                   total={meta.totalCount}

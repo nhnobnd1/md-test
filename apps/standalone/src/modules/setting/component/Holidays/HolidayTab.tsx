@@ -139,7 +139,7 @@ const HolidayTab = ({
   return (
     <div>
       <div className="my-2 w-full flex justify-end">
-        <ButtonAdd onClick={handleOpen}>Add new</ButtonAdd>
+        <ButtonAdd onClick={handleOpen}>Add holiday</ButtonAdd>
       </div>
       <ModalHoliday
         title="New holiday"

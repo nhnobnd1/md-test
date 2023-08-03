@@ -178,6 +178,8 @@ export const Pagination = ({
       hasPrevious={props.hasPrevious ?? page > 1}
       hasNext={props.hasNext ?? page < pageAmount}
       onNext={handleNext}
+      previousTooltip="Previous"
+      nextTooltip="Next"
     />
   );
 };

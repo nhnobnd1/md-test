@@ -11,7 +11,7 @@ import {
   Tooltip,
 } from "@shopify/polaris";
 import { CancelMinor } from "@shopify/polaris-icons";
-import { FC, useEffect, useRef } from "react";
+import { FC, memo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "react-query";
 import StarsRating from "react-star-rate";
@@ -19,14 +19,12 @@ import Form from "src/components/Form";
 import IconUI from "src/components/UI/Icon";
 import { getMerchantRatingApi, postMerchantRatingApi } from "src/helper/api";
 
-import { FormikProps } from "formik";
 import FormItem from "src/components/Form/Item";
 import useRating from "src/store/useRating";
 interface RatingProps {}
 
-export const Rating: FC<RatingProps> = () => {
+const Rating: FC<RatingProps> = () => {
   const ratingState = useRating((state) => state);
-  const formRef = useRef<FormikProps<any>>(null);
   const { show } = useToast();
   const { t } = useTranslation();
 
@@ -44,13 +42,14 @@ export const Rating: FC<RatingProps> = () => {
     queryFn: () => getMerchantRatingApi(),
     retry: 3,
     onSuccess: (data) => {
+      ratingState.changeFetching(true);
       if (data.star) {
         return;
       }
 
       initCountdown("rating");
     },
-
+    enabled: !ratingState.isFetch,
     onError: () => {
       show(t("messages:error.something_went_wrong"), { isError: true });
     },
@@ -99,8 +98,7 @@ export const Rating: FC<RatingProps> = () => {
       }`}
     >
       <Form
-        innerRef={formRef}
-        initialValues={{ comment: ratingState.comment }}
+        initialValues={{ comment: "" }}
         onSubmit={handleSubmit}
         // validationSchema={validateForm}
         enableReinitialize
@@ -192,3 +190,4 @@ export const Rating: FC<RatingProps> = () => {
     </div>
   );
 };
+export default memo(Rating);

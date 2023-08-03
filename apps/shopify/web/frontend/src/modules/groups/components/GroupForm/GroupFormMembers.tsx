@@ -355,7 +355,7 @@ const GroupFormMembers = ({ id, value, onChange }: GroupFormMembersProps) => {
           </IndexTable.Row>
         ))}
       </IndexTable>
-      <div className="flex items-center justify-center py-8">
+      <div className="flex items-center justify-center py-3">
         {filterData.page && filterData.limit && !disablePagination && (
           <Pagination
             total={isDetail && meta ? meta.totalCount : groupMembers.length}

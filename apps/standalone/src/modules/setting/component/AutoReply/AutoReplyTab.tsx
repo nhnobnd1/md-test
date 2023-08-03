@@ -163,10 +163,10 @@ const AutoReplyTab = ({
   return (
     <div>
       <div className="w-full flex justify-end py-2">
-        <ButtonAdd onClick={handleOpen}>Add new</ButtonAdd>
+        <ButtonAdd onClick={handleOpen}>Add Auto-reply</ButtonAdd>
       </div>
       <ModalAutoReply
-        title="New Auto-Reply"
+        title="New Auto-reply"
         open={openModalAutoReply}
         onClose={handleCloseModal}
         dataForm={dataForm}

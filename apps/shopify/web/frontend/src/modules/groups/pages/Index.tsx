@@ -322,7 +322,7 @@ const GroupsIndexPage: PageComponent<GroupsIndexPageProps> = () => {
             ))}
           </IndexTable>
           {meta?.totalCount ? (
-            <div className="flex items-center justify-center py-8">
+            <div className="flex items-center justify-center py-3">
               {filterData.page && filterData.limit && meta?.totalCount && (
                 <Pagination
                   total={meta.totalCount}

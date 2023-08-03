@@ -91,7 +91,7 @@ export default function TagIndexPage() {
         </IndexTable.Cell>
         <IndexTable.Cell className="py-3">
           <div
-            className="hover:underline hover:cursor-pointer max-w-[100px] text-right"
+            className="hover:underline hover:cursor-pointer max-w-[100px] "
             onClick={() => navigateToViewTicket(name)}
           >
             {ticketsCount}
@@ -259,21 +259,21 @@ export default function TagIndexPage() {
           >
             {rowMarkup}
           </IndexTable>
+          {result && result.metadata.totalCount ? (
+            <div className="flex items-center justify-center py-3">
+              <Pagination
+                total={result ? result.metadata.totalCount : 1}
+                pageSize={filterData.limit ?? 0}
+                currentPage={filterData.page ?? 1}
+                onChangePage={(page) =>
+                  setFilterData((val) => ({ ...val, page }))
+                }
+                previousTooltip={"Previous"}
+                nextTooltip={"Next"}
+              />
+            </div>
+          ) : null}
         </LegacyCard>
-        {result && result.metadata.totalCount ? (
-          <div className="flex items-center justify-center mt-4">
-            <Pagination
-              total={result ? result.metadata.totalCount : 1}
-              pageSize={filterData.limit ?? 0}
-              currentPage={filterData.page ?? 1}
-              onChangePage={(page) =>
-                setFilterData((val) => ({ ...val, page }))
-              }
-              previousTooltip={"Previous"}
-              nextTooltip={"Next"}
-            />
-          </div>
-        ) : null}
       </Page>
     </>
   );

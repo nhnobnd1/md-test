@@ -1,5 +1,6 @@
 import { AutoReply, Holidays } from "@moose-desk/repo";
 import {
+  Button,
   EmptySearchResult,
   IndexTable,
   LegacyCard,
@@ -142,7 +143,7 @@ const HolidayTab = ({
   );
   const [openModalHoliday, setOpenModalHoliday] = useState(false);
 
-  const handleOnpen = useCallback(() => {
+  const handleOpen = useCallback(() => {
     setOpenModalHoliday(true);
   }, []);
   const handleCloseModal = useCallback(() => {
@@ -171,13 +172,18 @@ const HolidayTab = ({
   return (
     <div className="p-2 mt-2">
       <ModalHoliday
-        title="Add a holiday"
+        title="New holiday"
         open={openModalHoliday}
         onClose={handleCloseModal}
         dataForm={dataForm}
         onChange={handleUpdateValue}
         dataAutoReply={dataAutoReply}
       />
+      <div className="w-full flex justify-end my-2">
+        <Button onClick={handleOpen} primary>
+          + Add a holiday...
+        </Button>
+      </div>
       {valueListHolidays.length ? (
         <div>
           <ModalDelete
@@ -225,7 +231,6 @@ const HolidayTab = ({
           </div>
         </div>
       ) : null}
-      <Link onClick={handleOnpen}>Add a holiday...</Link>
     </div>
   );
 };

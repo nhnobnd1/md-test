@@ -200,23 +200,23 @@ const ViewTicket: FC<ViewTicketProps> = () => {
               ))}
             </IndexTable>
           </div>
+          {meta?.totalCount
+            ? meta && (
+                <div className="flex items-center justify-center py-3">
+                  <Pagination
+                    currentPage={filterData.page ?? 1}
+                    total={meta?.totalCount}
+                    pageSize={filterData.limit ?? 10}
+                    onChangePage={(page) =>
+                      setFilterData((val) => ({ ...val, page }))
+                    }
+                    previousTooltip={"Previous"}
+                    nextTooltip={"Next"}
+                  />
+                </div>
+              )
+            : null}
         </LegacyCard>
-        {meta?.totalCount
-          ? meta && (
-              <div className="flex items-center justify-center mt-4">
-                <Pagination
-                  currentPage={filterData.page ?? 1}
-                  total={meta?.totalCount}
-                  pageSize={filterData.limit ?? 10}
-                  onChangePage={(page) =>
-                    setFilterData((val) => ({ ...val, page }))
-                  }
-                  previousTooltip={"Previous"}
-                  nextTooltip={"Next"}
-                />
-              </div>
-            )
-          : null}
       </Page>
       <ModalDelete
         title="Are you sure that you want to permanently remove all?"

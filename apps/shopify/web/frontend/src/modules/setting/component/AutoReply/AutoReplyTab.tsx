@@ -1,6 +1,7 @@
 import { AutoReply, Holidays } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
+  Button,
   ButtonGroup,
   EmptySearchResult,
   IndexTable,
@@ -203,12 +204,17 @@ const AutoReplyTab = ({
   return (
     <div className="p-2 mt-2">
       <ModalAutoReply
-        title="Add an Auto-Reply"
+        title="New Auto-reply"
         open={openModalAutoReply}
         onClose={handleCloseModal}
         dataForm={dataForm}
         onChange={handleUpdateValue}
       />
+      <div className="w-full flex justify-end my-2">
+        <Button onClick={handleOpen} primary>
+          + Add Auto-reply
+        </Button>
+      </div>
       {valueListAutoReplys.length ? (
         <div>
           <ModalDelete
@@ -252,11 +258,6 @@ const AutoReplyTab = ({
           </div>
         </div>
       ) : null}
-      <>
-        <div>
-          <Link onClick={handleOpen}>Add an auto-reply...</Link>
-        </div>
-      </>
     </div>
   );
 };
