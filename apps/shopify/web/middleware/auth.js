@@ -39,7 +39,6 @@ export default function applyAuthMiddleware(
 					companyName: null,
 					timezone: shop.timezone,
 				};
-				console.log('vaoday');
 				await registerUser(payload);
 
 				res.cookie(
