@@ -78,7 +78,9 @@ export const ViewWidget = (props: ViewWidgetProps) => {
         style={{ backgroundColor: data.headerBackgroundColor }}
       >
         {data?.logo && (
-          <img className="logo" src={data?.logo} alt="logo-widget" />
+          <div className="logo-container">
+            <img className="logo" src={data?.logo} alt="logo-widget" />
+          </div>
         )}
 
         <h1

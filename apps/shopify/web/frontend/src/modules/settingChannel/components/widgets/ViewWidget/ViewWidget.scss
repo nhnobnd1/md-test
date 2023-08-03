@@ -16,16 +16,24 @@
     display: flex;
     justify-content: space-between;
     flex-direction: column;
-    .logo {
-      height: 32px;
-      width: fit-content;
+    .logo-container {
+      max-height: 32px;
+      width: max-content;
+      overflow: hidden;
+      .logo {
+        max-height: 32px;
+        width: initial;
+        display: block;
+        margin: 0 auto;
+        object-fit: contain;
+      }
     }
+
     .title {
       @apply whitespace-nowrap overflow-hidden truncate font-semibold;
       font-size: 20px;
       max-width: 350px;
       line-height: initial;
-
     }
   }
 
