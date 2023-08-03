@@ -181,7 +181,7 @@ const HolidayTab = ({
       />
       <div className="w-full flex justify-end my-2">
         <Button onClick={handleOpen} primary>
-          + Add a holiday...
+          + Add holiday...
         </Button>
       </div>
       {valueListHolidays.length ? (
