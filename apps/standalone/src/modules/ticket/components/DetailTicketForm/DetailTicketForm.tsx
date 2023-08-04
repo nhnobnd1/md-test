@@ -31,7 +31,7 @@ import {
   Upload,
 } from "antd";
 import moment from "moment";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import useToggleGlobal from "@moose-desk/core/hooks/useToggleGlobal";
@@ -129,6 +129,7 @@ const DetailTicketForm = () => {
   const { state: send, on: openSend, off: closeSend } = useToggle();
   const [isForward, setIsForward] = useState(false);
   const [enableCC, setEnableCC] = useState(true);
+  const endRef = useRef<any>(null);
   const { data: dataTicket, isLoading: processing } = useQuery({
     queryKey: ["getTicket", id],
     queryFn: () => getOneTicket(id as string),
@@ -641,6 +642,9 @@ const DetailTicketForm = () => {
       );
 
       openSend();
+      setTimeout(() => {
+        endRef.current.scrollIntoView();
+      }, 0);
     }
   }, [chatItemForward, clickForward]);
 
@@ -718,7 +722,7 @@ Hit Send to see what your message will look like
     );
     openSend();
     setTimeout(() => {
-      window.scrollTo(0, document.body.scrollHeight);
+      endRef.current.scrollIntoView();
     }, 0);
   };
   const handleReply = () => {
@@ -728,7 +732,7 @@ Hit Send to see what your message will look like
     openSend();
     setIsForward(false);
     setTimeout(() => {
-      window.scrollTo(0, document.body.scrollHeight);
+      endRef.current.scrollIntoView();
     }, 0);
   };
   return (
@@ -1322,6 +1326,7 @@ Hit Send to see what your message will look like
           </Form>
         </div>
       )}
+      <div ref={endRef}></div>
     </>
   );
 };

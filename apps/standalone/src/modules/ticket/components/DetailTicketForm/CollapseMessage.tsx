@@ -22,9 +22,6 @@ export const CollapseMessage: FC<CollapseMessageProps> = ({ listChat }) => {
   const handleForward = (e: any, item: ChatItem) => {
     e.stopPropagation();
     updateChatItem(item);
-    setTimeout(() => {
-      window.scrollTo(0, document.body.scrollHeight);
-    }, 0);
   };
   return listChat.length > 4 ? (
     <Collapse
