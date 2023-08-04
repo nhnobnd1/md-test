@@ -202,7 +202,7 @@ const AutoReplyTab = ({
   }, [value]);
 
   return (
-    <div className="p-2 mt-2">
+    <div className="p-4">
       <ModalAutoReply
         title="New Auto-reply"
         open={openModalAutoReply}

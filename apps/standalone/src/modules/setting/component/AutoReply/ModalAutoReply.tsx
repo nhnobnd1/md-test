@@ -43,7 +43,7 @@ const ModalAutoReply = ({
   );
 
   return (
-    <div className="mt-4" style={{ width: "1000px" }}>
+    <div style={{ width: "1000px" }}>
       <MDModalUI
         {...props}
         open={open}

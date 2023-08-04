@@ -170,7 +170,7 @@ const HolidayTab = ({
     setValueListHolidays(value?.length ? [...value] : []);
   }, [value]);
   return (
-    <div className="p-2 mt-2">
+    <div className="p-4">
       <ModalHoliday
         title="New holiday"
         open={openModalHoliday}
@@ -181,7 +181,7 @@ const HolidayTab = ({
       />
       <div className="w-full flex justify-end my-2">
         <Button onClick={handleOpen} primary>
-          + Add holiday...
+          + Add holiday
         </Button>
       </div>
       {valueListHolidays.length ? (

@@ -215,92 +215,88 @@ const BusinessHours = (props: BusinessHoursProps) => {
                 onValuesChange={handleChangeValues}
                 enableReinitialize
               >
-                <LegacyCard sectioned>
-                  <Layout>
-                    <Layout.Section>
-                      <div className="flex items-center content-between">
-                        <Text as="span" variant="bodyMd">
-                          Time zone:
-                        </Text>
-                        <div className="w-3/6 ml-4">
-                          <FormItem name="timezone">
-                            <SelectTimeZone />
-                          </FormItem>
-                        </div>
+                <Layout>
+                  <Layout.Section>
+                    <div className="flex items-center content-between">
+                      <Text as="span" variant="bodyMd">
+                        Time zone:
+                      </Text>
+                      <div className="w-3/6 ml-4">
+                        <FormItem name="timezone">
+                          <SelectTimeZone />
+                        </FormItem>
                       </div>
-                    </Layout.Section>
-                    <Layout.Section>
-                      <LegacyCard>
-                        <Tabs
-                          tabs={tabs}
-                          selected={selected}
-                          onSelect={handleTabChange}
-                        >
-                          <div className="tabs">
-                            {selected === 0 ? (
-                              <BusinessHoursTab disabled={disabled} />
-                            ) : null}
-                            <div
-                              className={selected === 1 ? undefined : "hidden"}
-                            >
-                              <FormItem name="holidays">
-                                <HolidayTab dataAutoReply={dataAutoReply} />
-                              </FormItem>
+                    </div>
+                  </Layout.Section>
+                  <Layout.Section>
+                    <LegacyCard>
+                      <Tabs
+                        tabs={tabs}
+                        selected={selected}
+                        onSelect={handleTabChange}
+                      >
+                        <div className="tabs">
+                          {selected === 0 ? (
+                            <BusinessHoursTab disabled={disabled} />
+                          ) : null}
+                          <div
+                            className={selected === 1 ? undefined : "hidden"}
+                          >
+                            <FormItem name="holidays">
+                              <HolidayTab dataAutoReply={dataAutoReply} />
+                            </FormItem>
+                          </div>
+                          <div
+                            className={selected === 2 ? undefined : "hidden"}
+                          >
+                            <FormItem name="autoReply">
+                              <AutoReplyTab
+                                dataHolidays={dataHolidays}
+                                dataBusinessHoursAutoReplyCode={
+                                  dataBusinessHoursAutoReplyCode
+                                }
+                              />
+                            </FormItem>
+                          </div>
+                        </div>
+                      </Tabs>
+                      <div
+                        className={!disabled && selected === 0 ? "" : "hidden"}
+                      >
+                        <LegacyCard.Section>
+                          <div className="flex items-start content-between">
+                            <div className="mr-4 w-[100px] mt-2">
+                              <Text as="span" variant="bodyMd">
+                                Auto-Reply
+                              </Text>
                             </div>
-                            <div
-                              className={selected === 2 ? undefined : "hidden"}
-                            >
-                              <FormItem name="autoReply">
-                                <AutoReplyTab
-                                  dataHolidays={dataHolidays}
-                                  dataBusinessHoursAutoReplyCode={
-                                    dataBusinessHoursAutoReplyCode
-                                  }
+                            <div className="w-full">
+                              <FormItem name="businessHoursAutoReplyCode">
+                                <BoxSelectAutoReply
+                                  placeholder=""
+                                  dataAutoReply={dataAutoReply}
                                 />
                               </FormItem>
+                              <span style={{ fontSize: 13, opacity: 0.6 }}>
+                                Choose your auto-reply outside of business
+                                hours. You can set up new message in the{" "}
+                                <span
+                                  onClick={() => {
+                                    setSelected(2);
+                                  }}
+                                  className="cursor-pointer hover:underline text-blue-500 opacity-1"
+                                >
+                                  Auto-Reply
+                                </span>{" "}
+                                Tab
+                              </span>
                             </div>
                           </div>
-                        </Tabs>
-                        <div
-                          className={
-                            !disabled && selected === 0 ? "" : "hidden"
-                          }
-                        >
-                          <LegacyCard.Section>
-                            <div className="flex items-start content-between">
-                              <div className="mr-4 w-[100px] mt-2">
-                                <Text as="span" variant="bodyMd">
-                                  Auto-Reply
-                                </Text>
-                              </div>
-                              <div className="w-full">
-                                <FormItem name="businessHoursAutoReplyCode">
-                                  <BoxSelectAutoReply
-                                    placeholder=""
-                                    dataAutoReply={dataAutoReply}
-                                  />
-                                </FormItem>
-                                <span style={{ fontSize: 13, opacity: 0.6 }}>
-                                  Choose your auto-reply outside of business
-                                  hours. You can set up new message in the{" "}
-                                  <span
-                                    onClick={() => {
-                                      setSelected(2);
-                                    }}
-                                    className="cursor-pointer hover:underline text-blue-500 opacity-1"
-                                  >
-                                    Auto-Reply
-                                  </span>{" "}
-                                  Tab
-                                </span>
-                              </div>
-                            </div>
-                          </LegacyCard.Section>
-                        </div>
-                      </LegacyCard>
-                    </Layout.Section>
-                  </Layout>
-                </LegacyCard>
+                        </LegacyCard.Section>
+                      </div>
+                    </LegacyCard>
+                  </Layout.Section>
+                </Layout>
               </Form>
             </Layout.Section>
           </Layout>
