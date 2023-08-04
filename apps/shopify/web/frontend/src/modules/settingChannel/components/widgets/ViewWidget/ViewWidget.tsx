@@ -203,7 +203,9 @@ export const ViewWidget = (props: ViewWidgetProps) => {
                 color: `${data?.textButtonAppearanceColor}`,
               }}
             />
-            <div className="max-w-[150px] truncate">{data.widgetHeader}</div>
+            <div className="max-w-[150px] truncate md-font-customize-widget">
+              {data.widgetHeader}
+            </div>
           </button>
         </div>
       </div>

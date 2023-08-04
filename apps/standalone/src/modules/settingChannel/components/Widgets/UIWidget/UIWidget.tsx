@@ -326,6 +326,7 @@ export const UIWidget: FC<UIWidgetProps> = () => {
                     display: "inline-block",
                     height: 20,
                   }}
+                  className="md-font-customize-widget"
                 >
                   {data?.widgetHeader}
                 </span>
