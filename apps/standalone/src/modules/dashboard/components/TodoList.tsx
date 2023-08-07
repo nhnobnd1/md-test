@@ -1,7 +1,7 @@
 import { createdDatetimeFormat, Link } from "@moose-desk/core";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import { Ticket } from "@moose-desk/repo";
-import { Button } from "antd";
+import { Button, Empty } from "antd";
 import classNames from "classnames";
 import { useState } from "react";
 import { useQuery } from "react-query";
@@ -73,6 +73,14 @@ export const TodoList = () => {
     <div className={styles.wrapTodoList}>
       {isLoading ? (
         <MDSkeleton lines={15} />
+      ) : todoList?.data?.data?.length === 0 ? (
+        <div>
+          <Empty
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            description="Sorry!, There is no records matched with your search
+                  criteria."
+          />
+        </div>
       ) : (
         <Table
           dataSource={todoList?.data?.data}
@@ -81,6 +89,9 @@ export const TodoList = () => {
           scroll={{ x: 500 }}
           loading={isLoading}
           rowKey={(record) => record._id}
+          locale={{
+            emptyText: null,
+          }}
         />
       )}
       <Button

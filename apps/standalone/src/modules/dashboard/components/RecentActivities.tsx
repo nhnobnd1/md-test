@@ -1,5 +1,5 @@
 import { Activities } from "@moose-desk/repo/dashboard/Dashboard";
-import { Button } from "antd";
+import { Button, Empty } from "antd";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
@@ -47,6 +47,14 @@ export const RecentActivities = () => {
     <div className={styles.wrapActivities}>
       {isLoading ? (
         <MDSkeleton lines={15} />
+      ) : totalItem === 0 ? (
+        <div>
+          <Empty
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            description="Sorry!, There is no records matched with your search
+                  criteria."
+          />
+        </div>
       ) : (
         dataActivities?.map((activity: Activities, i: number) => {
           // if (dataActivities?.length === i + 1) {
