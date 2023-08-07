@@ -14,9 +14,6 @@ const LIST_HONORIFIC = [
   { label: "--", value: "" },
   { label: "Mr", value: "Mr" },
   { label: "Mrs", value: "Mrs" },
-
-  { label: "Miss", value: "Miss" },
-
   { label: "Ms", value: "Ms" },
 ];
 
