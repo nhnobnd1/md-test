@@ -1,5 +1,5 @@
 import { Activities } from "@moose-desk/repo/dashboard/Dashboard";
-import { Button, SkeletonBodyText } from "@shopify/polaris";
+import { Button, EmptySearchResult, SkeletonBodyText } from "@shopify/polaris";
 import React, { useState } from "react";
 import { useQuery } from "react-query";
 import { getActivities } from "src/modules/dashboard/api/api";
@@ -30,6 +30,12 @@ export const RecentActivities = React.memo(() => {
     <div className={styles.wrapActivities}>
       {isLoading ? (
         <SkeletonBodyText lines={15} />
+      ) : totalItem === 0 ? (
+        <EmptySearchResult
+          title={"Sorry! There is no records matched with your search criteria"}
+          description={"Try changing the filters or search term"}
+          withIllustration
+        />
       ) : (
         dataActivities?.map((activity: Activities) => (
           <ActivateItem data={activity} key={activity._id} />
