@@ -12,15 +12,13 @@ import {
 import { uniqBy } from "lodash-es";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useQuery } from "react-query";
 import { catchError, map, of } from "rxjs";
 import { MDSearchInput } from "src/components/UI/MDSearchInput";
 import { Table } from "src/components/UI/Table";
 import TableAction from "src/components/UI/Table/TableAction/TableAction";
 import useDeepEffect from "src/hooks/useDeepEffect";
 import useMessage from "src/hooks/useMessage";
-import { SelectList } from "src/modules/ticket/components/TicketForm/SelectList";
-import { getListAgentApi } from "src/modules/ticket/helper/api";
+import { AgentSelect } from "src/modules/ticket/components/TicketForm/AgentSelect";
 import { defaultFilter } from "src/utils/localValue";
 // import PhUserPlusFill from "~icons/ph/user-plus-fill";
 
@@ -38,7 +36,6 @@ const GroupFormMember = memo(
     );
     const { toggle: updateTable } = useToggle();
     const message = useMessage();
-
     const [groupIds, setGroupIds] = useState<string[]>(value ?? []);
     const [filterData, setFilterData] =
       useState<GetMembersGroupRequest>(defaultFilter);
@@ -49,39 +46,9 @@ const GroupFormMember = memo(
       return !!groupId;
     }, [groupId]);
 
-    const { data: dataAgents } = useQuery({
-      queryKey: [
-        "getAgents",
-        {
-          page: 1,
-          limit: 500,
-        },
-      ],
-      queryFn: () =>
-        getListAgentApi({
-          page: 1,
-          limit: 500,
-        }),
-      staleTime: 10000,
-      retry: 1,
-
-      onError: () => {
-        message.error(t("messages:error.get_agent"));
-      },
-    });
-    const agentsOptions = useMemo(() => {
-      if (!dataAgents) return [];
-      return dataAgents.map((item) => ({
-        label: item.lastName.includes("admin")
-          ? `${item.firstName} - ${item.email}`
-          : `${item.firstName} ${item.lastName} - ${item.email}`,
-        value: `${item._id}`,
-        obj: item,
-      }));
-    }, [dataAgents]);
-
     const handleSelectAgent = useCallback(
       (value: string, option: any) => {
+        value = value?.split(",")[0];
         if (!Array.isArray(option) && value) {
           if (isDetail) {
             setGroupIds([...groupIds, value]);
@@ -233,7 +200,7 @@ const GroupFormMember = memo(
           setGroupMembersTable(groupMembers);
         }
       }
-    }, [filterData]);
+    }, [filterData, groupIds]);
 
     useEffect(() => {
       value && setGroupIds(value);
@@ -243,12 +210,11 @@ const GroupFormMember = memo(
       <div>
         <div className="flex gap-3 xs:flex-col md:flex-row">
           <div className="mb-5  flex-1">
-            <SelectList
-              showSearch
-              className="w-full"
+            <AgentSelect
               placeholder="+ Add member"
-              options={agentsOptions}
               onChange={handleSelectAgent}
+              className="w-full"
+              filter={false}
             />
           </div>
           <div className="mb-5 flex-1">

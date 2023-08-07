@@ -24,11 +24,11 @@ import useDeepEffect from "src/hooks/useDeepEffect";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { ModalCustomer } from "src/modules/ticket/components/ModalCustomer";
+import { AgentSelect } from "src/modules/ticket/components/TicketForm/AgentSelect";
 import { AutoSelect } from "src/modules/ticket/components/TicketForm/AutoSelect";
 import { SelectList } from "src/modules/ticket/components/TicketForm/SelectList";
 import { SelectTag } from "src/modules/ticket/components/TicketForm/SelectTag";
 import {
-  getListAgentApi,
   getListCustomerApi,
   getListEmailIntegration,
   getTagsTicket,
@@ -121,40 +121,6 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
       };
     });
   }, [dataEmailIntegration]);
-
-  const { data: dataAgents } = useQuery({
-    queryKey: [
-      "getAgents",
-      {
-        page: 1,
-        limit: 500,
-      },
-    ],
-    queryFn: () =>
-      getListAgentApi({
-        page: 1,
-        limit: 500,
-      }),
-    staleTime: 10000,
-    retry: 1,
-
-    onError: () => {
-      message.error(t("messages:error.get_agent"));
-    },
-  });
-
-  const agentsOptions = useMemo(() => {
-    if (!dataAgents) return [];
-    return dataAgents
-      .filter((item) => item.isActive && item.emailConfirmed)
-      .map((item) => ({
-        label: item.lastName.includes("admin")
-          ? `${item.firstName} - ${item.email}`
-          : `${item.firstName} ${item.lastName} - ${item.email}`,
-        value: `${item._id},${item.email}`,
-        obj: item,
-      }));
-  }, [dataAgents]);
 
   const { data: dataTags } = useQuery({
     queryKey: [
@@ -537,7 +503,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
             <SelectTag placeholder="Add tags" options={tagsOptions} />
           </Form.Item>
           <Form.Item label="Assignee" name="assignee">
-            <SelectList placeholder="Search agents" options={agentsOptions} />
+            <AgentSelect />
           </Form.Item>
           <Form.Item label="Priority" name="priority">
             <Select size="large" options={priorityOptions}></Select>

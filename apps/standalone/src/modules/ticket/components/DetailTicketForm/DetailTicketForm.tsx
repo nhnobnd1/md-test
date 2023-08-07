@@ -10,7 +10,6 @@ import {
   useUnMount,
 } from "@moose-desk/core";
 import {
-  Agent,
   AttachFile,
   Conversation,
   CreateReplyTicketRequest,
@@ -22,14 +21,7 @@ import {
   priorityOptions,
   statusOptions,
 } from "@moose-desk/repo";
-import {
-  Select as AntSelect,
-  Card,
-  Divider,
-  Skeleton,
-  Tooltip,
-  Upload,
-} from "antd";
+import { Card, Divider, Skeleton, Tooltip, Upload } from "antd";
 import moment from "moment";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
@@ -53,11 +45,11 @@ import useMessage from "src/hooks/useMessage";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import useViewport from "src/hooks/useViewport";
 import { CollapseMessage } from "src/modules/ticket/components/DetailTicketForm/CollapseMessage";
+import { AgentSelect } from "src/modules/ticket/components/TicketForm/AgentSelect";
 import { AutoSelect } from "src/modules/ticket/components/TicketForm/AutoSelect";
 import { SelectTag } from "src/modules/ticket/components/TicketForm/SelectTag";
 import {
   emailIntegrationApi,
-  getListAgentApi,
   getListConversation,
   getListCustomerApi,
   getListEmailIntegration,
@@ -198,7 +190,6 @@ const DetailTicketForm = () => {
   }, [dataTags]);
   const { visible, setVisible } = useToggleGlobal();
   const { isMobile: isTablet } = useViewport(MediaScreen.LG);
-  const { isMobile } = useViewport();
   // const stateContent = useDetailTicketContent((state) => state);
   const contentCreate = useFormCreateTicket((state) => state.content);
   const chatItemForward = useForwardTicket((state) => state.chatItem);
@@ -232,31 +223,6 @@ const DetailTicketForm = () => {
     on: openStatusModal,
     off: closeStatusModal,
   } = useToggle();
-  const { data: dataAgents } = useQuery({
-    queryKey: [
-      "getAgents",
-      {
-        page: 1,
-        limit: 500,
-      },
-    ],
-    queryFn: () =>
-      getListAgentApi({
-        page: 1,
-        limit: 500,
-      }),
-    staleTime: 10000,
-    retry: 1,
-
-    onError: () => {
-      message.error(t("messages:error.get_agent"));
-    },
-  });
-
-  const agents = useMemo(() => {
-    if (!dataAgents) return [];
-    return dataAgents.filter((item) => item.isActive && item.emailConfirmed);
-  }, [dataAgents]);
 
   const { state: loadingApi, startLoading, stopLoading } = useLoading();
 
@@ -372,7 +338,9 @@ const DetailTicketForm = () => {
     if (conversationList.length === 0) {
       return {
         status: ticket?.status,
-        assignee: ticket?.agentObjectId,
+        assignee: ticket?.agentObjectId
+          ? `${ticket?.agentObjectId},${ticket?.agentEmail}`
+          : null,
         priority: ticket?.priority,
         to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
         tags: ticket?.tags,
@@ -391,7 +359,9 @@ const DetailTicketForm = () => {
     } else {
       return {
         status: ticket?.status,
-        assignee: ticket?.agentObjectId,
+        assignee: ticket?.agentObjectId
+          ? `${ticket?.agentObjectId},${ticket?.agentEmail}`
+          : null,
         priority: ticket?.priority,
         to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
         tags: ticket?.tags,
@@ -413,17 +383,6 @@ const DetailTicketForm = () => {
       };
     }
   }, [ticket, primaryEmail, conversationList, dataEmailIntegration]);
-  const agentsOptions = useMemo(() => {
-    const mapping = agents.map((item: Agent) => {
-      return {
-        value: item._id,
-        label: item.lastName.includes("admin")
-          ? `${item.firstName} - ${item.email}`
-          : `${item.firstName} ${item.lastName} - ${item.email}`,
-      };
-    });
-    return mapping;
-  }, [agents]);
 
   const { run: postReplyApi } = useJob((payload: CreateReplyTicketRequest) => {
     return TicketRepository()
@@ -577,15 +536,12 @@ const DetailTicketForm = () => {
   const handleSaveTicket = () => {
     const values = form.getFieldsValue();
     startLoading();
-
     updateTicketApi({
       priority: values.priority,
       status: values.status,
       tags: values.tags,
-      agentObjectId: values.assignee
-        ? values.assignee.split(",")[0]
-        : undefined,
-      agentEmail: values.assignee ? values.assignee.split(",")[1] : undefined,
+      agentObjectId: values.assignee ? values.assignee.split(",")[0] : "",
+      agentEmail: values.assignee ? values.assignee.split(",")[1] : "",
       ids: [ticket?._id as string],
     });
   };
@@ -822,12 +778,7 @@ Hit Send to see what your message will look like
                   <Select className="w-full" options={priorityOptions} />
                 </Form.Item>
                 <Form.Item label="Assignee" name="assignee">
-                  <AntSelect
-                    placeholder="Search agents"
-                    className="w-full"
-                    options={agentsOptions}
-                    size={isTablet ? "middle" : "large"}
-                  ></AntSelect>
+                  <AgentSelect placeholder="Search agents" className="w-full" />
                 </Form.Item>
 
                 <Form.Item
@@ -1299,13 +1250,7 @@ Hit Send to see what your message will look like
                   <Select className="w-full" options={priorityOptions} />
                 </Form.Item>
                 <Form.Item label="Assignee" name="assignee">
-                  <AntSelect
-                    placeholder="Search agents"
-                    className="w-full"
-                    options={agentsOptions}
-                    size={isMobile ? "middle" : "large"}
-                    // size="middle"
-                  ></AntSelect>
+                  <AgentSelect placeholder="Search agents" className="w-full" />
                 </Form.Item>
 
                 <Form.Item

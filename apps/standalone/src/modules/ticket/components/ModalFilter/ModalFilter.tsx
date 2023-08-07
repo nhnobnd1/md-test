@@ -1,6 +1,5 @@
 import { useNavigate } from "@moose-desk/core";
 import {
-  Agent,
   Customer,
   Tag,
   priorityOptions,
@@ -12,11 +11,11 @@ import { MDModalUI } from "src/components/MDModalUI";
 import { MDButton } from "src/components/UI/Button/MDButton";
 import { Form } from "src/components/UI/Form";
 import Select from "src/components/UI/Select/Select";
+import { AgentSelect } from "src/modules/ticket/components/TicketForm/AgentSelect";
 
 interface ModalFilterProps extends ModalProps {
   tags: Tag[];
   customers: Customer[];
-  agents: Agent[];
   closeFilterModal: () => void;
   handleResetModal: () => void;
   handleApply: (values: any) => void;
@@ -25,7 +24,6 @@ interface ModalFilterProps extends ModalProps {
 const ModalFilter = ({
   tags,
   customers,
-  agents,
   closeFilterModal,
   handleResetModal,
   handleApply,
@@ -48,17 +46,7 @@ const ModalFilter = ({
     });
     return customersOption;
   }, [customers]);
-  const agentsOptions = useMemo(() => {
-    const mapping = agents.map((item: Agent) => {
-      return {
-        value: item._id,
-        label: item.lastName.includes("admin")
-          ? `${item.firstName} - ${item.email}`
-          : `${item.firstName} ${item.lastName} - ${item.email}`,
-      };
-    });
-    return mapping;
-  }, [agents]);
+
   const handleApplySubmit = () => {
     handleApply(form.getFieldsValue());
   };
@@ -95,7 +83,7 @@ const ModalFilter = ({
       <div>
         <Form layout="vertical" form={form}>
           <Form.Item label="Agent" name="agentObjectId">
-            <Select options={agentsOptions} />
+            <AgentSelect />
           </Form.Item>
           <Form.Item label="Customer" name="customer">
             <Select options={customersOptions} />
