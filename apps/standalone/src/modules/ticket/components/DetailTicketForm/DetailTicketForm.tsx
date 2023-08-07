@@ -423,7 +423,6 @@ const DetailTicketForm = () => {
     if (isSampleEmail) {
       Crisp.chat.open();
       Crisp.message.send("text", trimHtmlCssJs(form.getFieldValue("content")));
-      return;
     }
     startLoading();
     closeSend();
