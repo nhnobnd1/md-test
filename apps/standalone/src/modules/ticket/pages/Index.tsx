@@ -37,7 +37,6 @@ import { Table } from "src/components/UI/Table";
 import TableAction from "src/components/UI/Table/TableAction/TableAction";
 import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
-import useNotification from "src/hooks/useNotification";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { DeleteSelectedModal } from "src/modules/ticket/components/DeleteSelectedModal";
 import ModalFilter from "src/modules/ticket/components/ModalFilter/ModalFilter";
@@ -59,7 +58,6 @@ import {
   getListCustomerApi,
   getListTicketApi,
   getStatisticTicket,
-  getTagsTicket,
   useExportTicket,
 } from "src/modules/ticket/helper/api";
 import useTicketSelected from "src/modules/ticket/store/useTicketSelected";
@@ -101,30 +99,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     return undefined;
   }, [dataTicket]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  const { data: dataTags } = useQuery({
-    queryKey: [
-      "getTagsTicket",
-      {
-        page: 1,
-        limit: 500,
-      },
-    ],
-    queryFn: () =>
-      getTagsTicket({
-        page: 1,
-        limit: 500,
-      }),
-    staleTime: 10000,
-    retry: 1,
-
-    onError: () => {
-      message.error(t("messages:error.get_tag"));
-    },
-  });
-  const tags = useMemo(() => {
-    if (!dataTags) return [];
-    return dataTags;
-  }, [dataTags]);
 
   const { data: dataAgents } = useQuery({
     queryKey: [
@@ -215,7 +189,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const message = useMessage();
-  const notification = useNotification();
   const location = useLocation();
   const [statusFromTrash, setStatusFromTrash] = useState(location.state);
   const exportPdfRef = useRef<any>(null);
@@ -424,7 +397,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     <>
       <ModalFilter
         customers={customers}
-        tags={tags}
         open={filterModal}
         handleResetModal={handleResetModal}
         cancelText="Reset"

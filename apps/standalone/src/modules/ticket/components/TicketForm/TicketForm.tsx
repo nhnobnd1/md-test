@@ -28,10 +28,10 @@ import { AgentSelect } from "src/modules/ticket/components/TicketForm/AgentSelec
 import { AutoSelect } from "src/modules/ticket/components/TicketForm/AutoSelect";
 import { SelectList } from "src/modules/ticket/components/TicketForm/SelectList";
 import { SelectTag } from "src/modules/ticket/components/TicketForm/SelectTag";
+import { TagSelect } from "src/modules/ticket/components/TicketForm/TagSelect";
 import {
   getListCustomerApi,
   getListEmailIntegration,
-  getTagsTicket,
 } from "src/modules/ticket/helper/api";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import useFormCreateTicket from "src/modules/ticket/store/useFormCreateTicket";
@@ -121,36 +121,6 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
       };
     });
   }, [dataEmailIntegration]);
-
-  const { data: dataTags } = useQuery({
-    queryKey: [
-      "getTagsTicket",
-      {
-        page: 1,
-        limit: 500,
-      },
-    ],
-    queryFn: () =>
-      getTagsTicket({
-        page: 1,
-        limit: 500,
-      }),
-    staleTime: 10000,
-    retry: 1,
-
-    onError: () => {
-      message.error(t("messages:error.get_tag"));
-    },
-  });
-
-  const tagsOptions = useMemo(() => {
-    if (!dataTags) return [];
-    return dataTags.map((item) => ({
-      label: item.name,
-      value: item.name,
-      obj: item,
-    }));
-  }, [dataTags]);
 
   const { run: CreateTicket } = useJob((dataSubmit: any) => {
     message.loading.show(t("messages:loading.creating_ticket"));
@@ -500,7 +470,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
           </div>
 
           <Form.Item name="tags" label="Tags">
-            <SelectTag placeholder="Add tags" options={tagsOptions} />
+            <TagSelect />
           </Form.Item>
           <Form.Item label="Assignee" name="assignee">
             <AgentSelect />

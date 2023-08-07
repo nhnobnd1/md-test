@@ -1,10 +1,5 @@
 import { useNavigate } from "@moose-desk/core";
-import {
-  Customer,
-  Tag,
-  priorityOptions,
-  statusOptions,
-} from "@moose-desk/repo";
+import { Customer, priorityOptions, statusOptions } from "@moose-desk/repo";
 import { ModalProps } from "antd";
 import { useMemo } from "react";
 import { MDModalUI } from "src/components/MDModalUI";
@@ -12,9 +7,9 @@ import { MDButton } from "src/components/UI/Button/MDButton";
 import { Form } from "src/components/UI/Form";
 import Select from "src/components/UI/Select/Select";
 import { AgentSelect } from "src/modules/ticket/components/TicketForm/AgentSelect";
+import { TagSelect } from "src/modules/ticket/components/TicketForm/TagSelect";
 
 interface ModalFilterProps extends ModalProps {
-  tags: Tag[];
   customers: Customer[];
   closeFilterModal: () => void;
   handleResetModal: () => void;
@@ -22,7 +17,6 @@ interface ModalFilterProps extends ModalProps {
 }
 
 const ModalFilter = ({
-  tags,
   customers,
   closeFilterModal,
   handleResetModal,
@@ -31,12 +25,7 @@ const ModalFilter = ({
 }: ModalFilterProps) => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
-  const tagsOptions = useMemo(() => {
-    const optionsTag = tags.map((item: Tag) => {
-      return { label: item.name, value: item.name };
-    });
-    return optionsTag;
-  }, [tags]);
+
   const customersOptions = useMemo(() => {
     const customersOption = customers.map((item: Customer) => {
       return {
@@ -89,7 +78,7 @@ const ModalFilter = ({
             <Select options={customersOptions} />
           </Form.Item>
           <Form.Item label="Tags" name="tags">
-            <Select mode="multiple" options={tagsOptions} listHeight={180} />
+            <TagSelect />
           </Form.Item>
           <Form.Item label="Priority" name="priority">
             <Select options={priorityOptions} />

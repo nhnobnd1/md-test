@@ -15,7 +15,6 @@ import {
   CreateReplyTicketRequest,
   Priority,
   StatusTicket,
-  Tag,
   TicketRepository,
   UpdateTicket,
   priorityOptions,
@@ -48,13 +47,13 @@ import { CollapseMessage } from "src/modules/ticket/components/DetailTicketForm/
 import { AgentSelect } from "src/modules/ticket/components/TicketForm/AgentSelect";
 import { AutoSelect } from "src/modules/ticket/components/TicketForm/AutoSelect";
 import { SelectTag } from "src/modules/ticket/components/TicketForm/SelectTag";
+import { TagSelect } from "src/modules/ticket/components/TicketForm/TagSelect";
 import {
   emailIntegrationApi,
   getListConversation,
   getListCustomerApi,
   getListEmailIntegration,
   getOneTicket,
-  getTagsTicket,
 } from "src/modules/ticket/helper/api";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import useFormCreateTicket from "src/modules/ticket/store/useFormCreateTicket";
@@ -164,33 +163,9 @@ const DetailTicketForm = () => {
   const [conversationList, setConversationList] = useState<Conversation[]>(
     dataConversations || []
   );
-  const { data: dataTags } = useQuery({
-    queryKey: [
-      "getTagsTicket",
-      {
-        page: 1,
-        limit: 500,
-      },
-    ],
-    queryFn: () =>
-      getTagsTicket({
-        page: 1,
-        limit: 500,
-      }),
-    staleTime: 10000,
-    retry: 1,
 
-    onError: () => {
-      message.error(t("messages:error.get_tag"));
-    },
-  });
-  const tags = useMemo(() => {
-    if (!dataTags) return [];
-    return dataTags;
-  }, [dataTags]);
   const { visible, setVisible } = useToggleGlobal();
   const { isMobile: isTablet } = useViewport(MediaScreen.LG);
-  // const stateContent = useDetailTicketContent((state) => state);
   const contentCreate = useFormCreateTicket((state) => state.content);
   const chatItemForward = useForwardTicket((state) => state.chatItem);
   const clickForward = useForwardTicket((state) => state.clickForward);
@@ -786,13 +761,7 @@ Hit Send to see what your message will look like
                   label={<span style={{ width: 60 }}>Tags</span>}
                   labelAlign="left"
                 >
-                  <SelectTag
-                    placeholder="Add tags"
-                    options={tags.map((item: Tag) => ({
-                      value: item.name,
-                      label: item.name,
-                    }))}
-                  />
+                  <TagSelect />
                 </Form.Item>
 
                 <div className="flex items-center justify-end">
@@ -1258,13 +1227,7 @@ Hit Send to see what your message will look like
                   label={<span style={{ width: 60 }}>Tags</span>}
                   labelAlign="left"
                 >
-                  <SelectTag
-                    placeholder="Add tags"
-                    options={tags.map((item: Tag) => ({
-                      value: item.name,
-                      label: item.name,
-                    }))}
-                  />
+                  <TagSelect />
                 </Form.Item>
               </Form>
             </MDModalUI>
