@@ -27,14 +27,14 @@ export const AgentSelect: FC<SelectListProps> = ({
       "getAgents",
       {
         page: 1,
-        limit: 100,
+        limit: 10,
         query: debounceValue,
       },
     ],
     queryFn: () =>
       getListAgentApi({
         page: 1,
-        limit: 100,
+        limit: 10,
         query: debounceValue,
       }),
     staleTime: 10000,
@@ -84,6 +84,9 @@ export const AgentSelect: FC<SelectListProps> = ({
       placeholder="Search agents"
       options={agentsOptions}
       loading={isFetching}
+      filterOption={(input, option: any) => {
+        return option?.label?.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+      }}
       {...props}
     />
   );

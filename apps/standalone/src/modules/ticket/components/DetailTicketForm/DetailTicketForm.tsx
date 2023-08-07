@@ -24,6 +24,7 @@ import { Card, Divider, Skeleton, Tooltip, Upload } from "antd";
 import moment from "moment";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import useToggleGlobal from "@moose-desk/core/hooks/useToggleGlobal";
 import { Crisp } from "crisp-sdk-web";
@@ -46,6 +47,7 @@ import useViewport from "src/hooks/useViewport";
 import { CollapseMessage } from "src/modules/ticket/components/DetailTicketForm/CollapseMessage";
 import { AgentSelect } from "src/modules/ticket/components/TicketForm/AgentSelect";
 import { AutoSelect } from "src/modules/ticket/components/TicketForm/AutoSelect";
+import { SelectList } from "src/modules/ticket/components/TicketForm/SelectList";
 import { SelectTag } from "src/modules/ticket/components/TicketForm/SelectTag";
 import { TagSelect } from "src/modules/ticket/components/TicketForm/TagSelect";
 import {
@@ -279,16 +281,20 @@ const DetailTicketForm = () => {
     }
     return conversationMapping;
   }, [ticket, conversationList, timezone]);
+  const [searchCustomer, setSearchCustomer] = useState<string>("");
+  const debounceCustomer: string = useDebounce(searchCustomer, 200);
 
-  const { data: dataCustomers } = useQuery({
-    queryKey: ["getCustomers"],
-    queryFn: () => getListCustomerApi({ page: 1, limit: 500 }),
+  const { data: dataCustomers, isFetching: isFetchingCustomer } = useQuery({
+    queryKey: ["getCustomers", { page: 1, limit: 10, query: debounceCustomer }],
+    queryFn: () =>
+      getListCustomerApi({ page: 1, limit: 10, query: debounceCustomer }),
     retry: 3,
     staleTime: 10000,
     onError: () => {
       message.error(t("messages:error.get_customer"));
     },
   });
+
   const customersOptions = useMemo(() => {
     if (!dataCustomers) return [];
     return dataCustomers.map((item) => {
@@ -855,12 +861,17 @@ Hit Send to see what your message will look like
                                   },
                                 ]}
                               >
-                                <Select
+                                <SelectList
+                                  showSearch
                                   onChange={onChangeEmailIntegration}
-                                  placeholder="Search email integration"
-                                  virtual
-                                  className=""
                                   options={emailIntegrationOptions}
+                                  filterOption={(input, option: any) => {
+                                    return (
+                                      option?.label
+                                        ?.toLowerCase()
+                                        .indexOf(input.toLowerCase()) >= 0
+                                    );
+                                  }}
                                 />
                               </Form.Item>
                             </div>
@@ -915,6 +926,9 @@ Hit Send to see what your message will look like
                                   disabled={!isForward}
                                   placeholder="Email"
                                   options={customersOptions}
+                                  onSearch={(value) => {
+                                    setSearchCustomer(value);
+                                  }}
                                 />
                               </Form.Item>
                             </div>
@@ -988,6 +1002,13 @@ Hit Send to see what your message will look like
                                     mode="tags"
                                     placeholder="Type CC email..."
                                     options={customersOptions}
+                                    onSearch={(value) => {
+                                      setSearchCustomer(value);
+                                    }}
+                                    onClick={() => {
+                                      setSearchCustomer("");
+                                    }}
+                                    loading={isFetchingCustomer}
                                   />
                                 </Form.Item>
                               </div>
@@ -1062,6 +1083,13 @@ Hit Send to see what your message will look like
                                     mode="tags"
                                     placeholder="Type BCC email..."
                                     options={customersOptions}
+                                    onSearch={(value) => {
+                                      setSearchCustomer(value);
+                                    }}
+                                    onClick={() => {
+                                      setSearchCustomer("");
+                                    }}
+                                    loading={isFetchingCustomer}
                                   />
                                 </Form.Item>
                               </div>

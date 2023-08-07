@@ -19,14 +19,14 @@ export const TagSelect: FC<TagSelectProps> = ({ ...props }) => {
       "getTagsTicket",
       {
         page: 1,
-        limit: 100,
+        limit: 10,
         query: debounceValue,
       },
     ],
     queryFn: () =>
       getTagsTicket({
         page: 1,
-        limit: 100,
+        limit: 10,
         query: debounceValue,
       }),
     staleTime: 10000,

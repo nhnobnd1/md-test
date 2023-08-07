@@ -47,6 +47,7 @@ export const AutoSelect: FC<AutoSelectProps> = ({
       options={filterOptions}
       onSearch={(e) => {
         setValue(e);
+        props.onSearch && props.onSearch(e);
       }}
       notFoundContent={props.notFoundContent ? <NotFoundContent /> : null}
     />
