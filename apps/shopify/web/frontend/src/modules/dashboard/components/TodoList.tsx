@@ -62,6 +62,12 @@ export const TodoList = React.memo(() => {
     <div className={styles.wrapTodoList}>
       {isLoading ? (
         <SkeletonTable columnsCount={3} rowsCount={15} />
+      ) : todoList?.data?.data?.length === 0 ? (
+        <EmptySearchResult
+          title={"Sorry! There is no records matched with your search criteria"}
+          description={"Try changing the filters or search term"}
+          withIllustration
+        />
       ) : (
         <IndexTable
           resourceName={resourceName}
@@ -74,15 +80,7 @@ export const TodoList = React.memo(() => {
             { title: "Date Requested" },
           ]}
           sortable={[false, false, false]}
-          emptyState={
-            <EmptySearchResult
-              title={
-                "Sorry! There is no records matched with your search criteria"
-              }
-              description={"Try changing the filters or search term"}
-              withIllustration
-            />
-          }
+          emptyState={null}
         >
           {rowMarkup}
         </IndexTable>

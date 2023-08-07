@@ -9,7 +9,7 @@ interface CustomerFormProps extends FormProps {
   disabled?: boolean;
   data?: CustomerRequestData;
 }
-const LIST_HONORIFIC = ["Mr", "Mrs", "Miss", "Ms"];
+const LIST_HONORIFIC = ["Mr", "Mrs", "Ms"];
 export const CustomerForm = ({
   disabled = false,
   data = undefined,
