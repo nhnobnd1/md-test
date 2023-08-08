@@ -1,0 +1,6 @@
+{
+  "youHaveMessages": {
+    "one": "you have one message",
+    "other": "you have {{count}} messages"
+  }
+}
