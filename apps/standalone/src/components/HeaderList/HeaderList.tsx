@@ -12,12 +12,14 @@ import useScreenType from "src/hooks/useScreenType";
 interface HeaderListProps {
   handleSearch: any;
   setShowTitle?: any;
+  value?: string;
 }
 
 export const HeaderList: FC<HeaderListProps> = ({
   handleSearch,
   setShowTitle,
   children,
+  value = "",
 }) => {
   const { state: isSearch, toggle: onToggleSearch } = useToggle(false);
   const [screenType, screenWidth] = useScreenType();
@@ -36,7 +38,7 @@ export const HeaderList: FC<HeaderListProps> = ({
               ></MDButton>
             ) : (
               <div className="sm:w-[284px]  ">
-                <MDSearchInput onTypeSearch={handleSearch} />
+                <MDSearchInput onTypeSearch={handleSearch} value={value} />
               </div>
             )}
 
@@ -51,7 +53,7 @@ export const HeaderList: FC<HeaderListProps> = ({
             type="text"
           ></MDButton>
           <div className="w-full">
-            <MDSearchInput onTypeSearch={handleSearch} />
+            <MDSearchInput onTypeSearch={handleSearch} value={value} />
           </div>
         </div>
       )}

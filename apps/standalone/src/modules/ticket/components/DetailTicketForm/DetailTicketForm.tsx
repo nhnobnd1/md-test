@@ -680,7 +680,6 @@ Hit Send to see what your message will look like
       ) : (
         <div className="wrapContainer">
           <Header
-            back
             backAction={() => {
               navigate(TicketRoutePaths.Index);
             }}

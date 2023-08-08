@@ -11,12 +11,14 @@ interface HeaderListTicketProps {
   handleSearch: any;
   handleAddNew: any;
   setShowTitle: any;
+  value: string;
 }
 
 export const HeaderListTicket: FC<HeaderListTicketProps> = ({
   handleSearch,
   handleAddNew,
   setShowTitle,
+  value,
   children,
 }) => {
   const { state: isSearch, toggle: onToggleSearch } = useToggle(false);
@@ -36,7 +38,7 @@ export const HeaderListTicket: FC<HeaderListTicketProps> = ({
               <Button icon={SearchMinor} onClick={onToggleSearch}></Button>
             ) : (
               <div className="lg:w-[300px] xl:w-[500px] ">
-                <Search onTypeSearch={handleSearch} />
+                <Search onTypeSearch={handleSearch} value={value} />
               </div>
             )}
 
@@ -50,7 +52,7 @@ export const HeaderListTicket: FC<HeaderListTicketProps> = ({
         <div className="flex w-full gap-2">
           <Button icon={MobileBackArrowMajor} onClick={onToggleSearch}></Button>
           <div className="w-full">
-            <Search onTypeSearch={handleSearch} />
+            <Search onTypeSearch={handleSearch} value={value} />
           </div>
         </div>
       )}

@@ -9,11 +9,11 @@ import {
   useLoading,
   useLocation,
   useNavigate,
+  useSearchParams,
   useToggle,
 } from "@moose-desk/core";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import {
-  BaseListTicketRequest,
   statusOptions,
   StatusTicket,
   Tag,
@@ -45,6 +45,7 @@ import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import { ExportTicket } from "src/modules/ticket/components/ExportTicketPdf/ExportTicket";
 import UilImport from "~icons/uil/import";
 
+import { identity, pickBy } from "lodash-es";
 import { useQuery } from "react-query";
 import { HeaderList } from "src/components/HeaderList";
 import { MDModalUI } from "src/components/MDModalUI";
@@ -61,7 +62,6 @@ import {
   useExportTicket,
 } from "src/modules/ticket/helper/api";
 import useTicketSelected from "src/modules/ticket/store/useTicketSelected";
-import { defaultFilter } from "src/utils/localValue";
 import "./ListTicket.scss";
 interface TicketIndexPageProps {}
 interface FilterObject {
@@ -73,19 +73,37 @@ interface FilterObject {
 }
 
 const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
-  const [filterData, setFilterData] =
-    useState<BaseListTicketRequest>(defaultFilter);
+  const [searchParams] = useSearchParams();
+  const [filterData, setFilterData] = useState<any>({
+    limit: searchParams.get("limit") ? Number(searchParams.get("limit")) : 10,
+    page: searchParams.get("page") ? Number(searchParams.get("page")) : 1,
+    query: searchParams.get("query") ?? "",
+    customer: searchParams.get("customer") || "",
+    tags: searchParams.get("tags") ?? "",
+    status: searchParams.get("status") ?? "",
+    priority: searchParams.get("priority") ?? "",
+    agentObjectId: searchParams.get("agentObjectId") ?? "",
+  });
 
   const [filterObject, setFilterObject] = useState<FilterObject | null>(null);
-  const [mappingFilter, setMappingFilter] = useState<any>(filterData);
+
   const {
     data: dataTicket,
     isLoading: loadingFilter,
     isFetching: fetchingFilter,
     refetch: refetchTicket,
   } = useQuery({
-    queryKey: ["getListTickets", mappingFilter],
-    queryFn: () => getListTicketApi(mappingFilter),
+    queryKey: ["getListTickets", filterData],
+    queryFn: () => getListTicketApi(filterData),
+    onSuccess: () => {
+      const searchParams = new URLSearchParams(pickBy(filterData, identity));
+      const queryString = searchParams.toString();
+
+      navigate({
+        pathname: "/ticket",
+        search: `?${queryString}`,
+      });
+    },
     onError: () => {
       message.error(t("messages:error.get_ticket"));
     },
@@ -112,6 +130,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       getListAgentApi({
         page: 1,
         limit: 500,
+        isLive: 0,
       }),
     staleTime: 10000,
     retry: 1,
@@ -195,7 +214,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const [showTitle, setShowTitle] = useState(true);
 
   const [activeButtonIndex, setActiveButtonIndex] = useState(
-    statusFromTrash || "ALL"
+    statusFromTrash || searchParams.get("status") || "ALL"
   );
 
   const handleButtonClick = useCallback(
@@ -304,7 +323,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     if (statusFromTrash) {
       // getListTicketFilter({ ...filterData, status: statusFromTrash });
 
-      setMappingFilter({ ...filterData, status: statusFromTrash });
+      setFilterData({ ...filterData, status: statusFromTrash });
 
       setStatusFromTrash("");
       setFilterObject({
@@ -319,12 +338,8 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       return;
     }
     if (filterObject) {
-      setMappingFilter({ ...filterData, ...filterObject });
-
-      return;
+      setFilterData({ ...filterData, ...filterObject });
     }
-
-    setMappingFilter({ ...filterData });
   }, [filterData]);
 
   const handleEdit = (record: Ticket) => {
@@ -370,10 +385,9 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   }, [filterData]);
 
   const handleApply = (values: any) => {
-    setMappingFilter({
+    setFilterData({
       ...filterData,
-      // page: 1,
-      // limit: 10,
+      page: 1,
       priority: values.priority || undefined,
       status: values.status || undefined,
       customer: values.customer || undefined,
@@ -392,7 +406,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
 
     closeFilterModal();
   };
-
   return (
     <>
       <ModalFilter
@@ -409,13 +422,13 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         {selectedRowKeys.length === 0 || screenWidth <= MediaScreen.LG ? (
           <div className="flex items-center justify-end flex-1 gap-2  ">
             <HeaderList
+              value={filterData.query}
               setShowTitle={setShowTitle}
               handleSearch={(searchText: string) => {
                 setFilterData((value: any) => {
                   return {
                     ...value,
                     query: searchText,
-                    page: 1,
                   };
                 });
               }}

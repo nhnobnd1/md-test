@@ -1,6 +1,5 @@
 import {
   createdDatetimeFormat,
-  generatePath,
   MediaScreen,
   useJob,
   useNavigate,
@@ -60,7 +59,6 @@ import { useSubdomain } from "src/hooks/useSubdomain";
 import useToggleGlobal from "src/hooks/useToggleGlobal";
 import { CollapseList } from "src/modules/ticket/components/CollapseList";
 import ContentShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ContentShopifySearch";
-import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import useSelectFrom from "src/modules/ticket/store/useSelectFrom";
 import { trimHtmlCssJs, wrapImageWithAnchorTag } from "src/utils/localValue";
 import * as Yup from "yup";
@@ -834,9 +832,6 @@ Hit Send to see what your message will look like
         <ContentShopifySearch />
       ) : (
         <Page
-          breadcrumbs={[
-            { content: "Ticket", url: generatePath(TicketRoutePaths.Index) },
-          ]}
           title={
             (
               <span className="truncate w-full  inline-block header-detail-ticket">{`Ticket ${ticket?.ticketId}: ${ticket?.subject}`}</span>

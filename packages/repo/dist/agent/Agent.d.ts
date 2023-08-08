@@ -1,4 +1,4 @@
-import { BaseListRequest, BaseListResponse, BaseResponse, Role } from "../unty";
+import { BaseListRequest, BaseListResponse, BaseResponse, Role } from '../unty';
 export interface Agent {
     _id: string;
     email: string;
@@ -16,6 +16,7 @@ export interface Agent {
     twoFactorMethod: string;
 }
 export interface GetListAgentRequest extends BaseListRequest {
+    isLive?: number;
 }
 export declare type GetListAgentResponse = BaseListResponse<Agent>;
 export interface CreateAgentRequest {

@@ -29,6 +29,7 @@ export const AgentSelect: FC<SelectListProps> = ({
         page: 1,
         limit: 10,
         query: debounceValue,
+        isLive: filter ? 1 : 0,
       },
     ],
     queryFn: () =>
@@ -36,6 +37,7 @@ export const AgentSelect: FC<SelectListProps> = ({
         page: 1,
         limit: 10,
         query: debounceValue,
+        isLive: filter ? 1 : 0,
       }),
     staleTime: 10000,
     retry: 1,
@@ -46,23 +48,13 @@ export const AgentSelect: FC<SelectListProps> = ({
   });
   const agentsOptions = useMemo(() => {
     if (!dataAgents) return [];
-    return filter
-      ? dataAgents
-          .filter((item) => item.isActive && item.emailConfirmed)
-          .map((item) => ({
-            label: item.lastName.includes("admin")
-              ? `${item.firstName} - ${item.email}`
-              : `${item.firstName} ${item.lastName} - ${item.email}`,
-            value: `${item._id},${item.email}`,
-            obj: item,
-          }))
-      : dataAgents.map((item) => ({
-          label: item.lastName.includes("admin")
-            ? `${item.firstName} - ${item.email}`
-            : `${item.firstName} ${item.lastName} - ${item.email}`,
-          value: `${item._id},${item.email}`,
-          obj: item,
-        }));
+    return dataAgents.map((item) => ({
+      label: item.lastName.includes("admin")
+        ? `${item.firstName} - ${item.email}`
+        : `${item.firstName} ${item.lastName} - ${item.email}`,
+      value: `${item._id},${item.email}`,
+      obj: item,
+    }));
   }, [dataAgents, filter]);
   return (
     <SelectList

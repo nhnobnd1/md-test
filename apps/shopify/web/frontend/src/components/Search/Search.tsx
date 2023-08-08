@@ -5,9 +5,10 @@ import { memo, useEffect, useState } from "react";
 
 interface ISearch {
   onTypeSearch: (keyword: string) => void;
+  value?: string;
 }
-export const Search = memo(({ onTypeSearch }: ISearch) => {
-  const [querySearch, setQuerySearch] = useState<string>("");
+export const Search = memo(({ onTypeSearch, value }: ISearch) => {
+  const [querySearch, setQuerySearch] = useState<string>(value || "");
   const debounceValue: string = useDebounce(querySearch, 500);
   const handleChange = (value: string) => {
     setQuerySearch(value);
