@@ -591,7 +591,6 @@ const DetailTicket = () => {
         "text",
         trimHtmlCssJs(formRef.current?.values?.content)
       );
-      return;
     }
     closeSend();
     setIsForward(false);
