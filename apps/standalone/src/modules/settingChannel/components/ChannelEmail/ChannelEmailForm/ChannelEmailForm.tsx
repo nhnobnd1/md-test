@@ -322,7 +322,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
 
           <div className="flex gap-8">
             <Form.Item name="isPrimaryEmail" valuePropName="checked">
-              <Checkbox>Mask as Primary Email</Checkbox>
+              <Checkbox>Mark as Primary Email</Checkbox>
             </Form.Item>
           </div>
           <Form.Item name="signature" label="Signature">

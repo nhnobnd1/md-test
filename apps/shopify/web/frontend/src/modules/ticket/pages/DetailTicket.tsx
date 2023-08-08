@@ -39,7 +39,7 @@ import {
   TextField,
   Tooltip,
 } from "@shopify/polaris";
-import { DeleteMinor, PriceLookupMinor } from "@shopify/polaris-icons";
+import { CancelMajor, PriceLookupMinor } from "@shopify/polaris-icons";
 import classNames from "classnames";
 import { FormikProps } from "formik";
 import moment from "moment";
@@ -1003,7 +1003,7 @@ Hit Send to see what your message will look like
                                     size="large"
                                     plain
                                     icon={
-                                      <Icon source={DeleteMinor} color="base" />
+                                      <Icon source={CancelMajor} color="base" />
                                     }
                                   />
                                 </Tooltip>
