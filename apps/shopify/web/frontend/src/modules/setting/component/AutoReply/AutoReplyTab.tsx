@@ -23,6 +23,7 @@ interface AutoReplyTabProps {
   onChange?: (value: AutoReply[]) => void;
   dataHolidays: Holidays[];
   dataBusinessHoursAutoReplyCode: string;
+  handleSave: any;
 }
 
 const AutoReplyTab = ({
@@ -30,6 +31,7 @@ const AutoReplyTab = ({
   onChange,
   dataHolidays,
   dataBusinessHoursAutoReplyCode,
+  handleSave,
 }: AutoReplyTabProps) => {
   const { show } = useToast();
   const { t, i18n } = useTranslation();
@@ -107,6 +109,8 @@ const AutoReplyTab = ({
         (holiday) =>
           holiday.autoReplyCode === valueListAutoReplys[indexDelete].code
       );
+      console.log("abc", valueListAutoReplys[indexDelete].code);
+      console.log("cde", dataBusinessHoursAutoReplyCode);
       if (
         !findAutoReplyCode &&
         valueListAutoReplys[indexDelete].code !== dataBusinessHoursAutoReplyCode
@@ -116,6 +120,7 @@ const AutoReplyTab = ({
           onChange && onChange([...init]);
           return init;
         });
+        handleSave();
       } else {
         show(t("messages:error.delete_auto_reply"), {
           isError: true,
@@ -169,6 +174,7 @@ const AutoReplyTab = ({
           }
         });
       }
+      handleSave();
     },
     [dataForm, valueListAutoReplys, isDetail]
   );

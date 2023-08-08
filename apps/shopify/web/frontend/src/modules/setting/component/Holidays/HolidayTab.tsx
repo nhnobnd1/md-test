@@ -19,12 +19,14 @@ interface HolidayTabProps {
   value?: Holidays[];
   onChange?: (value: Holidays[]) => void;
   dataAutoReply: AutoReply[];
+  handleSave: any;
 }
 
 const HolidayTab = ({
   value,
   onChange,
   dataAutoReply,
+  handleSave,
   ...props
 }: HolidayTabProps) => {
   const [valueListHolidays, setValueListHolidays] = useState<Holidays[]>([]);
@@ -115,6 +117,7 @@ const HolidayTab = ({
         onChange && onChange([...init]);
         return init;
       });
+      handleSave();
     },
     [deleteHoliday, setValueListHolidays, valueListHolidays]
   );
@@ -138,6 +141,7 @@ const HolidayTab = ({
           return [...init, { ...value }];
         });
       }
+      handleSave();
     },
     [isDetail, dataForm]
   );

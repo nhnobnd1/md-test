@@ -8,8 +8,6 @@ import {
 } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
-  Banner,
-  BannerStatus,
   ContextualSaveBar,
   Layout,
   LegacyCard,
@@ -44,19 +42,11 @@ interface BusinessHoursProps {}
 
 const BusinessHours = (props: BusinessHoursProps) => {
   // banner
-  const [banner, setBanner] = useState<{
-    isShow: boolean;
-    message: string;
-    type: BannerStatus;
-  }>({
-    isShow: false,
-    message: "",
-    type: "success",
-  });
+
   const { show } = useToast();
   const { t, i18n } = useTranslation();
   const { subDomain } = useSubdomain();
-
+  const [loading, setLoading] = useState(false);
   const { refetchGlobal } = useGlobalData(false, subDomain || ""); // main code
 
   const {
@@ -75,6 +65,7 @@ const BusinessHours = (props: BusinessHoursProps) => {
       setDataBusinessHoursAutoReplyCode(
         data.data[0].businessHoursAutoReplyCode
       );
+      setLoading(false);
     },
     onError: () => {
       show(t("messages:error.something_went_wrong"), {
@@ -86,22 +77,14 @@ const BusinessHours = (props: BusinessHoursProps) => {
   const update = useMutation({
     mutationFn: (payload) => updateListBusinessCalendar(payload),
     onSuccess: () => {
-      refetchBusinessCalendar();
-      setBanner({
-        isShow: true,
-        message: t("messages:success.update_business_calendar"),
-        type: "success",
-      });
-      refetchGlobal();
       show(t("messages:success.update_business_calendar"));
+
+      refetchBusinessCalendar();
+
+      refetchGlobal();
     },
 
     onError: () => {
-      setBanner({
-        isShow: true,
-        type: "critical",
-        message: t("messages:success.update_business_calendar"),
-      });
       show(t("messages:success.update_business_calendar"), {
         isError: true,
       });
@@ -158,14 +141,25 @@ const BusinessHours = (props: BusinessHoursProps) => {
 
   const handleSubmit = useCallback((data: any) => {
     // updateBusinessCalendar(data);
+    setLoading(true);
     update.mutate(data);
   }, []);
 
   // handle Effect
   // useMount(() => fetchListBusinessCalendar());
+  useEffect(() => {
+    // console.log("change value", formRef.current?.values);
+    setDataBusinessHoursAutoReplyCode(
+      formRef.current?.values?.businessHoursAutoReplyCode
+    );
+  }, [formRef.current?.values?.businessHoursAutoReplyCode]);
+
+  const handleSave = () => {
+    formRef.current?.submitForm();
+  };
   return (
     <>
-      {formRef.current?.dirty && (
+      {formRef.current?.dirty && selected === 0 && !loading && (
         <ContextualSaveBar
           fullWidth
           message={"Unsaved changes"}
@@ -196,17 +190,6 @@ const BusinessHours = (props: BusinessHoursProps) => {
       ) : (
         <Page title="Business Hours" fullWidth>
           <Layout>
-            {banner.isShow ? (
-              <Layout.Section>
-                <Banner
-                  title={undefined}
-                  status={banner.type}
-                  onDismiss={() => setBanner({ ...banner, isShow: false })}
-                >
-                  {banner.message}
-                </Banner>
-              </Layout.Section>
-            ) : null}
             <Layout.Section>
               <Form
                 initialValues={dataBusinessCalendar || {}}
@@ -243,7 +226,10 @@ const BusinessHours = (props: BusinessHoursProps) => {
                             className={selected === 1 ? undefined : "hidden"}
                           >
                             <FormItem name="holidays">
-                              <HolidayTab dataAutoReply={dataAutoReply} />
+                              <HolidayTab
+                                handleSave={handleSave}
+                                dataAutoReply={dataAutoReply}
+                              />
                             </FormItem>
                           </div>
                           <div
@@ -251,6 +237,7 @@ const BusinessHours = (props: BusinessHoursProps) => {
                           >
                             <FormItem name="autoReply">
                               <AutoReplyTab
+                                handleSave={handleSave}
                                 dataHolidays={dataHolidays}
                                 dataBusinessHoursAutoReplyCode={
                                   dataBusinessHoursAutoReplyCode
