@@ -300,7 +300,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
 
   const onPagination = useCallback(
     ({ page, limit }: { page: number; limit: number }) => {
-      setFilterData((value) => {
+      setFilterData((value: any) => {
         return {
           ...value,
           page,
