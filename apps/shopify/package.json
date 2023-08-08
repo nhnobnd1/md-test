@@ -10,7 +10,6 @@
 		"dev": "shopify app dev",
 		"info": "shopify app info",
 		"extension": "shopify extension create",
-		"generate": "shopify app generate",
 		"deploy": "shopify app deploy",
 		"frontend": "yarn --cwd web/frontend",
 		"web": "yarn --cwd web",
