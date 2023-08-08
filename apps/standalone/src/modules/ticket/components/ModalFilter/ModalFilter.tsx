@@ -1,31 +1,23 @@
 import { useNavigate } from "@moose-desk/core";
-import {
-  Agent,
-  Customer,
-  Tag,
-  priorityOptions,
-  statusOptions,
-} from "@moose-desk/repo";
+import { Customer, priorityOptions, statusOptions } from "@moose-desk/repo";
 import { ModalProps } from "antd";
 import { useMemo } from "react";
 import { MDModalUI } from "src/components/MDModalUI";
 import { MDButton } from "src/components/UI/Button/MDButton";
 import { Form } from "src/components/UI/Form";
 import Select from "src/components/UI/Select/Select";
+import { AgentSelect } from "src/modules/ticket/components/TicketForm/AgentSelect";
+import { TagSelect } from "src/modules/ticket/components/TicketForm/TagSelect";
 
 interface ModalFilterProps extends ModalProps {
-  tags: Tag[];
   customers: Customer[];
-  agents: Agent[];
   closeFilterModal: () => void;
   handleResetModal: () => void;
   handleApply: (values: any) => void;
 }
 
 const ModalFilter = ({
-  tags,
   customers,
-  agents,
   closeFilterModal,
   handleResetModal,
   handleApply,
@@ -33,12 +25,7 @@ const ModalFilter = ({
 }: ModalFilterProps) => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
-  const tagsOptions = useMemo(() => {
-    const optionsTag = tags.map((item: Tag) => {
-      return { label: item.name, value: item.name };
-    });
-    return optionsTag;
-  }, [tags]);
+
   const customersOptions = useMemo(() => {
     const customersOption = customers.map((item: Customer) => {
       return {
@@ -48,17 +35,7 @@ const ModalFilter = ({
     });
     return customersOption;
   }, [customers]);
-  const agentsOptions = useMemo(() => {
-    const mapping = agents.map((item: Agent) => {
-      return {
-        value: item._id,
-        label: item.lastName.includes("admin")
-          ? `${item.firstName} - ${item.email}`
-          : `${item.firstName} ${item.lastName} - ${item.email}`,
-      };
-    });
-    return mapping;
-  }, [agents]);
+
   const handleApplySubmit = () => {
     handleApply(form.getFieldsValue());
   };
@@ -95,13 +72,13 @@ const ModalFilter = ({
       <div>
         <Form layout="vertical" form={form}>
           <Form.Item label="Agent" name="agentObjectId">
-            <Select options={agentsOptions} />
+            <AgentSelect />
           </Form.Item>
           <Form.Item label="Customer" name="customer">
             <Select options={customersOptions} />
           </Form.Item>
           <Form.Item label="Tags" name="tags">
-            <Select mode="multiple" options={tagsOptions} listHeight={180} />
+            <TagSelect />
           </Form.Item>
           <Form.Item label="Priority" name="priority">
             <Select options={priorityOptions} />

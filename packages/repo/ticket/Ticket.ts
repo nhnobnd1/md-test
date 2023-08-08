@@ -83,6 +83,7 @@ export type Ticket = {
 	};
 	senderConfigId: string;
 	agentObjectId: string;
+	agentEmail: string;
 	customerObjectId: string;
 	toEmails: [{ email: string; name: string }];
 	ccEmails: string[];

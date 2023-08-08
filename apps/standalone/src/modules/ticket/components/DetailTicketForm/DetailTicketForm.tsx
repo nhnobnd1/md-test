@@ -10,29 +10,21 @@ import {
   useUnMount,
 } from "@moose-desk/core";
 import {
-  Agent,
   AttachFile,
   Conversation,
   CreateReplyTicketRequest,
   Priority,
   StatusTicket,
-  Tag,
   TicketRepository,
   UpdateTicket,
   priorityOptions,
   statusOptions,
 } from "@moose-desk/repo";
-import {
-  Select as AntSelect,
-  Card,
-  Divider,
-  Skeleton,
-  Tooltip,
-  Upload,
-} from "antd";
+import { Card, Divider, Skeleton, Tooltip, Upload } from "antd";
 import moment from "moment";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import useToggleGlobal from "@moose-desk/core/hooks/useToggleGlobal";
 import { Crisp } from "crisp-sdk-web";
@@ -53,16 +45,17 @@ import useMessage from "src/hooks/useMessage";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import useViewport from "src/hooks/useViewport";
 import { CollapseMessage } from "src/modules/ticket/components/DetailTicketForm/CollapseMessage";
+import { AgentSelect } from "src/modules/ticket/components/TicketForm/AgentSelect";
 import { AutoSelect } from "src/modules/ticket/components/TicketForm/AutoSelect";
+import { SelectList } from "src/modules/ticket/components/TicketForm/SelectList";
 import { SelectTag } from "src/modules/ticket/components/TicketForm/SelectTag";
+import { TagSelect } from "src/modules/ticket/components/TicketForm/TagSelect";
 import {
   emailIntegrationApi,
-  getListAgentApi,
   getListConversation,
   getListCustomerApi,
   getListEmailIntegration,
   getOneTicket,
-  getTagsTicket,
 } from "src/modules/ticket/helper/api";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import useFormCreateTicket from "src/modules/ticket/store/useFormCreateTicket";
@@ -172,34 +165,9 @@ const DetailTicketForm = () => {
   const [conversationList, setConversationList] = useState<Conversation[]>(
     dataConversations || []
   );
-  const { data: dataTags } = useQuery({
-    queryKey: [
-      "getTagsTicket",
-      {
-        page: 1,
-        limit: 500,
-      },
-    ],
-    queryFn: () =>
-      getTagsTicket({
-        page: 1,
-        limit: 500,
-      }),
-    staleTime: 10000,
-    retry: 1,
 
-    onError: () => {
-      message.error(t("messages:error.get_tag"));
-    },
-  });
-  const tags = useMemo(() => {
-    if (!dataTags) return [];
-    return dataTags;
-  }, [dataTags]);
   const { visible, setVisible } = useToggleGlobal();
   const { isMobile: isTablet } = useViewport(MediaScreen.LG);
-  const { isMobile } = useViewport();
-  // const stateContent = useDetailTicketContent((state) => state);
   const contentCreate = useFormCreateTicket((state) => state.content);
   const chatItemForward = useForwardTicket((state) => state.chatItem);
   const clickForward = useForwardTicket((state) => state.clickForward);
@@ -232,31 +200,6 @@ const DetailTicketForm = () => {
     on: openStatusModal,
     off: closeStatusModal,
   } = useToggle();
-  const { data: dataAgents } = useQuery({
-    queryKey: [
-      "getAgents",
-      {
-        page: 1,
-        limit: 500,
-      },
-    ],
-    queryFn: () =>
-      getListAgentApi({
-        page: 1,
-        limit: 500,
-      }),
-    staleTime: 10000,
-    retry: 1,
-
-    onError: () => {
-      message.error(t("messages:error.get_agent"));
-    },
-  });
-
-  const agents = useMemo(() => {
-    if (!dataAgents) return [];
-    return dataAgents.filter((item) => item.isActive && item.emailConfirmed);
-  }, [dataAgents]);
 
   const { state: loadingApi, startLoading, stopLoading } = useLoading();
 
@@ -338,16 +281,20 @@ const DetailTicketForm = () => {
     }
     return conversationMapping;
   }, [ticket, conversationList, timezone]);
+  const [searchCustomer, setSearchCustomer] = useState<string>("");
+  const debounceCustomer: string = useDebounce(searchCustomer, 200);
 
-  const { data: dataCustomers } = useQuery({
-    queryKey: ["getCustomers"],
-    queryFn: () => getListCustomerApi({ page: 1, limit: 500 }),
+  const { data: dataCustomers, isFetching: isFetchingCustomer } = useQuery({
+    queryKey: ["getCustomers", { page: 1, limit: 10, query: debounceCustomer }],
+    queryFn: () =>
+      getListCustomerApi({ page: 1, limit: 10, query: debounceCustomer }),
     retry: 3,
     staleTime: 10000,
     onError: () => {
       message.error(t("messages:error.get_customer"));
     },
   });
+
   const customersOptions = useMemo(() => {
     if (!dataCustomers) return [];
     return dataCustomers.map((item) => {
@@ -372,7 +319,9 @@ const DetailTicketForm = () => {
     if (conversationList.length === 0) {
       return {
         status: ticket?.status,
-        assignee: ticket?.agentObjectId,
+        assignee: ticket?.agentObjectId
+          ? `${ticket?.agentObjectId},${ticket?.agentEmail}`
+          : null,
         priority: ticket?.priority,
         to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
         tags: ticket?.tags,
@@ -391,7 +340,9 @@ const DetailTicketForm = () => {
     } else {
       return {
         status: ticket?.status,
-        assignee: ticket?.agentObjectId,
+        assignee: ticket?.agentObjectId
+          ? `${ticket?.agentObjectId},${ticket?.agentEmail}`
+          : null,
         priority: ticket?.priority,
         to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
         tags: ticket?.tags,
@@ -413,17 +364,6 @@ const DetailTicketForm = () => {
       };
     }
   }, [ticket, primaryEmail, conversationList, dataEmailIntegration]);
-  const agentsOptions = useMemo(() => {
-    const mapping = agents.map((item: Agent) => {
-      return {
-        value: item._id,
-        label: item.lastName.includes("admin")
-          ? `${item.firstName} - ${item.email}`
-          : `${item.firstName} ${item.lastName} - ${item.email}`,
-      };
-    });
-    return mapping;
-  }, [agents]);
 
   const { run: postReplyApi } = useJob((payload: CreateReplyTicketRequest) => {
     return TicketRepository()
@@ -483,7 +423,6 @@ const DetailTicketForm = () => {
     if (isSampleEmail) {
       Crisp.chat.open();
       Crisp.message.send("text", trimHtmlCssJs(form.getFieldValue("content")));
-      return;
     }
     startLoading();
     closeSend();
@@ -577,15 +516,12 @@ const DetailTicketForm = () => {
   const handleSaveTicket = () => {
     const values = form.getFieldsValue();
     startLoading();
-
     updateTicketApi({
       priority: values.priority,
       status: values.status,
       tags: values.tags,
-      agentObjectId: values.assignee
-        ? values.assignee.split(",")[0]
-        : undefined,
-      agentEmail: values.assignee ? values.assignee.split(",")[1] : undefined,
+      agentObjectId: values.assignee ? values.assignee.split(",")[0] : "",
+      agentEmail: values.assignee ? values.assignee.split(",")[1] : "",
       ids: [ticket?._id as string],
     });
   };
@@ -822,12 +758,7 @@ Hit Send to see what your message will look like
                   <Select className="w-full" options={priorityOptions} />
                 </Form.Item>
                 <Form.Item label="Assignee" name="assignee">
-                  <AntSelect
-                    placeholder="Search agents"
-                    className="w-full"
-                    options={agentsOptions}
-                    size={isTablet ? "middle" : "large"}
-                  ></AntSelect>
+                  <AgentSelect placeholder="Search agents" className="w-full" />
                 </Form.Item>
 
                 <Form.Item
@@ -835,13 +766,7 @@ Hit Send to see what your message will look like
                   label={<span style={{ width: 60 }}>Tags</span>}
                   labelAlign="left"
                 >
-                  <SelectTag
-                    placeholder="Add tags"
-                    options={tags.map((item: Tag) => ({
-                      value: item.name,
-                      label: item.name,
-                    }))}
-                  />
+                  <TagSelect />
                 </Form.Item>
 
                 <div className="flex items-center justify-end">
@@ -935,12 +860,17 @@ Hit Send to see what your message will look like
                                   },
                                 ]}
                               >
-                                <Select
+                                <SelectList
+                                  showSearch
                                   onChange={onChangeEmailIntegration}
-                                  placeholder="Search email integration"
-                                  virtual
-                                  className=""
                                   options={emailIntegrationOptions}
+                                  filterOption={(input, option: any) => {
+                                    return (
+                                      option?.label
+                                        ?.toLowerCase()
+                                        .indexOf(input.toLowerCase()) >= 0
+                                    );
+                                  }}
                                 />
                               </Form.Item>
                             </div>
@@ -995,6 +925,9 @@ Hit Send to see what your message will look like
                                   disabled={!isForward}
                                   placeholder="Email"
                                   options={customersOptions}
+                                  onSearch={(value) => {
+                                    setSearchCustomer(value);
+                                  }}
                                 />
                               </Form.Item>
                             </div>
@@ -1068,6 +1001,13 @@ Hit Send to see what your message will look like
                                     mode="tags"
                                     placeholder="Type CC email..."
                                     options={customersOptions}
+                                    onSearch={(value) => {
+                                      setSearchCustomer(value);
+                                    }}
+                                    onClick={() => {
+                                      setSearchCustomer("");
+                                    }}
+                                    loading={isFetchingCustomer}
                                   />
                                 </Form.Item>
                               </div>
@@ -1142,6 +1082,13 @@ Hit Send to see what your message will look like
                                     mode="tags"
                                     placeholder="Type BCC email..."
                                     options={customersOptions}
+                                    onSearch={(value) => {
+                                      setSearchCustomer(value);
+                                    }}
+                                    onClick={() => {
+                                      setSearchCustomer("");
+                                    }}
+                                    loading={isFetchingCustomer}
                                   />
                                 </Form.Item>
                               </div>
@@ -1299,13 +1246,7 @@ Hit Send to see what your message will look like
                   <Select className="w-full" options={priorityOptions} />
                 </Form.Item>
                 <Form.Item label="Assignee" name="assignee">
-                  <AntSelect
-                    placeholder="Search agents"
-                    className="w-full"
-                    options={agentsOptions}
-                    size={isMobile ? "middle" : "large"}
-                    // size="middle"
-                  ></AntSelect>
+                  <AgentSelect placeholder="Search agents" className="w-full" />
                 </Form.Item>
 
                 <Form.Item
@@ -1313,13 +1254,7 @@ Hit Send to see what your message will look like
                   label={<span style={{ width: 60 }}>Tags</span>}
                   labelAlign="left"
                 >
-                  <SelectTag
-                    placeholder="Add tags"
-                    options={tags.map((item: Tag) => ({
-                      value: item.name,
-                      label: item.name,
-                    }))}
-                  />
+                  <TagSelect />
                 </Form.Item>
               </Form>
             </MDModalUI>

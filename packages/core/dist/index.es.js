@@ -2724,7 +2724,7 @@ const im = /(^[0-9]{9,16}$)\b/g, sm = /^[a-z0-9\-\d@._]+$/, um = /^(?=.*[a-z])(?
 function cm(e) {
   return !/[^\x00-\x7F]/.test(e);
 }
-const lm = /^[0-9a-fA-F]{24}$/, fm = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/, zr = (e, t = "", r = new FormData()) => (Object.keys(e).forEach((n) => {
+const lm = /^[0-9a-fA-F]{24}$/, fm = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, zr = (e, t = "", r = new FormData()) => (Object.keys(e).forEach((n) => {
   const o = t !== "" ? t + "." + n : n, a = e[n];
   Array.isArray(a) ? a.forEach((i, s) => {
     typeof i == "object" ? i instanceof File ? r.append(o, i) : r = zr(i, o + `[${s}]`, r) : r.append(o, i);

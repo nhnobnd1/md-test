@@ -4,13 +4,17 @@ import {
   useJob,
   useNavigate,
 } from "@moose-desk/core";
+
+import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import useSaveDataGlobal from "@moose-desk/core/hooks/useSaveDataGlobal";
 import {
+  Customer,
   EmailIntegration,
   TicketRepository,
   priorityOptions,
 } from "@moose-desk/repo";
 import { Card } from "antd";
+import { uniqBy } from "lodash-es";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery, useQueryClient } from "react-query";
@@ -24,14 +28,14 @@ import useDeepEffect from "src/hooks/useDeepEffect";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { ModalCustomer } from "src/modules/ticket/components/ModalCustomer";
+import { AgentSelect } from "src/modules/ticket/components/TicketForm/AgentSelect";
 import { AutoSelect } from "src/modules/ticket/components/TicketForm/AutoSelect";
 import { SelectList } from "src/modules/ticket/components/TicketForm/SelectList";
 import { SelectTag } from "src/modules/ticket/components/TicketForm/SelectTag";
+import { TagSelect } from "src/modules/ticket/components/TicketForm/TagSelect";
 import {
-  getListAgentApi,
   getListCustomerApi,
   getListEmailIntegration,
-  getTagsTicket,
 } from "src/modules/ticket/helper/api";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import useFormCreateTicket from "src/modules/ticket/store/useFormCreateTicket";
@@ -82,11 +86,18 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
   const [openModalCustomer, setOpenModalCustomer] = useState(false);
   const contentCreate = useFormCreateTicket((state) => state.content);
 
-  const { data: dataCustomers, refetch: refetchCustomer } = useQuery({
-    queryKey: ["getCustomers"],
-    queryFn: () => getListCustomerApi({ page: 1, limit: 500 }),
+  const [searchCustomer, setSearchCustomer] = useState<string>("");
+  const debounceCustomer: string = useDebounce(searchCustomer, 200);
+  const [dataCustomersFetch, setDataCustomerFetch] = useState<Customer[]>([]);
+  const { data: dataCustomers, isFetching: isFetchingCustomer } = useQuery({
+    queryKey: ["getCustomers", { page: 1, limit: 10, query: debounceCustomer }],
+    queryFn: () =>
+      getListCustomerApi({ page: 1, limit: 10, query: debounceCustomer }),
     retry: 3,
     staleTime: 10000,
+    onSuccess: (data) => {
+      setDataCustomerFetch(uniqBy([...data, ...dataCustomersFetch], "_id"));
+    },
     onError: () => {
       message.error(t("messages:error.get_customer"));
     },
@@ -121,70 +132,6 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
       };
     });
   }, [dataEmailIntegration]);
-
-  const { data: dataAgents } = useQuery({
-    queryKey: [
-      "getAgents",
-      {
-        page: 1,
-        limit: 500,
-      },
-    ],
-    queryFn: () =>
-      getListAgentApi({
-        page: 1,
-        limit: 500,
-      }),
-    staleTime: 10000,
-    retry: 1,
-
-    onError: () => {
-      message.error(t("messages:error.get_agent"));
-    },
-  });
-
-  const agentsOptions = useMemo(() => {
-    if (!dataAgents) return [];
-    return dataAgents
-      .filter((item) => item.isActive && item.emailConfirmed)
-      .map((item) => ({
-        label: item.lastName.includes("admin")
-          ? `${item.firstName} - ${item.email}`
-          : `${item.firstName} ${item.lastName} - ${item.email}`,
-        value: `${item._id},${item.email}`,
-        obj: item,
-      }));
-  }, [dataAgents]);
-
-  const { data: dataTags } = useQuery({
-    queryKey: [
-      "getTagsTicket",
-      {
-        page: 1,
-        limit: 500,
-      },
-    ],
-    queryFn: () =>
-      getTagsTicket({
-        page: 1,
-        limit: 500,
-      }),
-    staleTime: 10000,
-    retry: 1,
-
-    onError: () => {
-      message.error(t("messages:error.get_tag"));
-    },
-  });
-
-  const tagsOptions = useMemo(() => {
-    if (!dataTags) return [];
-    return dataTags.map((item) => ({
-      label: item.name,
-      value: item.name,
-      obj: item,
-    }));
-  }, [dataTags]);
 
   const { run: CreateTicket } = useJob((dataSubmit: any) => {
     message.loading.show(t("messages:loading.creating_ticket"));
@@ -227,9 +174,10 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
   }, []);
   const onFinish = (values: any) => {
     const tags: string[] = values.tags;
-    const findCustomer = customersOptions.find(
-      (item) => item.value === values.to
+    const findCustomer = dataCustomersFetch.find(
+      (item) => item.email === values.to
     );
+
     const dataCreate: any = {
       fromEmail: {
         email: fromEmail?.supportEmail,
@@ -241,7 +189,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
         : undefined,
       agentEmail: values.assignee ? values.assignee.split(",")[1] : undefined,
       toEmails: [{ email: values.to, name: values.to.split("@")[0] }],
-      customerObjectId: findCustomer ? findCustomer?.obj._id : undefined,
+      customerObjectId: findCustomer ? findCustomer._id : undefined,
 
       ccEmails: enableCC ? values?.CC : [],
       bccEmails: enableCC ? values?.BCC : [],
@@ -343,6 +291,9 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
                   options={customersOptions}
                   onChange={onChangeEmail}
                   setOpenModalCustomer={setOpenModalCustomer}
+                  onSearch={(value) => {
+                    setSearchCustomer(value);
+                  }}
                 />
               </Form.Item>
               <>
@@ -404,6 +355,13 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
                       mode="tags"
                       placeholder="Type CC email..."
                       options={customersOptions}
+                      onSearch={(value) => {
+                        setSearchCustomer(value);
+                      }}
+                      onClick={() => {
+                        setSearchCustomer("");
+                      }}
+                      loading={isFetchingCustomer}
                     />
                   </Form.Item>
                 ) : (
@@ -467,6 +425,13 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
                       mode="tags"
                       placeholder="Type BCC email..."
                       options={customersOptions}
+                      onSearch={(value) => {
+                        setSearchCustomer(value);
+                      }}
+                      onClick={() => {
+                        setSearchCustomer("");
+                      }}
+                      loading={isFetchingCustomer}
                     />
                   </Form.Item>
                 ) : (
@@ -491,8 +456,14 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
             rules={[{ required: true, message: "From is required" }]}
           >
             <SelectList
+              showSearch
               onChange={onChangeEmailIntegration}
               options={emailIntegrationOptions}
+              filterOption={(input, option: any) => {
+                return (
+                  option?.label?.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                );
+              }}
             />
           </Form.Item>
           <Form.Item
@@ -534,10 +505,10 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
           </div>
 
           <Form.Item name="tags" label="Tags">
-            <SelectTag placeholder="Add tags" options={tagsOptions} />
+            <TagSelect />
           </Form.Item>
           <Form.Item label="Assignee" name="assignee">
-            <SelectList placeholder="Search agents" options={agentsOptions} />
+            <AgentSelect />
           </Form.Item>
           <Form.Item label="Priority" name="priority">
             <Select size="large" options={priorityOptions}></Select>

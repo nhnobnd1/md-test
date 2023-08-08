@@ -96,6 +96,12 @@ const BoxSelectAutoReply = (props: BoxSelectAutoReplyProps) => {
         placeholder="Choose your auto-reply outside of business hours. You can set up new message in the “Auto-Reply” Tab"
         showSearch
         allowClear
+        onClear={() => {
+          updateSelection(null);
+        }}
+        filterOption={(input, option: any) => {
+          return option?.label?.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+        }}
       ></Select>
     </div>
   );

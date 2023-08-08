@@ -13,7 +13,6 @@ import {
 } from "@moose-desk/core";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import {
-  Agent,
   BaseListTicketRequest,
   statusOptions,
   StatusTicket,
@@ -38,7 +37,6 @@ import { Table } from "src/components/UI/Table";
 import TableAction from "src/components/UI/Table/TableAction/TableAction";
 import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
-import useNotification from "src/hooks/useNotification";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { DeleteSelectedModal } from "src/modules/ticket/components/DeleteSelectedModal";
 import ModalFilter from "src/modules/ticket/components/ModalFilter/ModalFilter";
@@ -54,12 +52,12 @@ import { MDButton } from "src/components/UI/Button/MDButton";
 import Icon from "src/components/UI/Icon";
 import useDeepEffect from "src/hooks/useDeepEffect";
 import useScreenType from "src/hooks/useScreenType";
+import { AgentSelect } from "src/modules/ticket/components/TicketForm/AgentSelect";
 import {
   getListAgentApi,
   getListCustomerApi,
   getListTicketApi,
   getStatisticTicket,
-  getTagsTicket,
   useExportTicket,
 } from "src/modules/ticket/helper/api";
 import useTicketSelected from "src/modules/ticket/store/useTicketSelected";
@@ -101,30 +99,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     return undefined;
   }, [dataTicket]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  const { data: dataTags } = useQuery({
-    queryKey: [
-      "getTagsTicket",
-      {
-        page: 1,
-        limit: 500,
-      },
-    ],
-    queryFn: () =>
-      getTagsTicket({
-        page: 1,
-        limit: 500,
-      }),
-    staleTime: 10000,
-    retry: 1,
-
-    onError: () => {
-      message.error(t("messages:error.get_tag"));
-    },
-  });
-  const tags = useMemo(() => {
-    if (!dataTags) return [];
-    return dataTags;
-  }, [dataTags]);
 
   const { data: dataAgents } = useQuery({
     queryKey: [
@@ -207,17 +181,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     selectedRowKeys as string[]
   );
 
-  const agentsOptions = useMemo(() => {
-    const mapping = agents.map((item: Agent) => {
-      return {
-        value: item._id,
-        label: item.lastName.includes("admin")
-          ? `${item.firstName} - ${item.email}`
-          : `${item.firstName} ${item.lastName} - ${item.email}`,
-      };
-    });
-    return mapping;
-  }, [agents]);
   const {
     state: filterModal,
     on: openFilterModal,
@@ -226,7 +189,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const message = useMessage();
-  const notification = useNotification();
   const location = useLocation();
   const [statusFromTrash, setStatusFromTrash] = useState(location.state);
   const exportPdfRef = useRef<any>(null);
@@ -383,6 +345,15 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   };
   const handleChangeForm = useCallback(
     (changedValue) => {
+      if (changedValue?.agentObjectId) {
+        updateTicketApi({
+          ids: selectedRowKeys as string[],
+          ...changedValue,
+          agentObjectId: changedValue.agentObjectId?.split(",")[0],
+          agentEmail: changedValue.agentObjectId?.split(",")[1],
+        });
+        return;
+      }
       updateTicketApi({
         ids: selectedRowKeys as string[],
         ...changedValue,
@@ -407,7 +378,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       status: values.status || undefined,
       customer: values.customer || undefined,
       tags: values.tags?.toString() || undefined,
-      agentObjectId: values?.agentObjectId || undefined,
+      agentObjectId: values?.agentObjectId?.split(",")[0] || undefined,
     });
 
     setFilterObject({
@@ -415,7 +386,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       status: values.status,
       customer: values.customer,
       tags: values.tags?.toString(),
-      agentObjectId: values?.agentObjectId,
+      agentObjectId: values?.agentObjectId?.split(",")[0],
     });
     setActiveButtonIndex(values.status || "ALL");
 
@@ -426,8 +397,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     <>
       <ModalFilter
         customers={customers}
-        tags={tags}
-        agents={agents}
         open={filterModal}
         handleResetModal={handleResetModal}
         cancelText="Reset"
@@ -472,11 +441,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
               layout="horizontal"
             >
               <Form.Item label="" name="agentObjectId" className="mb-0">
-                <Select
-                  placeholder="Assign to"
-                  options={agentsOptions}
-                  className="w-[250px]"
-                />
+                <AgentSelect placeholder="Assign to" className="w-[250px]" />
               </Form.Item>
               <Form.Item label="" name="status" className="mb-0">
                 <Select
@@ -836,11 +801,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                 name="agentObjectId"
                 className="mb-0"
               >
-                <Select
-                  placeholder="Assign to"
-                  options={agentsOptions}
-                  className="w-[250px]"
-                />
+                <AgentSelect placeholder="Assign to" className="w-[250px]" />
               </Form.Item>
               <Form.Item label="Set status" name="status" className="mb-0">
                 <Select

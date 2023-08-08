@@ -13,6 +13,7 @@ interface HolidayTabProps {
   onChange?: (value: Holidays[]) => void;
   dataAutoReply: AutoReply[];
   loading: boolean;
+  handleSave: any;
 }
 
 const HolidayTab = ({
@@ -20,6 +21,7 @@ const HolidayTab = ({
   onChange,
   dataAutoReply,
   loading,
+  handleSave,
 }: HolidayTabProps) => {
   const message = useMessage();
   const { t } = useTranslation();
@@ -68,6 +70,7 @@ const HolidayTab = ({
         onChange && onChange([...init]);
         return init;
       });
+      handleSave();
     },
     [setValueListHolidays, valueListHolidays]
   );
@@ -93,6 +96,7 @@ const HolidayTab = ({
           return [...init, { ...value }];
         });
       }
+      handleSave();
     },
     [isDetail, dataForm]
   );

@@ -308,7 +308,7 @@
             "email_forwarding": "Email Forwarding",
             "mail_server": "Mail Server",
             "forwarding_details": "Forwarding_details",
-            "mask_as_primary_email": "Mask as Primary Email",
+            "mask_as_primary_email": "Mark as Primary Email",
             "enter_current_support_address": "Enter current support address",
             "setup_email_forwarding": "Setup email forwarding"
           }

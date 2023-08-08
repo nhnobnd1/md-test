@@ -16,6 +16,7 @@ interface AutoReplyTabProps {
   dataHolidays: Holidays[];
   dataBusinessHoursAutoReplyCode: string;
   loading: boolean;
+  handleSave: any;
 }
 
 const AutoReplyTab = ({
@@ -24,6 +25,7 @@ const AutoReplyTab = ({
   dataHolidays,
   dataBusinessHoursAutoReplyCode,
   loading,
+  handleSave,
 }: AutoReplyTabProps) => {
   const message = useMessage();
   const [isDetail, setIsDetail] = useState<boolean>(false);
@@ -74,6 +76,7 @@ const AutoReplyTab = ({
           onChange && onChange([...init]);
           return init;
         });
+        handleSave();
       } else {
         message.error(t("messages:error.delete_auto_reply"));
       }
@@ -115,6 +118,7 @@ const AutoReplyTab = ({
             return init;
           }
         });
+        handleSave();
       }
     },
     [dataForm, valueListAutoReplys, isDetail]

@@ -8,7 +8,7 @@ import {
   Holidays,
 } from "@moose-desk/repo";
 import { Card, Input, Space, Tabs } from "antd";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "react-query";
 import { MDButton } from "src/components/UI/Button/MDButton";
@@ -124,20 +124,32 @@ const BusinessHours = () => {
     // eslint-disable-next-line no-unused-expressions
     role === Role.Admin ? refetchBusinessCalendar() : "";
   });
+
+  useEffect(() => {
+    // console.log("change value", formRef.current?.values);
+    console.log("wow", form.getFieldsValue()?.businessHoursAutoReplyCode);
+    setDataBusinessHoursAutoReplyCode(
+      form.getFieldsValue()?.businessHoursAutoReplyCode
+    );
+  }, [form.getFieldsValue()?.businessHoursAutoReplyCode]);
+
+  const handleSave = () => form.submit();
   return (
     <>
       <Header
         className="xs:h-[32px] md:h-[40px] flex items-center mb-5 "
         title="Business Hours"
       >
-        <div className=" flex justify-end flex-1">
-          <Space>
-            <MDButton onClick={() => form.resetFields()}>Cancel</MDButton>
-            <MDButton type="primary" onClick={() => form.submit()}>
-              Save
-            </MDButton>
-          </Space>
-        </div>
+        {tabSelected === "1" && (
+          <div className=" flex justify-end flex-1">
+            <Space>
+              <MDButton onClick={() => form.resetFields()}>Cancel</MDButton>
+              <MDButton type="primary" onClick={() => form.submit()}>
+                Save
+              </MDButton>
+            </Space>
+          </div>
+        )}
       </Header>
       {processing ? (
         <>
@@ -185,6 +197,7 @@ const BusinessHours = () => {
                     children: (
                       <Form.Item name="holidays">
                         <HolidayTab
+                          handleSave={handleSave}
                           dataAutoReply={dataAutoReply}
                           loading={processing}
                         />
@@ -197,6 +210,7 @@ const BusinessHours = () => {
                     children: (
                       <Form.Item name="autoReply">
                         <AutoReplyTab
+                          handleSave={handleSave}
                           loading={processing}
                           dataHolidays={dataHolidays}
                           dataBusinessHoursAutoReplyCode={
