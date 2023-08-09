@@ -55,7 +55,6 @@ import { useSubdomain } from "src/hooks/useSubdomain";
 import { HeaderListTicket } from "src/modules/ticket/components/HeaderListTicket";
 import {
   getListAgentApi,
-  getListCustomerApi,
   getListTicketApi,
   getStatisticTicket,
   useExportTicket,
@@ -146,21 +145,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       },
     };
   }, [dataStatistic]);
-
-  const { data: dataCustomers } = useQuery({
-    queryKey: ["getCustomers"],
-    queryFn: () => getListCustomerApi({ page: 1, limit: 500 }),
-    retry: 3,
-    staleTime: 10000,
-    onError: () => {
-      // message.error(t("messages:error.get_customer"));
-      show(t("messages:error.get_customer"), { isError: true });
-    },
-  });
-  const customers = useMemo(() => {
-    if (!dataCustomers) return [];
-    return dataCustomers;
-  }, [dataCustomers]);
 
   const [screenType, screenWidth] = useScreenType();
   const { data: dataAgents } = useQuery({
@@ -348,7 +332,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       status: values.status,
       customer: values.customer,
       tags: values.tags?.toString(),
-      agentObjectId: values?.agentObjectId?.split(",")[0],
+      agentObjectId: values?.agentObjectId,
     });
     setActiveButtonIndex(values.status || "ALL");
   };
@@ -573,9 +557,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
               >
                 <Tooltip content="Filter">
                   <ModalFilter
-                    agents={agents}
                     handleResetModal={handleResetModal}
-                    customers={customers}
                     handleApply={handleApply}
                     filterObject={filterObject}
                   />

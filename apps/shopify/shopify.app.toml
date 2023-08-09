@@ -1,10 +1,27 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
+name = "nam999"
+client_id = "1daf15909ca639111b7358c7c37e6660"
+application_url = "https://trio-hong-receiving-clearly.trycloudflare.com"
 embedded = true
-extension_directories = [ "extensions/*" ]
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_products,write_draft_orders,read_themes,write_themes,read_price_rules,read_discounts"
 use_legacy_install_flow = true
 
+[auth]
+redirect_urls = [
+  "https://trio-hong-receiving-clearly.trycloudflare.com/auth/callback",
+  "https://trio-hong-receiving-clearly.trycloudflare.com/auth/shopify/callback",
+  "https://trio-hong-receiving-clearly.trycloudflare.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2023-01"
+
+[pos]
+embedded = false
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "nam999.myshopify.com"
