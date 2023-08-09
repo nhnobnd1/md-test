@@ -5,11 +5,11 @@ import { join } from 'path';
 import serveStatic from 'serve-static';
 import { api, registerUser } from './helpers/api-services.js';
 
+import compression from 'compression';
 import { config } from 'dotenv';
 import GDPRWebhookHandlers from './gdpr.js';
 import { getInformationShop } from './helpers/shop.js';
 import shopify from './shopify.js';
-import compression from 'compression';
 config();
 
 const PORT = parseInt(
@@ -106,7 +106,7 @@ app.use(async (req, res, next) => {
 	const { shop, offlineSession, shopDomain } = await getInformationShop(
 		req.query?.shop
 	);
-
+		
 	// signup insall app -> offlineSession null
 	if (shop && offlineSession) {
 		res.cookie(
@@ -157,8 +157,6 @@ app.use('/*', shopify.ensureInstalledOnShop(), async (_req, res, _next) => {
 		shop: shop ?? null,
 		subdomain: shop?.name,
 	};
-
-	console.log({ data });
 
 	const script = `
  

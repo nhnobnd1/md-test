@@ -21,11 +21,9 @@ export default function applyAuthMiddleware(
 				res,
 				req.query
 			);
-			console.log('vaoday');
 			const { shop, offlineSession, shopDomain } = await getInformationShop(
 				req.query?.shop
 			);
-
 			if (shop && offlineSession.accessToken) {
 				const payload = {
 					subdomain: shop.myshopify_domain.replace('.myshopify.com', ''),

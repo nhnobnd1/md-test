@@ -1,4 +1,4 @@
-declare type Listener<E> = (...param: E extends [] ? E : any[]) => void;
+type Listener<E> = (...param: E extends [] ? E : any[]) => void;
 declare class EventListenersManager<ListEvents extends {
     [key: string]: any[];
 }> {

@@ -29,7 +29,7 @@ import env from "src/core/env";
 import { useBanner } from "src/hooks/useBanner";
 import Appearance from "src/modules/settingChannel/components/widgets/Appearance/Appearance";
 import General from "src/modules/settingChannel/components/widgets/General/General";
-import Integration from "src/modules/settingChannel/components/widgets/Integration/Integration";
+import Setup from "src/modules/settingChannel/components/widgets/Setup/Setup";
 import { ViewWidget } from "src/modules/settingChannel/components/widgets/ViewWidget";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
 import useUpdateSave from "src/modules/settingChannel/store/saveUpdateWidget";
@@ -49,10 +49,15 @@ const tabs = [
     content: "Appearance",
     panelID: "appearance",
   },
+  // {
+  //   id: "integration",
+  //   content: "Integration",
+  //   panelID: "integration",
+  // },
   {
-    id: "integration",
-    content: "Integration",
-    panelID: "integration",
+    id: "setup",
+    content: "Setup",
+    panelID: "setup",
   },
 ];
 
@@ -294,7 +299,8 @@ const Widgets = (props: WidgetsProps) => {
                       </div>
                     </div>
                     <div className={classNames({ hidden: selected !== 2 })}>
-                      <Integration idWidget={widget?._id}></Integration>
+                      <Setup />
+                      {/* <Integration idWidget={widget?._id}></Integration> */}
                     </div>
                   </LegacyCard.Section>
                 </Tabs>
