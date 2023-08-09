@@ -85,3 +85,8 @@
 .content {
   margin-top: 20px;
 }
+.disabledBtn {
+  cursor: none;
+  opacity: 0.6;
+  pointer-events: none;
+}

@@ -1,15 +1,16 @@
-import { Link, Select, Spinner, Text } from "@shopify/polaris";
+import { Select } from "antd";
+import Link from "antd/es/typography/Link";
 import classNames from "classnames";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import { useSubdomain } from "src/hooks/useSubdomain";
-import { getListTheme } from "src/modules/settingChannel/components/widgets/Setup/api/api";
-import { Theme } from "src/modules/settingChannel/components/widgets/Setup/helper/interface";
+import { getListTheme } from "src/modules/settingChannel/components/Widgets/Setup/api/api";
+import { Theme } from "src/modules/settingChannel/components/Widgets/Setup/helper/interface";
 import styles from "../setup.module.scss";
+
 export const Automation = React.memo(() => {
   const { getSubDomain } = useSubdomain();
   const [themeId, setThemeId] = useState<string>("");
-
   const { data, isFetching }: any = useQuery({
     queryKey: ["themeList"],
     queryFn: () => getListTheme(),
@@ -21,7 +22,8 @@ export const Automation = React.memo(() => {
       setThemeId(String(liveTheme.id));
     },
   });
-  const deselectedOptions = useMemo(() => {
+
+  const options = useMemo(() => {
     if (!data?.data?.data?.length) return [];
     return data?.data?.data?.map((theme: Theme) => {
       return {
@@ -30,49 +32,44 @@ export const Automation = React.memo(() => {
       };
     });
   }, [data?.data?.data]);
-  const handleSelectChange = useCallback(
-    (value: string) => setThemeId(value),
-    []
-  );
+  const handleChangeTheme = (value: string) => {
+    setThemeId(value);
+  };
   return (
     <div className={styles.container}>
       <div className={styles.title}>
-        <Text variant="headingMd" as="h2">
-          Automation setup
-        </Text>
+        <h2>Automation setup</h2>
       </div>
       <div className={styles.wrapThemeSelect}>
+        <p>
+          <span className={styles.stepText}>Step 1:</span> Select theme
+        </p>
         <Select
-          label={
-            isFetching ? (
-              <Spinner size="small" />
-            ) : (
-              <p>
-                <span className={styles.stepText}>Step 1:</span> Select theme
-              </p>
-            )
-          }
-          options={deselectedOptions}
-          onChange={handleSelectChange}
+          className={styles.select}
+          //   placeholder="Search themes"
+          //   optionFilterProp="children"
+          onChange={handleChangeTheme}
+          loading={isFetching}
+          //   filterOption={(input: any, option: any) =>
+          //     (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+          //   }
+          options={options}
           value={themeId}
         />
       </div>
-
       <div className={styles.stepWrap}>
         <p>
           <span className={styles.stepText}>Step 2:</span> Click the button
           below to go to the Theme Editor
         </p>
         <div
-          className={classNames(
-            styles.buttonLink,
-            "Polaris-Button Polaris-Button--primary",
-            { [styles.disabledBtn]: isFetching }
-          )}
+          className={classNames(styles.buttonLink, {
+            [styles.disabledBtn]: isFetching,
+          })}
         >
           <Link
-            removeUnderline
-            url={`https://${getSubDomain()}.myshopify.com/admin/themes/${themeId}/editor?template=index&addAppBlockId=ed118f6f-db02-4570-8695-4416c857ded1/app-widget&target=sectionGroup:footer`}
+            target="_blank"
+            href={`https://${getSubDomain()}.myshopify.com/admin/themes/${themeId}/editor?template=index&addAppBlockId=ed118f6f-db02-4570-8695-4416c857ded1/app-widget&target=sectionGroup:footer`}
           >
             Go to Theme Editor
           </Link>
