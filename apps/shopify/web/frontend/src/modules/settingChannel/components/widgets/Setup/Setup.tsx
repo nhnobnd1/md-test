@@ -83,7 +83,7 @@ export default function Setup() {
       {/* <Card sectioned> */}
       <div className={styles.title}>
         <Text variant="headingMd" as="h2">
-          Select theme to add Web Form
+          Automation setup
         </Text>
       </div>
       <div className={styles.wrapThemeSelect}>
@@ -92,7 +92,7 @@ export default function Setup() {
             <Combobox.TextField
               prefix={<Icon source={SearchMinor} />}
               onChange={updateText}
-              label="Theme"
+              label="Step 1: Select theme"
               value={inputValue}
               placeholder="Search themes"
               autoComplete="off"
@@ -104,42 +104,8 @@ export default function Setup() {
           ) : null}
         </Combobox>
       </div>
-      <div className={styles.tutorial}>
-        <div className={styles.title}>
-          {" "}
-          <Text variant="headingMd" as="h2">
-            To install the Web Form on online store:
-          </Text>
-        </div>
-
-        <p>
-          - From Shopify admin, go to <span>Online Store</span> &#62;{" "}
-          <span>Themes</span> &#62; <span>Customize</span>
-        </p>
-        <p>
-          - From the <span>Sections</span> at the left top, click{" "}
-          <span>Add section</span> in <span>Footer</span>
-        </p>
-        <p>
-          - Click <span>Apps</span> tab, and select{" "}
-          <span>MooseDesk Help Widget</span>
-        </p>
-        <p>
-          - Click <span>Save</span>
-        </p>
-      </div>
-      <div className={styles.videoContainer}>
-        <div className={styles.wrapVideo}>
-          <iframe
-            src="https://www.youtube.com/embed/C5Ii1IOA-Xg"
-            title="Tutorial to install Web Form on Online store"
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowFullScreen={true}
-          ></iframe>
-        </div>
-      </div>
       <div>
+        <p>Step 2: Click the button below to go to the Theme Editor</p>
         <div
           className={classNames(
             styles.buttonLink,
@@ -153,7 +119,53 @@ export default function Setup() {
             Go to Theme Editor
           </Link>
         </div>
+        <p>Step 3: Click Save</p>
+        <img
+          src={
+            "https://cdn.shopify.com/s/files/1/0805/0819/1024/files/md-setup-widget-auto-1.png?v=1691587731"
+          }
+        />
       </div>
+      <div className={styles.tutorial}>
+        <div className={styles.title}>
+          {" "}
+          <Text variant="headingMd" as="h2">
+            Manual setup
+          </Text>
+        </div>
+
+        <p>
+          - Step 1: From Shopify admin, go to <span>Online Store</span> &#62;{" "}
+          <span>Themes</span> &#62; <span>Customize</span>
+        </p>
+        <img
+          src={
+            "https://cdn.shopify.com/s/files/1/0805/0819/1024/files/md-setup-widget-manual-step-1.png?v=1691587730"
+          }
+        />
+        <p>
+          - Step 2: From the <span>Sections</span> at the left top, click{" "}
+          <span>Add section</span> in <span>Footer</span>
+        </p>
+        <p>
+          - Step 3: Click <span>Apps</span> tab, and select{" "}
+          <span>MooseDesk Help Widget</span>
+        </p>
+        <img
+          src={
+            "https://cdn.shopify.com/s/files/1/0805/0819/1024/files/md-setup-widget-manual-step-2.png?v=1691587730"
+          }
+        />
+        <p>
+          - Step 4: Click <span>Save</span>
+        </p>
+        <img
+          src={
+            "https://cdn.shopify.com/s/files/1/0805/0819/1024/files/md-setup-widget-manual-step-3.png?v=1691587731"
+          }
+        />
+      </div>
+
       {/* </Card> */}
     </div>
   );
