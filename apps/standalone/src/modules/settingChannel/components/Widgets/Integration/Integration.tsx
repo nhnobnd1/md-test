@@ -1,8 +1,10 @@
 import { Button, Card, Divider, Row } from "antd";
+import Link from "antd/es/typography/Link";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import env from "src/core/env";
 import useMessage from "src/hooks/useMessage";
+import { useSubdomain } from "src/hooks/useSubdomain";
 import useWidgetSetting from "src/modules/settingChannel/store/useSetting";
 import { useStore } from "src/providers/StoreProviders";
 import CodeIcon from "~icons/carbon/code";
@@ -31,6 +33,7 @@ const commonStyles = {
 export default function Integration({ idWidget }: IntegrationProps) {
   const data = useWidgetSetting((state) => state.widgetSetting);
   const { storeId } = useStore();
+  const { subDomain } = useSubdomain();
   const message = useMessage();
   const { t } = useTranslation();
 
@@ -78,6 +81,14 @@ export default function Integration({ idWidget }: IntegrationProps) {
   return (
     <>
       <Card style={commonStyles.card}>
+        <div className="mb-3">
+          <Link
+            href={`https://${subDomain}.myshopify.com/admin/themes/current/editor?template=index&addAppBlockId=ed118f6f-db02-4570-8695-4416c857ded1/app-widget&target=sectionGroup:footer`}
+            target="_blank"
+          >
+            Deep link MooseDesk Help Widget
+          </Link>
+        </div>
         <div style={commonStyles.wrapTitle}>
           <CodeIcon fontSize={28} />
           <h2 style={commonStyles.title}>Embed HTML Code</h2>
