@@ -344,11 +344,11 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         agentObjectId: "",
       });
       history.replaceState(null, "", window.location.href);
-      return;
+      // return;
     }
-    if (filterObject) {
-      setFilterData({ ...filterData, ...filterObject });
-    }
+    // if (filterObject) {
+    //   setFilterData({ ...filterData, ...filterObject });
+    // }
   }, [filterData]);
 
   const handleResetModal = useCallback(() => {

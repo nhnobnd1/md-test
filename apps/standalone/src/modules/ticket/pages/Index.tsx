@@ -321,8 +321,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
 
   useDeepEffect(() => {
     if (statusFromTrash) {
-      // getListTicketFilter({ ...filterData, status: statusFromTrash });
-
       setFilterData({ ...filterData, status: statusFromTrash });
 
       setStatusFromTrash("");
@@ -335,11 +333,11 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       });
       history.replaceState(null, "", window.location.href);
 
-      return;
+      // return;
     }
-    if (filterObject) {
-      setFilterData({ ...filterData, ...filterObject });
-    }
+    // if (filterObject) {
+    //   setFilterData({ ...filterData, ...filterObject });
+    // }
   }, [filterData]);
 
   const handleEdit = (record: Ticket) => {
