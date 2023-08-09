@@ -1,5 +1,4 @@
-import { Combobox, Icon, Link, Listbox, Text } from "@shopify/polaris";
-import { SearchMinor } from "@shopify/polaris-icons";
+import { Link, Select, Text } from "@shopify/polaris";
 import classNames from "classnames";
 import { useCallback, useMemo, useState } from "react";
 import { useQuery } from "react-query";
@@ -9,6 +8,8 @@ import { Theme } from "src/modules/settingChannel/components/widgets/Setup/helpe
 import styles from "./setup.module.scss";
 export default function Setup() {
   const { getSubDomain } = useSubdomain();
+  const [themeId, setThemeId] = useState<string>("current");
+
   const { data, isLoading }: any = useQuery({
     queryKey: ["themeList"],
     queryFn: () => getListTheme(),
@@ -29,55 +30,10 @@ export default function Setup() {
       };
     });
   }, [data?.data?.data]);
-  const [inputValue, setInputValue] = useState("");
-  const [options, setOptions] = useState(deselectedOptions);
-  const [themeId, setThemeId] = useState<string>("current");
-  const updateText = useCallback(
-    (value: string) => {
-      setInputValue(value);
-
-      if (value === "") {
-        setOptions(deselectedOptions);
-        return;
-      }
-
-      const filterRegex = new RegExp(value, "i");
-      const resultOptions = deselectedOptions?.filter((option: any) =>
-        option?.label?.match(filterRegex)
-      );
-      setOptions(resultOptions);
-    },
-    [deselectedOptions]
+  const handleSelectChange = useCallback(
+    (value: string) => setThemeId(value),
+    []
   );
-  const updateSelection = useCallback(
-    (selected: string) => {
-      const matchedOption = options?.find((option: any) => {
-        return option?.value?.match(selected);
-      });
-
-      setThemeId(selected);
-      setInputValue((matchedOption && matchedOption.label) || "");
-    },
-    [options]
-  );
-  const optionsMarkup =
-    options?.length > 0
-      ? options?.map((option: any) => {
-          const { label, value } = option;
-
-          return (
-            <Listbox.Option
-              key={`${value}`}
-              value={value}
-              selected={themeId === value}
-              accessibilityLabel={label}
-            >
-              {label}
-            </Listbox.Option>
-          );
-        })
-      : null;
-
   return (
     <div className={styles.container}>
       {/* <Card sectioned> */}
@@ -87,22 +43,12 @@ export default function Setup() {
         </Text>
       </div>
       <div className={styles.wrapThemeSelect}>
-        <Combobox
-          activator={
-            <Combobox.TextField
-              prefix={<Icon source={SearchMinor} />}
-              onChange={updateText}
-              label="Theme"
-              value={inputValue}
-              placeholder="Search themes"
-              autoComplete="off"
-            />
-          }
-        >
-          {options.length > 0 ? (
-            <Listbox onSelect={updateSelection}>{optionsMarkup}</Listbox>
-          ) : null}
-        </Combobox>
+        <Select
+          label="Theme"
+          options={deselectedOptions}
+          onChange={handleSelectChange}
+          value={themeId}
+        />
       </div>
       <div className={styles.tutorial}>
         <div className={styles.title}>
