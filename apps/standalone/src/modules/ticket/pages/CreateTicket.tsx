@@ -12,23 +12,13 @@ import useViewport from "src/hooks/useViewport";
 import ContentShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ContentShopifySearch";
 import DrawerShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/DrawerShopifySearch";
 import { TicketForm } from "src/modules/ticket/components/TicketForm";
-import {
-  emailIntegrationApi,
-  getListEmailIntegration,
-} from "src/modules/ticket/helper/api";
+import { getListEmailIntegration } from "src/modules/ticket/helper/api";
 import styles from "./styles.module.scss";
 
 const CreateTicket = () => {
   const { isMobile } = useViewport(MediaScreen.LG);
   const { visible, setVisible } = useToggleGlobal();
 
-  const { data: dataPrimaryEmail, isLoading: processing } = useQuery({
-    queryKey: ["emailIntegrationApi"],
-    queryFn: () => emailIntegrationApi(),
-    retry: 3,
-    staleTime: 10000,
-    onError: () => {},
-  });
   const { data: dataEmailIntegration, isLoading: loadingList } = useQuery({
     queryKey: ["getListEmailIntegration"],
     queryFn: () => getListEmailIntegration({ page: 1, limit: 500 }),
@@ -38,17 +28,13 @@ const CreateTicket = () => {
   });
 
   const primaryEmail = useMemo(() => {
-    if (dataPrimaryEmail?._id) {
-      return dataPrimaryEmail;
-    }
     if (!dataEmailIntegration) {
       return undefined;
     }
     return dataEmailIntegration?.length > 0
       ? dataEmailIntegration[0]
       : undefined;
-  }, [dataPrimaryEmail, dataEmailIntegration]);
-
+  }, [dataEmailIntegration]);
   const initialValues = useMemo(() => {
     return {
       priority: Priority.MEDIUM,
@@ -84,7 +70,7 @@ const CreateTicket = () => {
         </div>
         <Header title="New Ticket" back className="mb-5"></Header>
 
-        {processing || loadingList ? (
+        {loadingList ? (
           <>
             <MDSkeleton lines={10} />
           </>
