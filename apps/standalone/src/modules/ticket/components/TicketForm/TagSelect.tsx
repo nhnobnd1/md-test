@@ -6,9 +6,11 @@ import useMessage from "src/hooks/useMessage";
 import { SelectTag } from "src/modules/ticket/components/TicketForm/SelectTag";
 import { getTagsTicket } from "src/modules/ticket/helper/api";
 
-interface TagSelectProps {}
+interface TagSelectProps {
+  placeholder?: string;
+}
 
-export const TagSelect: FC<TagSelectProps> = ({ ...props }) => {
+export const TagSelect: FC<TagSelectProps> = ({ placeholder, ...props }) => {
   const message = useMessage();
   const { t } = useTranslation();
   const [search, setSearch] = useState<string>("");
@@ -50,7 +52,7 @@ export const TagSelect: FC<TagSelectProps> = ({ ...props }) => {
         setSearch(value);
       }}
       mode="tags"
-      placeholder="Add tags"
+      placeholder={placeholder || "Add tags"}
       options={tagsOptions}
       loading={isFetching}
       {...props}

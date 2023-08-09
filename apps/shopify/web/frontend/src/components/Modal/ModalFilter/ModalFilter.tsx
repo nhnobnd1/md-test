@@ -2,7 +2,6 @@ import { useNavigate } from "@moose-desk/core";
 import {
   Agent,
   Customer,
-  Tag,
   priorityOptions,
   statusOptions,
 } from "@moose-desk/repo";
@@ -19,11 +18,10 @@ import { FC, useCallback, useMemo, useRef, useState } from "react";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
 import BoxSelectFilter from "src/components/Modal/ModalFilter/BoxSelectFilter";
-import BoxSelectTag from "src/components/Modal/ModalFilter/BoxSelectTag";
+import { TagSelect } from "src/modules/ticket/components/TicketForm/TagSelect";
 import { FilterObject } from "src/modules/ticket/pages/Index";
 interface ModalFilterProps {
   customers: Customer[];
-  tags: Tag[];
   agents: Agent[];
 
   handleApply: (values: any) => void;
@@ -33,7 +31,6 @@ interface ModalFilterProps {
 
 export const ModalFilter: FC<ModalFilterProps> = ({
   customers,
-  tags,
   agents,
   handleResetModal,
   handleApply,
@@ -43,12 +40,6 @@ export const ModalFilter: FC<ModalFilterProps> = ({
   const formRef = useRef<FormikProps<any>>(null);
   const navigate = useNavigate();
 
-  const tagsOptions = useMemo(() => {
-    const optionsTag = tags.map((item: Tag) => {
-      return { label: item.name, value: item.name };
-    });
-    return optionsTag;
-  }, [tags]);
   const agentsOptions = useMemo(() => {
     const mapping = agents.map((item: Agent) => {
       return {
@@ -137,7 +128,7 @@ export const ModalFilter: FC<ModalFilterProps> = ({
                     <BoxSelectFilter data={customerOptions} label="Customer" />
                   </FormItem>
                   <FormItem name="tags">
-                    <BoxSelectTag data={tagsOptions} label="Tags" />
+                    <TagSelect isFilter={true} />
                   </FormItem>
 
                   <FormItem name="priority">

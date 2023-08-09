@@ -6,9 +6,10 @@ import { getTagsTicket } from "src/modules/ticket/helper/api";
 
 interface TagSelectProps {
   disabled?: boolean;
+  isFilter?: boolean;
 }
 
-export const TagSelect: FC<TagSelectProps> = ({ ...props }) => {
+export const TagSelect: FC<TagSelectProps> = ({ isFilter, ...props }) => {
   const [search, setSearch] = useState<string>("");
   const debounceValue: string = useDebounce(search, 200);
   const { data: dataTags, isFetching } = useQuery({
@@ -41,6 +42,7 @@ export const TagSelect: FC<TagSelectProps> = ({ ...props }) => {
       obj: item,
     }));
   }, [dataTags]);
+
   return (
     <SelectAddTag
       disabled={props.disabled}
@@ -52,6 +54,7 @@ export const TagSelect: FC<TagSelectProps> = ({ ...props }) => {
       placeholder="+ Add Tags"
       {...props}
       loading={isFetching}
+      isFilter={isFilter}
     />
   );
 };

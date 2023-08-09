@@ -15,6 +15,7 @@ interface BoxSelectAutoReplyProps {
   data: Data[];
   onSearch?: (value: string) => any;
   loading?: boolean;
+  isFilter?: boolean;
 }
 
 const SelectAddTag = (props: BoxSelectAutoReplyProps) => {
@@ -82,19 +83,26 @@ const SelectAddTag = (props: BoxSelectAutoReplyProps) => {
   const updateSelection = useCallback(
     (selected, init = false) => {
       if (selected?.length) {
-        setSelectedTags((previousTags) => {
-          if (previousTags.includes(selected)) return previousTags;
-          if (init) {
-            return [...previousTags, ...selected];
-          } else {
-            return [...previousTags, selected];
-          }
-        });
+        if (props.isFilter) {
+          setSelectedTags((previousTags) => {
+            if (previousTags.includes(selected)) return previousTags;
+            return [...previousTags, ...selected.split(",")];
+          });
+        } else {
+          setSelectedTags((previousTags) => {
+            if (previousTags.includes(selected)) return previousTags;
+            if (init) {
+              return [...previousTags, ...selected];
+            } else {
+              return [...previousTags, selected];
+            }
+          });
+        }
         setInputValue("");
         setSelectedOption("");
       }
     },
-    [options]
+    [options, props.isFilter]
   );
   useEffect(() => {
     props.onChange && props.onChange(selectedTags);
@@ -154,9 +162,13 @@ const SelectAddTag = (props: BoxSelectAutoReplyProps) => {
           </Listbox>
         )}
       </Combobox>
-      <div className="mt-2">
-        <LegacyStack spacing="tight">{tagMarkup}</LegacyStack>
-      </div>
+      {props.value?.length ? (
+        <div className="mt-2">
+          <LegacyStack spacing="tight">{tagMarkup}</LegacyStack>
+        </div>
+      ) : (
+        <></>
+      )}
     </>
   );
 };

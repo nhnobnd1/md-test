@@ -1,23 +1,21 @@
 import { useNavigate } from "@moose-desk/core";
-import { Customer, priorityOptions, statusOptions } from "@moose-desk/repo";
+import { priorityOptions, statusOptions } from "@moose-desk/repo";
 import { ModalProps } from "antd";
-import { useMemo } from "react";
 import { MDModalUI } from "src/components/MDModalUI";
 import { MDButton } from "src/components/UI/Button/MDButton";
 import { Form } from "src/components/UI/Form";
 import Select from "src/components/UI/Select/Select";
 import { AgentSelect } from "src/modules/ticket/components/TicketForm/AgentSelect";
+import { CustomerSelect } from "src/modules/ticket/components/TicketForm/CustomerSelect";
 import { TagSelect } from "src/modules/ticket/components/TicketForm/TagSelect";
 
 interface ModalFilterProps extends ModalProps {
-  customers: Customer[];
   closeFilterModal: () => void;
   handleResetModal: () => void;
   handleApply: (values: any) => void;
 }
 
 const ModalFilter = ({
-  customers,
   closeFilterModal,
   handleResetModal,
   handleApply,
@@ -25,16 +23,6 @@ const ModalFilter = ({
 }: ModalFilterProps) => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
-
-  const customersOptions = useMemo(() => {
-    const customersOption = customers.map((item: Customer) => {
-      return {
-        label: `${item.firstName} ${item.lastName} - ${item.email}`,
-        value: item.email,
-      };
-    });
-    return customersOption;
-  }, [customers]);
 
   const handleApplySubmit = () => {
     handleApply(form.getFieldsValue());
@@ -75,10 +63,10 @@ const ModalFilter = ({
             <AgentSelect />
           </Form.Item>
           <Form.Item label="Customer" name="customer">
-            <Select options={customersOptions} />
+            <CustomerSelect />
           </Form.Item>
           <Form.Item label="Tags" name="tags">
-            <TagSelect />
+            <TagSelect placeholder="Search" />
           </Form.Item>
           <Form.Item label="Priority" name="priority">
             <Select options={priorityOptions} />

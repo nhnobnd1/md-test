@@ -58,7 +58,6 @@ import {
   getListCustomerApi,
   getListTicketApi,
   getStatisticTicket,
-  getTagsTicket,
   useExportTicket,
 } from "src/modules/ticket/helper/api";
 import UilImport from "~icons/uil/import";
@@ -84,7 +83,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
 
   const navigate = useNavigate();
   const { show } = useToast();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const {
     state: modalDelete,
@@ -120,6 +119,8 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     status: searchParams.get("status") ?? "",
     priority: searchParams.get("priority") ?? "",
     agentObjectId: searchParams.get("agentObjectId") ?? "",
+    sortBy: searchParams.get("sortBy") ?? "",
+    sortOrder: searchParams.get("sortOrder") ?? "",
   });
 
   const { data: dataStatistic, refetch: refetchStatistic } = useQuery({
@@ -189,33 +190,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     if (!dataAgents) return [];
     return dataAgents.filter((item) => item.isActive && item.emailConfirmed);
   }, [dataAgents]);
-
-  const { data: dataTags } = useQuery({
-    queryKey: [
-      "getTagsTicket",
-      {
-        page: 1,
-        limit: 500,
-      },
-    ],
-    queryFn: () =>
-      getTagsTicket({
-        page: 1,
-        limit: 500,
-      }),
-    staleTime: 10000,
-    retry: 1,
-
-    onError: () => {
-      show(t("messages:error.get_tag"), { isError: true });
-    },
-  });
-  const tags = useMemo(() => {
-    if (!dataTags) return [];
-    return dataTags;
-  }, [dataTags]);
-
-  const [mappingFilter, setMappingFilter] = useState<any>(filterData);
 
   const {
     data: dataTicket,
@@ -398,6 +372,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
       return {
         ...old,
         query: queryValue,
+        page: 1,
       };
     });
   }, []);
@@ -601,7 +576,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                     agents={agents}
                     handleResetModal={handleResetModal}
                     customers={customers}
-                    tags={tags}
                     handleApply={handleApply}
                     filterObject={filterObject}
                   />
