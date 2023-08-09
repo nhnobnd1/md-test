@@ -1,0 +1,113 @@
+@import "../../../../../styles/variables.scss";
+@import "../../../../../styles/mixin.scss";
+.container {
+  .title {
+    margin-bottom: 10px;
+  }
+  .wrapThemeSelect {
+    width: 50%;
+    min-width: 300px;
+    margin-bottom: 16px;
+    .label {
+      margin-bottom: 8px;
+    }
+    .select {
+      width: 100%;
+      height: 40px;
+      :global {
+        .ant-select-selector {
+          height: 100%;
+          input {
+            height: 100%;
+          }
+          .ant-select-selection-placeholder,.ant-select-selection-item {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            
+          }
+        }
+      }
+      @include mq(md, "max") {
+        height: 32px;
+      }
+    }
+    @include mq("900px", "max") {
+      width: 100%;
+      min-width: none;
+    }
+    @include breakpoints("901px", "1366px") {
+      width: 70%;
+      min-width: none;
+    }
+  }
+  .tutorial {
+    margin-bottom: 10px;
+    .titleTutorial {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    p {
+      // font-size: 16px;
+      margin-bottom: 5px;
+      span {
+        font-weight: bold;
+      }
+    }
+  }
+  .videoContainer {
+    width: 50%;
+    min-width: 300px;
+
+    @include mq("900px", "max") {
+      width: 100%;
+      min-width: none;
+    }
+    @include breakpoints("901px", "1366px") {
+      width: 70%;
+      min-width: none;
+    }
+    .wrapVideo {
+      width: 100%;
+      padding-bottom: 56.25%;
+      position: relative;
+
+      iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      // @include breakpoints(zero, lg) {
+      //     width: 100%;
+      // }
+    }
+  }
+  .buttonLink {
+    width: 156px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    height: 40px;
+    background-color: $primary;
+    border-radius: 8px;
+    &:hover {
+      // background-color: $primary-background-hover;
+    }
+    a {
+      height: 36px;
+      width: 156px;
+      color: $white-color;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      &:hover {
+        text-decoration: none;
+      }
+    }
+  }
+}

@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 import JobState from "../models/JobState";
-declare type Fn<Result = any> = (...args: any) => Observable<Result>;
+type Fn<Result = any> = (...args: any) => Observable<Result>;
 interface UseJobOptions {
     showLoading?: boolean;
 }
