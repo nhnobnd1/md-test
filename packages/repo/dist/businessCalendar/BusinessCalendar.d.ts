@@ -62,8 +62,8 @@ export interface UpdateBusinessCalendar {
     holidays: Holidays[];
     autoReply: AutoReply[];
 }
-export declare type GetListBusinessCalendarRequest = BaseListRequest;
-export declare type GetListBusinessCalendarResponse = BaseListResponse<BusinessCalendar>;
-export declare type UpdateBusinessCalendarRequest = UpdateBusinessCalendar;
-export declare type UpdateBusinessCalendarResponse = BaseResponse<BusinessCalendar>;
+export type GetListBusinessCalendarRequest = BaseListRequest;
+export type GetListBusinessCalendarResponse = BaseListResponse<BusinessCalendar>;
+export type UpdateBusinessCalendarRequest = UpdateBusinessCalendar;
+export type UpdateBusinessCalendarResponse = BaseResponse<BusinessCalendar>;
 //# sourceMappingURL=BusinessCalendar.d.ts.map

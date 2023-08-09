@@ -11,10 +11,10 @@ export interface SetupOTP {
 export interface BaseAccessManagerRequest {
     storeId?: string;
 }
-export declare type GetAccessMangerResponse = BaseResponse<AccessManger>;
-export declare type GetAccessManagerResponse = BaseResponse<AccessManger>;
-export declare type UpdateAccessManagerResponse = BaseResponse<AccessManger>;
-export declare type CreateAccessManagerRequest = Omit<AccessManger, "storeId">;
+export type GetAccessMangerResponse = BaseResponse<AccessManger>;
+export type GetAccessManagerResponse = BaseResponse<AccessManger>;
+export type UpdateAccessManagerResponse = BaseResponse<AccessManger>;
+export type CreateAccessManagerRequest = Omit<AccessManger, "storeId">;
 export declare enum MethodOTP {
     Disabled = "Disabled",
     Email = "Email",
@@ -27,5 +27,5 @@ export interface VerifySetupOTPRequest {
     method: MethodOTP;
     code: string;
 }
-export declare type SetUpResponse = BaseResponse<SetupOTP>;
+export type SetUpResponse = BaseResponse<SetupOTP>;
 //# sourceMappingURL=UserSetting.d.ts.map

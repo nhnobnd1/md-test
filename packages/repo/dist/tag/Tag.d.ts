@@ -1,6 +1,6 @@
 import { Ticket } from '../ticket';
 import { BaseListRequest, BaseListResponse, BaseResponse } from '../unty';
-export declare type Tag = {
+export type Tag = {
     id: string;
     createdDatetime: string;
     createdTimestamp: string;
@@ -22,13 +22,13 @@ export interface BaseListTagRequest extends BaseListRequest {
     sortBy?: string;
     sortOder?: number;
 }
-export declare type GetListTicketByTagResponse = BaseListResponse<Ticket>;
-export declare type GetListTagRequest = BaseListTagRequest;
-export declare type GetListTagResponse = BaseListResponse<Tag>;
-export declare type GetOneTagResponse = BaseResponse<Tag>;
-export declare type CreateTagRequest = Omit<Tag, 'id'>;
-export declare type CreateTagResponse = BaseResponse<Tag>;
-export declare type UpdateTagRequest = Tag;
-export declare type UpdateTagResponse = BaseResponse<Tag>;
-export declare type DeleteTagResponse = BaseResponse<Tag>;
+export type GetListTicketByTagResponse = BaseListResponse<Ticket>;
+export type GetListTagRequest = BaseListTagRequest;
+export type GetListTagResponse = BaseListResponse<Tag>;
+export type GetOneTagResponse = BaseResponse<Tag>;
+export type CreateTagRequest = Omit<Tag, 'id'>;
+export type CreateTagResponse = BaseResponse<Tag>;
+export type UpdateTagRequest = Tag;
+export type UpdateTagResponse = BaseResponse<Tag>;
+export type DeleteTagResponse = BaseResponse<Tag>;
 //# sourceMappingURL=Tag.d.ts.map

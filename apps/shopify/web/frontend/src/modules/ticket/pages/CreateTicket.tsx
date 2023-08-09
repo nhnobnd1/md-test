@@ -27,10 +27,7 @@ import useScreenType from "src/hooks/useScreenType";
 import useToggleGlobal from "src/hooks/useToggleGlobal";
 import ContentShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ContentShopifySearch";
 import { TicketForm } from "src/modules/ticket/components/TicketForm";
-import {
-  emailIntegrationApi,
-  getListEmailIntegration,
-} from "src/modules/ticket/helper/api";
+import { getListEmailIntegration } from "src/modules/ticket/helper/api";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import styles from "./style.module.scss";
 interface CreateTicketProps {}
@@ -43,18 +40,10 @@ const CreateTicket = (props: CreateTicketProps) => {
   const isMobileOrTablet = Boolean(screenWidth <= MediaScreen.LG);
   const formRef = useRef<FormikProps<any>>(null);
   // const [primaryEmail, setPrimaryEmail] = useState<EmailIntegration>();
-  const { data: dataPrimaryEmail, isLoading: processing } = useQuery({
-    queryKey: ["emailIntegrationApi"],
-    queryFn: () => emailIntegrationApi(),
-    retry: 3,
-    staleTime: 10000,
-    onError: () => {
-      show(t("messages:error.something_went_wrong"), { isError: true });
-    },
-  });
+
   const { data: dataEmailIntegration, isLoading: loadingList } = useQuery({
     queryKey: ["getListEmailIntegration"],
-    queryFn: () => getListEmailIntegration({ page: 1, limit: 500 }),
+    queryFn: () => getListEmailIntegration({ page: 1, limit: 500, isLive: 1 }),
     retry: 3,
     staleTime: 10000,
     onError: () => {
@@ -63,16 +52,13 @@ const CreateTicket = (props: CreateTicketProps) => {
   });
 
   const primaryEmail = useMemo(() => {
-    if (dataPrimaryEmail?._id) {
-      return dataPrimaryEmail;
-    }
     if (!dataEmailIntegration) {
       return undefined;
     }
     return dataEmailIntegration?.length > 0
       ? dataEmailIntegration[0]
       : undefined;
-  }, [dataPrimaryEmail, dataEmailIntegration]);
+  }, [dataEmailIntegration]);
 
   const initialValuesForm = useMemo(() => {
     return {
@@ -87,7 +73,7 @@ const CreateTicket = (props: CreateTicketProps) => {
     };
   }, [primaryEmail?._id]);
   const { show } = useToast();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   useMount(() => {
     updateForm();
@@ -103,7 +89,7 @@ const CreateTicket = (props: CreateTicketProps) => {
 
   return (
     <>
-      {processing || loadingList ? (
+      {loadingList ? (
         <>
           <Page fullWidth>
             <SkeletonPage primaryAction />

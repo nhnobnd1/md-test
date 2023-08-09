@@ -18,7 +18,7 @@ export interface Agent {
 export interface GetListAgentRequest extends BaseListRequest {
     isLive?: number;
 }
-export declare type GetListAgentResponse = BaseListResponse<Agent>;
+export type GetListAgentResponse = BaseListResponse<Agent>;
 export interface CreateAgentRequest {
     firstName: string;
     lastName: string;
@@ -28,20 +28,20 @@ export interface CreateAgentRequest {
     phoneNumber?: string;
     subdomain?: string;
 }
-export declare type CreateAgentResponse = BaseResponse<Agent>;
+export type CreateAgentResponse = BaseResponse<Agent>;
 export declare enum ErrorCodeCreate {
     INVITATION_EXISTS = "INVITATION_EXISTS",
     USER_IS_EXISTS = "USER_IS_EXISTS"
 }
-export declare type GetOneAgentResponse = BaseResponse<Agent>;
+export type GetOneAgentResponse = BaseResponse<Agent>;
 export interface UpdateAgentRequest {
     firstName: string;
     lastName?: string;
     role?: Role;
     phoneNumber?: string;
 }
-export declare type UpdateAgentResponse = BaseResponse<Agent>;
-export declare type DeleteAgentResponse = BaseResponse<{}>;
+export type UpdateAgentResponse = BaseResponse<Agent>;
+export type DeleteAgentResponse = BaseResponse<{}>;
 export interface ActiveNewAgentRequest {
     token: string;
     email: string;
@@ -49,14 +49,14 @@ export interface ActiveNewAgentRequest {
     password: string;
     confirmPassword: string;
 }
-export declare type ActiveNewAgentResponse = BaseResponse<Agent>;
+export type ActiveNewAgentResponse = BaseResponse<Agent>;
 export interface ResendEmailInvitationRequest {
     email: string;
     storeId: string;
 }
-export declare type ResendEmailInvitationResponse = BaseResponse<string>;
-export declare type DeActiveAgentResponse = BaseResponse<string>;
-export declare type ReActiveResponse = BaseResponse<string>;
+export type ResendEmailInvitationResponse = BaseResponse<string>;
+export type DeActiveAgentResponse = BaseResponse<string>;
+export type ReActiveResponse = BaseResponse<string>;
 export interface CheckTokenNewAgentRequest {
     token: string;
     email: string;
@@ -68,5 +68,5 @@ export declare enum TypeCheckTokenNewAgent {
     INVITATION_NOT_EXISTS = "INVITATION_NOT_EXISTS",
     USER_ACTIVE = "USER_ACTIVE"
 }
-export declare type CheckTokenNewAgentResponse = BaseResponse<TypeCheckTokenNewAgent>;
+export type CheckTokenNewAgentResponse = BaseResponse<TypeCheckTokenNewAgent>;
 //# sourceMappingURL=Agent.d.ts.map

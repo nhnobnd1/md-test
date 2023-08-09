@@ -209,7 +209,7 @@ const DetailTicket = () => {
   const [loadingButton, setLoadingButton] = useState(false);
   const { data: dataEmailIntegration } = useQuery({
     queryKey: ["getListEmailIntegration"],
-    queryFn: () => getListEmailIntegration({ page: 1, limit: 500 }),
+    queryFn: () => getListEmailIntegration({ page: 1, limit: 500, isLive: 1 }),
     retry: 3,
     staleTime: 10000,
     onError: () => {},
@@ -242,12 +242,14 @@ const DetailTicket = () => {
       {
         page: 1,
         limit: 500,
+        isLive: 1,
       },
     ],
     queryFn: () =>
       getListAgentApi({
         page: 1,
         limit: 500,
+        isLive: 1,
       }),
     staleTime: 10000,
     retry: 1,

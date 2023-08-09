@@ -66,7 +66,7 @@ export interface RegisterRequest {
     email: string;
     password: string;
 }
-export declare type LoginResponse = BaseResponse<{
+export type LoginResponse = BaseResponse<{
     accessToken: string;
     expiresIn: number;
     refreshToken: string;

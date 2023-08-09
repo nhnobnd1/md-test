@@ -1,5 +1,5 @@
 import { BaseListRequest, BaseListResponse, BaseResponse } from '../unty';
-export declare type HelpWidget = {
+export type HelpWidget = {
     id: string;
     createdDatetime: string;
     createdTimestamp: number;
@@ -20,12 +20,12 @@ export interface BaseListHelpWidgetRequest extends BaseListRequest {
     sortBy?: string;
     sortOrder?: number;
 }
-export declare type GetListHelpWidgetRequest = BaseListHelpWidgetRequest;
-export declare type GetListHelpWidgetResponse = BaseListResponse<HelpWidget>;
-export declare type GetOneHelpWidgetResponse = BaseResponse<HelpWidget>;
-export declare type CreateHelpWidgetRequest = Omit<HelpWidget, 'id'>;
-export declare type CreateHelpWidgetResponse = BaseResponse<HelpWidget>;
-export declare type UpdateHelpWidgetRequest = HelpWidget;
-export declare type UpdateHelpWidgetResponse = BaseResponse<HelpWidget>;
-export declare type DeleteHelpWidgetResponse = BaseListResponse<HelpWidget>;
+export type GetListHelpWidgetRequest = BaseListHelpWidgetRequest;
+export type GetListHelpWidgetResponse = BaseListResponse<HelpWidget>;
+export type GetOneHelpWidgetResponse = BaseResponse<HelpWidget>;
+export type CreateHelpWidgetRequest = Omit<HelpWidget, 'id'>;
+export type CreateHelpWidgetResponse = BaseResponse<HelpWidget>;
+export type UpdateHelpWidgetRequest = HelpWidget;
+export type UpdateHelpWidgetResponse = BaseResponse<HelpWidget>;
+export type DeleteHelpWidgetResponse = BaseListResponse<HelpWidget>;
 //# sourceMappingURL=HelpWidget.d.ts.map

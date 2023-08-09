@@ -34,7 +34,7 @@ export interface SignupAccountShopifyRequest {
     companyName?: string | null;
     timezone?: string;
 }
-export declare type SignupAccountResponse = BaseResponse<User>;
+export type SignupAccountResponse = BaseResponse<User>;
 export interface SignInAccountAgentRequest {
     email: string;
     password: string;
@@ -47,7 +47,7 @@ export interface SignInAccountShopifyRequest {
     password: string;
     storeId: string;
 }
-export declare type SignInAccountResponse = BaseResponse<{
+export type SignInAccountResponse = BaseResponse<{
     accessToken: string;
     expiresIn: number;
     refreshToken: string;
@@ -65,7 +65,7 @@ export interface ForgotPasswordRequest {
 export interface RefreshTokenRequest {
     refreshToken: string;
 }
-export declare type RefreshTokenResponse = BaseResponse<{
+export type RefreshTokenResponse = BaseResponse<{
     accessToken: string;
     tokenType: "Bearer";
     expiresIn: number;
@@ -76,7 +76,7 @@ export interface UpdatePasswordRequest {
     newPassword: string;
     confirmNewPassword: string;
 }
-export declare type Status2FAResponse = BaseResponse<{
+export type Status2FAResponse = BaseResponse<{
     twoFactorStoreEnabled: boolean;
     twoFactorEnabled: boolean;
     twoFactorMethod: string;

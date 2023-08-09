@@ -91,7 +91,9 @@ export interface GetEmailMicrosoftAuthRequest {
 
 export type GetEmailGoogleAuthResponse = BaseResponse<string>;
 
-export interface GetListEmailRequest extends BaseListRequest {}
+export interface GetListEmailRequest extends BaseListRequest {
+	isLive?: number;
+}
 
 export type GetListEmailResponse = BaseListResponse<EmailIntegration>;
 
