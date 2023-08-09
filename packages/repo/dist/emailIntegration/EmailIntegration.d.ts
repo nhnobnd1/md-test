@@ -83,11 +83,12 @@ export interface GetEmailMicrosoftAuthRequest {
     subdomainForTest?: string;
     type?: 'update' | 'new';
 }
-export declare type GetEmailGoogleAuthResponse = BaseResponse<string>;
+export type GetEmailGoogleAuthResponse = BaseResponse<string>;
 export interface GetListEmailRequest extends BaseListRequest {
+    isLive?: number;
 }
-export declare type GetListEmailResponse = BaseListResponse<EmailIntegration>;
-export declare type GetOneEmailResponse = BaseResponse<EmailIntegration>;
+export type GetListEmailResponse = BaseListResponse<EmailIntegration>;
+export type GetOneEmailResponse = BaseResponse<EmailIntegration>;
 export interface CreateEmailIntegrationRequest {
     name: string;
     supportEmail: string;
@@ -98,7 +99,7 @@ export interface CreateEmailIntegrationRequest {
     };
     signature: string | undefined;
 }
-export declare type CreateEmailIntegrationResponse = BaseResponse<EmailIntegration>;
+export type CreateEmailIntegrationResponse = BaseResponse<EmailIntegration>;
 export interface UpdateEmailIntegrationRequest {
     name: string;
     supportEmail: string;
@@ -108,7 +109,7 @@ export interface UpdateEmailIntegrationRequest {
         forwardEmail: string;
     };
 }
-export declare type UpdateEmailIntegrationResponse = BaseResponse<EmailIntegration>;
+export type UpdateEmailIntegrationResponse = BaseResponse<EmailIntegration>;
 export interface CheckConnectionRequest {
     host: string;
     port: number;

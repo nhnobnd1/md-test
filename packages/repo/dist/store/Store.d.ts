@@ -6,7 +6,7 @@ export interface GetTourGuideRequest {
     subdomain: string;
     isOnboardingComplete: boolean;
 }
-export declare type GetStoreIdResponse = BaseResponse<{
+export type GetStoreIdResponse = BaseResponse<{
     storeId: string;
     timezone: string;
     isOnboardingComplete: boolean;

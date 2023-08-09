@@ -17,7 +17,7 @@ import Statistic from "src/modules/report/components/Statistic/Statistic";
 import { getTimeFilterDefault } from "src/modules/report/helper/convert";
 import styles from "./styles.module.scss";
 export default function DashboardIndexPage() {
-  const { subDomain, getSubDomain } = useSubdomain();
+  const { subDomain } = useSubdomain();
   const { timezone } = useGlobalData(false, subDomain || "");
   const [screenType, screenWidth] = useScreenType();
   const isMobileOrTablet = Boolean(screenWidth < MediaScreen.LG);

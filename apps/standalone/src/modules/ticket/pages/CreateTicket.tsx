@@ -21,7 +21,7 @@ const CreateTicket = () => {
 
   const { data: dataEmailIntegration, isLoading: loadingList } = useQuery({
     queryKey: ["getListEmailIntegration"],
-    queryFn: () => getListEmailIntegration({ page: 1, limit: 500 }),
+    queryFn: () => getListEmailIntegration({ page: 1, limit: 500, isLive: 1 }),
     retry: 3,
     staleTime: 10000,
     onError: () => {},

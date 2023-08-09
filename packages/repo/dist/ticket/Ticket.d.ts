@@ -19,7 +19,7 @@ export declare const priorityOptions: {
     label: string;
     value: Priority;
 }[];
-export declare type AttachFile = {
+export type AttachFile = {
     attachmentUrl: string;
     contentType: string;
     createdTimestamp: number;
@@ -29,7 +29,7 @@ export declare type AttachFile = {
     thumbUrl?: string;
     _id: string;
 };
-export declare type Ticket = {
+export type Ticket = {
     id: string;
     createdDatetime: string;
     createdTimestamp: number;
@@ -73,7 +73,7 @@ export declare type Ticket = {
         isSample: boolean;
     };
 };
-export declare type Conversation = {
+export type Conversation = {
     id: string;
     createdDatetime: string;
     createdTimestamp: number;
@@ -104,7 +104,7 @@ export declare type Conversation = {
     _id: string;
     text: string;
 };
-export declare type ReplyTicket = {
+export type ReplyTicket = {
     id: string;
     attachmentIds?: string[];
     bccEmails?: string[];
@@ -120,7 +120,7 @@ export declare type ReplyTicket = {
         email: string;
     }];
 };
-export declare type TicketStatistic = {
+export type TicketStatistic = {
     statusCode: number;
     data: {
         OPEN: number;
@@ -130,10 +130,10 @@ export declare type TicketStatistic = {
         NEW: number;
     };
 };
-export declare type RestoreTicketResponse = {
+export type RestoreTicketResponse = {
     statusCode: number;
 };
-export declare type UpdateTicket = {
+export type UpdateTicket = {
     priority?: string;
     status?: string;
     tags?: string[];
@@ -154,19 +154,19 @@ export interface BaseListTicketFilterRequest extends BaseListRequest {
     priority?: string;
     agentObjectId?: string;
 }
-export declare type GetListTicketRequest = BaseListTicketRequest;
-export declare type GetListTicketResponse = BaseListResponse<Ticket>;
-export declare type GetListTicketConversationResponse = BaseListResponse<Conversation>;
-export declare type GetOneTicketResponse = BaseResponse<Ticket>;
-export declare type CreateTicketRequest = Omit<Ticket, 'id'>;
-export declare type CreateReplyTicketRequest = ReplyTicket;
-export declare type CreateReplyTicketResponse = BaseResponse<Conversation>;
-export declare type CreateTicketResponse = BaseResponse<Ticket>;
-export declare type UpdateTicketRequest = UpdateTicket;
-export declare type UpdateTicketResponse = BaseResponse<Ticket>;
-export declare type DeleteTicketResponse = BaseListResponse<Ticket>;
-export declare type StatisticTicketResponse = TicketStatistic;
-export declare type UploadFileResponse = {
+export type GetListTicketRequest = BaseListTicketRequest;
+export type GetListTicketResponse = BaseListResponse<Ticket>;
+export type GetListTicketConversationResponse = BaseListResponse<Conversation>;
+export type GetOneTicketResponse = BaseResponse<Ticket>;
+export type CreateTicketRequest = Omit<Ticket, 'id'>;
+export type CreateReplyTicketRequest = ReplyTicket;
+export type CreateReplyTicketResponse = BaseResponse<Conversation>;
+export type CreateTicketResponse = BaseResponse<Ticket>;
+export type UpdateTicketRequest = UpdateTicket;
+export type UpdateTicketResponse = BaseResponse<Ticket>;
+export type DeleteTicketResponse = BaseListResponse<Ticket>;
+export type StatisticTicketResponse = TicketStatistic;
+export type UploadFileResponse = {
     data: {
         ids: string[];
         urls: string[];

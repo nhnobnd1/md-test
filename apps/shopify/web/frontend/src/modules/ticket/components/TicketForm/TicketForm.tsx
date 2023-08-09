@@ -2,8 +2,8 @@ import { generatePath, useJob, useNavigate, useToggle } from "@moose-desk/core";
 import {
   AgentRepository,
   EmailIntegration,
-  Priority,
   TicketRepository,
+  priorityOptions,
 } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import { Button, FormLayout, Link, Select, TextField } from "@shopify/polaris";
@@ -37,25 +37,6 @@ interface TicketFormProps extends Partial<FormProps> {
   primaryEmail: EmailIntegration | undefined;
 }
 
-export const priorityOptions = [
-  {
-    label: "Urgent",
-    value: Priority.URGENT,
-  },
-  {
-    label: "High",
-    value: Priority.HIGH,
-  },
-  {
-    label: "Medium",
-    value: Priority.MEDIUM,
-  },
-  {
-    label: "Low",
-    value: Priority.LOW,
-  },
-];
-
 export const TicketForm = ({ ...props }: TicketFormProps) => {
   const [enableCC, setEnableCC] = useState(false);
   const navigate = useNavigate();
@@ -74,7 +55,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
 
   const { data: dataEmailIntegration } = useQuery({
     queryKey: ["getListEmailIntegration"],
-    queryFn: () => getListEmailIntegration({ page: 1, limit: 500 }),
+    queryFn: () => getListEmailIntegration({ page: 1, limit: 500, isLive: 1 }),
     retry: 3,
     staleTime: 10000,
     onError: () => {

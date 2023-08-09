@@ -1,5 +1,5 @@
 import { BaseListRequest, BaseListResponse, BaseResponse } from "../unty";
-export declare type Customer = {
+export type Customer = {
     id: string;
     _id: string;
     createdDatetime: string;
@@ -24,12 +24,12 @@ export interface BaseListCustomerRequest extends BaseListRequest {
     sortBy?: string;
     sortOrder?: number;
 }
-export declare type GetListCustomerRequest = BaseListCustomerRequest;
-export declare type GetListCustomerResponse = BaseListResponse<Customer>;
-export declare type GetOneCustomerResponse = BaseResponse<Customer>;
-export declare type CreateCustomerRequest = Omit<Customer, "id">;
-export declare type CreateCustomerResponse = BaseResponse<Customer>;
-export declare type UpdateCustomerRequest = Customer;
-export declare type UpdateCustomerResponse = BaseResponse<Customer>;
-export declare type DeleteCustomerResponse = BaseListResponse<Customer>;
+export type GetListCustomerRequest = BaseListCustomerRequest;
+export type GetListCustomerResponse = BaseListResponse<Customer>;
+export type GetOneCustomerResponse = BaseResponse<Customer>;
+export type CreateCustomerRequest = Omit<Customer, "id">;
+export type CreateCustomerResponse = BaseResponse<Customer>;
+export type UpdateCustomerRequest = Customer;
+export type UpdateCustomerResponse = BaseResponse<Customer>;
+export type DeleteCustomerResponse = BaseListResponse<Customer>;
 //# sourceMappingURL=Customer.d.ts.map
