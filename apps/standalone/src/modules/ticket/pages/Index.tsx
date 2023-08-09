@@ -56,7 +56,6 @@ import useScreenType from "src/hooks/useScreenType";
 import { AgentSelect } from "src/modules/ticket/components/TicketForm/AgentSelect";
 import {
   getListAgentApi,
-  getListCustomerApi,
   getListTicketApi,
   getStatisticTicket,
   useExportTicket,
@@ -83,6 +82,8 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     status: searchParams.get("status") ?? "",
     priority: searchParams.get("priority") ?? "",
     agentObjectId: searchParams.get("agentObjectId") ?? "",
+    sortBy: searchParams.get("sortBy") ?? "",
+    sortOrder: searchParams.get("sortOrder") ?? "",
   });
 
   const [filterObject, setFilterObject] = useState<FilterObject | null>(null);
@@ -145,21 +146,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     if (!dataAgents) return [];
     return dataAgents.filter((item) => item.isActive && item.emailConfirmed);
   }, [dataAgents]);
-
-  const { data: dataCustomers } = useQuery({
-    queryKey: ["getCustomers"],
-    queryFn: () => getListCustomerApi({ page: 1, limit: 500 }),
-    retry: 3,
-    staleTime: 10000,
-    onError: () => {
-      message.error(t("messages:error.get_customer"));
-    },
-  });
-
-  const customers = useMemo(() => {
-    if (!dataCustomers) return [];
-    return dataCustomers;
-  }, [dataCustomers]);
 
   const { subDomain } = useSubdomain();
   const { timezone } = useGlobalData(false, subDomain || "");
@@ -408,7 +394,6 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   return (
     <>
       <ModalFilter
-        customers={customers}
         open={filterModal}
         handleResetModal={handleResetModal}
         cancelText="Reset"
@@ -428,6 +413,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                   return {
                     ...value,
                     query: searchText,
+                    page: 1,
                   };
                 });
               }}

@@ -1,21 +1,17 @@
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import { FC, useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
-import useMessage from "src/hooks/useMessage";
-import { SelectTag } from "src/modules/ticket/components/TicketForm/SelectTag";
+import SelectAddTag from "src/components/SelectAddTag/SelectAddTag";
 import { getTagsTicket } from "src/modules/ticket/helper/api";
 
 interface TagSelectProps {
-  placeholder?: string;
+  disabled?: boolean;
+  isFilter?: boolean;
 }
 
-export const TagSelect: FC<TagSelectProps> = ({ placeholder, ...props }) => {
-  const message = useMessage();
-  const { t } = useTranslation();
+export const TagSelect: FC<TagSelectProps> = ({ isFilter, ...props }) => {
   const [search, setSearch] = useState<string>("");
   const debounceValue: string = useDebounce(search, 200);
-
   const { data: dataTags, isFetching } = useQuery({
     queryKey: [
       "getTagsTicket",
@@ -35,7 +31,7 @@ export const TagSelect: FC<TagSelectProps> = ({ placeholder, ...props }) => {
     retry: 1,
 
     onError: () => {
-      message.error(t("messages:error.get_tag"));
+      //   message.error(t("messages:error.get_tag"));
     },
   });
   const tagsOptions = useMemo(() => {
@@ -46,16 +42,19 @@ export const TagSelect: FC<TagSelectProps> = ({ placeholder, ...props }) => {
       obj: item,
     }));
   }, [dataTags]);
+
   return (
-    <SelectTag
+    <SelectAddTag
+      disabled={props.disabled}
       onSearch={(value) => {
         setSearch(value);
       }}
-      mode="tags"
-      placeholder={placeholder || "Add tags"}
-      options={tagsOptions}
-      loading={isFetching}
+      label="Tags"
+      data={tagsOptions}
+      placeholder="+ Add Tags"
       {...props}
+      loading={isFetching}
+      isFilter={isFilter}
     />
   );
 };

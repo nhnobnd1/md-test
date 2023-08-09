@@ -13,6 +13,9 @@ interface BoxSelectAutoReplyProps {
   onChange?: (value: any) => void;
   disabled?: boolean;
   data: Data[];
+  onSearch?: (value: string) => any;
+  loading?: boolean;
+  isFilter?: boolean;
 }
 
 const SelectAddTag = (props: BoxSelectAutoReplyProps) => {
@@ -49,7 +52,7 @@ const SelectAddTag = (props: BoxSelectAutoReplyProps) => {
   const updateText = useCallback(
     (value) => {
       setInputValue(value);
-
+      props.onSearch && props.onSearch(value);
       if (value === "") {
         setOptions(deselectedOptions);
         return;
@@ -80,23 +83,34 @@ const SelectAddTag = (props: BoxSelectAutoReplyProps) => {
   const updateSelection = useCallback(
     (selected, init = false) => {
       if (selected?.length) {
-        setSelectedTags((previousTags) => {
-          if (previousTags.includes(selected)) return previousTags;
-          if (init) {
-            return [...previousTags, ...selected];
-          } else {
-            return [...previousTags, selected];
-          }
-        });
+        if (props.isFilter) {
+          setSelectedTags((previousTags) => {
+            if (previousTags.includes(selected)) return previousTags;
+            return [...previousTags, ...selected.split(",")];
+          });
+        } else {
+          setSelectedTags((previousTags) => {
+            if (previousTags.includes(selected)) return previousTags;
+            if (init) {
+              return [...previousTags, ...selected];
+            } else {
+              return [...previousTags, selected];
+            }
+          });
+        }
         setInputValue("");
         setSelectedOption("");
       }
     },
-    [options]
+    [options, props.isFilter]
   );
   useEffect(() => {
     props.onChange && props.onChange(selectedTags);
   }, [selectedTags.length]);
+
+  const loadingMarkup = props.loading ? (
+    <Listbox.Loading accessibilityLabel="loading" />
+  ) : null;
 
   const optionsMarkup = (
     <div className="max-h-[200px]">
@@ -124,7 +138,6 @@ const SelectAddTag = (props: BoxSelectAutoReplyProps) => {
 
     updateSelection(props.value, true);
   }, [props.data]);
-
   return (
     <>
       <Combobox
@@ -143,12 +156,19 @@ const SelectAddTag = (props: BoxSelectAutoReplyProps) => {
         }
       >
         {props.disabled || options.length === 0 ? null : (
-          <Listbox onSelect={updateSelection}>{optionsMarkup}</Listbox>
+          <Listbox onSelect={updateSelection}>
+            {optionsMarkup}
+            {loadingMarkup}
+          </Listbox>
         )}
       </Combobox>
-      <div className="mt-2">
-        <LegacyStack spacing="tight">{tagMarkup}</LegacyStack>
-      </div>
+      {props.value?.length ? (
+        <div className="mt-2">
+          <LegacyStack spacing="tight">{tagMarkup}</LegacyStack>
+        </div>
+      ) : (
+        <></>
+      )}
     </>
   );
 };

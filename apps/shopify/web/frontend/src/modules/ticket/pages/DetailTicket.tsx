@@ -48,10 +48,8 @@ import { useQuery, useQueryClient } from "react-query";
 import { catchError, map, of } from "rxjs";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
-import BoxSelectAssignee from "src/components/Modal/ModalFilter/BoxSelectAssignee";
 import BoxSelectFilter from "src/components/Modal/ModalFilter/BoxSelectFilter";
 import SelectAddEmail from "src/components/SelectAddEmail/SelectAddEmail";
-import SelectAddTag from "src/components/SelectAddTag/SelectAddTag";
 import { TextEditorTicket } from "src/components/TextEditorTicket";
 import useGlobalData from "src/hooks/useGlobalData";
 import useScreenType from "src/hooks/useScreenType";
@@ -74,6 +72,7 @@ import BackIcon from "~icons/mingcute/back-2-fill";
 
 import { uniqBy } from "lodash-es";
 import BoxSelectCustomer from "src/modules/ticket/components/BoxSelectCustomer/BoxSelectCustomer";
+import { TagSelect } from "src/modules/ticket/components/TicketForm/TagSelect";
 import {
   emailIntegrationApi,
   getListAgentApi,
@@ -86,6 +85,7 @@ import {
 import { UploadForward } from "src/modules/ticket/pages/UploadForward";
 import useForwardTicket from "src/modules/ticket/store/useForwardTicket";
 import styles from "./style.module.scss";
+import BoxSelectAssignee from "src/components/Modal/ModalFilter/BoxSelectAssignee";
 export interface ChatItem {
   id: string;
   name: string;
@@ -387,6 +387,7 @@ const DetailTicket = () => {
       return {
         status: ticket?.status,
         assignee: ticket?.agentObjectId,
+
         priority: ticket?.priority,
         to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
         tags: ticket?.tags,
@@ -404,6 +405,7 @@ const DetailTicket = () => {
       return {
         status: ticket?.status,
         assignee: ticket?.agentObjectId,
+
         priority: ticket?.priority,
         to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
         tags: ticket?.tags,
@@ -851,10 +853,12 @@ Hit Send to see what your message will look like
                 onClick={handleOpenReply}
                 icon={<FaMailReply style={{ fontSize: 16 }} />}
               ></Button>
-              <Button
-                onClick={openStatusModal}
-                icon={<InfoIcon style={{ fontSize: 16 }} />}
-              ></Button>
+              {disabled ? null : (
+                <Button
+                  onClick={openStatusModal}
+                  icon={<InfoIcon style={{ fontSize: 16 }} />}
+                ></Button>
+              )}
               <Button
                 onClick={handleToggleSearch}
                 icon={PriceLookupMinor}
@@ -926,12 +930,7 @@ Hit Send to see what your message will look like
                                 />
                               </FormItem>
                               <FormItem name="tags">
-                                <SelectAddTag
-                                  disabled={disabled}
-                                  label="Tags"
-                                  data={tagsOptions}
-                                  placeholder="Add Tags"
-                                />
+                                <TagSelect disabled={disabled} />
                               </FormItem>
                             </div>
                           </FormLayout.Group>
@@ -1241,11 +1240,7 @@ Hit Send to see what your message will look like
                           />
                         </FormItem>
                         <FormItem name="tags">
-                          <SelectAddTag
-                            label="Tags"
-                            data={tagsOptions}
-                            placeholder="Add Tags"
-                          />
+                          <TagSelect />
                         </FormItem>
                       </FormLayout>
                     </Form>

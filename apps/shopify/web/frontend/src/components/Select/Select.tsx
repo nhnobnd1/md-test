@@ -4,6 +4,7 @@ import {
   useJob,
   useToggle,
 } from "@moose-desk/core";
+import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import {
   Combobox,
   ComboboxProps,
@@ -66,6 +67,8 @@ export const Select = ({
   const [selectedObj, setSelectedObj] = useState<SelectedObj[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [optionsData, setOptions] = useState<SelectOptions[]>(options);
+  const [search, setSearch] = useState<string>("");
+  const debounceValue: string = useDebounce(search, 200);
 
   const updateText = useCallback(
     (value) => {
@@ -76,7 +79,7 @@ export const Select = ({
         onSearch && onSearch("");
         return;
       } else {
-        onSearchDebounce(value);
+        setSearch(value);
       }
 
       const filterRegex = new RegExp(value, "i");
@@ -175,19 +178,15 @@ export const Select = ({
     setOptions(options);
   }, [options]);
 
-  const { run: onSearchDebounce } = useDebounceFn(
-    (text: string) => {
-      onSearch && onSearch(text);
-    },
-    { wait: 100 }
-  );
+  useEffect(() => {
+    onSearch && onSearch(debounceValue);
+  }, [debounceValue]);
   return (
     <div>
       <Combobox
         {...props}
         activator={
           <Combobox.TextField
-            // prefix={<Icon source={() => <CustomerPlusMajor />} />}
             onChange={updateText}
             onFocus={() => {
               setInputValue("");

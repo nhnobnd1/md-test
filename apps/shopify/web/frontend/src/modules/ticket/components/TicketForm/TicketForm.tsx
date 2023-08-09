@@ -1,12 +1,15 @@
 import { generatePath, useJob, useNavigate, useToggle } from "@moose-desk/core";
+import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import {
   AgentRepository,
+  Customer,
   EmailIntegration,
   TicketRepository,
   priorityOptions,
 } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import { Button, FormLayout, Link, Select, TextField } from "@shopify/polaris";
+import { uniqBy } from "lodash-es";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
@@ -16,12 +19,11 @@ import FormItem from "src/components/Form/Item";
 import BoxSelectFilter from "src/components/Modal/ModalFilter/BoxSelectFilter";
 import { Select as ComboSelect, LoadMoreValue } from "src/components/Select";
 import SelectAddEmail from "src/components/SelectAddEmail/SelectAddEmail";
-import SelectAddTag from "src/components/SelectAddTag/SelectAddTag";
 import { TextEditorTicket } from "src/components/TextEditorTicket";
 import useDeepEffect from "src/hooks/useDeepEffect";
-import useSaveDataGlobal from "src/hooks/useSaveDataGlobal";
 import { CustomModal } from "src/modules/customers/component/Modal";
 import BoxSelectCustomer from "src/modules/ticket/components/BoxSelectCustomer/BoxSelectCustomer";
+import { TagSelect } from "src/modules/ticket/components/TicketForm/TagSelect";
 import {
   getListCustomerApi,
   getListEmailIntegration,
@@ -44,15 +46,15 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
   const { t, i18n } = useTranslation();
   const { state: visible, on: openPopup, off: closePopup } = useToggle();
 
-  const { dataSaved }: any = useSaveDataGlobal();
-  const [fromEmail, setFromEmail] = useState(props.primaryEmail);
   const [toEmail, setToEmail] = useState("");
   const [files, setFiles] = useState<any>([]);
   const [loadingButton, setLoadingButton] = useState(false);
   const selectedFrom = useSelectFrom((state) => state.selected);
   const contentCreate = useFormCreateTicket((state) => state.content);
   const updateContent = useFormCreateTicket((state) => state.updateState);
-
+  const [dataCustomersFetch, setDataCustomerFetch] = useState<Customer[]>([]);
+  const [searchCustomer, setSearchCustomer] = useState<string>("");
+  const debounceCustomer: string = useDebounce(searchCustomer, 200);
   const { data: dataEmailIntegration } = useQuery({
     queryKey: ["getListEmailIntegration"],
     queryFn: () => getListEmailIntegration({ page: 1, limit: 500, isLive: 1 }),
@@ -192,13 +194,14 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
 
   const fetchAgents = useCallback(
     (params: LoadMoreValue) => {
-      const limit = 500;
+      const limit = 10;
 
       return AgentRepository()
         .getList({
           page: params.page,
           limit: limit,
           query: params.searchText,
+          isLive: 1,
         })
         .pipe(
           map(({ data }) => {
@@ -277,10 +280,14 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
   }, [dataTags]);
 
   const { data: dataCustomers } = useQuery({
-    queryKey: ["getCustomers"],
-    queryFn: () => getListCustomerApi({ page: 1, limit: 500 }),
+    queryKey: ["getCustomers", { page: 1, limit: 10, query: debounceCustomer }],
+    queryFn: () =>
+      getListCustomerApi({ page: 1, limit: 10, query: debounceCustomer }),
     retry: 3,
-    staleTime: 10000,
+    // staleTime: 10000,
+    onSuccess: (data) => {
+      setDataCustomerFetch(uniqBy([...data, ...dataCustomersFetch], "_id"));
+    },
     onError: () => {
       show(t("messages:error.get_customer"), { isError: true });
     },
@@ -289,7 +296,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
     if (!dataCustomers) return [];
     return dataCustomers.map((item) => {
       return {
-        label: `${item.firstName} ${item.lastName} - ${item.email}`,
+        label: `${item?.firstName} ${item?.lastName} - ${item.email}`,
         value: item.email,
         obj: item,
       };
@@ -301,8 +308,8 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
     const findEmailIntegration = emailIntegrationOptions.find(
       (item) => item.value === values.from
     );
-    const findCustomer = customersOptions.find(
-      (item) => item.value === values.to
+    const findCustomer = dataCustomersFetch.find(
+      (item) => item.email === values.to
     );
     const dataCreate: any = {
       fromEmail: {
@@ -316,11 +323,11 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
         {
           email: values.to,
           name: findCustomer
-            ? `${findCustomer?.obj.firstName} ${findCustomer?.obj.lastName}`
+            ? `${findCustomer.firstName} ${findCustomer.lastName}`
             : values.to.split("@")[0],
         },
       ],
-      customerObjectId: findCustomer ? findCustomer?.obj._id : undefined,
+      customerObjectId: findCustomer ? findCustomer._id : undefined,
       ccEmails: enableCC ? values?.CC : [],
       bccEmails: enableCC ? values?.BCC : [],
       subject: values.subject,
@@ -425,6 +432,9 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
                   }
                   data={customersOptions}
                   placeholder="Email"
+                  onSearch={(e) => {
+                    setSearchCustomer(e);
+                  }}
                 />
               </FormItem>
             </FormItem>
@@ -436,6 +446,9 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
                   label="CC"
                   data={customersOptions}
                   defaultTag={[]}
+                  onSearch={(e) => {
+                    setSearchCustomer(e);
+                  }}
                 />
               </FormItem>
             </div>
@@ -449,6 +462,9 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
                   label="BCC"
                   data={customersOptions}
                   defaultTag={[]}
+                  onSearch={(e) => {
+                    setSearchCustomer(e);
+                  }}
                 />
               </FormItem>
             </div>
@@ -490,11 +506,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
 
           <div className="mt-4">
             <FormItem name="tags">
-              <SelectAddTag
-                label="Tags"
-                data={tagsOptions}
-                placeholder="+ Add Tags"
-              />
+              <TagSelect />
             </FormItem>
           </div>
         </div>

@@ -17,6 +17,7 @@ interface BoxSelectAutoReplyProps {
   data: Data[];
   form: any;
   openPopup?: any;
+  onSearch?: (value: string) => any;
 }
 
 const BoxSelectCustomer = (props: BoxSelectAutoReplyProps) => {
@@ -44,6 +45,8 @@ const BoxSelectCustomer = (props: BoxSelectAutoReplyProps) => {
   }, [dataSaved?.email]);
   const updateText = useCallback(
     (value) => {
+      props.onSearch && props.onSearch(value);
+      props.form.current.setFieldValue("to", value);
       setInputValue(value);
       if (value === "") {
         setOptions(deselectedOptions);
@@ -55,7 +58,6 @@ const BoxSelectCustomer = (props: BoxSelectAutoReplyProps) => {
         option.label.match(filterRegex)
       );
       setOptions(resultOptions);
-      props.form.current.setFieldValue("to", value);
     },
     [options]
   );
@@ -67,7 +69,7 @@ const BoxSelectCustomer = (props: BoxSelectAutoReplyProps) => {
       });
       setSelectedOption(selected);
 
-      setInputValue((matchedOption && matchedOption.label) || "");
+      setInputValue((matchedOption && matchedOption.value) || "");
 
       if (selected !== props.value) {
         props.onChange && props.onChange(selected);
@@ -122,7 +124,11 @@ const BoxSelectCustomer = (props: BoxSelectAutoReplyProps) => {
         <Listbox onSelect={updateSelection}>{optionsMarkup}</Listbox>
       ) : props.openPopup ? (
         <Button
-          icon={<Icon source={CustomerPlusMajor} color="base" />}
+          icon={
+            <div className="mr-1">
+              <Icon source={CustomerPlusMajor} color="base" />
+            </div>
+          }
           plain
           fullWidth
           textAlign="left"
