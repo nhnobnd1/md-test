@@ -56,7 +56,6 @@ export default function App() {
         })
         .subscribe({
           next({ data }) {
-            changeUser(data.data.accessToken);
             login(
               {
                 base_token: data.data.accessToken,
@@ -64,6 +63,7 @@ export default function App() {
               },
               data.data
             );
+            changeUser(data.data.accessToken);
           },
           error() {
             show(t("messages:error.login"), {

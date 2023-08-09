@@ -14,6 +14,7 @@ import {
 import MainLayoutTopBar from "src/layouts/components/MainLayoutTopBar";
 import { getStatisticTicket } from "src/modules/ticket/helper/api";
 import useFullScreen from "src/store/useFullScreen";
+import useRating from "src/store/useRating";
 import useUser from "src/store/useUser";
 
 interface MainLayoutProps {
@@ -34,12 +35,16 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   }, [visible]);
 
   const user = useUser((state) => state.user);
+  const ratingState = useRating((state) => state);
 
   const { data: dataStatistic } = useQuery({
     queryKey: ["getStatisticTicket"],
     queryFn: () => getStatisticTicket(),
     retry: 3,
-    enabled: !!user,
+    onSuccess: () => {
+      ratingState.changeFetchStatistic(true);
+    },
+    enabled: !!user && !ratingState.fetchStatistic,
     onError: () => {
       // show(t("messages:error.get_ticket"), { isError: true });
     },

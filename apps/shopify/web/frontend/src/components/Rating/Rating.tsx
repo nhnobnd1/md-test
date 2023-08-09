@@ -21,12 +21,14 @@ import { getMerchantRatingApi, postMerchantRatingApi } from "src/helper/api";
 
 import FormItem from "src/components/Form/Item";
 import useRating from "src/store/useRating";
+import useUser from "src/store/useUser";
 interface RatingProps {}
 
 const Rating: FC<RatingProps> = () => {
   const ratingState = useRating((state) => state);
   const { show } = useToast();
   const { t } = useTranslation();
+  const user = useUser((state) => state.user);
 
   const {
     state: countDown,
@@ -49,7 +51,7 @@ const Rating: FC<RatingProps> = () => {
 
       initCountdown("rating");
     },
-    enabled: !ratingState.isFetch,
+    enabled: !!user && !ratingState.isFetch,
     onError: () => {
       show(t("messages:error.something_went_wrong"), { isError: true });
     },

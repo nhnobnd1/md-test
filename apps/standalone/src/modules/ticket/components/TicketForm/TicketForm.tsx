@@ -89,12 +89,13 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
   const [searchCustomer, setSearchCustomer] = useState<string>("");
   const debounceCustomer: string = useDebounce(searchCustomer, 200);
   const [dataCustomersFetch, setDataCustomerFetch] = useState<Customer[]>([]);
+  console.log({ dataCustomersFetch });
   const { data: dataCustomers, isFetching: isFetchingCustomer } = useQuery({
     queryKey: ["getCustomers", { page: 1, limit: 10, query: debounceCustomer }],
     queryFn: () =>
       getListCustomerApi({ page: 1, limit: 10, query: debounceCustomer }),
     retry: 3,
-    staleTime: 10000,
+    // staleTime: 10000,
     onSuccess: (data) => {
       setDataCustomerFetch(uniqBy([...data, ...dataCustomersFetch], "_id"));
     },

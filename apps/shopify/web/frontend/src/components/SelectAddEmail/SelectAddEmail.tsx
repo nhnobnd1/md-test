@@ -14,6 +14,7 @@ interface BoxSelectAutoReplyProps {
   disabled?: boolean;
   data: Data[];
   defaultTag?: string[];
+  onSearch?: (value: string) => any;
 }
 
 const SelectAddEmail = (props: BoxSelectAutoReplyProps) => {
@@ -32,8 +33,8 @@ const SelectAddEmail = (props: BoxSelectAutoReplyProps) => {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   useEffect(() => {
-    if (props?.defaultTag?.length > 0) {
-      setSelectedTags(props.defaultTag);
+    if ((props?.defaultTag?.length as any) > 0) {
+      setSelectedTags(props.defaultTag as any);
     }
   }, [props?.defaultTag]);
 
@@ -45,6 +46,10 @@ const SelectAddEmail = (props: BoxSelectAutoReplyProps) => {
     },
     []
   );
+
+  useEffect(() => {
+    props.onSearch && props.onSearch(inputValue);
+  }, [inputValue]);
 
   const tagMarkup =
     selectedTags?.length > 0
@@ -141,6 +146,9 @@ const SelectAddEmail = (props: BoxSelectAutoReplyProps) => {
               value={inputValue}
               autoComplete="off"
               error={props.error}
+              onFocus={() => {
+                props.onSearch && props.onSearch(inputValue);
+              }}
             />
           </div>
         }

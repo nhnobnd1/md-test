@@ -13,6 +13,8 @@ interface BoxSelectAutoReplyProps {
   onChange?: (value: any) => void;
   disabled?: boolean;
   data: Data[];
+  onSearch?: (value: string) => any;
+  loading?: boolean;
 }
 
 const SelectAddTag = (props: BoxSelectAutoReplyProps) => {
@@ -49,7 +51,7 @@ const SelectAddTag = (props: BoxSelectAutoReplyProps) => {
   const updateText = useCallback(
     (value) => {
       setInputValue(value);
-
+      props.onSearch && props.onSearch(value);
       if (value === "") {
         setOptions(deselectedOptions);
         return;
@@ -98,6 +100,10 @@ const SelectAddTag = (props: BoxSelectAutoReplyProps) => {
     props.onChange && props.onChange(selectedTags);
   }, [selectedTags.length]);
 
+  const loadingMarkup = props.loading ? (
+    <Listbox.Loading accessibilityLabel="loading" />
+  ) : null;
+
   const optionsMarkup = (
     <div className="max-h-[200px]">
       {options.map((option) => {
@@ -124,7 +130,6 @@ const SelectAddTag = (props: BoxSelectAutoReplyProps) => {
 
     updateSelection(props.value, true);
   }, [props.data]);
-
   return (
     <>
       <Combobox
@@ -143,7 +148,10 @@ const SelectAddTag = (props: BoxSelectAutoReplyProps) => {
         }
       >
         {props.disabled || options.length === 0 ? null : (
-          <Listbox onSelect={updateSelection}>{optionsMarkup}</Listbox>
+          <Listbox onSelect={updateSelection}>
+            {optionsMarkup}
+            {loadingMarkup}
+          </Listbox>
         )}
       </Combobox>
       <div className="mt-2">
