@@ -27,3 +27,5 @@ extensions/*/build
 web/database.sqlite
 
 shopify.app.toml
+
+shopify.app.moosedesk-dev.toml
