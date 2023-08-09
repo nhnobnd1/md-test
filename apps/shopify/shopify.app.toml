@@ -1,0 +1,10 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+embedded = true
+extension_directories = [ "extensions/*" ]
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "write_products,write_draft_orders,read_themes,write_themes,read_price_rules,read_discounts"
+use_legacy_install_flow = true
+
