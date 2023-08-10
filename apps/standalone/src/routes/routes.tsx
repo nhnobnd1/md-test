@@ -1,5 +1,6 @@
 import { IRoute } from "@moose-desk/core";
 import { lazy } from "react";
+import { lazyRetry } from "src/helper";
 import { MainLayout } from "src/layouts/MainLayout";
 import RoutePaths from "src/routes/paths";
 
@@ -10,51 +11,65 @@ const appRootRoutes: IRoute[] = [
     routes: [
       {
         path: RoutePaths.Index,
-        component: lazy(() => import("src/pages/RedirectPage")),
+        component: lazy(() =>
+          lazyRetry(() => import("src/pages/RedirectPage"))
+        ),
       },
       {
         path: RoutePaths.Login,
         title: "Login",
-        component: lazy(
-          () => import("src/modules/agent/pages/auth/signIn/SignIn")
+        component: lazy(() =>
+          lazyRetry(() => import("src/modules/agent/pages/auth/signIn/SignIn"))
         ),
       },
       {
         path: RoutePaths.OnBoarding,
-        component: lazy(
-          () => import("src/modules/agent/pages/auth/onBoarding/OnBoarding")
+        component: lazy(() =>
+          lazyRetry(
+            () => import("src/modules/agent/pages/auth/onBoarding/OnBoarding")
+          )
         ),
       },
       {
         path: RoutePaths.ForgotPassword,
-        component: lazy(
-          () =>
-            import("src/modules/agent/pages/auth/forgotPassword/ForgotPassword")
+        component: lazy(() =>
+          lazyRetry(
+            () =>
+              import(
+                "src/modules/agent/pages/auth/forgotPassword/ForgotPassword"
+              )
+          )
         ),
       },
       {
         path: RoutePaths.ResetPassword,
-        component: lazy(
-          () =>
-            import("src/modules/agent/pages/auth/resetPassword/ResetPassword")
+        component: lazy(() =>
+          lazyRetry(
+            () =>
+              import("src/modules/agent/pages/auth/resetPassword/ResetPassword")
+          )
         ),
       },
       {
         path: RoutePaths.VerifyEmailSuccess,
-        component: lazy(
-          () =>
-            import(
-              "src/modules/agent/pages/auth/verifyEmailSuccess/VerifyEmailSuccess"
-            )
+        component: lazy(() =>
+          lazyRetry(
+            () =>
+              import(
+                "src/modules/agent/pages/auth/verifyEmailSuccess/VerifyEmailSuccess"
+              )
+          )
         ),
       },
       {
         path: RoutePaths.VerifyEmailFail,
-        component: lazy(
-          () =>
-            import(
-              "src/modules/agent/pages/auth/verifyEmailFail/VerifyEmailFail"
-            )
+        component: lazy(() =>
+          lazyRetry(
+            () =>
+              import(
+                "src/modules/agent/pages/auth/verifyEmailFail/VerifyEmailFail"
+              )
+          )
         ),
       },
     ],

@@ -2,7 +2,7 @@
 
 name = "MooseDesk Local"
 client_id = "6beffae9e7e2d336d04c001812119383"
-application_url = "https://qc-ipod-watershed-commonly.trycloudflare.com"
+application_url = "https://temporarily-sl-adventures-licking.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ use_legacy_install_flow = true
 
 [auth]
 redirect_urls = [
-  "https://qc-ipod-watershed-commonly.trycloudflare.com/auth/callback",
-  "https://qc-ipod-watershed-commonly.trycloudflare.com/auth/shopify/callback",
-  "https://qc-ipod-watershed-commonly.trycloudflare.com/api/auth/callback"
+  "https://temporarily-sl-adventures-licking.trycloudflare.com/auth/callback",
+  "https://temporarily-sl-adventures-licking.trycloudflare.com/auth/shopify/callback",
+  "https://temporarily-sl-adventures-licking.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

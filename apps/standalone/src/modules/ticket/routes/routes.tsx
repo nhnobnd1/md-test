@@ -1,5 +1,6 @@
 import { IRoute } from "@moose-desk/core";
 import { lazy } from "react";
+import { lazyRetry } from "src/helper";
 import { AppLayout } from "src/layouts/AppLayout";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 
@@ -13,22 +14,30 @@ const ticketRoutes: IRoute = {
       title: "Ticket",
       middleware: "user",
       index: true,
-      component: lazy(() => import("src/modules/ticket/pages/Index")),
+      component: lazy(() =>
+        lazyRetry(() => import("src/modules/ticket/pages/Index"))
+      ),
     },
     {
       path: TicketRoutePaths.Create,
       middleware: "user",
-      component: lazy(() => import("src/modules/ticket/pages/CreateTicket")),
+      component: lazy(() =>
+        lazyRetry(() => import("src/modules/ticket/pages/CreateTicket"))
+      ),
     },
     {
       path: TicketRoutePaths.Detail,
       middleware: "user",
-      component: lazy(() => import("src/modules/ticket/pages/DetailTicket")),
+      component: lazy(() =>
+        lazyRetry(() => import("src/modules/ticket/pages/DetailTicket"))
+      ),
     },
     {
       path: TicketRoutePaths.Trash,
       middleware: "user",
-      component: lazy(() => import("src/modules/ticket/pages/TrashTicket")),
+      component: lazy(() =>
+        lazyRetry(() => import("src/modules/ticket/pages/TrashTicket"))
+      ),
     },
   ],
 };

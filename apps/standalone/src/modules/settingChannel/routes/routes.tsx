@@ -1,5 +1,6 @@
 import { IRoute } from "@moose-desk/core";
 import { lazy } from "react";
+import { lazyRetry } from "src/helper";
 import { AppLayout } from "src/layouts/AppLayout";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
 
@@ -12,21 +13,28 @@ const settingChannelRoutes: IRoute = {
       path: SettingChannelRoutePaths.Index,
       index: true,
       middleware: "admin",
-      component: lazy(() => import("src/modules/settingChannel/pages/Index")),
+      component: lazy(() =>
+        lazyRetry(() => import("src/modules/settingChannel/pages/Index"))
+      ),
     },
     {
       path: SettingChannelRoutePaths.ChannelEmail.Index,
       middleware: "admin",
-      component: lazy(
-        () =>
-          import("src/modules/settingChannel/pages/ChannelEmail/ChannelEmail")
+      component: lazy(() =>
+        lazyRetry(
+          () =>
+            import("src/modules/settingChannel/pages/ChannelEmail/ChannelEmail")
+        )
       ),
     },
     {
       path: SettingChannelRoutePaths.Widgets.Index,
       middleware: "admin",
       component: lazy(
-        () => import("src/modules/settingChannel/pages/Widgets/WidgetDetail")
+        lazyRetry(
+          () => () =>
+            import("src/modules/settingChannel/pages/Widgets/WidgetDetail")
+        )
       ),
     },
     // {
@@ -39,30 +47,36 @@ const settingChannelRoutes: IRoute = {
     {
       path: SettingChannelRoutePaths.ChannelEmail.Create,
       middleware: "admin",
-      component: lazy(
-        () =>
-          import(
-            "src/modules/settingChannel/pages/ChannelEmail/ChannelEmailCreate"
-          )
+      component: lazy(() =>
+        lazyRetry(
+          () =>
+            import(
+              "src/modules/settingChannel/pages/ChannelEmail/ChannelEmailCreate"
+            )
+        )
       ),
     },
     {
       path: SettingChannelRoutePaths.ChannelEmail.Update,
       middleware: "admin",
-      component: lazy(
-        () =>
-          import(
-            "src/modules/settingChannel/pages/ChannelEmail/ChannelEmailUpdate"
-          )
+      component: lazy(() =>
+        lazyRetry(
+          () =>
+            import(
+              "src/modules/settingChannel/pages/ChannelEmail/ChannelEmailUpdate"
+            )
+        )
       ),
     },
     {
       path: SettingChannelRoutePaths.EmailIntegration,
-      component: lazy(
-        () =>
-          import(
-            "src/modules/settingChannel/pages/ChannelEmail/ChannelEmailIntegration"
-          )
+      component: lazy(() =>
+        lazyRetry(
+          () =>
+            import(
+              "src/modules/settingChannel/pages/ChannelEmail/ChannelEmailIntegration"
+            )
+        )
       ),
     },
     {
@@ -76,11 +90,13 @@ const settingChannelRoutes: IRoute = {
     },
     {
       path: SettingChannelRoutePaths.ChannelEmail.Redirect,
-      component: lazy(
-        () =>
-          import(
-            "src/modules/settingChannel/pages/ChannelEmail/ChannelEmailRedirect"
-          )
+      component: lazy(() =>
+        lazyRetry(
+          () =>
+            import(
+              "src/modules/settingChannel/pages/ChannelEmail/ChannelEmailRedirect"
+            )
+        )
       ),
     },
   ],
