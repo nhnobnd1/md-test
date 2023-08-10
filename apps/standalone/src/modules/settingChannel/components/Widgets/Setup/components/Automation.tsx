@@ -28,7 +28,7 @@ export const Automation = React.memo(() => {
     return data?.data?.data?.map((theme: Theme) => {
       return {
         value: String(theme.id),
-        label: theme.name,
+        label: `${theme.name}${theme.role === "main" ? " (Live theme)" : ""}`,
       };
     });
   }, [data?.data?.data]);
