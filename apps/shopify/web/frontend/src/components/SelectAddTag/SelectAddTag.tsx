@@ -155,7 +155,7 @@ const SelectAddTag = (props: BoxSelectAutoReplyProps) => {
           </div>
         }
       >
-        {props.disabled || options.length === 0 ? null : (
+        {props.disabled || (options.length === 0 && !props.loading) ? null : (
           <Listbox onSelect={updateSelection}>
             {optionsMarkup}
             {loadingMarkup}

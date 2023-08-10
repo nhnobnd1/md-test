@@ -27,7 +27,6 @@ import { TagSelect } from "src/modules/ticket/components/TicketForm/TagSelect";
 import {
   getListCustomerApi,
   getListEmailIntegration,
-  getTagsTicket,
 } from "src/modules/ticket/helper/api";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import useFormCreateTicket from "src/modules/ticket/store/useFormCreateTicket";
@@ -249,37 +248,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
       );
   });
 
-  const { data: dataTags } = useQuery({
-    queryKey: [
-      "getTagsTicket",
-      {
-        page: 1,
-        limit: 500,
-      },
-    ],
-    queryFn: () =>
-      getTagsTicket({
-        page: 1,
-        limit: 500,
-      }),
-    staleTime: 10000,
-    retry: 1,
-
-    onError: () => {
-      show(t("messages:error.get_tag"), { isError: true });
-    },
-  });
-
-  const tagsOptions = useMemo(() => {
-    if (!dataTags) return [];
-    return dataTags.map((item) => ({
-      label: item.name,
-      value: item.name,
-      obj: item,
-    }));
-  }, [dataTags]);
-
-  const { data: dataCustomers } = useQuery({
+  const { data: dataCustomers, isLoading: isLoadingCustomer } = useQuery({
     queryKey: ["getCustomers", { page: 1, limit: 10, query: debounceCustomer }],
     queryFn: () =>
       getListCustomerApi({ page: 1, limit: 10, query: debounceCustomer }),
@@ -435,6 +404,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
                   onSearch={(e) => {
                     setSearchCustomer(e);
                   }}
+                  loading={isLoadingCustomer}
                 />
               </FormItem>
             </FormItem>
@@ -449,6 +419,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
                   onSearch={(e) => {
                     setSearchCustomer(e);
                   }}
+                  loading={isLoadingCustomer}
                 />
               </FormItem>
             </div>
@@ -465,6 +436,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
                   onSearch={(e) => {
                     setSearchCustomer(e);
                   }}
+                  loading={isLoadingCustomer}
                 />
               </FormItem>
             </div>

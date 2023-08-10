@@ -15,6 +15,7 @@ interface BoxSelectAutoReplyProps {
   data: Data[];
   defaultTag?: string[];
   onSearch?: (value: string) => any;
+  loading?: boolean;
 }
 
 const SelectAddEmail = (props: BoxSelectAutoReplyProps) => {
@@ -103,6 +104,9 @@ const SelectAddEmail = (props: BoxSelectAutoReplyProps) => {
     },
     [options]
   );
+  const loadingMarkup = props.loading ? (
+    <Listbox.Loading accessibilityLabel="loading" />
+  ) : null;
   useEffect(() => {
     props.onChange && props.onChange(selectedTags);
   }, [selectedTags.length]);
@@ -153,8 +157,11 @@ const SelectAddEmail = (props: BoxSelectAutoReplyProps) => {
           </div>
         }
       >
-        {props.disabled || options.length === 0 ? null : (
-          <Listbox onSelect={updateSelection}>{optionsMarkup}</Listbox>
+        {props.disabled || (options.length === 0 && !props.loading) ? null : (
+          <Listbox onSelect={updateSelection}>
+            {optionsMarkup}
+            {loadingMarkup}
+          </Listbox>
         )}
       </Combobox>
       <div className="mt-1">

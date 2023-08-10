@@ -12,7 +12,7 @@ interface TagSelectProps {
 export const TagSelect: FC<TagSelectProps> = ({ isFilter, ...props }) => {
   const [search, setSearch] = useState<string>("");
   const debounceValue: string = useDebounce(search, 200);
-  const { data: dataTags, isFetching } = useQuery({
+  const { data: dataTags, isLoading } = useQuery({
     queryKey: [
       "getTagsTicket",
       {
@@ -27,7 +27,7 @@ export const TagSelect: FC<TagSelectProps> = ({ isFilter, ...props }) => {
         limit: 10,
         query: debounceValue,
       }),
-    staleTime: 10000,
+    // staleTime: 10000,
     retry: 1,
 
     onError: () => {
@@ -53,7 +53,7 @@ export const TagSelect: FC<TagSelectProps> = ({ isFilter, ...props }) => {
       data={tagsOptions}
       placeholder="+ Add Tags"
       {...props}
-      loading={isFetching}
+      loading={isLoading}
       isFilter={isFilter}
     />
   );

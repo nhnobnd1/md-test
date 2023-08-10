@@ -20,8 +20,6 @@ interface ChartFirstResponseTimeProps {
 export const ChartFirstResponseTime = ({
   data,
 }: ChartFirstResponseTimeProps) => {
-  console.log("re-render");
-
   const chartData: any = data?.map((item: ChartFirstResponseTimeRes) => {
     return {
       name: formatTimeDDMMYY(item?.date),
