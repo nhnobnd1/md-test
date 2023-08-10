@@ -11,6 +11,7 @@ import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery, useQueryClient } from "react-query";
 import { catchError, map, of } from "rxjs";
+import { MDButton } from "src/components/UI/Button/MDButton";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
 import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
@@ -110,21 +111,21 @@ const DetailGroup = () => {
       <Header className="pb-6" title={group?.name ?? ""} back>
         <div className="flex justify-end items-center flex-1">
           <div className="flex gap-2">
-            <Button
+            <MDButton
               onClick={() => {
                 form.resetFields();
                 navigate(generatePath(GroupRoutePaths.Index));
               }}
             >
               Cancel
-            </Button>
-            <Button
+            </MDButton>
+            <MDButton
               type="primary"
               loading={loadingUpdateGroup}
               onClick={() => form.submit()}
             >
               Save
-            </Button>
+            </MDButton>
           </div>
         </div>
       </Header>

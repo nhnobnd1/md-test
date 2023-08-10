@@ -3,7 +3,7 @@
 @import "./mixin.scss";
 
 .pl-mobile-24 {
-  @include mq(md, 'max') {
+  @include mq(md, "max") {
     padding-left: 24px;
   }
 }
@@ -63,6 +63,9 @@
 .tox-editor-dock-fadeout {
   opacity: 1 !important;
   visibility: visible !important;
+}
+.tox-tinymce {
+  border: 1px solid #d9d9d9 !important;
 }
 
 .ant-form-inline {
