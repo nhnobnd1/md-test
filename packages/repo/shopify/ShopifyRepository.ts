@@ -16,6 +16,7 @@ export const ShopifyRepository = createRepository(
     getOrder(api, id: string) {
       return api.get(`/order/${id}`);
     },
+    getTheme(api) {return api.get("/theme")}
   }
 );
 

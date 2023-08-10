@@ -1,11 +1,11 @@
 import { FunctionComponent, ReactNode } from "react";
-export declare type LoadingContextType = {
+export type LoadingContextType = {
     startLoading: () => void;
     stopLoading: () => void;
     state: boolean;
 };
 export declare const LoadingContext: import("react").Context<LoadingContextType | undefined>;
-export declare type LoadingComponentType = FunctionComponent<{
+export type LoadingComponentType = FunctionComponent<{
     state: boolean;
     color?: string;
     children?: React.ReactNode;

@@ -1,5 +1,5 @@
 import { DebounceSettings } from "lodash-es";
-declare type Fn = (...args: any) => any;
+type Fn = (...args: any) => any;
 export declare function useDebounceFn<T extends Fn>(fn: T, options?: DebounceSettings & {
     wait: number;
 }): {

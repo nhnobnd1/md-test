@@ -1,8 +1,8 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-name = "nam999"
-client_id = "1daf15909ca639111b7358c7c37e6660"
-application_url = "https://trio-hong-receiving-clearly.trycloudflare.com"
+name = "MooseDesk Local"
+client_id = "6beffae9e7e2d336d04c001812119383"
+application_url = "https://airlines-explaining-neural-hospital.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ use_legacy_install_flow = true
 
 [auth]
 redirect_urls = [
-  "https://trio-hong-receiving-clearly.trycloudflare.com/auth/callback",
-  "https://trio-hong-receiving-clearly.trycloudflare.com/auth/shopify/callback",
-  "https://trio-hong-receiving-clearly.trycloudflare.com/api/auth/callback"
+  "https://airlines-explaining-neural-hospital.trycloudflare.com/auth/callback",
+  "https://airlines-explaining-neural-hospital.trycloudflare.com/auth/shopify/callback",
+  "https://airlines-explaining-neural-hospital.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
@@ -24,4 +24,4 @@ embedded = false
 
 [build]
 automatically_update_urls_on_dev = true
-dev_store_url = "nam999.myshopify.com"
+dev_store_url = "md-dev-vuong-01.myshopify.com"

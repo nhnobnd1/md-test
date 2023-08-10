@@ -10,7 +10,7 @@ import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import Appearance from "src/modules/settingChannel/components/Widgets/Appearance/Appearance";
 import General from "src/modules/settingChannel/components/Widgets/General/General";
-import Integration from "src/modules/settingChannel/components/Widgets/Integration/Integration";
+import Setup from "src/modules/settingChannel/components/Widgets/Setup/Setup";
 import {
   getListHelpWidget,
   updateHelpWidget,
@@ -128,10 +128,15 @@ const WidgetDetail = () => {
         ),
       },
       {
-        label: `Integration`,
+        label: `Setup`,
         key: "3",
-        children: <Integration idWidget={null} />,
+        children: <Setup />,
       },
+      // {
+      //   label: `Integration`,
+      //   key: "3",
+      //   children: <Integration idWidget={null} />,
+      // },
     ];
   }, [widget, widgetSetting]);
 

@@ -1,0 +1,175 @@
+@import "../../../../../styles/variables.scss";
+@import "../../../../../styles/mixin.scss";
+.container {
+  .title {
+    margin-bottom: 10px;
+  }
+  .wrapRadio {
+    width: 30%;
+    min-width: 300px;
+    max-width: 500px;
+  }
+  .wrapThemeSelect {
+    width: 60%;
+    min-width: 300px;
+    max-width: 1000px;
+    margin-bottom: 16px;
+    .stepText {
+        text-decoration: underline;
+      }
+    .select {
+      width: 100%;
+      height: 40px;
+      :global {
+        .ant-select-selector {
+          height: 100%;
+          input {
+            height: 100%;
+          }
+          .ant-select-selection-placeholder,
+          .ant-select-selection-item {
+            height: 100%;
+            display: flex;
+            align-items: center;
+          }
+        }
+      }
+      @include mq(md, "max") {
+        height: 32px;
+      }
+    }
+    @include mq("900px", "max") {
+      width: 100%;
+      min-width: none;
+    }
+    @include breakpoints("901px", "1366px") {
+      width: 70%;
+      min-width: none;
+    }
+  }
+  .stepWrap {
+    margin-bottom: 16px;
+    .stepText {
+      text-decoration: underline;
+    }
+  }
+
+  p {
+    // font-size: 16px;
+    margin-bottom: 5px;
+    span {
+      font-weight: bold;
+    }
+  }
+  .imageContainer {
+    width: 60%;
+    min-width: 300px;
+    max-width: 1000px;
+
+    @include mq("900px", "max") {
+      width: 100%;
+      min-width: none;
+    }
+    @include breakpoints("901px", "1366px") {
+      width: 70%;
+      min-width: none;
+    }
+    .wrapImage {
+      width: 100%;
+      padding-bottom: 56.25%;
+      position: relative;
+
+      img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 8px;
+      }
+
+      // @include breakpoints(zero, lg) {
+      //     width: 100%;
+      // }
+    }
+  }
+  .buttonLink {
+    width: 156px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    background-color: $primary;
+    border-radius: 8px;
+   
+    a {
+      height: 40px;
+      width: 156px;
+      color: $white-color;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      &:hover {
+        text-decoration: none;
+      }
+    }
+    @include mq(md, "max") {
+      height: 32px;
+      border-radius: 6px;
+      a {
+        height: 32px;
+      }
+    }
+  }
+}
+.content {
+  margin-top: 20px;
+}
+.wrapRadio {
+  :global {
+    .ant-radio-group {
+      width: 100%;
+      padding-right: 0;
+      padding-left: 0;
+      display: flex;
+      justify-content: space-between;
+
+      @include mq(md, "max") {
+      
+        flex-direction: column;
+      }
+
+      .ant-radio {
+        // transform: scale(1.3);
+      }
+    }
+
+    .ant-radio-checked .ant-radio-inner {
+      // border-color: $primary;
+    }
+
+    .ant-radio-wrapper {
+      @include mq(md, "max") {
+        &:first-child {
+          margin-bottom: 10px;
+        }
+      }
+
+      span:last-child {
+        opacity: 0.7;
+      }
+    }
+
+    .ant-radio-wrapper-checked {
+      span:last-child {
+        opacity: 1;
+      }
+    }
+  }
+}
+.disabledBtn {
+  cursor: none;
+  opacity: 0.6;
+  pointer-events: none;
+}

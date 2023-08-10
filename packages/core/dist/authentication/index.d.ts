@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { Observable } from "rxjs";
-declare type Tokens = Partial<Record<TokenTypes, string>>;
+type Tokens = Partial<Record<TokenTypes, string>>;
 interface AuthContextType<AccountType> {
     login: (tokens: Tokens, user?: AccountType) => void;
     logout: () => void;
