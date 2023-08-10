@@ -22,7 +22,7 @@ const CustomerSelect = (props: BoxSelectAutoReplyProps) => {
   const [inputValue, setInputValue] = useState(props.value || "");
   const [search, setSearch] = useState("");
   const debounceValue: string = useDebounce(search, 200);
-  const { data: dataCustomers, isFetching: isFetchingCustomer } = useQuery({
+  const { data: dataCustomers, isLoading } = useQuery({
     queryKey: ["getCustomers", { page: 1, limit: 10, query: debounceValue }],
     queryFn: () =>
       getListCustomerApi({ page: 1, limit: 10, query: debounceValue }),
@@ -88,6 +88,11 @@ const CustomerSelect = (props: BoxSelectAutoReplyProps) => {
   useEffect(() => {
     setInputValue(props.value || "");
   }, [props.value]);
+
+  const loadingMarkup = isLoading ? (
+    <Listbox.Loading accessibilityLabel="loading" />
+  ) : null;
+
   return (
     <Combobox
       height={props.disabled ? "0" : ""}
@@ -111,11 +116,15 @@ const CustomerSelect = (props: BoxSelectAutoReplyProps) => {
         />
       }
     >
-      {customersOptions.length > 0 && !props.disabled ? (
-        <div className="min-h-[100px]">
-          <Listbox onSelect={updateSelection}>{optionsMarkup}</Listbox>
+      {(customersOptions.length === 0 && !isLoading) ||
+      props.disabled ? null : (
+        <div className="">
+          <Listbox onSelect={updateSelection}>
+            {optionsMarkup}
+            {loadingMarkup}
+          </Listbox>
         </div>
-      ) : null}
+      )}
     </Combobox>
   );
 };

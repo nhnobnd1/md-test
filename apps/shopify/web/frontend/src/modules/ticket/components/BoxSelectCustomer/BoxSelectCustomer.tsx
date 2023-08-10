@@ -18,6 +18,7 @@ interface BoxSelectAutoReplyProps {
   form: any;
   openPopup?: any;
   onSearch?: (value: string) => any;
+  loading?: boolean;
 }
 
 const BoxSelectCustomer = (props: BoxSelectAutoReplyProps) => {
@@ -106,6 +107,9 @@ const BoxSelectCustomer = (props: BoxSelectAutoReplyProps) => {
       setInputValue(props.value);
     }
   }, [props.data]);
+  const loadingMarkup = props.loading ? (
+    <Listbox.Loading accessibilityLabel="loading" />
+  ) : null;
   return (
     <Combobox
       activator={
@@ -123,24 +127,27 @@ const BoxSelectCustomer = (props: BoxSelectAutoReplyProps) => {
       {options.length > 0 && !props.disabled ? (
         <Listbox onSelect={updateSelection}>{optionsMarkup}</Listbox>
       ) : props.openPopup ? (
-        <Button
-          icon={
-            <div className="mx-1">
-              <Icon source={CustomerPlusMajor} color="base" />
-            </div>
-          }
-          plain
-          fullWidth
-          textAlign="left"
-          size="slim"
-          onClick={() => {
-            if (emailRegex.test(inputValue)) {
-              props.openPopup();
+        <Listbox>
+          <Button
+            icon={
+              <div className="mx-1">
+                <Icon source={CustomerPlusMajor} color="base" />
+              </div>
             }
-          }}
-        >
-          Add new contact
-        </Button>
+            plain
+            fullWidth
+            textAlign="left"
+            size="slim"
+            onClick={() => {
+              if (emailRegex.test(inputValue)) {
+                props.openPopup();
+              }
+            }}
+          >
+            Add new contact
+          </Button>
+          {loadingMarkup}
+        </Listbox>
       ) : null}
     </Combobox>
   );

@@ -71,6 +71,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
   const isForwardEmailCreated = useMailSetting(
     (state) => state.isForwardEmailCreated
   );
+
   const changeUpdateMooseDeskEmail = useMailSetting(
     (state) => state.changeUpdateMooseDeskEmail
   );
@@ -130,9 +131,9 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
           signature: "",
         };
   }, [props.initialValues, signInCallback]);
-
   useMount(() => {
     updateForm();
+    handleChangeMailSetting(MailSettingType.CUSTOM);
   });
 
   const handleFormChange = useCallback(
@@ -154,6 +155,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
               : `${getSubDomain()}@email.moosedesk.net`;
           // form.setFieldValue("name", "");
           form.setFieldValue("supportEmail", supportEmailDefault);
+          form.setFieldValue("name", (getSubDomain() as string).toLowerCase());
         } else if (changedValue.mailSettingType === MailSettingType.FORWARD) {
           form.setFieldValue(
             "supportEmail",
@@ -258,6 +260,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
       <div className="md:w-[90%] lg:w-[80%]">
         <Form.Item name="mailSettingType">
           <Radio.Group
+            className="flex flex-wrap gap-2"
             onChange={(e: RadioChangeEvent) => {
               handleChangeMailSetting(e.target.value);
             }}

@@ -261,14 +261,14 @@ const ChannelEmail = () => {
     <>
       <style scoped>{css}</style>
       <Header title={showTitle ? "Email Configuration" : ""}>
-        <div className="flex items-center justify-end flex-1 mb-5">
+        <div className="flex items-center justify-end flex-1 ">
           <HeaderList setShowTitle={setShowTitle} handleSearch={handleSearch}>
             <ButtonAdd onClick={handleRedirectToCreate}>Add new</ButtonAdd>
           </HeaderList>
         </div>
       </Header>
 
-      <div className="">
+      <div className="mt-5">
         <>
           <Table
             rowSelection={{

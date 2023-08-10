@@ -343,7 +343,7 @@ Please check your inbox and click on the link within to use this email for sendi
           </Card>
         )
       ) : (
-        <Card className="mb-5 " title=" " type="inner">
+        <Card className="mb-5 " type="inner">
           <Steps
             className="mb-5"
             current={step}
@@ -374,7 +374,7 @@ Please check your inbox and click on the link within to use this email for sendi
           >
             {step === 0 && (
               <div className="flex flex-col items-center">
-                <Typography.Title className="font-medium text-md" level={3}>
+                <Typography.Title className="font-medium text-md" level={4}>
                   Enter current support info
                 </Typography.Title>
                 <div className="flex  flex-col items-center mt-1">

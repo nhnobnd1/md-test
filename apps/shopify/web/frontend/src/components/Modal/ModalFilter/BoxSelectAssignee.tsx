@@ -21,7 +21,7 @@ const BoxSelectAssignee = (props: BoxSelectAutoReplyProps) => {
   const [count, setCount] = useState(0);
   const [search, setSearch] = useState(props.value?.split(",")[1] || "");
   const debounceValue: string = useDebounce(search, 200);
-  const { data: dataAgents } = useQuery({
+  const { data: dataAgents, isLoading } = useQuery({
     queryKey: [
       "getAgents",
       {
@@ -113,7 +113,9 @@ const BoxSelectAssignee = (props: BoxSelectAutoReplyProps) => {
       updateSelection("");
     }
   }, [props.value]);
-
+  const loadingMarkup = isLoading ? (
+    <Listbox.Loading accessibilityLabel="loading" />
+  ) : null;
   return (
     <Combobox
       height={props.disabled ? "0" : ""}
@@ -138,11 +140,14 @@ const BoxSelectAssignee = (props: BoxSelectAutoReplyProps) => {
         />
       }
     >
-      {agentsOptions.length > 0 && !props.disabled ? (
-        <div className="min-h-[100px]">
-          <Listbox onSelect={updateSelection}>{optionsMarkup}</Listbox>
+      {(agentsOptions.length === 0 && !isLoading) || props.disabled ? null : (
+        <div className="">
+          <Listbox onSelect={updateSelection}>
+            {optionsMarkup}
+            {loadingMarkup}
+          </Listbox>
         </div>
-      ) : null}
+      )}
     </Combobox>
   );
 };

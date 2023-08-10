@@ -7,7 +7,7 @@ import {
 import { FunctionComponent, SVGProps, useCallback, useMemo } from "react";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
-import RightIcon from "~icons/material-symbols/arrow-right";
+import RightIcon from "~icons/ic/round-keyboard-arrow-right";
 
 interface SettingChannelIndexPageProps {}
 
@@ -90,7 +90,7 @@ const SettingChannelIndexPage: PageComponent<
                     </div>
                   </div>
                   <div className="">
-                    <RightIcon style={{ fontSize: 32 }} />
+                    <RightIcon style={{ fontSize: 28 }} />
                   </div>
                 </div>
               </LegacyCard>

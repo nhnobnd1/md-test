@@ -50,7 +50,6 @@ export const ModalFilter: FC<ModalFilterProps> = ({
     handleApply(values);
     setActive(false);
   };
-  console.log({ filterObject });
   return (
     <>
       <div>
