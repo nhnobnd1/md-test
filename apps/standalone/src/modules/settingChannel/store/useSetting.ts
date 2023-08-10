@@ -8,7 +8,7 @@ interface WidgetSetting {
   confirmMessage: string;
   allowAttach: boolean;
   allowCaptcha: boolean;
-  headerBackgroundColor: string;
+  headerBackgroundColor: string | any;
   headerTextColor: string;
   widgetPosition: string;
   offsetBottom: number;
