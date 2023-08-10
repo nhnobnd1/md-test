@@ -49,9 +49,9 @@ const SettingChannelIndexPage: PageComponent<
         },
       },
       {
-        title: "Web Form Configuration",
+        title: "Help Widget Configuration",
         description:
-          "Configure the web form widget that can be added to your website",
+          "Configure the help widget that can be added to your website",
         link: "",
         icon: () => <ChecklistAlternateMajor />,
         onConfigure: () => {

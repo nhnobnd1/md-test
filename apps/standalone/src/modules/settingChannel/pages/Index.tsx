@@ -25,7 +25,7 @@ const ChannelIndexPage = () => {
       {
         title: ChannelTitle.WebFormConfiguration,
         description:
-          "Configure the web form widget that can be added to your website",
+          "Configure the help widget that can be added to your website",
         link: SettingChannelRoutePaths.Widgets.Index,
         icon: <Icon name="webForm" />,
       },
