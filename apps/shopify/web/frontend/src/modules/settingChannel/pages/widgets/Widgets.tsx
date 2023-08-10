@@ -251,7 +251,7 @@ const Widgets = (props: WidgetsProps) => {
               url: generatePath(SettingChannelRoutePaths.Index),
             },
           ]}
-          title={(<span>Web Form</span>) as unknown as string}
+          title={(<span>Help Widget</span>) as unknown as string}
           fullWidth
         >
           <Layout>
