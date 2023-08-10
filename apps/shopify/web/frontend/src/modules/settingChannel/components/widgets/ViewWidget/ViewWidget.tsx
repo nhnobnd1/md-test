@@ -191,7 +191,7 @@ export const ViewWidget = (props: ViewWidgetProps) => {
         )}
         <div className="flex justify-end px-4 button-widget">
           <button
-            className="px-4 py-2 rounded-[20px] flex justify-center gap-1"
+            className="px-4 py-2 rounded-[20px] flex justify-center gap-1 float-button"
             style={{
               color: data?.textButtonAppearanceColor,
               backgroundColor: data?.buttonAppearanceColor,

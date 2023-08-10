@@ -48,14 +48,6 @@ export default function Appearance() {
   );
   const cancelState = useUpdateSave((state) => state.cancel);
 
-  const onFinish = (values: any) => {
-    console.log("Success:", values);
-  };
-
-  const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
-
   const handleChangeTargetButton = (number: number) => {
     setTargetButton(number);
   };
@@ -102,18 +94,18 @@ export default function Appearance() {
   );
   const backgroundHeader = useMemo(() => {
     return <SketchPicker color={rgb} onChange={updateColor} />;
-  }, [color, data]);
+  }, [color, data, rgb]);
   const bgText = useMemo(() => {
     return <SketchPicker color={rgbText} onChange={updateTextColor} />;
-  }, [textColor, data]);
+  }, [textColor, data, rgbText]);
   const bgButton = useMemo(() => {
     return <SketchPicker color={rgbButton} onChange={updateButtonColor} />;
-  }, [buttonColor, data]);
+  }, [buttonColor, data, rgbButton]);
   const bgButtonText = useMemo(() => {
     return (
       <SketchPicker color={rgbButtonText} onChange={updateButtonTextColor} />
     );
-  }, [buttonTextColor, data]);
+  }, [buttonTextColor, data, rgbButtonText]);
 
   useEffect(() => {
     form.resetFields();
@@ -123,6 +115,12 @@ export default function Appearance() {
     setButtonColor(null);
     setTextColor(null);
   }, [data.id, cancelState]);
+  useEffect(() => {
+    setColor({ rgb: data?.headerBackgroundColor } as any);
+    setTextColor({ rgb: data?.headerTextColor } as any);
+    setButtonColor({ rgb: data?.buttonAppearanceColor } as any);
+    setButtonTextColor({ rgb: data?.textButtonAppearanceColor } as any);
+  }, [data]);
   const handleUpdateButton = (e: any) => {
     updateWidgetSetting({
       ...data,
@@ -160,8 +158,6 @@ export default function Appearance() {
           // labelCol={{ span: 14 }}
           // wrapperCol={{ span: 16 }}
           initialValues={initialFormValues}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
           form={form}
           autoComplete="off"
           className="flex-1 basis-3/6 mt-5"
