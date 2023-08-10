@@ -2,7 +2,8 @@ import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import { Combobox, Listbox } from "@shopify/polaris";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
-import { getListAgentApi } from "src/modules/ticket/helper/api";
+import { getListCustomerApi } from "src/modules/ticket/helper/api";
+import useSelectFrom from "src/modules/ticket/store/useSelectFrom";
 interface Data {
   value: string;
   label: string;
@@ -15,70 +16,46 @@ interface BoxSelectAutoReplyProps {
   onChange?: (value: any) => void;
   disabled?: boolean;
 }
-const BoxSelectAssignee = (props: BoxSelectAutoReplyProps) => {
+
+const CustomerSelect = (props: BoxSelectAutoReplyProps) => {
   const [selectedOption, setSelectedOption] = useState();
-  const [inputValue, setInputValue] = useState("");
-  const [count, setCount] = useState(0);
-  const [search, setSearch] = useState(props.value?.split(",")[1] || "");
+  const [inputValue, setInputValue] = useState(props.value || "");
+  const [search, setSearch] = useState("");
   const debounceValue: string = useDebounce(search, 200);
-  const { data: dataAgents } = useQuery({
-    queryKey: [
-      "getAgents",
-      {
-        page: 1,
-        limit: 10,
-        isLive: 1,
-        query: debounceValue,
-      },
-    ],
+  const { data: dataCustomers, isFetching: isFetchingCustomer } = useQuery({
+    queryKey: ["getCustomers", { page: 1, limit: 10, query: debounceValue }],
     queryFn: () =>
-      getListAgentApi({
-        page: 1,
-        limit: 10,
-        isLive: 1,
-        query: debounceValue,
-      }),
+      getListCustomerApi({ page: 1, limit: 10, query: debounceValue }),
+    retry: 3,
     // staleTime: 10000,
-    onSuccess: () => {
-      if (count === 0) {
-        setCount(1);
-      }
+    onError: () => {
+      //   message.error(t("messages:error.get_customer"));
     },
-
-    retry: 1,
-
-    onError: () => {},
   });
-
-  const agentsOptions = useMemo(() => {
-    if (!dataAgents) return [];
-    return dataAgents.map((item) => ({
-      label: item.lastName.includes("admin")
-        ? `${item.firstName} - ${item.email}`
-        : `${item.firstName} ${item.lastName} - ${item.email}`,
-      value: `${item._id},${item.email}`,
-      obj: item,
-    }));
-  }, [dataAgents]);
-
+  const customersOptions = useMemo(() => {
+    if (!dataCustomers) return [];
+    return dataCustomers.map((item) => {
+      return {
+        label: `${item.firstName} ${item.lastName} - ${item.email}`,
+        value: item.email,
+        obj: item,
+      };
+    });
+  }, [dataCustomers]);
+  const changeSelected = useSelectFrom((state) => state.changeSelected);
   const updateText = useCallback((value) => {
     setSearch(value);
     setInputValue(value);
   }, []);
 
-  useEffect(() => {
-    if (count === 1) {
-      updateSelection(props.value);
-      setCount(2);
-    }
-  }, [dataAgents, count, props.value]);
-
   const updateSelection = useCallback(
     (selected) => {
-      const matchedOption = agentsOptions.find((option) => {
+      changeSelected(selected);
+      const matchedOption = customersOptions.find((option) => {
         return option.value === selected;
       });
       setSelectedOption(selected);
+
       setInputValue((matchedOption && matchedOption.label) || "");
 
       if (selected !== props.value) {
@@ -88,12 +65,12 @@ const BoxSelectAssignee = (props: BoxSelectAutoReplyProps) => {
         props.onChange && props.onChange(null);
       }
     },
-    [agentsOptions, props.value, props.onChange]
+    [customersOptions, props.value, props.onChange]
   );
 
   const optionsMarkup =
-    agentsOptions.length > 0
-      ? agentsOptions.map((option) => {
+    customersOptions.length > 0
+      ? customersOptions.map((option) => {
           const { label, value } = option;
 
           return (
@@ -109,11 +86,8 @@ const BoxSelectAssignee = (props: BoxSelectAutoReplyProps) => {
         })
       : null;
   useEffect(() => {
-    if (!props.value) {
-      updateSelection("");
-    }
+    setInputValue(props.value || "");
   }, [props.value]);
-
   return (
     <Combobox
       height={props.disabled ? "0" : ""}
@@ -122,13 +96,12 @@ const BoxSelectAssignee = (props: BoxSelectAutoReplyProps) => {
           onChange={updateText}
           label={props.label}
           labelHidden={!props.label}
-          // onFocus={() => {
-          //   setSearch("");
-          // }}
+          //   onFocus={() => {
+          //     setOptions(props.data);
+          //   }}
           onBlur={() => {
-            if (agentsOptions.length === 0) {
+            if (customersOptions.length === 0) {
               setInputValue("");
-              setSearch("");
             }
           }}
           value={inputValue}
@@ -138,7 +111,7 @@ const BoxSelectAssignee = (props: BoxSelectAutoReplyProps) => {
         />
       }
     >
-      {agentsOptions.length > 0 && !props.disabled ? (
+      {customersOptions.length > 0 && !props.disabled ? (
         <div className="min-h-[100px]">
           <Listbox onSelect={updateSelection}>{optionsMarkup}</Listbox>
         </div>
@@ -147,4 +120,4 @@ const BoxSelectAssignee = (props: BoxSelectAutoReplyProps) => {
   );
 };
 
-export default memo(BoxSelectAssignee);
+export default memo(CustomerSelect);

@@ -125,7 +125,7 @@ const BoxSelectCustomer = (props: BoxSelectAutoReplyProps) => {
       ) : props.openPopup ? (
         <Button
           icon={
-            <div className="mr-1">
+            <div className="mx-1">
               <Icon source={CustomerPlusMajor} color="base" />
             </div>
           }

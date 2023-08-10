@@ -8,7 +8,6 @@ import {
   useUnMount,
 } from "@moose-desk/core";
 import {
-  Agent,
   AttachFile,
   Conversation,
   CreateReplyTicketRequest,
@@ -71,21 +70,19 @@ import ReplyIcon from "~icons/ion/reply";
 import BackIcon from "~icons/mingcute/back-2-fill";
 
 import { uniqBy } from "lodash-es";
+import BoxSelectAssignee from "src/components/Modal/ModalFilter/BoxSelectAssignee";
 import BoxSelectCustomer from "src/modules/ticket/components/BoxSelectCustomer/BoxSelectCustomer";
 import { TagSelect } from "src/modules/ticket/components/TicketForm/TagSelect";
 import {
   emailIntegrationApi,
-  getListAgentApi,
   getListConversation,
   getListCustomerApi,
   getListEmailIntegration,
   getOneTicket,
-  getTagsTicket,
 } from "src/modules/ticket/helper/api";
 import { UploadForward } from "src/modules/ticket/pages/UploadForward";
 import useForwardTicket from "src/modules/ticket/store/useForwardTicket";
 import styles from "./style.module.scss";
-import BoxSelectAssignee from "src/components/Modal/ModalFilter/BoxSelectAssignee";
 export interface ChatItem {
   id: string;
   name: string;
@@ -166,26 +163,7 @@ const DetailTicket = () => {
     dataConversations || []
   );
   // const [conversationList, setConversationList] = useState<Conversation[]>([]);
-  const { data: dataTags } = useQuery({
-    queryKey: [
-      "getTagsTicket",
-      {
-        page: 1,
-        limit: 500,
-      },
-    ],
-    queryFn: () =>
-      getTagsTicket({
-        page: 1,
-        limit: 500,
-      }),
-    staleTime: 10000,
-    retry: 1,
 
-    onError: () => {
-      show(t("messages:error.get_tag"), { isError: true });
-    },
-  });
   const [enableCC, setEnableCC] = useState(true);
   const [isChanged, setIsChanged] = useState(false);
   const { data: dataPrimaryEmail } = useQuery({
@@ -236,32 +214,7 @@ const DetailTicket = () => {
   // detail ticket
   const contentCreate = useFormCreateTicket((state) => state.content);
   const updateContent = useFormCreateTicket((state) => state.updateState);
-  const { data: dataAgents } = useQuery({
-    queryKey: [
-      "getAgents",
-      {
-        page: 1,
-        limit: 500,
-        isLive: 1,
-      },
-    ],
-    queryFn: () =>
-      getListAgentApi({
-        page: 1,
-        limit: 500,
-        isLive: 1,
-      }),
-    staleTime: 10000,
-    retry: 1,
 
-    onError: () => {
-      // message.error(t("messages:error.get_agent"));
-    },
-  });
-  const agents = useMemo(() => {
-    if (!dataAgents) return [];
-    return dataAgents.filter((item) => item.isActive && item.emailConfirmed);
-  }, [dataAgents]);
   const { data: dataCustomers } = useQuery({
     queryKey: ["getCustomers"],
     queryFn: () => getListCustomerApi({ page: 1, limit: 500 }),
@@ -386,7 +339,9 @@ const DetailTicket = () => {
     if (conversationList.length === 0) {
       return {
         status: ticket?.status,
-        assignee: ticket?.agentObjectId,
+        assignee: ticket?.agentObjectId
+          ? `${ticket?.agentObjectId},${ticket?.agentEmail}`
+          : null,
 
         priority: ticket?.priority,
         to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
@@ -404,7 +359,9 @@ const DetailTicket = () => {
     } else {
       return {
         status: ticket?.status,
-        assignee: ticket?.agentObjectId,
+        assignee: ticket?.agentObjectId
+          ? `${ticket?.agentObjectId},${ticket?.agentEmail}`
+          : null,
 
         priority: ticket?.priority,
         to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
@@ -525,26 +482,6 @@ const DetailTicket = () => {
     if (formRef.current?.values.status === StatusTicket.RESOLVED) return true;
     return false;
   }, [formRef.current?.values.status]);
-
-  const agentsOptions = useMemo(() => {
-    const mapping = agents.map((item: Agent) => {
-      return {
-        value: item._id,
-        label: item.lastName.includes("admin")
-          ? `${item.firstName} - ${item.email}`
-          : `${item.firstName} ${item.lastName} - ${item.email}`,
-      };
-    });
-    return mapping;
-  }, [agents]);
-  const tagsOptions = useMemo(() => {
-    if (!dataTags) return [];
-    return dataTags.map((item) => ({
-      label: item.name,
-      value: item.name,
-      obj: item,
-    }));
-  }, [dataTags]);
 
   const customersOptions = useMemo(() => {
     if (!dataCustomers) return [];
@@ -904,36 +841,33 @@ Hit Send to see what your message will look like
                             "xs:hidden md:block"
                           )}
                         >
-                          <FormLayout.Group condensed>
-                            <div className="flex flex-col gap-3 w-[250px] ">
-                              <FormItem name="status">
-                                <Select
-                                  disabled={disabled}
-                                  label="Status"
-                                  options={statusOptions}
-                                />
-                              </FormItem>
+                          <div className="flex flex-col gap-3 w-[280px] px-2">
+                            <FormItem name="status">
+                              <Select
+                                disabled={disabled}
+                                label="Status"
+                                options={statusOptions}
+                              />
+                            </FormItem>
 
-                              <FormItem name="priority">
-                                <Select
-                                  disabled={disabled}
-                                  label="Priority"
-                                  options={priorityOptions}
-                                />
-                              </FormItem>
-                              <FormItem name="assignee">
-                                <BoxSelectAssignee
-                                  disabled={disabled}
-                                  label="Assignee"
-                                  data={agentsOptions}
-                                  placeholder="Search agents"
-                                />
-                              </FormItem>
-                              <FormItem name="tags">
-                                <TagSelect disabled={disabled} />
-                              </FormItem>
-                            </div>
-                          </FormLayout.Group>
+                            <FormItem name="priority">
+                              <Select
+                                disabled={disabled}
+                                label="Priority"
+                                options={priorityOptions}
+                              />
+                            </FormItem>
+                            <FormItem name="assignee">
+                              <BoxSelectAssignee
+                                disabled={disabled}
+                                label="Assignee"
+                                placeholder="Search agents"
+                              />
+                            </FormItem>
+                            <FormItem name="tags">
+                              <TagSelect disabled={disabled} />
+                            </FormItem>
+                          </div>
 
                           <div className="flex justify-end mb-3 mt-3">
                             <Button
@@ -1233,9 +1167,8 @@ Hit Send to see what your message will look like
                           <Select label="Priority" options={priorityOptions} />
                         </FormItem>
                         <FormItem name="assignee">
-                          <BoxSelectFilter
+                          <BoxSelectAssignee
                             label="Assignee"
-                            data={agentsOptions}
                             placeholder="Search agents"
                           />
                         </FormItem>

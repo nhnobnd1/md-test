@@ -1,10 +1,5 @@
 import { useNavigate } from "@moose-desk/core";
-import {
-  Agent,
-  Customer,
-  priorityOptions,
-  statusOptions,
-} from "@moose-desk/repo";
+import { priorityOptions, statusOptions } from "@moose-desk/repo";
 import {
   Button,
   FormLayout,
@@ -14,24 +9,21 @@ import {
 } from "@shopify/polaris";
 import { FilterMajor } from "@shopify/polaris-icons";
 import { FormikProps, FormikValues } from "formik";
-import { FC, useCallback, useMemo, useRef, useState } from "react";
+import { FC, useCallback, useRef, useState } from "react";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
+import BoxSelectAssignee from "src/components/Modal/ModalFilter/BoxSelectAssignee";
 import BoxSelectFilter from "src/components/Modal/ModalFilter/BoxSelectFilter";
+import CustomerSelect from "src/components/Modal/ModalFilter/CustomerSelect";
 import { TagSelect } from "src/modules/ticket/components/TicketForm/TagSelect";
 import { FilterObject } from "src/modules/ticket/pages/Index";
 interface ModalFilterProps {
-  customers: Customer[];
-  agents: Agent[];
-
   handleApply: (values: any) => void;
   handleResetModal: () => void;
-  filterObject: FilterObject | null;
+  filterObject?: FilterObject | null;
 }
 
 export const ModalFilter: FC<ModalFilterProps> = ({
-  customers,
-  agents,
   handleResetModal,
   handleApply,
   filterObject,
@@ -39,27 +31,6 @@ export const ModalFilter: FC<ModalFilterProps> = ({
   const [active, setActive] = useState(false);
   const formRef = useRef<FormikProps<any>>(null);
   const navigate = useNavigate();
-
-  const agentsOptions = useMemo(() => {
-    const mapping = agents.map((item: Agent) => {
-      return {
-        value: item._id,
-        label: item.lastName.includes("admin")
-          ? `${item.firstName} - ${item.email}`
-          : `${item.firstName} ${item.lastName} - ${item.email}`,
-      };
-    });
-    return mapping;
-  }, [agents]);
-  const customerOptions = useMemo(() => {
-    const customersOption = customers.map((item: Customer) => {
-      return {
-        label: `${item.firstName} ${item.lastName} - ${item.email}`,
-        value: item.email,
-      };
-    });
-    return customersOption;
-  }, [customers]);
 
   const handleChange = useCallback(() => setActive(!active), [active]);
 
@@ -79,6 +50,7 @@ export const ModalFilter: FC<ModalFilterProps> = ({
     handleApply(values);
     setActive(false);
   };
+  console.log({ filterObject });
   return (
     <>
       <div>
@@ -122,10 +94,13 @@ export const ModalFilter: FC<ModalFilterProps> = ({
               >
                 <FormLayout>
                   <FormItem name="agentObjectId">
-                    <BoxSelectFilter data={agentsOptions} label="Agent" />
+                    <BoxSelectAssignee
+                      label="Assignee"
+                      placeholder="Search agents"
+                    />
                   </FormItem>
                   <FormItem name="customer">
-                    <BoxSelectFilter data={customerOptions} label="Customer" />
+                    <CustomerSelect label="Customer" />
                   </FormItem>
                   <FormItem name="tags">
                     <TagSelect isFilter={true} />
