@@ -61,11 +61,9 @@ const ChannelEmailCreate = () => {
             }
           }),
           catchError((err) => {
-            if (err.response.data.statusCode === 409) {
-              message.loading.hide().then(() => {
-                notification.error(`${payload.supportEmail} is exist`);
-              });
-            }
+            message.loading.hide().then(() => {
+              notification.error(t("messages:error.something_went_wrong"));
+            });
             return of(err);
           })
         );

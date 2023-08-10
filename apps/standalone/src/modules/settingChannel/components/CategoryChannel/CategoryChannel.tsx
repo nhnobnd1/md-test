@@ -4,7 +4,7 @@ import classNames from "classnames";
 import { ReactNode, useMemo } from "react";
 import { RolePermission } from "src/constaint/RolePermission";
 import { ChannelTitle } from "src/constaint/SettingChannel";
-import RightIcon from "~icons/material-symbols/arrow-right";
+import RightIcon from "~icons/ic/round-keyboard-arrow-right";
 import "./CategoryChannel.scss";
 
 interface CategoryChannelProps {
@@ -50,7 +50,7 @@ const CategoryChannel = ({
         </div>
         <div>
           <div className="">
-            <RightIcon style={{ fontSize: 32 }} />
+            <RightIcon style={{ fontSize: 28 }} />
           </div>
         </div>
       </div>
