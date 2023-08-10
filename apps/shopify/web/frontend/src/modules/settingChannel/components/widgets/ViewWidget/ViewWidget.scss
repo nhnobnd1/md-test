@@ -4,7 +4,13 @@
   border-radius: 8px;
   background-color: rgb(239, 242, 245);
   position: relative;
-
+letter-spacing: 0.06rem;
+button {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+}
   .header {
     border-radius: 8px;
     position: absolute;
@@ -42,8 +48,7 @@
     position: relative;
     padding-top: 90px;
     .form-demo {
-      // max-width: 350px;
-      margin: 20px;
+      margin: 15px;
       background: #ffffff;
       border-radius: 8px;
       box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03),
@@ -51,11 +56,26 @@
 
       .card {
         .card-header {
-          padding: 16px;
+          padding: 17px 24px;
           border-bottom: 1px solid #f0f0f0;
         }
         .card-body {
-          padding: 16px;
+          padding: 24px;
+          input, textarea {
+            border: 1px solid #d9d9d9 !important;
+              border-radius: 6px;
+              height: 37px;
+              &::placeholder {
+                color: rgba(0, 0, 0, 0.25);
+              }
+          }
+          .Polaris-Labelled__LabelWrapper, .label {
+            margin-bottom: 8px !important;
+          }
+          .Polaris-TextField__Backdrop {
+            border: 1px solid #d9d9d9 !important;
+            border-radius: 6px;
+          }
         }
       }
     }
@@ -63,4 +83,12 @@
 }
 .header-title {
   font-size: 20px;
+}
+.float-button {
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+  .md-font-customize-widget {
+    margin-left: 8px;
+    font-size: 20px !important;
+  }
 }
