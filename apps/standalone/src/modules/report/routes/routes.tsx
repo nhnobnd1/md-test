@@ -1,5 +1,6 @@
 import { IRoute } from "@moose-desk/core";
 import { lazy } from "react";
+import { lazyRetry } from "src/helper";
 import { AppLayout } from "src/layouts/AppLayout";
 import ReportRoutePaths from "src/modules/report/routes/paths";
 
@@ -12,17 +13,23 @@ const reportRoutes: IRoute = {
     {
       path: ReportRoutePaths.Overview,
       index: true,
-      component: lazy(() => import("src/modules/report/pages/Index")),
+      component: lazy(() =>
+        lazyRetry(() => import("src/modules/report/pages/Index"))
+      ),
       middleware: "notBasic",
     },
     {
       path: ReportRoutePaths.ByAgent,
-      component: lazy(() => import("src/modules/report/pages/ByAgent")),
+      component: lazy(() =>
+        lazyRetry(() => import("src/modules/report/pages/ByAgent"))
+      ),
       middleware: "notBasic",
     },
     {
       path: ReportRoutePaths.ByTags,
-      component: lazy(() => import("src/modules/report/pages/ByTags")),
+      component: lazy(() =>
+        lazyRetry(() => import("src/modules/report/pages/ByTags"))
+      ),
       middleware: "notBasic",
     },
   ],

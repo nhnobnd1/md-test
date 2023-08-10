@@ -6,7 +6,7 @@ import {
 } from "@moose-desk/core";
 import LazyComponent from "@moose-desk/core/components/LazyComponent";
 import { AccountRepository, Env } from "@moose-desk/repo";
-import { Suspense, lazy } from "react";
+import { lazy, Suspense } from "react";
 import ReactDOM from "react-dom";
 import ReactGA from "react-ga4";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -14,6 +14,7 @@ import { createWebStoragePersistor } from "react-query/createWebStoragePersistor
 import { Loading } from "src/components/Loading";
 import env from "src/core/env";
 import ModuleLoader from "src/core/utilities/ModuleLoader";
+import { lazyRetry } from "src/helper";
 import AppConfigProviders from "src/providers/AppConfigProviders";
 import InitApp from "src/providers/InitAppProviders";
 import { StoreProviders } from "src/providers/StoreProviders";
@@ -94,7 +95,9 @@ ReactDOM.render(
                   <AppConfigProviders>
                     <ModuleLoader>
                       <LazyComponent
-                        component={lazy(() => import("src/App"))}
+                        component={lazy(() =>
+                          lazyRetry(() => import("src/App"))
+                        )}
                       />
                     </ModuleLoader>
                   </AppConfigProviders>
