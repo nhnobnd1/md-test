@@ -10,7 +10,7 @@ import ErrorBoundary from "src/ErrorBoundary";
 import TextEditor from "src/components/UI/Editor/TextEditor";
 import { AppRoutes } from "src/routes";
 import { store } from "./redux";
-
+// test
 function App() {
   const { i18n } = useTranslation();
 
