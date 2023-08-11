@@ -14,7 +14,6 @@ import { createWebStoragePersistor } from "react-query/createWebStoragePersistor
 import { Loading } from "src/components/Loading";
 import env from "src/core/env";
 import ModuleLoader from "src/core/utilities/ModuleLoader";
-import { lazyRetry } from "src/helper";
 import AppConfigProviders from "src/providers/AppConfigProviders";
 import InitApp from "src/providers/InitAppProviders";
 import { StoreProviders } from "src/providers/StoreProviders";
@@ -95,9 +94,7 @@ ReactDOM.render(
                   <AppConfigProviders>
                     <ModuleLoader>
                       <LazyComponent
-                        component={lazy(() =>
-                          lazyRetry(() => import("src/App"))
-                        )}
+                        component={lazy(() => import("src/App"))}
                       />
                     </ModuleLoader>
                   </AppConfigProviders>
