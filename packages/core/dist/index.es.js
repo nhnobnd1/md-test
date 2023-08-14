@@ -2851,6 +2851,23 @@ function vm(e) {
       return "default";
   }
 }
+function ym(e) {
+  switch (e.toLowerCase()) {
+    case "urgent":
+      return "critical";
+    case "high":
+      return "warning";
+    case "medium":
+      return "info";
+    case "low":
+      return;
+    default:
+      return;
+  }
+}
+function bm(e) {
+  return e ? "success" : "warning";
+}
 var Xd = /* @__PURE__ */ ((e) => (e[e.XS = 320] = "XS", e[e.SM = 576] = "SM", e[e.MD = 768] = "MD", e[e.LG = 1024] = "LG", e[e.XL = 1280] = "XL", e[e.XXL = 1600] = "XXL", e))(Xd || {});
 function Fa(e, t) {
   return function() {
@@ -4168,20 +4185,20 @@ ie.AxiosHeaders = Ae;
 ie.formToJSON = (e) => ti(v.isHTMLForm(e) ? new FormData(e) : e);
 ie.default = ie;
 const si = ie, {
-  Axios: Tm,
+  Axios: wm,
   AxiosError: dp,
-  CanceledError: Em,
-  isCancel: wm,
-  CancelToken: Sm,
-  VERSION: _m,
-  all: Om,
-  Cancel: Am,
-  isAxiosError: Mm,
-  spread: xm,
-  toFormData: Pm,
-  AxiosHeaders: Rm,
-  formToJSON: Cm,
-  mergeConfig: $m
+  CanceledError: Sm,
+  isCancel: _m,
+  CancelToken: Om,
+  VERSION: Am,
+  all: Mm,
+  Cancel: xm,
+  isAxiosError: Pm,
+  spread: Rm,
+  toFormData: Cm,
+  AxiosHeaders: $m,
+  formToJSON: Dm,
+  mergeConfig: Gm
 } = si;
 var Yr = function(e, t) {
   return Yr = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function(r, n) {
@@ -5586,7 +5603,7 @@ Check the top-level render call using <` + A + ">.");
 }
 process.env.NODE_ENV === "production" ? Qr.exports = Ap() : Qr.exports = Mp();
 var Pn = Qr.exports;
-const Ye = Pn.Fragment, Q = Pn.jsx, en = Pn.jsxs, Dm = (e = () => {
+const Ye = Pn.Fragment, Q = Pn.jsx, en = Pn.jsxs, Nm = (e = () => {
 }) => {
   const [t, r] = re(!1);
   t || (e(), r(!0));
@@ -5599,7 +5616,7 @@ function xp(e, t) {
     r.current = !0;
   }, t);
 }
-function Gm({ initValue: e, key: t }) {
+function Im({ initValue: e, key: t }) {
   const [r, n] = re({}), [o, a] = re({}), i = Z(
     (c, d) => {
       n((p) => ({
@@ -5863,7 +5880,7 @@ function hi() {
     () => ht.routes
   ), addRoutes: e, removeRoute: t };
 }
-const Nm = () => {
+const Lm = () => {
   const { routes: e } = hi(), [t, r] = re(), n = xe(), o = Z(
     (a) => {
       const i = a.filter(
@@ -5910,13 +5927,13 @@ function Ip(e, t) {
     flush: o.flush
   };
 }
-function Im(e, t) {
+function jm(e, t) {
   const [r, n] = re(e), { run: o } = Ip((a) => {
     n(a);
   }, t);
   return [r, o];
 }
-const Lm = (e, t) => {
+const Um = (e, t) => {
   const r = ke(e);
   r.current = e;
   const n = re()[1], o = Z(() => {
@@ -5944,7 +5961,7 @@ const Lm = (e, t) => {
 }, pi = ea(
   void 0
 );
-function jm({
+function km({
   children: e,
   color: t,
   isWrap: r = !1,
@@ -6008,7 +6025,7 @@ function jp(e, t) {
     error: d
   };
 }
-const Up = { attributes: !0, childList: !0, subtree: !0 }, Um = (e, t) => {
+const Up = { attributes: !0, childList: !0, subtree: !0 }, Fm = (e, t) => {
   const r = nt(() => new MutationObserver(t), [t]);
   ce(() => {
     const n = e instanceof HTMLElement ? e : e.current;
@@ -6017,13 +6034,13 @@ const Up = { attributes: !0, childList: !0, subtree: !0 }, Um = (e, t) => {
     };
   }, [r, e]);
 };
-function km(e) {
+function Bm(e) {
   const t = ke();
   return ce(() => {
     t.current = e;
   }), t.current;
 }
-const Fm = (e, t) => {
+const Hm = (e, t) => {
   const r = ke(e);
   r.current = e;
   const n = re()[1], o = Z(() => {
@@ -6040,11 +6057,11 @@ const Fm = (e, t) => {
     cancel: a
   };
 };
-function Bm({ get: e, set: t }, r) {
+function Vm({ get: e, set: t }, r) {
   const n = nt(e, r), o = Z(t, r);
   return [n, o];
 }
-const gi = ea(void 0), Hm = ({
+const gi = ea(void 0), Wm = ({
   children: e,
   defaultTokens: t = () => ({}),
   fetchUserOnLogin: r = () => new Kt((a) => a.next(void 0)),
@@ -6129,13 +6146,13 @@ const gi = ea(void 0), Hm = ({
   });
   return Rn(() => C()), /* @__PURE__ */ Q(gi.Provider, { value: { user: a, tokens: s, isLoggedIn: l, login: g, logout: m }, children: e });
 };
-function Vm() {
+function zm() {
   const e = rn(gi);
   if (!e)
     throw new Error("useAuthContext must be used in AuthProvider");
   return e;
 }
-const Cn = Tt.createContext(void 0), Wm = ({
+const Cn = Tt.createContext(void 0), Ym = ({
   userPermissions: e,
   isUser: t,
   children: r
@@ -6156,22 +6173,22 @@ const Cn = Tt.createContext(void 0), Wm = ({
     granted: nt(() => e ? t.can(e) : !0, [e, t.can]),
     ...t
   };
-}, zm = ta(
+}, Km = ta(
   ({ permissions: e, children: t, guestView: r }) => {
     const { granted: n } = kp(e);
     return typeof t == "function" ? t(n) : /* @__PURE__ */ Q(Ye, { children: n ? t : r });
   }
 );
-function Ym(e) {
+function qm(e) {
   return (t) => (r) => /* @__PURE__ */ Q(Cn.Consumer, { children: (n) => /* @__PURE__ */ Q(Ye, { children: (n == null ? void 0 : n.can(e || [])) && /* @__PURE__ */ Q(t, { ...r }) }) });
 }
-function Km({
+function Jm({
   component: e,
   props: t
 }) {
   return /* @__PURE__ */ Q(e, { ...t });
 }
-function qm({
+function Zm({
   children: e
 }) {
   const { startLoading: t, stopLoading: r } = mi();
@@ -6188,7 +6205,7 @@ function qm({
     }
   })), /* @__PURE__ */ Q(Ye, { children: e });
 }
-function Jm(e, t) {
+function Xm(e, t) {
   return () => {
     const r = new bt(e().baseURL, e());
     return Nd(t, (n) => (...o) => n(r, ...o));
@@ -6242,7 +6259,7 @@ const Bp = ({
   return ce(() => {
     e && e(t);
   }, [t.pathname]), /* @__PURE__ */ Q(Ye, {});
-}, Zm = ({
+}, Qm = ({
   routes: e,
   notFoundElement: t,
   onRouteChange: r
@@ -6259,14 +6276,14 @@ const Bp = ({
     ] })
   ] });
 };
-function Xm(e) {
+function e0(e) {
   const t = e;
   return (r) => {
     const n = hi();
     return /* @__PURE__ */ Q(t, { ...r, routes: n });
   };
 }
-const Qm = {
+const t0 = {
   "Etc/GMT+12": "(GMT-12:00) International Date Line West",
   "Pacific/Pago_Pago": "(GMT-11:00) American Samoa",
   "Pacific/Midway": "(GMT-11:00) Midway Island",
@@ -6402,7 +6419,7 @@ const Qm = {
   "Pacific/Tongatapu": "(GMT+13:00) Nuku'alofa",
   "Pacific/Apia": "(GMT+13:00) Samoa",
   "Pacific/Fakaofo": "(GMT+13:00) Tokelau Is"
-}, e0 = {
+}, r0 = {
   "Etc/GMT+12": "GMT-12:00",
   "Pacific/Pago_Pago": "GMT-11:00",
   "Pacific/Midway": "GMT-11:00",
@@ -6541,34 +6558,34 @@ const Qm = {
 };
 export {
   bt as Api,
-  qm as ApiLoadingHandlerProvider,
-  Hm as AuthProvider,
-  Wm as AuthorizationProvider,
+  Zm as ApiLoadingHandlerProvider,
+  Wm as AuthProvider,
+  Ym as AuthorizationProvider,
   xn as AxiosObservable,
   tm as BrowserRouter,
   Vd as EventListenersManager,
   da as Link,
   pi as LoadingContext,
-  jm as LoadingProvider,
+  km as LoadingProvider,
   Vp as LocationEffect,
   Xd as MediaScreen,
   em as Navigate,
   Ds as Outlet,
-  zm as PrivateView,
+  Km as PrivateView,
   Fr as RequestHeaderContentType,
   Qo as RouteMiddleware,
   Hp as RouteRenderer,
-  Zm as RouterGenerator,
+  Qm as RouterGenerator,
   ht as RouterHandler,
   Pt as StorageManager,
   Ia as StorageManagerClass,
-  Qm as TIME_ZONES,
-  e0 as TIME_ZONES_GMT,
+  t0 as TIME_ZONES,
+  r0 as TIME_ZONES_GMT,
   Xe as TokenManager,
   sm as clearObject,
   Ro as clearUndefinedProperties,
   dt as coreConfig,
-  Jm as createRepository,
+  Xm as createRepository,
   Fp as createRoutePath,
   om as createVariableWithWatcher,
   am as createdDatetimeFormat,
@@ -6578,49 +6595,51 @@ export {
   Br as formData,
   Yp as generatePath,
   vi as generateRoutes,
-  Km as lazyComponent,
+  Jm as lazyComponent,
   $o as makeId,
   dm as objectIdRegex,
   lm as passwordRegex,
   Jo as pathMatched,
   um as phoneNumberRegex,
   vm as priorityToTag,
+  ym as priorityToTagShopify,
+  bm as typeChannelTicket,
   gm as upperCaseFirst,
   Ht as urlEncoded,
   Zp as useActionData,
   Qp as useAsyncError,
   Xp as useAsyncValue,
-  Vm as useAuthContext,
+  zm as useAuthContext,
   kp as useAuthorization,
   nm as useBeforeUnload,
-  Dm as useConstructor,
-  Gm as useCountDown,
-  Nm as useCurrentRoute,
+  Nm as useConstructor,
+  Im as useCountDown,
+  Lm as useCurrentRoute,
   Ip as useDebounceFn,
-  Im as useDebounceState,
+  jm as useDebounceState,
   xp as useDidUpdate,
-  Lm as useInterval,
+  Um as useInterval,
   jp as useJob,
   mi as useLoading,
   xe as useLocation,
   Rn as useMount,
   qt as useNavigate,
   Jp as useNavigation,
-  Um as useOnElementChange,
+  Fm as useOnElementChange,
   Ss as useOutlet,
   Kp as useOutletContext,
   qp as useParams,
-  km as usePrevious,
+  Bm as usePrevious,
   pm as useRole,
   hi as useRoutes,
   rm as useSearchParams,
-  Fm as useTimeout,
+  Hm as useTimeout,
   Lp as useToggle,
   Np as useUnMount,
   mm as useUser,
-  Bm as useWritableMemo,
+  Vm as useWritableMemo,
   cm as usernameRegex,
   fm as validateAsciiChars,
-  Ym as withAuthorization,
-  Xm as withRoutes
+  qm as withAuthorization,
+  e0 as withRoutes
 };

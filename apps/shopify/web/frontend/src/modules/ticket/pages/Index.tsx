@@ -3,6 +3,8 @@ import {
   generatePath,
   MediaScreen,
   PageComponent,
+  priorityToTagShopify,
+  typeChannelTicket,
   upperCaseFirst,
   useDidUpdate,
   useJob,
@@ -21,6 +23,7 @@ import {
   UpdateTicket,
 } from "@moose-desk/repo";
 import {
+  Badge,
   Button,
   ButtonGroup,
   EmptySearchResult,
@@ -364,7 +367,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
     "ticketId",
     "subject",
     "customer",
-    "tags",
+    "createdViaWidget",
     "priority",
     "updatedTimestamp",
   ];
@@ -471,21 +474,25 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
         </IndexTable.Cell>
         <IndexTable.Cell>
           {createdViaWidget || incoming ? (
-            <span className="subject max-w-lg truncate">{`${fromEmail.email}`}</span>
+            <span className="subject max-w-lg truncate">{`${
+              fromEmail.name ? fromEmail.name : fromEmail.email
+            }`}</span>
           ) : (
-            <span className="subject max-w-lg truncate">{`${toEmails[0]?.email}`}</span>
+            <span className="subject max-w-lg truncate">{`${
+              toEmails[0]?.name ? toEmails[0]?.name : toEmails[0]?.email
+            }`}</span>
           )}
         </IndexTable.Cell>
         <IndexTable.Cell>
-          <div className="flex flex-col wrap gap-2">
-            {tags?.slice(-2).map((item, indexTag) => (
-              <span className="tag-item" key={item + indexTag}>
-                #{item}
-              </span>
-            ))}
-          </div>
+          <Badge status={typeChannelTicket(createdViaWidget)}>
+            {createdViaWidget ? "Via widget" : "Email"}
+          </Badge>
         </IndexTable.Cell>
-        <IndexTable.Cell>{upperCaseFirst(priority)}</IndexTable.Cell>
+        <IndexTable.Cell>
+          <Badge status={priorityToTagShopify(priority)}>
+            {upperCaseFirst(priority)}
+          </Badge>
+        </IndexTable.Cell>
         <IndexTable.Cell>
           {createdDatetimeFormat(updatedDatetime, timezone)}
         </IndexTable.Cell>
@@ -530,7 +537,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
   }
   `;
   return (
-    <>
+    <div className="overflow-x-hidden">
       <style scoped>{screenType === ScreenType.SM ? css : ""}</style>{" "}
       <Page
         title={
@@ -757,7 +764,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                           { title: "Ticket ID" },
                           { title: "Ticket Title" },
                           { title: "Customer" },
-                          { title: "Tags" },
+                          { title: "Channel" },
                           { title: "Priority" },
                           { title: "Last Update" },
                           { title: "Action" },
@@ -862,7 +869,7 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
           )}
         </LegacyCard>
       </Page>
-    </>
+    </div>
   );
 };
 

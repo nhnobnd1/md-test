@@ -4,6 +4,7 @@ import {
   MediaScreen,
   PageComponent,
   priorityToTag,
+  typeChannelTicket,
   upperCaseFirst,
   useJob,
   useLoading,
@@ -660,11 +661,19 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                     render={(_, record: Ticket) => {
                       if (record.createdViaWidget || record.incoming) {
                         return (
-                          <span className="subject">{`${record?.fromEmail.email}`}</span>
+                          <span className="subject">{`${
+                            record?.fromEmail.name
+                              ? record?.fromEmail.name
+                              : record?.fromEmail.email
+                          }`}</span>
                         );
                       }
                       return (
-                        <span className="subject">{`${record?.toEmails[0]?.email}`}</span>
+                        <span className="subject">{`${
+                          record?.toEmails[0]?.name
+                            ? record?.toEmails[0]?.name
+                            : record?.toEmails[0]?.email
+                        }`}</span>
                       );
                     }}
                     sorter={{
@@ -682,17 +691,15 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
                     }}
                   ></Table.Column>
                   <Table.Column
-                    key="tags"
-                    title="Tags"
+                    key="createdViaWidget"
+                    title="Channel"
                     render={(_, record: Ticket) => {
                       return (
-                        <div className="flex flex-col wrap gap-2">
-                          {record.tags?.slice(-2).map((item, index) => (
-                            <span className="tag-item" key={item + index}>
-                              #{item}
-                            </span>
-                          ))}
-                        </div>
+                        <TagAntd
+                          color={typeChannelTicket(record.createdViaWidget)}
+                        >{`${
+                          record.createdViaWidget ? "Via widget" : "Email"
+                        }`}</TagAntd>
                       );
                     }}
                     sorter={{

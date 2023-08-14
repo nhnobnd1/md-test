@@ -39,6 +39,25 @@ export function priorityToTag(str: string) {
       return "default";
   }
 }
+export function priorityToTagShopify(str: string) {
+  switch (str.toLowerCase()) {
+    case "urgent":
+      return "critical";
+    case "high":
+      return "warning";
+    case "medium":
+      return "info";
+    case "low":
+      return undefined;
+    default:
+      return undefined;
+  }
+}
+
+export function typeChannelTicket(isCreatedByWidget: boolean) {
+  if (isCreatedByWidget) return "success";
+  return "warning";
+}
 
 export enum MediaScreen {
   XS = 320,

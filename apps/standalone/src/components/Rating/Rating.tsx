@@ -1,4 +1,4 @@
-import { useCountDown } from "@moose-desk/core";
+import { useCountDown, useUser } from "@moose-desk/core";
 import { MerchantRating } from "@moose-desk/repo";
 import { Card, Input, Space, Typography } from "antd";
 import { FC, useEffect } from "react";
@@ -18,6 +18,7 @@ export const Rating: FC<RatingProps> = () => {
   const ratingState = useRating((state) => state);
   const message = useMessage();
   const { t } = useTranslation();
+  const user = useUser();
   const {
     state: countDown,
     initCountdown,
@@ -43,7 +44,7 @@ export const Rating: FC<RatingProps> = () => {
       }
       initCountdown("rating");
     },
-    enabled: !ratingState.isFetch,
+    enabled: !ratingState.isFetch && !!user,
 
     onError: () => {
       message.error(t("messages:error.something_went_wrong"));

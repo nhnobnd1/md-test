@@ -26,7 +26,6 @@ export const MainLayout = () => {
   const { t } = useTranslation();
   const user = useUser();
   useEffect(() => {
-    console.log({ user });
     if (user) {
       navigate(generatePath(DashboardRoutePaths.Index));
     }
