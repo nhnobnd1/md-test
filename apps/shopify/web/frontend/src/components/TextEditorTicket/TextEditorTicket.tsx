@@ -214,6 +214,14 @@ export const TextEditorTicket = ({
     }
   }, [files]);
 
+  useEffect(() => {
+    setTimeout(() => {
+      editorRef.current.focus();
+      onChange && onChange("test");
+      formRef.current?.setFieldValue("content", "test");
+    }, 2000);
+  }, []);
+
   return (
     <div>
       <Modal
