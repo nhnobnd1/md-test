@@ -19,13 +19,15 @@ export const MDSearchInput = React.memo(
   }: IMDSearchInput) => {
     const { isMobile } = useViewport();
     const [querySearch, setQuerySearch] = useState<string>(value || "");
+    const [isInitial, setIsInitial] = useState<boolean>(true);
     const debounceValue: string = useDebounce(querySearch, 500);
     const handleChange = (e: any) => {
       setQuerySearch(e?.target?.value);
+      setIsInitial(false);
     };
     useEffect(() => {
-      onTypeSearch(debounceValue);
-    }, [debounceValue]);
+      if (!isInitial) onTypeSearch(debounceValue);
+    }, [debounceValue, isInitial]);
 
     return (
       <Input

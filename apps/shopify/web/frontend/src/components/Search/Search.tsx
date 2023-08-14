@@ -9,16 +9,19 @@ interface ISearch {
 }
 export const Search = memo(({ onTypeSearch, value }: ISearch) => {
   const [querySearch, setQuerySearch] = useState<string>(value || "");
+  const [isInitial, setIsInitial] = useState<boolean>(true);
+
   const debounceValue: string = useDebounce(querySearch, 500);
   const handleChange = (value: string) => {
     setQuerySearch(value);
+    setIsInitial(false);
   };
   const handleClear = () => {
     setQuerySearch("");
   };
   useEffect(() => {
-    onTypeSearch(debounceValue);
-  }, [debounceValue]);
+    if (!isInitial) onTypeSearch(debounceValue);
+  }, [debounceValue, isInitial]);
   return (
     <TextField
       prefix={<Icon source={SearchMinor} />}
