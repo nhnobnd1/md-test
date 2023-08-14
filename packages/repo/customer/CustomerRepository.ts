@@ -13,38 +13,38 @@ import {
 } from "./Customer";
 
 export const CustomerRepository = createRepository(
-  () => ({
-    baseURL: `${env.getApiUrl()}/api/v1/customer`,
-  }),
-  {
-    getList(api, params: GetListCustomerRequest) {
-      return api.get<GetListCustomerResponse>("", params);
-    },
-    getOne(api, id: string | undefined) {
-      return api.get<GetOneCustomerResponse>(`/${id}`);
-    },
-    create(api, data: CreateCustomerRequest) {
-      return api.post<CreateCustomerResponse>("", data);
-    },
-    update(api, id: string, data: UpdateCustomerRequest) {
-      return api.put<UpdateCustomerResponse>(`/${id}`, data);
-    },
-    delete(api, data: BaseDeleteList) {
-      return api.delete<DeleteCustomerResponse>("", {}, { data });
-    },
-    getListTicket(api, id: string, params: GetListCustomerRequest) {
-      return api.get(`/all-tickets/${id}`, params);
-    },
-    syncShopifyCustomers(api) {
-      return api.post("/sync-from-shopify", {});
-    },
-    checkingSyncImportCustomer(api) {
-      return api.get("/check-status-sync-or-import");
-    },
-    importCSV(api, data: any) {
-      return api.post("/import-from-csv", data);
-    },
-  }
+	() => ({
+		baseURL: `${env.getApiUrl()}/api/v1/customer`,
+	}),
+	{
+		getList(api, params: GetListCustomerRequest) {
+			return api.get<GetListCustomerResponse>('', params);
+		},
+		getOne(api, id: string | undefined) {
+			return api.get<GetOneCustomerResponse>(`/${id}`);
+		},
+		create(api, data: CreateCustomerRequest) {
+			return api.post<CreateCustomerResponse>('', data);
+		},
+		update(api, id: string, data: UpdateCustomerRequest) {
+			return api.put<UpdateCustomerResponse>(`/${id}`, data);
+		},
+		delete(api, data: BaseDeleteList) {
+			return api.delete<DeleteCustomerResponse>('', {}, { data });
+		},
+		getListTicket(api, id: string, params: GetListCustomerRequest) {
+			return api.get(`/all-tickets/${id}`, params);
+		},
+		syncShopifyCustomers(api) {
+			return api.post('/sync-from-shopify', {});
+		},
+		checkingSyncImportCustomer(api) {
+			return api.get('/check-status-sync-or-import');
+		},
+		importCSV(api, data: any) {
+			return api.post('/import-from-csv', data);
+		},
+	}
 );
 
 export default CustomerRepository;

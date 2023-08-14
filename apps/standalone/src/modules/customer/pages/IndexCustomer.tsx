@@ -91,7 +91,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
     isLoading: isFetchingListCustomer,
   }: any = useQuery({
     queryKey: [QUERY_KEY.LIST_CUSTOMER, filterData],
-    queryFn: () => getListCustomer(filterData),
+    queryFn: () => getListCustomer({ ...filterData, getTicket: 1 }),
     keepPreviousData: true,
     onError: () => {
       message.error(t("messages:error.get_customer"));

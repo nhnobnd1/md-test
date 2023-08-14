@@ -68,7 +68,7 @@ const TagIndexPage: PageComponent<TagIndexPageProps> = () => {
     refetch,
   } = useQuery({
     queryKey: ["getTags", filterData],
-    queryFn: () => getListTagFilter(filterData),
+    queryFn: () => getListTagFilter({ ...filterData, getTicket: 1 }),
     retry: 1,
 
     onError: () => {

@@ -60,7 +60,7 @@ export default function TagIndexPage() {
   } = useJob(
     () => {
       return TagRepository()
-        .getList(filterData)
+        .getList({ ...filterData, getTicket: 1 })
         .pipe(
           map(({ data }) => {
             setTags(

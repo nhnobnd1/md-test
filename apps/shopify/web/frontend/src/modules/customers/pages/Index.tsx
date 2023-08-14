@@ -76,7 +76,7 @@ export default function CustomerIndexPage() {
     isLoading,
   }: any = useQuery({
     queryKey: [QUERY_KEY.LIST_CUSTOMER, filterData],
-    queryFn: () => getListCustomer(filterData),
+    queryFn: () => getListCustomer({ ...filterData, getTicket: 1 }),
     keepPreviousData: true,
   });
   const { mutate: deleteCustomerMutate, isLoading: deleting } = useMutation({
