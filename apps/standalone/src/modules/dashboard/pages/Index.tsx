@@ -31,7 +31,7 @@ const DashboardIndexPage: PageComponent<DashboardIndexPageProps> = () => {
             <div className={styles.block}>
               <div className={styles.title}>
                 <Icon name="todo" />
-                <span>To do List</span>
+                <span>Recent Ticket</span>
               </div>
               <TodoList />
             </div>

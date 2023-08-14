@@ -63,11 +63,11 @@ export default function DashboardIndexPage() {
         </div>
         <div className={styles.block}>
           {isMobileOrTablet ? (
-            <CollapseOnMobile title="To Do List">
+            <CollapseOnMobile title="Recent Ticket">
               <TodoList />
             </CollapseOnMobile>
           ) : (
-            <LegacyCard title="To Do List" sectioned>
+            <LegacyCard title="Recent Ticket" sectioned>
               <TodoList />
             </LegacyCard>
           )}
