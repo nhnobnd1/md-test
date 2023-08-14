@@ -156,8 +156,14 @@ export const getListAgentApi = (
 };
 export const emailIntegrationApi = (): Promise<EmailIntegration> => {
   return new Promise((resolve, reject) => {
-    lastValueFrom(EmailIntegrationRepository().getPrimaryEmail())
-      .then(({ data }) => resolve(data.data))
+    lastValueFrom(
+      EmailIntegrationRepository().getListEmail({
+        page: 1,
+        limit: 500,
+        isLive: 1,
+      })
+    )
+      .then(({ data }) => resolve(data.data[0]))
       .catch((error) => reject(error));
   });
 };
