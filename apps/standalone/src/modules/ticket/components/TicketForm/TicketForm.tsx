@@ -188,7 +188,14 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
         ? values.assignee.split(",")[0]
         : undefined,
       agentEmail: values.assignee ? values.assignee.split(",")[1] : undefined,
-      toEmails: [{ email: values.to, name: values.to.split("@")[0] }],
+      toEmails: [
+        {
+          email: values.to,
+          name: findCustomer
+            ? `${findCustomer.firstName} ${findCustomer.lastName}`
+            : values.to.split("@")[0],
+        },
+      ],
       customerObjectId: findCustomer ? findCustomer._id : undefined,
 
       ccEmails: enableCC ? values?.CC : [],
