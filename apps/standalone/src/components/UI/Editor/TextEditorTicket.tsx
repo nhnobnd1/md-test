@@ -312,14 +312,7 @@ const TextEditorTicket = ({
               "body { font-family:Helvetica,Arial,sans-serif; font-size:14px}",
             toolbar:
               "undo redo  bold italic underline align  blocks fontfamily fontsizeinput  importfile image media link code  past blockquote backcolor forecolor indent  lineheight  strikethrough",
-            plugins: [
-              "advlist lists autolink charmap print preview anchor",
-              "searchreplace visualblocks code fullscreen",
-              "insertdatetime media table paste code help wordcount",
-              "image",
-              "link",
-              "code",
-            ],
+
             toolbar_sticky: true,
             // object_resizing: false,
 
