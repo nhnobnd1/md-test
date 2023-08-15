@@ -88,9 +88,7 @@ export const Automation = React.memo(() => {
         <div className={styles.imageContainer}>
           <div className={styles.wrapImage}>
             <img
-              src={
-                "https://cdn.shopify.com/s/files/1/0805/0819/1024/files/md-setup-widget-auto-1.png?v=1691587731"
-              }
+              src="https://cdn.shopify.com/s/files/1/0805/0819/1024/files/md-help-widget-setup-auto-1.png?v=1692075440"
               alt="auto"
             />
           </div>
