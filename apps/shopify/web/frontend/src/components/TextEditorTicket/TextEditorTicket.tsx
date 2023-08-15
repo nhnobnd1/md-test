@@ -219,22 +219,9 @@ export const TextEditorTicket = ({
     onChange && onChange(value);
   }, [value, onChange]);
 
-  useEffect(() => {
-    setTimeout(() => {
-      editorRef.current.focus();
-      onChange && onChange("test");
-      formRef.current?.setFieldValue("content", "test");
-    }, 2000);
-  }, []);
-
   return (
     <div>
-      <Modal
-        // activator={activator}
-        open={modal}
-        onClose={handleCloseModal}
-        title="Upload file"
-      >
+      <Modal open={modal} onClose={handleCloseModal} title="Upload file">
         <Modal.Section>
           <TextContainer>
             <section className="flex justify-center ">
