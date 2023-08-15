@@ -153,6 +153,9 @@ const BusinessHours = () => {
     if (isSubmit) {
       form.submit();
     }
+    return () => {
+      updateFormDirty(false);
+    };
   }, [isSubmit]);
   return (
     <>
