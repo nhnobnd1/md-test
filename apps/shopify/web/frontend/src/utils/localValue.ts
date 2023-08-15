@@ -35,4 +35,15 @@ function trimHtmlCssJs(html: string): string {
 
   return html;
 }
-export { defaultFilter, trimHtmlCssJs, wrapImageWithAnchorTag };
+
+function verifyShopifyAppIos() {
+  const isShopifyApp = navigator.userAgent.includes("Shopify Mobile");
+  const isIos = /iPad|iPhone|iPod/.test(navigator.platform);
+  return isShopifyApp && isIos;
+}
+export {
+  defaultFilter,
+  trimHtmlCssJs,
+  verifyShopifyAppIos,
+  wrapImageWithAnchorTag,
+};
