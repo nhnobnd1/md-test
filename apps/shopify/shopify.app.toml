@@ -2,7 +2,7 @@
 
 name = "MooseDesk Local"
 client_id = "6beffae9e7e2d336d04c001812119383"
-application_url = "https://relief-multi-clean-park.trycloudflare.com"
+application_url = "https://clouds-pages-lowest-falling.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ use_legacy_install_flow = true
 
 [auth]
 redirect_urls = [
-  "https://relief-multi-clean-park.trycloudflare.com/auth/callback",
-  "https://relief-multi-clean-park.trycloudflare.com/auth/shopify/callback",
-  "https://relief-multi-clean-park.trycloudflare.com/api/auth/callback"
+  "https://clouds-pages-lowest-falling.trycloudflare.com/auth/callback",
+  "https://clouds-pages-lowest-falling.trycloudflare.com/auth/shopify/callback",
+  "https://clouds-pages-lowest-falling.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
