@@ -26,6 +26,4 @@ extensions/*/build
 # Node library SQLite database
 web/database.sqlite
 
-shopify.app.toml
 
-shopify.app.moosedesk-dev.toml

@@ -74,7 +74,9 @@ export const Automation = React.memo(() => {
             removeUnderline
             url={`https://${getSubDomain()}.myshopify.com/admin/themes/${
               themeId || "current"
-            }/editor?context=apps&template=index&activateAppId=ed118f6f-db02-4570-8695-4416c857ded1/app-widget`}
+            }/editor?context=apps&template=index&activateAppId=${
+              import.meta.env.VITE_THEME_WIDGET_ID
+            }/app-widget`}
           >
             Go to Theme Editor
           </Link>
