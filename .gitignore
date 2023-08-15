@@ -31,4 +31,4 @@ yarn-error.log*
 
 # turbo
 .turbo
-apps/shopify/shoify.app.toml
+apps/shopify/shoify.app.*
