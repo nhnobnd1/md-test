@@ -16,18 +16,19 @@
 Sau khi update code trong `apps/shopify/extensions/*` thì cần phải deploy để update lại extension trên shopify
 
 - B1: Sửa file `*.liquid` trong folder `blocks`:
-  - Nếu deploy production thì sửa `widget_id: "https://moosedesk-help-widget.s3.amazonaws.com/{{ shop.id }}/{{ shop.id }}.json"`
-  - Nếu deploy development thì sửa `widget_id: "https://md-help-widget.s3.amazonaws.com/{{ shop.id }}/{{ shop.id }}.json"`
+  - Production `widget_id: "https://moosedesk-help-widget.s3.amazonaws.com/{{ shop.id }}/{{ shop.id }}.json"`
+  - Development `widget_id: "https://md-help-widget.s3.amazonaws.com/{{ shop.id }}/{{ shop.id }}.json"`
 - B2: Logout khỏi shopify
 
 ```
- $ yarn shopify auth logout
+ yarn shopify auth logout
 ```
 
-- B3: Trỏ terminal vào folder `shopify` chạy lệnh deploy
+- B3: Chạy lệnh deploy
 
 ```
- $ yarn deploy
+ cd apps/shopify
+ yarn deploy
 ```
 
 # Turborepo starter
