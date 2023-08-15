@@ -71,7 +71,7 @@ export const Automation = React.memo(() => {
             target="_blank"
             href={`https://${getSubDomain()}.myshopify.com/admin/themes/${
               themeId || "current"
-            }/editor?context=apps&template=index&activateAppId=07370181-6fc0-4239-952b-84901be873c5/app-widget`}
+            }/editor?context=apps&template=index&activateAppId=ed118f6f-db02-4570-8695-4416c857ded1/app-widget`}
           >
             Go to Theme Editor
           </Link>
