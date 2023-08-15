@@ -41,7 +41,7 @@ import { CancelMajor, PriceLookupMinor } from "@shopify/polaris-icons";
 import classNames from "classnames";
 import { FormikProps } from "formik";
 import moment from "moment";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery, useQueryClient } from "react-query";
 import { catchError, map, of } from "rxjs";
@@ -69,6 +69,7 @@ import ForwardIcon from "~icons/ion/forward";
 import ReplyIcon from "~icons/ion/reply";
 import BackIcon from "~icons/mingcute/back-2-fill";
 
+import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import { uniqBy } from "lodash-es";
 import BoxSelectAssignee from "src/components/Modal/ModalFilter/BoxSelectAssignee";
 import BoxSelectCustomer from "src/modules/ticket/components/BoxSelectCustomer/BoxSelectCustomer";
@@ -214,12 +215,14 @@ const DetailTicket = () => {
   // detail ticket
   const contentCreate = useFormCreateTicket((state) => state.content);
   const updateContent = useFormCreateTicket((state) => state.updateState);
-
-  const { data: dataCustomers } = useQuery({
-    queryKey: ["getCustomers"],
-    queryFn: () => getListCustomerApi({ page: 1, limit: 500 }),
+  const [searchCustomer, setSearchCustomer] = useState<string>("");
+  const debounceCustomer: string = useDebounce(searchCustomer, 200);
+  const { data: dataCustomers, isLoading: isLoadingCustomer } = useQuery({
+    queryKey: ["getCustomers", { page: 1, limit: 10, query: debounceCustomer }],
+    queryFn: () =>
+      getListCustomerApi({ page: 1, limit: 10, query: debounceCustomer }),
     retry: 3,
-    staleTime: 10000,
+    // staleTime: 10000,
     onError: () => {
       show(t("messages:error.get_customer"), { isError: true });
     },
@@ -472,12 +475,6 @@ const DetailTicket = () => {
     });
   }, [enableCC, emailIntegrationOptions]);
 
-  useEffect(() => {
-    if (id) {
-      // getTicketApi(id);
-      // fetchConversation(id);
-    }
-  }, [id]);
   const disabled = useMemo(() => {
     if (formRef.current?.values.status === StatusTicket.RESOLVED) return true;
     return false;
@@ -968,6 +965,10 @@ Hit Send to see what your message will look like
                                           }
                                           placeholder="Email"
                                           data={customersOptions}
+                                          onSearch={(e) => {
+                                            setSearchCustomer(e);
+                                          }}
+                                          loading={isLoadingCustomer}
                                         />
                                       ) : (
                                         <TextField
@@ -1002,6 +1003,10 @@ Hit Send to see what your message will look like
                                           disabled={disabled}
                                           label="CC"
                                           data={customersOptions}
+                                          onSearch={(e) => {
+                                            setSearchCustomer(e);
+                                          }}
+                                          loading={isLoadingCustomer}
                                         />
                                       </FormItem>
                                     </div>
@@ -1018,6 +1023,10 @@ Hit Send to see what your message will look like
                                           disabled={disabled}
                                           label="BCC"
                                           data={customersOptions}
+                                          onSearch={(e) => {
+                                            setSearchCustomer(e);
+                                          }}
+                                          loading={isLoadingCustomer}
                                         />
                                       </FormItem>
                                     </div>
