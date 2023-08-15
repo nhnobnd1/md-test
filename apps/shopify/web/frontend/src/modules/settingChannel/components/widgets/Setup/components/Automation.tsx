@@ -34,7 +34,6 @@ export const Automation = React.memo(() => {
     (value: string) => setThemeId(value),
     []
   );
-  console.log(process.env, "env");
   return (
     <div className={styles.container}>
       <div className={styles.title}>
