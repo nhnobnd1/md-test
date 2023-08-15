@@ -9,7 +9,7 @@ import {
   useUser,
 } from "@moose-desk/core";
 import { AccountRepository } from "@moose-desk/repo";
-import { Badge, Layout, Menu } from "antd";
+import { Badge, Layout, Menu, Space } from "antd";
 import classNames from "classnames";
 import { Suspense, useCallback, useMemo, useState } from "react";
 import { useQuery } from "react-query";
@@ -31,6 +31,7 @@ import DashboardRoutePaths from "src/modules/dashboard/routes/paths";
 import GroupRoutePaths from "src/modules/group/routes/paths";
 import ReportRoutePaths from "src/modules/report/routes/paths";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
+import useBusinessHour from "src/modules/setting/store/Businesshour";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
 import { getStatisticTicket } from "src/modules/ticket/helper/api";
 import TicketRoutePaths from "src/modules/ticket/routes/paths";
@@ -58,6 +59,10 @@ export const AppLayout = () => {
       // message.error(t("messages:error.get_ticket"));
     },
   });
+  const formChanged = useBusinessHour((state) => state.formChanged);
+  const handleResetForm = useBusinessHour((state) => state.handleResetForm);
+  const handleSubmitForm = useBusinessHour((state) => state.handleSubmitForm);
+
   const statistic = useMemo(() => {
     if (dataStatistic) {
       return dataStatistic;
@@ -370,40 +375,6 @@ export const AppLayout = () => {
       breadCrumb: atk.breadCrumb,
     };
   }, [caseTopMenu, location.pathname, getDefaultOpenKeys]);
-  // useEffect(() => {
-  //   setBreadCrumb({
-  //     items: keys.breadCrumb.map((bread) => {
-  //       return {
-  //         key: bread.key,
-  //         props: {
-  //           children: (
-  //             <>
-  //               {bread.link ? (
-  //                 <a
-  //                   className={classNames({
-  //                     active: bread.link === location.pathname,
-  //                   })}
-  //                   onClick={() =>
-  //                     bread.link && navigate(generatePath(bread.link))
-  //                   }
-  //                 >
-  //                   {bread.label}
-  //                 </a>
-  //               ) : (
-  //                 bread.label
-  //               )}
-  //             </>
-  //           ),
-  //         },
-  //       };
-  //     }),
-  //   });
-  // }, [caseTopMenu, keys, location.pathname]);
-  // useEffect(() => {
-  //   if (isMobile) {
-  //     setCollapsed(true);
-  //   }
-  // }, [isMobile]);
 
   const { run: SignOutApi } = useJob(
     () => {
@@ -443,42 +414,53 @@ export const AppLayout = () => {
           "no-touch": !collapsed && isMobile,
         })}
       >
-        <div className="flex justify-between items-center px-20px full-height-header">
-          <div className="logo hover:cursor-pointer flex justify-center items-center gap-2">
-            <MDButton
-              icon={<MenuIcon visible={!collapsed} />}
-              type="text"
-              onClick={handleToggleMenu}
-            ></MDButton>
-            <Link to="/dashboard">
-              <img
-                src={Images.Logo.LogoMooseDesk}
-                width="130"
-                alt="home logo"
-              />
-            </Link>
-          </div>
-          <div className="user-action">
-            <div className="flex gap-3 align-center">
-              <div className="md:flex hidden">
-                <Link
-                  className="md-link-ant"
-                  to="/setting/account&security/profile"
-                >
-                  {user?.subdomain} / {user?.email}
-                </Link>
-              </div>
-              <MDButton
-                icon={<Icon name="logout" />}
-                className="btn-logout"
-                onClick={handleLogout}
-                type="text"
-              >
-                Logout
+        {formChanged ? (
+          <div className=" flex justify-end flex-1 px-20px">
+            <Space>
+              <MDButton onClick={handleResetForm}>Cancel</MDButton>
+              <MDButton type="primary" onClick={handleSubmitForm}>
+                Save
               </MDButton>
+            </Space>
+          </div>
+        ) : (
+          <div className="flex justify-between items-center px-20px full-height-header">
+            <div className="logo hover:cursor-pointer flex justify-center items-center gap-2">
+              <MDButton
+                icon={<MenuIcon visible={!collapsed} />}
+                type="text"
+                onClick={handleToggleMenu}
+              ></MDButton>
+              <Link to="/dashboard">
+                <img
+                  src={Images.Logo.LogoMooseDesk}
+                  width="130"
+                  alt="home logo"
+                />
+              </Link>
+            </div>
+            <div className="user-action">
+              <div className="flex gap-3 align-center">
+                <div className="md:flex hidden">
+                  <Link
+                    className="md-link-ant"
+                    to="/setting/account&security/profile"
+                  >
+                    {user?.subdomain} / {user?.email}
+                  </Link>
+                </div>
+                <MDButton
+                  icon={<Icon name="logout" />}
+                  className="btn-logout"
+                  onClick={handleLogout}
+                  type="text"
+                >
+                  Logout
+                </MDButton>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </Layout.Header>
       <Layout className="md-layout-contain-menu">
         {!collapsed && isMobile && (

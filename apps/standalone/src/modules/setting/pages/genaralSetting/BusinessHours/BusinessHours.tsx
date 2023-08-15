@@ -1,4 +1,4 @@
-import { useMount, useRole, useToggle } from "@moose-desk/core";
+import { useMount, useRole } from "@moose-desk/core";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import {
   AutoReply,
@@ -7,11 +7,11 @@ import {
   GetListBusinessCalendarResponse,
   Holidays,
 } from "@moose-desk/repo";
-import { Card, Input, Space, Tabs } from "antd";
+import { Card, Input, Tabs } from "antd";
+import { isEqual, keys, pick } from "lodash-es";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "react-query";
-import { MDButton } from "src/components/UI/Button/MDButton";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
 import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
@@ -35,6 +35,10 @@ const BusinessHours = () => {
   const notification = useNotification();
   const tabSelected = useBusinessHour((state) => state.tabSelected);
   const updateTabSelected = useBusinessHour((state) => state.updateTabSelected);
+  const updateFormDirty = useBusinessHour((state) => state.updateFormDirty);
+  const formChanged = useBusinessHour((state) => state.formChanged);
+  const isReset = useBusinessHour((state) => state.isReset);
+  const isSubmit = useBusinessHour((state) => state.isSubmit);
   const { subDomain } = useSubdomain();
   const { refetchGlobal } = useGlobalData(false, subDomain || "");
   // main code
@@ -42,6 +46,7 @@ const BusinessHours = () => {
     data,
     refetch: refetchBusinessCalendar,
     isLoading: processing,
+    isSuccess,
   } = useQuery({
     queryKey: ["getListBusinessCalendar"],
     queryFn: () => getListBusinessCalendar(),
@@ -62,6 +67,7 @@ const BusinessHours = () => {
   const update = useMutation({
     mutationFn: (payload) => updateListBusinessCalendar(payload),
     onSuccess: () => {
+      updateFormDirty(false);
       message.loading.hide();
       refetchBusinessCalendar();
       notification.success(t("messages:success.update_business_calendar"));
@@ -81,7 +87,6 @@ const BusinessHours = () => {
   const [dataBusinessCalendar, setDataBusinessCalendar] = useState<
     BusinessCalendar | undefined
   >(data ? { ...data.data[0] } : undefined);
-  const { toggle: updateForm } = useToggle();
   const [dataAutoReply, setDataAutoReply] = useState<AutoReply[]>(
     data ? [...data.data[0].autoReply] : []
   );
@@ -95,19 +100,26 @@ const BusinessHours = () => {
   const [form] = Form.useForm();
   const role = useRole();
 
-  const handleChangeValues = useCallback((value) => {
-    updateForm();
-    if (value.autoReply) {
-      setDataAutoReply([...value.autoReply]);
-    }
-    if (value.holidays) {
-      setDataHolidays([...value.holidays]);
-    }
-  }, []);
+  const handleChangeValues = useCallback(
+    (value) => {
+      if (isSuccess && tabSelected === "1") {
+        updateFormDirty(
+          !isEqual(pick(dataBusinessCalendar, keys(value)), value)
+        );
+      }
+      if (value.autoReply) {
+        setDataAutoReply([...value.autoReply]);
+      }
+      if (value.holidays) {
+        setDataHolidays([...value.holidays]);
+      }
+    },
+    [dataBusinessCalendar, isSuccess, tabSelected]
+  );
 
   const disabled = useMemo(() => {
     return form.getFieldValue("businessHoursType") === BusinessHoursType.Full;
-  }, [form.getFieldValue("businessHoursType")]);
+  }, [form.getFieldValue("businessHoursType"), formChanged]);
 
   const handleSubmit = useCallback((data: any) => {
     const revertTimeZome = timeZoneList.timeZone.find(
@@ -126,31 +138,28 @@ const BusinessHours = () => {
   });
 
   useEffect(() => {
-    // console.log("change value", formRef.current?.values);
-    console.log("wow", form.getFieldsValue()?.businessHoursAutoReplyCode);
     setDataBusinessHoursAutoReplyCode(
       form.getFieldsValue()?.businessHoursAutoReplyCode
     );
   }, [form.getFieldsValue()?.businessHoursAutoReplyCode]);
 
   const handleSave = () => form.submit();
+  useEffect(() => {
+    if (isReset) {
+      form.resetFields();
+    }
+  }, [isReset]);
+  useEffect(() => {
+    if (isSubmit) {
+      form.submit();
+    }
+  }, [isSubmit]);
   return (
     <>
       <Header
         className="xs:h-[32px] md:h-[40px] flex items-center mb-5 "
         title="Business Hours"
-      >
-        {tabSelected === "1" && (
-          <div className=" flex justify-end flex-1">
-            <Space>
-              <MDButton onClick={() => form.resetFields()}>Cancel</MDButton>
-              <MDButton type="primary" onClick={() => form.submit()}>
-                Save
-              </MDButton>
-            </Space>
-          </div>
-        )}
-      </Header>
+      ></Header>
       {processing ? (
         <>
           <MDSkeleton lines={10} />
