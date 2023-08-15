@@ -3,7 +3,7 @@ import { TicketRepository } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import { FC, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import ReactQuill, { Quill } from "react-quill";
+import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { catchError, map, of } from "rxjs";
 
@@ -11,21 +11,14 @@ interface QuillEditorProps {
   onChange: any;
   placeholder?: string;
   value?: string;
+  openModal?: any;
 }
-const Font = Quill.import("formats/font");
-Font.whitelist = [
-  "arial",
-  "comic-sans",
-  "courier-new",
-  "georgia",
-  "helvetica",
-  "lucida",
-];
-Quill.register(Font, true);
+
 export const QuillEditor: FC<QuillEditorProps> = ({
   onChange,
   placeholder,
   value,
+  openModal,
 }) => {
   const quillRef = useRef<any>();
   const { show } = useToast();
@@ -60,7 +53,6 @@ export const QuillEditor: FC<QuillEditorProps> = ({
     input.onchange = async () => {
       const file = input.files && input.files[0];
       postAttachmentApi(file, (link: any) => {
-        console.log("wel", editor.getSelection());
         editor.insertEmbed(editor.getSelection(), "image", link);
       });
     };
@@ -69,16 +61,18 @@ export const QuillEditor: FC<QuillEditorProps> = ({
     () => ({
       toolbar: {
         container: [
-          [{ font: [] }],
           [{ header: [1, 2, 3, 4, 5, 6, false] }],
           ["bold", "italic", "underline", "strike"],
           [{ color: [] }, { background: [] }],
           ["blockquote", "code-block"],
           [{ list: "ordered" }, { list: "bullet" }],
-          ["image"],
+          ["image", openModal ? "link" : ""],
         ],
         handlers: {
           image: imageHandler,
+          link: () => {
+            openModal();
+          },
         },
       },
     }),

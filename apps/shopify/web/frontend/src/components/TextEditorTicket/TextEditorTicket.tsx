@@ -280,7 +280,11 @@ export const TextEditorTicket = ({
       </div>
       {verifyShopifyAppIos() ? (
         <div className="pb-10">
-          <QuillEditor value={value} onChange={handleChange} />
+          <QuillEditor
+            value={value}
+            onChange={handleChange}
+            openModal={openModal}
+          />
         </div>
       ) : (
         <Editor
