@@ -1,11 +1,16 @@
-import { generatePath, useJob, useMount, useNavigate } from "@moose-desk/core";
-import { GetStoreIdRequest, StoreRepository } from "@moose-desk/repo";
+import { generatePath, useJob, useNavigate } from "@moose-desk/core";
+import {
+  GetStoreIdRequest,
+  GetStoreIdResponse,
+  StoreRepository,
+} from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import { Crisp } from "crisp-sdk-web";
 import CryptoJS from "crypto-js";
 import { ReactNode, createContext, useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { catchError, map, of } from "rxjs";
+import { useQuery } from "react-query";
+import { catchError, lastValueFrom, map, of } from "rxjs";
 import useDeepEffect from "src/hooks/useDeepEffect";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import OnBoardingRoutePaths from "src/modules/onBoarding/routes/paths";
@@ -22,6 +27,13 @@ const StoreContext = createContext<StoreContextType | undefined>(undefined);
 interface StoreProvidersProps {
   children?: ReactNode;
 }
+export const getStoreApi = (payload: GetStoreIdRequest) => {
+  return new Promise((resolve, reject) => {
+    lastValueFrom(StoreRepository().getStore(payload))
+      .then(({ data }) => resolve(data))
+      .catch((error) => reject(error));
+  });
+};
 
 export const StoreProviders = ({ children }: StoreProvidersProps) => {
   const [generalInfo, setGeneralInfo] = useState<StoreContextType>();
@@ -30,6 +42,34 @@ export const StoreProviders = ({ children }: StoreProvidersProps) => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const user = useUser((state) => state.user);
+
+  useQuery({
+    queryKey: ["global"],
+    staleTime: 10000,
+    queryFn: () =>
+      getStoreApi({
+        subdomain: (getSubDomain() as string).toLowerCase(),
+      }),
+
+    onSuccess: (data: GetStoreIdResponse) => {
+      setGeneralInfo(data.data);
+      if (!data.data.isOnboardingComplete) {
+        navigate(generatePath(OnBoardingRoutePaths.Index));
+      }
+    },
+    onError: (error) => {
+      console.log({ error });
+    },
+
+    retry: (failureCount, error: any) => {
+      console.log({ failureCount, error });
+      if (error.response?.status === 400) {
+        navigate("/404");
+        return false;
+      }
+      return true;
+    },
+  });
 
   useDeepEffect(() => {
     if (user) {
@@ -78,14 +118,14 @@ export const StoreProviders = ({ children }: StoreProvidersProps) => {
     { showLoading: true }
   );
 
-  useMount(() => {
-    const subDomain = getSubDomain();
-    if (subDomain) {
-      fetchStoreId({ subdomain: subDomain.toLowerCase() });
-    } else {
-      show(t("messages:error.get_store"), { isError: true });
-    }
-  });
+  // useMount(() => {
+  //   const subDomain = getSubDomain();
+  //   if (subDomain) {
+  //     fetchStoreId({ subdomain: subDomain.toLowerCase() });
+  //   } else {
+  //     show(t("messages:error.get_store"), { isError: true });
+  //   }
+  // });
 
   return (
     <StoreContext.Provider value={generalInfo}>

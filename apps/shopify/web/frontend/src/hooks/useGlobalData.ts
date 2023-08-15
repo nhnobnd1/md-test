@@ -12,9 +12,10 @@ export default function useGlobalData(enabled = false, subdomain: string) {
     });
   };
   const { data, refetch } = useQuery({
-    queryKey: [QUERY_KEY.GLOBAL, { subdomain }],
+    queryKey: [QUERY_KEY.GLOBAL],
     queryFn: () => getGlobalData({ subdomain }),
     enabled: enabled && !!subdomain,
+    staleTime: 10000,
   });
   const deepData: any = (data as any)?.data?.data;
 
