@@ -19,9 +19,7 @@ export const Manual = React.memo(() => {
         <div className={styles.imageContainer}>
           <div className={styles.wrapImage}>
             <img
-              src={
-                "https://cdn.shopify.com/s/files/1/0805/0819/1024/files/md-setup-widget-manual-step-1.png?v=1691587730"
-              }
+              src="https://cdn.shopify.com/s/files/1/0805/0819/1024/files/md-help-widget-setup-manual-1.png?v=1692075440"
               alt="manual_1"
             />
           </div>
@@ -30,38 +28,14 @@ export const Manual = React.memo(() => {
       <div className={styles.stepWrap}>
         <p>
           <span className={styles.stepText}>Step 2:</span> From the{" "}
-          <span>Sections</span> at the left top, click <span>Add section</span>{" "}
-          in <span>Footer</span>
-        </p>
-      </div>
-      <div className={styles.stepWrap}>
-        <p>
-          <span className={styles.stepText}>Step 3:</span> Click{" "}
-          <span>Apps</span> tab, and select <span>MooseDesk Help Widget</span>
+          <span>App embeds</span> in the upper left corner, enable the{" "}
+          <span>MooseDesk Help Widget</span> and then click <span>Save</span>
         </p>
         <div className={styles.imageContainer}>
           <div className={styles.wrapImage}>
             <img
-              src={
-                "https://cdn.shopify.com/s/files/1/0805/0819/1024/files/md-setup-widget-manual-step-2.png?v=1691587730"
-              }
+              src="https://cdn.shopify.com/s/files/1/0805/0819/1024/files/md-help-widget-setup-manual-2.png?v=1692075440"
               alt="manual_2"
-            />
-          </div>
-        </div>
-      </div>
-      <div className={styles.stepWrap}>
-        <p>
-          <span className={styles.stepText}>Step 4:</span> Click{" "}
-          <span>Save</span>
-        </p>
-        <div className={styles.imageContainer}>
-          <div className={styles.wrapImage}>
-            <img
-              src={
-                "https://cdn.shopify.com/s/files/1/0805/0819/1024/files/md-setup-widget-manual-step-3.png?v=1691587731"
-              }
-              alt="manual_3"
             />
           </div>
         </div>
