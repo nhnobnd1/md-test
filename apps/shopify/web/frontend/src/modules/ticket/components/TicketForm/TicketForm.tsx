@@ -44,7 +44,8 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
   const { show } = useToast();
   const { t, i18n } = useTranslation();
   const { state: visible, on: openPopup, off: closePopup } = useToggle();
-
+  console.log("hehehe", navigator.userAgent);
+  console.log("abc", navigator.platform);
   const [toEmail, setToEmail] = useState("");
   const [files, setFiles] = useState<any>([]);
   const [loadingButton, setLoadingButton] = useState(false);
@@ -361,6 +362,8 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
     >
       <style scoped>{css}</style>
       <FormLayout>
+        <p>{navigator.userAgent}</p>
+        <p>{navigator.platform}</p>
         <div className="grid xs:grid-cols-1 gap-x-[7%]">
           <div className="flex items-center gap-2 justify-start">
             <div className="flex-1">
