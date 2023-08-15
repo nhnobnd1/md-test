@@ -11,6 +11,16 @@
   - core: logic core
   - repo: các Repository Api
 
+# Deploy theme app extension:
+
+Sau khi update code trong `apps/shopify/extensions/*` thì cần phải deploy để update lại extension trên shopify
+
+- B1: Sửa file `*.liquid` trong folder `blocks`:
+  - Nếu deploy production thì sửa `widget_id: "https://moosedesk-help-widget.s3.amazonaws.com/{{ shop.id }}/{{ shop.id }}.json"`
+  - Nếu deploy development thì sửa `widget_id: "https://md-help-widget.s3.amazonaws.com/{{ shop.id }}/{{ shop.id }}.json"`
+- B2: Chạy lệnh "yarn shopify auth logout" để logout khỏi shopify
+- B3: Trỏ terminal vào folder `shopify` chạy lệnh "yarn deploy"
+
 # Turborepo starter
 
 This is an official Yarn v1 starter turborepo.
