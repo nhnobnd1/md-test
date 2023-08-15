@@ -14,6 +14,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
+import { QuillEditor } from "src/components/QuillEditor";
+import { verifyShopifyAppIos } from "src/utils/localValue";
 import DeleteIcon from "~icons/ic/baseline-delete-outline";
 import UploadIcon from "~icons/ic/outline-cloud-upload";
 import "./editor.scss";
@@ -195,7 +197,7 @@ export const TextEditorTicket = ({
   }, []);
 
   const handleChange = (content: string) => {
-    onChange && onChange(content);
+    content = content === "<p><br></p>" ? "" : content;
     formRef.current?.setFieldValue("content", content);
     if (setIsChanged) {
       setIsChanged(content);
@@ -213,6 +215,9 @@ export const TextEditorTicket = ({
       setMyFiles([]);
     }
   }, [files]);
+  useEffect(() => {
+    onChange && onChange(value);
+  }, [value, onChange]);
 
   return (
     <div>
@@ -265,70 +270,76 @@ export const TextEditorTicket = ({
         <span className="mr-1 text-red-500">*</span>
         <span>Message</span>
       </div>
+      {verifyShopifyAppIos() ? (
+        <div className="pb-10">
+          <QuillEditor value={value} onChange={handleChange} />
+        </div>
+      ) : (
+        <Editor
+          apiKey="t4mxpsmop8giuev4szkrl7etgn43rtilju95m2tnst9m9uod"
+          {...props}
+          onInit={initEditor}
+          onEditorChange={handleChange}
+          value={value}
+          init={{
+            height: 400,
+            branding: false,
+            menubar: false,
+            // toolbar_mode: "sliding",
+            fontsize_formats:
+              "8pt 9pt 10pt 11pt 12pt 14pt 18pt 24pt 30pt 36pt 48pt 60pt 72pt 96pt",
+            content_style:
+              "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+            toolbar:
+              "undo redo  bold italic underline align  blocks fontfamily fontsizeinput  importfile image media link code  past blockquote backcolor forecolor indent lineheight strikethrough",
 
-      <Editor
-        apiKey="t4mxpsmop8giuev4szkrl7etgn43rtilju95m2tnst9m9uod"
-        {...props}
-        onInit={initEditor}
-        onEditorChange={handleChange}
-        value={value}
-        init={{
-          height: 400,
-          branding: false,
-          menubar: false,
-          // toolbar_mode: "sliding",
-          fontsize_formats:
-            "8pt 9pt 10pt 11pt 12pt 14pt 18pt 24pt 30pt 36pt 48pt 60pt 72pt 96pt",
-          content_style:
-            "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
-          toolbar:
-            "undo redo  bold italic underline align  blocks fontfamily fontsizeinput  importfile image media link code  past blockquote backcolor forecolor indent lineheight strikethrough",
+            toolbar_sticky: true,
+            file_picker_types: "image",
+            file_picker_callback: function (cb, value, meta) {
+              if (meta.filetype === "image") {
+                const input = document.createElement("input");
+                input.setAttribute("type", "file");
+                input.setAttribute("accept", "image/*");
 
-          toolbar_sticky: true,
-          file_picker_types: "image",
-          file_picker_callback: function (cb, value, meta) {
-            if (meta.filetype === "image") {
-              const input = document.createElement("input");
-              input.setAttribute("type", "file");
-              input.setAttribute("accept", "image/*");
-
-              input.onchange = function () {
-                if (input.files?.length) {
-                  const file = input.files[0];
-                  show("Loading...");
-                  postImage(file, (data: any) => {
-                    cb(data.urls[0], {
-                      title: file.name,
-                      alt: file.name,
-                      width: "200px",
+                input.onchange = function () {
+                  if (input.files?.length) {
+                    const file = input.files[0];
+                    show("Loading...");
+                    postImage(file, (data: any) => {
+                      cb(data.urls[0], {
+                        title: file.name,
+                        alt: file.name,
+                        width: "200px",
+                      });
                     });
-                  });
-                }
-              };
+                  }
+                };
 
-              input.click();
-            }
-          },
-          setup: (editor) => {
-            editor.ui.registry.addButton("importfile", {
-              text: "Upload file",
-              icon: "upload",
-              onAction: () => {
-                openModal();
-              },
-            });
-          },
-          // init_instance_callback: (ed) => {
-          //   ed.on("click", function (e) {
-          //     ed.editorCommands.execCommand("fontName", false, "Helvetica");
-          //   });
-          // },
-          statusbar: false,
+                input.click();
+              }
+            },
+            setup: (editor) => {
+              editor.ui.registry.addButton("importfile", {
+                text: "Upload file",
+                icon: "upload",
+                onAction: () => {
+                  openModal();
+                },
+              });
+            },
+            // init_instance_callback: (ed) => {
+            //   ed.on("click", function (e) {
+            //     ed.editorCommands.execCommand("fontName", false, "Helvetica");
+            //   });
+            // },
+            statusbar: false,
 
-          paste_data_images: true,
-          ...props.init,
-        }}
-      ></Editor>
+            paste_data_images: true,
+            ...props.init,
+          }}
+        ></Editor>
+      )}
+
       {isShowFile ? ListFileRow : ""}
       {error ? (
         <div className="mt-1">
