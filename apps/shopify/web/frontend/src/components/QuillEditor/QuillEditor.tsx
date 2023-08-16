@@ -12,6 +12,7 @@ interface QuillEditorProps {
   placeholder?: string;
   value?: string;
   openModal?: any;
+  setLoading: any;
 }
 
 export const QuillEditor: FC<QuillEditorProps> = ({
@@ -19,22 +20,26 @@ export const QuillEditor: FC<QuillEditorProps> = ({
   placeholder,
   value,
   openModal,
+  setLoading,
 }) => {
   const quillRef = useRef<any>();
   const { show } = useToast();
   const { t } = useTranslation();
   const { run: postAttachmentApi } = useJob(
     (dataSubmit: any, callback: any) => {
+      setLoading(true);
       return TicketRepository()
         .postAttachment(dataSubmit)
         .pipe(
           map(({ data }) => {
             if (data.statusCode === 200) {
+              setLoading(false);
               show(t("messages:success.file_upload"));
               callback(data.data.urls[0]);
             }
           }),
           catchError((err) => {
+            setLoading(false);
             show(t("messages:error.file_upload"), { isError: true });
 
             return of(err);
@@ -65,8 +70,12 @@ export const QuillEditor: FC<QuillEditorProps> = ({
           ["bold", "italic", "underline", "strike"],
           [{ color: [] }, { background: [] }],
           ["blockquote", "code-block"],
-          [{ list: "ordered" }, { list: "bullet" }],
-          ["image", openModal ? "link" : ""],
+          [
+            { list: "ordered" },
+            { list: "bullet" },
+            "image",
+            openModal ? "link" : "",
+          ],
         ],
         handlers: {
           image: imageHandler,

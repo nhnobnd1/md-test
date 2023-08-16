@@ -4,6 +4,7 @@ import { useToast } from "@shopify/app-bridge-react";
 import {
   Button,
   InlineError,
+  Loading,
   Modal,
   TextContainer,
   TextProps,
@@ -216,9 +217,6 @@ export const TextEditorTicket = ({
       setMyFiles([]);
     }
   }, [files]);
-  // useEffect(() => {
-  //   onChange && onChange(value);
-  // }, [value, onChange]);
 
   return (
     <div>
@@ -272,6 +270,7 @@ export const TextEditorTicket = ({
             value={value}
             onChange={handleChange}
             openModal={openModal}
+            setLoading={setLoading}
           />
         </div>
       ) : (
@@ -292,7 +291,7 @@ export const TextEditorTicket = ({
               "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
             toolbar:
               "undo redo  bold italic underline align  blocks fontfamily fontsizeinput  importfile image media link code  past blockquote backcolor forecolor indent lineheight strikethrough",
-
+            plugins: ["image", "link", "code"],
             toolbar_sticky: true,
             file_picker_types: "image",
             file_picker_callback: function (cb, value, meta) {
@@ -346,6 +345,7 @@ export const TextEditorTicket = ({
           <InlineError message={error} fieldID="myFieldID" />
         </div>
       ) : null}
+      {loading && <Loading />}
     </div>
   );
 };

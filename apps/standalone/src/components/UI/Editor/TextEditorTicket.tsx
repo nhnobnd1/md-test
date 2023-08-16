@@ -311,8 +311,8 @@ const TextEditorTicket = ({
             content_style:
               "body { font-family:Helvetica,Arial,sans-serif; font-size:14px}",
             toolbar:
-              "undo redo  bold italic underline align  blocks fontfamily fontsizeinput  importfile image media link code  past blockquote backcolor forecolor indent  lineheight  strikethrough",
-
+              "undo redo  bold italic underline align  blocks fontfamily fontsizeinput  importfile image  link code  past blockquote backcolor forecolor indent  lineheight  strikethrough",
+            plugins: ["image", "link", "code"],
             toolbar_sticky: true,
             // object_resizing: false,
 

@@ -100,7 +100,7 @@ const TextEditor = ({
             "body { font-family:Helvetica,Arial,sans-serif; font-size:14px}",
           toolbar:
             "undo redo | bold italic underline align | blocks fontfamily fontsizeinput | link image code past blockquote backcolor forecolor indent lineheight strikethrough",
-
+          plugins: ["image", "link", "code"],
           file_picker_types: "image",
 
           file_picker_callback: function (cb, value, meta) {

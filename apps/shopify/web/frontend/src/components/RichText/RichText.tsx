@@ -61,7 +61,7 @@ export const RichText = ({
             //   "body { font-family:Helvetica,Arial,sans-serif; font-size:12pt }",
             toolbar:
               "undo redo | bold italic underline align | blocks fontfamily fontsizeinput | link image code past blockquote backcolor forecolor indent  lineheight strikethrough",
-
+            plugins: ["image", "link", "code"],
             menubar: false,
             file_picker_types: "image",
             file_picker_callback: function (cb, value, meta) {
