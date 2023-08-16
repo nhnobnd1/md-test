@@ -317,7 +317,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
       setToEmail(changedValue?.to);
     }
     if (changedValue.content) {
-      const contentSplit = changedValue.content.split('<div class="divide">');
+      const contentSplit = changedValue.content.split("- - - - - - -");
       updateContent({ content: contentSplit[0] });
     } else {
       updateContent({ content: undefined });

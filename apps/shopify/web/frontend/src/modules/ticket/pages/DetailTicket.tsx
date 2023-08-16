@@ -597,7 +597,7 @@ const DetailTicket = () => {
   };
   const handleChangeForm = useCallback((changedValue) => {
     if (changedValue.content) {
-      const contentSplit = changedValue.content.split('<div class="divide">');
+      const contentSplit = changedValue.content.split("- - - - - - -");
       updateContent({ content: contentSplit[0] });
     } else {
       updateContent({ content: undefined });

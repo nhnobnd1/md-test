@@ -199,6 +199,7 @@ export const TextEditorTicket = ({
   const handleChange = (content: string) => {
     content = content === "<p><br></p>" ? "" : content;
     formRef.current?.setFieldValue("content", content);
+    onChange && onChange(content);
     if (setIsChanged) {
       setIsChanged(content);
     }
@@ -215,9 +216,9 @@ export const TextEditorTicket = ({
       setMyFiles([]);
     }
   }, [files]);
-  useEffect(() => {
-    onChange && onChange(value);
-  }, [value, onChange]);
+  // useEffect(() => {
+  //   onChange && onChange(value);
+  // }, [value, onChange]);
 
   return (
     <div>
