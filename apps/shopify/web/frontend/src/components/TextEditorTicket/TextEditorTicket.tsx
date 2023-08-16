@@ -267,7 +267,7 @@ export const TextEditorTicket = ({
         <span>Message</span>
       </div>
       {verifyShopifyAppIos() ? (
-        <div className="pb-10">
+        <div className="xs:pb-14  lg:pb-10">
           <QuillEditor
             value={value}
             onChange={handleChange}
