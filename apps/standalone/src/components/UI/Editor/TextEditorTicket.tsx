@@ -1,9 +1,8 @@
-import { CloudUploadOutlined, DeleteOutlined } from "@ant-design/icons";
+import { CloudUploadOutlined } from "@ant-design/icons";
 import { useJob, useLoading, useLocation, useToggle } from "@moose-desk/core";
 import { TicketRepository, UploadFileResponse } from "@moose-desk/repo";
 import { Editor, IAllProps } from "@tinymce/tinymce-react";
-import { Button, FormInstance, Modal, Popover } from "antd";
-import { filesize } from "filesize";
+import { FormInstance, Modal, Upload } from "antd";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useTranslation } from "react-i18next";
@@ -12,7 +11,6 @@ import { catchError, map, of } from "rxjs";
 import { QuillEditor } from "src/components/QuillEditor";
 import { postImageApi } from "src/components/UI/Editor/api";
 import useMessage from "src/hooks/useMessage";
-import ImageZoom from "src/modules/ticket/components/DetailTicketForm/ImageZoom";
 import "./editor.scss";
 
 interface TextEditorProps extends Omit<IAllProps, "onChange" | "value"> {
@@ -195,7 +193,7 @@ const TextEditorTicket = ({
         })
       );
   });
-  const removeFile = (file: any, index: number) => () => {
+  const removeFile = (file: any, index: number) => {
     const newFiles = [...myFiles];
     const newIdAttachments = [...idAttachments];
     newFiles.splice(newFiles.indexOf(file), 1);
@@ -204,45 +202,23 @@ const TextEditorTicket = ({
     setMyFiles(newFiles);
     setIdAttachments(newIdAttachments);
   };
-
   const ListFileRow = useMemo(() => {
     return (
-      <div className="flex flex-wrap justify-start flex-row items-center gap-2">
-        {myFiles.map((item: any, index: number) => {
-          return (
-            <div className="item-file flex gap-3" key={item.path}>
-              <Popover title={item.path}>
-                <div style={{ flexGrow: 1, width: 0 }}>
-                  <p style={{ wordBreak: "break-all" }} className="truncate">
-                    {item.path}
-                  </p>
-                  <p style={{ wordBreak: "break-all" }} className="truncate">
-                    {filesize(item.size, { base: 2, standard: "jedec" })}
-                  </p>
-                </div>
-              </Popover>
-              {item.type.startsWith("image/") ? (
-                <ImageZoom
-                  style={{ height: 75, borderRadius: 10 }}
-                  src={URL.createObjectURL(item)}
-                  alt={item.name}
-                />
-              ) : (
-                <></>
-              )}
-              {/* <div style={{ marginLeft: 10 }}> */}
-
-              <Button
-                disabled={loading}
-                style={{ width: 50 }}
-                onClick={removeFile(item, index)}
-              >
-                <DeleteOutlined />
-              </Button>
-              {/* </div> */}
-            </div>
-          );
-        })}
+      <div className="flex flex-wrap justify-start flex-row items-center gap-2 w-full">
+        <Upload
+          key={myFiles.length + Date()}
+          className="w-full"
+          defaultFileList={myFiles.map((item: any, index: number) => ({
+            uid: item.path,
+            name: item.name,
+            url: URL.createObjectURL(item),
+            index: index,
+            item: item,
+          }))}
+          onChange={({ file, fileList }: any) => {
+            removeFile(file?.item, file?.index);
+          }}
+        />
       </div>
     );
   }, [myFiles, idAttachments, loading]);
@@ -327,86 +303,10 @@ const TextEditorTicket = ({
           postImage={postImage}
           placeholder="Enter your message here..."
           // setLoading={setLoading}
+          listFile={ListFileRow}
         />
-        {/* <Editor
-          apiKey="t4mxpsmop8giuev4szkrl7etgn43rtilju95m2tnst9m9uod"
-          {...props}
-          onInit={initEditor}
-          onEditorChange={handleEditorChange}
-          value={value}
-          init={{
-            height: 400,
-            branding: false,
-            menubar: false,
-            toolbar_mode: "sliding",
-            fontsize_formats:
-              "8pt 9pt 10pt 11pt 12pt 14pt 18pt 24pt 30pt 36pt 48pt 60pt 72pt 96pt",
-            content_style:
-              "body { font-family:Helvetica,Arial,sans-serif; font-size:14px}",
-            toolbar:
-              "undo redo  bold italic underline align  blocks fontfamily fontsizeinput  importfile image  link code  past blockquote backcolor forecolor indent  lineheight  strikethrough",
-            plugins: ["image", "link", "code"],
-            toolbar_sticky: true,
-            // object_resizing: false,
 
-            file_picker_types: "image",
-            file_picker_callback: function (cb, value, meta) {
-              if (meta.filetype === "image") {
-                const input = document.createElement("input");
-                input.setAttribute("type", "file");
-                input.setAttribute("accept", "image/*");
-
-                input.onchange = function () {
-                  if (input.files?.length) {
-                    const file = input.files[0];
-                    postImage(file, (data: any) => {
-                      cb(data.urls[0], {
-                        title: file.name,
-                        alt: file.name,
-                        width: "200px",
-                      });
-                    });
-                  }
-                };
-
-                input.click();
-              }
-            },
-
-            setup: (editor) => {
-              editor.ui.registry.addButton("importfile", {
-                text: "Upload file",
-                icon: "upload",
-                onAction: () => {
-                  openModal();
-                },
-              });
-              editor.on("paste", function (e) {
-                const clipboardData = e.clipboardData;
-                if (!clipboardData) {
-                  return;
-                }
-                const items = clipboardData.items;
-                for (let i = 0; i < items.length; i++) {
-                  const item = items[i];
-                  const file = item.getAsFile();
-                  if (item.kind === "file" && item.type.startsWith("image/")) {
-                    e.preventDefault();
-
-                    startLoading();
-                    uploadInsert.mutate(file);
-                  }
-                }
-                return e;
-              });
-            },
-
-            statusbar: false,
-            paste_data_images: true,
-            ...props.init,
-          }}
-        ></Editor> */}
-        {isShowFile ? ListFileRow : ""}
+        {/* {isShowFile ? ListFileRow : ""} */}
       </div>
     </div>
   );

@@ -112,7 +112,9 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
       <div
         className="text-black text-scroll mt-5 "
         dangerouslySetInnerHTML={{
-          __html: `<div style="font-family:Helvetica;font-size:14px">${sortChat}</div>`,
+          __html: `<div style="font-family:Helvetica;font-size:14px"> <style>
+img {max-width:300px!important;}
+</style>${sortChat}</div>`,
         }}
       />
 

@@ -1,5 +1,5 @@
 import { useToggle } from "@moose-desk/core";
-import { Button } from "antd";
+import { Button, Tooltip } from "antd";
 import QuillImageDropAndPaste from "quill-image-drop-and-paste";
 import ImageResize from "quill-image-resize-module-react";
 import { FC, useMemo, useRef } from "react";
@@ -54,12 +54,9 @@ const QuillToolbar = ({ showToolbar }: any) => {
       <span className={showToolbar ? "" : "hidden"}>
         <button className="ql-list" value="ordered" />
         <button className="ql-list" value="bullet" />
-        <button className="ql-indent" value="-1" />
-        <button className="ql-indent" value="+1" />
       </span>
       <span className={showToolbar ? "" : "hidden"}>
         <button className="ql-blockquote" />
-        <button className="ql-link" />
       </span>
       <span className={showToolbar ? "" : "hidden"}>
         <select className="ql-align" />
@@ -76,6 +73,7 @@ interface QuillEditorProps {
   openModal?: any;
   postInsertImage?: any;
   postImage?: any;
+  listFile?: any;
 }
 
 export const QuillEditor: FC<QuillEditorProps> = ({
@@ -85,6 +83,7 @@ export const QuillEditor: FC<QuillEditorProps> = ({
   openModal,
   postInsertImage,
   postImage,
+  listFile,
 }) => {
   const quillRef = useRef<any>();
   const { state: showToolbar, toggle } = useToggle(false);
@@ -149,18 +148,25 @@ export const QuillEditor: FC<QuillEditorProps> = ({
         formats={formats}
         theme="snow"
       />
+      <div className="md-upload">{listFile}</div>
       <div className="md-custom-border">
-        <Button onClick={toggle} type="text" icon={<IconText />}></Button>
-        <Button
-          onClick={openModal}
-          type="text"
-          icon={<AttachIcon fontSize={16} />}
-        ></Button>
-        <Button
-          onClick={imageHandler}
-          type="text"
-          icon={<ImageIcon fontSize={16} />}
-        ></Button>
+        <Tooltip title="Format text">
+          <Button onClick={toggle} type="text" icon={<IconText />}></Button>
+        </Tooltip>
+        <Tooltip title="Attachment">
+          <Button
+            onClick={openModal}
+            type="text"
+            icon={<AttachIcon fontSize={16} />}
+          ></Button>
+        </Tooltip>
+        <Tooltip title="Insert image">
+          <Button
+            onClick={imageHandler}
+            type="text"
+            icon={<ImageIcon fontSize={16} />}
+          ></Button>
+        </Tooltip>
       </div>
       <QuillToolbar showToolbar={showToolbar} />
     </div>
