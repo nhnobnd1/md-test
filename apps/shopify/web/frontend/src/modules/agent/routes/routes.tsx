@@ -8,20 +8,19 @@ const agentRoutes: IRoute = {
   component: lazy(() => import("src/layouts/MainLayout")),
 
   routes: [
-    // for review
-    // {
-    //   path: AgentRoutePaths.Index,
-    //   index: true,
-    //   component: lazy(() => import("src/modules/agent/pages/Index")),
-    // },
-    // {
-    //   path: AgentRoutePaths.Create,
-    //   component: lazy(() => import("src/modules/agent/pages/CreateAgent")),
-    // },
-    // {
-    //   path: AgentRoutePaths.Detail,
-    //   component: lazy(() => import("src/modules/agent/pages/DetailAgent")),
-    // },
+    {
+      path: AgentRoutePaths.Index,
+      index: true,
+      component: lazy(() => import("src/modules/agent/pages/Index")),
+    },
+    {
+      path: AgentRoutePaths.Create,
+      component: lazy(() => import("src/modules/agent/pages/CreateAgent")),
+    },
+    {
+      path: AgentRoutePaths.Detail,
+      component: lazy(() => import("src/modules/agent/pages/DetailAgent")),
+    },
   ],
 };
 

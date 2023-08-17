@@ -8,20 +8,19 @@ const groupsRoutes: IRoute = {
   component: lazy(() => import("src/layouts/MainLayout")),
 
   routes: [
-    // for review
-    // {
-    //   path: GroupsRoutePaths.Index,
-    //   index: true,
-    //   component: lazy(() => import("src/modules/groups/pages/Index")),
-    // },
-    // {
-    //   path: GroupsRoutePaths.Create,
-    //   component: lazy(() => import("src/modules/groups/pages/CreateGroup")),
-    // },
-    // {
-    //   path: GroupsRoutePaths.Detail,
-    //   component: lazy(() => import("src/modules/groups/pages/DetailGroup")),
-    // },
+    {
+      path: GroupsRoutePaths.Index,
+      index: true,
+      component: lazy(() => import("src/modules/groups/pages/Index")),
+    },
+    {
+      path: GroupsRoutePaths.Create,
+      component: lazy(() => import("src/modules/groups/pages/CreateGroup")),
+    },
+    {
+      path: GroupsRoutePaths.Detail,
+      component: lazy(() => import("src/modules/groups/pages/DetailGroup")),
+    },
   ],
 };
 

@@ -2,7 +2,7 @@
 
 name = "MooseDesk Local"
 client_id = "6beffae9e7e2d336d04c001812119383"
-application_url = "https://broker-partner-roulette-metabolism.trycloudflare.com"
+application_url = "https://marking-globe-nominations-publications.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ use_legacy_install_flow = true
 
 [auth]
 redirect_urls = [
-  "https://broker-partner-roulette-metabolism.trycloudflare.com/auth/callback",
-  "https://broker-partner-roulette-metabolism.trycloudflare.com/auth/shopify/callback",
-  "https://broker-partner-roulette-metabolism.trycloudflare.com/api/auth/callback"
+  "https://marking-globe-nominations-publications.trycloudflare.com/auth/callback",
+  "https://marking-globe-nominations-publications.trycloudflare.com/auth/shopify/callback",
+  "https://marking-globe-nominations-publications.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
