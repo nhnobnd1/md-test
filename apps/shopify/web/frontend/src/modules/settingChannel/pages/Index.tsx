@@ -1,6 +1,9 @@
 import { PageComponent, TokenManager, useNavigate } from "@moose-desk/core";
 import { Icon, Layout, LegacyCard, Page, Text } from "@shopify/polaris";
-import { ChecklistAlternateMajor } from "@shopify/polaris-icons";
+import {
+  ChecklistAlternateMajor,
+  EmailNewsletterMajor,
+} from "@shopify/polaris-icons";
 import { FunctionComponent, SVGProps, useCallback, useMemo } from "react";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
@@ -35,17 +38,16 @@ const SettingChannelIndexPage: PageComponent<
     }>
   >(
     () => [
-      // for review
-      // {
-      //   title: "Email Configuration",
-      //   description:
-      //     "Configure the email addresses used for communication with your customers in MooseDesk",
-      //   link: SettingChannelRoutePaths.ChannelEmail.Index,
-      //   icon: () => <EmailNewsletterMajor />,
-      //   onConfigure: () => {
-      //     handleRedirectStandaloneCreate();
-      //   },
-      // },
+      {
+        title: "Email Configuration",
+        description:
+          "Configure the email addresses used for communication with your customers in MooseDesk",
+        link: SettingChannelRoutePaths.ChannelEmail.Index,
+        icon: () => <EmailNewsletterMajor />,
+        onConfigure: () => {
+          handleRedirectStandaloneCreate();
+        },
+      },
       {
         title: "Help Widget Configuration",
         description:
