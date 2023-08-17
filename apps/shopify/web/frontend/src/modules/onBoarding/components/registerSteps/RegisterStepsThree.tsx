@@ -63,6 +63,7 @@ const RegisterStepsThree = ({
 
   const redirectLandingPage = useCallback(() => {
     updateTourGuide({ subdomain: storeId, isOnboardingComplete: true });
+    StorageManager.setToken("isAcceptUsing", "true");
     redirectIndex();
   }, []);
   return (

@@ -6,6 +6,7 @@ import CryptoJS from "crypto-js";
 import { ReactNode, createContext, useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
+import StorageManager from "src/core/utilities/StorageManager";
 import useDeepEffect from "src/hooks/useDeepEffect";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import OnBoardingRoutePaths from "src/modules/onBoarding/routes/paths";
@@ -63,6 +64,10 @@ export const StoreProviders = ({ children }: StoreProvidersProps) => {
           map(({ data }) => {
             if (data.statusCode === 200) {
               setGeneralInfo(data.data);
+              StorageManager.setToken(
+                "isAcceptUsing",
+                data.data.isOnboardingComplete ? "true" : "false"
+              );
               if (!data.data.isOnboardingComplete) {
                 navigate(generatePath(OnBoardingRoutePaths.Index));
               }
