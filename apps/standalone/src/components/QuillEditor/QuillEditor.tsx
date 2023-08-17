@@ -151,7 +151,12 @@ export const QuillEditor: FC<QuillEditorProps> = ({
       <div className="md-upload">{listFile}</div>
       <div className="md-custom-border">
         <Tooltip title="Format text">
-          <Button onClick={toggle} type="text" icon={<IconText />}></Button>
+          <Button
+            className={showToolbar ? "bg-gray-100" : ""}
+            onClick={toggle}
+            type="text"
+            icon={<IconText />}
+          ></Button>
         </Tooltip>
         <Tooltip title="Attachment">
           <Button

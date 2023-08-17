@@ -248,9 +248,18 @@ const TextEditorTicket = ({
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [location, form]);
+  const css = `
+   .ql-container.ql-snow {
+      border-bottom: 0px;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      border-color: #d9d9d9;
+    }
+  `;
 
   return (
     <div>
+      <style>{setIsChanged ? "" : css}</style>
       <Modal
         open={modal}
         onCancel={handleCancel}

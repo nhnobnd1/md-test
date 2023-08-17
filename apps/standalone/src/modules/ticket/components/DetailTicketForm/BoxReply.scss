@@ -166,3 +166,21 @@
 .ant-divider {
   border-block-start: 1px solid #d9d9d9;
 }
+.md-from-detail {
+  border: 1px solid #d9d9d9;
+  border-bottom: none;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+.md-to-detail {
+  border: 1px solid #d9d9d9;
+  border-bottom: none;
+}
+.md-cc-detail {
+  border: 1px solid #d9d9d9;
+  border-bottom: none;
+}
+.md-bcc-detail {
+  border: 1px solid #d9d9d9;
+  border-bottom: none;
+}

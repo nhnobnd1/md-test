@@ -819,284 +819,249 @@ Hit Send to see what your message will look like
                         >
                           Reply
                         </MDButton>
-                        {/* <MDButton
-                          icon={
-                            <span className="mr-2 translate-y-[3px]">
-                              <ForwardIcon fontSize={14} />
-                            </span>
-                          }
-                          onClick={handleClickForwardAll}
-                        >
-                          Forward all
-                        </MDButton> */}
                       </div>
                     )}
-                    <Card
-                      className={send ? "" : "hidden"}
-                      extra={
-                        <MDButton
-                          onClick={() => {
-                            closeSend();
-                            setIsForward(false);
-                          }}
-                          type="text"
-                          icon={<Icon name="close" />}
-                        ></MDButton>
-                      }
-                    >
+                    <div className={send ? "" : "hidden"}>
                       <div className="box-comment">
-                        <div className="w-full flex justify-between gap-4 flex-wrap">
-                          <div className="flex flex-1 flex-col">
-                            <div className="xs:w-[300px] sm:w-[400px] ">
-                              <Form.Item
-                                label={<div style={{ width: 35 }}>From</div>}
-                                name="from"
-                                labelAlign="left"
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: "From address is required",
-                                  },
-                                ]}
-                              >
-                                <SelectList
-                                  showSearch
-                                  onChange={onChangeEmailIntegration}
-                                  options={emailIntegrationOptions}
-                                  filterOption={(input, option: any) => {
-                                    return (
-                                      option?.label
-                                        ?.toLowerCase()
-                                        .indexOf(input.toLowerCase()) >= 0
+                        <div className="md-from-detail w-full flex items-center gap-2 px-3 ">
+                          <span className="w-[40px]">From:</span>
+                          <Form.Item
+                            className="m-0 w-full"
+                            name="from"
+                            labelAlign="left"
+                            rules={[
+                              {
+                                required: true,
+                                message: "From address is required",
+                              },
+                            ]}
+                          >
+                            <SelectList
+                              showSearch
+                              bordered={false}
+                              onChange={onChangeEmailIntegration}
+                              options={emailIntegrationOptions}
+                              filterOption={(input, option: any) => {
+                                return (
+                                  option?.label
+                                    ?.toLowerCase()
+                                    .indexOf(input.toLowerCase()) >= 0
+                                );
+                              }}
+                            />
+                          </Form.Item>
+                        </div>
+
+                        <div className="md-to-detail w-full flex items-center gap-2 px-3">
+                          <span className="w-[40px]">To:</span>
+                          <Form.Item
+                            className="m-0 w-full"
+                            name="to"
+                            rules={[
+                              {
+                                required: true,
+                                message: "Email address is required",
+                              },
+                              {
+                                type: "email",
+                                message: "The email address is not valid",
+                              },
+                              ({ getFieldValue }) => ({
+                                validator(_, value) {
+                                  if (
+                                    emailIntegrationOptions.find(
+                                      (item) =>
+                                        item.value === getFieldValue("from")
+                                    )?.obj.supportEmail === value
+                                  ) {
+                                    return Promise.reject(
+                                      new Error(
+                                        "The recipient's email must not be the same as the sender's email"
+                                      )
                                     );
-                                  }}
-                                />
-                              </Form.Item>
-                            </div>
-                            <div className="xs:w-[300px] sm:w-[400px]">
-                              <Form.Item
-                                label={
-                                  <div className="flex justify-between items-center xs:w-[300px] sm:w-[400px]">
-                                    <div style={{ width: 35 }}> To</div>
-                                    <div>
-                                      <span
-                                        className="link  inline-block"
-                                        onClick={() => {
-                                          setEnableCC(!enableCC);
-                                        }}
-                                      >
-                                        CC/BCC
-                                      </span>
-                                    </div>
-                                  </div>
-                                }
-                                name="to"
-                                labelAlign="left"
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: "Email address is required",
-                                  },
-                                  {
-                                    type: "email",
-                                    message: "The email address is not valid",
-                                  },
-                                  ({ getFieldValue }) => ({
-                                    validator(_, value) {
-                                      if (
+                                  }
+                                  return Promise.resolve();
+                                },
+                              }),
+                            ]}
+                          >
+                            <AutoSelect
+                              bordered={false}
+                              disabled={!isForward}
+                              placeholder="Email"
+                              options={customersOptions}
+                              onSearch={(value) => {
+                                setSearchCustomer(value);
+                              }}
+                            />
+                          </Form.Item>
+                          <span
+                            className="link  inline-block"
+                            onClick={() => {
+                              setEnableCC(!enableCC);
+                            }}
+                          >
+                            CC/BCC
+                          </span>
+                        </div>
+                        {enableCC ? (
+                          <div className="md-cc-detail w-full flex items-center gap-2 px-3">
+                            <span className="w-[40px]">CC:</span>
+                            <Form.Item
+                              className="m-0 w-full"
+                              name="CC"
+                              rules={[
+                                ({ getFieldValue }) => ({
+                                  validator(_, value) {
+                                    if (
+                                      validateCCEmail(
+                                        value,
                                         emailIntegrationOptions.find(
                                           (item) =>
                                             item.value === getFieldValue("from")
-                                        )?.obj.supportEmail === value
-                                      ) {
-                                        return Promise.reject(
-                                          new Error(
-                                            "The recipient's email must not be the same as the sender's email"
-                                          )
-                                        );
-                                      }
+                                        )?.obj.supportEmail,
+                                        getFieldValue("to")
+                                      ) === true
+                                    ) {
                                       return Promise.resolve();
-                                    },
-                                  }),
-                                ]}
-                              >
-                                <AutoSelect
-                                  disabled={!isForward}
-                                  placeholder="Email"
-                                  options={customersOptions}
-                                  onSearch={(value) => {
-                                    setSearchCustomer(value);
-                                  }}
-                                />
-                              </Form.Item>
-                            </div>
+                                    } else if (
+                                      validateCCEmail(
+                                        value,
+                                        emailIntegrationOptions.find(
+                                          (item) =>
+                                            item.value === getFieldValue("from")
+                                        )?.obj.supportEmail,
+                                        getFieldValue("to")
+                                      ) === "fromEmail"
+                                    ) {
+                                      return Promise.reject(
+                                        new Error(
+                                          "The recipient's email must not be the same as the sender's email"
+                                        )
+                                      );
+                                    } else if (
+                                      validateCCEmail(
+                                        value,
+                                        emailIntegrationOptions.find(
+                                          (item) =>
+                                            item.value === getFieldValue("from")
+                                        )?.obj.supportEmail,
+                                        getFieldValue("to")
+                                      ) === "toEmail"
+                                    ) {
+                                      return Promise.reject(
+                                        new Error(
+                                          "The CC's email must not be the same as the to email"
+                                        )
+                                      );
+                                    } else {
+                                      return Promise.reject(
+                                        new Error(
+                                          "The email address is not valid"
+                                        )
+                                      );
+                                    }
+                                  },
+                                }),
+                              ]}
+                            >
+                              <SelectTag
+                                bordered={false}
+                                mode="tags"
+                                placeholder="Type CC email..."
+                                options={customersOptions}
+                                onSearch={(value) => {
+                                  setSearchCustomer(value);
+                                }}
+                                onClick={() => {
+                                  setSearchCustomer("");
+                                }}
+                                loading={isFetchingCustomer}
+                              />
+                            </Form.Item>
                           </div>
-                          <div className="flex flex-1 flex-col">
-                            {enableCC ? (
-                              <div className="xs:w-[300px] sm:w-[400px] ">
-                                <Form.Item
-                                  label={<div style={{ width: 35 }}> CC</div>}
-                                  name="CC"
-                                  labelAlign="left"
-                                  rules={[
-                                    ({ getFieldValue }) => ({
-                                      validator(_, value) {
-                                        if (
-                                          validateCCEmail(
-                                            value,
-                                            emailIntegrationOptions.find(
-                                              (item) =>
-                                                item.value ===
-                                                getFieldValue("from")
-                                            )?.obj.supportEmail,
-                                            getFieldValue("to")
-                                          ) === true
-                                        ) {
-                                          return Promise.resolve();
-                                        } else if (
-                                          validateCCEmail(
-                                            value,
-                                            emailIntegrationOptions.find(
-                                              (item) =>
-                                                item.value ===
-                                                getFieldValue("from")
-                                            )?.obj.supportEmail,
-                                            getFieldValue("to")
-                                          ) === "fromEmail"
-                                        ) {
-                                          return Promise.reject(
-                                            new Error(
-                                              "The recipient's email must not be the same as the sender's email"
-                                            )
-                                          );
-                                        } else if (
-                                          validateCCEmail(
-                                            value,
-                                            emailIntegrationOptions.find(
-                                              (item) =>
-                                                item.value ===
-                                                getFieldValue("from")
-                                            )?.obj.supportEmail,
-                                            getFieldValue("to")
-                                          ) === "toEmail"
-                                        ) {
-                                          return Promise.reject(
-                                            new Error(
-                                              "The CC's email must not be the same as the to email"
-                                            )
-                                          );
-                                        } else {
-                                          return Promise.reject(
-                                            new Error(
-                                              "The email address is not valid"
-                                            )
-                                          );
-                                        }
-                                      },
-                                    }),
-                                  ]}
-                                >
-                                  <SelectTag
-                                    mode="tags"
-                                    placeholder="Type CC email..."
-                                    options={customersOptions}
-                                    onSearch={(value) => {
-                                      setSearchCustomer(value);
-                                    }}
-                                    onClick={() => {
-                                      setSearchCustomer("");
-                                    }}
-                                    loading={isFetchingCustomer}
-                                  />
-                                </Form.Item>
-                              </div>
-                            ) : (
-                              <></>
-                            )}
-                            {enableCC ? (
-                              <div className="xs:w-[300px] sm:w-[400px] ">
-                                <Form.Item
-                                  label={<div style={{ width: 35 }}> BCC</div>}
-                                  name="BCC"
-                                  labelAlign="left"
-                                  rules={[
-                                    ({ getFieldValue }) => ({
-                                      validator(_, value) {
-                                        if (
-                                          validateCCEmail(
-                                            value,
-                                            emailIntegrationOptions.find(
-                                              (item) =>
-                                                item.value ===
-                                                getFieldValue("from")
-                                            )?.obj.supportEmail,
-                                            getFieldValue("to")
-                                          ) === true
-                                        ) {
-                                          return Promise.resolve();
-                                        } else if (
-                                          validateCCEmail(
-                                            value,
-                                            emailIntegrationOptions.find(
-                                              (item) =>
-                                                item.value ===
-                                                getFieldValue("from")
-                                            )?.obj.supportEmail,
-                                            getFieldValue("to")
-                                          ) === "fromEmail"
-                                        ) {
-                                          return Promise.reject(
-                                            new Error(
-                                              "The recipient's email must not be the same as the sender's email"
-                                            )
-                                          );
-                                        } else if (
-                                          validateCCEmail(
-                                            value,
-                                            emailIntegrationOptions.find(
-                                              (item) =>
-                                                item.value ===
-                                                getFieldValue("from")
-                                            )?.obj.supportEmail,
-                                            getFieldValue("to")
-                                          ) === "toEmail"
-                                        ) {
-                                          return Promise.reject(
-                                            new Error(
-                                              "The BCC's email must not be the same as the to email"
-                                            )
-                                          );
-                                        } else {
-                                          return Promise.reject(
-                                            new Error(
-                                              "The email address is not valid"
-                                            )
-                                          );
-                                        }
-                                      },
-                                    }),
-                                  ]}
-                                >
-                                  <SelectTag
-                                    mode="tags"
-                                    placeholder="Type BCC email..."
-                                    options={customersOptions}
-                                    onSearch={(value) => {
-                                      setSearchCustomer(value);
-                                    }}
-                                    onClick={() => {
-                                      setSearchCustomer("");
-                                    }}
-                                    loading={isFetchingCustomer}
-                                  />
-                                </Form.Item>
-                              </div>
-                            ) : (
-                              <></>
-                            )}
+                        ) : (
+                          <></>
+                        )}
+                        {enableCC ? (
+                          <div className="md-bcc-detail w-full flex items-center px-3 gap-2">
+                            <span className="w-[40px]">BCC:</span>
+                            <Form.Item
+                              name="BCC"
+                              className="m-0 w-full"
+                              rules={[
+                                ({ getFieldValue }) => ({
+                                  validator(_, value) {
+                                    if (
+                                      validateCCEmail(
+                                        value,
+                                        emailIntegrationOptions.find(
+                                          (item) =>
+                                            item.value === getFieldValue("from")
+                                        )?.obj.supportEmail,
+                                        getFieldValue("to")
+                                      ) === true
+                                    ) {
+                                      return Promise.resolve();
+                                    } else if (
+                                      validateCCEmail(
+                                        value,
+                                        emailIntegrationOptions.find(
+                                          (item) =>
+                                            item.value === getFieldValue("from")
+                                        )?.obj.supportEmail,
+                                        getFieldValue("to")
+                                      ) === "fromEmail"
+                                    ) {
+                                      return Promise.reject(
+                                        new Error(
+                                          "The recipient's email must not be the same as the sender's email"
+                                        )
+                                      );
+                                    } else if (
+                                      validateCCEmail(
+                                        value,
+                                        emailIntegrationOptions.find(
+                                          (item) =>
+                                            item.value === getFieldValue("from")
+                                        )?.obj.supportEmail,
+                                        getFieldValue("to")
+                                      ) === "toEmail"
+                                    ) {
+                                      return Promise.reject(
+                                        new Error(
+                                          "The BCC's email must not be the same as the to email"
+                                        )
+                                      );
+                                    } else {
+                                      return Promise.reject(
+                                        new Error(
+                                          "The email address is not valid"
+                                        )
+                                      );
+                                    }
+                                  },
+                                }),
+                              ]}
+                            >
+                              <SelectTag
+                                bordered={false}
+                                mode="tags"
+                                placeholder="Type BCC email..."
+                                options={customersOptions}
+                                onSearch={(value) => {
+                                  setSearchCustomer(value);
+                                }}
+                                onClick={() => {
+                                  setSearchCustomer("");
+                                }}
+                                loading={isFetchingCustomer}
+                              />
+                            </Form.Item>
                           </div>
-                        </div>
-
+                        ) : (
+                          <></>
+                        )}
                         <Form.Item
                           name="content"
                           rules={[
@@ -1171,6 +1136,14 @@ Hit Send to see what your message will look like
                           ) : (
                             <div className="flex items-center gap-2">
                               <MDButton
+                                onClick={() => {
+                                  closeSend();
+                                  setIsForward(false);
+                                }}
+                                type="text"
+                                icon={<Icon name="close" />}
+                              ></MDButton>
+                              <MDButton
                                 disabled={!isChanged || loadingButton}
                                 onClick={handleCloseTicket}
                               >
@@ -1187,7 +1160,7 @@ Hit Send to see what your message will look like
                           )}
                         </div>
                       </div>
-                    </Card>
+                    </div>
                   </div>
                 </div>
               ) : (
