@@ -13,13 +13,14 @@ const settingChannelRoutes: IRoute = {
       index: true,
       component: lazy(() => import("src/modules/settingChannel/pages/Index")),
     },
-    {
-      path: SettingChannelRoutePaths.ChannelEmail.Index,
-      component: lazy(
-        () =>
-          import("src/modules/settingChannel/pages/channelEmail/ChannelEmail")
-      ),
-    },
+    // for review
+    // {
+    //   path: SettingChannelRoutePaths.ChannelEmail.Index,
+    //   component: lazy(
+    //     () =>
+    //       import("src/modules/settingChannel/pages/channelEmail/ChannelEmail")
+    //   ),
+    // },
     {
       path: SettingChannelRoutePaths.Widgets.Index,
       component: lazy(

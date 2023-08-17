@@ -4,7 +4,6 @@ import {
   CustomersMinor,
   FraudProtectMinor,
   HomeMinor,
-  ProfileMinor,
   ReadTimeMinor,
   ReportMinor,
   SettingsMajor,
@@ -13,7 +12,6 @@ import {
 import AgentRoutePaths from "src/modules/agent/routes/paths";
 import CustomersRoutePaths from "src/modules/customers/routes/paths";
 import DashboardRoutePaths from "src/modules/dashboard/routes/paths";
-import GroupsRoutePaths from "src/modules/groups/routes/paths";
 import ReportRoutePaths from "src/modules/report/routes/paths";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
@@ -92,15 +90,16 @@ export const getCaseNavigation = (badge = ""): NavigationItems[] => {
             },
           ],
         },
-        {
-          label: "People",
-          url: AgentRoutePaths.Index,
-          icon: () => <ProfileMinor />,
-          tabBarNavigation: [
-            { label: "Agents", url: AgentRoutePaths.Index },
-            { label: "Groups", url: GroupsRoutePaths.Index },
-          ],
-        },
+        // for review
+        // {
+        //   label: "People",
+        //   url: AgentRoutePaths.Index,
+        //   icon: () => <ProfileMinor />,
+        //   tabBarNavigation: [
+        //     { label: "Agents", url: AgentRoutePaths.Index },
+        //     { label: "Groups", url: GroupsRoutePaths.Index },
+        //   ],
+        // },
         {
           label: "Workdesk",
           url: SettingRoutePaths.Workdesk.Tag.Index,
