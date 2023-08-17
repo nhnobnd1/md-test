@@ -166,7 +166,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
 
   const handleChangeForm = useCallback((changedValue) => {
     if (changedValue.content) {
-      const contentSplit = changedValue.content.split('<div class="divide">');
+      const contentSplit = changedValue.content.split("- - - - - - -");
       updateContent({ content: contentSplit[0] });
     } else {
       updateContent({ content: "" });
@@ -211,6 +211,17 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
   };
 
   const onChangeEmailIntegration = (value: string, options: any) => {
+    console.log({ contentCreate });
+    console.log(
+      "meo",
+      options?.obj?.signature
+        ? `${
+            contentCreate || "<br/>"
+          }<div class='divide'> - - - - - - - </div><div class='signature'>${
+            options?.obj?.signature
+          }</div>`
+        : contentCreate
+    );
     form.setFieldValue(
       "content",
       options?.obj?.signature

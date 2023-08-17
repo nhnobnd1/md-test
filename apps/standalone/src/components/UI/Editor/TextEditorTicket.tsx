@@ -9,6 +9,7 @@ import { useDropzone } from "react-dropzone";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
 import { catchError, map, of } from "rxjs";
+import { QuillEditor } from "src/components/QuillEditor";
 import { postImageApi } from "src/components/UI/Editor/api";
 import useMessage from "src/hooks/useMessage";
 import ImageZoom from "src/modules/ticket/components/DetailTicketForm/ImageZoom";
@@ -147,6 +148,29 @@ const TextEditorTicket = ({
       );
   });
 
+  const { run: postInsertImage } = useJob((dataSubmit: any, callback: any) => {
+    setLoadingButton(true);
+    startLoading();
+    return TicketRepository()
+      .postAttachment(dataSubmit)
+      .pipe(
+        map(({ data }) => {
+          if (data.statusCode === 200) {
+            setLoadingButton(false);
+            stopLoading();
+            callback(data.data.urls[0]);
+            message.success(t("messages:success.file_upload"));
+          }
+        }),
+        catchError((err) => {
+          setLoadingButton(false);
+          stopLoading();
+          message.error(t("messages:error.file_upload"));
+          return of(err);
+        })
+      );
+  });
+
   const { run: postImage } = useJob((dataSubmit: any, callback = () => {}) => {
     setLoadingButton(true);
     startLoading();
@@ -157,7 +181,7 @@ const TextEditorTicket = ({
           if (data.statusCode === 200) {
             setLoadingButton(false);
             stopLoading();
-            callback(data.data);
+            callback(data.data.urls[0]);
             message.success(t("messages:success.file_upload"));
           }
         }),
@@ -294,8 +318,17 @@ const TextEditorTicket = ({
         </div>
       </Modal>
 
-      <div id="my-editor">
-        <Editor
+      <div id="my-editor" className="xs:pb-5 lg:pb-5">
+        <QuillEditor
+          value={value}
+          onChange={handleEditorChange}
+          openModal={openModal}
+          postInsertImage={postInsertImage}
+          postImage={postImage}
+          placeholder="Enter your message here..."
+          // setLoading={setLoading}
+        />
+        {/* <Editor
           apiKey="t4mxpsmop8giuev4szkrl7etgn43rtilju95m2tnst9m9uod"
           {...props}
           onInit={initEditor}
@@ -372,7 +405,7 @@ const TextEditorTicket = ({
             paste_data_images: true,
             ...props.init,
           }}
-        ></Editor>
+        ></Editor> */}
         {isShowFile ? ListFileRow : ""}
       </div>
     </div>
