@@ -1,4 +1,5 @@
 @import "../../../../styles/variables.scss";
+@import "../../../../styles/mixin.scss";
 .container {
   height: calc(100vh - 48px - 64px);
   overflow: hidden;
@@ -7,6 +8,12 @@
   display: flex;
   width: 100%;
   border: 1px solid $gray-border;
+  position: relative;
+  .buttonToggle {
+    position: absolute;
+    right: 20px;
+    top: 70px;
+  }
   :global {
     .ant-tabs-nav-wrap {
       padding: 10px 20px 0;
@@ -41,17 +48,24 @@
   .wrapSetting {
     width: calc(100% - 360px);
     background-color: $white-color;
-   
+   @include breakpoints(zero, lg) {
+    width: 100%;
+   }
   }
 }
 .myProfile {
   display: flex;
   justify-content: space-between;
   padding: 25px 20px 0;
-
+  @include mq(md, "max") {
+    flex-direction: column;
+  }
   .profile {
     display: flex;
     align-items: center;
+    @include mq(md, "max") {
+        margin-bottom: 10px;
+      }
     img {
       width: 50px;
       height: 50px;
@@ -107,6 +121,7 @@
     .ant-form-item-label {
       min-width: 80px;
       width: 80px;
+      flex: unset;
       label {
         font-size: 13px;
       }
