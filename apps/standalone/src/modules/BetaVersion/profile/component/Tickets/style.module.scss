@@ -1,0 +1,13 @@
+@import "../../../../../styles/mixin.scss";
+@import "../../../../../styles/variables.scss";
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-top: 8px;
+    padding-right: 16px;
+
+    @include mq(md, "max") {
+        // justify-content: center;
+    }
+}

@@ -5,7 +5,7 @@ import ProfileRoutePaths from "src/modules/BetaVersion/profile/routes/paths";
 
 const profileRoutes: IRoute = {
   path: ProfileRoutePaths.Index,
-  title: "Profile",
+  title: "Setting Account",
   showInNavigationMenu: true,
   middleware: "user",
   element: <AppLayout />,

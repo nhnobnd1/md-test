@@ -26,6 +26,7 @@ import { usePermission } from "src/hooks/usePerrmisson";
 import useScreenType from "src/hooks/useScreenType";
 import useViewport from "src/hooks/useViewport";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
+import ProfileRoutePaths from "src/modules/BetaVersion/profile/routes/paths";
 import CustomersRoutePaths from "src/modules/customer/routes/paths";
 import DashboardRoutePaths from "src/modules/dashboard/routes/paths";
 import GroupRoutePaths from "src/modules/group/routes/paths";
@@ -284,6 +285,15 @@ export const AppLayout = () => {
                 : "",
             ],
           },
+          {
+            key: `case-${ProfileRoutePaths.Index}`,
+            label: "Setting Account",
+            link: ProfileRoutePaths.Index,
+            onClick: () => {
+              navigate("/setting-account?tab=ticket");
+              handleCollapseMobile(true);
+            },
+          },
         ],
       },
     ];
@@ -292,6 +302,7 @@ export const AppLayout = () => {
     DashboardRoutePaths,
     SettingRoutePaths,
     RoutePaths,
+    ProfileRoutePaths,
     isMobile,
     // screenType,
     isAdmin,
