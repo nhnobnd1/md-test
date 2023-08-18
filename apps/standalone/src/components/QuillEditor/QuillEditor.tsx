@@ -71,7 +71,6 @@ interface QuillEditorProps {
   placeholder?: string;
   value?: string;
   openModal?: any;
-  postInsertImage?: any;
   postImage?: any;
   listFile?: any;
 }
@@ -81,7 +80,6 @@ export const QuillEditor: FC<QuillEditorProps> = ({
   placeholder,
   value,
   openModal,
-  postInsertImage,
   postImage,
   listFile,
 }) => {
@@ -97,8 +95,8 @@ export const QuillEditor: FC<QuillEditorProps> = ({
 
     input.onchange = async () => {
       const file = input.files && input.files[0];
-      postInsertImage(file, (link: any) => {
-        editor.insertEmbed(editor.getSelection().index, "image", link);
+      postImage(file, (link: any) => {
+        editor.insertEmbed(editor.getSelection()?.index, "image", link);
       });
     };
   };
@@ -112,7 +110,7 @@ export const QuillEditor: FC<QuillEditorProps> = ({
     formData.append("file", file);
     console.log({ file });
     postImage(file, (data: any) => {
-      editor.insertEmbed(editor.getSelection().index, "image", data);
+      editor.insertEmbed(editor.getSelection()?.index, "image", data);
     });
   }
 

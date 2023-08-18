@@ -146,29 +146,6 @@ const TextEditorTicket = ({
       );
   });
 
-  const { run: postInsertImage } = useJob((dataSubmit: any, callback: any) => {
-    setLoadingButton(true);
-    startLoading();
-    return TicketRepository()
-      .postAttachment(dataSubmit)
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            setLoadingButton(false);
-            stopLoading();
-            callback(data.data.urls[0]);
-            message.success(t("messages:success.file_upload"));
-          }
-        }),
-        catchError((err) => {
-          setLoadingButton(false);
-          stopLoading();
-          message.error(t("messages:error.file_upload"));
-          return of(err);
-        })
-      );
-  });
-
   const { run: postImage } = useJob((dataSubmit: any, callback = () => {}) => {
     setLoadingButton(true);
     startLoading();
@@ -308,7 +285,6 @@ const TextEditorTicket = ({
           value={value}
           onChange={handleEditorChange}
           openModal={openModal}
-          postInsertImage={postInsertImage}
           postImage={postImage}
           placeholder="Enter your message here..."
           // setLoading={setLoading}
