@@ -1,0 +1,23 @@
+import { IRoute } from "@moose-desk/core";
+import { lazy } from "react";
+import { AppLayout } from "src/layouts/AppLayout";
+import ProfileRoutePaths from "src/modules/BetaVersion/profile/routes/paths";
+
+const profileRoutes: IRoute = {
+  path: ProfileRoutePaths.Index,
+  title: "Profile",
+  showInNavigationMenu: true,
+  middleware: "user",
+  element: <AppLayout />,
+  routes: [
+    {
+      path: ProfileRoutePaths.Index,
+      index: true,
+      component: lazy(
+        () => import("src/modules/BetaVersion/profile/pages/Profile")
+      ),
+    },
+  ],
+};
+
+export default profileRoutes;
