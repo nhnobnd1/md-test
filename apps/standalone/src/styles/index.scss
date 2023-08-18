@@ -2,6 +2,15 @@
 @import "./variables.scss";
 @import "./mixin.scss";
 
+.md-beta-tag {
+  font-size: 12px;
+  color: $white-color;
+  background-color: red;
+  border-radius: 5px;
+  padding: 0 6px;
+  margin-top: -5px;
+  margin-left: 5px;
+}
 .pl-mobile-24 {
   @include mq(md, "max") {
     padding-left: 24px;

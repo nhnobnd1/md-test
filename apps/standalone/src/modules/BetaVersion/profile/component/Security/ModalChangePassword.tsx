@@ -1,16 +1,8 @@
-import {
-  MediaScreen,
-  useCountDown,
-  useNavigate,
-  useSearchParams,
-  useToggle,
-  useUnMount,
-} from "@moose-desk/core";
-import { QUERY_KEY } from "@moose-desk/core/helper/constant";
+import { MediaScreen, useNavigate, useSearchParams } from "@moose-desk/core";
 import classNames from "classnames";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { useMutation, useQuery } from "react-query";
+import { useMutation } from "react-query";
 import { MDButton } from "src/components/UI/Button/MDButton";
 import { Form } from "src/components/UI/Form";
 import { MDInput } from "src/components/UI/Input";
@@ -18,11 +10,7 @@ import { MDModal } from "src/components/UI/Modal/MDModal";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import useViewport from "src/hooks/useViewport";
-import {
-  getRecoveryCodes,
-  getStatus2FA,
-  updatePassword,
-} from "src/modules/setting/api/api";
+import { updatePassword } from "src/modules/setting/api/api";
 import { RequestPasswordPayload } from "src/modules/setting/helper/interface";
 import { rulesValidatePassword } from "src/regex";
 import styles from "./style.module.scss";
@@ -40,50 +28,7 @@ export const ModalChangePassword = React.memo(
     const { isMobile } = useViewport(MediaScreen.LG);
     const message = useMessage();
     const [form] = Form.useForm();
-    const {
-      state: visibleRecoveryCodeModal,
-      off: handleCloseRecoveryCodeModal,
-      on: handleOpenRecoveryCodeModal,
-    } = useToggle(false);
-    const {
-      clearCountDown,
-      initCountdown: startCountDown,
-      state: countDown,
-    } = useCountDown({
-      initValue: 10,
-      key: "countdownRecoveryCode",
-    });
-    useEffect(() => {
-      if (!querySearch) return;
-      if (querySearch === "true") {
-        handleOpenRecoveryCodeModal();
-      }
-    }, [querySearch]);
-    useUnMount(() => clearCountDown("countdownRecoveryCode"));
-    const { data, isFetching }: any = useQuery({
-      queryKey: ["2faRecoveryCodes"],
-      queryFn: () => getRecoveryCodes(),
-      keepPreviousData: true,
-      enabled: visibleRecoveryCodeModal,
-      onSuccess: () => startCountDown("countdownRecoveryCode"),
-    });
-    const {
-      data: statusSecurity,
-      isLoading,
-      refetch: fetchingStatus,
-    }: any = useQuery({
-      queryKey: [QUERY_KEY.TWO_FA_STATUS],
-      queryFn: () => getStatus2FA(),
-    });
-    const method = useMemo(() => {
-      return {
-        show: statusSecurity?.data?.data?.twoFactorEnabled,
-        method: statusSecurity?.data?.data?.twoFactorMethod || "Disabled",
-      };
-    }, [statusSecurity]);
-    const status = useMemo(() => {
-      return statusSecurity?.data?.data?.twoFactorStoreEnabled || false;
-    }, [statusSecurity]);
+
     // update password
     const { mutate: updatePasswordMutate, isLoading: updating } = useMutation({
       mutationFn: (payload: RequestPasswordPayload) => updatePassword(payload),
@@ -114,15 +59,7 @@ export const ModalChangePassword = React.memo(
     const handleResetForm = useCallback(() => {
       form.resetFields();
     }, []);
-    // modal
-    const [open2FA, setOpen2FA] = useState(false);
-    const handleCloseRecoveryCodes = useCallback(() => {
-      handleCloseRecoveryCodeModal();
-      navigate("/setting/account&security/security");
-    }, []);
-    const handleAcceptRequestCodes = useCallback(() => {
-      handleOpenRecoveryCodeModal();
-    }, []);
+
     const handleCloseModal = useCallback(() => {
       form.resetFields();
       onClose();

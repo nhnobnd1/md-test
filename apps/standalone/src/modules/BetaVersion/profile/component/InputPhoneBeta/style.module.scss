@@ -19,16 +19,16 @@
     width: 30%;
 
     @include mq(md, "max") {
-      width: 50%;
-      .flagImg {
-        width: 20px;
-        margin-right: 5px;
-      }
+      // width: 50%;
+      // .flagImg {
+      //   width: 20px;
+      //   margin-right: 5px;
+      // }
     }
     @include breakpoints(md, lg) {
-      .flagImg {
-        margin-right: 5px;
-      }
+      // .flagImg {
+      //   margin-right: 5px;
+      // }
     }
     :global {
       .ant-select {
@@ -55,7 +55,7 @@
     border-left: 1px solid $gray-border;
     border-radius: 0 6px 6px 0;
     @include mq(md, "max") {
-      width: 50%;
+      // width: 50%;
     }
     input {
       height: unset !important;
