@@ -36,7 +36,7 @@ const Rating: FC<RatingProps> = () => {
     checkTimerProcess,
     clearCountDown,
   } = useCountDown({
-    initValue: 10,
+    initValue: 3600,
     key: "rating",
   });
   const { data: dataMerchantRating } = useQuery({

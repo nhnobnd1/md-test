@@ -24,7 +24,7 @@ export const Rating: FC<RatingProps> = () => {
     initCountdown,
     clearCountDown,
   } = useCountDown({
-    initValue: 10,
+    initValue: 3600,
     key: "rating",
   });
 
