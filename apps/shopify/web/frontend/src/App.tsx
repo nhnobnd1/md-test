@@ -8,6 +8,7 @@ import { Fullscreen } from "@shopify/app-bridge/actions";
 
 import { LoginResponse } from "@moose-desk/repo";
 import { NavigationLink } from "@shopify/app-bridge-react/components/NavigationMenu/NavigationMenu";
+import { Loading } from "@shopify/polaris";
 import CryptoJS from "crypto-js";
 import { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
@@ -88,7 +89,7 @@ export default function App() {
   return (
     <>
       <NavigationMenu navigationLinks={navigationLinks} />
-      <AppRoutes />
+      {user ? <AppRoutes /> : <Loading />}
       <div className="hidden">
         <RichText />
       </div>

@@ -249,8 +249,17 @@ const TextEditorTicket = ({
     };
   }, [location, form]);
 
+  const css = `
+  .tox-tinymce{
+      border-top-right-radius: 0px!important;
+      border-top-left-radius: 0px!important;
+  }
+  
+  `;
+
   return (
     <div>
+      <style>{setIsChanged ? css : ""}</style>
       <Modal
         open={modal}
         onCancel={handleCancel}
