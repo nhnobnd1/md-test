@@ -6,7 +6,7 @@ import {
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import { Ticket } from "@moose-desk/repo";
 import { message, Tag } from "antd";
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import Pagination from "src/components/UI/Pagination/Pagination";
@@ -15,7 +15,21 @@ import { Table } from "src/components/UI/Table";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { getListTicketApi } from "src/modules/ticket/helper/api";
 import styles from "./style.module.scss";
-export const Tickets = () => {
+const getStatusTag = (status: string) => {
+  switch (status) {
+    case "NEW":
+      return "cyan";
+    case "OPEN":
+      return "orange";
+    case "PENDING":
+      return "red";
+    case "RESOLVED":
+      return "green";
+    default:
+      return "cyan";
+  }
+};
+export const Tickets = React.memo(() => {
   const { subDomain } = useSubdomain();
   const { timezone } = useGlobalData(false, subDomain || "");
   const [filter, setFilter] = useState({
@@ -42,7 +56,7 @@ export const Tickets = () => {
       title: "Status",
       dataIndex: "status",
       render: (_: any, record: Ticket) => (
-        <Tag color={priorityToTag(record.status)}>{`${upperCaseFirst(
+        <Tag color={getStatusTag(record.status)}>{`${upperCaseFirst(
           record.status
         )}`}</Tag>
       ),
@@ -106,7 +120,7 @@ export const Tickets = () => {
         dataSource={(dataTicket as any)?.data}
         loading={fetchingFilter}
         columns={columns}
-        scroll={{ x: 1024 }}
+        scroll={{ x: 1024, y: 400 }}
       />
       <div className={styles.pagination}>
         {loadingFilter ? (
@@ -122,4 +136,4 @@ export const Tickets = () => {
       </div>
     </div>
   );
-};
+});

@@ -1,4 +1,5 @@
 import {
+  Link,
   PageComponent,
   useNavigate,
   useSearchParams,
@@ -164,7 +165,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
           return a.email - b.email;
         },
       },
-      width: "40%",
+      width: "30%",
     },
     {
       title: t("common:customers.ticket_count"),
@@ -196,6 +197,18 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
           }
           onSpecialDelete={handleDeleteCustomer}
         />
+      ),
+    },
+    {
+      title: "",
+      dataIndex: "",
+      width: "10%",
+      render: (_: any, record: any) => (
+        <div>
+          <Link to={`/customer-beta?customer=${record?._id}`}>
+            Detail<span className="md-beta-tag">Beta</span>
+          </Link>
+        </div>
       ),
     },
   ];

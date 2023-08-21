@@ -1,3 +1,5 @@
+import InputPhoneBeta from "@moose-beta/components/layoutComponents/component/InputPhoneBeta/InputPhoneBeta";
+import { FileSize } from "@moose-beta/profile/helper/enum";
 import { message, Select, Upload } from "antd";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -10,8 +12,7 @@ import { MDInput } from "src/components/UI/Input";
 import MDAvatar from "src/components/UI/MDAvatar/MDAvatar";
 import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import useNotification from "src/hooks/useNotification";
-import InputPhoneBeta from "src/modules/BetaVersion/profile/component/InputPhoneBeta/InputPhoneBeta";
-import { FileSize } from "src/modules/BetaVersion/profile/helper/enum";
+import { updateCustomer } from "src/modules/customer/api/api";
 import { updateProfile } from "src/modules/setting/api/api";
 import { regexPhoneValidate } from "src/regex";
 import styles from "./style.module.scss";
@@ -50,7 +51,7 @@ const Information = ({
     mutationFn: (payload: any) => postImageApi(payload),
     onSuccess: ({ data }) => {
       setAvatar(data?.urls[0]);
-      addSaveButton();
+      // addSaveButton();
     },
   });
   const handleChange = (files: any) => {
@@ -80,10 +81,20 @@ const Information = ({
     onSuccess: () => {
       onRefetch();
       notification.success(t("messages:success.update_profile"));
-      removeSaveButton();
+      // removeSaveButton();
     },
     onError: () => {
       notification.error(t("messages:error.update_profile"));
+    },
+  });
+  const { mutate: updateCustomerMutate, isLoading: isUpdating } = useMutation({
+    mutationFn: (payload: any) => updateCustomer(profile?._id || "", payload),
+    onSuccess: async () => {
+      onRefetch();
+      notification.success(t("messages:success.update_customer"));
+    },
+    onError: () => {
+      notification.error(t("messages:error.update_customer"));
     },
   });
   const addSaveButton = () => {
@@ -100,8 +111,11 @@ const Information = ({
     addSaveButton();
   };
 
-  const handleSubmitProfile = (payload: any) => {
-    submitMutate({ ...payload, avatar });
+  const handleSubmitProfile = (data: any) => {
+    const payload = { ...data, avatar };
+    layout === "profile"
+      ? submitMutate(payload)
+      : updateCustomerMutate(payload);
   };
   return (
     <div className={styles.contentWrap}>
@@ -118,32 +132,30 @@ const Information = ({
               preview
             />
 
-            {layout === "profile" && (
-              <div className={styles.wrapActionAvatar}>
-                {avatar && (
-                  <div
-                    className={styles.removeAvatar}
-                    onClick={handleRemoveAvatar}
-                  >
-                    <Icon name="delete" />
-                  </div>
-                )}
-                <div className={styles.edit}>
-                  <Upload
-                    name="avatar"
-                    listType="picture-circle"
-                    className="avatar-uploader"
-                    showUploadList={false}
-                    beforeUpload={() => {
-                      return false;
-                    }}
-                    onChange={handleChange}
-                  >
-                    <Icon name="edit" color="#8C8C8C" />
-                  </Upload>
+            <div className={styles.wrapActionAvatar}>
+              {avatar && (
+                <div
+                  className={styles.removeAvatar}
+                  onClick={handleRemoveAvatar}
+                >
+                  <Icon name="delete" />
                 </div>
+              )}
+              <div className={styles.edit}>
+                <Upload
+                  name="avatar"
+                  listType="picture-circle"
+                  className="avatar-uploader"
+                  showUploadList={false}
+                  beforeUpload={() => {
+                    return false;
+                  }}
+                  onChange={handleChange}
+                >
+                  <Icon name="edit" color="#8C8C8C" />
+                </Upload>
               </div>
-            )}
+            </div>
           </div>
         </div>
         {loadingProfile ? (
@@ -152,7 +164,7 @@ const Information = ({
           <div className={styles.formInfo}>
             <Form
               form={form}
-              onChange={handleChangeForm}
+              // onValuesChange={handleChangeForm}
               onFinish={handleSubmitProfile}
               initialValues={profile}
               enableReinitialize
@@ -221,7 +233,10 @@ const Information = ({
                     { type: "email", message: "Email is invalid!" },
                   ]}
                 >
-                  <MDInput disabled={true} placeholder="Email" />
+                  <MDInput
+                    disabled={layout === "profile"}
+                    placeholder="Email"
+                  />
                 </Form.Item>
               </div>
 
@@ -245,7 +260,7 @@ const Information = ({
         ) : (
           <div className={styles.moreInfo}>
             <span className={styles.label}>Role:</span>
-            <span className={styles.result}>{profile?.role || "-"}</span>
+            <span className={styles.result}>{profile?.role || "End user"}</span>
           </div>
         )}
         <div className={styles.groupButton} id="save_button">
@@ -253,7 +268,7 @@ const Information = ({
             <MDButton
               size="small"
               type="primary"
-              loading={updating}
+              loading={updating || isUpdating}
               onClick={() => form.submit()}
             >
               Save

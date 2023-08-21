@@ -7,7 +7,7 @@ import classNames from "classnames";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
-import { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import { MDSearchInput } from "src/components/UI/MDSearchInput";
@@ -28,7 +28,7 @@ dayjs.extend(utc);
 
 const limit = 10;
 
-export const ListTicketCustomer = () => {
+export const ListTicketCustomer = React.memo(() => {
   const [searchParams] = useSearchParams();
   const customerId: string = searchParams.get("customer") || "";
   const { subDomain } = useSubdomain();
@@ -63,6 +63,11 @@ export const ListTicketCustomer = () => {
       title: t("common:customers.ticket_title"),
       dataIndex: "subject",
       width: "45%",
+      sorter: {
+        compare: (a: any, b: any) => {
+          return a.subject - b.subject;
+        },
+      },
     },
     {
       title: t("common:customers.date_request"),
@@ -176,7 +181,7 @@ export const ListTicketCustomer = () => {
             columns={columns}
             dataSource={memoDataSource}
             rowKey={(record) => record._id}
-            scroll={{ x: 1024 }}
+            scroll={{ x: 1024, y: 400 }}
             pagination={false}
             loading={isFetchingListTicket}
             onChange={handleChangeTable}
@@ -204,4 +209,4 @@ export const ListTicketCustomer = () => {
       {/* </section> */}
     </div>
   );
-};
+});

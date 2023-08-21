@@ -49,7 +49,7 @@ const MDAvatar = ({
     }
   };
   const convertAvatarText = () => {
-    if (firstName || lastName) {
+    if (firstName?.trim() || lastName?.trim()) {
       return `${getFirstCharacter(firstName)}${getFirstCharacter(
         lastName
       )}`.toUpperCase();
