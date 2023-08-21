@@ -1,0 +1,75 @@
+@import "../../../../../../styles/variables.scss";
+@import "../../../../../../styles/mixin.scss";
+.MDPhone {
+  height: 36px;
+  border: 1px solid $gray-border;
+  border-radius: 6px;
+
+  :global {
+    .ant-input-prefix {
+      font-size: 13px;
+    }
+  }
+  @include mq(md, "max") {
+    height: 32px;
+  }
+  .phoneSelect {
+    border: none;
+    height: 100%;
+    width: 30%;
+
+    @include mq(md, "max") {
+      // width: 50%;
+      // .flagImg {
+      //   width: 20px;
+      //   margin-right: 5px;
+      // }
+    }
+    @include breakpoints(md, lg) {
+      // .flagImg {
+      //   margin-right: 5px;
+      // }
+    }
+    :global {
+      .ant-select {
+        display: flex;
+        align-items: center;
+      }
+      .ant-select-selector {
+        height: calc(100% - 2px) !important;
+        border: none;
+        display: flex;
+        align-items: center;
+        .ant-select-selection-item,
+        .ant-select-selection-search {
+          display: flex;
+          align-items: center;
+          height: calc(100% - 2px);
+        }
+      }
+    }
+  }
+  .phoneInput {
+    width: 70%;
+    border: none;
+    border-left: 1px solid $gray-border;
+    border-radius: 0 6px 6px 0;
+    @include mq(md, "max") {
+      // width: 50%;
+    }
+    input {
+      height: unset !important;
+    }
+  }
+}
+.wrapPhoneFlag {
+  height: 100%;
+  flex-direction: column !important;
+
+  span {
+    font-size: 12px;
+  }
+}
+.popupCountrySelect {
+  width: 150px !important;
+}
