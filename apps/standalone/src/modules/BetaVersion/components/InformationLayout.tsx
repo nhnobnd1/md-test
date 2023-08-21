@@ -57,7 +57,7 @@ export default function InformationLayout({ layout }: IProps) {
         <Setting
           layout={layout}
           basicInformation={basicInformation}
-          // loadingProfile={isLoadingProfile}
+          loading={isLoadingProfile || isLoadingCustomer}
         />
       </div>
       {isMobile && (

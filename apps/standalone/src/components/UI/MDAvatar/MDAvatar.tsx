@@ -16,6 +16,7 @@ interface IProps {
   size?: "small" | "medium" | "large";
   preview?: boolean;
   loading?: boolean;
+  skeleton?: boolean;
 }
 const MDAvatar = ({
   email,
@@ -25,6 +26,7 @@ const MDAvatar = ({
   size = "small",
   preview = false,
   loading = false,
+  skeleton = false,
 }: IProps) => {
   const avatarSize = () => {
     if (size === "small") {
@@ -86,7 +88,9 @@ const MDAvatar = ({
         fontSize: fontSize(),
         backgroundColor: getColor(CharacterPosition(convertAvatarText())),
       }}
-      className={classNames(styles.avatar, styles.haveBackground)}
+      className={classNames(styles.avatar, styles.haveBackground, {
+        [styles.skeleton]: skeleton,
+      })}
     >
       {convertAvatarText()}
     </div>

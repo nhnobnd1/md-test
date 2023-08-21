@@ -130,6 +130,7 @@ const Information = ({
               source={avatar}
               loading={uploading}
               preview
+              skeleton={loadingProfile}
             />
 
             <div className={styles.wrapActionAvatar}>

@@ -6,6 +6,7 @@ import { Tabs, TabsProps } from "antd";
 import React from "react";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
 import MDAvatar from "src/components/UI/MDAvatar/MDAvatar";
+import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import styles from "./style.module.scss";
 
 interface IProps {
@@ -15,8 +16,9 @@ interface IProps {
     lastName?: string;
     email?: string;
   };
+  loading?: boolean;
 }
-const Setting = ({ layout, basicInformation }: IProps) => {
+const Setting = ({ layout, basicInformation, loading = false }: IProps) => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const currentTab = searchParams.get("tab");
@@ -62,8 +64,12 @@ const Setting = ({ layout, basicInformation }: IProps) => {
             firstName={basicInformation.firstName}
             lastName={basicInformation.lastName}
             email={basicInformation.email}
+            skeleton={loading}
           />
-          <div className={styles.name}>{renderName()}</div>
+
+          <div className={styles.name}>
+            {loading ? <MDSkeleton lines={1} width={100} /> : renderName()}
+          </div>
         </div>
         {layout === "profile" && (
           <div className={styles.buttonCreate}>
