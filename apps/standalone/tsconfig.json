@@ -16,7 +16,10 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "baseUrl": "./",
-    "types": ["unplugin-icons/types/react", "node", "lodash"]
+    "types": ["unplugin-icons/types/react", "node", "lodash"],
+    "paths": {
+      "@moose-beta/*": ["src/modules/BetaVersion/*"]
+    }
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

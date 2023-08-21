@@ -1,10 +1,11 @@
+import { ListTicketCustomer } from "@moose-beta/components/layoutComponents/component/CustomerTicket/ListTicketCustomer";
+import { Security } from "@moose-beta/components/layoutComponents/component/Security";
+import { Tickets } from "@moose-beta/components/layoutComponents/component/Tickets";
 import { useNavigate, useSearchParams } from "@moose-desk/core";
 import { Tabs, TabsProps } from "antd";
+import React from "react";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
 import MDAvatar from "src/components/UI/MDAvatar/MDAvatar";
-import { ListTicketCustomer } from "src/modules/BetaVersion/components/layoutComponents/component/CustomerTicket/ListTicketCustomer";
-import { Security } from "src/modules/BetaVersion/profile/component/Security";
-import { Tickets } from "src/modules/BetaVersion/profile/component/Tickets";
 import styles from "./style.module.scss";
 
 interface IProps {
@@ -15,7 +16,7 @@ interface IProps {
     email?: string;
   };
 }
-export default function Setting({ layout, basicInformation }: IProps) {
+const Setting = ({ layout, basicInformation }: IProps) => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const currentTab = searchParams.get("tab");
@@ -79,4 +80,5 @@ export default function Setting({ layout, basicInformation }: IProps) {
       />
     </div>
   );
-}
+};
+export default React.memo(Setting);

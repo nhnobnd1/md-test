@@ -1,7 +1,7 @@
+import { ModalChangePassword } from "@moose-beta/components/layoutComponents/component/Security/ModalChangePassword";
 import { useToggle } from "@moose-desk/core";
 import React from "react";
 import { MDButton } from "src/components/UI/Button/MDButton";
-import { ModalChangePassword } from "src/modules/BetaVersion/profile/component/Security/ModalChangePassword";
 import styles from "./style.module.scss";
 
 export const Password = React.memo(() => {

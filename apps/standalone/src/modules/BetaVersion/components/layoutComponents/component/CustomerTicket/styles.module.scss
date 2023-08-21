@@ -70,6 +70,7 @@
   align-items: center;
   justify-content: flex-end;
   padding-top: 8px;
+  margin-top: 15px;
   @include mq(md, "max") {
     padding-right: 16px;
   }

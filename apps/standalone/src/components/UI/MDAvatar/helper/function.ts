@@ -4,7 +4,6 @@ export const CharacterPosition = (character?: string) => {
   if (!character) return 0;
   // Lấy mã Unicode của ký tự đầu tiên trong chuỗi
   const unicode = character.charCodeAt(0);
-
   // Kiểm tra xem ký tự có thuộc vào khoảng mã Unicode của chữ cái không
   if (unicode >= 65 && unicode <= 90) {
     // Ký tự là chữ hoa
@@ -15,7 +14,7 @@ export const CharacterPosition = (character?: string) => {
   }
 };
 export const getFirstCharacter = (text?: string) => {
-  if (!text) return "";
+  if (!text?.trim()) return "";
   return text.trim()[0];
 };
 

@@ -1,5 +1,9 @@
-import InformationLayout from "src/modules/BetaVersion/components/InformationLayout";
+import InformationLayout from "@moose-beta/components/InformationLayout";
 
 export default function Profile() {
-  return <InformationLayout layout="profile" />;
+  return (
+    <div>
+      <InformationLayout layout="profile" />
+    </div>
+  );
 }
