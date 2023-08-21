@@ -389,21 +389,21 @@ class Icon extends React.Component<IconProps> {
       >
         <path
           d="M11.05 2.99987L4.20833 10.2415C3.92083 10.5829 3.72827 10.9939 3.65 11.4332L3.34167 14.134C3.30124 14.344 3.3144 14.5608 3.37991 14.7644C3.44542 14.968 3.56117 15.1517 3.71648 15.2987C3.87179 15.4457 4.06164 15.5512 4.2685 15.6055C4.47535 15.6597 4.69254 15.6609 4.9 15.609L7.58333 15.1507C8.02028 15.0548 8.42158 14.8382 8.74166 14.5257L15.5833 7.28404C16.7667 6.03404 17.3 4.60904 15.4583 2.86737C13.625 1.14154 12.2333 1.74987 11.05 2.99987Z"
-          stroke="#1890FF"
+          stroke={this.getProperty("color", "#1890FF")}
           strokeWidth={1.5}
           strokeLinecap="round"
           strokeLinejoin="round"
         />
         <path
           d="M9.90833 4.2085C10.083 5.32587 10.6238 6.35361 11.4458 7.13037C12.2678 7.90713 13.3245 8.38894 14.45 8.50016"
-          stroke="#1890FF"
+          stroke={this.getProperty("color", "#1890FF")}
           strokeWidth={1.5}
           strokeLinecap="round"
           strokeLinejoin="round"
         />
         <path
           d="M2.5 18.3335H17.5"
-          stroke="#1890FF"
+          stroke={this.getProperty("color", "#1890FF")}
           strokeWidth={1.5}
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -674,8 +674,8 @@ class Icon extends React.Component<IconProps> {
     user: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
+        width={this.getProperty("width", "24")}
+        height={this.getProperty("height", "24")}
         viewBox="0 0 24 24"
         fill="none"
       >

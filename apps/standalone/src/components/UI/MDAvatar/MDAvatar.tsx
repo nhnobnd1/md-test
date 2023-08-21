@@ -1,5 +1,7 @@
 import { Image } from "antd";
 import classNames from "classnames";
+import React from "react";
+import SmallLoader from "src/components/Loader/SmallLoader";
 import {
   CharacterPosition,
   getColor,
@@ -13,15 +15,17 @@ interface IProps {
   source?: string;
   size?: "small" | "medium" | "large";
   preview?: boolean;
+  loading?: boolean;
 }
-export default function MDAvatar({
+const MDAvatar = ({
   email,
   firstName,
   lastName,
   source,
   size = "small",
   preview = false,
-}: IProps) {
+  loading = false,
+}: IProps) => {
   const avatarSize = () => {
     if (size === "small") {
       return 40;
@@ -44,7 +48,6 @@ export default function MDAvatar({
       return 50;
     }
   };
-
   const convertAvatarText = () => {
     if (firstName || lastName) {
       return `${getFirstCharacter(firstName)}${getFirstCharacter(
@@ -60,7 +63,14 @@ export default function MDAvatar({
     width: avatarSize(),
     height: avatarSize(),
   };
-  return source ? (
+  return loading ? (
+    <div
+      style={sizeStyle}
+      className={classNames(styles.avatar, styles.haveBackground)}
+    >
+      <SmallLoader />
+    </div>
+  ) : source ? (
     <Image
       width={avatarSize()}
       height={avatarSize()}
@@ -81,4 +91,5 @@ export default function MDAvatar({
       {convertAvatarText()}
     </div>
   );
-}
+};
+export default React.memo(MDAvatar);

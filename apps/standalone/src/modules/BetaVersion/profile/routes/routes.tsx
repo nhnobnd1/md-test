@@ -1,5 +1,4 @@
 import { IRoute } from "@moose-desk/core";
-import { lazy } from "react";
 import { AppLayout } from "src/layouts/AppLayout";
 import ProfileRoutePaths from "src/modules/BetaVersion/profile/routes/paths";
 
@@ -10,13 +9,13 @@ const profileRoutes: IRoute = {
   middleware: "user",
   element: <AppLayout />,
   routes: [
-    {
-      path: ProfileRoutePaths.Index,
-      index: true,
-      component: lazy(
-        () => import("src/modules/BetaVersion/profile/pages/Profile")
-      ),
-    },
+    // {
+    //   path: ProfileRoutePaths.Index,
+    //   index: true,
+    //   component: lazy(
+    //     () => import("src/modules/BetaVersion/profile/pages/Profile")
+    //   ),
+    // },
   ],
 };
 

@@ -16,7 +16,7 @@ export const CharacterPosition = (character?: string) => {
 };
 export const getFirstCharacter = (text?: string) => {
   if (!text) return "";
-  return text[0];
+  return text.trim()[0];
 };
 
 export const getColor = (position: number) => {
