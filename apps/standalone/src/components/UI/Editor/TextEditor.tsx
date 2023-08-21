@@ -91,9 +91,9 @@ const TextEditor = ({
         onEditorChange={handleEditorChange}
         value={value}
         init={{
-          height: 400,
+          height: 200,
           branding: false,
-          toolbar_mode: "sliding",
+          toolbar_mode: "scrolling",
           fontsize_formats:
             "8pt 9pt 10pt 11pt 12pt 14pt 18pt 24pt 30pt 36pt 48pt 60pt 72pt 96pt",
           content_style:
@@ -102,6 +102,7 @@ const TextEditor = ({
             "undo redo | bold italic underline align | blocks fontfamily fontsizeinput | link image code past blockquote backcolor forecolor indent lineheight strikethrough",
           plugins: ["image", "link", "code"],
           file_picker_types: "image",
+          toolbar_location: "bottom",
 
           file_picker_callback: function (cb, value, meta) {
             if (meta.filetype === "image") {

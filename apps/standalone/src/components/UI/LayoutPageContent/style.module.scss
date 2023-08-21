@@ -1,7 +1,7 @@
 @import "../../../styles/variables.scss";
 @import "../../../styles/mixin.scss";
 .container {
-  padding: 24px;
+  padding: 20px;
   background-color: $background-page-color;
   @include mq(md, "max") {
     padding: 16px;

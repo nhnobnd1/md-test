@@ -75,8 +75,7 @@
 }
 .tox-tinymce {
   border: 1px solid #d9d9d9 !important;
-  // border-top-right-radius: 0px!important;
-  // border-top-left-radius: 0px!important;
+  border-radius: 0px!important;
 }
 
 .ant-form-inline {
@@ -254,6 +253,9 @@ select {
 }
 
 #my-editor {
+  background-color: white;
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
   .md-text-editor {
     .text-editor {
       width: 1086px;
@@ -264,7 +266,8 @@ select {
     }
     .ql-container.ql-snow {
       border-bottom: 0px;
-
+      // border-top-left-radius: 10px;
+      // border-top-right-radius: 10px;
       border-color: #d9d9d9;
     }
     #toolbar {
@@ -299,4 +302,55 @@ select {
 }
 ::-webkit-scrollbar {
   width: 0 !important
+}
+.md-from-detail {
+  border: 1px solid #d9d9d9;
+  border-bottom: none;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  background-color: white;
+}
+.md-to-detail {
+  border: 1px solid #d9d9d9;
+  border-bottom: none;
+  background-color: white;
+}
+.md-cc-detail {
+  border: 1px solid #d9d9d9;
+  border-bottom: none;
+  background-color: white;
+}
+.md-bcc-detail {
+  border: 1px solid #d9d9d9;
+  border-bottom: none;
+  background-color: white;
+}
+.md-list-file-attach {
+  border: 1px solid #d9d9d9;
+  border-bottom: none;
+  border-top: none;
+  background-color: white;
+  padding:0px 12px;
+}
+.form-ticket {
+  height: calc(100vh - 64px - 48px - 16px - 24px);
+}
+.tox-editor-header {
+  border-top: none !important;
+  margin: 10px;
+  // display: none!important;
+}
+
+.md-custom-border {
+  border: 1px solid #d9d9d9;
+  border-top: none;
+  // border-bottom: none;
+
+  border-radius: 10px;
+  border-top-right-radius: 0px;
+  border-top-left-radius: 0px;
+  padding: 10px;
+  display: flex;
+  gap: 2px;
+  padding-top: 10px;
 }
