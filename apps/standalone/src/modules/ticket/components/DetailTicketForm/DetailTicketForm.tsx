@@ -671,15 +671,9 @@ Hit Send to see what your message will look like
       endRef.current.scrollIntoView();
     }, 0);
   };
-  const css = `
-  .tox-tinymce {
-  border-top-right-radius: 0px!important;
-  border-top-left-radius: 0px!important;
-}
-  `;
+
   return (
     <>
-      <style>{css}</style>
       {processing || isLoadingConversation ? (
         <>
           <MDSkeleton lines={10} />
