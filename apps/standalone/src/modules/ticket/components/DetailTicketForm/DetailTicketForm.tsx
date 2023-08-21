@@ -411,6 +411,7 @@ const DetailTicketForm = () => {
       );
   });
   const handleChangeForm = useCallback((changedValue) => {
+    if (changedValue.status) return;
     if (changedValue.content) {
       const contentSplit = changedValue.content.split("- - - - - - -");
       updateContent({ content: contentSplit[0] });
