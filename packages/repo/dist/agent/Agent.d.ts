@@ -1,4 +1,4 @@
-import { BaseListRequest, BaseListResponse, BaseResponse, Role } from '../unty';
+import { BaseListRequest, BaseListResponse, BaseResponse, Role } from "../unty";
 export interface Agent {
     _id: string;
     email: string;

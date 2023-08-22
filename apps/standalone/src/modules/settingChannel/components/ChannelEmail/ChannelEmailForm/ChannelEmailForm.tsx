@@ -333,7 +333,7 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
               form={form}
               init={{
                 menubar: false,
-                height: 400,
+
                 toolbar:
                   "undo redo blocks fontfamily fontsizeinput bold italic underline strikethrough link image media table mergetags addcomment showcomments spellcheckdialog a11ycheck typography align lineheight ",
               }}

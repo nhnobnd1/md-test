@@ -18,12 +18,16 @@ const ticketRoutes: IRoute = {
     {
       path: TicketRoutePaths.Create,
       middleware: "user",
-      component: lazy(() => import("src/modules/ticket/pages/CreateTicket")),
+      component: lazy(
+        () => import("src/modules/ticket/pages/CreateTicketBeta")
+      ),
     },
     {
       path: TicketRoutePaths.Detail,
       middleware: "user",
-      component: lazy(() => import("src/modules/ticket/pages/DetailTicket")),
+      component: lazy(
+        () => import("src/modules/ticket/pages/DetailTicketBeta")
+      ),
     },
     {
       path: TicketRoutePaths.Trash,

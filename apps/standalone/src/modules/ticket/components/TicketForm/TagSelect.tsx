@@ -1,4 +1,5 @@
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
+import { SelectProps } from "antd";
 import { FC, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
@@ -6,7 +7,7 @@ import useMessage from "src/hooks/useMessage";
 import { SelectTag } from "src/modules/ticket/components/TicketForm/SelectTag";
 import { getTagsTicket } from "src/modules/ticket/helper/api";
 
-interface TagSelectProps {
+interface TagSelectProps extends SelectProps {
   placeholder?: string;
 }
 

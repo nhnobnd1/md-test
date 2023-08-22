@@ -1,14 +1,15 @@
-import { Button, Collapse, Popover } from "antd";
+import { Button, Collapse, Divider, Popover, Tooltip } from "antd";
 import { filesize } from "filesize";
 import { FC, useMemo, useState } from "react";
 import { ChatItem } from "src/modules/ticket/components/DetailTicketForm/DetailTicketForm";
-import UserIcon from "~icons/material-symbols/person";
-import AgentIcon from "~icons/material-symbols/support-agent-sharp";
+import ForwardIcon from "~icons/ion/forward";
 import QuoteIcon from "~icons/octicon/ellipsis-16";
 
 import axios from "axios";
 import fileDownload from "js-file-download";
-import "./BoxReply.scss";
+import MDAvatar from "src/components/UI/MDAvatar/MDAvatar";
+import useForwardTicket from "src/modules/ticket/store/useForwardTicket";
+import "./BoxReplyBeta.scss";
 interface RowMessageProps {
   item: ChatItem;
 }
@@ -25,8 +26,9 @@ function splitText(fileName: string, maxLength: number) {
 
 const regexContent = /^.*(?=<div class="md_quote">)/s;
 
-export const RowMessage: FC<RowMessageProps> = ({ item }) => {
+export const RowMessageBeta: FC<RowMessageProps> = ({ item }) => {
   const [toggleQuote, setToggleQuote] = useState(true);
+  const updateChatItem = useForwardTicket((state) => state.updateChatItem);
 
   const sortChat = useMemo(() => {
     if (item.chat.match(regexContent)) {
@@ -51,24 +53,44 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
     return false;
   }, [quote]);
 
+  const handleForward = (e: any, item: ChatItem) => {
+    e.stopPropagation();
+    updateChatItem(item);
+  };
+
   return (
     <div>
       <div className=" items-center gap-3 ">
-        <div className="flex items-end gap-3 ">
-          {item?.incoming ? (
-            <UserIcon fontSize={24} />
-          ) : (
-            <AgentIcon fontSize={24} />
-          )}
-          <span style={{ color: "black" }}>
-            {item.typeChat ? item.typeChat : "replied"}
-          </span>
+        <div className="flex items-end gap-3 justify-between items-center">
+          <div className="flex gap-2 items-center flex-wrap">
+            <MDAvatar lastName={item.name} />
+            <span className="text-bold">{item.name}</span>
+            <span className="text-xs">({item.email})</span>
+          </div>
+          <div className="flex gap-2 items-center">
+            <span>{item.time}</span>
+            <Button
+              onClick={(e) => {
+                handleForward(e, item);
+              }}
+              type="text"
+              icon={
+                <Tooltip title="Forward">
+                  <span className="translate-y-[3px]">
+                    <ForwardIcon fontSize={14} />
+                  </span>
+                </Tooltip>
+              }
+            ></Button>
+          </div>
         </div>
 
         <div className="flex gap-3  mt-2 flex-wrap">
-          <span style={{ color: "black", fontSize: 12 }}>
-            <span style={{ fontWeight: "bold" }}>To </span>: {item.toEmail}
-          </span>
+          {item.email && (
+            <span style={{ color: "black", fontSize: 12 }}>
+              <span style={{ fontWeight: "bold" }}>To </span>: {item.toEmail}
+            </span>
+          )}
           {item?.ccEmails?.length ? (
             <>
               <span
@@ -112,9 +134,7 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
       <div
         className="text-black text-scroll mt-5 "
         dangerouslySetInnerHTML={{
-          __html: `<div style="font-family:Helvetica;font-size:14px"> <style>
-img {max-width:100%!important;}
-</style>${sortChat}</div>`,
+          __html: `<div style="font-family:Helvetica;font-size:14px"><style>img{max-width:100%}</style>${sortChat}</div>`,
         }}
       />
 
@@ -224,6 +244,7 @@ img {max-width:100%!important;}
       ) : (
         <></>
       )}
+      <Divider />
     </div>
   );
 };

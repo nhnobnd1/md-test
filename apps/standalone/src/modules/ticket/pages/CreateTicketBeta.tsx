@@ -4,14 +4,10 @@ import { Priority } from "@moose-desk/repo";
 import classNames from "classnames";
 import { useEffect, useMemo } from "react";
 import { useQuery } from "react-query";
-import { MDButton } from "src/components/UI/Button/MDButton";
 import { Header } from "src/components/UI/Header";
-import Icon from "src/components/UI/Icon";
 import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import useViewport from "src/hooks/useViewport";
-import ContentShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ContentShopifySearch";
-import DrawerShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/DrawerShopifySearch";
-import { TicketForm } from "src/modules/ticket/components/TicketForm";
+import TicketFormBeta from "src/modules/ticket/components/TicketForm/TicketFormBeta";
 import { getListEmailIntegration } from "src/modules/ticket/helper/api";
 import styles from "./styles.module.scss";
 
@@ -55,43 +51,38 @@ const CreateTicket = () => {
       setVisible(false);
     };
   }, []);
-
+  const css = `
+  .md-layout-content{
+    overflow: hidden!important;
+  }
+  `;
   return (
     <section
       className={classNames(styles.container, {
         "d-flex": visible && !isMobile,
       })}
     >
+      {/* <style>{css}</style> */}
       <div className={styles.wrapContent}>
-        <div className={styles.wrapSearchToggle}>
+        {/* <div className={styles.wrapSearchToggle}>
           <MDButton
             onClick={() => setVisible(!visible)}
             icon={<Icon name="findOrder" />}
           />
-        </div>
-        <Header title="New Ticket" back className="mb-5"></Header>
+        </div> */}
+        <Header className="mb-5" title="New Ticket"></Header>
 
         {loadingList ? (
           <>
             <MDSkeleton lines={10} />
           </>
         ) : (
-          <TicketForm
+          <TicketFormBeta
             primaryEmail={primaryEmail}
             initialValues={initialValues}
           />
         )}
       </div>
-      {isMobile ? (
-        <DrawerShopifySearch
-          visible={visible}
-          onClose={() => setVisible(false)}
-        />
-      ) : (
-        <div className={visible ? "" : "d-none"}>
-          <ContentShopifySearch />
-        </div>
-      )}
     </section>
   );
 };

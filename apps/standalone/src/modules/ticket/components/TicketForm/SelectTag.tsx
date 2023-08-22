@@ -9,7 +9,7 @@ export const SelectTag: FC<SelectTagProps> = ({ ...props }) => {
 
   return (
     <Select
-      // maxTagCount="responsive"
+      maxTagCount="responsive"
       mode="tags"
       size={isMobile ? "middle" : "large"}
       {...props}
