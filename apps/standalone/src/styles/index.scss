@@ -294,3 +294,9 @@ select {
     }
   }
 }
+::-webkit-scrollbar {
+  display: none;
+}
+::-webkit-scrollbar {
+  width: 0 !important
+}
