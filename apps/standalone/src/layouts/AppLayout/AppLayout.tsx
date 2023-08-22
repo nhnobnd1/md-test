@@ -283,20 +283,20 @@ export const AppLayout = () => {
                     },
                   }
                 : "",
+              {
+                key: `case-${ProfileRoutePaths.Index}`,
+                label: (
+                  <div>
+                    Setting Account <span className="md-beta-tag">Beta</span>
+                  </div>
+                ),
+                link: ProfileRoutePaths.Index,
+                onClick: () => {
+                  navigate("/setting-account?tab=ticket");
+                  handleCollapseMobile(true);
+                },
+              },
             ],
-          },
-          {
-            key: `case-${ProfileRoutePaths.Index}`,
-            label: (
-              <div>
-                Setting Account <span className="md-beta-tag">Beta</span>
-              </div>
-            ),
-            link: ProfileRoutePaths.Index,
-            onClick: () => {
-              navigate("/setting-account?tab=ticket");
-              handleCollapseMobile(true);
-            },
           },
         ],
       },

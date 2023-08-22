@@ -54,11 +54,17 @@
     border: none;
     border-left: 1px solid $gray-border;
     border-radius: 0 6px 6px 0;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
     @include mq(md, "max") {
       // width: 50%;
     }
     input {
       height: unset !important;
+      display: flex;
+      align-items: center;
+      font-size: 13px !important;
     }
   }
 }
