@@ -3,7 +3,7 @@ import { ChatItem } from "src/modules/ticket/components/DetailTicketForm/DetailT
 
 import { RowMessageBeta } from "src/modules/ticket/components/DetailTicketForm/RowMessageBeta";
 import useForwardTicket from "src/modules/ticket/store/useForwardTicket";
-import "./BoxReply.scss";
+import "./BoxReplyBeta.scss";
 interface CollapseMessageProps {
   listChat: any;
 }

@@ -10,7 +10,7 @@ import QuoteIcon from "~icons/octicon/ellipsis-16";
 import axios from "axios";
 import fileDownload from "js-file-download";
 import useForwardTicket from "src/modules/ticket/store/useForwardTicket";
-import "./BoxReply.scss";
+import "./BoxReplyBeta.scss";
 interface RowMessageProps {
   item: ChatItem;
 }

@@ -64,7 +64,7 @@ import { trimHtmlCssJs, wrapImageWithAnchorTag } from "src/utils/localValue";
 import ReplyIcon from "~icons/ion/reply";
 import DownIcon from "~icons/material-symbols/arrow-downward";
 import BackIcon from "~icons/mingcute/back-2-fill";
-import "./BoxReply.scss";
+import "./BoxReplyBeta.scss";
 interface ValueForm {
   status: StatusTicket;
   assignee: string;
