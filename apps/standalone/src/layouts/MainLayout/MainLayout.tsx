@@ -21,15 +21,17 @@ import "./MainLayout.scss";
 export const MainLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const isInvitation = location.pathname === "/invitation";
   const { isLoggedIn, logout } = useAuth();
   const notification = useNotification();
   const { t } = useTranslation();
   const user = useUser();
   useEffect(() => {
-    if (user) {
+    if (user && !isInvitation) {
+      // fix create password agent auto redirect to dashboard because have token
       navigate(generatePath(DashboardRoutePaths.Index));
     }
-  }, [user]);
+  }, [user, isInvitation]);
 
   const { run: signOut } = useJob(() => {
     return AccountRepository()
@@ -83,35 +85,11 @@ export const MainLayout = () => {
     ];
   }, [AgentRoutePaths, isLoggedIn]);
 
-  const activeKeys = useMemo(() => {
-    return caseTopMenu?.find(
-      (item) => item?.key === `case-${location.pathname}`
-    )?.key as string;
-  }, [caseTopMenu, location]);
   return (
     <Layout className="main-layout min-h-screen">
-      {/* {location.pathname === RoutePaths.VerifyEmailFail ||
-      location.pathname === RoutePaths.VerifyEmailSuccess ? (
-        <></>
-      ) : (
-        <Layout.Header className="header">
-          <div className="logo" />
-          <Menu
-            className="main-layout__menu"
-            mode="horizontal"
-            theme="dark"
-            selectedKeys={[activeKeys]}
-            items={caseTopMenu}
-          />
-        </Layout.Header>
-      )} */}
-      {/* <Layout className="p-6"> */}
-      {/* <Layout.Content> */}
       <div className="wrap-main-content">
         <Outlet />
       </div>
-      {/* </Layout.Content> */}
-      {/* </Layout> */}
     </Layout>
   );
 };

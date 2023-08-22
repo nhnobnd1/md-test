@@ -10,7 +10,7 @@ import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import styles from "./style.module.scss";
 
 interface IProps {
-  layout: "profile" | "customer";
+  layout: "profile" | "customer" | "agent";
   basicInformation: {
     firstName?: string;
     lastName?: string;
@@ -23,33 +23,23 @@ const Setting = ({ layout, basicInformation, loading = false }: IProps) => {
   const [searchParams] = useSearchParams();
   const currentTab = searchParams.get("tab");
   const onChange = (key: string) => {
-    if (layout === "customer") return;
-    navigate(`/setting-account?tab=${key}`);
+    if (layout === "profile") navigate(`/setting-account?tab=${key}`);
   };
   const items: TabsProps["items"] = [
     {
       key: "ticket",
       label: "Tickets",
-      children: <Tickets />,
-    },
-    {
-      key: "setting",
-      label: "Security Settings",
-      children: <Security />,
-    },
-  ];
-  const customerItems: TabsProps["items"] = [
-    {
-      key: "list_ticket",
-      label: "List Ticket",
-      children: <ListTicketCustomer />,
+      children:
+        layout === "customer" ? (
+          <ListTicketCustomer />
+        ) : (
+          <Tickets email={basicInformation.email} />
+        ),
     },
   ];
   const handleRedirectCreateTicket = () => {
-    if (layout === "customer") return;
-    navigate("/ticket/new");
+    if (layout === "profile") navigate("/ticket/new");
   };
-  const initTab = layout === "customer" ? "list_ticket" : "ticket";
   const renderName = () => {
     if (basicInformation.firstName || basicInformation.lastName) {
       return `${basicInformation.firstName} ${basicInformation.lastName}`;
@@ -80,8 +70,19 @@ const Setting = ({ layout, basicInformation, loading = false }: IProps) => {
         )}
       </div>
       <Tabs
-        activeKey={currentTab || initTab}
-        items={layout === "customer" ? customerItems : items}
+        activeKey={currentTab || "ticket"}
+        items={[
+          ...items,
+          ...(layout === "profile"
+            ? [
+                {
+                  key: "setting",
+                  label: "Security Settings",
+                  children: <Security />,
+                },
+              ]
+            : []),
+        ]}
         onChange={onChange}
       />
     </div>

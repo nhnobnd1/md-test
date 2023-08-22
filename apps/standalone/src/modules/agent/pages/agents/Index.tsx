@@ -1,7 +1,6 @@
-import { EditOutlined } from "@ant-design/icons";
-import { useToggle } from "@moose-desk/core";
+import { Link, useToggle, useUser } from "@moose-desk/core";
 import { Agent, GetListAgentRequest, Role } from "@moose-desk/repo";
-import { Badge, Button, TableProps, Tooltip } from "antd";
+import { Badge, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -19,10 +18,12 @@ import { AgentFormValues } from "src/modules/agent/components/AgentForm";
 import { PopupAgent } from "src/modules/agent/components/PopupAgent";
 import { getStatusAgent } from "src/modules/agent/constant";
 import { getListAgentFilter } from "src/modules/agent/helper/api";
+import { hiddenEditAgent } from "src/modules/agent/helper/function";
 import { defaultFilter } from "src/utils/localValue";
 
 const AgentsIndex = () => {
   const message = useMessage();
+  const { sub: userId }: string | any = useUser();
   const {
     state: popupAgent,
     on: openPopupAgent,
@@ -36,10 +37,11 @@ const AgentsIndex = () => {
     phoneNumber: "",
     role: Role.BasicAgent,
   });
+
   const { t } = useTranslation();
   const [showTitle, setShowTitle] = useState(true);
 
-  const { isAgent, isLead } = usePermission();
+  const { isAgent, isLead, isAdmin } = usePermission();
 
   const [filterData, setFilterData] =
     useState<GetListAgentRequest>(defaultFilter);
@@ -131,7 +133,40 @@ const AgentsIndex = () => {
     },
     [setFilterData]
   ) as TableProps<Agent>["onChange"];
-
+  const renderAction = (data: Agent) => {
+    if (
+      hiddenEditAgent(
+        userId === data?._id,
+        data?.isOwner,
+        isAdmin,
+        isLead,
+        isAgent,
+        data?.role
+      )
+    )
+      return null;
+    return (
+      <TableAction record={data} edit={!isAgent} onlyIcon onEdit={handleEdit} />
+    );
+  };
+  const renderBetaAction = (data: Agent) => {
+    if (
+      hiddenEditAgent(
+        userId === data?._id,
+        data?.isOwner,
+        isAdmin,
+        isLead,
+        isAgent,
+        data?.role
+      )
+    )
+      return null;
+    return (
+      <Link to={`/agent-beta?agent=${data?._id}`}>
+        Detail<span className="md-beta-tag">Beta</span>
+      </Link>
+    );
+  };
   return (
     <div>
       <PopupAgent
@@ -155,15 +190,16 @@ const AgentsIndex = () => {
               });
             }}
           >
-            <ButtonAdd
-              disabled={isAgent}
-              onClick={() => {
-                openPopupAgent();
-                setDataPopup(undefined);
-              }}
-            >
-              Add new
-            </ButtonAdd>
+            {!isAgent && (
+              <ButtonAdd
+                onClick={() => {
+                  openPopupAgent();
+                  setDataPopup(undefined);
+                }}
+              >
+                Add new
+              </ButtonAdd>
+            )}
           </HeaderList>
         </div>
       </Header>
@@ -251,31 +287,18 @@ const AgentsIndex = () => {
               }}
             />
             {!isAgent ? (
-              <Table.Column
-                align="center"
-                title="Action"
-                render={(_, record: Agent) =>
-                  !isAgent && !(isLead && record.role === Role.Admin) ? (
-                    <TableAction
-                      record={record}
-                      edit={!isAgent}
-                      onlyIcon
-                      onEdit={handleEdit}
-                    />
-                  ) : (
-                    <Tooltip
-                      placement="top"
-                      title={"You do not have permission to edit this account"}
-                    >
-                      <Button
-                        type="primary"
-                        disabled
-                        icon={<EditOutlined />}
-                      ></Button>
-                    </Tooltip>
-                  )
-                }
-              />
+              <>
+                <Table.Column
+                  align="center"
+                  title="Action"
+                  render={(_, record: Agent) => renderAction(record)}
+                />
+                <Table.Column
+                  key="beta-action"
+                  title=""
+                  render={(_, record: Agent) => renderBetaAction(record)}
+                />
+              </>
             ) : (
               <></>
             )}

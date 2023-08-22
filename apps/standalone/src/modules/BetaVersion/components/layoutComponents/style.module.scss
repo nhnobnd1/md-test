@@ -43,9 +43,10 @@
   }
   .wrapInfo {
     width: 360px;
-    background-color: #f8f9f9;
+    background-color: $white-color;
     border-left: 1px solid $gray-border;
-    padding: 8px;
+    // padding: 8px;
+    // border: none;
     overflow-y: scroll;
   }
   .wrapSetting {
@@ -102,9 +103,12 @@
   .blockContent {
     padding: 15px 10px;
     background-color: $white-color;
-    border: 1px solid $gray-border;
-    border-radius: 5px;
-    margin-bottom: 8px;
+    border-bottom: 1px solid $gray-border;
+    &:last-child {
+      border: none;
+    }
+    // border-radius: 5px;
+    // margin-bottom: 8px;
   }
   :global {
     .ant-image-mask {
@@ -199,6 +203,8 @@
     color: #68737d;
     font-size: 13px;
     padding-left: 10px;
+    display: flex;
+    align-items: center;
   }
 }
 .groupButton {

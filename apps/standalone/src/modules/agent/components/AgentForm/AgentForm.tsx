@@ -4,6 +4,11 @@ import Form, { FormProps } from "src/components/UI/Form/Form";
 import { MDInput } from "src/components/UI/Input";
 import InputPhone from "src/components/UI/InputPhone/InputPhone";
 import Select from "src/components/UI/Select/Select";
+import { usePermission } from "src/hooks/usePerrmisson";
+import {
+  ROLE_OPTIONS_FULL,
+  ROLE_OPTIONS_LEAD,
+} from "src/modules/agent/helper/constant";
 import "./AgentForm.scss";
 
 export interface AgentFormValues {
@@ -17,13 +22,16 @@ export interface AgentFormValues {
 interface AgentFormProps extends FormProps {
   disabled?: boolean;
   disabledEmail?: boolean;
+  disabledForm?: boolean;
 }
 
 export const AgentForm = ({
   disabled = false,
   disabledEmail = false,
+  disabledForm = false,
   ...props
 }: AgentFormProps) => {
+  const { isLead } = usePermission();
   const initialValues = useMemo(() => {
     return (
       props.initialValues ?? {
@@ -35,12 +43,6 @@ export const AgentForm = ({
       }
     );
   }, [props.initialValues]);
-
-  const options = [
-    { label: "System Admin", value: Role.Admin },
-    { label: "Agent Leader", value: Role.AgentLeader },
-    { label: "Basic Agent", value: Role.BasicAgent },
-  ];
 
   return (
     <Form {...props} layout="vertical" initialValues={initialValues}>
@@ -109,7 +111,10 @@ export const AgentForm = ({
         name="role"
         rules={[{ required: true, message: "User role is required!" }]}
       >
-        <Select options={options} disabled={disabled} />
+        <Select
+          options={isLead ? ROLE_OPTIONS_LEAD : ROLE_OPTIONS_FULL}
+          disabled={disabled}
+        />
       </Form.Item>
     </Form>
   );
