@@ -45,7 +45,7 @@ export const PopupAgent = ({
   const message = useMessage();
   const notification = useNotification();
   const [dataForm, setDataForm] = useState<Agent>();
-  const { isAdmin } = usePermission();
+  const { isLead, isAdmin } = usePermission();
   const { t } = useTranslation();
 
   const {
@@ -119,7 +119,6 @@ export const PopupAgent = ({
           }),
           catchError((err) => {
             message.loading.hide();
-            console.log("error");
             const errorCode = err.response.data.errorCode;
             if (errorCode) {
               notification.error(
@@ -238,6 +237,7 @@ export const PopupAgent = ({
               message.success(t("messages:success.deactivate_agent"));
               onChange && onChange();
               getDetailAgentApi(id);
+              onCancel && onCancel();
             } else {
               message.error(t("messages:error.deactivate_agent"));
             }
@@ -263,6 +263,7 @@ export const PopupAgent = ({
               message.success(t("messages:success.active_agent"));
               onChange && onChange();
               getDetailAgentApi(id);
+              onCancel && onCancel();
             } else {
               message.error(t("messages:error.active_agent"));
             }
@@ -331,7 +332,6 @@ export const PopupAgent = ({
       });
     }
   }, [dataForm]);
-
   return (
     <MDModalUI
       {...props}
@@ -423,22 +423,13 @@ export const PopupAgent = ({
       }
     >
       <div>
-        {/* <Header
-          className="xs:h-[32px] md:h-[40px] flex items-center mb-5"
-         
-        ></Header> */}
         <Loading spinning={loadingSentMail || loadingUpdate || loadingCreate}>
           <AgentForm
             initialValues={dataForm}
             disabledEmail={!!dataForm?._id}
             enableLoadForm
             enableReinitialize
-            disabled={
-              dataForm && dataForm._id
-                ? (dataForm.isActive && !dataForm?.emailConfirmed) ||
-                  !dataForm.isActive
-                : false
-            }
+            disabled={!(data?.isActive && data?.emailConfirmed)}
             form={form}
             onFinish={handleFinish}
           />

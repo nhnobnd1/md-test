@@ -6,7 +6,7 @@ import {
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import { Ticket } from "@moose-desk/repo";
 import { message, Tag } from "antd";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import Pagination from "src/components/UI/Pagination/Pagination";
@@ -18,31 +18,37 @@ import styles from "./style.module.scss";
 const getStatusTag = (status: string) => {
   switch (status) {
     case "NEW":
-      return "cyan";
+      return "#2db7f5";
     case "OPEN":
-      return "orange";
+      return "rgb(255, 153, 0)";
     case "PENDING":
-      return "red";
+      return "#f50";
     case "RESOLVED":
-      return "green";
+      return "#87d068";
     default:
-      return "cyan";
+      return "#2db7f5";
   }
 };
-export const Tickets = React.memo(() => {
+interface IProps {
+  email?: string;
+}
+export const Tickets = React.memo(({ email }: IProps) => {
   const { subDomain } = useSubdomain();
   const { timezone } = useGlobalData(false, subDomain || "");
   const [filter, setFilter] = useState({
     page: 1,
     limit: 10,
-    customer: "minhvuongdev37@gmail.com",
+    customer: "",
   });
+  useEffect(() => {
+    if (!email) return;
+    setFilter((pre) => ({ ...pre, customer: email }));
+  }, [email]);
   const { t } = useTranslation();
   const {
     data: dataTicket,
     isLoading: loadingFilter,
     isFetching: fetchingFilter,
-    refetch: refetchTicket,
   } = useQuery({
     queryKey: ["getListTickets", filter],
     queryFn: () => getListTicketApi(filter),
@@ -50,7 +56,9 @@ export const Tickets = React.memo(() => {
     onError: () => {
       message.error(t("messages:error.get_ticket"));
     },
+    enabled: !!filter?.customer,
   });
+  console.log(email);
   const columns: any = [
     {
       title: "Status",
@@ -63,6 +71,7 @@ export const Tickets = React.memo(() => {
       sorter: {
         compare: (a: any, b: any) => a.status - b.status,
       },
+      width: "10%",
     },
     {
       title: "Ticket ID",
@@ -70,6 +79,7 @@ export const Tickets = React.memo(() => {
       sorter: {
         compare: (a: Ticket, b: Ticket) => a.ticketId - b.ticketId,
       },
+      width: "10%",
     },
     {
       title: "Ticket Title",
@@ -77,6 +87,7 @@ export const Tickets = React.memo(() => {
       sorter: {
         compare: (a: any, b: any) => a.subject - b.subject,
       },
+      width: "50%",
     },
     {
       title: "Last Update",
@@ -88,6 +99,7 @@ export const Tickets = React.memo(() => {
       render: (_: any, record: Ticket) => (
         <span>{createdDatetimeFormat(record.updatedDatetime, timezone)}</span>
       ),
+      width: "20%",
     },
     {
       title: "Priority",
@@ -100,6 +112,7 @@ export const Tickets = React.memo(() => {
       sorter: {
         compare: (a: any, b: any) => a.priority - b.priority,
       },
+      width: "10%",
     },
   ];
   const handleChangePage = useCallback(

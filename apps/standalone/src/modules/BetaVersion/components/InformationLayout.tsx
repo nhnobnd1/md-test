@@ -9,20 +9,24 @@ import { MDButton } from "src/components/UI/Button/MDButton";
 import Icon from "src/components/UI/Icon";
 import { MDDrawer } from "src/components/UI/MDDrawer";
 import useViewport from "src/hooks/useViewport";
+import { getOneAgent } from "src/modules/agent/api/api";
 import { getOneCustomer } from "src/modules/customer/api/api";
 import { getProfile } from "src/modules/setting/api/api";
 import styles from "./layoutComponents/style.module.scss";
 
 interface IProps {
-  layout: "customer" | "profile";
+  layout: "customer" | "profile" | "agent";
 }
 export default function InformationLayout({ layout }: IProps) {
+  const { state: visible, off, toggle } = useToggle(false);
+  const { isMobile } = useViewport(1024);
   const [searchParams] = useSearchParams();
   const customerId: string = searchParams.get("customer") || "";
-  const { state: visible, off, on, toggle } = useToggle(false);
-  const { isMobile } = useViewport(1024);
+  const agentId: string = searchParams.get("agent") || "";
+
   const token = jose.decodeJwt(TokenManager.getToken("base_token") || "");
   const [dataProfile, setDataProfile] = useState<Agent | Customer | any>();
+
   const { isLoading: isLoadingProfile, refetch: refetchProfile }: any =
     useQuery({
       queryKey: ["profile", token.sub],
@@ -41,6 +45,28 @@ export default function InformationLayout({ layout }: IProps) {
         setDataProfile(data?.data?.data);
       },
     });
+  const { isLoading: isLoadingAgent, refetch: refetchAgent } = useQuery({
+    queryKey: ["one_agent", agentId],
+    queryFn: () => getOneAgent(agentId),
+    enabled: !!agentId && layout === "agent",
+    onSuccess: (data: any) => {
+      setDataProfile(data?.data?.data);
+    },
+  });
+  // console.log(agentId);
+  const handleRefetchProfile = useCallback(() => {
+    switch (layout) {
+      case "profile":
+        return refetchProfile();
+      case "customer":
+        return refetchCustomer();
+      case "agent":
+        return refetchAgent();
+      default:
+        return () => {};
+    }
+  }, [layout]);
+  const loading = isLoadingProfile || isLoadingCustomer || isLoadingAgent;
   const basicInformation = useMemo(() => {
     return {
       firstName: dataProfile?.firstName,
@@ -48,16 +74,13 @@ export default function InformationLayout({ layout }: IProps) {
       email: dataProfile?.email,
     };
   }, [dataProfile?.firstName, dataProfile?.lastName, dataProfile?.email]);
-  const handleRefetchProfile = useCallback(() => {
-    layout === "customer" ? refetchCustomer() : refetchProfile();
-  }, [layout]);
   return (
     <section className={styles.container}>
       <div className={styles.wrapSetting}>
         <Setting
           layout={layout}
           basicInformation={basicInformation}
-          loading={isLoadingProfile || isLoadingCustomer}
+          loading={loading}
         />
       </div>
       {isMobile && (
@@ -78,7 +101,7 @@ export default function InformationLayout({ layout }: IProps) {
               profile={dataProfile}
               layout={layout}
               onRefetch={handleRefetchProfile}
-              loadingProfile={isLoadingProfile || isLoadingCustomer}
+              loadingProfile={loading}
             />
           }
           closable={true}
@@ -89,7 +112,7 @@ export default function InformationLayout({ layout }: IProps) {
             profile={dataProfile}
             layout={layout}
             onRefetch={handleRefetchProfile}
-            loadingProfile={isLoadingProfile || isLoadingCustomer}
+            loadingProfile={loading}
           />
         </div>
       )}
