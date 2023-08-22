@@ -87,6 +87,7 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
   const [openModalCustomer, setOpenModalCustomer] = useState(false);
   const contentCreate = useFormCreateTicket((state) => state.content);
   const { visible, setVisible } = useToggleGlobal();
+  const [isChanged, setIsChanged] = useState(false);
 
   const [searchCustomer, setSearchCustomer] = useState<string>("");
   const debounceCustomer: string = useDebounce(searchCustomer, 200);
@@ -553,19 +554,13 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
             )}
 
             <div>
-              <Form.Item
-                name="content"
-                className="w-full mb-0"
-                rules={[
-                  { required: true, message: "Please input your message!" },
-                ]}
-              >
+              <Form.Item name="content" className="w-full mb-0">
                 <TextEditorTicketBeta
                   form={form}
                   files={files}
                   setFiles={setFiles}
                   setLoadingButton={setLoadingButton}
-                  // setIsChanged={setIsChanged}
+                  setIsChanged={setIsChanged}
                   init={{
                     menubar: false,
                     placeholder: "Please input your message here......",
@@ -587,7 +582,12 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
             >
               Cancel
             </MDButton>
-            <MDButton loading={loadingButton} type="primary" htmlType="submit">
+            <MDButton
+              disabled={!isChanged || loadingButton}
+              loading={loadingButton}
+              type="primary"
+              htmlType="submit"
+            >
               Send
             </MDButton>
           </div>
