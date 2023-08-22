@@ -3,12 +3,11 @@ import { filesize } from "filesize";
 import { FC, useMemo, useState } from "react";
 import { ChatItem } from "src/modules/ticket/components/DetailTicketForm/DetailTicketForm";
 import ForwardIcon from "~icons/ion/forward";
-import UserIcon from "~icons/material-symbols/person";
-import AgentIcon from "~icons/material-symbols/support-agent-sharp";
 import QuoteIcon from "~icons/octicon/ellipsis-16";
 
 import axios from "axios";
 import fileDownload from "js-file-download";
+import MDAvatar from "src/components/UI/MDAvatar/MDAvatar";
 import useForwardTicket from "src/modules/ticket/store/useForwardTicket";
 import "./BoxReplyBeta.scss";
 interface RowMessageProps {
@@ -63,13 +62,10 @@ export const RowMessageBeta: FC<RowMessageProps> = ({ item }) => {
     <div>
       <div className=" items-center gap-3 ">
         <div className="flex items-end gap-3 justify-between items-center">
-          <div className="flex gap-2 items-center">
-            {item?.incoming ? (
-              <UserIcon fontSize={24} />
-            ) : (
-              <AgentIcon fontSize={24} />
-            )}
+          <div className="flex gap-2 items-center flex-wrap">
+            <MDAvatar lastName={item.name} />
             <span className="text-bold">{item.name}</span>
+            <span className="text-xs">({item.email})</span>
           </div>
           <div className="flex gap-2 items-center">
             <span>{item.time}</span>
@@ -90,9 +86,11 @@ export const RowMessageBeta: FC<RowMessageProps> = ({ item }) => {
         </div>
 
         <div className="flex gap-3  mt-2 flex-wrap">
-          <span style={{ color: "black", fontSize: 12 }}>
-            <span style={{ fontWeight: "bold" }}>To </span>: {item.toEmail}
-          </span>
+          {item.email && (
+            <span style={{ color: "black", fontSize: 12 }}>
+              <span style={{ fontWeight: "bold" }}>To </span>: {item.toEmail}
+            </span>
+          )}
           {item?.ccEmails?.length ? (
             <>
               <span

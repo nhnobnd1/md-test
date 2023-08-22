@@ -250,7 +250,14 @@ const DetailTicketFormBeta = () => {
         return {
           id: item._id,
           name: item.fromEmail?.name,
-          time: `${moment.unix(item.createdTimestamp).local().fromNow()}`,
+          time: `${moment
+            .unix(item.createdTimestamp)
+            .local()
+            .fromNow()} (${createdDatetimeFormat(
+            item.createdDatetime,
+            timezone,
+            "HH:mm"
+          )})`,
           chat: item.description,
           email: item.fromEmail?.email,
           attachments: item.attachments,
@@ -274,7 +281,13 @@ const DetailTicketFormBeta = () => {
       conversationMapping?.unshift({
         id: ticket._id,
         name: ticket?.fromEmail.name,
-        time: `${moment(ticket.createdDatetime).fromNow()}`,
+        time: `${moment(
+          ticket.createdDatetime
+        ).fromNow()} (${createdDatetimeFormat(
+          ticket.createdDatetime,
+          timezone,
+          "HH:mm"
+        )})`,
         chat: ticket.description,
         email: ticket.fromEmail.email,
         attachments: ticket.attachments,
@@ -1101,11 +1114,7 @@ Hit Send to see what your message will look like
                       />
                     </Form.Item>
                   </div>
-                  <div
-                    className={`flex justify-end absolute right-4 bottom-${
-                      send ? 5 : 2
-                    }`}
-                  >
+                  <div className={`flex justify-end absolute right-4 bottom-2`}>
                     {form.getFieldValue("status") === StatusTicket.RESOLVED ? (
                       <>
                         <MDButton
