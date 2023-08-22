@@ -205,7 +205,7 @@ const TextEditorTicketBeta = ({
 
   const ListFileRow = useMemo(() => {
     return (
-      <div className="flex flex-wrap justify-start flex-row items-center gap-2">
+      <div className="flex  justify-start flex-row items-center gap-2 px-2 w-full flex-wrap file-row-attach">
         {myFiles.map((item: any, index: number) => {
           return (
             <div className="item-file flex gap-3" key={item.path}>
@@ -399,6 +399,7 @@ const TextEditorTicketBeta = ({
           }}
         ></Editor>
         <div className="md-list-file-attach">{listFileAttach}</div>
+        {isShowFile ? ListFileRow : ""}
         <div className="md-custom-border">
           <Tooltip title="Format text">
             <Button
@@ -423,7 +424,6 @@ const TextEditorTicketBeta = ({
             ></Button>
           </Tooltip>
         </div>
-        {isShowFile ? ListFileRow : ""}
       </div>
     </div>
   );

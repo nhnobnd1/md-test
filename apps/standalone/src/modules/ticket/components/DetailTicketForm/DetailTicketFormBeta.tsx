@@ -727,7 +727,7 @@ Hit Send to see what your message will look like
             enableReinitialize
             onFinish={onFinish}
             onValuesChange={handleChangeForm}
-            className="flex justify-between gap-2 form-ticket "
+            className="flex  gap-2 form-ticket "
           >
             <Card
               className="  w-[350px] xs:hidden lg:block h-full "
@@ -777,7 +777,7 @@ Hit Send to see what your message will look like
               <Divider />
             </Card>
             <div
-              className="flex-1 h-full"
+              className="flex-1 h-full "
               style={{
                 height: "100%",
                 display: "flex",
