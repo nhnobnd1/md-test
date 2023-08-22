@@ -177,6 +177,12 @@ const ChannelEmailUpdate = () => {
             }
           }),
           catchError((err) => {
+            if (err.response.data.statusCode === 400) {
+              message.loading.hide().then(() => {
+                notification.error(`${err.response.data.error[0]}`);
+              });
+              return of(err);
+            }
             if (err.response.data.statusCode === 409) {
               message.loading.hide().then(() => {
                 notification.error(`${payload.supportEmail} is exist`);
