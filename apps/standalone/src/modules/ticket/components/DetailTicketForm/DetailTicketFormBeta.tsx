@@ -121,7 +121,6 @@ const DetailTicketFormBeta = () => {
   const { state: send, on: openSend, off: closeSend } = useToggle(true);
   const [isForward, setIsForward] = useState(false);
   const [enableCC, setEnableCC] = useState(false);
-  const [isConversationLoad, setIsConversationLoad] = useState(false);
   const { data: dataTicket, isLoading: processing } = useQuery({
     queryKey: ["getTicket", id],
     queryFn: () => getOneTicket(id as string),
@@ -152,9 +151,10 @@ const DetailTicketFormBeta = () => {
     retry: 1,
     onSuccess: (data) => {
       setConversationList(data);
-      setEndOfPage(true);
-      setIsConversationLoad(true);
-      // endOfPageRef.current.scrollTop = endOfPageRef.current.scrollHeight;
+      setTimeout(() => {
+        setEndOfPage(true);
+        endOfPageRef.current.scrollIntoView({});
+      }, 0);
     },
 
     onError: () => {
@@ -173,7 +173,6 @@ const DetailTicketFormBeta = () => {
 
   const handleContainerOnBottom = useCallback(() => {
     setEndOfPage(true);
-    setIsConversationLoad(false);
   }, []);
 
   const containerRef = useBottomScrollListener(handleContainerOnBottom, {});
@@ -182,14 +181,6 @@ const DetailTicketFormBeta = () => {
   const chatItemForward = useForwardTicket((state) => state.chatItem);
   const clickForward = useForwardTicket((state) => state.clickForward);
   const updateChatItem = useForwardTicket((state) => state.updateChatItem);
-
-  useEffect(() => {
-    if (isConversationLoad && endOfPage && endOfPageRef.current) {
-      setTimeout(() => {
-        endOfPageRef.current.scrollIntoView({});
-      }, 200);
-    }
-  }, [isConversationLoad, endOfPage, endOfPageRef]);
 
   const [isChanged, setIsChanged] = useState(false);
   const { data: dataPrimaryEmail } = useQuery({
@@ -684,18 +675,18 @@ Hit Send to see what your message will look like
   };
   return (
     <>
-      {processing || isLoadingConversation ? (
-        <>
-          <MDSkeleton lines={10} />
-        </>
-      ) : (
-        <div className="wrapContainer">
-          <Header
-            backAction={() => {
-              navigate(TicketRoutePaths.Index);
-            }}
-          >
-            <div className="flex justify-between w-full items-center gap-2 mb-5">
+      <div className="wrapContainer">
+        <Header
+          backAction={() => {
+            navigate(TicketRoutePaths.Index);
+          }}
+        >
+          <div className="flex justify-between w-full items-center gap-2 mb-5">
+            {processing ? (
+              <div className="">
+                <MDSkeleton lines={1} />
+              </div>
+            ) : (
               <div className="flex items-center gap-2 w-full ">
                 <h1 className="break-words overflow-hidden header-detail-ticket">
                   {` Ticket ${ticket?.ticketId}: ${ticket?.subject}`}
@@ -704,555 +695,553 @@ Hit Send to see what your message will look like
                   <Tag color="red">{listChat[0]?.typeChat}</Tag>
                 </div>
               </div>
-              <div className="flex gap-2 ">
-                <Tooltip title="Status">
-                  <MDButton
-                    className={isTablet ? "flex" : "hidden"}
-                    onClick={() => openStatusModal()}
-                    icon={<Icon name="statusTicket" />}
-                  />
-                </Tooltip>
+            )}
+            <div className="flex gap-2 ">
+              <Tooltip title="Status">
+                <MDButton
+                  className={isTablet ? "flex" : "hidden"}
+                  onClick={() => openStatusModal()}
+                  icon={<Icon name="statusTicket" />}
+                />
+              </Tooltip>
+            </div>
+          </div>
+        </Header>
+        <Form
+          disabled={
+            form.getFieldValue("status") === StatusTicket.RESOLVED ||
+            loadingButton
+          }
+          form={form}
+          layout="horizontal"
+          initialValues={initialValues}
+          enableLoadForm
+          enableReinitialize
+          onFinish={onFinish}
+          onValuesChange={handleChangeForm}
+          className="flex  gap-2 form-ticket "
+        >
+          <Card
+            className="max-w-[350px] xs:hidden lg:block h-full "
+            bodyStyle={{ padding: 16 }}
+            style={{ flexBasis: 350, flexShrink: 0 }}
+            loading={processing}
+          >
+            <div className="">
+              <Form.Item
+                labelAlign="left"
+                label={<span style={{ width: 60 }}>Status</span>}
+                name="status"
+              >
+                <Select
+                  size="large"
+                  className="w-full"
+                  options={statusOptions}
+                />
+              </Form.Item>
+              <Form.Item label="Assignee" name="assignee">
+                <AgentSelect placeholder="Search agents" className="w-full" />
+              </Form.Item>
+              <Form.Item
+                labelAlign="left"
+                label={<span style={{ width: 60 }}>Priority</span>}
+                name="priority"
+              >
+                <Select className="w-full" options={priorityOptions} />
+              </Form.Item>
+
+              <Form.Item
+                name="tags"
+                label={<span style={{ width: 60 }}>Tags</span>}
+                labelAlign="left"
+              >
+                <TagSelect />
+              </Form.Item>
+
+              <div className="flex items-center justify-end">
+                <MDButton
+                  className="w-full"
+                  type="primary"
+                  onClick={handleSaveTicket}
+                >
+                  Save
+                </MDButton>
               </div>
             </div>
-          </Header>
-          <Form
-            disabled={
-              form.getFieldValue("status") === StatusTicket.RESOLVED ||
-              loadingButton
-            }
-            form={form}
-            layout="horizontal"
-            initialValues={initialValues}
-            enableLoadForm
-            enableReinitialize
-            onFinish={onFinish}
-            onValuesChange={handleChangeForm}
-            className="flex  gap-2 form-ticket "
+            <Divider />
+          </Card>
+          <div
+            className="flex-1 h-full "
+            style={{
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "flex-end",
+              padding: "0px",
+            }}
           >
-            <Card
-              className="  w-[350px] xs:hidden lg:block h-full "
-              bodyStyle={{ padding: 16 }}
-            >
-              <div className="">
-                <Form.Item
-                  labelAlign="left"
-                  label={<span style={{ width: 60 }}>Status</span>}
-                  name="status"
-                >
-                  <Select
-                    size="large"
-                    className="w-full"
-                    options={statusOptions}
-                  />
-                </Form.Item>
-                <Form.Item label="Assignee" name="assignee">
-                  <AgentSelect placeholder="Search agents" className="w-full" />
-                </Form.Item>
-                <Form.Item
-                  labelAlign="left"
-                  label={<span style={{ width: 60 }}>Priority</span>}
-                  name="priority"
-                >
-                  <Select className="w-full" options={priorityOptions} />
-                </Form.Item>
-
-                <Form.Item
-                  name="tags"
-                  label={<span style={{ width: 60 }}>Tags</span>}
-                  labelAlign="left"
-                >
-                  <TagSelect />
-                </Form.Item>
-
-                <div className="flex items-center justify-end">
-                  <MDButton
-                    className="w-full"
-                    type="primary"
-                    onClick={handleSaveTicket}
-                  >
-                    Save
-                  </MDButton>
-                </div>
-              </div>
-              <Divider />
-            </Card>
             <div
-              className="flex-1 h-full "
-              style={{
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "flex-end",
-                padding: "0px",
+              ref={containerRef as any}
+              onScroll={() => {
+                setEndOfPage(false);
               }}
+              className=" h-full  overflow-auto box-chat bg-white p-4"
             >
-              <div
-                ref={containerRef as any}
-                onScroll={() => {
-                  setEndOfPage(false);
-                }}
-                className=" h-full  overflow-auto box-chat bg-white p-4"
-              >
-                <div className="relative">
-                  {!isFetchConversation ? (
-                    <>
-                      <CollapseMessageBeta listChat={listChat} />
-                      <div className="sticky  bottom-0 right-0 h-[40px]  w-full flex justify-center items-center ">
-                        <Button
-                          className={`${
-                            endOfPage ? "opacity-0 pointer-events-none" : ""
-                          }`}
-                          onClick={() => {
-                            endOfPageRef.current.scrollIntoView({
-                              behavior: "smooth",
-                            });
-                          }}
-                          icon={<DownIcon />}
-                          shape="circle"
-                          type="primary"
-                        ></Button>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <MDSkeleton lines={5} />
-                    </>
-                  )}
-                  <div ref={endOfPageRef}></div>
-                </div>
-              </div>
-              {ticket ? (
-                <div
-                  className={`w-full flex flex-col justify-between mt-${
-                    send ? 0 : 2
-                  }`}
-                >
-                  <div className={`box-comment ${send ? "hidden" : ""}`}>
-                    <div className="md-from-detail w-full flex items-center gap-2 px-3 ">
-                      <span className="w-[40px]">From:</span>
-                      <Form.Item
-                        className="m-0 w-full"
-                        name="from"
-                        labelAlign="left"
-                        rules={[
-                          {
-                            required: true,
-                            message: "From address is required",
-                          },
-                        ]}
-                      >
-                        <SelectList
-                          showSearch
-                          bordered={false}
-                          onChange={onChangeEmailIntegration}
-                          options={emailIntegrationOptions}
-                          filterOption={(input, option: any) => {
-                            return (
-                              option?.label
-                                ?.toLowerCase()
-                                .indexOf(input.toLowerCase()) >= 0
-                            );
-                          }}
-                        />
-                      </Form.Item>
+              <div className="relative">
+                {!isFetchConversation ? (
+                  <>
+                    <CollapseMessageBeta listChat={listChat} />
+                    <div className="sticky  bottom-0 right-0 h-[40px]  w-full flex justify-center items-center ">
+                      <Button
+                        className={`${
+                          endOfPage ? "opacity-0 pointer-events-none" : ""
+                        }`}
+                        onClick={() => {
+                          endOfPageRef.current.scrollIntoView({
+                            behavior: "smooth",
+                          });
+                        }}
+                        icon={<DownIcon />}
+                        shape="circle"
+                        type="primary"
+                      ></Button>
                     </div>
+                  </>
+                ) : (
+                  <>
+                    <MDSkeleton lines={5} />
+                  </>
+                )}
+                <div ref={endOfPageRef}></div>
+              </div>
+            </div>
+            {ticket ? (
+              <div
+                className={`w-full flex flex-col justify-between mt-${
+                  send ? 0 : 2
+                }`}
+              >
+                <div className={`box-comment ${send ? "hidden" : ""}`}>
+                  <div className="md-from-detail w-full flex items-center gap-2 px-3 ">
+                    <span className="w-[40px]">From:</span>
+                    <Form.Item
+                      className="m-0 w-full"
+                      name="from"
+                      labelAlign="left"
+                      rules={[
+                        {
+                          required: true,
+                          message: "From address is required",
+                        },
+                      ]}
+                    >
+                      <SelectList
+                        showSearch
+                        bordered={false}
+                        onChange={onChangeEmailIntegration}
+                        options={emailIntegrationOptions}
+                        filterOption={(input, option: any) => {
+                          return (
+                            option?.label
+                              ?.toLowerCase()
+                              .indexOf(input.toLowerCase()) >= 0
+                          );
+                        }}
+                      />
+                    </Form.Item>
+                  </div>
 
-                    <div className="md-to-detail w-full flex items-center gap-2 px-3">
-                      <span className="w-[40px]">To:</span>
+                  <div className="md-to-detail w-full flex items-center gap-2 px-3">
+                    <span className="w-[40px]">To:</span>
+                    <Form.Item
+                      className="m-0 w-full"
+                      name="to"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Email address is required",
+                        },
+                        {
+                          type: "email",
+                          message: "The email address is not valid",
+                        },
+                        ({ getFieldValue }) => ({
+                          validator(_, value) {
+                            if (
+                              emailIntegrationOptions.find(
+                                (item) => item.value === getFieldValue("from")
+                              )?.obj.supportEmail === value
+                            ) {
+                              return Promise.reject(
+                                new Error(
+                                  "The recipient's email must not be the same as the sender's email"
+                                )
+                              );
+                            }
+                            return Promise.resolve();
+                          },
+                        }),
+                      ]}
+                    >
+                      <AutoSelect
+                        bordered={false}
+                        disabled={!isForward}
+                        placeholder="Email"
+                        options={customersOptions}
+                        onSearch={(value) => {
+                          setSearchCustomer(value);
+                        }}
+                      />
+                    </Form.Item>
+                    <span
+                      className="link  inline-block"
+                      onClick={() => {
+                        setEnableCC(!enableCC);
+                      }}
+                    >
+                      CC/BCC
+                    </span>
+                  </div>
+                  {enableCC ? (
+                    <div className="md-cc-detail w-full flex items-center gap-2 px-3">
+                      <span className="w-[40px]">CC:</span>
                       <Form.Item
                         className="m-0 w-full"
-                        name="to"
+                        name="CC"
                         rules={[
-                          {
-                            required: true,
-                            message: "Email address is required",
-                          },
-                          {
-                            type: "email",
-                            message: "The email address is not valid",
-                          },
                           ({ getFieldValue }) => ({
                             validator(_, value) {
                               if (
-                                emailIntegrationOptions.find(
-                                  (item) => item.value === getFieldValue("from")
-                                )?.obj.supportEmail === value
+                                validateCCEmail(
+                                  value,
+                                  emailIntegrationOptions.find(
+                                    (item) =>
+                                      item.value === getFieldValue("from")
+                                  )?.obj.supportEmail,
+                                  getFieldValue("to")
+                                ) === true
+                              ) {
+                                return Promise.resolve();
+                              } else if (
+                                validateCCEmail(
+                                  value,
+                                  emailIntegrationOptions.find(
+                                    (item) =>
+                                      item.value === getFieldValue("from")
+                                  )?.obj.supportEmail,
+                                  getFieldValue("to")
+                                ) === "fromEmail"
                               ) {
                                 return Promise.reject(
                                   new Error(
                                     "The recipient's email must not be the same as the sender's email"
                                   )
                                 );
+                              } else if (
+                                validateCCEmail(
+                                  value,
+                                  emailIntegrationOptions.find(
+                                    (item) =>
+                                      item.value === getFieldValue("from")
+                                  )?.obj.supportEmail,
+                                  getFieldValue("to")
+                                ) === "toEmail"
+                              ) {
+                                return Promise.reject(
+                                  new Error(
+                                    "The CC's email must not be the same as the to email"
+                                  )
+                                );
+                              } else {
+                                return Promise.reject(
+                                  new Error("The email address is not valid")
+                                );
                               }
-                              return Promise.resolve();
                             },
                           }),
                         ]}
                       >
-                        <AutoSelect
+                        <SelectTag
                           bordered={false}
-                          disabled={!isForward}
-                          placeholder="Email"
+                          mode="tags"
+                          placeholder="Type CC email..."
                           options={customersOptions}
                           onSearch={(value) => {
                             setSearchCustomer(value);
                           }}
+                          onClick={() => {
+                            setSearchCustomer("");
+                          }}
+                          loading={isFetchingCustomer}
                         />
                       </Form.Item>
-                      <span
-                        className="link  inline-block"
-                        onClick={() => {
-                          setEnableCC(!enableCC);
-                        }}
-                      >
-                        CC/BCC
-                      </span>
                     </div>
-                    {enableCC ? (
-                      <div className="md-cc-detail w-full flex items-center gap-2 px-3">
-                        <span className="w-[40px]">CC:</span>
-                        <Form.Item
-                          className="m-0 w-full"
-                          name="CC"
-                          rules={[
-                            ({ getFieldValue }) => ({
-                              validator(_, value) {
-                                if (
-                                  validateCCEmail(
-                                    value,
-                                    emailIntegrationOptions.find(
-                                      (item) =>
-                                        item.value === getFieldValue("from")
-                                    )?.obj.supportEmail,
-                                    getFieldValue("to")
-                                  ) === true
-                                ) {
-                                  return Promise.resolve();
-                                } else if (
-                                  validateCCEmail(
-                                    value,
-                                    emailIntegrationOptions.find(
-                                      (item) =>
-                                        item.value === getFieldValue("from")
-                                    )?.obj.supportEmail,
-                                    getFieldValue("to")
-                                  ) === "fromEmail"
-                                ) {
-                                  return Promise.reject(
-                                    new Error(
-                                      "The recipient's email must not be the same as the sender's email"
-                                    )
-                                  );
-                                } else if (
-                                  validateCCEmail(
-                                    value,
-                                    emailIntegrationOptions.find(
-                                      (item) =>
-                                        item.value === getFieldValue("from")
-                                    )?.obj.supportEmail,
-                                    getFieldValue("to")
-                                  ) === "toEmail"
-                                ) {
-                                  return Promise.reject(
-                                    new Error(
-                                      "The CC's email must not be the same as the to email"
-                                    )
-                                  );
-                                } else {
-                                  return Promise.reject(
-                                    new Error("The email address is not valid")
-                                  );
-                                }
-                              },
-                            }),
-                          ]}
-                        >
-                          <SelectTag
-                            bordered={false}
-                            mode="tags"
-                            placeholder="Type CC email..."
-                            options={customersOptions}
-                            onSearch={(value) => {
-                              setSearchCustomer(value);
-                            }}
-                            onClick={() => {
-                              setSearchCustomer("");
-                            }}
-                            loading={isFetchingCustomer}
-                          />
-                        </Form.Item>
-                      </div>
-                    ) : (
-                      <></>
-                    )}
-                    {enableCC ? (
-                      <div className="md-bcc-detail w-full flex items-center px-3 gap-2">
-                        <span className="w-[40px]">BCC:</span>
-                        <Form.Item
-                          name="BCC"
-                          className="m-0 w-full"
-                          rules={[
-                            ({ getFieldValue }) => ({
-                              validator(_, value) {
-                                if (
-                                  validateCCEmail(
-                                    value,
-                                    emailIntegrationOptions.find(
-                                      (item) =>
-                                        item.value === getFieldValue("from")
-                                    )?.obj.supportEmail,
-                                    getFieldValue("to")
-                                  ) === true
-                                ) {
-                                  return Promise.resolve();
-                                } else if (
-                                  validateCCEmail(
-                                    value,
-                                    emailIntegrationOptions.find(
-                                      (item) =>
-                                        item.value === getFieldValue("from")
-                                    )?.obj.supportEmail,
-                                    getFieldValue("to")
-                                  ) === "fromEmail"
-                                ) {
-                                  return Promise.reject(
-                                    new Error(
-                                      "The recipient's email must not be the same as the sender's email"
-                                    )
-                                  );
-                                } else if (
-                                  validateCCEmail(
-                                    value,
-                                    emailIntegrationOptions.find(
-                                      (item) =>
-                                        item.value === getFieldValue("from")
-                                    )?.obj.supportEmail,
-                                    getFieldValue("to")
-                                  ) === "toEmail"
-                                ) {
-                                  return Promise.reject(
-                                    new Error(
-                                      "The BCC's email must not be the same as the to email"
-                                    )
-                                  );
-                                } else {
-                                  return Promise.reject(
-                                    new Error("The email address is not valid")
-                                  );
-                                }
-                              },
-                            }),
-                          ]}
-                        >
-                          <SelectTag
-                            bordered={false}
-                            mode="tags"
-                            placeholder="Type BCC email..."
-                            options={customersOptions}
-                            onSearch={(value) => {
-                              setSearchCustomer(value);
-                            }}
-                            onClick={() => {
-                              setSearchCustomer("");
-                            }}
-                            loading={isFetchingCustomer}
-                          />
-                        </Form.Item>
-                      </div>
-                    ) : (
-                      <></>
-                    )}
-                    <Form.Item className="mb-0" name="content">
-                      <TextEditorTicketBeta
-                        form={form}
-                        files={files}
-                        disabled={
-                          form.getFieldValue("status") === StatusTicket.RESOLVED
-                        }
-                        setFiles={setFiles}
-                        setIsChanged={setIsChanged}
-                        setLoadingButton={setLoadingButton}
-                        init={{
-                          menubar: false,
-                          placeholder: "Please input your message here......",
-                        }}
-                        listFileAttach={
-                          isForward ? (
-                            <Upload
-                              key={chatItemForward ? chatItemForward.id : "all"}
-                              defaultFileList={uniqBy(
-                                chatItemForward
-                                  ? chatItemForward?.attachments?.map(
-                                      (item) => ({
-                                        uid: item?._id as string,
-                                        name: item?.name as string,
-                                        status: "done",
-                                        url: item?.attachmentUrl as string,
-                                      })
-                                    )
-                                  : listChat
-                                      .map((item) => item.attachments)
-                                      .flat()
-                                      .map((item) => ({
-                                        uid: item?._id as string,
-                                        name: item?.name as string,
-                                        status: "done",
-                                        url: item?.attachmentUrl as string,
-                                      })),
-                                "uid"
-                              )}
-                              onChange={({ file, fileList }) => {
-                                setFileForward(
-                                  fileList.map((item) => item?.uid)
+                  ) : (
+                    <></>
+                  )}
+                  {enableCC ? (
+                    <div className="md-bcc-detail w-full flex items-center px-3 gap-2">
+                      <span className="w-[40px]">BCC:</span>
+                      <Form.Item
+                        name="BCC"
+                        className="m-0 w-full"
+                        rules={[
+                          ({ getFieldValue }) => ({
+                            validator(_, value) {
+                              if (
+                                validateCCEmail(
+                                  value,
+                                  emailIntegrationOptions.find(
+                                    (item) =>
+                                      item.value === getFieldValue("from")
+                                  )?.obj.supportEmail,
+                                  getFieldValue("to")
+                                ) === true
+                              ) {
+                                return Promise.resolve();
+                              } else if (
+                                validateCCEmail(
+                                  value,
+                                  emailIntegrationOptions.find(
+                                    (item) =>
+                                      item.value === getFieldValue("from")
+                                  )?.obj.supportEmail,
+                                  getFieldValue("to")
+                                ) === "fromEmail"
+                              ) {
+                                return Promise.reject(
+                                  new Error(
+                                    "The recipient's email must not be the same as the sender's email"
+                                  )
                                 );
-                              }}
-                            />
-                          ) : (
-                            <></>
-                          )
-                        }
-                      />
-                    </Form.Item>
-                  </div>
-                  <div className={`flex justify-end absolute right-4 bottom-2`}>
-                    {form.getFieldValue("status") === StatusTicket.RESOLVED ? (
-                      <>
-                        <MDButton
-                          icon={
-                            <span className="mr-2 translate-y-[3px]">
-                              <BackIcon fontSize={14} />
-                            </span>
-                          }
-                          onClick={handleReopenTicket}
-                          disabled={false}
-                        >
-                          Reopen
-                        </MDButton>
-                      </>
-                    ) : (
-                      <div className="flex items-center gap-2 justify-end w-full">
-                        {send ? (
-                          <div className="flex gap-2">
-                            <MDButton
-                              icon={
-                                <span className="mr-2 translate-y-[3px]">
-                                  <ReplyIcon fontSize={14} />
-                                </span>
+                              } else if (
+                                validateCCEmail(
+                                  value,
+                                  emailIntegrationOptions.find(
+                                    (item) =>
+                                      item.value === getFieldValue("from")
+                                  )?.obj.supportEmail,
+                                  getFieldValue("to")
+                                ) === "toEmail"
+                              ) {
+                                return Promise.reject(
+                                  new Error(
+                                    "The BCC's email must not be the same as the to email"
+                                  )
+                                );
+                              } else {
+                                return Promise.reject(
+                                  new Error("The email address is not valid")
+                                );
                               }
-                              onClick={handleReply}
-                            >
-                              Reply
-                            </MDButton>
-                            <Tooltip title="Forward all">
-                              <MDButton
-                                onClick={handleClickForwardAll}
-                                // icon={}
-                                className="flex gap-2 items-center"
-                              >
-                                Forward all
-                              </MDButton>
-                            </Tooltip>
-                          </div>
-                        ) : (
-                          <div className="flex items-center gap-2">
-                            <MDButton
-                              onClick={() => {
-                                openSend();
-                              }}
-                              type="text"
-                              icon={<Icon name="close" />}
-                            ></MDButton>
-                            {!isForward && (
-                              <MDButton
-                                disabled={!isChanged || loadingButton}
-                                onClick={handleCloseTicket}
-                              >
-                                Send & Close Ticket
-                              </MDButton>
+                            },
+                          }),
+                        ]}
+                      >
+                        <SelectTag
+                          bordered={false}
+                          mode="tags"
+                          placeholder="Type BCC email..."
+                          options={customersOptions}
+                          onSearch={(value) => {
+                            setSearchCustomer(value);
+                          }}
+                          onClick={() => {
+                            setSearchCustomer("");
+                          }}
+                          loading={isFetchingCustomer}
+                        />
+                      </Form.Item>
+                    </div>
+                  ) : (
+                    <></>
+                  )}
+                  <Form.Item className="mb-0" name="content">
+                    <TextEditorTicketBeta
+                      form={form}
+                      files={files}
+                      disabled={
+                        form.getFieldValue("status") === StatusTicket.RESOLVED
+                      }
+                      setFiles={setFiles}
+                      setIsChanged={setIsChanged}
+                      setLoadingButton={setLoadingButton}
+                      init={{
+                        menubar: false,
+                        placeholder: "Please input your message here......",
+                      }}
+                      listFileAttach={
+                        isForward ? (
+                          <Upload
+                            key={chatItemForward ? chatItemForward.id : "all"}
+                            defaultFileList={uniqBy(
+                              chatItemForward
+                                ? chatItemForward?.attachments?.map((item) => ({
+                                    uid: item?._id as string,
+                                    name: item?.name as string,
+                                    status: "done",
+                                    url: item?.attachmentUrl as string,
+                                  }))
+                                : listChat
+                                    .map((item) => item.attachments)
+                                    .flat()
+                                    .map((item) => ({
+                                      uid: item?._id as string,
+                                      name: item?.name as string,
+                                      status: "done",
+                                      url: item?.attachmentUrl as string,
+                                    })),
+                              "uid"
                             )}
-                            <MDButton
-                              type="primary"
-                              htmlType="submit"
-                              disabled={!isChanged || loadingButton}
-                            >
-                              Send
-                            </MDButton>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
+                            onChange={({ file, fileList }) => {
+                              setFileForward(fileList.map((item) => item?.uid));
+                            }}
+                          />
+                        ) : (
+                          <></>
+                        )
+                      }
+                    />
+                  </Form.Item>
                 </div>
-              ) : (
-                <>
-                  <Skeleton />
-                </>
-              )}
-            </div>
-            <MDModalUI
-              // title="Properties"
-              open={statusModal}
-              onCancel={() => {
-                closeStatusModal();
-              }}
-              centered
-              footer={[
-                <MDButton
-                  key="back"
-                  onClick={() => {
-                    closeStatusModal();
-                  }}
-                >
-                  Cancel
-                </MDButton>,
-                <MDButton
-                  key="submit"
-                  type="primary"
-                  // loading={loading}
-                  onClick={() => {
-                    handleSaveTicket();
-                    closeStatusModal();
-                  }}
-                >
-                  Save
-                </MDButton>,
-              ]}
-            >
-              <Form layout="vertical" form={form}>
-                <Form.Item
-                  labelAlign="left"
-                  label={<span style={{ width: 50 }}>Status</span>}
-                  name="status"
-                >
-                  <Select
-                    size="large"
-                    className="w-full"
-                    options={statusOptions}
-                  />
-                </Form.Item>
-                <Form.Item
-                  labelAlign="left"
-                  label={<span style={{ width: 50 }}>Priority</span>}
-                  name="priority"
-                >
-                  <Select className="w-full" options={priorityOptions} />
-                </Form.Item>
-                <Form.Item label="Assignee" name="assignee">
-                  <AgentSelect placeholder="Search agents" className="w-full" />
-                </Form.Item>
+                <div className={`flex justify-end absolute right-4 bottom-2`}>
+                  {form.getFieldValue("status") === StatusTicket.RESOLVED ? (
+                    <>
+                      <MDButton
+                        icon={
+                          <span className="mr-2 translate-y-[3px]">
+                            <BackIcon fontSize={14} />
+                          </span>
+                        }
+                        onClick={handleReopenTicket}
+                        disabled={false}
+                      >
+                        Reopen
+                      </MDButton>
+                    </>
+                  ) : (
+                    <div className="flex items-center gap-2 justify-end w-full">
+                      {send ? (
+                        <div className="flex gap-2">
+                          <MDButton
+                            icon={
+                              <span className="mr-2 translate-y-[3px]">
+                                <ReplyIcon fontSize={14} />
+                              </span>
+                            }
+                            onClick={handleReply}
+                          >
+                            Reply
+                          </MDButton>
+                          <Tooltip title="Forward all">
+                            <MDButton
+                              onClick={handleClickForwardAll}
+                              // icon={}
+                              className="flex gap-2 items-center"
+                            >
+                              Forward all
+                            </MDButton>
+                          </Tooltip>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <MDButton
+                            onClick={() => {
+                              openSend();
+                            }}
+                            type="text"
+                            icon={<Icon name="close" />}
+                          ></MDButton>
+                          {!isForward && (
+                            <MDButton
+                              disabled={!isChanged || loadingButton}
+                              onClick={handleCloseTicket}
+                            >
+                              Send & Close Ticket
+                            </MDButton>
+                          )}
+                          <MDButton
+                            type="primary"
+                            htmlType="submit"
+                            disabled={!isChanged || loadingButton}
+                          >
+                            Send
+                          </MDButton>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <>
+                <Skeleton />
+              </>
+            )}
+          </div>
+          <MDModalUI
+            // title="Properties"
+            open={statusModal}
+            onCancel={() => {
+              closeStatusModal();
+            }}
+            centered
+            footer={[
+              <MDButton
+                key="back"
+                onClick={() => {
+                  closeStatusModal();
+                }}
+              >
+                Cancel
+              </MDButton>,
+              <MDButton
+                key="submit"
+                type="primary"
+                // loading={loading}
+                onClick={() => {
+                  handleSaveTicket();
+                  closeStatusModal();
+                }}
+              >
+                Save
+              </MDButton>,
+            ]}
+          >
+            <Form layout="vertical" form={form}>
+              <Form.Item
+                labelAlign="left"
+                label={<span style={{ width: 50 }}>Status</span>}
+                name="status"
+              >
+                <Select
+                  size="large"
+                  className="w-full"
+                  options={statusOptions}
+                />
+              </Form.Item>
+              <Form.Item
+                labelAlign="left"
+                label={<span style={{ width: 50 }}>Priority</span>}
+                name="priority"
+              >
+                <Select className="w-full" options={priorityOptions} />
+              </Form.Item>
+              <Form.Item label="Assignee" name="assignee">
+                <AgentSelect placeholder="Search agents" className="w-full" />
+              </Form.Item>
 
-                <Form.Item
-                  name="tags"
-                  label={<span style={{ width: 60 }}>Tags</span>}
-                  labelAlign="left"
-                >
-                  <TagSelect />
-                </Form.Item>
-              </Form>
-            </MDModalUI>
-          </Form>
-        </div>
-      )}
+              <Form.Item
+                name="tags"
+                label={<span style={{ width: 60 }}>Tags</span>}
+                labelAlign="left"
+              >
+                <TagSelect />
+              </Form.Item>
+            </Form>
+          </MDModalUI>
+        </Form>
+      </div>
     </>
   );
 };
