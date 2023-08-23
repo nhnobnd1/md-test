@@ -20,7 +20,7 @@ import {
   priorityOptions,
   statusOptions,
 } from "@moose-desk/repo";
-import { Button, Card, Divider, Skeleton, Tag, Tooltip, Upload } from "antd";
+import { Button, Card, Divider, Tag, Tooltip, Upload } from "antd";
 import moment from "moment";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
@@ -90,6 +90,7 @@ export interface ChatItem {
   ccEmails?: [];
   bccEmails?: [];
   datetime?: string;
+  right?: boolean;
 }
 const validateCCEmail = (
   value: string[],
@@ -151,8 +152,8 @@ const DetailTicketFormBeta = () => {
     retry: 1,
     onSuccess: (data) => {
       setConversationList(data);
+      setEndOfPage(true);
       setTimeout(() => {
-        setEndOfPage(true);
         endOfPageRef.current.scrollIntoView({});
       }, 0);
     },
@@ -257,6 +258,7 @@ const DetailTicketFormBeta = () => {
           ccEmails: item?.ccEmails,
           bccEmails: item?.bccEmails,
           datetime: createdDatetimeFormat(item.createdDatetime, timezone),
+          right: !!item?.senderConfigId,
         };
       }
     );
@@ -288,6 +290,7 @@ const DetailTicketFormBeta = () => {
         ccEmails: ticket?.ccEmails,
         bccEmails: ticket?.bccEmails,
         datetime: createdDatetimeFormat(ticket.createdDatetime, timezone),
+        right: !!ticket?.senderConfigId,
       });
     }
     return conversationMapping;
@@ -771,7 +774,7 @@ Hit Send to see what your message will look like
             <Divider />
           </Card>
           <div
-            className="flex-1 h-full "
+            className="flex-1 h-full w-full  "
             style={{
               height: "100%",
               display: "flex",
@@ -787,12 +790,13 @@ Hit Send to see what your message will look like
               }}
               className=" h-full  overflow-auto box-chat bg-white p-4"
             >
-              <div className="relative">
+              <div className="relative ">
                 {!isFetchConversation ? (
                   <>
                     <CollapseMessageBeta listChat={listChat} />
                     <div className="sticky  bottom-0 right-0 h-[40px]  w-full flex justify-center items-center ">
                       <Button
+                        disabled={false}
                         className={`${
                           endOfPage ? "opacity-0 pointer-events-none" : ""
                         }`}
@@ -809,7 +813,7 @@ Hit Send to see what your message will look like
                   </>
                 ) : (
                   <>
-                    <MDSkeleton lines={5} />
+                    <MDSkeleton lines={100} />
                   </>
                 )}
                 <div ref={endOfPageRef}></div>
@@ -1174,9 +1178,7 @@ Hit Send to see what your message will look like
                 </div>
               </div>
             ) : (
-              <>
-                <Skeleton />
-              </>
+              <></>
             )}
           </div>
           <MDModalUI

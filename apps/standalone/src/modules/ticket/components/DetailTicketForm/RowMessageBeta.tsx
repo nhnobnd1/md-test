@@ -1,4 +1,4 @@
-import { Button, Collapse, Divider, Popover, Tooltip } from "antd";
+import { Button, Card, Collapse, Divider, Popover, Tooltip } from "antd";
 import { filesize } from "filesize";
 import { FC, useMemo, useState } from "react";
 import { ChatItem } from "src/modules/ticket/components/DetailTicketForm/DetailTicketForm";
@@ -59,7 +59,7 @@ export const RowMessageBeta: FC<RowMessageProps> = ({ item }) => {
   };
 
   return (
-    <div>
+    <Card className="max-w-[500px] my-3">
       <div className=" items-center gap-3 ">
         <div className="flex items-end gap-3 justify-between items-center">
           <div className="flex gap-2 items-center flex-wrap">
@@ -91,6 +91,7 @@ export const RowMessageBeta: FC<RowMessageProps> = ({ item }) => {
               <span style={{ fontWeight: "bold" }}>To </span>: {item.toEmail}
             </span>
           )}
+
           {item?.ccEmails?.length ? (
             <>
               <span
@@ -131,8 +132,9 @@ export const RowMessageBeta: FC<RowMessageProps> = ({ item }) => {
           )}
         </div>
       </div>
+      <Divider className="m-0 my-2" />
       <div
-        className="text-black text-scroll mt-5 "
+        className="text-black text-scroll "
         dangerouslySetInnerHTML={{
           __html: `<div style="font-family:Helvetica;font-size:14px"><style>img{max-width:100%}</style>${sortChat}</div>`,
         }}
@@ -244,7 +246,6 @@ export const RowMessageBeta: FC<RowMessageProps> = ({ item }) => {
       ) : (
         <></>
       )}
-      <Divider />
-    </div>
+    </Card>
   );
 };

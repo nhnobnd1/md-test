@@ -20,7 +20,12 @@ export const CollapseMessageBeta: FC<CollapseMessageProps> = ({ listChat }) => {
     updateChatItem(item);
   };
   return listChat.map((item: ChatItem, index: number) => (
-    <RowMessageBeta key={item.id} item={item} />
+    <div
+      key={item.id}
+      className={`flex justify-${item.right ? "end" : "start"}`}
+    >
+      <RowMessageBeta key={item.id} item={item} />
+    </div>
   ));
 
   //     bordered={false}

@@ -128,6 +128,7 @@ export type Conversation = {
 	attachments: AttachFile[];
 	_id: string;
 	text: string;
+	senderConfigId: string;
 };
 
 export type ReplyTicket = {

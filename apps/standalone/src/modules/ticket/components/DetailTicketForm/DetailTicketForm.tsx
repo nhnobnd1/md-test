@@ -91,6 +91,7 @@ export interface ChatItem {
   ccEmails?: [];
   bccEmails?: [];
   datetime?: string;
+  right?: boolean;
 }
 const validateCCEmail = (
   value: string[],
