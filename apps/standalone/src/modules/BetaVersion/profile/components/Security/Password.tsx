@@ -1,4 +1,4 @@
-import { ModalChangePassword } from "@moose-beta/components/layoutComponents/component/Security/ModalChangePassword";
+import { ModalChangePassword } from "@moose-beta/profile/components/Security/ModalChangePassword";
 import { useToggle } from "@moose-desk/core";
 import React from "react";
 import { MDButton } from "src/components/UI/Button/MDButton";
