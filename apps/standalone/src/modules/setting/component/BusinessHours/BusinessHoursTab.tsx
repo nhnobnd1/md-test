@@ -54,7 +54,7 @@ const BusinessHoursTab = ({
         className="mb-0 mt-4"
         hidden={!!disabled}
         help={
-          <span style={{ fontSize: 13, opacity: 0.6 }}>
+          <span style={{ fontSize: 13 }} className="text-gray-400">
             Choose your auto-reply outside of business hours. You can set up new
             message in the{" "}
             <span

@@ -98,49 +98,47 @@ const ModalHoliday = ({
         setValueDate(undefined);
       }}
     >
-      <div style={{ height: "400px" }}>
-        <Modal.Section>
-          <Form
-            initialValues={
-              dataForm?.value || {
-                name: "",
-                date: "",
-                autoReplyCode: "",
-              }
+      <Modal.Section>
+        <Form
+          initialValues={
+            dataForm?.value || {
+              name: "",
+              date: "",
+              autoReplyCode: "",
             }
-            ref={formRef}
-            validationSchema={validateObject}
-            enableReinitialize
-            onSubmit={handleSubmitValue}
-          >
-            <FormLayout>
-              <FormItem name="name">
-                <TextField
-                  autoComplete="off"
-                  placeholder="Enter name holiday"
-                  label={
-                    <div>
-                      <span className="text-red">*</span> Name:
-                    </div>
-                  }
-                />
-              </FormItem>
-              <FormItem name="date">
-                <SelectDateHolidays
-                  valueDate={valueDate}
-                  onChangeValueDate={(value) => setValueDate(value)}
-                />
-              </FormItem>
-              <FormItem name="autoReplyCode">
-                <BoxSelectAutoReply
-                  dataAutoReply={dataAutoReply}
-                  label="Auto-Reply:"
-                />
-              </FormItem>
-            </FormLayout>
-          </Form>
-        </Modal.Section>
-      </div>
+          }
+          ref={formRef}
+          validationSchema={validateObject}
+          enableReinitialize
+          onSubmit={handleSubmitValue}
+        >
+          <FormLayout>
+            <FormItem name="name">
+              <TextField
+                autoComplete="off"
+                placeholder="Enter name holiday"
+                label={
+                  <div>
+                    <span className="text-red">*</span> Name:
+                  </div>
+                }
+              />
+            </FormItem>
+            <FormItem name="date">
+              <SelectDateHolidays
+                valueDate={valueDate}
+                onChangeValueDate={(value) => setValueDate(value)}
+              />
+            </FormItem>
+            <FormItem name="autoReplyCode">
+              <BoxSelectAutoReply
+                dataAutoReply={dataAutoReply}
+                label="Auto-Reply:"
+              />
+            </FormItem>
+          </FormLayout>
+        </Form>
+      </Modal.Section>
     </Modal>
   );
 };

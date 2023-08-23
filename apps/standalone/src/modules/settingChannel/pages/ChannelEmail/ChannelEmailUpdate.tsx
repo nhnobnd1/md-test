@@ -71,17 +71,17 @@ const ChannelEmailUpdate = () => {
   }, [externalEmailConnection, mailboxType, mailSettingType]);
 
   const initialForm = useMemo(() => {
-    if (signCallback?.oauthStatus) {
-      return {
-        name: signCallback.name,
-        supportEmail: signCallback.supportEmail,
-        mailSettingType: MailSettingType.CUSTOM,
-        mailboxType: MailBoxType.GMAIL,
-        isPrimaryEmail: email?.isPrimaryEmail,
-        accessType: AccessType.Both,
-        deleteFromServer: true,
-      };
-    }
+    // if (signCallback?.oauthStatus) {
+    //   return {
+    //     name: signCallback.name,
+    //     supportEmail: signCallback.supportEmail,
+    //     mailSettingType: MailSettingType.CUSTOM,
+    //     mailboxType: MailBoxType.GMAIL,
+    //     isPrimaryEmail: email?.isPrimaryEmail,
+    //     accessType: AccessType.Both,
+    //     deleteFromServer: true,
+    //   };
+    // }
     if (email && email.mailboxType) {
       const mailBoxConfig = email.mailboxConfig as MailBoxConfig;
       switch (email.mailboxType) {
@@ -179,7 +179,7 @@ const ChannelEmailUpdate = () => {
           catchError((err) => {
             if (err.response.data.statusCode === 400) {
               message.loading.hide().then(() => {
-                notification.error(`${err.response.data.error[0]}`);
+                notification.error(err?.response?.data?.error[0]);
               });
               return of(err);
             }
@@ -187,6 +187,7 @@ const ChannelEmailUpdate = () => {
               message.loading.hide().then(() => {
                 notification.error(`${payload.supportEmail} is exist`);
               });
+              return of(err);
             }
             message.loading.hide().then(() => {
               notification.error(t("messages:error.something_went_wrong"));
@@ -263,7 +264,7 @@ const ChannelEmailUpdate = () => {
   return (
     <>
       <Header
-        className="xs:h-[32px] md:h-[40px] mb-5 "
+        className="xs:h-[32px] md:h-[40px] mb-5 md:w-[90%] lg:w-[80%]"
         title="Email Configuration"
         back
         backAction={handleBack}

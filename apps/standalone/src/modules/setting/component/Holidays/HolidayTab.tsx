@@ -164,22 +164,22 @@ const HolidayTab = ({
               key="nameHoliday"
               title="Name"
               render={(_, record: Holidays) => <span>{`${record.name}`}</span>}
-              sorter={{
-                compare: (a: Holidays, b: Holidays) => {
-                  return ("" + a.name).localeCompare(b.name);
-                },
-              }}
+              // sorter={{
+              //   compare: (a: Holidays, b: Holidays) => {
+              //     return ("" + a.name).localeCompare(b.name);
+              //   },
+              // }}
             />
             <Table.Column
               key="dateHoliday"
               title="Date"
-              sorter={{
-                compare: (a: Holidays, b: Holidays) => {
-                  const dateA: any = moment(a.startDate, "DD-MM");
-                  const dateB: any = moment(b.startDate, "DD-MM");
-                  return (dateA - dateB) as number;
-                },
-              }}
+              // sorter={{
+              //   compare: (a: Holidays, b: Holidays) => {
+              //     const dateA: any = moment(a.startDate, "DD-MM");
+              //     const dateB: any = moment(b.startDate, "DD-MM");
+              //     return (dateA - dateB) as number;
+              //   },
+              // }}
               render={(_, record: Holidays) => (
                 <span>
                   {record.startDate === record.endDate

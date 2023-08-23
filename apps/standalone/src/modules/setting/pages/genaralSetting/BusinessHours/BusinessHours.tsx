@@ -102,7 +102,7 @@ const BusinessHours = () => {
 
   const handleChangeValues = useCallback(
     (value) => {
-      if (isSuccess && tabSelected === "1") {
+      if (isSuccess) {
         updateFormDirty(
           !isEqual(pick(dataBusinessCalendar, keys(value)), value)
         );

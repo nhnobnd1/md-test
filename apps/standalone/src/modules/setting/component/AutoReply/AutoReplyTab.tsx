@@ -187,11 +187,11 @@ const AutoReplyTab = ({
               key="name"
               title="Name"
               render={(_, record: AutoReply) => <span>{`${record.name}`}</span>}
-              sorter={{
-                compare: (a: AutoReply, b: AutoReply) => {
-                  return ("" + a.name).localeCompare(b.name);
-                },
-              }}
+              // sorter={{
+              //   compare: (a: AutoReply, b: AutoReply) => {
+              //     return ("" + a.name).localeCompare(b.name);
+              //   },
+              // }}
             />
             <Table.Column
               key="date"
@@ -199,14 +199,14 @@ const AutoReplyTab = ({
               render={(_, record: AutoReply) => (
                 <span>{dayjs(`${record.createAt}`).format("MM/DD/YYYY")}</span>
               )}
-              sorter={{
-                compare: (a: AutoReply, b: AutoReply) => {
-                  const dateA: number = moment(a.createAt).valueOf();
-                  const dateB: number = moment(b.createAt).valueOf();
+              // sorter={{
+              //   compare: (a: AutoReply, b: AutoReply) => {
+              //     const dateA: number = moment(a.createAt).valueOf();
+              //     const dateB: number = moment(b.createAt).valueOf();
 
-                  return dateA - dateB;
-                },
-              }}
+              //     return dateA - dateB;
+              //   },
+              // }}
             ></Table.Column>
             <Table.Column
               align="center"

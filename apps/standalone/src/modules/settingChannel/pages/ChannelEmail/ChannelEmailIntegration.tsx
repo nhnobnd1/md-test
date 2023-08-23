@@ -5,6 +5,7 @@ import {
   useSearchParams,
 } from "@moose-desk/core";
 import { useEffect, useState } from "react";
+import useMessage from "src/hooks/useMessage";
 import { setSignInCallback } from "src/modules/settingChannel/redux/channelEmail";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
 import { useAppDispatch, useAppSelector } from "src/redux/hook";
@@ -16,6 +17,8 @@ const ChannelEmailIntegration = () => {
   } | null>(null);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const message = useMessage();
+
   const signInCallback = useAppSelector(
     (state) => state.channelEmail.signInCallback
   );
@@ -57,9 +60,8 @@ const ChannelEmailIntegration = () => {
         );
       }
     } else {
-      setError({
-        message: "Sign In Error",
-      });
+      navigate(generatePath(SettingChannelRoutePaths.ChannelEmail.Index), {});
+      message.error("Sign in Error");
     }
   }, [signInCallback]);
 

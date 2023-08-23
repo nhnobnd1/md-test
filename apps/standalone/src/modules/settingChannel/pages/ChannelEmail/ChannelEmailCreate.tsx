@@ -52,6 +52,9 @@ const ChannelEmailCreate = () => {
               message.loading.hide().then(() => {
                 notification.success(t("messages:success.create_email"));
               });
+              navigate(
+                generatePath(SettingChannelRoutePaths.ChannelEmail.Index)
+              );
             } else {
               message.loading.hide().then(() => {
                 message.loading.hide().then(() => {
@@ -93,10 +96,17 @@ const ChannelEmailCreate = () => {
             }
           }),
           catchError((err) => {
+            if (err.response.data.statusCode === 400) {
+              message.loading.hide().then(() => {
+                notification.error(`${payload.supportEmail} is exist`);
+              });
+              return of(err);
+            }
             if (err.response.data.statusCode === 409) {
               message.loading.hide().then(() => {
                 notification.error(`${payload.supportEmail} is exist`);
               });
+              return of(err);
             }
             message.loading.hide().then(() => {
               notification.error(t("messages:error.something_went_wrong"));
@@ -215,7 +225,7 @@ const ChannelEmailCreate = () => {
   return (
     <>
       <Header
-        className="xs:h-[32px] md:h-[40px] mb-5 "
+        className="xs:h-[32px] md:h-[40px] mb-5 md:w-[90%] lg:w-[80%]"
         title="Email Configuration"
         back
         backAction={handleBack}

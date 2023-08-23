@@ -66,57 +66,55 @@ const ModalAutoReply = ({
       ]}
       onClose={() => props.onClose()}
     >
-      <div style={{ height: "500px" }}>
-        <Modal.Section>
-          <Form
-            initialValues={
-              dataForm?.value || {
-                name: "",
-                content: "",
-              }
+      <Modal.Section>
+        <Form
+          initialValues={
+            dataForm?.value || {
+              name: "",
+              content: "",
             }
-            ref={formRef}
-            validationSchema={validateObject}
-            enableReinitialize
-            onSubmit={handleSubmitValue}
-          >
-            <FormLayout>
-              <FormItem name="name">
-                <TextField
-                  autoComplete="off"
-                  placeholder="Enter name auto-reply"
-                  label={
-                    <div>
-                      <span className="mr-1 text-red-500">*</span>Name
-                    </div>
-                  }
-                />
-              </FormItem>
-              <FormItem name="code"></FormItem>
-              <FormItem name="createAt"></FormItem>
-              <FormItem name="content">
-                <RichText
-                  formRef={formRef}
-                  labelProps={{
-                    as: "span",
-                    variant: "bodyMd",
-                    children: (
-                      <>
-                        <span className="mr-1 text-red-500">*</span>Content
-                      </>
-                    ),
-                  }}
-                  init={{
-                    menubar: false,
-                    toolbar:
-                      "undo redo blocks fontfamily fontsizeinput bold italic underline strikethrough link image media table mergetags addcomment showcomments spellcheckdialog a11ycheck typography align lineheight",
-                  }}
-                />
-              </FormItem>
-            </FormLayout>
-          </Form>
-        </Modal.Section>
-      </div>
+          }
+          ref={formRef}
+          validationSchema={validateObject}
+          enableReinitialize
+          onSubmit={handleSubmitValue}
+        >
+          <FormLayout>
+            <FormItem name="name">
+              <TextField
+                autoComplete="off"
+                placeholder="Enter name auto-reply"
+                label={
+                  <div>
+                    <span className="mr-1 text-red-500">*</span>Name
+                  </div>
+                }
+              />
+            </FormItem>
+            <FormItem name="code"></FormItem>
+            <FormItem name="createAt"></FormItem>
+            <FormItem name="content">
+              <RichText
+                formRef={formRef}
+                labelProps={{
+                  as: "span",
+                  variant: "bodyMd",
+                  children: (
+                    <>
+                      <span className="mr-1 text-red-500">*</span>Content
+                    </>
+                  ),
+                }}
+                init={{
+                  menubar: false,
+                  toolbar:
+                    "undo redo blocks fontfamily fontsizeinput bold italic underline strikethrough link image media table mergetags addcomment showcomments spellcheckdialog a11ycheck typography align lineheight",
+                }}
+              />
+            </FormItem>
+          </FormLayout>
+        </Form>
+      </Modal.Section>
     </Modal>
   );
 };
