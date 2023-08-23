@@ -1,6 +1,6 @@
-import { ListTicketCustomer } from "@moose-beta/components/layoutComponents/component/CustomerTicket/ListTicketCustomer";
-import { Security } from "@moose-beta/components/layoutComponents/component/Security";
 import { Tickets } from "@moose-beta/components/layoutComponents/component/Tickets";
+import { ListTicketCustomer } from "@moose-beta/customerBeta/components/CustomerTicket/ListTicketCustomer";
+import { Security } from "@moose-beta/profile/components/Security";
 import { useNavigate, useSearchParams } from "@moose-desk/core";
 import { Tabs, TabsProps } from "antd";
 import React from "react";
