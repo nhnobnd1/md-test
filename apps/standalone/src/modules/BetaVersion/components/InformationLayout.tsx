@@ -53,7 +53,7 @@ export default function InformationLayout({ layout }: IProps) {
       setDataProfile(data?.data?.data);
     },
   });
-  // console.log(agentId);
+
   const handleRefetchProfile = useCallback(() => {
     switch (layout) {
       case "profile":

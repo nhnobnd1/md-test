@@ -1,4 +1,4 @@
-import { MediaScreen, useNavigate, useSearchParams } from "@moose-desk/core";
+import { MediaScreen } from "@moose-desk/core";
 import classNames from "classnames";
 import React, { useCallback } from "react";
 import { useTranslation } from "react-i18next";
@@ -22,9 +22,6 @@ export const ModalChangePassword = React.memo(
   ({ onClose, visible }: IProps) => {
     const { t } = useTranslation();
     const notification = useNotification();
-    const navigate = useNavigate();
-    const [searchParams] = useSearchParams();
-    const querySearch = searchParams.get("recovery");
     const { isMobile } = useViewport(MediaScreen.LG);
     const message = useMessage();
     const [form] = Form.useForm();
