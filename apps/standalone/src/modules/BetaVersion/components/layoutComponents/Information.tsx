@@ -1,8 +1,9 @@
+import { AgentInfoBlock } from "@moose-beta/agentBeta/components/AgentInfoBlock";
 import InputPhoneBeta from "@moose-beta/components/layoutComponents/component/InputPhoneBeta/InputPhoneBeta";
 import { FileSize } from "@moose-beta/profile/helper/enum";
-import { useToggle } from "@moose-desk/core";
-import { ResendEmailInvitationRequest } from "@moose-desk/repo";
-import { message, Select, Switch, Tag, Upload } from "antd";
+import { useNavigate, useUser } from "@moose-desk/core";
+import { Agent, Role } from "@moose-desk/repo";
+import { message, Select, Upload } from "antd";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
@@ -15,13 +16,7 @@ import MDAvatar from "src/components/UI/MDAvatar/MDAvatar";
 import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import useNotification from "src/hooks/useNotification";
 import { usePermission } from "src/hooks/usePerrmisson";
-import {
-  activeAgent,
-  deActiveAgent,
-  removeAgent,
-  resendInviteEmail,
-  updateAgent,
-} from "src/modules/agent/api/api";
+import { updateAgent } from "src/modules/agent/api/api";
 import {
   ROLE_OPTIONS_FULL,
   ROLE_OPTIONS_LEAD,
@@ -34,21 +29,7 @@ const LIST_HONORIFIC = ["Mr", "Mrs", "Ms"];
 
 interface IProps {
   layout: "profile" | "customer" | "agent";
-  profile: {
-    _id?: string;
-    avatar?: string;
-    firstName?: string;
-    lastName?: string;
-    email?: string;
-    phoneNumber?: string;
-    role?: string;
-    group?: string[];
-    timezone?: string;
-    honorific?: string;
-    isActive?: boolean;
-    emailConfirmed?: boolean;
-    storeId?: string;
-  };
+  profile: Agent | any;
   onRefetch: () => void;
   loadingProfile?: boolean;
 }
@@ -59,10 +40,11 @@ const Information = ({
   loadingProfile = false,
 }: IProps) => {
   const { t } = useTranslation();
-  const { isLead } = usePermission();
-  const { state: visible, on, off } = useToggle(false);
+  const { isLead, role } = usePermission();
   const [form] = Form.useForm();
   const notification = useNotification();
+  const { sub: userId }: string | any = useUser();
+  const navigate = useNavigate();
   const [avatar, setAvatar] = useState("");
   useEffect(() => {
     if (profile?.avatar) {
@@ -70,6 +52,18 @@ const Information = ({
     }
   }, [profile]);
 
+  useEffect(() => {
+    if (layout === "agent") {
+      if (
+        role === profile?.role ||
+        (isLead && profile?.role === Role.Admin) ||
+        userId === profile?._id
+      ) {
+        // vào trang bằng url nhập tay hoặc sau khi update agent có role bằng bản thân thì thoát ra ngoài
+        navigate(-1);
+      }
+    }
+  }, [profile?.role]);
   const isDisabledForm =
     !(profile?.isActive && profile?.emailConfirmed) && layout === "agent";
   // const buttonEl: HTMLElement | null = document.getElementById("save_button");
@@ -121,49 +115,6 @@ const Information = ({
     },
   });
 
-  const { mutate: activeAgentMutate, isLoading: activeIng } = useMutation({
-    mutationFn: () => activeAgent(profile?._id || ""),
-    onSuccess: async () => {
-      onRefetch();
-      notification.success(t("messages:success.active_agent"));
-    },
-    onError: () => {
-      notification.error(t("messages:error.active_agent"));
-    },
-  });
-  const { mutate: deActiveAgentMutate, isLoading: deActiveIng } = useMutation({
-    mutationFn: () => deActiveAgent(profile?._id || ""),
-    onSuccess: async () => {
-      onRefetch();
-      notification.success(t("messages:success.deactivate_agent"));
-    },
-    onError: () => {
-      notification.error(t("messages:error.deactivate_agent"));
-    },
-  });
-  const { mutate: sendInviteMutate, isLoading: sending } = useMutation({
-    mutationFn: (payload: ResendEmailInvitationRequest) =>
-      resendInviteEmail(payload),
-    onSuccess: async () => {
-      notification.success(`Resend invitation ${profile?.email}`, {
-        description: t("messages:success.resend_invitation_email"),
-      });
-    },
-    onError: () => {
-      notification.error(t("messages:error.resend_invitation_email"));
-    },
-  });
-  const { mutate: removeAgentMutate, isLoading: removing } = useMutation({
-    mutationFn: () => removeAgent(profile?._id || ""),
-    onSuccess: async () => {
-      notification.success(t("messages:success.deleted_agent"));
-    },
-    onError: () => {
-      notification.error(t("messages:error.deleted_agent"), {
-        description: "Remove agent failed",
-      });
-    },
-  });
   // const addSaveButton = () => {
   //   if (buttonEl?.classList.contains(styles.showButton)) return;
   //   buttonEl?.classList.add(styles.showButton);
@@ -177,9 +128,7 @@ const Information = ({
   // const handleChangeForm = () => {
   //   addSaveButton();
   // };
-  const handleChangeStatus = (value: boolean) => {
-    value ? activeAgentMutate() : deActiveAgentMutate();
-  };
+
   const handleChange = (files: any) => {
     if (layout === "customer") return;
     const file = files.file;
@@ -422,56 +371,12 @@ const Information = ({
         )}
       </div>
       {layout === "agent" && (
-        <div className={styles.blockContent}>
-          {loadingProfile ? (
-            <MDSkeleton lines={1} />
-          ) : !profile?.emailConfirmed ? (
-            <div className="d-grid">
-              <MDButton
-                type="link"
-                onClick={() =>
-                  sendInviteMutate({
-                    email: profile?.email || "",
-                    storeId: profile?.storeId || "",
-                  })
-                }
-                loading={sending}
-              >
-                Send Invitation Email
-              </MDButton>
-              <MDButton
-                onClick={() => removeAgentMutate()}
-                type="primary"
-                danger
-                className="mt-2"
-                loading={removing}
-              >
-                Remove Agent
-              </MDButton>
-            </div>
-          ) : (
-            <>
-              <div className={styles.moreInfo}>
-                <span className={styles.label}>Status:</span>
-                <span className={styles.result}>
-                  <Switch
-                    onChange={handleChangeStatus}
-                    loading={activeIng || deActiveIng}
-                    checked={profile?.isActive}
-                  />
-                  <Tag
-                    className="ml-2"
-                    color={profile?.isActive ? "green" : "error"}
-                  >
-                    {profile?.isActive ? "Active" : "Deactivate"}
-                  </Tag>
-                </span>
-              </div>
-            </>
-          )}
-        </div>
+        <AgentInfoBlock
+          profile={profile}
+          loading={loadingProfile}
+          onRefetch={onRefetch}
+        />
       )}
-      {/* <Modal */}
     </div>
   );
 };

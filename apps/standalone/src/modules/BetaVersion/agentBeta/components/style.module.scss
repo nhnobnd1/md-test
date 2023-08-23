@@ -1,0 +1,28 @@
+@import "src/styles/variables.scss";
+@import "src/styles/mixin.scss";
+.blockContent {
+  padding: 15px 10px;
+  background-color: $white-color;
+//   border-bottom: 1px solid $gray-border;
+  .moreInfo {
+    display: flex;
+    height: 32px;
+    align-items: center;
+
+    .label {
+      min-width: 80px;
+      width: 80px;
+      font-size: 13px;
+      text-align: end;
+      padding-right: 10px;
+    }
+
+    .result {
+      color: #68737d;
+      font-size: 13px;
+      padding-left: 10px;
+      display: flex;
+      align-items: center;
+    }
+  }
+}

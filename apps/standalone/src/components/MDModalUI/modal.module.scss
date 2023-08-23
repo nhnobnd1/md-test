@@ -1,0 +1,26 @@
+.modalConfirm {
+    :global {
+
+        .ant-modal-content,
+        .ant-modal-header {
+            border-radius: 20px;
+        }
+    }
+}
+
+.removeButton {
+    border-radius: 20px;
+    background-color: #f47373;
+    border: none;
+    outline: none;
+
+    &:hover {
+        background-color: #f47373;
+        opacity: 0.8;
+    }
+}
+
+.cancelButton {
+    border-radius: 20px;
+    outline: none;
+}

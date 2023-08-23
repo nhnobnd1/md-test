@@ -58,7 +58,6 @@ export const Tickets = React.memo(({ email }: IProps) => {
     },
     enabled: !!filter?.customer,
   });
-  console.log(email);
   const columns: any = [
     {
       title: "Status",
@@ -93,7 +92,7 @@ export const Tickets = React.memo(({ email }: IProps) => {
       title: "Last Update",
       dataIndex: "updatedTimestamp",
       sorter: {
-        compare: (a: any, b: any) => a.numberOfTicket - b.numberOfTicket,
+        compare: (a: any, b: any) => a.updatedTimestamp - b.updatedTimestamp,
       },
 
       render: (_: any, record: Ticket) => (

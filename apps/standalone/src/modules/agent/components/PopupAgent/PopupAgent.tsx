@@ -429,7 +429,9 @@ export const PopupAgent = ({
             disabledEmail={!!dataForm?._id}
             enableLoadForm
             enableReinitialize
-            disabled={!(data?.isActive && data?.emailConfirmed)}
+            disabled={
+              !!dataForm?._id && !(data?.isActive && data?.emailConfirmed)
+            }
             form={form}
             onFinish={handleFinish}
           />
