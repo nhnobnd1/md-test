@@ -51,6 +51,7 @@ export const AppLayout = () => {
   const [screenType, screenWidth] = useScreenType();
   const { isMobile } = useViewport(MediaScreen.LG);
   const user = useUser();
+
   const { data: dataStatistic } = useQuery({
     queryKey: ["getStatisticTicket"],
     queryFn: () => getStatisticTicket(),
@@ -425,14 +426,18 @@ export const AppLayout = () => {
       })}
     >
       <Layout.Header
-        className={classNames("header p-0 ", {
+        className={classNames("header p-0 z-[1]", {
           "no-touch": !collapsed && isMobile,
         })}
       >
         {formChanged ? (
           <div className=" flex justify-end flex-1 px-20px">
             <Space>
-              <MDButton onClick={handleResetForm}>Cancel</MDButton>
+              {location.pathname.includes("channel-email") ? (
+                <></>
+              ) : (
+                <MDButton onClick={handleResetForm}>Cancel</MDButton>
+              )}
               <MDButton type="primary" onClick={handleSubmitForm}>
                 Save
               </MDButton>
