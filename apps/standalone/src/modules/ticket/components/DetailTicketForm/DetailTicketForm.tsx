@@ -673,7 +673,6 @@ Hit Send to see what your message will look like
       endRef.current.scrollIntoView();
     }, 0);
   };
-
   return (
     <>
       {processing || isLoadingConversation ? (
@@ -725,10 +724,7 @@ Hit Send to see what your message will look like
             </div>
           </Header>
           <Form
-            disabled={
-              form.getFieldValue("status") === StatusTicket.RESOLVED ||
-              loadingButton
-            }
+            disabled={ticket?.status === StatusTicket.RESOLVED || loadingButton}
             form={form}
             layout="vertical"
             initialValues={initialValues}

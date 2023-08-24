@@ -8,12 +8,12 @@ import {
 import { useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
-import { MDButton } from "src/components/UI/Button/MDButton";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { useSubdomain } from "src/hooks/useSubdomain";
+import useBusinessHour from "src/modules/setting/store/Businesshour";
 import {
   ChannelEmailForm,
   ValuesForm,
@@ -34,10 +34,14 @@ const ChannelEmailCreate = () => {
   const isForwardEmailCreated = useMailSetting(
     (state) => state.isForwardEmailCreated
   );
+  const handleChangeMailSetting = useMailSetting((state) => state.changeUpdate);
 
   const signCallback = useAppSelector(
     (state) => state.channelEmail.signInCallback
   );
+  const updateFormDirty = useBusinessHour((state) => state.updateFormDirty);
+  const isSubmit = useBusinessHour((state) => state.isSubmit);
+  const isReset = useBusinessHour((state) => state.isReset);
 
   const { run: createMailAPI } = useJob(
     (payload: CreateEmailIntegrationRequest) => {
@@ -53,7 +57,9 @@ const ChannelEmailCreate = () => {
                 notification.success(t("messages:success.create_email"));
               });
               navigate(
-                generatePath(SettingChannelRoutePaths.ChannelEmail.Index)
+                generatePath(SettingChannelRoutePaths.ChannelEmail.Update, {
+                  id: data.data._id,
+                })
               );
             } else {
               message.loading.hide().then(() => {
@@ -64,6 +70,12 @@ const ChannelEmailCreate = () => {
             }
           }),
           catchError((err) => {
+            if (err.response.data.statusCode === 400) {
+              message.loading.hide().then(() => {
+                notification.error(err?.response?.data?.error[0]);
+              });
+              return of(err);
+            }
             message.loading.hide().then(() => {
               notification.error(t("messages:error.something_went_wrong"));
             });
@@ -219,9 +231,39 @@ const ChannelEmailCreate = () => {
   const createMailOther = useCallback((values: ValuesForm) => {
     createMailAPI(payloadMailOther(values));
   }, []);
-  const handleSubmit = () => form.submit();
+  const handleSubmit = async () => {
+    try {
+      const validate = await form.validateFields();
+      if (validate) {
+        form.submit();
+      }
+    } catch (e) {
+      updateFormDirty(true);
+    }
+  };
   const handleBack = () =>
     navigate(generatePath(SettingChannelRoutePaths.ChannelEmail.Index));
+
+  useEffect(() => {
+    if (form.getFieldValue("supportEmail")) {
+      updateFormDirty(true);
+    }
+    return () => {
+      updateFormDirty(false);
+    };
+  }, [form.getFieldValue("supportEmail")]);
+  useEffect(() => {
+    if (isSubmit) {
+      handleSubmit();
+    }
+  }, [isSubmit]);
+  useEffect(() => {
+    if (isReset) {
+      handleChangeMailSetting(MailSettingType.CUSTOM);
+      form.resetFields();
+    }
+  }, [isReset]);
+
   return (
     <>
       <Header
@@ -229,17 +271,7 @@ const ChannelEmailCreate = () => {
         title="Email Configuration"
         back
         backAction={handleBack}
-      >
-        <div className="flex-1 flex justify-end">
-          <MDButton
-            type="primary"
-            onClick={handleSubmit}
-            disabled={!form.getFieldValue("supportEmail")}
-          >
-            Save
-          </MDButton>
-        </div>
-      </Header>
+      ></Header>
 
       <ChannelEmailForm form={form} type="new" onFinish={handleFinishForm} />
     </>

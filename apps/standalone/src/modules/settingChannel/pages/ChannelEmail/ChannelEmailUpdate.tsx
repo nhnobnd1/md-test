@@ -17,11 +17,11 @@ import {
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
-import { MDButton } from "src/components/UI/Button/MDButton";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
+import useBusinessHour from "src/modules/setting/store/Businesshour";
 import {
   ChannelEmailForm,
   ValuesForm,
@@ -47,7 +47,8 @@ const ChannelEmailUpdate = () => {
   const externalEmailConnection = useAppSelector(
     (state) => state.channelEmail.externalMailConnection
   );
-
+  const updateFormDirty = useBusinessHour((state) => state.updateFormDirty);
+  const isSubmit = useBusinessHour((state) => state.isSubmit);
   const mailboxType = useMemo(() => {
     return form.getFieldValue("mailboxType");
   }, [form.getFieldValue("mailboxType")]);
@@ -258,9 +259,30 @@ const ChannelEmailUpdate = () => {
   const createMailOther = useCallback((values: ValuesForm) => {
     updateEmailIntegration(payloadMailOther(values));
   }, []);
-  const handleSubmit = () => form.submit();
+  const handleSubmit = async () => {
+    try {
+      const validate = await form.validateFields();
+      if (validate) {
+        form.submit();
+      }
+    } catch (e) {
+      updateFormDirty(true);
+    }
+  };
   const handleBack = () =>
     navigate(generatePath(SettingChannelRoutePaths.ChannelEmail.Index));
+  useEffect(() => {
+    updateFormDirty(true);
+    return () => {
+      updateFormDirty(false);
+    };
+  }, []);
+  useEffect(() => {
+    if (isSubmit) {
+      handleSubmit();
+    }
+  }, [isSubmit]);
+
   return (
     <>
       <Header
@@ -268,17 +290,7 @@ const ChannelEmailUpdate = () => {
         title="Email Configuration"
         back
         backAction={handleBack}
-      >
-        <div className="flex-1 flex justify-end">
-          <MDButton
-            type="primary"
-            disabled={!activeSave}
-            onClick={handleSubmit}
-          >
-            Save
-          </MDButton>
-        </div>
-      </Header>
+      ></Header>
       {email && (
         <ChannelEmailForm
           form={form}
