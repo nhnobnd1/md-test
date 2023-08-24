@@ -1,9 +1,9 @@
 import { AutoReply, Holidays } from "@moose-desk/repo";
 import dayjs from "dayjs";
-import moment from "moment";
 import { memo, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
+import { MDSearchInput } from "src/components/UI/MDSearchInput";
 import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
 import TableAction from "src/components/UI/Table/TableAction/TableAction";
@@ -164,9 +164,20 @@ const AutoReplyTab = ({
   useEffect(() => {
     setValueListAutoReplys(value?.length ? [...value] : []);
   }, [value]);
+  const handleSearchAutoReply = (valueSearch: string) => {
+    setValueListAutoReplys(() => {
+      const filter = value?.filter((item) =>
+        item.name.toLowerCase().includes(valueSearch.toLowerCase())
+      );
+
+      return filter || [];
+    });
+  };
   return (
     <div>
-      <div className="w-full flex justify-end py-2">
+      <div className="w-full flex justify-end py-2 gap-2">
+        <MDSearchInput onTypeSearch={handleSearchAutoReply} />
+
         <ButtonAdd onClick={handleOpen}>Add Auto-reply</ButtonAdd>
       </div>
       <ModalAutoReply

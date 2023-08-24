@@ -394,7 +394,29 @@ Please check your inbox and click on the link within to use this email for sendi
                       placeholder="e.g. support@company.com"
                     />
                   </Form.Item>
-                  <Form.Item name="name" label="Name" className="w-[300px]">
+                  <Form.Item
+                    rules={[
+                      {
+                        required: true,
+                        message: "Name is required",
+                      },
+                      ({ getFieldValue }) => ({
+                        validator(_, value) {
+                          if (value.length <= 100) {
+                            return Promise.resolve();
+                          }
+                          return Promise.reject(
+                            new Error(
+                              "The name length must not exceed 100 characters"
+                            )
+                          );
+                        },
+                      }),
+                    ]}
+                    name="name"
+                    label="Name"
+                    className="w-[300px]"
+                  >
                     <MDInput
                       onKeyPress={(e) => {
                         e.key === "Enter" && e.preventDefault();

@@ -281,16 +281,6 @@ export const CardSelectEmail = forwardRef(
             <span className="font-bold">
               {signCallback.supportEmail || form.getFieldValue("supportEmail")}
             </span>
-            <span
-              className={`ml-4 link ${
-                !signCallback.name && !form.getFieldValue("isLive")
-                  ? "hidden"
-                  : ""
-              }`}
-              onClick={onChangeEmail}
-            >
-              Change email address
-            </span>
           </div>
           {!signCallback.name && !form.getFieldValue("isLive") ? (
             <div>

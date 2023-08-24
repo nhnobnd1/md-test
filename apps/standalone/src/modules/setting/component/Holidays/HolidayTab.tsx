@@ -1,8 +1,8 @@
 import { AutoReply, Holidays } from "@moose-desk/repo";
-import moment from "moment";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
+import { MDSearchInput } from "src/components/UI/MDSearchInput";
 import Pagination from "src/components/UI/Pagination/Pagination";
 import { Table } from "src/components/UI/Table";
 import TableAction from "src/components/UI/Table/TableAction/TableAction";
@@ -132,6 +132,16 @@ const HolidayTab = ({
     []
   );
 
+  const handleSearchHoliday = (valueSearch: string) => {
+    setValueListHolidays(() => {
+      const filter = value?.filter((item) =>
+        item.name.toLowerCase().includes(valueSearch.toLowerCase())
+      );
+
+      return filter || [];
+    });
+  };
+
   // handle Effect
   useEffect(() => {
     handleUpdateTable();
@@ -142,7 +152,8 @@ const HolidayTab = ({
   }, [value]);
   return (
     <div>
-      <div className="my-2 w-full flex justify-end">
+      <div className="my-2 w-full flex justify-end gap-2">
+        <MDSearchInput onTypeSearch={handleSearchHoliday} />
         <ButtonAdd onClick={handleOpen}>Add holiday</ButtonAdd>
       </div>
       <ModalHoliday
