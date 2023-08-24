@@ -259,7 +259,16 @@ const ChannelEmailUpdate = () => {
   const createMailOther = useCallback((values: ValuesForm) => {
     updateEmailIntegration(payloadMailOther(values));
   }, []);
-  const handleSubmit = () => form.submit();
+  const handleSubmit = async () => {
+    try {
+      const validate = await form.validateFields();
+      if (validate) {
+        form.submit();
+      }
+    } catch (e) {
+      updateFormDirty(true);
+    }
+  };
   const handleBack = () =>
     navigate(generatePath(SettingChannelRoutePaths.ChannelEmail.Index));
   useEffect(() => {

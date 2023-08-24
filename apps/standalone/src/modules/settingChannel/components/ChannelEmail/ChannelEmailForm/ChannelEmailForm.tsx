@@ -288,7 +288,27 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
           </Radio.Group>
         </Form.Item>
         <div className={`${isHidden ? "hidden" : ""}`}>
-          <Form.Item name="name" label="Name">
+          <Form.Item
+            rules={[
+              {
+                required: true,
+                message: "Name is required",
+              },
+
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (value.length <= 100) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(
+                    new Error("The name length must not exceed 100 characters")
+                  );
+                },
+              }),
+            ]}
+            name="name"
+            label="Name"
+          >
             <MDInput />
           </Form.Item>
           <Form.Item

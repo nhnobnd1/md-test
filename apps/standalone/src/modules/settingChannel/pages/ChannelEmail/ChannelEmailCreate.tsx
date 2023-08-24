@@ -231,7 +231,16 @@ const ChannelEmailCreate = () => {
   const createMailOther = useCallback((values: ValuesForm) => {
     createMailAPI(payloadMailOther(values));
   }, []);
-  const handleSubmit = () => form.submit();
+  const handleSubmit = async () => {
+    try {
+      const validate = await form.validateFields();
+      if (validate) {
+        form.submit();
+      }
+    } catch (e) {
+      updateFormDirty(true);
+    }
+  };
   const handleBack = () =>
     navigate(generatePath(SettingChannelRoutePaths.ChannelEmail.Index));
 
@@ -254,6 +263,7 @@ const ChannelEmailCreate = () => {
       form.resetFields();
     }
   }, [isReset]);
+
   return (
     <>
       <Header
