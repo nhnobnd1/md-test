@@ -343,15 +343,14 @@ const TextEditorTicketBeta = ({
             menubar: false,
             toolbar_mode: "scrolling",
             toolbar_location: "bottom",
-            resize: "both",
-            autoresize_bottom_margin: 50,
+
             fontsize_formats:
               "8pt 9pt 10pt 11pt 12pt 14pt 18pt 24pt 30pt 36pt 48pt 60pt 72pt 96pt",
             content_style:
               "body { font-family:Helvetica,Arial,sans-serif; font-size:14px}",
             toolbar:
               "undo redo  bold italic underline align  blocks fontfamily fontsizeinput   link code  past blockquote backcolor forecolor indent  lineheight  strikethrough",
-            plugins: ["link", "code", "autoresize"],
+            plugins: ["link", "code"],
             toolbar_sticky: false,
 
             file_picker_types: "image",
@@ -433,12 +432,20 @@ const TextEditorTicketBeta = ({
           <Tooltip title="">
             <Button
               onClick={() => {
-                const editorElement: any = document.querySelector(
+                const editorElement = document.querySelector(
                   "div.tox.tox-tinymce.tox-tinymce--toolbar-bottom"
                 );
+
                 if (editorElement) {
-                  editorElement.style.height = isZoomIn ? "200px" : "400px";
+                  if (isZoomIn) {
+                    editorElement.classList.add("editor-small");
+                    editorElement.classList.remove("editor-large");
+                  } else {
+                    editorElement.classList.remove("editor-small");
+                    editorElement.classList.add("editor-large");
+                  }
                 }
+
                 setIsZoomIn(!isZoomIn);
               }}
               type="text"

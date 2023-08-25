@@ -1,6 +1,7 @@
 import {
   MediaScreen,
   createdDatetimeFormat,
+  createdDatetimeFormatDefault,
   emailRegex,
   useJob,
   useLoading,
@@ -21,7 +22,6 @@ import {
   statusOptions,
 } from "@moose-desk/repo";
 import { Button, Card, Divider, Tag, Tooltip, Upload } from "antd";
-import moment from "moment";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
@@ -242,14 +242,7 @@ const DetailTicketFormBeta = () => {
         return {
           id: item._id,
           name: item.fromEmail?.name,
-          time: `${moment
-            .unix(item.createdTimestamp)
-            .local()
-            .fromNow()} (${createdDatetimeFormat(
-            item.createdDatetime,
-            timezone,
-            "HH:mm"
-          )})`,
+          time: `(${createdDatetimeFormat(item.createdDatetime, timezone)})`,
           chat: item.description,
           email: item.fromEmail?.email,
           attachments: item.attachments,
@@ -257,7 +250,10 @@ const DetailTicketFormBeta = () => {
           incoming: item?.incoming,
           ccEmails: item?.ccEmails,
           bccEmails: item?.bccEmails,
-          datetime: createdDatetimeFormat(item.createdDatetime, timezone),
+          datetime: createdDatetimeFormatDefault(
+            item.createdDatetime,
+            timezone
+          ),
           right: !!item?.senderConfigId,
         };
       }
@@ -274,13 +270,7 @@ const DetailTicketFormBeta = () => {
       conversationMapping?.unshift({
         id: ticket._id,
         name: ticket?.fromEmail.name,
-        time: `${moment(
-          ticket.createdDatetime
-        ).fromNow()} (${createdDatetimeFormat(
-          ticket.createdDatetime,
-          timezone,
-          "HH:mm"
-        )})`,
+        time: `(${createdDatetimeFormat(ticket.createdDatetime, timezone)})`,
         chat: ticket.description,
         email: ticket.fromEmail.email,
         attachments: ticket.attachments,
@@ -289,7 +279,10 @@ const DetailTicketFormBeta = () => {
         incoming: ticket?.incoming || ticket?.createdViaWidget,
         ccEmails: ticket?.ccEmails,
         bccEmails: ticket?.bccEmails,
-        datetime: createdDatetimeFormat(ticket.createdDatetime, timezone),
+        datetime: createdDatetimeFormatDefault(
+          ticket.createdDatetime,
+          timezone
+        ),
         right: !!ticket?.senderConfigId,
       });
     }
