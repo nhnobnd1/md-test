@@ -12,7 +12,7 @@ import { useSubdomain } from "src/hooks/useSubdomain";
 import { getDashboardSummary } from "src/modules/dashboard/api/api";
 import CollapseOnMobile from "src/modules/dashboard/components/CollapseOnMobile";
 import { getTimeFilterDefault } from "src/modules/report/helper/convert";
-import { onCLS, onFID, onLCP } from "web-vitals";
+import { onLCP } from "web-vitals";
 import styles from "./styles.module.scss";
 
 const RecentActivities = lazy(
@@ -35,8 +35,6 @@ export default function DashboardIndexPage() {
     endTime: "",
   });
 
-  onCLS(console.log);
-  onFID(console.log);
   onLCP(console.log);
   useEffect(() => {
     if (!timezone) return;

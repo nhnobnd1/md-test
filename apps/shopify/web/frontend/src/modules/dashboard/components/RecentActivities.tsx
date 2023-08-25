@@ -1,12 +1,13 @@
 import { Activities } from "@moose-desk/repo/dashboard/Dashboard";
 import { Button, EmptySearchResult, SkeletonBodyText } from "@shopify/polaris";
-import React, { lazy, useState } from "react";
+import React, { useState } from "react";
 import { useQuery } from "react-query";
 import { getActivities } from "src/modules/dashboard/api/api";
+import ActivateItem from "src/modules/dashboard/components/ActivateItem";
 import styles from "./styles.module.scss";
-const ActivateItem = lazy(
-  () => import("src/modules/dashboard/components/ActivateItem")
-);
+// const ActivateItem = lazy(
+//   () => import("src/modules/dashboard/components/ActivateItem")
+// );
 const RecentActivities = React.memo(() => {
   const [page, setPage] = useState({
     page: 1,
