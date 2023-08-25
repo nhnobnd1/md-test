@@ -19,7 +19,10 @@
     "types": ["node", "lodash"],
 
     // Path
-    "baseUrl": "./"
+    "baseUrl": "./",
+    "paths": {
+      "@moose-beta/*": ["src/modules/BetaVersion/*"]
+    }
   },
   "include": ["src", "__test__"]
 }

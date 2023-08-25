@@ -15,10 +15,11 @@ interface ProfileForm {
   initialValues: Agent;
   submit: (value: any) => void;
   updateForm: () => void;
+  beta?: boolean;
 }
 
 const ProfileForm = (
-  { initialValues, submit, updateForm }: ProfileForm,
+  { initialValues, submit, updateForm, beta = false }: ProfileForm,
   ref: ForwardedRef<FormikProps<any>>
 ) => {
   const handleSubmit = useCallback((data: any) => {
@@ -50,7 +51,13 @@ const ProfileForm = (
     >
       <FormLayout>
         <FormItem name="_id" />
-        <Grid columns={{ xs: 1, sm: 2, lg: 2, xl: 2 }}>
+        <Grid
+          columns={
+            beta
+              ? { xs: 1, sm: 1, lg: 1, xl: 1 }
+              : { xs: 1, sm: 2, lg: 2, xl: 2 }
+          }
+        >
           <Grid.Cell>
             <FormItem name="firstName">
               <TextField

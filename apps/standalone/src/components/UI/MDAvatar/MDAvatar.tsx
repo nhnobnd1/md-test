@@ -12,7 +12,7 @@ interface IProps {
   email?: string;
   firstName?: string;
   lastName?: string;
-  source?: string;
+  source?: string | null;
   size?: "small" | "medium" | "large";
   preview?: boolean;
   loading?: boolean;

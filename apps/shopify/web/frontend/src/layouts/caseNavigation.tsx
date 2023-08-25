@@ -126,6 +126,10 @@ export const getCaseNavigation = (badge = ""): NavigationItems[] => {
               label: "Access Manager",
               url: SettingRoutePaths.AccountSecurity.AccessManager.Index,
             },
+            // {
+            //   label: "Setting Account Beta",
+            //   url: `${ProfileRoutePaths.Index}?tab=tickets`,
+            // },
           ],
         },
       ],

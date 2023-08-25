@@ -43,7 +43,7 @@ const Information = ({
   const { isLead, role } = usePermission();
   const [form] = Form.useForm();
   const notification = useNotification();
-  const { sub: userId }: string | any = useUser();
+  const { sub: userId, isOwner }: string | any = useUser();
   const navigate = useNavigate();
   const [avatar, setAvatar] = useState("");
   useEffect(() => {
@@ -55,7 +55,7 @@ const Information = ({
   useEffect(() => {
     if (layout === "agent") {
       if (
-        role === profile?.role ||
+        (role === profile?.role && isOwner === "False") ||
         (isLead && profile?.role === Role.Admin) ||
         userId === profile?._id
       ) {
@@ -130,7 +130,7 @@ const Information = ({
   // };
 
   const handleChange = (files: any) => {
-    if (layout === "customer") return;
+    // if (layout === "customer") return;
     const file = files.file;
     if (file.size > FileSize.MAX) {
       message.error("Size of the image must not exceed 3MB.");
@@ -160,7 +160,9 @@ const Information = ({
   };
   const loading =
     uploading || customerUpdating || agentUpdating || profileUpdating;
-
+  const convertListGroup = profile?.groupIds?.map(
+    (group: { id: string; name: string }) => group?.name
+  );
   return (
     <div className={styles.contentWrap}>
       <div className={styles.blockContent}>
@@ -178,7 +180,7 @@ const Information = ({
             />
 
             <div className={styles.wrapActionAvatar}>
-              {avatar && (
+              {avatar && !isDisabledForm && (
                 <div
                   className={styles.removeAvatar}
                   onClick={handleRemoveAvatar}
@@ -186,20 +188,22 @@ const Information = ({
                   <Icon name="delete" />
                 </div>
               )}
-              <div className={styles.edit}>
-                <Upload
-                  name="avatar"
-                  listType="picture-circle"
-                  className="avatar-uploader"
-                  showUploadList={false}
-                  beforeUpload={() => {
-                    return false;
-                  }}
-                  onChange={handleChange}
-                >
-                  <Icon name="edit" color="#8C8C8C" />
-                </Upload>
-              </div>
+              {!isDisabledForm && (
+                <div className={styles.edit}>
+                  <Upload
+                    name="avatar"
+                    listType="picture-circle"
+                    className="avatar-uploader"
+                    showUploadList={false}
+                    beforeUpload={() => {
+                      return false;
+                    }}
+                    onChange={handleChange}
+                  >
+                    <Icon name="edit" color="#8C8C8C" />
+                  </Upload>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -361,7 +365,19 @@ const Information = ({
           <>
             <div className={styles.moreInfo}>
               <span className={styles.label}>Group:</span>
-              <span className={styles.result}>-</span>
+              <span className={styles.result}>
+                {" "}
+                {convertListGroup?.length > 0
+                  ? convertListGroup?.map(
+                      (groupName: string, index: number) => (
+                        <span key={index} style={{ marginRight: 3 }}>
+                          {groupName}
+                          {index === convertListGroup?.length - 1 ? "" : ","}
+                        </span>
+                      )
+                    )
+                  : "-"}
+              </span>
             </div>
             <div className={styles.moreInfo}>
               <span className={styles.label}>Timezone:</span>
