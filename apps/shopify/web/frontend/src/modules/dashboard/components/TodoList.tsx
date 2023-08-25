@@ -1,4 +1,3 @@
-import { createdDatetimeFormat } from "@moose-desk/core";
 import {
   Button,
   EmptySearchResult,
@@ -6,6 +5,7 @@ import {
   Link,
   Text,
 } from "@shopify/polaris";
+import moment from "moment";
 import React, { useState } from "react";
 import { useQuery } from "react-query";
 import { SkeletonTable } from "src/components/Skelaton/SkeletonTable";
@@ -54,7 +54,8 @@ export const TodoList = React.memo(() => {
         </Link>
       </IndexTable.Cell>
       <IndexTable.Cell>
-        {createdDatetimeFormat(records?.updatedDatetime, timezone)}
+        {/* {createdDatetimeFormat(records?.updatedDatetime, timezone)} */}
+        {moment(records?.updatedDatetime).local().fromNow()}
       </IndexTable.Cell>
     </IndexTable.Row>
   ));
