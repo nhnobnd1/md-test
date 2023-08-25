@@ -83,7 +83,7 @@ export const ChartSupportVolume = ({ data }: ChartSupportVolumeProps) => {
           isAnimationActive={true}
         />
         <Legend
-          align="left"
+          align="center"
           formatter={(value) => (
             <span style={{ color: "#141414" }}>{value}</span>
           )}
