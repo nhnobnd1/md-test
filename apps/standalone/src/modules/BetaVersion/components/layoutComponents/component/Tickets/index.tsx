@@ -1,7 +1,9 @@
+import { getTableHeigh } from "@moose-beta/helper/function";
 import {
   createdDatetimeFormat,
   priorityToTag,
   upperCaseFirst,
+  useSearchParams,
 } from "@moose-desk/core";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import { Ticket } from "@moose-desk/repo";
@@ -29,22 +31,21 @@ const getStatusTag = (status: string) => {
       return "#2db7f5";
   }
 };
-interface IProps {
-  email?: string;
-}
-export const Tickets = React.memo(({ email }: IProps) => {
+export const Tickets = React.memo(() => {
   const { subDomain } = useSubdomain();
+  const { t } = useTranslation();
   const { timezone } = useGlobalData(false, subDomain || "");
+  const [searchParams] = useSearchParams();
+  const agentId = searchParams.get("agent");
   const [filter, setFilter] = useState({
     page: 1,
     limit: 10,
-    customer: "",
+    agentObjectId: "",
   });
   useEffect(() => {
-    if (!email) return;
-    setFilter((pre) => ({ ...pre, customer: email }));
-  }, [email]);
-  const { t } = useTranslation();
+    if (!agentId) return;
+    setFilter((pre) => ({ ...pre, agentObjectId: agentId }));
+  }, [agentId]);
   const {
     data: dataTicket,
     isLoading: loadingFilter,
@@ -56,7 +57,7 @@ export const Tickets = React.memo(({ email }: IProps) => {
     onError: () => {
       message.error(t("messages:error.get_ticket"));
     },
-    enabled: !!filter?.customer,
+    enabled: !!filter?.agentObjectId,
   });
   const columns: any = [
     {
@@ -126,13 +127,23 @@ export const Tickets = React.memo(({ email }: IProps) => {
     },
     []
   );
+  const headerSettingEl = document.getElementById("md_my_profile");
+  const tabHeaderEl = document.querySelector(".ant-tabs-nav-wrap");
+  const screenHeight = window.innerHeight;
   return (
     <div>
       <Table
         dataSource={(dataTicket as any)?.data}
         loading={fetchingFilter}
         columns={columns}
-        scroll={{ x: 1024, y: 400 }}
+        scroll={{
+          x: 1024,
+          y: getTableHeigh(
+            screenHeight,
+            headerSettingEl?.clientHeight,
+            tabHeaderEl?.clientHeight
+          ),
+        }}
       />
       <div className={styles.pagination}>
         {loadingFilter ? (

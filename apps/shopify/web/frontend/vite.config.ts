@@ -62,6 +62,10 @@ export default defineConfig(({ mode }) => ({
       { find: "src", replacement: path.resolve(__dirname, "src") },
       { find: "templates", replacement: path.resolve(__dirname, "templates") },
       { find: /^~antd/, replacement: "antd" },
+      {
+        find: "@moose-beta",
+        replacement: path.resolve(__dirname, "src/modules/BetaVersion"),
+      },
     ],
   },
   server: {

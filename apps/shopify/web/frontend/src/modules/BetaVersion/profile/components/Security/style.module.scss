@@ -1,0 +1,60 @@
+@import "../../../../../styles/variables.scss";
+@import "../../../../../styles/mixin.scss";
+.security {
+    min-width: 600px;
+        // overflow-x: scroll;
+  h5 {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: 500;
+  }
+  .block {
+    padding: 25px 15px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid $border-gray;
+    .title,
+    .group {
+      width: 50%;
+    }
+    .title {
+      color: #68737d;
+      font-weight: 500;
+    }
+    .group {
+      display: flex;
+      align-items: center;
+      button {
+        min-width: 120px;
+      }
+    }
+  }
+}
+.subContent {
+  color: #cccbc9;
+  margin-left: 10px;
+  .passwordHide {
+    letter-spacing: 2px;
+    margin-bottom: 0;
+  }
+}
+.wrapContentModal {
+  h3 {
+    padding: 0 0 20px 0;
+    border-bottom: 1px solid $border-gray;
+    @include mq(md, "max") {
+      padding: 16px;
+    }
+  }
+  .wrapForm {
+    padding-top: 10px;
+    @include mq(md, "max") {
+      padding: 16px;
+    }
+  }
+}
+.recoveryCode {
+    button {
+        padding-left: 0 !important;
+    }
+}

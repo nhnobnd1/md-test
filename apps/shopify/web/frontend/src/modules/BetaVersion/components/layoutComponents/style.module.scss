@@ -1,50 +1,25 @@
 @import "../../../../styles/variables.scss";
 @import "../../../../styles/mixin.scss";
 .container {
-  height: calc(100vh - 48px - 64px);
+  height: calc(100vh - 56px);
   overflow: hidden;
-  min-height: calc(100vh - 48px - 64px);
-  max-height: calc(100vh - 48px - 64px);
+  min-height: calc(100vh - 56px);
+  max-height: calc(100vh - 56px);
+  margin-bottom: -2rem;
   display: flex;
   width: 100%;
-  border: 1px solid $gray-border;
+  border: 1px solid $border-gray;
   position: relative;
   .buttonToggle {
     position: absolute;
     right: 20px;
     top: 70px;
   }
-  :global {
-    .ant-tabs-nav-wrap {
-      padding: 10px 20px 0;
-      .ant-tabs-tab {
-        padding-bottom: 6px;
-      }
-      .ant-tabs-ink-bar {
-        height: 3px;
-      }
-      .ant-tabs-tab-btn {
-        // font-weight: 500;
-        font-size: 15px;
-      }
-    }
-    .ant-tabs-content-holder {
-      padding: 5px 20px;
-      // overflow-x: hidden;
-      overflow: hidden;
-    }
-    .ant-tabs-tabpane {
-      overflow-x: scroll;
-      overflow-y: hidden;
-    }
-    .ant-tabs-nav::before {
-      border-color: $gray-border;
-    }
-  }
+ 
   .wrapInfo {
     width: 360px;
     background-color: $white-color;
-    border-left: 1px solid $gray-border;
+    border-left: 1px solid $border-gray;
     // padding: 8px;
     // border: none;
     overflow-y: scroll;
@@ -56,6 +31,9 @@
       width: 100%;
     }
   }
+}
+.tabContentWrap {
+  padding: 10px 20px;
 }
 .myProfile {
   display: flex;
@@ -70,79 +48,58 @@
     @include mq(md, "max") {
       margin-bottom: 10px;
     }
-    img {
-      width: 40px;
-      height: 40px;
-      object-fit: cover;
-      border-radius: 50%;
-    }
-    :global {
-      .ant-image-mask {
-        border-radius: 50%;
-      }
-      .ant-image-mask-info {
-        font-size: 0;
-      }
-    }
+   
     .name {
       font-size: 20px;
       font-weight: 500;
       margin-left: 10px;
       margin-right: 5px;
     }
-    .edit {
-      cursor: pointer;
-      svg {
-        fill: $gray-border;
-        stroke: $gray-border;
-      }
-    }
+  
   }
 }
 .contentWrap {
   .blockContent {
     padding: 15px 10px;
     background-color: $white-color;
-    border-bottom: 1px solid $gray-border;
+    border-bottom: 1px solid $border-gray;
     &:last-child {
       border: none;
     }
     // border-radius: 5px;
     // margin-bottom: 8px;
   }
-  :global {
-    .ant-image-mask {
-      border-radius: 50%;
-    }
-  }
+  
   .avatar {
     border-radius: 50%;
-
-    img {
-      border-radius: 50%;
-      object-fit: cover;
+    height: 150px;
+    width: 150px;
+    :global {
+      .Polaris-Avatar {
+        height: 100% !important;
+        width: 100% !important;
+      }
     }
   }
 }
 .formInfo {
+  padding-top: 16px;
   :global {
-    .ant-form-item-label {
-      min-width: 80px;
-      width: 80px;
-      flex: unset;
-      label {
-        font-size: 13px;
-      }
+    .Polaris-Grid-Cell>div, .Polaris-FormLayout__Item:nth-child(3)>div, .Polaris-FormLayout__Item:nth-child(4)>div {
+      display: grid;
+      grid-template-columns: 80px calc(100% - 80px);
     }
-  }
-}
-.formItem {
-  :global {
-    .ant-form-item {
-      input {
-        font-size: 13px !important;
-        height: 36px !important;
-      }
+    .Polaris-TextField__Input {
+      font-size: 13px;
+    }
+       
+    .Polaris-Labelled__LabelWrapper {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 10px;
+      font-size: 13px;
+      margin-bottom: 0;
     }
   }
 }
@@ -151,15 +108,7 @@
   justify-content: center;
   margin-bottom: 30px;
   position: relative;
-  :global {
-    .ant-upload-wrapper.ant-upload-picture-circle-wrapper
-      .ant-upload.ant-upload-select {
-      margin: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-  }
+  
   .wrapActionAvatar {
     position: absolute;
     bottom: -15px;
@@ -173,7 +122,7 @@
     .edit,
     .removeAvatar {
       background-color: $white-color;
-      border: 1px solid $gray-border;
+      border: 1px solid $border-gray;
       border-radius: 50%;
       width: 30px;
       height: 30px;
@@ -188,11 +137,28 @@
       margin-right: 8px;
     }
   }
+  .edit {
+    position: relative;
+  }
+  .dropzone {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    top: 0;
+    left: 0;
+    border-radius: 50%;
+    opacity: 0;
+    :global {
+      .Polaris-DropZone--sizeSmall {
+        min-height: 30px;
+      }
+    }
+  }
 }
 .moreInfo {
   display: flex;
-  height: 32px;
-  align-items: center;
+  min-height: 32px;
+  align-items: start;
   .label {
     min-width: 80px;
     width: 80px;

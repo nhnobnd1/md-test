@@ -1,3 +1,4 @@
+import { getTableHeigh } from "@moose-beta/helper/function";
 import { useNavigate, useSearchParams } from "@moose-desk/core";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import { Customer } from "@moose-desk/repo";
@@ -164,6 +165,9 @@ export const ListTicketCustomer = React.memo(() => {
   const handleClickRow = (record: TicketCustomerResponse) => {
     navigate(`/ticket/${record?._id}`);
   };
+  const headerSettingEl = document.getElementById("md_my_profile");
+  const tabHeaderEl = document.querySelector(".ant-tabs-nav-wrap");
+  const screenHeight = window.innerHeight;
   return (
     <div className={styles.wrapTableTicketCustomer}>
       <div className={styles.searchBlock}>
@@ -181,7 +185,15 @@ export const ListTicketCustomer = React.memo(() => {
             columns={columns}
             dataSource={memoDataSource}
             rowKey={(record) => record._id}
-            scroll={{ x: 1024, y: 400 }}
+            scroll={{
+              x: 1024,
+              y:
+                getTableHeigh(
+                  screenHeight,
+                  headerSettingEl?.clientHeight,
+                  tabHeaderEl?.clientHeight
+                ) - 56, // Search input height,
+            }}
             pagination={false}
             loading={isFetchingListTicket}
             onChange={handleChangeTable}

@@ -293,7 +293,7 @@ export const AppLayout = () => {
                 ),
                 link: ProfileRoutePaths.Index,
                 onClick: () => {
-                  navigate("/setting-account?tab=ticket");
+                  navigate("/setting-account?tab=settings");
                   handleCollapseMobile(true);
                 },
               },

@@ -4,7 +4,6 @@ import { Security } from "@moose-beta/profile/components/Security";
 import { useNavigate, useSearchParams } from "@moose-desk/core";
 import { Tabs, TabsProps } from "antd";
 import React from "react";
-import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
 import MDAvatar from "src/components/UI/MDAvatar/MDAvatar";
 import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import styles from "./style.module.scss";
@@ -12,9 +11,11 @@ import styles from "./style.module.scss";
 interface IProps {
   layout: "profile" | "customer" | "agent";
   basicInformation: {
+    _id: string;
     firstName?: string;
     lastName?: string;
     email?: string;
+    avatar?: string | null;
   };
   loading?: boolean;
 }
@@ -23,23 +24,37 @@ const Setting = ({ layout, basicInformation, loading = false }: IProps) => {
   const [searchParams] = useSearchParams();
   const currentTab = searchParams.get("tab");
   const onChange = (key: string) => {
-    if (layout === "profile") navigate(`/setting-account?tab=${key}`);
+    // if (layout === "profile") navigate(`/setting-account?tab=${key}`);
   };
+  // const items: TabsProps["items"] = [
+  //   {
+  //     key: "ticket",
+  //     label: "Tickets",
+  //     children:
+  //       layout === "customer" ? (
+  //         <ListTicketCustomer />
+  //       ) : (
+  //         <Tickets email={basicInformation.email} />
+  //       ),
+  //   },
+  // ];
   const items: TabsProps["items"] = [
     {
-      key: "ticket",
-      label: "Tickets",
+      key: layout === "profile" ? "settings" : "ticket",
+      label: layout === "profile" ? "Security Settings" : "Tickets",
       children:
-        layout === "customer" ? (
-          <ListTicketCustomer />
+        layout === "profile" ? (
+          <Security />
+        ) : layout === "agent" ? (
+          <Tickets />
         ) : (
-          <Tickets email={basicInformation.email} />
+          <ListTicketCustomer />
         ),
     },
   ];
-  const handleRedirectCreateTicket = () => {
-    if (layout === "profile") navigate("/ticket/new");
-  };
+  // const handleRedirectCreateTicket = () => {
+  //   if (layout === "profile") navigate("/ticket/new");
+  // };
   const renderName = () => {
     if (basicInformation.firstName || basicInformation.lastName) {
       return `${basicInformation.firstName} ${basicInformation.lastName}`;
@@ -48,41 +63,43 @@ const Setting = ({ layout, basicInformation, loading = false }: IProps) => {
   };
   return (
     <div>
-      <div className={styles.myProfile}>
+      <div className={styles.myProfile} id="md_my_profile">
         <div className={styles.profile}>
           <MDAvatar
             firstName={basicInformation.firstName}
             lastName={basicInformation.lastName}
             email={basicInformation.email}
             skeleton={loading}
+            source={basicInformation?.avatar}
           />
 
           <div className={styles.name}>
             {loading ? <MDSkeleton lines={1} width={100} /> : renderName()}
           </div>
         </div>
-        {layout === "profile" && (
+        {/* {layout === "profile" && (
           <div className={styles.buttonCreate}>
             <ButtonAdd type="primary" onClick={handleRedirectCreateTicket}>
               New Ticket
             </ButtonAdd>
           </div>
-        )}
+        )} */}
       </div>
       <Tabs
         activeKey={currentTab || "ticket"}
-        items={[
-          ...items,
-          ...(layout === "profile"
-            ? [
-                {
-                  key: "setting",
-                  label: "Security Settings",
-                  children: <Security />,
-                },
-              ]
-            : []),
-        ]}
+        // items={[
+        //   ...items,
+        //   ...(layout === "profile"
+        //     ? [
+        //         {
+        //           key: "setting",
+        //           label: "Security Settings",
+        //           children: <Security />,
+        //         },
+        //       ]
+        //     : []),
+        // ]}
+        items={items}
         onChange={onChange}
       />
     </div>

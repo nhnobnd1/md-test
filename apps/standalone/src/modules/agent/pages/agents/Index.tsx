@@ -23,7 +23,7 @@ import { defaultFilter } from "src/utils/localValue";
 
 const AgentsIndex = () => {
   const message = useMessage();
-  const { sub: userId }: string | any = useUser();
+  const { sub: userId, isOwner }: string | any = useUser();
   const {
     state: popupAgent,
     on: openPopupAgent,
@@ -136,6 +136,7 @@ const AgentsIndex = () => {
   const renderAction = (data: Agent) => {
     if (
       hiddenEditAgent(
+        isOwner,
         userId === data?._id,
         data?.isOwner,
         isAdmin,
@@ -152,6 +153,7 @@ const AgentsIndex = () => {
   const renderBetaAction = (data: Agent) => {
     if (
       hiddenEditAgent(
+        isOwner,
         userId === data?._id,
         data?.isOwner,
         isAdmin,
