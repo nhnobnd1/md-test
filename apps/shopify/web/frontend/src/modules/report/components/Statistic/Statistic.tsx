@@ -9,7 +9,7 @@ export interface StatisticProps {
   data: SummaryReportRes | any;
   loading: boolean;
 }
-export const Statistic = ({ data, loading }: StatisticProps) => {
+const Statistic = ({ data, loading }: StatisticProps) => {
   const LIST_SUMMARY = [
     { title: "Tickets Created", value: data?.ticketCreatedCount || 0 },
     { title: "Tickets Replied", value: data?.ticketRepliedCount || 0 },
