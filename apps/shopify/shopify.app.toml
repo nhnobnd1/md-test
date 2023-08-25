@@ -2,7 +2,7 @@
 
 name = "MooseDesk Local"
 client_id = "6beffae9e7e2d336d04c001812119383"
-application_url = "https://adventures-disc-netscape-contacts.trycloudflare.com"
+application_url = "https://global-diet-sponsor-nsw.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ use_legacy_install_flow = true
 
 [auth]
 redirect_urls = [
-  "https://adventures-disc-netscape-contacts.trycloudflare.com/auth/callback",
-  "https://adventures-disc-netscape-contacts.trycloudflare.com/auth/shopify/callback",
-  "https://adventures-disc-netscape-contacts.trycloudflare.com/api/auth/callback"
+  "https://global-diet-sponsor-nsw.trycloudflare.com/auth/callback",
+  "https://global-diet-sponsor-nsw.trycloudflare.com/auth/shopify/callback",
+  "https://global-diet-sponsor-nsw.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

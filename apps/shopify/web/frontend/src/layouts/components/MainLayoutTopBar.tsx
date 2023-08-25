@@ -6,8 +6,8 @@ import {
   MinimizeMinor,
   MobileHamburgerMajor,
 } from "@shopify/polaris-icons";
-import { useEffect, useState } from "react";
-import Images from "src/assets/images";
+import React, { useEffect, useState } from "react";
+import logo from "src/assets/images/logo/logoBase.svg";
 
 import "src/assets/styles/layouts/components/main-layout-topbar.scss";
 import useScreenType from "src/hooks/useScreenType";
@@ -74,11 +74,13 @@ const MainLayoutTopBar = ({
               />
             </div>
             <img
-              src={Images.Logo.LogoMooseDesk}
+              src={logo}
               alt="logo"
               style={{ cursor: "pointer" }}
               onClick={() => navigate("/dashboard")}
-              width={isMobile ? 150 : 175}
+              width={isMobile ? 135 : 150}
+              height={35}
+              loading="lazy"
             />
           </div>
           <div className="mr-10 flex items-center w-full gap-2">
@@ -123,4 +125,4 @@ const MainLayoutTopBar = ({
   );
 };
 
-export default MainLayoutTopBar;
+export default React.memo(MainLayoutTopBar);

@@ -3,7 +3,7 @@ import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { LegacyCard, SkeletonBodyText, Text } from "@shopify/polaris";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { lazy, useCallback, useEffect, useMemo, useState } from "react";
 import { useQueries } from "react-query";
 import MDDatePicker from "src/components/DatePicker/MDDatePicker";
 import useGlobalData from "src/hooks/useGlobalData";
@@ -18,9 +18,11 @@ import {
 import ChartFirstResponseTime from "src/modules/report/components/ChartFirstResponseTime/ChartFirstResponseTime";
 import ChartResolutionTime from "src/modules/report/components/ChartResolutionTime/ChartResolutionTime";
 import ChartSupportVolume from "src/modules/report/components/ChartSupportVolume/ChartSupportVolume";
-import Statistic from "src/modules/report/components/Statistic/Statistic";
 import { formatDefaultTimeRangePicker } from "src/modules/report/helper/format";
 import styles from "./styles.module.scss";
+const Statistic = lazy(
+  () => import("src/modules/report/components/Statistic/Statistic")
+);
 dayjs.extend(timezone);
 interface ReportIndexPageProps {}
 enum ChartReportData {

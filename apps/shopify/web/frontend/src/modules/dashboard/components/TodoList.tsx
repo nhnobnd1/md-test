@@ -5,7 +5,8 @@ import {
   Link,
   Text,
 } from "@shopify/polaris";
-import moment from "moment";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import React, { useState } from "react";
 import { useQuery } from "react-query";
 import { SkeletonTable } from "src/components/Skelaton/SkeletonTable";
@@ -13,11 +14,12 @@ import useGlobalData from "src/hooks/useGlobalData";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { getTodoList } from "src/modules/dashboard/api/api";
 import styles from "./styles.module.scss";
+dayjs.extend(relativeTime);
 const resourceName = {
   singular: "todoListTable",
   plural: "todoListTable",
 };
-export const TodoList = React.memo(() => {
+const TodoList = React.memo(() => {
   const { subDomain } = useSubdomain();
   const { timezone } = useGlobalData(false, subDomain || "");
   const [page, setPage] = useState({
@@ -54,8 +56,7 @@ export const TodoList = React.memo(() => {
         </Link>
       </IndexTable.Cell>
       <IndexTable.Cell>
-        {/* {createdDatetimeFormat(records?.updatedDatetime, timezone)} */}
-        {moment(records?.updatedDatetime).local().fromNow()}
+        {dayjs(records?.updatedDatetime).local().fromNow()}
       </IndexTable.Cell>
     </IndexTable.Row>
   ));
@@ -100,3 +101,4 @@ export const TodoList = React.memo(() => {
     </div>
   );
 });
+export default TodoList;

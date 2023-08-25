@@ -1,12 +1,17 @@
 import { Activities } from "@moose-desk/repo/dashboard/Dashboard";
 import { Link } from "@shopify/polaris";
-import moment from "moment";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import React from "react";
 import { ACTIVATE_TYPE } from "src/modules/dashboard/helper";
 import styles from "./styles.module.scss";
+
+dayjs.extend(relativeTime);
+
 interface IProps {
   data: Activities;
 }
-export default function ActivateItem({ data }: IProps) {
+const ActivateItem = ({ data }: IProps) => {
   const renderName = (isAgent: boolean) => {
     return isAgent ? (
       <span className={styles.name}>{data.performer.name}</span>
@@ -98,8 +103,9 @@ export default function ActivateItem({ data }: IProps) {
     <div className={styles.activateWrap}>
       {renderTypeTextActivate()}
       <div className={styles.timeAgo}>
-        {moment.unix(data.performedTimestamp).local().fromNow()}
+        {dayjs.unix(data.performedTimestamp).local().fromNow()}
       </div>
     </div>
   );
-}
+};
+export default React.memo(ActivateItem);

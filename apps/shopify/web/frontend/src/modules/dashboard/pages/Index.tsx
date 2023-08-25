@@ -4,18 +4,26 @@ import {
   GetSummaryResponse,
 } from "@moose-desk/repo/dashboard/Dashboard";
 import { LegacyCard, Text } from "@shopify/polaris";
-import { useEffect, useState } from "react";
+import { lazy, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import useGlobalData from "src/hooks/useGlobalData";
 import useScreenType from "src/hooks/useScreenType";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import { getDashboardSummary } from "src/modules/dashboard/api/api";
 import CollapseOnMobile from "src/modules/dashboard/components/CollapseOnMobile";
-import { RecentActivities } from "src/modules/dashboard/components/RecentActivities";
-import { TodoList } from "src/modules/dashboard/components/TodoList";
-import Statistic from "src/modules/report/components/Statistic/Statistic";
 import { getTimeFilterDefault } from "src/modules/report/helper/convert";
+import { onCLS, onFID, onLCP } from "web-vitals";
 import styles from "./styles.module.scss";
+
+const RecentActivities = lazy(
+  () => import("src/modules/dashboard/components/RecentActivities")
+);
+const TodoList = lazy(
+  () => import("src/modules/dashboard/components/TodoList")
+);
+const Statistic = lazy(
+  () => import("src/modules/report/components/Statistic/Statistic")
+);
 export default function DashboardIndexPage() {
   const { subDomain } = useSubdomain();
   const { timezone } = useGlobalData(false, subDomain || "");
@@ -26,6 +34,10 @@ export default function DashboardIndexPage() {
     startTime: "",
     endTime: "",
   });
+
+  onCLS(console.log);
+  onFID(console.log);
+  onLCP(console.log);
   useEffect(() => {
     if (!timezone) return;
     setFilter({

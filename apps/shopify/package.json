@@ -23,7 +23,8 @@
 		"@shopify/shopify-api": "^6.2.0",
 		"@shopify/theme": "^3.48.1",
 		"dotenv": "^16.0.3",
-		"node-fetch": "^3.3.0"
+		"node-fetch": "^3.3.0",
+		"web-vitals": "^3.4.0"
 	},
 	"devDependencies": {
 		"@iconify-json/ic": "^1.1.13"
