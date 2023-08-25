@@ -1,8 +1,9 @@
-import { createdDatetimeFormat, Link } from "@moose-desk/core";
+import { Link } from "@moose-desk/core";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
 import { Ticket } from "@moose-desk/repo";
 import { Button, Empty } from "antd";
 import classNames from "classnames";
+import moment from "moment";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
@@ -64,7 +65,10 @@ export const TodoList = () => {
       dataIndex: "updatedDatetime",
       key: "updatedDatetime",
       render: (_: string, record: any) => (
-        <div>{createdDatetimeFormat(record.updatedDatetime, timezone)}</div>
+        <div>
+          {/* {createdDatetimeFormat(record.updatedDatetime, timezone)} */}
+          {moment(record.updatedDatetime).local().fromNow()}
+        </div>
       ),
       width: "35%",
     },
