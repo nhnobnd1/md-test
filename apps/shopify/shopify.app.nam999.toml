@@ -2,7 +2,7 @@
 
 name = "nam999"
 client_id = "1daf15909ca639111b7358c7c37e6660"
-application_url = "https://entitled-issues-incentives-mounting.trycloudflare.com"
+application_url = "https://image-witch-sox-indexed.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ use_legacy_install_flow = true
 
 [auth]
 redirect_urls = [
-  "https://entitled-issues-incentives-mounting.trycloudflare.com/auth/callback",
-  "https://entitled-issues-incentives-mounting.trycloudflare.com/auth/shopify/callback",
-  "https://entitled-issues-incentives-mounting.trycloudflare.com/api/auth/callback"
+  "https://image-witch-sox-indexed.trycloudflare.com/auth/callback",
+  "https://image-witch-sox-indexed.trycloudflare.com/auth/shopify/callback",
+  "https://image-witch-sox-indexed.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

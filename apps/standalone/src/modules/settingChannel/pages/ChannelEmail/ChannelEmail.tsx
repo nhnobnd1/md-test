@@ -11,13 +11,12 @@ import {
   EmailIntegration,
   EmailIntegrationRepository,
   GetListEmailRequest,
-  MailBoxType,
 } from "@moose-desk/repo";
 import { Button, Space, TableProps, Tooltip } from "antd";
 import { SorterResult } from "antd/es/table/interface";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { catchError, forkJoin, map, of } from "rxjs";
+import { catchError, map, of } from "rxjs";
 import { HeaderList } from "src/components/HeaderList";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
 import { Header } from "src/components/UI/Header";
@@ -38,7 +37,6 @@ const ChannelEmail = () => {
   const notification = useNotification();
   const { t } = useTranslation();
   const [emails, setEmails] = useState<EmailIntegration[]>([]);
-  const [listEmailOtherFail, setListEmailOtherFail] = useState<string[]>([]);
   const changeUpdateMooseDeskEmail = useMailSetting(
     (state) => state.changeUpdateMooseDeskEmail
   );
@@ -96,35 +94,6 @@ const ChannelEmail = () => {
         })
       );
   });
-  const { run: sendVerifyEmail } = useJob((payload: string) => {
-    return EmailIntegrationRepository()
-      .checkVerifyEmailSes(payload)
-      .pipe(
-        map(({ data }) => {
-          if (data.statusCode === 200) {
-            if (data.data.isVerified !== true) {
-              setListEmailOtherFail((prev) => [...prev, payload]);
-            }
-          }
-        }),
-        catchError((err) => {
-          message.error(t("messages:error.something_went_wrong"));
-
-          return of(err);
-        })
-      );
-  });
-  useEffect(() => {
-    const findOtherEmail = emails.filter(
-      (item) => item.mailboxType === MailBoxType.OTHER
-    );
-    if (findOtherEmail.length > 0) {
-      const listRequest = findOtherEmail.map((item) =>
-        sendVerifyEmail(item.supportEmail)
-      );
-      forkJoin(listRequest).pipe(map(() => {}));
-    }
-  }, [emails]);
 
   const { run: getListEmailApi, processing: loadingList } = useJob(
     (payload: any) => {
@@ -311,12 +280,10 @@ const ChannelEmail = () => {
                   <span
                     style={{ color: "red" }}
                     className={
-                      listEmailOtherFail.includes(record.supportEmail)
-                        ? "block"
-                        : "hidden"
+                      record?.senderVerified === false ? "block" : "hidden"
                     }
                   >
-                    The sender is not verified.
+                    The sender is not verified
                   </span>
                 </div>
               )}

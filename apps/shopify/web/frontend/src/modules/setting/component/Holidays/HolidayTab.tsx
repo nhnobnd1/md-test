@@ -13,6 +13,7 @@ import { ButtonDelete } from "src/components/Button/ButtonDelete";
 import { ButtonEdit } from "src/components/Button/ButtonEdit";
 import { ModalDelete } from "src/components/Modal/ModalDelete";
 import { Pagination } from "src/components/Pagination";
+import { Search } from "src/components/Search/Search";
 import ModalHoliday from "src/modules/setting/component/Holidays/ModalHoliday";
 
 interface HolidayTabProps {
@@ -173,6 +174,15 @@ const HolidayTab = ({
   useEffect(() => {
     setValueListHolidays(value?.length ? [...value] : []);
   }, [value]);
+  const handleSearchHoliday = (valueSearch: string) => {
+    setValueListHolidays(() => {
+      const filter = value?.filter((item) =>
+        item.name.toLowerCase().includes(valueSearch.toLowerCase())
+      );
+
+      return filter || [];
+    });
+  };
   return (
     <div className="p-4">
       <ModalHoliday
@@ -183,7 +193,10 @@ const HolidayTab = ({
         onChange={handleUpdateValue}
         dataAutoReply={dataAutoReply}
       />
-      <div className="w-full flex justify-end my-2">
+      <div className="w-full flex justify-end my-2 gap-2">
+        <div className="flex-1">
+          <Search onTypeSearch={handleSearchHoliday} />
+        </div>
         <Button onClick={handleOpen} primary>
           + Add holiday
         </Button>

@@ -16,6 +16,7 @@ import { ButtonDelete } from "src/components/Button/ButtonDelete";
 import { ButtonEdit } from "src/components/Button/ButtonEdit";
 import { ModalDelete } from "src/components/Modal/ModalDelete";
 import { Pagination } from "src/components/Pagination";
+import { Search } from "src/components/Search/Search";
 import ModalAutoReply from "src/modules/setting/component/AutoReply/ModalAutoReply";
 
 interface AutoReplyTabProps {
@@ -206,7 +207,15 @@ const AutoReplyTab = ({
   useEffect(() => {
     setValueListAutoReplys(value?.length ? [...value] : []);
   }, [value]);
+  const handleSearchAutoReply = (valueSearch: string) => {
+    setValueListAutoReplys(() => {
+      const filter = value?.filter((item) =>
+        item.name.toLowerCase().includes(valueSearch.toLowerCase())
+      );
 
+      return filter || [];
+    });
+  };
   return (
     <div className="p-4">
       <ModalAutoReply
@@ -216,7 +225,10 @@ const AutoReplyTab = ({
         dataForm={dataForm}
         onChange={handleUpdateValue}
       />
-      <div className="w-full flex justify-end my-2">
+      <div className="w-full flex justify-end my-2 gap-2">
+        <div className="flex-1">
+          <Search onTypeSearch={handleSearchAutoReply} />
+        </div>
         <Button onClick={handleOpen} primary>
           + Add Auto-reply
         </Button>
