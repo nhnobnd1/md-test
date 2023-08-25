@@ -13,6 +13,8 @@ import { postImageApi } from "src/components/UI/Editor/api";
 import useMessage from "src/hooks/useMessage";
 import ImageZoom from "src/modules/ticket/components/DetailTicketForm/ImageZoom";
 import ImageIcon from "~icons/material-symbols/photo-camera-back-outline";
+import ZoomInIcon from "~icons/material-symbols/zoom-in-map";
+import ZoomOutIcon from "~icons/material-symbols/zoom-out-map";
 import AttachIcon from "~icons/solar/paperclip-2-bold";
 import IconText from "~icons/solar/text-bold";
 import "./editor.scss";
@@ -49,6 +51,7 @@ const TextEditorTicketBeta = ({
   }, []);
   const { state: modal, on: openModal, off: closeModal } = useToggle();
   const { state: showToolbar, toggle } = useToggle(false);
+  const [isZoomIn, setIsZoomIn] = useState(false);
 
   const message = useMessage();
 
@@ -278,6 +281,7 @@ const TextEditorTicketBeta = ({
   }
   
   `;
+
   return (
     <div>
       <style>{showToolbar ? "" : css}</style>
@@ -335,17 +339,19 @@ const TextEditorTicketBeta = ({
             placeholder: "Enter your message here...",
             height: 200,
             branding: false,
+
             menubar: false,
             toolbar_mode: "scrolling",
             toolbar_location: "bottom",
-
+            resize: "both",
+            autoresize_bottom_margin: 50,
             fontsize_formats:
               "8pt 9pt 10pt 11pt 12pt 14pt 18pt 24pt 30pt 36pt 48pt 60pt 72pt 96pt",
             content_style:
               "body { font-family:Helvetica,Arial,sans-serif; font-size:14px}",
             toolbar:
               "undo redo  bold italic underline align  blocks fontfamily fontsizeinput   link code  past blockquote backcolor forecolor indent  lineheight  strikethrough",
-            plugins: ["link", "code"],
+            plugins: ["link", "code", "autoresize"],
             toolbar_sticky: false,
 
             file_picker_types: "image",
@@ -398,6 +404,7 @@ const TextEditorTicketBeta = ({
             ...props.init,
           }}
         ></Editor>
+
         <div className="md-list-file-attach">{listFileAttach}</div>
         {isShowFile ? ListFileRow : ""}
         <div className="md-custom-border">
@@ -421,6 +428,27 @@ const TextEditorTicketBeta = ({
               onClick={imageHandler}
               type="text"
               icon={<ImageIcon fontSize={16} />}
+            ></Button>
+          </Tooltip>
+          <Tooltip title="">
+            <Button
+              onClick={() => {
+                const editorElement: any = document.querySelector(
+                  "div.tox.tox-tinymce.tox-tinymce--toolbar-bottom"
+                );
+                if (editorElement) {
+                  editorElement.style.height = isZoomIn ? "200px" : "400px";
+                }
+                setIsZoomIn(!isZoomIn);
+              }}
+              type="text"
+              icon={
+                isZoomIn ? (
+                  <ZoomInIcon fontSize={16} />
+                ) : (
+                  <ZoomOutIcon fontSize={16} />
+                )
+              }
             ></Button>
           </Tooltip>
         </div>
