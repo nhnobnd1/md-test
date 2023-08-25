@@ -100,7 +100,7 @@ const ChartAgentsTicket = ({
           />
           <YAxis axisLine={false} tickLine={false} tick={<CustomYAxisTick />} />
           <Tooltip content={<CustomTooltip />} />
-          <Legend />
+          <Legend align="center" />
           {_renderListBarChart()}
         </BarChart>
       )}

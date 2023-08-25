@@ -108,7 +108,7 @@ export const ChartSupportVolume = ({ data }: ChartSupportVolumeProps) => {
           barSize={32}
         />
         <Legend
-          align="left"
+          align="center"
           formatter={(value) => (
             <span style={{ color: "#141414" }}>{value}</span>
           )}
