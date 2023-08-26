@@ -12,7 +12,7 @@
 
 
 <!-- <link rel="stylesheet" href="https://unpkg.com/@shopify/polaris@11.11.0/build/esm/styles.css" /> -->
-    <script type="module">
+    <script defer type="module">
       if (!import.meta.env || !import.meta.env.PROD) {
         // Because the base HTML is rendered in the server side, we need to manually embed the code to enable HMR in our
         // code, so that the vite server is properly enabled to run HMR
@@ -22,7 +22,7 @@
         document.getElementsByTagName("head")[0].append(script);
       }
     </script>
-    <script type="text/javascript">
+    <script defer type="text/javascript">
       (function (c, l, a, r, i, t, y) {
         c[a] =
           c[a] ||
@@ -36,10 +36,9 @@
         y.parentNode.insertBefore(t, y);
       })(window, document, "clarity", "script", "h9sf2lgnp6");
     </script>
-    <!-- <script src="./dev_embed.js"></script> -->
   </head>
   <body>
     <div id="app"><!--index.jsx injects App.jsx here--></div>
-    <script type="module" src="/src/index.tsx"></script>
+    <script async type="module" src="/src/index.tsx"></script>
   </body>
 </html>
