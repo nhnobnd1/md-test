@@ -17,7 +17,7 @@ interface RichTextProps extends Omit<IAllProps, "onChange" | "value"> {
   files?: any;
 }
 
-export const RichText = ({
+const RichText = ({
   value,
   onChange,
   error,

@@ -4,7 +4,7 @@ import { FormikProps, FormikValues } from "formik";
 import { memo, useCallback, useRef } from "react";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
-import { RichText } from "src/components/RichText";
+import RichText from "src/components/RichText/RichText";
 import { object, string } from "yup";
 
 interface ModalAutoReplyProps extends ModalProps {

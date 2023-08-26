@@ -13,10 +13,9 @@ import {
 import { Loading } from "@shopify/polaris";
 import { lazy, Suspense } from "react";
 import ReactDOM from "react-dom";
+import { ErrorBoundary } from "react-error-boundary";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Provider as ReduxProvider } from "react-redux";
-// import ErrorBoundary from "src/ErrorBoundary";
-import { ErrorBoundary } from "react-error-boundary";
 import { AppBridgeProvider, PolarisProvider } from "src/components";
 import env from "src/core/env";
 import ModuleLoader from "src/core/utilities/ModuleLoader";

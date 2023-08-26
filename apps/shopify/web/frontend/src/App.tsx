@@ -10,9 +10,8 @@ import { LoginResponse } from "@moose-desk/repo";
 import { NavigationLink } from "@shopify/app-bridge-react/components/NavigationMenu/NavigationMenu";
 import { Loading } from "@shopify/polaris";
 import CryptoJS from "crypto-js";
-import { useEffect, useMemo } from "react";
+import { lazy, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { RichText } from "src/components/RichText";
 import env from "src/core/env";
 import { useApi, useShopDomain } from "src/hooks";
 import useAuth from "src/hooks/useAuth";
@@ -21,6 +20,7 @@ import { useStore } from "src/providers/StoreProviders";
 import { AppRoutes } from "src/routes";
 import useFullScreen from "src/store/useFullScreen";
 import useUser from "src/store/useUser";
+const RichText = lazy(() => import("src/components/RichText/RichText"));
 export default function App() {
   const { routes } = useRoutes();
   const app = useAppBridge();
