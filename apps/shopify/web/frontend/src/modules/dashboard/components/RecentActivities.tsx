@@ -5,13 +5,10 @@ import { useQuery } from "react-query";
 import { getActivities } from "src/modules/dashboard/api/api";
 import ActivateItem from "src/modules/dashboard/components/ActivateItem";
 import styles from "./styles.module.scss";
-// const ActivateItem = lazy(
-//   () => import("src/modules/dashboard/components/ActivateItem")
-// );
-const RecentActivities = React.memo(() => {
+export const RecentActivities = React.memo(() => {
   const [page, setPage] = useState({
     page: 1,
-    limit: 15,
+    limit: 10,
     sortBy: "performedDatetime",
     sortOrder: -1,
   });
@@ -58,4 +55,3 @@ const RecentActivities = React.memo(() => {
     </div>
   );
 });
-export default RecentActivities;

@@ -3,7 +3,7 @@ import { Link } from "@shopify/polaris";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import React from "react";
-import { ACTIVATE_TYPE } from "src/modules/dashboard/helper";
+import { renderTextContent } from "src/modules/dashboard/helper";
 import styles from "./styles.module.scss";
 
 dayjs.extend(relativeTime);
@@ -11,97 +11,37 @@ dayjs.extend(relativeTime);
 interface IProps {
   data: Activities;
 }
+const renderName = (isAgent: boolean, id: string, name: string) => {
+  return isAgent ? (
+    <span className={styles.name}>{name}</span>
+  ) : (
+    <Link
+      url={id ? `/customers?id=${id}` : "#"} // for checking undefined id when re-build backend
+      monochrome
+      removeUnderline
+    >
+      <span className={styles.name}>{name}</span>
+    </Link>
+  );
+};
 const ActivateItem = ({ data }: IProps) => {
-  const renderName = (isAgent: boolean) => {
-    return isAgent ? (
-      <span className={styles.name}>{data.performer.name}</span>
-    ) : (
-      <Link
-        url={data.performer.id ? `/customers?id=${data.performer.id}` : "#"} // for checking undefined id when re-build backend
-        monochrome
-        removeUnderline
-      >
-        <span className={styles.name}>{data.performer.name}</span>
-      </Link>
-    );
-  };
-  const renderTypeTextActivate = () => {
-    switch (data.actions.type) {
-      case ACTIVATE_TYPE.NEW_TICKET_BY_AGENT:
-        return (
-          <div>
-            {renderName(data.performer.isAgent)}{" "}
-            <span className={styles.content}>
-              created a ticket{" "}
-              <span className={styles.ticketTitle}>
-                <Link
-                  removeUnderline
-                  url={`/ticket/${data.actions.ticketObjectId}`}
-                >
-                  {data.actions.ticketSubject}
-                </Link>
-              </span>{" "}
-            </span>
-          </div>
-        );
-      case ACTIVATE_TYPE.NEW_TICKET_BY_CUSTOMER:
-        return (
-          <div>
-            {renderName(data.performer.isAgent)}{" "}
-            <span className={styles.content}>
-              raised a new ticket{" "}
-              <span className={styles.ticketTitle}>
-                <Link
-                  removeUnderline
-                  url={`/ticket/${data.actions.ticketObjectId}`}
-                >
-                  {data.actions.ticketSubject}
-                </Link>
-              </span>{" "}
-            </span>
-          </div>
-        );
-      case ACTIVATE_TYPE.NEW_REPLY_BY_AGENT:
-        return (
-          <div>
-            {renderName(data.performer.isAgent)}{" "}
-            <span className={styles.content}>
-              has sent a response to the ticket{" "}
-              <span className={styles.ticketTitle}>
-                <Link
-                  removeUnderline
-                  url={`/ticket/${data.actions.ticketObjectId}`}
-                >
-                  {data.actions.ticketSubject}
-                </Link>
-              </span>{" "}
-            </span>
-          </div>
-        );
-      case ACTIVATE_TYPE.NEW_REPLY_BY_CUSTOMER:
-        return (
-          <div>
-            {renderName(data.performer.isAgent)}{" "}
-            <span className={styles.content}>
-              has sent an email response to the ticket{" "}
-              <span className={styles.ticketTitle}>
-                <Link
-                  removeUnderline
-                  url={`/ticket/${data.actions.ticketObjectId}`}
-                >
-                  {data.actions.ticketSubject}
-                </Link>
-              </span>{" "}
-            </span>
-          </div>
-        );
-      default:
-        return null;
-    }
-  };
+  const { performer } = data;
   return (
     <div className={styles.activateWrap}>
-      {renderTypeTextActivate()}
+      <div>
+        {renderName(performer.isAgent, performer.id, performer.name)}{" "}
+        <span className={styles.content}>
+          {renderTextContent(data.actions.type)}
+          <span className={styles.ticketTitle}>
+            <Link
+              removeUnderline
+              url={`/ticket/${data.actions.ticketObjectId}`}
+            >
+              {data.actions.ticketSubject}
+            </Link>
+          </span>{" "}
+        </span>
+      </div>
       <div className={styles.timeAgo}>
         {dayjs.unix(data.performedTimestamp).local().fromNow()}
       </div>

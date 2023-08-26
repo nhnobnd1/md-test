@@ -11,15 +11,24 @@ import {
 } from "@shopify/polaris";
 import { Editor, IAllProps } from "@tinymce/tinymce-react";
 import { filesize } from "filesize";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useDropzone } from "react-dropzone";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
-import { QuillEditor } from "src/components/QuillEditor";
+
 import { verifyShopifyAppIos } from "src/utils/localValue";
 import DeleteIcon from "~icons/ic/baseline-delete-outline";
 import UploadIcon from "~icons/ic/outline-cloud-upload";
 import "./editor.scss";
+const QuillEditor = React.lazy(
+  () => import("src/components/QuillEditor/QuillEditor")
+);
 interface RichTextProps extends Omit<IAllProps, "onChange" | "value"> {
   value?: any;
   onChange?: (value: any) => void;

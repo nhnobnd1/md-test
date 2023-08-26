@@ -15,7 +15,7 @@ interface QuillEditorProps {
   setLoading: any;
 }
 
-export const QuillEditor: FC<QuillEditorProps> = ({
+const QuillEditor: FC<QuillEditorProps> = ({
   onChange,
   placeholder,
   value,
@@ -98,3 +98,4 @@ export const QuillEditor: FC<QuillEditorProps> = ({
     />
   );
 };
+export default QuillEditor;

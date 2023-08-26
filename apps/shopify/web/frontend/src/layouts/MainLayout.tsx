@@ -1,22 +1,28 @@
 import { Outlet, useLocation, useRoutes } from "@moose-desk/core";
 import { Frame, Navigation } from "@shopify/polaris";
 import { TabDescriptor } from "@shopify/polaris/build/ts/latest/src/components/Tabs/types";
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import {
+  lazy,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useQuery } from "react-query";
 import "src/assets/styles/layouts/main-layout.scss";
-import Rating from "src/components/Rating/Rating";
 import useToggleGlobal from "src/hooks/useToggleGlobal";
 import {
+  getCaseNavigation,
   NavigationItems,
   SubNavigation,
-  getCaseNavigation,
 } from "src/layouts/caseNavigation";
 import MainLayoutTopBar from "src/layouts/components/MainLayoutTopBar";
 import { getStatisticTicket } from "src/modules/ticket/helper/api";
 import useFullScreen from "src/store/useFullScreen";
 import useRating from "src/store/useRating";
 import useUser from "src/store/useUser";
-
+const Rating = lazy(() => import("src/components/Rating/Rating"));
 interface MainLayoutProps {
   children?: ReactNode;
 }

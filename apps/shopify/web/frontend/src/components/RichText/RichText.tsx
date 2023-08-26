@@ -1,9 +1,11 @@
 import { InlineError, Text, TextProps } from "@shopify/polaris";
 import { Editor, IAllProps } from "@tinymce/tinymce-react";
-import { useCallback, useRef } from "react";
-import { QuillEditor } from "src/components/QuillEditor";
-import "./RichText.scss";
+import React, { useCallback, useRef } from "react";
 import { verifyShopifyAppIos } from "src/utils/localValue";
+import "./RichText.scss";
+const QuillEditor = React.lazy(
+  () => import("src/components/QuillEditor/QuillEditor")
+);
 interface RichTextProps extends Omit<IAllProps, "onChange" | "value"> {
   value?: any;
   onChange?: (value: any) => void;
@@ -43,7 +45,11 @@ export const RichText = ({
         </div>
       )}
       {verifyShopifyAppIos() ? (
-        <QuillEditor value={value} onChange={handleChange} />
+        <QuillEditor
+          value={value}
+          onChange={handleChange}
+          setLoading={() => {}}
+        />
       ) : (
         <Editor
           apiKey="t4mxpsmop8giuev4szkrl7etgn43rtilju95m2tnst9m9uod"
