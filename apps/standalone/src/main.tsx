@@ -11,6 +11,7 @@ import ReactDOM from "react-dom";
 import ReactGA from "react-ga4";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { createWebStoragePersistor } from "react-query/createWebStoragePersistor-experimental";
+import { ReactQueryDevtools } from "react-query/devtools";
 import { Loading } from "src/components/Loading";
 import env from "src/core/env";
 import ModuleLoader from "src/core/utilities/ModuleLoader";
@@ -18,6 +19,7 @@ import AppConfigProviders from "src/providers/AppConfigProviders";
 import InitApp from "src/providers/InitAppProviders";
 import { StoreProviders } from "src/providers/StoreProviders";
 import { getBaseToken, getRefreshToken } from "src/utils/localValue";
+
 import("src/styles/tailwind.scss").then(() =>
   import("antd/dist/reset.css").then(() => import("src/styles/index.scss"))
 );
@@ -104,6 +106,7 @@ ReactDOM.render(
           </ApiLoadingHandlerProvider>
         </LoadingProvider>
       </Suspense>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   </BrowserRouter>,
   document.getElementById("root")

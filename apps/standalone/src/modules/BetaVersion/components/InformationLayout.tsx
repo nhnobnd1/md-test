@@ -1,6 +1,11 @@
 import Information from "@moose-beta/components/layoutComponents/Information";
 import Setting from "@moose-beta/components/layoutComponents/Setting";
-import { TokenManager, useSearchParams, useToggle } from "@moose-desk/core";
+import {
+  TokenManager,
+  useSearchParams,
+  useToggle,
+  useUnMount,
+} from "@moose-desk/core";
 import { Agent, Customer } from "@moose-desk/repo";
 import * as jose from "jose";
 import { useCallback, useMemo, useState } from "react";
@@ -8,6 +13,7 @@ import { useQuery } from "react-query";
 import { MDButton } from "src/components/UI/Button/MDButton";
 import Icon from "src/components/UI/Icon";
 import { MDDrawer } from "src/components/UI/MDDrawer";
+import useUpdated from "src/hooks/useUpdated";
 import useViewport from "src/hooks/useViewport";
 import { getOneAgent } from "src/modules/agent/api/api";
 import { getOneCustomer } from "src/modules/customer/api/api";
@@ -19,7 +25,10 @@ interface IProps {
 }
 export default function InformationLayout({ layout }: IProps) {
   const { state: visible, off, toggle } = useToggle(false);
-  const { isMobile } = useViewport(1024);
+  const { setUpdated } = useUpdated();
+  const { isMobile: isTable } = useViewport(1024);
+  const { isMobile } = useViewport();
+
   const [searchParams] = useSearchParams();
   const customerId: string = searchParams.get("customer") || "";
   const agentId: string = searchParams.get("agent") || "";
@@ -53,7 +62,9 @@ export default function InformationLayout({ layout }: IProps) {
       setDataProfile(data?.data?.data);
     },
   });
-
+  useUnMount(() => {
+    setUpdated(false);
+  });
   const handleRefetchProfile = useCallback(() => {
     switch (layout) {
       case "profile":
@@ -81,6 +92,10 @@ export default function InformationLayout({ layout }: IProps) {
     dataProfile?.email,
     dataProfile?.avatar,
   ]);
+  const handleCloseDrawer = () => {
+    off();
+    setUpdated(false);
+  };
   return (
     <section className={styles.container}>
       <div className={styles.wrapSetting}>
@@ -90,25 +105,28 @@ export default function InformationLayout({ layout }: IProps) {
           loading={loading}
         />
       </div>
-      {isMobile && (
+      {isTable && (
         <MDButton
           className={styles.buttonToggle}
           onClick={toggle}
           icon={<Icon name="user" />}
         />
       )}
-      {isMobile ? (
+      {isTable ? (
         <MDDrawer
           title=""
           visible={visible}
-          onClose={off}
+          onClose={handleCloseDrawer}
           rootClassName={styles.drawerSearch}
+          destroyOnClose
+          width={isMobile ? "100%" : 378}
           content={
             <Information
               profile={dataProfile}
               layout={layout}
               onRefetch={handleRefetchProfile}
               loadingProfile={loading}
+              onCloseDrawer={isMobile ? handleCloseDrawer : undefined}
             />
           }
           closable={true}
