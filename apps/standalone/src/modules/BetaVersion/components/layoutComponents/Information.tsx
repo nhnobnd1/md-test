@@ -213,7 +213,6 @@ const Information = ({
           <div className={styles.formInfo}>
             <Form
               form={form}
-              // onValuesChange={handleChangeForm}
               onFinish={handleSubmitProfile}
               initialValues={profile}
               enableReinitialize

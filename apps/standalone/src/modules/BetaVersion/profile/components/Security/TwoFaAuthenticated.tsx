@@ -19,7 +19,7 @@ import { ResetModalRecoveryCode } from "src/modules/setting/pages/account&Securi
 import styles from "./style.module.scss";
 
 const fontStyle = {
-  fontSize: 12,
+  fontSize: 13,
 };
 export default function TwoFaAuthenticated() {
   const { t } = useTranslation();
@@ -74,7 +74,7 @@ export default function TwoFaAuthenticated() {
   }, [statusSecurity]);
   const handleCloseRecoveryCodes = useCallback(() => {
     handleCloseRecoveryCodeModal();
-    navigate("/setting-account?tab=setting", { replace: true });
+    navigate("/setting-account?tab=settings", { replace: true });
   }, []);
   const handleAcceptRequestCodes = useCallback(() => {
     handleOpenRecoveryCodeModal();
@@ -83,6 +83,8 @@ export default function TwoFaAuthenticated() {
     <div className={classNames(styles.block, { "align-start": method.show })}>
       <div className={styles.title}>
         <span>Two-Factor Authentication</span>
+      </div>
+      <div className={styles.group}>
         <div>
           {method.show && (
             <div className="flex items-center">
@@ -97,7 +99,7 @@ export default function TwoFaAuthenticated() {
               </div>
               <div>
                 {status ? (
-                  <Typography.Text style={fontStyle}>
+                  <Typography.Text style={fontStyle} strong>
                     {method.method === "Email"
                       ? "Email OTP"
                       : method.method === "Authenticator"
@@ -117,37 +119,21 @@ export default function TwoFaAuthenticated() {
             </div>
           )}
         </div>
-
-        {method.show ? (
-          <div className={styles.recoveryCode}>
-            <ResetModalRecoveryCode
-              onOpenModalRecoveryCode={handleAcceptRequestCodes}
-              countDown={countDown}
-              loading={isFetching}
-            />
-          </div>
-        ) : null}
-      </div>
-      <div className={styles.group}>
+        <div className={styles.subContent}>
+          {method.show ? (
+            <div className={styles.recoveryCode}>
+              <ResetModalRecoveryCode
+                onOpenModalRecoveryCode={handleAcceptRequestCodes}
+                countDown={countDown}
+                loading={isFetching}
+                size="small"
+              />
+            </div>
+          ) : null}
+        </div>
         <MDButton onClick={() => setOpen2FA(true)} disabled={!status}>
           {method.show ? "Change" : "Enable 2FA"}
         </MDButton>
-        <div className={styles.subContent}>
-          <Typography.Text
-            type={
-              method.show
-                ? status
-                  ? "success"
-                  : "secondary"
-                : status
-                ? "danger"
-                : "secondary"
-            }
-            strong
-          >
-            {method.show ? "Active" : "InActive"}
-          </Typography.Text>
-        </div>
       </div>
       {open2FA ? (
         <Enable2FAModal

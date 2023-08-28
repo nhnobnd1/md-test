@@ -1,5 +1,5 @@
 import { InputProps, Select } from "antd";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import timeZoneList from "src/constaint/timeZone";
 import useViewport from "src/hooks/useViewport";
 interface SelectTimeZoneProps
@@ -58,4 +58,4 @@ const SelectTimeZone = ({ value, onChange }: SelectTimeZoneProps) => {
   );
 };
 
-export default SelectTimeZone;
+export default memo(SelectTimeZone);
