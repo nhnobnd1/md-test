@@ -1,12 +1,13 @@
 import { useToggle } from "@moose-desk/core";
 import { Typography } from "antd";
+import { ButtonProps } from "antd/lib/button";
 import classNames from "classnames";
 import React from "react";
 import { MDButton } from "src/components/UI/Button/MDButton";
 import { Header } from "src/components/UI/Header";
 import { MDModal } from "src/components/UI/Modal/MDModal";
 import styles from "./styles.module.scss";
-interface IProps {
+interface IProps extends ButtonProps {
   onOpenModalRecoveryCode: () => void;
   loading?: boolean;
   buttonTitle?: string;
@@ -18,6 +19,7 @@ export const ResetModalRecoveryCode = React.memo(
     loading = false,
     countDown = 0,
     onOpenModalRecoveryCode,
+    ...props
   }: IProps) => {
     const { state: visible, on, off } = useToggle(false);
 
@@ -40,6 +42,7 @@ export const ResetModalRecoveryCode = React.memo(
           onClick={handleOpenModalConfirm}
           loading={loading}
           disabled={!!countDown}
+          {...props}
         >
           {buttonTitle}
         </MDButton>

@@ -4,7 +4,7 @@ import styles from "./style.module.scss";
 export const Security = () => {
   return (
     <div className={styles.security}>
-      <h5>Setting Security</h5>
+      {/* <h5>Setting Security</h5> */}
 
       <Password />
       <TwoFaAuthenticated />

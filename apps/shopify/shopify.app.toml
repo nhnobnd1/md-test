@@ -2,7 +2,7 @@
 
 name = "MooseDesk Local"
 client_id = "6beffae9e7e2d336d04c001812119383"
-application_url = "https://flood-starting-baptist-male.trycloudflare.com"
+application_url = "https://chargers-each-cookies-radiation.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ use_legacy_install_flow = true
 
 [auth]
 redirect_urls = [
-  "https://flood-starting-baptist-male.trycloudflare.com/auth/callback",
-  "https://flood-starting-baptist-male.trycloudflare.com/auth/shopify/callback",
-  "https://flood-starting-baptist-male.trycloudflare.com/api/auth/callback"
+  "https://chargers-each-cookies-radiation.trycloudflare.com/auth/callback",
+  "https://chargers-each-cookies-radiation.trycloudflare.com/auth/shopify/callback",
+  "https://chargers-each-cookies-radiation.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
