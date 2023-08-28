@@ -5,6 +5,7 @@ import { InputTextNumber } from "src/components/UI/InputTextNumber";
 import Select from "src/components/UI/Select/Select";
 import constaint from "src/constaint";
 import { Country } from "src/constaint/country";
+import useUpdated from "src/hooks/useUpdated";
 import styles from "./style.module.scss";
 interface InputPhoneProps
   extends Omit<InputProps, "value" | "onChange" | "disabled"> {
@@ -27,6 +28,7 @@ const InputPhoneBeta = ({
   onChange,
   ...props
 }: InputPhoneProps) => {
+  const { setUpdated } = useUpdated();
   const [flagValue, setFlagValue] = useState<string>("1");
   const [valueSelect, setValueSelect] = useState("CA");
   const [valueField, setValueField] = useState("");
@@ -42,6 +44,7 @@ const InputPhoneBeta = ({
     );
     setFlagValue(getPhonePrefix?.phonePrefix || "");
     setValueSelect(value);
+    setUpdated(true);
     if (valueField !== "") {
       onChange && onChange(`${getPhonePrefix?.phonePrefix}-${valueField}`);
     }
