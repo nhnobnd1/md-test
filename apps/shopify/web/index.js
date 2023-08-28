@@ -73,6 +73,7 @@ app.get(
 			if (tourGuide?.data?.storeId) {
 			} else {
 				await registerUser(payload);
+				console.log(">>>>>>>>>>>>>>>>register<<<<<<<<<<<")
 			}
 
 			res.cookie(
