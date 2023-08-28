@@ -16,7 +16,7 @@ export const Password = React.memo(() => {
       <div className={styles.group}>
         <MDButton onClick={handleOpenChangePassword}>Change</MDButton>
         <div className={styles.subContent}>
-          <p className={styles.passwordHide}>●●●●●●●●●●●</p>
+          {/* <p className={styles.passwordHide}>●●●●●●●●●●●</p> */}
         </div>
       </div>
       <ModalChangePassword

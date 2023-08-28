@@ -3,7 +3,7 @@ import { GetStoreIdRequest, StoreRepository } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import { Crisp } from "crisp-sdk-web";
 import CryptoJS from "crypto-js";
-import { ReactNode, createContext, useContext, useState } from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
 import StorageManager from "src/core/utilities/StorageManager";
