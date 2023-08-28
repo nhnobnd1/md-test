@@ -9,7 +9,7 @@ import {
 } from "@moose-desk/repo";
 import { Card, Input, Tabs } from "antd";
 import { isEqual, keys, pick } from "lodash-es";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "react-query";
 import { Form } from "src/components/UI/Form";
@@ -47,6 +47,7 @@ const BusinessHours = () => {
     refetch: refetchBusinessCalendar,
     isLoading: processing,
     isSuccess,
+    isFetching,
   } = useQuery({
     queryKey: ["getListBusinessCalendar"],
     queryFn: () => getListBusinessCalendar(),
@@ -102,6 +103,18 @@ const BusinessHours = () => {
 
   const handleChangeValues = useCallback(
     (value) => {
+      if (value.businessHoursType) {
+        switch (value.businessHoursType) {
+          case BusinessHoursType.Full:
+            setDisabled(true);
+            break;
+          case BusinessHoursType.Custom:
+            setDisabled(false);
+            break;
+          default:
+            break;
+        }
+      }
       if (isSuccess) {
         updateFormDirty(
           !isEqual(pick(dataBusinessCalendar, keys(value)), value)
@@ -116,10 +129,22 @@ const BusinessHours = () => {
     },
     [dataBusinessCalendar, isSuccess, tabSelected]
   );
-
-  const disabled = useMemo(() => {
-    return form.getFieldValue("businessHoursType") === BusinessHoursType.Full;
-  }, [form.getFieldValue("businessHoursType"), formChanged]);
+  const [disabled, setDisabled] = useState(false);
+  useEffect(() => {
+    dataBusinessCalendar?.businessHoursType === BusinessHoursType.Full
+      ? setDisabled(true)
+      : setDisabled(false);
+  }, [dataBusinessCalendar]);
+  // const disabled = useMemo(() => {
+  //   return (
+  //     form.getFieldValue("businessHoursType") === BusinessHoursType.Full ||
+  //     dataBusinessCalendar?.businessHoursType === BusinessHoursType.Full
+  //   );
+  // }, [
+  //   form.getFieldValue("businessHoursType"),
+  //   formChanged,
+  //   dataBusinessCalendar?.businessHoursType,
+  // ]);
 
   const handleSubmit = useCallback((data: any) => {
     const revertTimeZome = timeZoneList.timeZone.find(
@@ -175,6 +200,7 @@ const BusinessHours = () => {
             enableReinitialize
             onFinish={handleSubmit}
             onValuesChange={handleChangeValues}
+            disabled={isFetching}
           >
             <Form.Item
               name="timezone"

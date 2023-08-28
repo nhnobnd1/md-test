@@ -64,13 +64,7 @@ const CreateTicket = () => {
     >
       {/* <style>{css}</style> */}
       <div className={styles.wrapContent}>
-        {/* <div className={styles.wrapSearchToggle}>
-          <MDButton
-            onClick={() => setVisible(!visible)}
-            icon={<Icon name="findOrder" />}
-          />
-        </div> */}
-        <Header className="mb-5" title="New Ticket"></Header>
+        {/* <Header className="mb-5" title="New Ticket"></Header> */}
 
         {loadingList ? (
           <>

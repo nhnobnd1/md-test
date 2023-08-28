@@ -76,9 +76,11 @@ export const RowMessage: FC<RowMessageProps> = ({ item }) => {
         </div>
 
         <div className="flex gap-3 flex-wrap mt-2">
-          <span style={{ color: "black", fontSize: 12 }}>
-            <span style={{ fontWeight: "bold" }}>To </span>: {item.toEmail}
-          </span>
+          {item.toEmail && (
+            <span style={{ color: "black", fontSize: 12 }}>
+              <span style={{ fontWeight: "bold" }}>To </span>: {item.toEmail}
+            </span>
+          )}
           {item?.ccEmails?.length ? (
             <>
               <span
