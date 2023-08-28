@@ -117,7 +117,10 @@ const BusinessHours = () => {
       }
       if (isSuccess) {
         updateFormDirty(
-          !isEqual(pick(dataBusinessCalendar, keys(value)), value)
+          !isEqual(
+            pick(dataBusinessCalendar, keys(form.getFieldsValue())),
+            form.getFieldsValue()
+          )
         );
       }
       if (value.autoReply) {
@@ -172,8 +175,11 @@ const BusinessHours = () => {
   useEffect(() => {
     if (isReset) {
       form.resetFields();
+      dataBusinessCalendar?.businessHoursType === BusinessHoursType.Full
+        ? setDisabled(true)
+        : setDisabled(false);
     }
-  }, [isReset]);
+  }, [isReset, dataBusinessCalendar]);
   useEffect(() => {
     if (isSubmit) {
       form.submit();
