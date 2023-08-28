@@ -715,57 +715,8 @@ Hit Send to see what your message will look like
           enableReinitialize
           onFinish={onFinish}
           onValuesChange={handleChangeForm}
-          className="flex  gap-2 form-ticket "
+          className="flex form-ticket-detail"
         >
-          <Card
-            className="max-w-[350px] xs:hidden lg:block h-full "
-            bodyStyle={{ padding: 16 }}
-            style={{ flexBasis: 350, flexShrink: 0 }}
-            loading={processing}
-          >
-            <div className="">
-              <Form.Item
-                labelAlign="left"
-                label={<span style={{ width: 60 }}>Status</span>}
-                name="status"
-              >
-                <Select
-                  size="large"
-                  className="w-full"
-                  options={statusOptions}
-                />
-              </Form.Item>
-              <Form.Item label="Assignee" name="assignee">
-                <AgentSelect placeholder="Search agents" className="w-full" />
-              </Form.Item>
-              <Form.Item
-                labelAlign="left"
-                label={<span style={{ width: 60 }}>Priority</span>}
-                name="priority"
-              >
-                <Select className="w-full" options={priorityOptions} />
-              </Form.Item>
-
-              <Form.Item
-                name="tags"
-                label={<span style={{ width: 60 }}>Tags</span>}
-                labelAlign="left"
-              >
-                <TagSelect />
-              </Form.Item>
-
-              <div className="flex items-center justify-end">
-                <MDButton
-                  className="w-full"
-                  type="primary"
-                  onClick={handleSaveTicket}
-                >
-                  Save
-                </MDButton>
-              </div>
-            </div>
-            <Divider />
-          </Card>
           <div
             className="flex-1 h-full w-full  "
             style={{
@@ -814,7 +765,7 @@ Hit Send to see what your message will look like
             </div>
             {ticket ? (
               <div
-                className={`w-full flex flex-col justify-between mt-${
+                className={`w-full flex flex-col justify-between relative mt-${
                   send ? 0 : 2
                 }`}
               >
@@ -1174,6 +1125,55 @@ Hit Send to see what your message will look like
               <></>
             )}
           </div>
+          <Card
+            className="max-w-[350px] xs:hidden lg:block h-full "
+            bodyStyle={{ padding: 16 }}
+            style={{ flexBasis: 350, flexShrink: 0 }}
+            loading={processing}
+          >
+            <div className="">
+              <Form.Item
+                labelAlign="left"
+                label={<span style={{ width: 60 }}>Status</span>}
+                name="status"
+              >
+                <Select
+                  size="large"
+                  className="w-full"
+                  options={statusOptions}
+                />
+              </Form.Item>
+              <Form.Item label="Assignee" name="assignee">
+                <AgentSelect placeholder="Search agents" className="w-full" />
+              </Form.Item>
+              <Form.Item
+                labelAlign="left"
+                label={<span style={{ width: 60 }}>Priority</span>}
+                name="priority"
+              >
+                <Select className="w-full" options={priorityOptions} />
+              </Form.Item>
+
+              <Form.Item
+                name="tags"
+                label={<span style={{ width: 60 }}>Tags</span>}
+                labelAlign="left"
+              >
+                <TagSelect />
+              </Form.Item>
+
+              <div className="flex items-center justify-end">
+                <MDButton
+                  className="w-full"
+                  type="primary"
+                  onClick={handleSaveTicket}
+                >
+                  Save
+                </MDButton>
+              </div>
+            </div>
+            <Divider />
+          </Card>
           <MDModalUI
             // title="Properties"
             open={statusModal}

@@ -23,6 +23,7 @@ import { catchError, map, of } from "rxjs";
 import { MDButton } from "src/components/UI/Button/MDButton";
 import TextEditorTicketBeta from "src/components/UI/Editor/TextEditorTicketBeta";
 import { Form } from "src/components/UI/Form";
+import { Header } from "src/components/UI/Header";
 import { MDInput } from "src/components/UI/Input";
 import Select from "src/components/UI/Select/Select";
 import useDeepEffect from "src/hooks/useDeepEffect";
@@ -272,32 +273,7 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
       className="form-ticket"
       {...props}
     >
-      <div className="flex h-full gap-2">
-        <Card className="w-[350px]" bodyStyle={{ padding: 16 }}>
-          <Form.Item
-            labelAlign="left"
-            label={<span style={{ width: 60 }}>Assignee</span>}
-            name="assignee"
-          >
-            <AgentSelect />
-          </Form.Item>
-          <Form.Item
-            labelAlign="left"
-            label={<span style={{ width: 60 }}>Priority</span>}
-            name="priority"
-          >
-            <Select size="large" options={priorityOptions}></Select>
-          </Form.Item>
-
-          <Form.Item
-            labelAlign="left"
-            name="tags"
-            label={<span style={{ width: 60 }}>Tags</span>}
-          >
-            <TagSelect maxTagCount={undefined} />
-          </Form.Item>
-          <Divider />
-        </Card>
+      <div className="flex h-full">
         <Card
           className="w-full flex-1"
           bodyStyle={{
@@ -308,6 +284,8 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
             padding: 16,
           }}
         >
+          <Header className="mb-5" title="New Ticket"></Header>
+
           <div className=" flex w-full  items-center pb-3">
             <Form.Item
               className="m-0 w-full"
@@ -324,10 +302,8 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
               <MDInput placeholder="Subject" />
             </Form.Item>
           </div>
-          <Divider />
 
           <div className="flex-1 flex justify-end flex-col">
-            <Divider />
             <div className="md-from-detail w-full flex items-center gap-2 px-3">
               <span className="w-[40px]">From:</span>
               <Form.Item
@@ -592,11 +568,31 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
             </MDButton>
           </div>
         </Card>
-        {/* <Card>
-          <div>
-            <ContentShopifySearch />
-          </div>
-        </Card> */}
+        <Card className="w-[350px]" bodyStyle={{ padding: 16 }}>
+          <Form.Item
+            labelAlign="left"
+            label={<span style={{ width: 60 }}>Assignee</span>}
+            name="assignee"
+          >
+            <AgentSelect />
+          </Form.Item>
+          <Form.Item
+            labelAlign="left"
+            label={<span style={{ width: 60 }}>Priority</span>}
+            name="priority"
+          >
+            <Select size="large" options={priorityOptions}></Select>
+          </Form.Item>
+
+          <Form.Item
+            labelAlign="left"
+            name="tags"
+            label={<span style={{ width: 60 }}>Tags</span>}
+          >
+            <TagSelect maxTagCount={undefined} />
+          </Form.Item>
+          <Divider />
+        </Card>
       </div>
       <ModalCustomer
         open={openModalCustomer}
