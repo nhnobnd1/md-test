@@ -80,7 +80,7 @@ const MainLayoutTopBar = ({
               onClick={() => navigate("/dashboard")}
               width={isMobile ? 135 : 150}
               height={35}
-              loading="lazy"
+              loading="eager"
             />
           </div>
           <div className="mr-10 flex items-center w-full gap-2">

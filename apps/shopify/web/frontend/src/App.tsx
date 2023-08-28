@@ -90,9 +90,9 @@ export default function App() {
     <>
       <NavigationMenu navigationLinks={navigationLinks} />
       {user ? <AppRoutes /> : <Loading />}
-      <div className="hidden">
+      {/* <div className="hidden">
         <RichText />
-      </div>
+      </div> */}
     </>
   );
 }
