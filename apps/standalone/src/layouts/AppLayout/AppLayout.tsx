@@ -9,7 +9,7 @@ import {
   useUser,
 } from "@moose-desk/core";
 import { AccountRepository } from "@moose-desk/repo";
-import { Badge, Layout, Menu, Space } from "antd";
+import { Badge, Layout, Menu } from "antd";
 import classNames from "classnames";
 import { Suspense, useCallback, useMemo, useState } from "react";
 import { useQuery } from "react-query";
@@ -203,11 +203,11 @@ export const AppLayout = () => {
             // icon: <FeUsers />,
             children: [
               {
-                key: `case-${AgentRoutePaths.Agents.Index}`,
+                key: `case-${AgentRoutePaths.Index}`,
                 label: "Agents",
-                link: AgentRoutePaths.Agents.Index,
+                link: AgentRoutePaths.Index,
                 onClick: () => {
-                  navigate(generatePath(AgentRoutePaths.Agents.Index));
+                  navigate(generatePath(AgentRoutePaths.Index));
                   handleCollapseMobile(true);
                 },
               },
@@ -243,29 +243,38 @@ export const AppLayout = () => {
             label: "Account & Security",
             // icon: <MdiSecurity />,
             children: [
+              // {
+              //   key: `case-${SettingRoutePaths.AccountSecurity.Profile.Index}`,
+              //   label: "Profile",
+              //   link: SettingRoutePaths.AccountSecurity.Profile.Index,
+              //   onClick: () => {
+              //     navigate(
+              //       generatePath(
+              //         SettingRoutePaths.AccountSecurity.Profile.Index
+              //       )
+              //     );
+              //     handleCollapseMobile(true);
+              //   },
+              // },
+              // {
+              //   key: `case-${SettingRoutePaths.AccountSecurity.Security.Index}`,
+              //   label: "Security",
+              //   link: SettingRoutePaths.AccountSecurity.Security.Index,
+              //   onClick: () => {
+              //     navigate(
+              //       generatePath(
+              //         SettingRoutePaths.AccountSecurity.Security.Index
+              //       )
+              //     );
+              //     handleCollapseMobile(true);
+              //   },
+              // },
               {
-                key: `case-${SettingRoutePaths.AccountSecurity.Profile.Index}`,
-                label: "Profile",
-                link: SettingRoutePaths.AccountSecurity.Profile.Index,
+                key: `case-${ProfileRoutePaths.Index}`,
+                label: <div>Setting Account</div>,
+                link: ProfileRoutePaths.Index,
                 onClick: () => {
-                  navigate(
-                    generatePath(
-                      SettingRoutePaths.AccountSecurity.Profile.Index
-                    )
-                  );
-                  handleCollapseMobile(true);
-                },
-              },
-              {
-                key: `case-${SettingRoutePaths.AccountSecurity.Security.Index}`,
-                label: "Security",
-                link: SettingRoutePaths.AccountSecurity.Security.Index,
-                onClick: () => {
-                  navigate(
-                    generatePath(
-                      SettingRoutePaths.AccountSecurity.Security.Index
-                    )
-                  );
+                  navigate("/setting-account?tab=settings");
                   handleCollapseMobile(true);
                 },
               },
@@ -284,19 +293,6 @@ export const AppLayout = () => {
                     },
                   }
                 : "",
-              {
-                key: `case-${ProfileRoutePaths.Index}`,
-                label: (
-                  <div>
-                    Setting Account <span className="md-beta-tag">Beta</span>
-                  </div>
-                ),
-                link: ProfileRoutePaths.Index,
-                onClick: () => {
-                  navigate("/setting-account?tab=settings");
-                  handleCollapseMobile(true);
-                },
-              },
             ],
           },
         ],
@@ -450,7 +446,7 @@ export const AppLayout = () => {
               <div className="md:flex hidden">
                 <Link
                   className="md-link-ant"
-                  to="/setting/account&security/profile"
+                  to="/setting-account?tab=settings"
                 >
                   {user?.subdomain} / {user?.email}
                 </Link>

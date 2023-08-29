@@ -1,8 +1,11 @@
 import { Link } from "@moose-desk/core";
 import { Activities } from "@moose-desk/repo/dashboard/Dashboard";
-import moment from "moment";
+import dayjs, { unix } from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import { ACTIVATE_TYPE } from "src/modules/dashboard/helper";
 import styles from "./styles.module.scss";
+dayjs.extend(relativeTime);
+
 interface IProps {
   data: Activities;
 }
@@ -13,7 +16,11 @@ const ActivateItem = ({ data }: IProps) => {
       <span className={styles.name}>{data.performer.name}</span>
     ) : (
       <Link
-        to={data.performer.id ? `/customers?id=${data.performer.id}` : "#"} // for checking undefined id when re-build backend
+        to={
+          data.performer.id
+            ? `/customers/detail?customer=${data.performer.id}`
+            : "#"
+        } // for checking undefined id when re-build backend
         // className={styles.name}
       >
         {data.performer.name}
@@ -101,7 +108,7 @@ const ActivateItem = ({ data }: IProps) => {
     <div className={styles.activateWrap}>
       {renderTypeTextActivate()}
       <div className={styles.timeAgo}>
-        {moment.unix(data.performedTimestamp).local().fromNow()}
+        {unix(data.performedTimestamp).local().fromNow()}
       </div>
     </div>
   );

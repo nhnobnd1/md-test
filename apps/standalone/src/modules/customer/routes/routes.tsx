@@ -15,6 +15,13 @@ const customerRoutes: IRoute = {
       index: true,
       component: lazy(() => import("src/modules/customer/pages/IndexCustomer")),
     },
+    {
+      path: CustomerRoutePaths.Details,
+      index: true,
+      component: lazy(
+        () => import("src/modules/BetaVersion/customerBeta/pages/Index")
+      ),
+    },
   ],
 };
 
