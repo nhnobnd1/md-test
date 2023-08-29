@@ -1,8 +1,8 @@
 import {
-  MediaScreen,
   createdDatetimeFormat,
   createdDatetimeFormatDefault,
   emailRegex,
+  MediaScreen,
   useJob,
   useLoading,
   useNavigate,
@@ -15,13 +15,13 @@ import {
   Conversation,
   CreateReplyTicketRequest,
   Priority,
+  priorityOptions,
+  statusOptions,
   StatusTicket,
   TicketRepository,
   UpdateTicket,
-  priorityOptions,
-  statusOptions,
 } from "@moose-desk/repo";
-import { Button, Card, Divider, Tag, Tooltip, Upload } from "antd";
+import { Button, Card, Tag, Tooltip, Upload } from "antd";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
@@ -45,6 +45,7 @@ import useMessage from "src/hooks/useMessage";
 import { useSubdomain } from "src/hooks/useSubdomain";
 import useViewport from "src/hooks/useViewport";
 import { CollapseMessageBeta } from "src/modules/ticket/components/DetailTicketForm/CollapseMessageBeta";
+import ResultShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ResultShopifySearch";
 import { AgentSelect } from "src/modules/ticket/components/TicketForm/AgentSelect";
 import { AutoSelect } from "src/modules/ticket/components/TicketForm/AutoSelect";
 import { SelectList } from "src/modules/ticket/components/TicketForm/SelectList";
@@ -122,6 +123,7 @@ const DetailTicketFormBeta = () => {
   const { state: send, on: openSend, off: closeSend } = useToggle(true);
   const [isForward, setIsForward] = useState(false);
   const [enableCC, setEnableCC] = useState(false);
+  const [toEmail, setToEmail] = useState("");
   const { data: dataTicket, isLoading: processing } = useQuery({
     queryKey: ["getTicket", id],
     queryFn: () => getOneTicket(id as string),
@@ -140,7 +142,6 @@ const DetailTicketFormBeta = () => {
       };
     return undefined;
   }, [dataTicket]);
-
   const {
     data: dataConversations,
     isLoading: isLoadingConversation,
@@ -154,7 +155,7 @@ const DetailTicketFormBeta = () => {
       setConversationList(data);
       setEndOfPage(true);
       setTimeout(() => {
-        endOfPageRef.current.scrollIntoView({});
+        endOfPageRef?.current?.scrollIntoView({});
       }, 0);
     },
 
@@ -162,9 +163,7 @@ const DetailTicketFormBeta = () => {
       message.error(t("messages:error.get_ticket"));
     },
   });
-
   const [form] = Form.useForm();
-
   const [conversationList, setConversationList] = useState<Conversation[]>(
     dataConversations || []
   );
@@ -419,7 +418,9 @@ const DetailTicketFormBeta = () => {
   });
   const handleChangeForm = useCallback((changedValue) => {
     if (changedValue.status) return;
-
+    if (changedValue.to) {
+      setToEmail(changedValue.to);
+    }
     if (changedValue.content) {
       const contentSplit = changedValue.content.split("- - - - - - -");
       updateContent({ content: contentSplit[0] });
@@ -669,6 +670,7 @@ Hit Send to see what your message will look like
     closeSend();
     setIsForward(false);
   };
+
   return (
     <>
       <div className="wrapContainer">
@@ -745,7 +747,7 @@ Hit Send to see what your message will look like
                           endOfPage ? "opacity-0 pointer-events-none" : ""
                         }`}
                         onClick={() => {
-                          endOfPageRef.current.scrollIntoView({
+                          endOfPageRef?.current?.scrollIntoView({
                             behavior: "smooth",
                           });
                         }}
@@ -1126,7 +1128,7 @@ Hit Send to see what your message will look like
             )}
           </div>
           <Card
-            className="max-w-[350px] xs:hidden lg:block h-full "
+            className="max-w-[350px] xs:hidden lg:block h-full scroll-y"
             bodyStyle={{ padding: 16 }}
             style={{ flexBasis: 350, flexShrink: 0 }}
             loading={processing}
@@ -1172,7 +1174,12 @@ Hit Send to see what your message will look like
                 </MDButton>
               </div>
             </div>
-            <Divider />
+            <div>
+              <ResultShopifySearch
+                email={toEmail || form.getFieldValue("to")}
+              />
+            </div>
+            {/* <Divider /> */}
           </Card>
           <MDModalUI
             // title="Properties"
