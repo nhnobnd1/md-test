@@ -101,8 +101,7 @@ const ContentShopifySearch = () => {
                     <div className={styles.item}>
                       Amount:{" "}
                       <span>
-                        {item.total_spent}
-                        {item.currency}
+                        {item.total_spent} {item.currency}
                       </span>
                     </div>
                   </div>
