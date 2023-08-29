@@ -130,8 +130,12 @@
       min-width: 80px;
       width: 80px;
       flex: unset;
+      text-align: start;
       label {
         font-size: 13px;
+        &::before, &::after {
+          display: none !important;
+        }
       }
     }
   }
@@ -197,7 +201,7 @@
     min-width: 80px;
     width: 80px;
     font-size: 13px;
-    text-align: end;
+    text-align: left;
     padding-right: 10px;
   }
   .result {

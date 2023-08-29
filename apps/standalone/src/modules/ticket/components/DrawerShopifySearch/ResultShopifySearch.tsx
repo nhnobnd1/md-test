@@ -28,11 +28,6 @@ const convertCustomerName = (customer: Customer) => {
 const { Panel } = Collapse;
 const ResultShopifySearch = ({ email = "", id = "" }: IProps) => {
   const [idFromShopify, setIdFromShopify] = useState<number | null>(null);
-  const { data: customer, isFetching: isLoadingCustomer }: any = useQuery({
-    queryKey: ["one_customer", id],
-    queryFn: () => getOneCustomer(id),
-    enabled: !!id,
-  });
   useQuery({
     queryKey: [QUERY_KEY.LIST_CUSTOMER_SHOPIFY, { query: email }],
     queryFn: () => getListShopifyCustomer({ query: email }),
@@ -47,23 +42,29 @@ const ResultShopifySearch = ({ email = "", id = "" }: IProps) => {
     },
   });
   const { data: resultData, isFetching: isLoading } = useQuery({
-    queryKey: [QUERY_KEY.CUSTOMER_SHOPIFY, idFromShopify],
+    queryKey: [QUERY_KEY.CUSTOMER_SHOPIFY, idFromShopify, id],
     queryFn: () => getDetailShopifyCustomer(String(idFromShopify)),
     enabled: !!idFromShopify,
   });
-  const convertResult: { customerInfo: ListShopifyCustomerRes; orders: any } = (
-    resultData as any
-  )?.data?.data;
 
-  const convertDataTable = useMemo(() => {
-    return convertResult?.orders.map((item: any) => {
-      return {
-        ...item,
-        name: item?.name,
-        total: item?.current_total_price,
-      };
-    });
-  }, [convertResult?.orders]);
+  const convertResult: {
+    customerInfo: ListShopifyCustomerRes;
+    orders: any;
+  } = (resultData as any)?.data?.data;
+
+  const convertDataTable = convertResult?.orders.map((item: any) => {
+    return {
+      ...item,
+      name: item?.name,
+      total: item?.current_total_price,
+    };
+  });
+  const { data: customer, isFetching: isLoadingCustomer }: any = useQuery({
+    queryKey: ["one_customer", id],
+    queryFn: () => getOneCustomer(id),
+    enabled: !!id,
+  });
+
   const customerInfo: Customer | any = useMemo(() => {
     return customer?.data?.data;
   }, [customer?.data?.data]);
@@ -100,7 +101,7 @@ const ResultShopifySearch = ({ email = "", id = "" }: IProps) => {
     );
   };
   const _renderListOrder = () => {
-    return isLoading ? (
+    return isLoading || isLoadingCustomer ? (
       <div>
         <MDSkeleton lines={3} />
       </div>
@@ -148,12 +149,13 @@ const ResultShopifySearch = ({ email = "", id = "" }: IProps) => {
                   <div className={styles.moreInfo}>
                     <span className={styles.label}>Phone:</span>
                     <span className={styles.result}>
-                      {customerInfo?.phoneNumber || "No Phone Number"}
+                      {customerInfo?.phoneNumber || "-"}
                     </span>
                   </div>
                   <div className={styles.moreInfo}>
                     <span className={styles.label}>Orders:</span>
                     <span className={styles.result}>
+                      {!customerFromShopify && "-"}
                       {customerFromShopify?.orders_count}
                       {!!customerFromShopify?.orders_count &&
                         !convertDataTable?.length && (
@@ -174,6 +176,7 @@ const ResultShopifySearch = ({ email = "", id = "" }: IProps) => {
                   <div className={styles.moreInfo}>
                     <span className={styles.label}>Amount:</span>
                     <span className={styles.result}>
+                      {!customerFromShopify && "-"}
                       {customerFromShopify?.total_spent}
                       {customerFromShopify?.currency}
                     </span>
@@ -186,7 +189,7 @@ const ResultShopifySearch = ({ email = "", id = "" }: IProps) => {
       )}
       {!!convertDataTable?.length && (
         <div className={styles.tableHead}>
-          {isLoading ? (
+          {isLoading || isLoadingCustomer ? (
             <MDSkeleton lines={1} />
           ) : (
             <>
