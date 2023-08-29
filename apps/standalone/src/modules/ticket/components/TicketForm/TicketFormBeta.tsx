@@ -106,7 +106,6 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
       message.error(t("messages:error.get_customer"));
     },
   });
-  console.log(toEmail);
   const customersOptions = useMemo(() => {
     if (!dataCustomers) return [];
     return dataCustomers.map((item) => {
@@ -177,7 +176,6 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
       updateContent({ content: "" });
     }
   }, []);
-  console.log("check");
 
   const onFinish = (values: any) => {
     const tags: string[] = values.tags;
@@ -218,17 +216,6 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
   };
 
   const onChangeEmailIntegration = (value: string, options: any) => {
-    console.log({ contentCreate });
-    console.log(
-      "meo",
-      options?.obj?.signature
-        ? `${
-            contentCreate || "<br/>"
-          }<div class='divide'> - - - - - - - </div><div class='signature'>${
-            options?.obj?.signature
-          }</div>`
-        : contentCreate
-    );
     form.setFieldValue(
       "content",
       options?.obj?.signature
