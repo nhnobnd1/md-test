@@ -8,12 +8,13 @@ import {
 import { useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
+import { ContextualSaveBar } from "src/components/ContextualSaveBar";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { useSubdomain } from "src/hooks/useSubdomain";
-import useBusinessHour from "src/modules/setting/store/Businesshour";
+import useUpdated from "src/hooks/useUpdated";
 import {
   ChannelEmailForm,
   ValuesForm,
@@ -30,18 +31,14 @@ const ChannelEmailCreate = () => {
   const notification = useNotification();
   const { t } = useTranslation();
   const { getSubDomain } = useSubdomain();
-  const mailSettingType = useMailSetting((state) => state.mailSettingType);
   const isForwardEmailCreated = useMailSetting(
     (state) => state.isForwardEmailCreated
   );
-  const handleChangeMailSetting = useMailSetting((state) => state.changeUpdate);
 
   const signCallback = useAppSelector(
     (state) => state.channelEmail.signInCallback
   );
-  const updateFormDirty = useBusinessHour((state) => state.updateFormDirty);
-  const isSubmit = useBusinessHour((state) => state.isSubmit);
-  const isReset = useBusinessHour((state) => state.isReset);
+  const { isUpdated, setUpdated } = useUpdated();
 
   const { run: createMailAPI } = useJob(
     (payload: CreateEmailIntegrationRequest) => {
@@ -143,21 +140,7 @@ const ChannelEmailCreate = () => {
       if (values.name === "") {
         values.name = (getSubDomain() as string).toLowerCase();
       }
-      // if (values.mailSettingType === MailSettingType.CUSTOM) {
-      //   if (values.mailboxType === MailBoxType.GMAIL) {
-      //     createMail(values);
-      //   }
-      //   // else if (values.mailboxType === MailBoxType.OUTLOOK) {
-      //   //   createMail(values);
-      //   // }
-      //   else {
-      //     createMailExternal(values);
-      //   }
-      // } else if (values.mailSettingType === MailSettingType.FORWARD) {
-      //   createMailOther(values);
-      // } else {
-      //   createMailMooseDesk(values);
-      // }
+
       switch (values.mailSettingType) {
         case MailSettingType.CUSTOM:
           if (values.mailboxType === MailBoxType.GMAIL) {
@@ -231,38 +214,18 @@ const ChannelEmailCreate = () => {
   const createMailOther = useCallback((values: ValuesForm) => {
     createMailAPI(payloadMailOther(values));
   }, []);
-  const handleSubmit = async () => {
-    try {
-      const validate = await form.validateFields();
-      if (validate) {
-        form.submit();
-      }
-    } catch (e) {
-      updateFormDirty(true);
-    }
-  };
+
   const handleBack = () =>
     navigate(generatePath(SettingChannelRoutePaths.ChannelEmail.Index));
 
   useEffect(() => {
     if (form.getFieldValue("supportEmail")) {
-      updateFormDirty(true);
+      setUpdated(true);
     }
     return () => {
-      updateFormDirty(false);
+      setUpdated(false);
     };
   }, [form.getFieldValue("supportEmail")]);
-  useEffect(() => {
-    if (isSubmit) {
-      handleSubmit();
-    }
-  }, [isSubmit]);
-  useEffect(() => {
-    if (isReset) {
-      handleChangeMailSetting(MailSettingType.CUSTOM);
-      form.resetFields();
-    }
-  }, [isReset]);
 
   return (
     <>
@@ -274,6 +237,7 @@ const ChannelEmailCreate = () => {
       ></Header>
 
       <ChannelEmailForm form={form} type="new" onFinish={handleFinishForm} />
+      {isUpdated && <ContextualSaveBar onSave={() => form.submit()} />}
     </>
   );
 };

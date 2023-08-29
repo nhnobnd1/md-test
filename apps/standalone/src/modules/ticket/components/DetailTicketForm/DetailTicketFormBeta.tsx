@@ -694,7 +694,7 @@ Hit Send to see what your message will look like
             )}
             <div className="flex gap-2 ">
               <Tooltip title="Status">
-                <MDButton
+                <Button
                   className={isTablet ? "flex" : "hidden"}
                   onClick={() => openStatusModal()}
                   icon={<Icon name="statusTicket" />}
@@ -1052,7 +1052,7 @@ Hit Send to see what your message will look like
                     />
                   </Form.Item>
                 </div>
-                <div className={`flex justify-end absolute right-4 bottom-2`}>
+                <div className={`flex justify-end absolute right-5 bottom-2`}>
                   {form.getFieldValue("status") === StatusTicket.RESOLVED ? (
                     <>
                       <MDButton

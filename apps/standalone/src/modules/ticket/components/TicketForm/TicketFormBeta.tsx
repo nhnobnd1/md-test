@@ -273,7 +273,7 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
       className="form-ticket"
       {...props}
     >
-      <div className="flex h-full">
+      <div className="flex h-full ">
         <Card
           className="w-full flex-1"
           style={{
@@ -281,6 +281,8 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
             borderRadius: 0,
             borderTopLeftRadius: 10,
             borderBottomLeftRadius: 10,
+            // overflow: "auto",
+            position: "relative",
           }}
           bodyStyle={{
             height: "100%",
@@ -288,6 +290,8 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
             flexDirection: "column",
             justifyContent: "space-between",
             padding: 16,
+            position: "relative",
+            overflow: "auto",
           }}
         >
           <Header className="mb-5" title="New Ticket"></Header>
@@ -554,7 +558,7 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
             </div>
           </div>
 
-          <div className="absolute bottom-6 right-8 flex justify-end items-center gap-2">
+          <div className="mt-3 flex justify-end items-center gap-2">
             <MDButton
               onClick={() => {
                 // createState
