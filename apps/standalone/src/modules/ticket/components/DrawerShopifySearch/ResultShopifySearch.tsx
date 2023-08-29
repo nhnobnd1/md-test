@@ -1,5 +1,7 @@
 import { CaretRightOutlined, InfoCircleTwoTone } from "@ant-design/icons";
+import { getOneCustomer } from "@moose-beta/profile/api/api";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
+import { Customer } from "@moose-desk/repo";
 import { Collapse, Tooltip } from "antd";
 import Link from "antd/es/typography/Link";
 import React, { useMemo, useState } from "react";
@@ -15,10 +17,22 @@ import ListShopifyCustomerRes from "src/modules/ticket/helper/interface";
 import styles from "./styles.module.scss";
 interface IProps {
   email?: string;
+  id?: string;
 }
+const convertCustomerName = (customer: Customer) => {
+  if (customer.honorific) {
+    return `(${customer.honorific}.) ${customer.firstName} ${customer.lastName}`;
+  }
+  return `${customer.firstName} ${customer.lastName}`;
+};
 const { Panel } = Collapse;
-const ResultShopifySearch = ({ email = "" }: IProps) => {
-  const [id, setId] = useState<number | null>(null);
+const ResultShopifySearch = ({ email = "", id = "" }: IProps) => {
+  const [idFromShopify, setIdFromShopify] = useState<number | null>(null);
+  const { data: customer, isFetching: isLoadingCustomer }: any = useQuery({
+    queryKey: ["one_customer", id],
+    queryFn: () => getOneCustomer(id),
+    enabled: !!id,
+  });
   useQuery({
     queryKey: [QUERY_KEY.LIST_CUSTOMER_SHOPIFY, { query: email }],
     queryFn: () => getListShopifyCustomer({ query: email }),
@@ -26,16 +40,16 @@ const ResultShopifySearch = ({ email = "" }: IProps) => {
     onSuccess: ({ data }) => {
       const customerData: any = data?.data;
       if (customerData?.length > 0) {
-        setId(customerData[0]?.id);
+        setIdFromShopify(customerData[0]?.id);
       } else {
-        setId(null);
+        setIdFromShopify(null);
       }
     },
   });
   const { data: resultData, isFetching: isLoading } = useQuery({
-    queryKey: [QUERY_KEY.CUSTOMER_SHOPIFY, id],
-    queryFn: () => getDetailShopifyCustomer(String(id)),
-    enabled: !!id,
+    queryKey: [QUERY_KEY.CUSTOMER_SHOPIFY, idFromShopify],
+    queryFn: () => getDetailShopifyCustomer(String(idFromShopify)),
+    enabled: !!idFromShopify,
   });
   const convertResult: { customerInfo: ListShopifyCustomerRes; orders: any } = (
     resultData as any
@@ -50,7 +64,11 @@ const ResultShopifySearch = ({ email = "" }: IProps) => {
       };
     });
   }, [convertResult?.orders]);
-  const customerInfo: ListShopifyCustomerRes = convertResult?.customerInfo;
+  const customerInfo: Customer | any = useMemo(() => {
+    return customer?.data?.data;
+  }, [customer?.data?.data]);
+  const customerFromShopify: ListShopifyCustomerRes =
+    convertResult?.customerInfo;
   const _renderTableOrDetailOrder = () => {
     return (
       <Collapse
@@ -98,24 +116,24 @@ const ResultShopifySearch = ({ email = "" }: IProps) => {
             <div className={styles.basicInfo}>
               <span className={styles.label}>
                 <MDAvatar
-                  firstName={customerInfo?.first_name}
-                  lastName={customerInfo?.last_name}
+                  firstName={customerInfo?.firstName}
+                  lastName={customerInfo?.lastName}
                   email={customerInfo?.email}
                   size="small"
-                  skeleton={isLoading}
+                  skeleton={isLoadingCustomer}
+                  source={customerInfo?.avatar}
                 />
               </span>
-
               <span className={styles.result}>
-                {isLoading ? (
+                {isLoadingCustomer ? (
                   <MDSkeleton lines={1} width={100} />
                 ) : (
-                  `${customerInfo?.first_name} ${customerInfo?.last_name}`
+                  convertCustomerName(customerInfo)
                 )}
               </span>
             </div>
             <>
-              {isLoading ? (
+              {isLoadingCustomer ? (
                 <MDSkeleton lines={4} />
               ) : (
                 <>
@@ -130,14 +148,14 @@ const ResultShopifySearch = ({ email = "" }: IProps) => {
                   <div className={styles.moreInfo}>
                     <span className={styles.label}>Phone:</span>
                     <span className={styles.result}>
-                      {customerInfo?.phone || "No Phone Number"}
+                      {customerInfo?.phoneNumber || "No Phone Number"}
                     </span>
                   </div>
                   <div className={styles.moreInfo}>
                     <span className={styles.label}>Orders:</span>
                     <span className={styles.result}>
-                      {customerInfo?.orders_count}
-                      {!!customerInfo?.orders_count &&
+                      {customerFromShopify?.orders_count}
+                      {!!customerFromShopify?.orders_count &&
                         !convertDataTable?.length && (
                           <Tooltip
                             title={
@@ -156,8 +174,8 @@ const ResultShopifySearch = ({ email = "" }: IProps) => {
                   <div className={styles.moreInfo}>
                     <span className={styles.label}>Amount:</span>
                     <span className={styles.result}>
-                      {customerInfo?.total_spent}
-                      {customerInfo?.currency}
+                      {customerFromShopify?.total_spent}
+                      {customerFromShopify?.currency}
                     </span>
                   </div>
                 </>

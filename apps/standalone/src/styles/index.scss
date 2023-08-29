@@ -210,6 +210,13 @@
     padding: 8px 16px !important;
   }
 }
+.ant-table-tbody {
+  tr {
+    .ant-table-cell {
+      word-break: break-word;
+    }
+  }
+}
 .recharts-legend-wrapper {
   bottom: -8px;
 }

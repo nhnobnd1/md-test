@@ -14,6 +14,7 @@ import {
   AttachFile,
   Conversation,
   CreateReplyTicketRequest,
+  Customer,
   Priority,
   priorityOptions,
   statusOptions,
@@ -311,6 +312,16 @@ const DetailTicketFormBeta = () => {
       };
     });
   }, [dataCustomers]);
+
+  const getCustomerId = useCallback(() => {
+    const email = toEmail || form.getFieldValue("to");
+    if (!email) return "";
+    const customerSelected: Customer | undefined = dataCustomers?.find(
+      (customer: Customer) => customer.email === email
+    );
+    return customerSelected?._id || "";
+  }, [toEmail, form.getFieldValue("to"), dataCustomers]);
+
   const initialValues = useMemo(() => {
     const condition = ticket?.incoming || ticket?.createdViaWidget;
 
@@ -370,7 +381,6 @@ const DetailTicketFormBeta = () => {
       };
     }
   }, [ticket, primaryEmail, conversationList, dataEmailIntegration]);
-
   const { run: postReplyApi } = useJob((payload: CreateReplyTicketRequest) => {
     return TicketRepository()
       .postReply(payload)
@@ -556,7 +566,6 @@ const DetailTicketFormBeta = () => {
       form.setFieldValue("BCC", []);
     }
   }, [enableCC]);
-
   useEffect(() => {
     if (chatItemForward) {
       setIsForward(true);
@@ -1194,6 +1203,7 @@ Hit Send to see what your message will look like
             <div>
               <ResultShopifySearch
                 email={toEmail || form.getFieldValue("to")}
+                id={getCustomerId()}
               />
             </div>
             {/* <Divider /> */}
