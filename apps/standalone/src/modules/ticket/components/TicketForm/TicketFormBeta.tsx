@@ -11,10 +11,10 @@ import useToggleGlobal from "@moose-desk/core/hooks/useToggleGlobal";
 import {
   Customer,
   EmailIntegration,
-  TicketRepository,
   priorityOptions,
+  TicketRepository,
 } from "@moose-desk/repo";
-import { Card, Divider } from "antd";
+import { Card } from "antd";
 import { uniqBy } from "lodash-es";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -29,6 +29,7 @@ import Select from "src/components/UI/Select/Select";
 import useDeepEffect from "src/hooks/useDeepEffect";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
+import ResultShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ResultShopifySearch";
 import { ModalCustomer } from "src/modules/ticket/components/ModalCustomer";
 import { AgentSelect } from "src/modules/ticket/components/TicketForm/AgentSelect";
 import { AutoSelect } from "src/modules/ticket/components/TicketForm/AutoSelect";
@@ -82,7 +83,7 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
   const [form] = Form.useForm();
   const [files, setFiles] = useState<any>([]);
   const [loadingButton, setLoadingButton] = useState(false);
-  const { dataSaved }: any = useSaveDataGlobal();
+  const { setDataSaved }: any = useSaveDataGlobal();
   const { t } = useTranslation();
   const [openModalCustomer, setOpenModalCustomer] = useState(false);
   const contentCreate = useFormCreateTicket((state) => state.content);
@@ -105,6 +106,7 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
       message.error(t("messages:error.get_customer"));
     },
   });
+  console.log(toEmail);
   const customersOptions = useMemo(() => {
     if (!dataCustomers) return [];
     return dataCustomers.map((item) => {
@@ -246,13 +248,9 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
       value,
       id: options?.obj ? options?.obj?._id : "",
     });
+    setDataSaved({ customerId: options?.obj ? options?.obj?._id : "" });
   };
 
-  useEffect(() => {
-    if (form) {
-      form.setFieldsValue({ to: dataSaved?.email });
-    }
-  }, [dataSaved]);
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["saveData"]);
@@ -585,7 +583,7 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
             borderTopRightRadius: 10,
             borderBottomRightRadius: 10,
           }}
-          className="w-[350px]"
+          className="w-[350px] scroll-y"
           bodyStyle={{ padding: 16 }}
         >
           <Form.Item
@@ -610,7 +608,11 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
           >
             <TagSelect maxTagCount={undefined} />
           </Form.Item>
-          <Divider />
+
+          <div>
+            <ResultShopifySearch email={toEmail?.value} />
+          </div>
+          {/* <Divider /> */}
         </Card>
       </div>
       <ModalCustomer

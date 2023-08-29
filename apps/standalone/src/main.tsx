@@ -18,7 +18,6 @@ import AppConfigProviders from "src/providers/AppConfigProviders";
 import InitApp from "src/providers/InitAppProviders";
 import { StoreProviders } from "src/providers/StoreProviders";
 import { getBaseToken, getRefreshToken } from "src/utils/localValue";
-
 import("src/styles/tailwind.scss").then(() =>
   import("antd/dist/reset.css").then(() => import("src/styles/index.scss"))
 );
