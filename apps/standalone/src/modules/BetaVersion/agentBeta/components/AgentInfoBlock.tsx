@@ -112,7 +112,7 @@ export const AgentInfoBlock = React.memo(
         ) : (
           <>
             <div className={styles.moreInfo}>
-              <span className={styles.label}>Status:</span>
+              <span className={styles.label}>Status</span>
               <span className={styles.result}>
                 <Switch
                   onChange={handleChangeStatus}
