@@ -21,7 +21,6 @@ import {
   statusOptions,
 } from "@moose-desk/repo";
 import { Card, Divider, Skeleton, Tooltip, Upload } from "antd";
-import moment from "moment";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
@@ -958,7 +957,7 @@ Hit Send to see what your message will look like
                               <SelectTag
                                 bordered={false}
                                 mode="tags"
-                                placeholder="Type CC email..."
+                                placeholder="Email"
                                 options={customersOptions}
                                 onSearch={(value) => {
                                   setSearchCustomer(value);
@@ -1037,7 +1036,7 @@ Hit Send to see what your message will look like
                               <SelectTag
                                 bordered={false}
                                 mode="tags"
-                                placeholder="Type BCC email..."
+                                placeholder="Email"
                                 options={customersOptions}
                                 onSearch={(value) => {
                                   setSearchCustomer(value);

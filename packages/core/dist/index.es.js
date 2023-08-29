@@ -5308,7 +5308,7 @@ const yb = (e, t = null, r = "MM/DD/YYYY HH:mm:ss") => {
   if (t) {
     const n = Je.utc().tz(t), a = Je.utc(e).tz(t), s = n.diff(a, "second");
     let i;
-    return s >= 60 * 60 * 24 ? i = a.format("MMM D HH:mm") : i = D(e).local().fromNow(), e ? i : "";
+    return s >= 60 * 60 * 24 ? i = a.format("MMM D, HH:mm") : i = `${a.format("HH:mm")} (${D(e).local().fromNow()})`, e ? i : "";
   }
   return e ? Je(e).format(r) : "";
 }, gb = (e, t = null, r = "MM/DD/YYYY HH:mm:ss") => t ? e ? Je.utc(e).tz(t).format(r) : "" : e ? Je(e).format(r) : "";

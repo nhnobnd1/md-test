@@ -77,7 +77,6 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
   const notification = useNotification();
   const navigate = useNavigate();
   const updateContent = useFormCreateTicket((state) => state.updateState);
-
   const [fromEmail, setFromEmail] = useState(primaryEmail);
   const [toEmail, setToEmail] = useState({ value: "", id: "" });
   const [form] = Form.useForm();
@@ -176,6 +175,8 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
       updateContent({ content: "" });
     }
   }, []);
+  console.log("check");
+
   const onFinish = (values: any) => {
     const tags: string[] = values.tags;
     const findCustomer = dataCustomersFetch.find(
@@ -265,6 +266,7 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
   }, [enableCC]);
   return (
     <Form
+      colon={false}
       form={form}
       layout={"horizontal"}
       enableReinitialize
@@ -281,7 +283,6 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
             borderRadius: 0,
             borderTopLeftRadius: 10,
             borderBottomLeftRadius: 10,
-            // overflow: "auto",
             position: "relative",
           }}
           bodyStyle={{
@@ -448,7 +449,7 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
                   <SelectTag
                     mode="tags"
                     bordered={false}
-                    placeholder="Type CC email..."
+                    placeholder="Email"
                     options={customersOptions}
                     onSearch={(value) => {
                       setSearchCustomer(value);
@@ -523,7 +524,7 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
                   <SelectTag
                     bordered={false}
                     mode="tags"
-                    placeholder="Type BCC email..."
+                    placeholder="Email"
                     options={customersOptions}
                     onSearch={(value) => {
                       setSearchCustomer(value);

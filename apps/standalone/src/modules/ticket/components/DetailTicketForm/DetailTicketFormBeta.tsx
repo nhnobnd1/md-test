@@ -162,7 +162,6 @@ const DetailTicketFormBeta = () => {
       message.error(t("messages:error.get_ticket"));
     },
   });
-
   const [form] = Form.useForm();
 
   const [conversationList, setConversationList] = useState<Conversation[]>(
@@ -704,6 +703,7 @@ Hit Send to see what your message will look like
           </div>
         </Header>
         <Form
+          colon={false}
           disabled={
             form.getFieldValue("status") === StatusTicket.RESOLVED ||
             loadingButton
@@ -738,7 +738,10 @@ Hit Send to see what your message will look like
                 {!isFetchConversation ? (
                   <>
                     <CollapseMessageBeta listChat={listChat} />
-                    <div className="sticky  bottom-0 right-0 h-[40px]  w-full flex justify-center items-center ">
+                    <div
+                      style={{ margin: "auto" }}
+                      className="sticky  bottom-0 right-0 h-[40px]   w-[300px] flex justify-center items-center "
+                    >
                       <Button
                         disabled={false}
                         className={`${
@@ -912,7 +915,7 @@ Hit Send to see what your message will look like
                         <SelectTag
                           bordered={false}
                           mode="tags"
-                          placeholder="Type CC email..."
+                          placeholder="Email"
                           options={customersOptions}
                           onSearch={(value) => {
                             setSearchCustomer(value);
@@ -989,7 +992,7 @@ Hit Send to see what your message will look like
                         <SelectTag
                           bordered={false}
                           mode="tags"
-                          placeholder="Type BCC email..."
+                          placeholder="Email"
                           options={customersOptions}
                           onSearch={(value) => {
                             setSearchCustomer(value);

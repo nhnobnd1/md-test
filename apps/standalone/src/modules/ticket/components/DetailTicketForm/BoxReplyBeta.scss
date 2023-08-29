@@ -6,10 +6,21 @@
   right: 20px;
   top: 20px;
 }
+// .ant-select-selector {
+//   padding-left: 0 !important;
+// }
+.box-comment {
+  .ant-form-item-explain-error {
+    padding-left: 10px;
+  }
+}
 .BoxReply {
   .box-comment {
     width: 100%;
     margin-top: 20px;
+    .ant-select-selector {
+      padding-left: 0 !important;
+    }
   }
   .rc-virtual-list-scrollbar {
     // display: unset !important;
