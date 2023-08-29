@@ -4,7 +4,6 @@ import { Priority } from "@moose-desk/repo";
 import classNames from "classnames";
 import { useEffect, useMemo } from "react";
 import { useQuery } from "react-query";
-import { Header } from "src/components/UI/Header";
 import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import useViewport from "src/hooks/useViewport";
 import TicketFormBeta from "src/modules/ticket/components/TicketForm/TicketFormBeta";

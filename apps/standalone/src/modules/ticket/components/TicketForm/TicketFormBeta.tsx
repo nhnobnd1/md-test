@@ -78,7 +78,6 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
   const notification = useNotification();
   const navigate = useNavigate();
   const updateContent = useFormCreateTicket((state) => state.updateState);
-
   const [fromEmail, setFromEmail] = useState(primaryEmail);
   const [toEmail, setToEmail] = useState({ value: "", id: "" });
   const [form] = Form.useForm();
@@ -107,7 +106,6 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
       message.error(t("messages:error.get_customer"));
     },
   });
-  console.log(toEmail);
   const customersOptions = useMemo(() => {
     if (!dataCustomers) return [];
     return dataCustomers.map((item) => {
@@ -178,6 +176,7 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
       updateContent({ content: "" });
     }
   }, []);
+
   const onFinish = (values: any) => {
     const tags: string[] = values.tags;
     const findCustomer = dataCustomersFetch.find(
@@ -217,17 +216,6 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
   };
 
   const onChangeEmailIntegration = (value: string, options: any) => {
-    console.log({ contentCreate });
-    console.log(
-      "meo",
-      options?.obj?.signature
-        ? `${
-            contentCreate || "<br/>"
-          }<div class='divide'> - - - - - - - </div><div class='signature'>${
-            options?.obj?.signature
-          }</div>`
-        : contentCreate
-    );
     form.setFieldValue(
       "content",
       options?.obj?.signature
@@ -263,6 +251,7 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
   }, [enableCC]);
   return (
     <Form
+      colon={false}
       form={form}
       layout={"horizontal"}
       enableReinitialize
@@ -279,7 +268,6 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
             borderRadius: 0,
             borderTopLeftRadius: 10,
             borderBottomLeftRadius: 10,
-            // overflow: "auto",
             position: "relative",
           }}
           bodyStyle={{
@@ -446,7 +434,7 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
                   <SelectTag
                     mode="tags"
                     bordered={false}
-                    placeholder="Type CC email..."
+                    placeholder="Email"
                     options={customersOptions}
                     onSearch={(value) => {
                       setSearchCustomer(value);
@@ -521,7 +509,7 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
                   <SelectTag
                     bordered={false}
                     mode="tags"
-                    placeholder="Type BCC email..."
+                    placeholder="Email"
                     options={customersOptions}
                     onSearch={(value) => {
                       setSearchCustomer(value);

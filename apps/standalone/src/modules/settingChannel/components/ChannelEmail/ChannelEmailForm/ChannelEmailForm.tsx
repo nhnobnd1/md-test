@@ -16,7 +16,7 @@ import React, {
 } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
-import TextEditor from "src/components/UI/Editor/TextEditor";
+import TextEditorTicketBeta from "src/components/UI/Editor/TextEditorTicketBeta";
 import { Form, FormProps } from "src/components/UI/Form";
 import { MDInput } from "src/components/UI/Input";
 import useMessage from "src/hooks/useMessage";
@@ -32,7 +32,7 @@ import {
 } from "src/modules/settingChannel/redux/channelEmail";
 import useMailSetting from "src/modules/settingChannel/store/useMailSetting";
 import { useAppDispatch, useAppSelector } from "src/redux/hook";
-
+import "./ChannelEmailForm.scss";
 interface ChannelEmailFormProps extends FormProps {
   type: "new" | "update";
 }
@@ -348,15 +348,17 @@ export const ChannelEmailForm = ({ type, ...props }: ChannelEmailFormProps) => {
               <Checkbox>Mark as Primary Email</Checkbox>
             </Form.Item>
           </div>
-          <Form.Item name="signature" label="Signature">
-            <TextEditor
+          <Form.Item
+            name="signature"
+            label="Signature"
+            className="editor-signature"
+          >
+            <TextEditorTicketBeta
               form={form}
               init={{
                 menubar: false,
-
-                toolbar:
-                  "undo redo blocks fontfamily fontsizeinput bold italic underline strikethrough link image media table mergetags addcomment showcomments spellcheckdialog a11ycheck typography align lineheight ",
               }}
+              isSignature={true}
             />
           </Form.Item>
         </div>

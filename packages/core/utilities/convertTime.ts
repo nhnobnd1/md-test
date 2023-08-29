@@ -18,11 +18,12 @@ const createdDatetimeFormat = (
     const timeDifference = currentTime.diff(timeFormat, "second");
     let formattedTime;
     if (timeDifference >= 60 * 60 * 24) {
-      formattedTime = timeFormat.format("MMM D HH:mm");
+      formattedTime = timeFormat.format("MMM D, HH:mm");
     } else {
-      formattedTime = moment(time).local().fromNow();
+      formattedTime = `${timeFormat.format("HH:mm")} (${moment(time)
+        .local()
+        .fromNow()})`;
     }
-
     return time ? formattedTime : "";
   }
   return time ? dayjs(time).format(format) : "";

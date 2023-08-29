@@ -371,7 +371,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
                   >
                     <SelectTag
                       mode="tags"
-                      placeholder="Type CC email..."
+                      placeholder="Email"
                       options={customersOptions}
                       onSearch={(value) => {
                         setSearchCustomer(value);
@@ -441,7 +441,7 @@ export const TicketForm = ({ primaryEmail, ...props }: TicketFormProps) => {
                   >
                     <SelectTag
                       mode="tags"
-                      placeholder="Type BCC email..."
+                      placeholder="Email"
                       options={customersOptions}
                       onSearch={(value) => {
                         setSearchCustomer(value);

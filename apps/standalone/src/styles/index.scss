@@ -87,6 +87,12 @@
   border: 1px solid #d9d9d9 !important;
   border-radius: 0px !important;
 }
+#tiny-mce {
+  .tox-tinymce {
+    border: 1px solid #d9d9d9 !important;
+    border-radius: 10px !important;
+  }
+}
 
 .ant-form-inline {
   .ant-form-item {
@@ -358,9 +364,17 @@ select {
 }
 .form-ticket {
   height: calc(100vh - 64px - 48px);
+  .ant-form-item-explain-error {
+    padding-left: 10px;
+  }
 }
+// .box-comment {
+//   .ant-form-item-explain-error {
+//     padding-left: 10px;
+//   }
+// }
 .form-ticket-detail {
-  height: calc(100vh - 64px - 48px - 40px);
+  height: calc(100vh - 64px - 48px - 44px);
 }
 .tox-editor-header {
   border-top: none !important;
