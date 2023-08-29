@@ -28,16 +28,6 @@ const DetailTicket = () => {
       >
         <DetailTicketFormBeta />
       </div>
-      {/* {isMobile ? (
-        <DrawerShopifySearch
-          visible={visible}
-          onClose={() => setVisible(false)}
-        />
-      ) : (
-        <div className={visible ? "" : "d-none"}>
-          <ContentShopifySearch />
-        </div>
-      )} */}
     </section>
   );
 };

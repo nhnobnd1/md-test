@@ -1,4 +1,4 @@
-import { BaseListRequest, BaseListResponse, BaseResponse } from "../unty";
+import { BaseListRequest, BaseListResponse, BaseResponse } from '../unty';
 export type Customer = {
     id: string;
     _id: string;
@@ -19,6 +19,7 @@ export type Customer = {
     storeId: string;
     ticketsCount?: number;
     honorific: string;
+    avatar?: string;
 };
 export interface BaseListCustomerRequest extends BaseListRequest {
     sortBy?: string;
@@ -28,7 +29,7 @@ export interface BaseListCustomerRequest extends BaseListRequest {
 export type GetListCustomerRequest = BaseListCustomerRequest;
 export type GetListCustomerResponse = BaseListResponse<Customer>;
 export type GetOneCustomerResponse = BaseResponse<Customer>;
-export type CreateCustomerRequest = Omit<Customer, "id">;
+export type CreateCustomerRequest = Omit<Customer, 'id'>;
 export type CreateCustomerResponse = BaseResponse<Customer>;
 export type UpdateCustomerRequest = Customer;
 export type UpdateCustomerResponse = BaseResponse<Customer>;

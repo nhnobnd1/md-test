@@ -54,6 +54,7 @@ import { SelectTag } from "src/modules/ticket/components/TicketForm/SelectTag";
 import { TagSelect } from "src/modules/ticket/components/TicketForm/TagSelect";
 import {
   emailIntegrationApi,
+  getCustomerTicket,
   getListConversation,
   getListCustomerApi,
   getListEmailIntegration,
@@ -93,6 +94,7 @@ export interface ChatItem {
   bccEmails?: [];
   datetime?: string;
   right?: boolean;
+  avatar?: string;
 }
 const validateCCEmail = (
   value: string[],
@@ -125,6 +127,7 @@ const DetailTicketFormBeta = () => {
   const [isForward, setIsForward] = useState(false);
   const [enableCC, setEnableCC] = useState(false);
   const [toEmail, setToEmail] = useState("");
+
   const { data: dataTicket, isLoading: processing } = useQuery({
     queryKey: ["getTicket", id],
     queryFn: () => getOneTicket(id as string),
@@ -235,7 +238,16 @@ const DetailTicketFormBeta = () => {
   const updateContent = useFormCreateTicket((state) => state.updateState);
 
   const { timezone } = useGlobalData(false, subDomain || "");
-
+  const { data: customer } = useQuery({
+    queryKey: ["getCustomer", { id: ticket?.customerObjectId }],
+    queryFn: () => getCustomerTicket(ticket?.customerObjectId),
+    retry: 3,
+    staleTime: 10000,
+    enabled: !!ticket?.customerObjectId,
+    onError: () => {
+      message.error(t("messages:error.get_customer"));
+    },
+  });
   const listChat = useMemo<ChatItem[]>(() => {
     const conversationMapping: any = conversationList?.map(
       (item: Conversation) => {
@@ -255,6 +267,7 @@ const DetailTicketFormBeta = () => {
             timezone
           ),
           right: !!item?.senderConfigId,
+          avatar: item?.senderConfigId ? "" : customer?.avatar,
         };
       }
     );
@@ -284,10 +297,11 @@ const DetailTicketFormBeta = () => {
           timezone
         ),
         right: !!ticket?.senderConfigId,
+        avatar: ticket?.senderConfigId ? "" : customer?.avatar,
       });
     }
     return conversationMapping;
-  }, [ticket, conversationList, timezone]);
+  }, [ticket, conversationList, timezone, customer]);
   const [searchCustomer, setSearchCustomer] = useState<string>("");
   const debounceCustomer: string = useDebounce(searchCustomer, 200);
 
@@ -302,6 +316,7 @@ const DetailTicketFormBeta = () => {
     },
   });
 
+  console.log({ customer });
   const customersOptions = useMemo(() => {
     if (!dataCustomers) return [];
     return dataCustomers.map((item) => {
