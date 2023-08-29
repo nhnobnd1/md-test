@@ -11,7 +11,6 @@ import { MDSearchInput } from "src/components/UI/MDSearchInput";
 import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import useViewport from "src/hooks/useViewport";
 import { getListShopifyCustomer } from "src/modules/ticket/api/api";
-import ResultShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ResultShopifySearch";
 import ListShopifyCustomerRes from "src/modules/ticket/helper/interface";
 import styles from "./styles.module.scss";
 const ContentShopifySearch = () => {
@@ -111,11 +110,11 @@ const ContentShopifySearch = () => {
               )
             }
           >
-            {selectedId && selectedId === item.id ? (
+            {/* {selectedId && selectedId === item.id ? (
               <ResultShopifySearch id={selectedId} ref={parentRef} />
             ) : (
               ""
-            )}
+            )} */}
           </Panel>
         ))}
       </Collapse>

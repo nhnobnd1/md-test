@@ -59,6 +59,9 @@
     background-color: rgba(0, 0, 0, 0.04);
   }
 }
+.scroll-y {
+  overflow-y: scroll;
+}
 .one-line {
   overflow: hidden;
   display: -webkit-box;

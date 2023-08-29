@@ -320,59 +320,6 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
             onChange={handleChangeTable}
             columns={columns}
             scroll={{ x: 1024 }}
-            // locale={{
-            //   emptyText: (
-            //     <div className={styles.wrapEmpty}>
-            //       <Empty
-            //         image={Empty.PRESENTED_IMAGE_SIMPLE}
-            //         description="Sorry!, There is no records matched with your search
-            //       criteria."
-            //       />
-            //       <div className={styles.groupButtonTableEmpty}>
-            //         <Dragger
-            //           height={isMobile ? 32 : 40}
-            //           className={styles.uploadBtn}
-            //           name="file"
-            //           accept=".csv, .xlsx"
-            //           onChange={handleUploadFile}
-            //           showUploadList={false}
-            //           beforeUpload={(file: any) => {
-            //             return false;
-            //           }}
-            //           disabled={syncStatus}
-            //         >
-            //           {syncStatus ? (
-            //             <div className="d-flex align-center">
-            //               <span>Processing</span>
-            //               <Tooltip
-            //                 title={
-            //                   "Currently in the process of syncing Shopify customer data or importing data from a file."
-            //                 }
-            //               >
-            //                 <div className={styles.infoPicker}>
-            //                   <InfoCircleTwoTone twoToneColor="#FA7D00" />
-            //                 </div>
-            //               </Tooltip>
-            //             </div>
-            //           ) : (
-            //             <MDButton>Import CSV</MDButton>
-            //           )}
-            //         </Dragger>
-            //         <div
-            //           className={classNames(
-            //             styles.buttonAdd,
-            //             "md-btn md-btn-primary"
-            //           )}
-            //           style={{ marginLeft: 15 }}
-            //         >
-            //           <ButtonAdd onClick={handleAddCustomer}>
-            //             Add customer
-            //           </ButtonAdd>
-            //         </div>
-            //       </div>
-            //     </div>
-            //   ),
-            // }}
           />
         )}
 
