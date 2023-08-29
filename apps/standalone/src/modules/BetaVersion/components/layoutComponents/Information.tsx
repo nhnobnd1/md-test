@@ -338,7 +338,7 @@ const Information = ({
           ) : (
             layout === "profile" && (
               <div className={styles.moreInfo}>
-                <span className={styles.label}>Role:</span>
+                <span className={styles.label}>Role</span>
                 <span className={styles.result}>
                   {profile?.role || "End user"}
                 </span>
@@ -353,7 +353,7 @@ const Information = ({
             ) : (
               <>
                 <div className={styles.moreInfo}>
-                  <span className={styles.label}>Group:</span>
+                  <span className={styles.label}>Group</span>
                   <span className={styles.result}>
                     {" "}
                     {convertListGroup?.length > 0
@@ -371,7 +371,7 @@ const Information = ({
                   </span>
                 </div>
                 <div className={styles.moreInfo}>
-                  <span className={styles.label}>Timezone:</span>
+                  <span className={styles.label}>Timezone</span>
                   <span className={styles.result}>
                     {profile?.timezone || "-"}
                   </span>
