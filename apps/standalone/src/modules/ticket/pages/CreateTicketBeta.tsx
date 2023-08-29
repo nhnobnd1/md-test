@@ -1,19 +1,13 @@
-import { MediaScreen } from "@moose-desk/core";
-import useToggleGlobal from "@moose-desk/core/hooks/useToggleGlobal";
 import { Priority } from "@moose-desk/repo";
 import classNames from "classnames";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { useQuery } from "react-query";
 import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
-import useViewport from "src/hooks/useViewport";
 import TicketFormBeta from "src/modules/ticket/components/TicketForm/TicketFormBeta";
 import { getListEmailIntegration } from "src/modules/ticket/helper/api";
 import styles from "./styles.module.scss";
 
 const CreateTicket = () => {
-  const { isMobile } = useViewport(MediaScreen.LG);
-  const { visible, setVisible } = useToggleGlobal();
-
   const { data: dataEmailIntegration, isLoading: loadingList } = useQuery({
     queryKey: ["getListEmailIntegration"],
     queryFn: () => getListEmailIntegration({ page: 1, limit: 500, isLive: 1 }),
@@ -45,26 +39,13 @@ const CreateTicket = () => {
     };
   }, [primaryEmail]);
 
-  useEffect(() => {
-    return () => {
-      setVisible(false);
-    };
-  }, []);
-  const css = `
-  .md-layout-content{
-    overflow: hidden!important;
-  }
-  `;
   return (
     <section
       className={classNames(styles.container, {
-        "d-flex": visible && !isMobile,
+        "d-flex": true,
       })}
     >
-      {/* <style>{css}</style> */}
       <div className={styles.wrapContent}>
-        {/* <Header className="mb-5" title="New Ticket"></Header> */}
-
         {loadingList ? (
           <>
             <MDSkeleton lines={10} />

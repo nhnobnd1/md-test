@@ -7,7 +7,6 @@ import {
 
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import useSaveDataGlobal from "@moose-desk/core/hooks/useSaveDataGlobal";
-import useToggleGlobal from "@moose-desk/core/hooks/useToggleGlobal";
 import {
   Customer,
   EmailIntegration,
@@ -87,9 +86,7 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
   const { t } = useTranslation();
   const [openModalCustomer, setOpenModalCustomer] = useState(false);
   const contentCreate = useFormCreateTicket((state) => state.content);
-  const { visible, setVisible } = useToggleGlobal();
   const [isChanged, setIsChanged] = useState(false);
-
   const [searchCustomer, setSearchCustomer] = useState<string>("");
   const debounceCustomer: string = useDebounce(searchCustomer, 200);
   const [dataCustomersFetch, setDataCustomerFetch] = useState<Customer[]>([]);

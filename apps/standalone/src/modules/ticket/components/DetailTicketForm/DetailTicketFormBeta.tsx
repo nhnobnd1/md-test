@@ -95,6 +95,7 @@ export interface ChatItem {
   datetime?: string;
   right?: boolean;
   avatar?: string;
+  customerId?: string;
 }
 const validateCCEmail = (
   value: string[],
@@ -268,6 +269,7 @@ const DetailTicketFormBeta = () => {
           ),
           right: !!item?.senderConfigId,
           avatar: item?.senderConfigId ? "" : customer?.avatar,
+          customerId: item?.senderConfigId ? "" : customer?._id,
         };
       }
     );
@@ -298,6 +300,7 @@ const DetailTicketFormBeta = () => {
         ),
         right: !!ticket?.senderConfigId,
         avatar: ticket?.senderConfigId ? "" : customer?.avatar,
+        customerId: ticket?.senderConfigId ? "" : customer?._id,
       });
     }
     return conversationMapping;
@@ -719,13 +722,13 @@ Hit Send to see what your message will look like
               </div>
             )}
             <div className="flex gap-2 ">
-              <Tooltip title="Status">
+              {/* <Tooltip title="Status">
                 <Button
                   className={isTablet ? "flex" : "hidden"}
                   onClick={() => openStatusModal()}
                   icon={<Icon name="statusTicket" />}
                 />
-              </Tooltip>
+              </Tooltip> */}
             </div>
           </div>
         </Header>

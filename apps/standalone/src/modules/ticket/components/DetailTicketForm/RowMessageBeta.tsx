@@ -1,3 +1,4 @@
+import { useNavigate } from "@moose-desk/core";
 import { Button, Card, Collapse, Divider, Popover, Tooltip } from "antd";
 import { filesize } from "filesize";
 import { FC, useMemo, useState } from "react";
@@ -29,7 +30,7 @@ const regexContent = /^.*(?=<div class="md_quote">)/s;
 export const RowMessageBeta: FC<RowMessageProps> = ({ item }) => {
   const [toggleQuote, setToggleQuote] = useState(true);
   const updateChatItem = useForwardTicket((state) => state.updateChatItem);
-
+  const navigate = useNavigate();
   const sortChat = useMemo(() => {
     if (item.chat.match(regexContent)) {
       return item.chat.match(regexContent)?.[0] as string;
@@ -62,7 +63,15 @@ export const RowMessageBeta: FC<RowMessageProps> = ({ item }) => {
     <Card className="w-[800px] mb-3">
       <div className=" items-center gap-3 ">
         <div className="flex items-end gap-3 justify-between items-center  ">
-          <div className="flex gap-2 items-center flex-wrap max-w-[500]">
+          <div
+            onClick={() => {
+              item?.customerId &&
+                navigate(`/customers/detail?customer=${item?.customerId}`);
+            }}
+            className={`flex gap-2 items-center flex-wrap max-w-[500] ${
+              item?.customerId ? "hover:cursor-pointer" : ""
+            }`}
+          >
             <MDAvatar source={item.avatar} lastName={item.name} />
             <div className="flex flex-col">
               <div className="flex gap-2 items-center">
