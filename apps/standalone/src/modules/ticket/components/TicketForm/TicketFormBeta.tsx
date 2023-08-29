@@ -276,6 +276,12 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
       <div className="flex h-full">
         <Card
           className="w-full flex-1"
+          style={{
+            borderRightWidth: 0,
+            borderRadius: 0,
+            borderTopLeftRadius: 10,
+            borderBottomLeftRadius: 10,
+          }}
           bodyStyle={{
             height: "100%",
             display: "flex",
@@ -568,7 +574,15 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
             </MDButton>
           </div>
         </Card>
-        <Card className="w-[350px]" bodyStyle={{ padding: 16 }}>
+        <Card
+          style={{
+            borderRadius: 0,
+            borderTopRightRadius: 10,
+            borderBottomRightRadius: 10,
+          }}
+          className="w-[350px]"
+          bodyStyle={{ padding: 16 }}
+        >
           <Form.Item
             labelAlign="left"
             label={<span style={{ width: 60 }}>Assignee</span>}

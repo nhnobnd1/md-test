@@ -68,7 +68,7 @@ export const RowMessageBeta: FC<RowMessageProps> = ({ item }) => {
             <span className="text-xs">({item.email})</span>
           </div>
           <div className="flex gap-2 items-center">
-            <span>{item.time}</span>
+            <span className="text-xs">{item.time}</span>
             <Button
               onClick={(e) => {
                 handleForward(e, item);
