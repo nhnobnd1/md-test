@@ -20,60 +20,6 @@ export const DetailOrderCustomer = memo(({ dataOrder }: IProps) => {
   const countPrice = (item: any) => {
     return item?.quantity * Number(item?.price);
   };
-  const LIST_OVERVIEW = [
-    {
-      title: "Date",
-      value: formatTimeDDMMYY(dataOrder?.created_at),
-    },
-    {
-      title: "Order Status",
-      value: `${dataOrder?.financial_status || "refund"}, ${
-        dataOrder?.fulfillment_status || "unfulfilled"
-      }`,
-      style: "text-bold",
-    },
-  ];
-  const columns = [
-    {
-      title: "",
-      dataIndex: "name",
-      width: "40%",
-      render: (nameOrder: string, record: any) => (
-        <div>
-          <div className={record?.isRefund ? "text-line-through" : ""}>
-            {nameOrder}
-          </div>
-          {record?.sku && (
-            <div className={record?.isRefund ? "text-line-through" : ""}>
-              {record?.sku}
-            </div>
-          )}
-        </div>
-      ),
-    },
-    {
-      title: "",
-      dataIndex: "price",
-      width: "30%",
-      render: (price: string, record: any) => (
-        <div className={record?.isRefund ? "text-line-through" : ""}>
-          {record?.quantity}x{price}
-          {unit}
-        </div>
-      ),
-    },
-    {
-      title: "",
-      dataIndex: "total",
-      width: "30%",
-      render: (_: any, record: any) => (
-        <div className={record?.isRefund ? "text-line-through" : ""}>
-          {countPrice(record)}
-          {unit}
-        </div>
-      ),
-    },
-  ];
   const memoDataSource = useMemo(() => {
     const listRefundsItem = dataOrder?.refunds;
     const listRefunds: any = [];
@@ -175,14 +121,14 @@ export const DetailOrderCustomer = memo(({ dataOrder }: IProps) => {
                   {trackingAddress?.tracking_url}
                 </Link>
               ) : (
-                "Empty"
+                "-"
               )}
             </span>
           </div>
           <div className={styles.contentBlock}>
             <span className={styles.labels}>Track number:</span>
             <span className={styles.number}>
-              {trackingAddress?.tracking_number || "Empty"}
+              {trackingAddress?.tracking_number || "-"}
             </span>
           </div>
         </>
@@ -268,8 +214,7 @@ export const DetailOrderCustomer = memo(({ dataOrder }: IProps) => {
                   "text-line-through": item?.isRefund,
                 })}
               >
-                {countPrice(item)}
-                {unit}
+                {countPrice(item)} {unit}
               </div>
             </div>
           ))}
@@ -278,22 +223,19 @@ export const DetailOrderCustomer = memo(({ dataOrder }: IProps) => {
           <div className={styles.tax}>
             <span>Tax:</span>
             <p>
-              {dataOrder?.current_total_tax || 0}
-              {unit}
+              {dataOrder?.current_total_tax || 0} {unit}
             </p>
           </div>
           <div className={styles.shipping}>
             <span>Shipping:</span>
             <p>
-              {countShippingPrice()}
-              {unit}
+              {countShippingPrice()} {unit}
             </p>
           </div>
           <div className={styles.total}>
             <span>Total:</span>
             <p>
-              {dataOrder?.current_total_price || 0}
-              {unit}
+              {dataOrder?.current_total_price || 0} {unit}
             </p>
           </div>
         </div>
@@ -312,8 +254,7 @@ export const DetailOrderCustomer = memo(({ dataOrder }: IProps) => {
               <div className={styles.contentBlock}>
                 <span className={styles.labels}>Refunded:</span>
                 <p className={styles.number}>
-                  {memoDetailRefund?.totalRefund}
-                  {unit}
+                  {memoDetailRefund?.totalRefund} {unit}
                 </p>
               </div>
               <div className={styles.contentBlock}>
