@@ -81,7 +81,7 @@ const TextEditor = ({
   });
 
   return (
-    <div>
+    <div id="tiny-mce">
       <Editor
         // initialValue={value || content}
         apiKey="t4mxpsmop8giuev4szkrl7etgn43rtilju95m2tnst9m9uod"
@@ -94,6 +94,7 @@ const TextEditor = ({
           height: 200,
           branding: false,
           toolbar_mode: "scrolling",
+          menubar: false,
           fontsize_formats:
             "8pt 9pt 10pt 11pt 12pt 14pt 18pt 24pt 30pt 36pt 48pt 60pt 72pt 96pt",
           content_style:

@@ -28,6 +28,7 @@ interface TextEditorProps extends Omit<IAllProps, "onChange" | "value"> {
   setLoadingButton?: any;
   files?: any;
   listFileAttach?: any;
+  isSignature?: boolean;
 }
 
 const TextEditorTicketBeta = ({
@@ -39,6 +40,7 @@ const TextEditorTicketBeta = ({
   setFiles,
   setLoadingButton,
   listFileAttach,
+  isSignature,
   ...props
 }: TextEditorProps) => {
   const editorRef = useRef<Editor["editor"] | null>(null);
@@ -253,7 +255,7 @@ const TextEditorTicketBeta = ({
   };
 
   useEffect(() => {
-    setFiles(idAttachments);
+    setFiles && setFiles(idAttachments);
   }, [idAttachments.length]);
   useEffect(() => {
     if (!files?.length) {
@@ -415,20 +417,28 @@ const TextEditorTicketBeta = ({
               icon={<IconText />}
             ></Button>
           </Tooltip>
-          <Tooltip title="Attachment">
-            <Button
-              onClick={openModal}
-              type="text"
-              icon={<AttachIcon fontSize={16} />}
-            ></Button>
-          </Tooltip>
-          <Tooltip title="Insert image">
-            <Button
-              onClick={imageHandler}
-              type="text"
-              icon={<ImageIcon fontSize={16} />}
-            ></Button>
-          </Tooltip>
+          {isSignature ? (
+            <></>
+          ) : (
+            <Tooltip title="Attachment">
+              <Button
+                onClick={openModal}
+                type="text"
+                icon={<AttachIcon fontSize={16} />}
+              ></Button>
+            </Tooltip>
+          )}
+          {isSignature ? (
+            <></>
+          ) : (
+            <Tooltip title="Insert image">
+              <Button
+                onClick={imageHandler}
+                type="text"
+                icon={<ImageIcon fontSize={16} />}
+              ></Button>
+            </Tooltip>
+          )}
           <Tooltip title="">
             <Button
               onClick={() => {

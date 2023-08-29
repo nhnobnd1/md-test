@@ -61,11 +61,25 @@ export const RowMessageBeta: FC<RowMessageProps> = ({ item }) => {
   return (
     <Card className="w-[800px] mb-3">
       <div className=" items-center gap-3 ">
-        <div className="flex items-end gap-3 justify-between items-center">
-          <div className="flex gap-2 items-center flex-wrap">
+        <div className="flex items-end gap-3 justify-between items-center  ">
+          <div className="flex gap-2 items-center flex-wrap max-w-[500]">
             <MDAvatar lastName={item.name} />
-            <span className="text-bold">{item.name}</span>
-            <span className="text-xs">({item.email})</span>
+            <div className="flex flex-col">
+              <div className="flex gap-2 items-center">
+                <span className="text-bold truncate max-w-[300px]">
+                  {item.name}
+                </span>
+                <span className="text-xs truncate max-w-[300px]">
+                  ({item.email})
+                </span>
+              </div>
+              {item.toEmail && (
+                <span style={{ color: "black", fontSize: 12 }}>
+                  <span style={{ fontWeight: "bold" }}>To </span>:{" "}
+                  {item.toEmail}
+                </span>
+              )}
+            </div>
           </div>
           <div className="flex gap-2 items-center">
             <span className="text-xs">{item.time}</span>
@@ -85,20 +99,21 @@ export const RowMessageBeta: FC<RowMessageProps> = ({ item }) => {
           </div>
         </div>
 
-        <div className="flex gap-3  mt-2 flex-wrap">
-          {item.toEmail && (
-            <span style={{ color: "black", fontSize: 12 }}>
-              <span style={{ fontWeight: "bold" }}>To </span>: {item.toEmail}
-            </span>
-          )}
-
+        <div className="flex  ml-12 flex-wrap flex-col">
           {item?.ccEmails?.length ? (
             <>
-              <span
+              <Tooltip
+                title={item.ccEmails.map((i, index) =>
+                  index === (item?.ccEmails?.length as number) - 1 ? (
+                    <span key={i}>{i}</span>
+                  ) : (
+                    <span key={i}>{i}, </span>
+                  )
+                )}
                 style={{ color: "black", fontSize: 12 }}
-                className="truncate"
+                className="truncate w-full"
               >
-                <span style={{ fontWeight: "bold" }}>CC</span>:{" "}
+                <span style={{ fontWeight: "bold", fontSize: 12 }}>Cc</span>:{" "}
                 {item.ccEmails.map((i, index) =>
                   index === (item?.ccEmails?.length as number) - 1 ? (
                     <span key={i}>{i}</span>
@@ -106,18 +121,25 @@ export const RowMessageBeta: FC<RowMessageProps> = ({ item }) => {
                     <span key={i}>{i}, </span>
                   )
                 )}
-              </span>
+              </Tooltip>
             </>
           ) : (
             <></>
           )}
           {item?.bccEmails?.length ? (
             <>
-              <span
-                className="truncate"
+              <Tooltip
+                title={item.bccEmails.map((i, index) =>
+                  index === (item?.bccEmails?.length as number) - 1 ? (
+                    <span key={i}>{i}</span>
+                  ) : (
+                    <span key={i}>{i}, </span>
+                  )
+                )}
+                className="truncate w-full"
                 style={{ color: "black", fontSize: 12 }}
               >
-                <span style={{ fontWeight: "bold" }}>BCC</span>:{" "}
+                <span style={{ fontWeight: "bold", fontSize: 12 }}>Bcc</span>:{" "}
                 {item.bccEmails.map((i, index) =>
                   index === (item?.bccEmails?.length as number) - 1 ? (
                     <span key={i}>{i}</span>
@@ -125,7 +147,7 @@ export const RowMessageBeta: FC<RowMessageProps> = ({ item }) => {
                     <span key={i}>{i}, </span>
                   )
                 )}
-              </span>
+              </Tooltip>
             </>
           ) : (
             <></>

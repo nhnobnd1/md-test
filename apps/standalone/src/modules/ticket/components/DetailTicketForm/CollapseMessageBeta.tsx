@@ -1,6 +1,8 @@
 import { FC, useState } from "react";
 import { ChatItem } from "src/modules/ticket/components/DetailTicketForm/DetailTicketForm";
 
+import { MediaScreen } from "@moose-desk/core";
+import useViewport from "src/hooks/useViewport";
 import { RowMessageBeta } from "src/modules/ticket/components/DetailTicketForm/RowMessageBeta";
 import useForwardTicket from "src/modules/ticket/store/useForwardTicket";
 import "./BoxReplyBeta.scss";
@@ -10,7 +12,7 @@ interface CollapseMessageProps {
 
 export const CollapseMessageBeta: FC<CollapseMessageProps> = ({ listChat }) => {
   const [showMiddleItems, setShowMiddleItems] = useState(false);
-
+  const { isMobile: isTablet } = useViewport(MediaScreen.LG);
   const handleShowMiddleItems = () => {
     setShowMiddleItems(!showMiddleItems);
   };
@@ -22,7 +24,9 @@ export const CollapseMessageBeta: FC<CollapseMessageProps> = ({ listChat }) => {
   return listChat.map((item: ChatItem, index: number) => (
     <div
       key={item.id}
-      className={`flex justify-${item.right ? "end" : "start"}`}
+      className={`flex justify-${
+        item.right ? (isTablet ? "start" : "end") : "start"
+      }`}
     >
       <RowMessageBeta key={item.id} item={item} />
     </div>
