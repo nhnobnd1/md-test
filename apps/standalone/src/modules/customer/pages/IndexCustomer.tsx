@@ -13,7 +13,7 @@ import {
 import { TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import classNames from "classnames";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "react-query";
 import { ButtonAdd } from "src/components/UI/Button/ButtonAdd";
@@ -30,11 +30,7 @@ import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { usePermission } from "src/hooks/usePerrmisson";
 import useViewport from "src/hooks/useViewport";
-import {
-  deleteCustomer,
-  getListCustomer,
-  getOneCustomer,
-} from "src/modules/customer/api/api";
+import { deleteCustomer, getListCustomer } from "src/modules/customer/api/api";
 import { MoreActions } from "src/modules/customer/component/MoreActions";
 import PopupCustomer from "src/modules/customer/component/PopupCustomer";
 import { QUERY_KEY } from "src/modules/customer/helper/constant";
@@ -114,30 +110,30 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
       });
     },
   });
-  useEffect(() => {
-    if (!querySearchCustomer) return;
-    const getCustomerData = async () => {
-      try {
-        const { data: customerData }: any = await getOneCustomer(
-          querySearchCustomer
-        );
-        if (customerData?.data && Object.keys(customerData?.data).length > 0) {
-          handleEdit(customerData?.data);
-        } else {
-          notification.error("Customer not found");
-          navigate("/customers");
-        }
-      } catch (error) {
-        console.log(error, "error");
-      }
-    };
-    getCustomerData();
-  }, [querySearchCustomer, listCustomer]);
+  // useEffect(() => {
+  //   if (!querySearchCustomer) return;
+  //   const getCustomerData = async () => {
+  //     try {
+  //       const { data: customerData }: any = await getOneCustomer(
+  //         querySearchCustomer
+  //       );
+  //       if (customerData?.data && Object.keys(customerData?.data).length > 0) {
+  //         handleEdit(customerData?.data);
+  //       } else {
+  //         notification.error("Customer not found");
+  //         navigate("/customers");
+  //       }
+  //     } catch (error) {
+  //       console.log(error, "error");
+  //     }
+  //   };
+  //   getCustomerData();
+  // }, [querySearchCustomer, listCustomer]);
   const columns: any = [
     {
       title: t("common:customers.honorific"),
       dataIndex: "honorific",
-      width: "5%",
+      width: "10%",
       sorter: {
         compare: (a: any, b: any) => a.honorific - b.honorific,
       },
@@ -151,10 +147,10 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
       },
 
       render: (_: string, record: Customer) => (
-        <div
-          className="cursor-pointer fit-content hover-text"
-          onClick={() => handleEdit(record)}
-        >{`${record.firstName} ${record.lastName}`}</div>
+        <Link
+          className="cursor-pointer fit-content text-black hover-text "
+          to={`/customers/detail?customer=${record?._id}`}
+        >{`${record.firstName} ${record.lastName}`}</Link>
       ),
     },
     {
@@ -165,7 +161,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
           return a.email - b.email;
         },
       },
-      width: "30%",
+      width: "35%",
     },
     {
       title: t("common:customers.ticket_count"),
@@ -185,7 +181,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
           record={record}
           edit
           onlyIcon
-          onEdit={handleEdit}
+          onEdit={() => navigate(`/customers/detail?customer=${record?._id}`)}
           specialDelete={
             isAdmin
               ? {
@@ -199,18 +195,18 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
         />
       ),
     },
-    {
-      title: "",
-      dataIndex: "",
-      width: "10%",
-      render: (_: any, record: any) => (
-        <div>
-          <Link to={`/customer-beta?customer=${record?._id}`}>
-            Detail<span className="md-beta-tag">Beta</span>
-          </Link>
-        </div>
-      ),
-    },
+    // {
+    //   title: "",
+    //   dataIndex: "",
+    //   width: "10%",
+    //   render: (_: any, record: any) => (
+    //     <div>
+    //       <Link to={}>
+    //         Detail<span className="md-beta-tag">Beta</span>
+    //       </Link>
+    //     </div>
+    //   ),
+    // },
   ];
   const handleSearchInput = (query: string) => {
     setFilterData((pre) => ({ ...pre, query }));

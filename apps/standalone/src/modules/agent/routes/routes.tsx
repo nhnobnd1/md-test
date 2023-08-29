@@ -6,17 +6,19 @@ import AgentRoutePaths from "src/modules/agent/routes/paths";
 const agentRoutes: IRoute = {
   path: AgentRoutePaths.Index,
   showInNavigationMenu: false,
+  title: "Agents",
+  middleware: "user",
   element: <AppLayout />,
   routes: [
     {
-      path: AgentRoutePaths.Agents.Index,
-      middleware: "user",
-      routes: [
-        {
-          path: AgentRoutePaths.Agents.Index,
-          component: lazy(() => import("src/modules/agent/pages/agents/Index")),
-        },
-      ],
+      path: AgentRoutePaths.Index,
+      component: lazy(() => import("src/modules/agent/pages/agents/Index")),
+      index: true,
+    },
+    {
+      path: AgentRoutePaths.Detail,
+      index: true,
+      component: lazy(() => import("@moose-beta/agentBeta/pages/Index")),
     },
   ],
 };

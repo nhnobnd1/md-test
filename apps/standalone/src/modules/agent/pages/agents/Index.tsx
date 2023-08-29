@@ -1,4 +1,4 @@
-import { Link, useToggle, useUser } from "@moose-desk/core";
+import { useNavigate, useToggle, useUser } from "@moose-desk/core";
 import { Agent, GetListAgentRequest, Role } from "@moose-desk/repo";
 import { Badge, TableProps } from "antd";
 import { SorterResult } from "antd/es/table/interface";
@@ -23,6 +23,7 @@ import { defaultFilter } from "src/utils/localValue";
 
 const AgentsIndex = () => {
   const message = useMessage();
+  const navigate = useNavigate();
   const { sub: userId, isOwner }: string | any = useUser();
   const {
     state: popupAgent,
@@ -147,28 +148,33 @@ const AgentsIndex = () => {
     )
       return null;
     return (
-      <TableAction record={data} edit={!isAgent} onlyIcon onEdit={handleEdit} />
+      <TableAction
+        record={data}
+        edit={!isAgent}
+        onlyIcon
+        onEdit={() => navigate(`/agent-beta?agent=${data?._id}`)}
+      />
     );
   };
-  const renderBetaAction = (data: Agent) => {
-    if (
-      hiddenEditAgent(
-        isOwner,
-        userId === data?._id,
-        data?.isOwner,
-        isAdmin,
-        isLead,
-        isAgent,
-        data?.role
-      )
-    )
-      return null;
-    return (
-      <Link to={`/agent-beta?agent=${data?._id}`}>
-        Detail<span className="md-beta-tag">Beta</span>
-      </Link>
-    );
-  };
+  // const renderBetaAction = (data: Agent) => {
+  //   if (
+  //     hiddenEditAgent(
+  //       isOwner,
+  //       userId === data?._id,
+  //       data?.isOwner,
+  //       isAdmin,
+  //       isLead,
+  //       isAgent,
+  //       data?.role
+  //     )
+  //   )
+  //     return null;
+  //   return (
+  //     <Link to={`/agent-beta?agent=${data?._id}`}>
+  //       Detail<span className="md-beta-tag">Beta</span>
+  //     </Link>
+  //   );
+  // };
   return (
     <div>
       <PopupAgent
@@ -219,14 +225,32 @@ const AgentsIndex = () => {
               render={(_, record: Agent) => (
                 <span
                   className={
-                    !isAgent && !(isLead && record.role === Role.Admin)
+                    !hiddenEditAgent(
+                      isOwner,
+                      userId === record?._id,
+                      record?.isOwner,
+                      isAdmin,
+                      isLead,
+                      isAgent,
+                      record?.role
+                    )
                       ? `cursor-pointer hover:underline hover:text-blue-500`
                       : ``
                   }
                   onClick={() => {
-                    if (!isAgent && !(isLead && record.role === Role.Admin)) {
-                      handleEdit(record);
-                    }
+                    if (
+                      hiddenEditAgent(
+                        isOwner,
+                        userId === record?._id,
+                        record?.isOwner,
+                        isAdmin,
+                        isLead,
+                        isAgent,
+                        record?.role
+                      )
+                    )
+                      return;
+                    navigate(`/agent-beta?agent=${record?._id}`);
                   }}
                 >
                   {record.lastName === "admin"
@@ -295,11 +319,11 @@ const AgentsIndex = () => {
                   title="Action"
                   render={(_, record: Agent) => renderAction(record)}
                 />
-                <Table.Column
+                {/* <Table.Column
                   key="beta-action"
                   title=""
                   render={(_, record: Agent) => renderBetaAction(record)}
-                />
+                /> */}
               </>
             ) : (
               <></>

@@ -1,7 +1,7 @@
 import { createRoutePath } from "@moose-desk/core";
 
 const CustomerBetaRoutePaths = createRoutePath({
-  Index: "customer-beta",
+  Index: "customers",
 } as const);
 
 export default CustomerBetaRoutePaths;

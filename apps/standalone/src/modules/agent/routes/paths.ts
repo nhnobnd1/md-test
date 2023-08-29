@@ -2,11 +2,7 @@ import { createRoutePath } from "@moose-desk/core";
 
 const AgentRoutePaths = createRoutePath({
   Index: "agent",
-  Agents: {
-    Index: "",
-    New: "new",
-    Detail: ":id",
-  },
+  Detail: "detail",
 } as const);
 
 export default AgentRoutePaths;
