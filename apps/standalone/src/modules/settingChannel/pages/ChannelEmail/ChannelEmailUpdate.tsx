@@ -17,11 +17,12 @@ import {
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
+import { ContextualSaveBar } from "src/components/ContextualSaveBar";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
-import useBusinessHour from "src/modules/setting/store/Businesshour";
+import useUpdated from "src/hooks/useUpdated";
 import {
   ChannelEmailForm,
   ValuesForm,
@@ -44,45 +45,9 @@ const ChannelEmailUpdate = () => {
     (state) => state.channelEmail.signInCallback
   );
 
-  const externalEmailConnection = useAppSelector(
-    (state) => state.channelEmail.externalMailConnection
-  );
-  const updateFormDirty = useBusinessHour((state) => state.updateFormDirty);
-  const isSubmit = useBusinessHour((state) => state.isSubmit);
-  const mailboxType = useMemo(() => {
-    return form.getFieldValue("mailboxType");
-  }, [form.getFieldValue("mailboxType")]);
-
-  const mailSettingType = useMemo(() => {
-    return form.getFieldValue("mailSettingType");
-  }, [form.getFieldValue("mailSettingType")]);
-
-  const activeSave = useMemo(() => {
-    if (mailSettingType === MailSettingType.MOOSEDESK) {
-      return true;
-    }
-    if (mailSettingType === MailSettingType.FORWARD) {
-      return true;
-    }
-    if (mailboxType === MailBoxType.OTHER) {
-      return externalEmailConnection;
-    } else {
-      return true;
-    }
-  }, [externalEmailConnection, mailboxType, mailSettingType]);
+  const { isUpdated, setUpdated } = useUpdated();
 
   const initialForm = useMemo(() => {
-    // if (signCallback?.oauthStatus) {
-    //   return {
-    //     name: signCallback.name,
-    //     supportEmail: signCallback.supportEmail,
-    //     mailSettingType: MailSettingType.CUSTOM,
-    //     mailboxType: MailBoxType.GMAIL,
-    //     isPrimaryEmail: email?.isPrimaryEmail,
-    //     accessType: AccessType.Both,
-    //     deleteFromServer: true,
-    //   };
-    // }
     if (email && email.mailboxType) {
       const mailBoxConfig = email.mailboxConfig as MailBoxConfig;
       switch (email.mailboxType) {
@@ -259,29 +224,16 @@ const ChannelEmailUpdate = () => {
   const createMailOther = useCallback((values: ValuesForm) => {
     updateEmailIntegration(payloadMailOther(values));
   }, []);
-  const handleSubmit = async () => {
-    try {
-      const validate = await form.validateFields();
-      if (validate) {
-        form.submit();
-      }
-    } catch (e) {
-      updateFormDirty(true);
-    }
-  };
+
   const handleBack = () =>
     navigate(generatePath(SettingChannelRoutePaths.ChannelEmail.Index));
   useEffect(() => {
-    updateFormDirty(true);
+    setUpdated(true);
+
     return () => {
-      updateFormDirty(false);
+      setUpdated(false);
     };
   }, []);
-  useEffect(() => {
-    if (isSubmit) {
-      handleSubmit();
-    }
-  }, [isSubmit]);
 
   return (
     <>
@@ -300,6 +252,7 @@ const ChannelEmailUpdate = () => {
           onFinish={handleFinishForm}
         />
       )}
+      {isUpdated && <ContextualSaveBar onSave={() => form.submit()} />}
     </>
   );
 };

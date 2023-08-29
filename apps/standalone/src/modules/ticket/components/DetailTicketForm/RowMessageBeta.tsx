@@ -59,7 +59,7 @@ export const RowMessageBeta: FC<RowMessageProps> = ({ item }) => {
   };
 
   return (
-    <Card className="max-w-[500px] my-3">
+    <Card className="w-[800px] mb-3">
       <div className=" items-center gap-3 ">
         <div className="flex items-end gap-3 justify-between items-center">
           <div className="flex gap-2 items-center flex-wrap">
@@ -68,7 +68,7 @@ export const RowMessageBeta: FC<RowMessageProps> = ({ item }) => {
             <span className="text-xs">({item.email})</span>
           </div>
           <div className="flex gap-2 items-center">
-            <span>{item.time}</span>
+            <span className="text-xs">{item.time}</span>
             <Button
               onClick={(e) => {
                 handleForward(e, item);

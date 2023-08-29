@@ -430,57 +430,42 @@ export const AppLayout = () => {
           "no-touch": !collapsed && isMobile,
         })}
       >
-        {formChanged ? (
-          <div className=" flex justify-end flex-1 px-20px">
-            <Space>
-              {location.pathname.includes("channel-email") ? (
-                <></>
-              ) : (
-                <MDButton onClick={handleResetForm}>Cancel</MDButton>
-              )}
-              <MDButton type="primary" onClick={handleSubmitForm}>
-                Save
-              </MDButton>
-            </Space>
+        <div className="flex justify-between items-center px-20px full-height-header">
+          <div className="logo hover:cursor-pointer flex justify-center items-center gap-2">
+            <MDButton
+              icon={<MenuIcon visible={!collapsed} />}
+              type="text"
+              onClick={handleToggleMenu}
+            ></MDButton>
+            <Link to="/dashboard">
+              <img
+                src={Images.Logo.LogoMooseDesk}
+                width="130"
+                alt="home logo"
+              />
+            </Link>
           </div>
-        ) : (
-          <div className="flex justify-between items-center px-20px full-height-header">
-            <div className="logo hover:cursor-pointer flex justify-center items-center gap-2">
-              <MDButton
-                icon={<MenuIcon visible={!collapsed} />}
-                type="text"
-                onClick={handleToggleMenu}
-              ></MDButton>
-              <Link to="/dashboard">
-                <img
-                  src={Images.Logo.LogoMooseDesk}
-                  width="130"
-                  alt="home logo"
-                />
-              </Link>
-            </div>
-            <div className="user-action">
-              <div className="flex gap-3 align-center">
-                <div className="md:flex hidden">
-                  <Link
-                    className="md-link-ant"
-                    to="/setting/account&security/profile"
-                  >
-                    {user?.subdomain} / {user?.email}
-                  </Link>
-                </div>
-                <MDButton
-                  icon={<Icon name="logout" />}
-                  className="btn-logout"
-                  onClick={handleLogout}
-                  type="text"
+          <div className="user-action">
+            <div className="flex gap-3 align-center">
+              <div className="md:flex hidden">
+                <Link
+                  className="md-link-ant"
+                  to="/setting/account&security/profile"
                 >
-                  Logout
-                </MDButton>
+                  {user?.subdomain} / {user?.email}
+                </Link>
               </div>
+              <MDButton
+                icon={<Icon name="logout" />}
+                className="btn-logout"
+                onClick={handleLogout}
+                type="text"
+              >
+                Logout
+              </MDButton>
             </div>
           </div>
-        )}
+        </div>
       </Layout.Header>
       <Layout className="md-layout-contain-menu">
         {!collapsed && isMobile && (

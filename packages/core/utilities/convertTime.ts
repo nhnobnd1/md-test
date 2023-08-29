@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
+import moment from "moment";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(relativeTime);
@@ -16,16 +17,10 @@ const createdDatetimeFormat = (
     const timeFormat = dayjs.utc(time).tz(timezone);
     const timeDifference = currentTime.diff(timeFormat, "second");
     let formattedTime;
-    if (timeDifference > 7 * 60 * 60 * 24) {
+    if (timeDifference >= 60 * 60 * 24) {
       formattedTime = timeFormat.format("MMM D HH:mm");
-    } else if (timeDifference > 60 * 60 * 24) {
-      formattedTime = `${timeFormat.format("dddd HH:mm")}`;
-    } else if (timeDifference > 60 * 60) {
-      formattedTime = `${currentTime.from(timeFormat)} (${timeFormat.format(
-        "HH:mm"
-      )})`;
     } else {
-      formattedTime = currentTime.from(timeFormat);
+      formattedTime = moment(time).local().fromNow();
     }
 
     return time ? formattedTime : "";

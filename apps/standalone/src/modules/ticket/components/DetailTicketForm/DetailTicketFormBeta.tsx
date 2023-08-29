@@ -21,7 +21,7 @@ import {
   TicketRepository,
   UpdateTicket,
 } from "@moose-desk/repo";
-import { Button, Card, Tag, Tooltip, Upload } from "antd";
+import { Button, Card, Select, Tag, Tooltip, Upload } from "antd";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
@@ -38,7 +38,7 @@ import TextEditorTicketBeta from "src/components/UI/Editor/TextEditorTicketBeta"
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
 import Icon from "src/components/UI/Icon";
-import Select from "src/components/UI/Select/Select";
+// import Select from "src/components/UI/Select/Select";
 import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import useDeepEffect from "src/hooks/useDeepEffect";
 import useMessage from "src/hooks/useMessage";
@@ -241,7 +241,7 @@ const DetailTicketFormBeta = () => {
         return {
           id: item._id,
           name: item.fromEmail?.name,
-          time: `(${createdDatetimeFormat(item.createdDatetime, timezone)})`,
+          time: `${createdDatetimeFormat(item.createdDatetime, timezone)}`,
           chat: item.description,
           email: item.fromEmail?.email,
           attachments: item.attachments,
@@ -269,7 +269,7 @@ const DetailTicketFormBeta = () => {
       conversationMapping?.unshift({
         id: ticket._id,
         name: ticket?.fromEmail.name,
-        time: `(${createdDatetimeFormat(ticket.createdDatetime, timezone)})`,
+        time: `${createdDatetimeFormat(ticket.createdDatetime, timezone)}`,
         chat: ticket.description,
         email: ticket.fromEmail.email,
         attachments: ticket.attachments,
@@ -696,7 +696,7 @@ Hit Send to see what your message will look like
             )}
             <div className="flex gap-2 ">
               <Tooltip title="Status">
-                <MDButton
+                <Button
                   className={isTablet ? "flex" : "hidden"}
                   onClick={() => openStatusModal()}
                   icon={<Icon name="statusTicket" />}
@@ -1054,7 +1054,7 @@ Hit Send to see what your message will look like
                     />
                   </Form.Item>
                 </div>
-                <div className={`flex justify-end absolute right-4 bottom-2`}>
+                <div className={`flex justify-end absolute right-5 bottom-2`}>
                   {form.getFieldValue("status") === StatusTicket.RESOLVED ? (
                     <>
                       <MDButton
@@ -1130,7 +1130,12 @@ Hit Send to see what your message will look like
           <Card
             className="max-w-[350px] xs:hidden lg:block h-full scroll-y"
             bodyStyle={{ padding: 16 }}
-            style={{ flexBasis: 350, flexShrink: 0 }}
+            style={{
+              flexBasis: 350,
+              flexShrink: 0,
+              borderColor: "#d9d9d9",
+              borderLeftWidth: 0,
+            }}
             loading={processing}
           >
             <div className="">
@@ -1140,13 +1145,21 @@ Hit Send to see what your message will look like
                 name="status"
               >
                 <Select
-                  size="large"
+                  size="middle"
                   className="w-full"
                   options={statusOptions}
                 />
               </Form.Item>
-              <Form.Item label="Assignee" name="assignee">
-                <AgentSelect placeholder="Search agents" className="w-full" />
+              <Form.Item
+                labelAlign="left"
+                label={<span style={{ width: 60 }}>Assignee</span>}
+                name="assignee"
+              >
+                <AgentSelect
+                  size="middle"
+                  placeholder="Search agents"
+                  className="w-full"
+                />
               </Form.Item>
               <Form.Item
                 labelAlign="left"
@@ -1161,7 +1174,7 @@ Hit Send to see what your message will look like
                 label={<span style={{ width: 60 }}>Tags</span>}
                 labelAlign="left"
               >
-                <TagSelect />
+                <TagSelect size="middle" />
               </Form.Item>
 
               <div className="flex items-center justify-end">
@@ -1213,24 +1226,24 @@ Hit Send to see what your message will look like
             <Form layout="vertical" form={form}>
               <Form.Item
                 labelAlign="left"
-                label={<span style={{ width: 50 }}>Status</span>}
+                label={<span style={{ width: 60 }}>Status</span>}
                 name="status"
               >
-                <Select
-                  size="large"
-                  className="w-full"
-                  options={statusOptions}
-                />
+                <Select className="w-full" options={statusOptions} />
               </Form.Item>
               <Form.Item
                 labelAlign="left"
-                label={<span style={{ width: 50 }}>Priority</span>}
+                label={<span style={{ width: 60 }}>Priority</span>}
                 name="priority"
               >
                 <Select className="w-full" options={priorityOptions} />
               </Form.Item>
               <Form.Item label="Assignee" name="assignee">
-                <AgentSelect placeholder="Search agents" className="w-full" />
+                <AgentSelect
+                  size="middle"
+                  placeholder="Search agents"
+                  className="w-full"
+                />
               </Form.Item>
 
               <Form.Item
@@ -1238,7 +1251,7 @@ Hit Send to see what your message will look like
                 label={<span style={{ width: 60 }}>Tags</span>}
                 labelAlign="left"
               >
-                <TagSelect />
+                <TagSelect size="middle" />
               </Form.Item>
             </Form>
           </MDModalUI>

@@ -244,13 +244,8 @@ const DetailTicket = () => {
         return {
           id: item._id,
           name: item.fromEmail?.name,
-          time: `${moment
-            .unix(item.createdTimestamp)
-            .local()
-            .fromNow()} (${createdDatetimeFormat(
-            item.createdDatetime,
-            timezone
-          )})`,
+          time: `${createdDatetimeFormat(item.createdDatetime, timezone)}`,
+
           chat: item.description,
           email: item.fromEmail?.email,
           attachments: item.attachments,
@@ -274,12 +269,8 @@ const DetailTicket = () => {
       conversationMapping?.unshift({
         id: ticket._id,
         name: ticket?.fromEmail.name,
-        time: `${moment(
-          ticket.createdDatetime
-        ).fromNow()} (${createdDatetimeFormat(
-          ticket.createdDatetime,
-          timezone
-        )})`,
+        time: `${createdDatetimeFormat(ticket.createdDatetime, timezone)}`,
+
         chat: ticket.description,
         email: ticket.fromEmail.email,
         attachments: ticket.attachments,

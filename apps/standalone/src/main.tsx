@@ -11,7 +11,6 @@ import ReactDOM from "react-dom";
 import ReactGA from "react-ga4";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { createWebStoragePersistor } from "react-query/createWebStoragePersistor-experimental";
-import { ReactQueryDevtools } from "react-query/devtools";
 import { Loading } from "src/components/Loading";
 import env from "src/core/env";
 import ModuleLoader from "src/core/utilities/ModuleLoader";
@@ -105,7 +104,7 @@ ReactDOM.render(
           </ApiLoadingHandlerProvider>
         </LoadingProvider>
       </Suspense>
-      <ReactQueryDevtools initialIsOpen={false} />
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </QueryClientProvider>
   </BrowserRouter>,
   document.getElementById("root")

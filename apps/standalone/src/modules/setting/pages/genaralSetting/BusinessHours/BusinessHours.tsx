@@ -12,6 +12,7 @@ import { isEqual, keys, pick } from "lodash-es";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "react-query";
+import { ContextualSaveBar } from "src/components/ContextualSaveBar";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
 import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
@@ -19,6 +20,7 @@ import timeZoneList from "src/constaint/timeZone";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
 import { useSubdomain } from "src/hooks/useSubdomain";
+import useUpdated from "src/hooks/useUpdated";
 import { Role } from "src/models/Rule";
 import AutoReplyTab from "src/modules/setting/component/AutoReply/AutoReplyTab";
 import BusinessHoursTab from "src/modules/setting/component/BusinessHours/BusinessHoursTab";
@@ -35,11 +37,10 @@ const BusinessHours = () => {
   const notification = useNotification();
   const tabSelected = useBusinessHour((state) => state.tabSelected);
   const updateTabSelected = useBusinessHour((state) => state.updateTabSelected);
-  const updateFormDirty = useBusinessHour((state) => state.updateFormDirty);
-  const formChanged = useBusinessHour((state) => state.formChanged);
-  const isReset = useBusinessHour((state) => state.isReset);
-  const isSubmit = useBusinessHour((state) => state.isSubmit);
+
   const { subDomain } = useSubdomain();
+  const { isUpdated, setUpdated } = useUpdated();
+
   const { refetchGlobal } = useGlobalData(false, subDomain || "");
   // main code
   const {
@@ -68,7 +69,7 @@ const BusinessHours = () => {
   const update = useMutation({
     mutationFn: (payload) => updateListBusinessCalendar(payload),
     onSuccess: () => {
-      updateFormDirty(false);
+      setUpdated(false);
       message.loading.hide();
       refetchBusinessCalendar();
       notification.success(t("messages:success.update_business_calendar"));
@@ -116,7 +117,7 @@ const BusinessHours = () => {
         }
       }
       if (isSuccess) {
-        updateFormDirty(
+        setUpdated(
           !isEqual(
             pick(dataBusinessCalendar, keys(form.getFieldsValue())),
             form.getFieldsValue()
@@ -138,16 +139,6 @@ const BusinessHours = () => {
       ? setDisabled(true)
       : setDisabled(false);
   }, [dataBusinessCalendar]);
-  // const disabled = useMemo(() => {
-  //   return (
-  //     form.getFieldValue("businessHoursType") === BusinessHoursType.Full ||
-  //     dataBusinessCalendar?.businessHoursType === BusinessHoursType.Full
-  //   );
-  // }, [
-  //   form.getFieldValue("businessHoursType"),
-  //   formChanged,
-  //   dataBusinessCalendar?.businessHoursType,
-  // ]);
 
   const handleSubmit = useCallback((data: any) => {
     const revertTimeZome = timeZoneList.timeZone.find(
@@ -172,22 +163,7 @@ const BusinessHours = () => {
   }, [form.getFieldsValue()?.businessHoursAutoReplyCode]);
 
   const handleSave = () => form.submit();
-  useEffect(() => {
-    if (isReset) {
-      form.resetFields();
-      dataBusinessCalendar?.businessHoursType === BusinessHoursType.Full
-        ? setDisabled(true)
-        : setDisabled(false);
-    }
-  }, [isReset, dataBusinessCalendar]);
-  useEffect(() => {
-    if (isSubmit) {
-      form.submit();
-    }
-    return () => {
-      updateFormDirty(false);
-    };
-  }, [isSubmit]);
+
   return (
     <>
       <Header
@@ -272,6 +248,19 @@ const BusinessHours = () => {
             </Form.Item>
           </Form>
         </>
+      )}
+      {isUpdated && (
+        <ContextualSaveBar
+          onCancel={() => {
+            form.resetFields();
+            dataBusinessCalendar?.businessHoursType === BusinessHoursType.Full
+              ? setDisabled(true)
+              : setDisabled(false);
+            setUpdated(false);
+          }}
+          onSave={() => form.submit()}
+          loading={update.isLoading}
+        />
       )}
     </>
   );
