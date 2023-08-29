@@ -609,7 +609,7 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
           </Form.Item>
 
           <div>
-            <ResultShopifySearch email={toEmail?.value} />
+            <ResultShopifySearch email={toEmail?.value} id={toEmail?.id} />
           </div>
           {/* <Divider /> */}
         </Card>

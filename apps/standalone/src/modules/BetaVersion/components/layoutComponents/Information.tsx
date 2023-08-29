@@ -336,7 +336,7 @@ const Information = ({
           {loadingProfile ? (
             <MDSkeleton lines={1} />
           ) : (
-            layout !== "agent" && (
+            layout === "profile" && (
               <div className={styles.moreInfo}>
                 <span className={styles.label}>Role:</span>
                 <span className={styles.result}>
@@ -346,36 +346,40 @@ const Information = ({
             )
           )}
         </div>
-        <div className={styles.blockContent}>
-          {loadingProfile ? (
-            <MDSkeleton lines={2} />
-          ) : (
-            <>
-              <div className={styles.moreInfo}>
-                <span className={styles.label}>Group:</span>
-                <span className={styles.result}>
-                  {" "}
-                  {convertListGroup?.length > 0
-                    ? convertListGroup?.map(
-                        (groupName: string, index: number) => (
-                          <span key={index} style={{ marginRight: 3 }}>
-                            {groupName}
-                            {index === convertListGroup?.length - 1 ? "" : ","}
-                          </span>
+        {layout !== "customer" && (
+          <div className={styles.blockContent}>
+            {loadingProfile ? (
+              <MDSkeleton lines={2} />
+            ) : (
+              <>
+                <div className={styles.moreInfo}>
+                  <span className={styles.label}>Group:</span>
+                  <span className={styles.result}>
+                    {" "}
+                    {convertListGroup?.length > 0
+                      ? convertListGroup?.map(
+                          (groupName: string, index: number) => (
+                            <span key={index} style={{ marginRight: 3 }}>
+                              {groupName}
+                              {index === convertListGroup?.length - 1
+                                ? ""
+                                : ","}
+                            </span>
+                          )
                         )
-                      )
-                    : "-"}
-                </span>
-              </div>
-              <div className={styles.moreInfo}>
-                <span className={styles.label}>Timezone:</span>
-                <span className={styles.result}>
-                  {profile?.timezone || "-"}
-                </span>
-              </div>
-            </>
-          )}
-        </div>
+                      : "-"}
+                  </span>
+                </div>
+                <div className={styles.moreInfo}>
+                  <span className={styles.label}>Timezone:</span>
+                  <span className={styles.result}>
+                    {profile?.timezone || "-"}
+                  </span>
+                </div>
+              </>
+            )}
+          </div>
+        )}
         {layout === "agent" && (
           <AgentInfoBlock
             profile={profile}
