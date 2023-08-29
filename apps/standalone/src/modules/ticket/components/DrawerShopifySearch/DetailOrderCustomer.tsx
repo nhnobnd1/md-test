@@ -121,14 +121,14 @@ export const DetailOrderCustomer = memo(({ dataOrder }: IProps) => {
                   {trackingAddress?.tracking_url}
                 </Link>
               ) : (
-                "Empty"
+                "-"
               )}
             </span>
           </div>
           <div className={styles.contentBlock}>
             <span className={styles.labels}>Track number:</span>
             <span className={styles.number}>
-              {trackingAddress?.tracking_number || "Empty"}
+              {trackingAddress?.tracking_number || "-"}
             </span>
           </div>
         </>

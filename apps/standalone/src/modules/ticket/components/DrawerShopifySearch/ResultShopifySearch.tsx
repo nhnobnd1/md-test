@@ -138,7 +138,7 @@ const ResultShopifySearch = ({ email = "", id = "" }: IProps) => {
               ) : (
                 <>
                   <div className={styles.moreInfo}>
-                    <span className={styles.label}>Email:</span>
+                    <span className={styles.label}>Email</span>
                     <span className={styles.result}>
                       <Link href={`mailto:${customerInfo?.email}`}>
                         {customerInfo?.email}
@@ -146,13 +146,13 @@ const ResultShopifySearch = ({ email = "", id = "" }: IProps) => {
                     </span>
                   </div>
                   <div className={styles.moreInfo}>
-                    <span className={styles.label}>Phone:</span>
+                    <span className={styles.label}>Phone</span>
                     <span className={styles.result}>
                       {customerInfo?.phoneNumber || "-"}
                     </span>
                   </div>
                   <div className={styles.moreInfo}>
-                    <span className={styles.label}>Orders:</span>
+                    <span className={styles.label}>Orders</span>
                     <span className={styles.result}>
                       {!customerFromShopify && "-"}
                       {customerFromShopify?.orders_count}
@@ -173,7 +173,7 @@ const ResultShopifySearch = ({ email = "", id = "" }: IProps) => {
                     </span>
                   </div>
                   <div className={styles.moreInfo}>
-                    <span className={styles.label}>Amount:</span>
+                    <span className={styles.label}>Amount</span>
                     <span className={styles.result}>
                       {!customerFromShopify && "-"}
                       {customerFromShopify?.total_spent}{" "}
