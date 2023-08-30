@@ -225,16 +225,6 @@ const BusinessHours = (props: BusinessHoursProps) => {
                           <div
                             className={selected === 1 ? undefined : "hidden"}
                           >
-                            <FormItem name="holidays">
-                              <HolidayTab
-                                handleSave={handleSave}
-                                dataAutoReply={dataAutoReply}
-                              />
-                            </FormItem>
-                          </div>
-                          <div
-                            className={selected === 2 ? undefined : "hidden"}
-                          >
                             <FormItem name="autoReply">
                               <AutoReplyTab
                                 handleSave={handleSave}
@@ -242,6 +232,16 @@ const BusinessHours = (props: BusinessHoursProps) => {
                                 dataBusinessHoursAutoReplyCode={
                                   dataBusinessHoursAutoReplyCode
                                 }
+                              />
+                            </FormItem>
+                          </div>
+                          <div
+                            className={selected === 2 ? undefined : "hidden"}
+                          >
+                            <FormItem name="holidays">
+                              <HolidayTab
+                                handleSave={handleSave}
+                                dataAutoReply={dataAutoReply}
                               />
                             </FormItem>
                           </div>
@@ -272,7 +272,7 @@ const BusinessHours = (props: BusinessHoursProps) => {
                                 hours. You can set up new message in the{" "}
                                 <span
                                   onClick={() => {
-                                    setSelected(2);
+                                    setSelected(1);
                                   }}
                                   className="cursor-pointer hover:underline text-blue-500 opacity-1"
                                 >

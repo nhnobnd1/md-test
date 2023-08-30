@@ -59,14 +59,14 @@ export const tabs = [
     panelID: "business-hours",
   },
   {
-    id: "holiday",
-    content: "Holidays",
-    panelID: "holiday",
-  },
-  {
     id: "auto-reply",
     content: "Auto-Reply",
     panelID: "auto-reply",
+  },
+  {
+    id: "holiday",
+    content: "Holidays",
+    panelID: "holiday",
   },
 ];
 

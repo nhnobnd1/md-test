@@ -1,4 +1,10 @@
-import { useCountDown, useJob, useMount, useUnMount } from "@moose-desk/core";
+import {
+  convertSecondsToMinutesAndSeconds,
+  useCountDown,
+  useJob,
+  useMount,
+  useUnMount,
+} from "@moose-desk/core";
 import { MethodOTP, UserSettingRepository } from "@moose-desk/repo";
 import { Space, Typography } from "antd";
 import Link from "antd/es/typography/Link";
@@ -98,7 +104,9 @@ const EmailOTP = ({
               Re-send OTP Code
             </Link>
             {!countDown ? null : (
-              <Typography.Text className="ml-2">({countDown}s)</Typography.Text>
+              <Typography.Text className="ml-2">
+                ({convertSecondsToMinutesAndSeconds(countDown)})
+              </Typography.Text>
             )}
           </div>
         </div>

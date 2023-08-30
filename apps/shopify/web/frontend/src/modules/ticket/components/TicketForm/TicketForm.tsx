@@ -348,13 +348,20 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
       updateContent({ content: undefined });
     };
   }, []);
-
+  const onKeyDown = useCallback((keyEvent: any) => {
+    if ((keyEvent.charCode || keyEvent.keyCode) === 13) {
+      keyEvent.preventDefault();
+    }
+  }, []);
   return (
     <Form
       {...props}
       initialValues={props.initialValues}
       validationSchema={TicketFormSchema}
-      onSubmit={() => {
+      formDefaultProps={{
+        onKeyDown: onKeyDown,
+      }}
+      onSubmit={(e) => {
         onFinish();
       }}
       onValuesChange={handleChangeForm}

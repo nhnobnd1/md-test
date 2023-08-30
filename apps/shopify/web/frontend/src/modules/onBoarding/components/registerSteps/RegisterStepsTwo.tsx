@@ -1,4 +1,4 @@
-import { Button, LegacyCard, Page, Text } from "@shopify/polaris";
+import { Button, LegacyCard, Link, Page, Text } from "@shopify/polaris";
 import classNames from "classnames";
 import { useCallback } from "react";
 import { useSubdomain } from "src/hooks/useSubdomain";
@@ -63,9 +63,7 @@ const RegisterStepsTwo = ({ nextStep, preStep }: RegisterStepsTwoProps) => {
           </Text>
         </div>
         <div className={classNames(styles.groupButtonStep2, "mt-4")}>
-          <Button onClick={preStep} destructive>
-            Back
-          </Button>
+          <Link onClick={preStep}>Back</Link>
           <Button onClick={handleActionStep} primary>
             Next
           </Button>

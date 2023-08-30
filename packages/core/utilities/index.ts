@@ -59,6 +59,16 @@ export function typeChannelTicket(isCreatedByWidget: boolean) {
   return "warning";
 }
 
+export function convertSecondsToMinutesAndSeconds(seconds: number) {
+  if (seconds < 60) {
+    return seconds + "s";
+  } else {
+    var minutes = Math.floor(seconds / 60);
+    var remainingSeconds = seconds % 60;
+    return minutes + " m " + (remainingSeconds ? remainingSeconds + " s" : "");
+  }
+}
+
 export enum MediaScreen {
   XS = 320,
   SM = 576,

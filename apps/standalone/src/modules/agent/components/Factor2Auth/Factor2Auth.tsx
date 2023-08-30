@@ -1,4 +1,8 @@
-import { useMount, useUnMount } from "@moose-desk/core";
+import {
+  convertSecondsToMinutesAndSeconds,
+  useMount,
+  useUnMount,
+} from "@moose-desk/core";
 import { SignInAccountAgentRequest } from "@moose-desk/repo";
 import { Button, Form } from "antd";
 import classNames from "classnames";
@@ -105,7 +109,11 @@ export const Factor2Auth = ({
             >
               Re-send OTP Code
             </span>
-            {!activeResend && <span className={styles.time}>{countDown}s</span>}
+            {!activeResend && (
+              <span className={styles.time}>
+                {convertSecondsToMinutesAndSeconds(countDown)}
+              </span>
+            )}
           </div>
         )}
       </Form>

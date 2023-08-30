@@ -1,4 +1,4 @@
-import { useToggle } from "@moose-desk/core";
+import { convertSecondsToMinutesAndSeconds, useToggle } from "@moose-desk/core";
 import { Typography } from "antd";
 import { ButtonProps } from "antd/lib/button";
 import classNames from "classnames";
@@ -34,7 +34,7 @@ export const ResetModalRecoveryCode = React.memo(
       <div className="d-flex align-center">
         {!countDown ? null : (
           <Typography.Text type="success" className="mr-2">
-            ({countDown}s)
+            ({convertSecondsToMinutesAndSeconds(countDown)})
           </Typography.Text>
         )}
         <MDButton

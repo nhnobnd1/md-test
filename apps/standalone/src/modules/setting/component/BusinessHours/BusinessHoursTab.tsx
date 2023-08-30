@@ -59,7 +59,7 @@ const BusinessHoursTab = ({
             message in the{" "}
             <span
               onClick={() => {
-                updateTabSelected("3");
+                updateTabSelected("2");
               }}
               className="cursor-pointer hover:underline text-blue-500 opacity-1"
             >

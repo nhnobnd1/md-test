@@ -112,12 +112,10 @@ const RegisterStepsThree = ({
           </Text>
         </div>
         <div className={classNames(styles.redirectLandingPage, "mt-4")}>
-          <Button onClick={previousStep} destructive>
-            Back
-          </Button>
-          <Link onClick={redirectLandingPage} external>
+          <Link onClick={previousStep}>Back</Link>
+          <Button primary onClick={redirectLandingPage} external>
             Click here to start using your portal
-          </Link>
+          </Button>
         </div>
       </LegacyCard>
     </Page>

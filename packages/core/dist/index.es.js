@@ -5442,6 +5442,12 @@ function Pb(e) {
 function Rb(e) {
   return e ? "success" : "warning";
 }
+function Cb(e) {
+  if (e < 60)
+    return e + "s";
+  var t = Math.floor(e / 60), r = e % 60;
+  return t + " m " + (r ? r + " s" : "");
+}
 var l_ = /* @__PURE__ */ ((e) => (e[e.XS = 320] = "XS", e[e.SM = 576] = "SM", e[e.MD = 768] = "MD", e[e.LG = 1024] = "LG", e[e.XL = 1280] = "XL", e[e.XXL = 1600] = "XXL", e))(l_ || {});
 function Ku(e, t) {
   return function() {
@@ -6759,20 +6765,20 @@ be.AxiosHeaders = ct;
 be.formToJSON = (e) => cl(g.isHTMLForm(e) ? new FormData(e) : e);
 be.default = be;
 const yl = be, {
-  Axios: Nb,
+  Axios: $b,
   AxiosError: Sw,
-  CanceledError: $b,
-  isCancel: Gb,
-  CancelToken: Lb,
-  VERSION: Ib,
-  all: Yb,
-  Cancel: Fb,
-  isAxiosError: Ub,
-  spread: jb,
-  toFormData: Wb,
-  AxiosHeaders: Hb,
-  formToJSON: Bb,
-  mergeConfig: Vb
+  CanceledError: Gb,
+  isCancel: Lb,
+  CancelToken: Ib,
+  VERSION: Yb,
+  all: Fb,
+  Cancel: Ub,
+  isAxiosError: jb,
+  spread: Wb,
+  toFormData: Hb,
+  AxiosHeaders: Bb,
+  formToJSON: Vb,
+  mergeConfig: zb
 } = yl;
 var Ua = function(e, t) {
   return Ua = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function(r, n) {
@@ -8177,7 +8183,7 @@ Check the top-level render call using <` + A + ">.");
 }
 process.env.NODE_ENV === "production" ? za.exports = Lw() : za.exports = Iw();
 var Us = za.exports;
-const Ut = Us.Fragment, he = Us.jsx, qa = Us.jsxs, zb = (e = () => {
+const Ut = Us.Fragment, he = Us.jsx, qa = Us.jsxs, qb = (e = () => {
 }) => {
   const [t, r] = ye(!1);
   t || (e(), r(!0));
@@ -8190,7 +8196,7 @@ function Yw(e, t) {
     r.current = !0;
   }, t);
 }
-function qb({ initValue: e, key: t }) {
+function Jb({ initValue: e, key: t }) {
   const [r, n] = ye({}), [a, s] = ye({}), i = ce(
     (c, d) => {
       n((p) => ({
@@ -8454,7 +8460,7 @@ function Tl() {
     () => yr.routes
   ), addRoutes: e, removeRoute: t };
 }
-const Jb = () => {
+const Kb = () => {
   const { routes: e } = Tl(), [t, r] = ye(), n = ht(), a = ce(
     (s) => {
       const i = s.filter(
@@ -8501,13 +8507,13 @@ function zw(e, t) {
     flush: a.flush
   };
 }
-function Kb(e, t) {
+function Zb(e, t) {
   const [r, n] = ye(e), { run: a } = zw((s) => {
     n(s);
   }, t);
   return [r, a];
 }
-const Zb = (e, t) => {
+const Xb = (e, t) => {
   const r = kt(e);
   r.current = e;
   const n = ye()[1], a = ce(() => {
@@ -8535,7 +8541,7 @@ const Zb = (e, t) => {
 }, Sl = go(
   void 0
 );
-function Xb({
+function Qb({
   children: e,
   color: t,
   isWrap: r = !1,
@@ -8599,7 +8605,7 @@ function Jw(e, t) {
     error: d
   };
 }
-const Kw = { attributes: !0, childList: !0, subtree: !0 }, Qb = (e, t) => {
+const Kw = { attributes: !0, childList: !0, subtree: !0 }, eT = (e, t) => {
   const r = rr(() => new MutationObserver(t), [t]);
   Ae(() => {
     const n = e instanceof HTMLElement ? e : e.current;
@@ -8608,13 +8614,13 @@ const Kw = { attributes: !0, childList: !0, subtree: !0 }, Qb = (e, t) => {
     };
   }, [r, e]);
 };
-function eT(e) {
+function tT(e) {
   const t = kt();
   return Ae(() => {
     t.current = e;
   }), t.current;
 }
-const tT = (e, t) => {
+const rT = (e, t) => {
   const r = kt(e);
   r.current = e;
   const n = ye()[1], a = ce(() => {
@@ -8631,11 +8637,11 @@ const tT = (e, t) => {
     cancel: s
   };
 };
-function rT({ get: e, set: t }, r) {
+function nT({ get: e, set: t }, r) {
   const n = rr(e, r), a = ce(t, r);
   return [n, a];
 }
-const Ml = go(void 0), nT = ({
+const Ml = go(void 0), aT = ({
   children: e,
   defaultTokens: t = () => ({}),
   fetchUserOnLogin: r = () => new _n((s) => s.next(void 0)),
@@ -8720,13 +8726,13 @@ const Ml = go(void 0), nT = ({
   });
   return js(() => k()), /* @__PURE__ */ he(Ml.Provider, { value: { user: s, tokens: o, isLoggedIn: l, login: y, logout: m }, children: e });
 };
-function aT() {
+function sT() {
   const e = Ka(Ml);
   if (!e)
     throw new Error("useAuthContext must be used in AuthProvider");
   return e;
 }
-const Ws = Dr.createContext(void 0), sT = ({
+const Ws = Dr.createContext(void 0), iT = ({
   userPermissions: e,
   isUser: t,
   children: r
@@ -8747,22 +8753,22 @@ const Ws = Dr.createContext(void 0), sT = ({
     granted: rr(() => e ? t.can(e) : !0, [e, t.can]),
     ...t
   };
-}, iT = vo(
+}, oT = vo(
   ({ permissions: e, children: t, guestView: r }) => {
     const { granted: n } = Zw(e);
     return typeof t == "function" ? t(n) : /* @__PURE__ */ he(Ut, { children: n ? t : r });
   }
 );
-function oT(e) {
+function uT(e) {
   return (t) => (r) => /* @__PURE__ */ he(Ws.Consumer, { children: (n) => /* @__PURE__ */ he(Ut, { children: (n == null ? void 0 : n.can(e || [])) && /* @__PURE__ */ he(t, { ...r }) }) });
 }
-function uT({
+function lT({
   component: e,
   props: t
 }) {
   return /* @__PURE__ */ he(e, { ...t });
 }
-function lT({
+function cT({
   children: e
 }) {
   const { startLoading: t, stopLoading: r } = El();
@@ -8779,7 +8785,7 @@ function lT({
     }
   })), /* @__PURE__ */ he(Ut, { children: e });
 }
-function cT(e, t) {
+function fT(e, t) {
   return () => {
     const r = new xr(e().baseURL, e());
     return Hm(t, (n) => (...a) => n(r, ...a));
@@ -8833,7 +8839,7 @@ const Qw = ({
   return Ae(() => {
     e && e(t);
   }, [t.pathname]), /* @__PURE__ */ he(Ut, {});
-}, fT = ({
+}, dT = ({
   routes: e,
   notFoundElement: t,
   onRouteChange: r
@@ -8850,14 +8856,14 @@ const Qw = ({
     ] })
   ] });
 };
-function dT(e) {
+function hT(e) {
   const t = e;
   return (r) => {
     const n = Tl();
     return /* @__PURE__ */ he(t, { ...r, routes: n });
   };
 }
-const hT = {
+const pT = {
   "Etc/GMT+12": "(GMT-12:00) International Date Line West",
   "Pacific/Pago_Pago": "(GMT-11:00) American Samoa",
   "Pacific/Midway": "(GMT-11:00) Midway Island",
@@ -8993,7 +8999,7 @@ const hT = {
   "Pacific/Tongatapu": "(GMT+13:00) Nuku'alofa",
   "Pacific/Apia": "(GMT+13:00) Samoa",
   "Pacific/Fakaofo": "(GMT+13:00) Tokelau Is"
-}, pT = {
+}, mT = {
   "Etc/GMT+12": "GMT-12:00",
   "Pacific/Pago_Pago": "GMT-11:00",
   "Pacific/Midway": "GMT-11:00",
@@ -9132,34 +9138,35 @@ const hT = {
 };
 export {
   xr as Api,
-  lT as ApiLoadingHandlerProvider,
-  nT as AuthProvider,
-  sT as AuthorizationProvider,
+  cT as ApiLoadingHandlerProvider,
+  aT as AuthProvider,
+  iT as AuthorizationProvider,
   Fs as AxiosObservable,
   db as BrowserRouter,
   Qm as EventListenersManager,
   Ao as Link,
   Sl as LoadingContext,
-  Xb as LoadingProvider,
+  Qb as LoadingProvider,
   tb as LocationEffect,
   l_ as MediaScreen,
   fb as Navigate,
   jc as Outlet,
-  iT as PrivateView,
+  oT as PrivateView,
   Da as RequestHeaderContentType,
   yo as RouteMiddleware,
   eb as RouteRenderer,
-  fT as RouterGenerator,
+  dT as RouterGenerator,
   yr as RouterHandler,
   jr as StorageManager,
   Qo as StorageManagerClass,
-  hT as TIME_ZONES,
-  pT as TIME_ZONES_GMT,
+  pT as TIME_ZONES,
+  mT as TIME_ZONES_GMT,
   Jt as TokenManager,
   _b as clearObject,
   Vi as clearUndefinedProperties,
+  Cb as convertSecondsToMinutesAndSeconds,
   mr as coreConfig,
-  cT as createRepository,
+  fT as createRepository,
   Xw as createRoutePath,
   mb as createVariableWithWatcher,
   yb as createdDatetimeFormat,
@@ -9170,7 +9177,7 @@ export {
   Ga as formData,
   ab as generatePath,
   Ol as generateRoutes,
-  uT as lazyComponent,
+  lT as lazyComponent,
   qi as makeId,
   Eb as objectIdRegex,
   Tb as passwordRegex,
@@ -9184,37 +9191,37 @@ export {
   ub as useActionData,
   cb as useAsyncError,
   lb as useAsyncValue,
-  aT as useAuthContext,
+  sT as useAuthContext,
   Zw as useAuthorization,
   pb as useBeforeUnload,
-  zb as useConstructor,
-  qb as useCountDown,
-  Jb as useCurrentRoute,
+  qb as useConstructor,
+  Jb as useCountDown,
+  Kb as useCurrentRoute,
   zw as useDebounceFn,
-  Kb as useDebounceState,
+  Zb as useDebounceState,
   Yw as useDidUpdate,
-  Zb as useInterval,
+  Xb as useInterval,
   Jw as useJob,
   El as useLoading,
   ht as useLocation,
   js as useMount,
   wn as useNavigate,
   ob as useNavigation,
-  Qb as useOnElementChange,
+  eT as useOnElementChange,
   Cc as useOutlet,
   sb as useOutletContext,
   ib as useParams,
-  eT as usePrevious,
+  tT as usePrevious,
   Ob as useRole,
   Tl as useRoutes,
   hb as useSearchParams,
-  tT as useTimeout,
+  rT as useTimeout,
   qw as useToggle,
   Vw as useUnMount,
   xb as useUser,
-  rT as useWritableMemo,
+  nT as useWritableMemo,
   bb as usernameRegex,
   Sb as validateAsciiChars,
-  oT as withAuthorization,
-  dT as withRoutes
+  uT as withAuthorization,
+  hT as withRoutes
 };

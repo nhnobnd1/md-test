@@ -1,4 +1,8 @@
-import { useCountDown, useJob } from "@moose-desk/core";
+import {
+  convertSecondsToMinutesAndSeconds,
+  useCountDown,
+  useJob,
+} from "@moose-desk/core";
 import {
   Agent,
   AgentRepository,
@@ -447,7 +451,9 @@ export const PopupAgent = ({
                 <span>Re-send Invitation Email</span>
               </div>
               {isSendingMail && !loadingGetDetail && (
-                <span className="font-semibold">({countDown})</span>
+                <span className="font-semibold">
+                  ({convertSecondsToMinutesAndSeconds(countDown)})
+                </span>
               )}
             </div>
           )}

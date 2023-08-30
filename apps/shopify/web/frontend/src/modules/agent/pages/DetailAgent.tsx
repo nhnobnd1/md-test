@@ -1,4 +1,5 @@
 import {
+  convertSecondsToMinutesAndSeconds,
   generatePath,
   useCountDown,
   useJob,
@@ -430,7 +431,7 @@ const DetailAgent = (props: CreateAgentProps) => {
 
                       {isSendingMail && (
                         <Text as="span" variant="bodyLg">
-                          ({countDown})
+                          ({convertSecondsToMinutesAndSeconds(countDown)})
                         </Text>
                       )}
                     </div>

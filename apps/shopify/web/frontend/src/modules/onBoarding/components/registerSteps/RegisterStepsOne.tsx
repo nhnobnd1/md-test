@@ -55,7 +55,9 @@ const RegisterStepsOne = ({ nextStep }: RegisterStepsOneProps) => {
                 <div className="mr-8">
                   <Stack distribution="trailing">
                     <ButtonGroup>
-                      <Button onClick={handleStart}>Click here to start</Button>
+                      <Button primary onClick={handleStart}>
+                        Click here to start
+                      </Button>
                     </ButtonGroup>
                   </Stack>
                 </div>

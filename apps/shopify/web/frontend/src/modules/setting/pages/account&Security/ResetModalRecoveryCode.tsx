@@ -1,4 +1,4 @@
-import { useToggle } from "@moose-desk/core";
+import { convertSecondsToMinutesAndSeconds, useToggle } from "@moose-desk/core";
 import { Button, ButtonGroup, Modal, Text } from "@shopify/polaris";
 import React from "react";
 
@@ -30,7 +30,7 @@ export const ResetModalRecoveryCode = React.memo(
         {!countDown ? null : (
           <div className="mr-2">
             <Text as="span" variant="bodyMd">
-              ({countDown}s)
+              ({convertSecondsToMinutesAndSeconds(countDown)})
             </Text>
           </div>
         )}

@@ -213,19 +213,6 @@ const BusinessHours = () => {
                   },
                   {
                     key: "2",
-                    label: `Holidays`,
-                    children: (
-                      <Form.Item name="holidays">
-                        <HolidayTab
-                          handleSave={handleSave}
-                          dataAutoReply={dataAutoReply}
-                          loading={processing}
-                        />
-                      </Form.Item>
-                    ),
-                  },
-                  {
-                    key: "3",
                     label: `Auto-reply`,
                     children: (
                       <Form.Item name="autoReply">
@@ -236,6 +223,19 @@ const BusinessHours = () => {
                           dataBusinessHoursAutoReplyCode={
                             dataBusinessHoursAutoReplyCode
                           }
+                        />
+                      </Form.Item>
+                    ),
+                  },
+                  {
+                    key: "3",
+                    label: `Holiday`,
+                    children: (
+                      <Form.Item name="holidays">
+                        <HolidayTab
+                          handleSave={handleSave}
+                          dataAutoReply={dataAutoReply}
+                          loading={processing}
                         />
                       </Form.Item>
                     ),

@@ -1,4 +1,9 @@
-import { useCountDown, useJob, useToggle } from "@moose-desk/core";
+import {
+  convertSecondsToMinutesAndSeconds,
+  useCountDown,
+  useJob,
+  useToggle,
+} from "@moose-desk/core";
 import {
   Agent,
   AgentRepository,
@@ -307,7 +312,7 @@ export const ModalDetailAgent: FC<ModalDetailAgentProps> = ({
 
               {isSendingMail && (
                 <Text as="span" variant="bodyLg">
-                  ({countDown})
+                  ({convertSecondsToMinutesAndSeconds(countDown)})
                 </Text>
               )}
             </div>

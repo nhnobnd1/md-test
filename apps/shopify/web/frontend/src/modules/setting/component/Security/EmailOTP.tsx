@@ -1,4 +1,10 @@
-import { useCountDown, useJob, useMount, useUnMount } from "@moose-desk/core";
+import {
+  convertSecondsToMinutesAndSeconds,
+  useCountDown,
+  useJob,
+  useMount,
+  useUnMount,
+} from "@moose-desk/core";
 import { MethodOTP, UserSettingRepository } from "@moose-desk/repo";
 import { FormLayout, Link, Stack, Text } from "@shopify/polaris";
 import { memo, useCallback, useEffect, useState } from "react";
@@ -103,7 +109,7 @@ const EmailOPT = ({
                 {!countDown ? null : (
                   <div className="ml-2">
                     <Text as="span" variant="bodyMd">
-                      ({countDown}s)
+                      ({convertSecondsToMinutesAndSeconds(countDown)})
                     </Text>
                   </div>
                 )}
