@@ -263,8 +263,7 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
           style={{
             borderRightWidth: 0,
             borderRadius: 0,
-            borderTopLeftRadius: 10,
-            borderBottomLeftRadius: 10,
+
             position: "relative",
           }}
           bodyStyle={{
@@ -564,8 +563,6 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
         <Card
           style={{
             borderRadius: 0,
-            borderTopRightRadius: 10,
-            borderBottomRightRadius: 10,
           }}
           className="w-[350px] scroll-y"
           bodyStyle={{ padding: 16 }}

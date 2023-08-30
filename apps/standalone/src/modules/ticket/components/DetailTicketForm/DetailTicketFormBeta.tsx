@@ -1166,6 +1166,7 @@ Hit Send to see what your message will look like
               flexShrink: 0,
               borderColor: "#d9d9d9",
               borderLeftWidth: 0,
+              borderRadius: 0,
             }}
             loading={processing}
           >
