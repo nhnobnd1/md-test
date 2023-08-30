@@ -11,9 +11,7 @@ export default defineConfig({
       entry: resolve(__dirname, "index.tsx"),
       name: "MooseDeskCore",
       // the proper extensions will be added
-      fileName(format) {
-        return `index.${format}.js`;
-      },
+      fileName: "index.es.js",
       formats: ["es", "cjs"],
     },
     rollupOptions: {
@@ -23,6 +21,9 @@ export default defineConfig({
       output: {
         // Provide global variables to use in the UMD build
         // for externalized deps
+        entryFileNames: "index.es.js", // Set the desired filename
+        chunkFileNames: "chunk-[name].js", // Set the desired chunk filename
+        assetFileNames: "assets/[name].[ext]", // Set the desired asset filename
         globals: {
           react: "React",
         },
