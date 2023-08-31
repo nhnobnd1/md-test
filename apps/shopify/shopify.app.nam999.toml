@@ -2,7 +2,7 @@
 
 name = "nam999"
 client_id = "1daf15909ca639111b7358c7c37e6660"
-application_url = "https://perfectly-reprint-like-distinguished.trycloudflare.com"
+application_url = "https://per-kick-indirect-seminars.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ use_legacy_install_flow = true
 
 [auth]
 redirect_urls = [
-  "https://perfectly-reprint-like-distinguished.trycloudflare.com/auth/callback",
-  "https://perfectly-reprint-like-distinguished.trycloudflare.com/auth/shopify/callback",
-  "https://perfectly-reprint-like-distinguished.trycloudflare.com/api/auth/callback"
+  "https://per-kick-indirect-seminars.trycloudflare.com/auth/callback",
+  "https://per-kick-indirect-seminars.trycloudflare.com/auth/shopify/callback",
+  "https://per-kick-indirect-seminars.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

@@ -1,4 +1,10 @@
-import { generatePath, useJob, useNavigate, useToggle } from "@moose-desk/core";
+import {
+  emailRegex,
+  generatePath,
+  useJob,
+  useNavigate,
+  useToggle,
+} from "@moose-desk/core";
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import {
   AgentRepository,
@@ -16,8 +22,9 @@ import { useQuery } from "react-query";
 import { catchError, map, of } from "rxjs";
 import Form, { FormProps } from "src/components/Form";
 import FormItem from "src/components/Form/Item";
+import BoxSelectAssignee from "src/components/Modal/ModalFilter/BoxSelectAssignee";
 import BoxSelectFilter from "src/components/Modal/ModalFilter/BoxSelectFilter";
-import { Select as ComboSelect, LoadMoreValue } from "src/components/Select";
+import { LoadMoreValue } from "src/components/Select";
 import SelectAddEmail from "src/components/SelectAddEmail/SelectAddEmail";
 import { TextEditorTicket } from "src/components/TextEditorTicket";
 import useDeepEffect from "src/hooks/useDeepEffect";
@@ -107,6 +114,19 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
             }
             return true;
           }),
+        assignee: Yup.string().test(
+          "is-blank",
+          "The assignee does not exist",
+          (value: any) => {
+            if (!value) {
+              return true;
+            }
+            if (value?.includes(",") && emailRegex.test(value.split(",")[1])) {
+              return true;
+            }
+            return false;
+          }
+        ),
         CC: Yup.array()
           .test(
             "same from",
@@ -171,6 +191,19 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
             return value !== findFromEmail;
           }
         ),
+      assignee: Yup.string().test(
+        "is-blank",
+        "The assignee does not exist",
+        (value: any) => {
+          if (!value) {
+            return true;
+          }
+          if (value?.includes(",") && emailRegex.test(value.split(",")[1])) {
+            return true;
+          }
+          return false;
+        }
+      ),
 
       content: Yup.string()
         .required("Please input your message!")
@@ -274,6 +307,13 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
 
   const onFinish = () => {
     const values = (props.innerRef as any)?.current.values;
+    const assigneeId = values.assignee
+      ? values.assignee.split(",")[0]
+      : undefined;
+    const assigneeEmail = values.assignee
+      ? values.assignee.split(",")[1]
+      : undefined;
+    console.log({ assigneeId, assigneeEmail });
     const findEmailIntegration = emailIntegrationOptions.find(
       (item) => item.value === values.from
     );
@@ -286,8 +326,8 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
         name: findEmailIntegration?.obj.name,
       },
       senderConfigId: values.from,
-      agentObjectId: values.assignee ? values.assignee.value._id : undefined,
-      agentEmail: values.assignee ? values.assignee.value.email : undefined,
+      agentObjectId: assigneeId,
+      agentEmail: assigneeEmail,
       toEmails: [
         {
           email: values.to,
@@ -491,14 +531,10 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
         </div>
         <div className="mt-4">
           <FormItem name="assignee">
-            <ComboSelect.Ajax
-              label="Assignee"
-              placeholder="Search agents"
-              height=""
-              loadMore={fetchAgents}
-            />
+            <BoxSelectAssignee label="Assignee" placeholder="Search agents" />
           </FormItem>
         </div>
+
         <div className="mt-4">
           <FormItem name="priority">
             <Select label="Priority" options={priorityOptions} />

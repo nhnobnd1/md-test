@@ -45,6 +45,7 @@ interface SelectProps extends Omit<ComboboxProps, "activator"> {
   onSearch?: (value: string) => any;
   onChange?: (selectedObj: SelectedObj[] | SelectedObj) => void;
   activator?: React.ReactElement<TextFieldProps>;
+  error?: boolean;
 }
 
 export const Select = ({
@@ -60,6 +61,7 @@ export const Select = ({
   onSearch,
   onChange,
   options,
+  error,
   ...props
 }: SelectProps) => {
   const [selectedOptions, setSelectedOptions] =
@@ -69,11 +71,10 @@ export const Select = ({
   const [optionsData, setOptions] = useState<SelectOptions[]>(options);
   const [search, setSearch] = useState<string>("");
   const debounceValue: string = useDebounce(search, 200);
-
   const updateText = useCallback(
     (value) => {
       setInputValue(value);
-
+      setSelectedObj([{ key: "", value: value }]);
       if (value === "") {
         setOptions(options);
         onSearch && onSearch("");
@@ -192,11 +193,12 @@ export const Select = ({
               setInputValue("");
               onSearch && onSearch("");
             }}
-            onBlur={() => {
-              if (optionsData.length === 0) {
-                setInputValue("");
-              }
-            }}
+            error={error}
+            // onBlur={() => {
+            //   if (optionsData.length === 0) {
+            //     setInputValue("");
+            //   }
+            // }}
             autoComplete="Combobox"
             label={label}
             labelHidden={labelHidden}
@@ -252,6 +254,7 @@ interface AjaxSelectProps extends Omit<SelectProps, "options" | "onSearch"> {
   dependencies?: any[];
   dependenciesWait?: number;
   onDependenciesChanged?: () => void;
+  error?: boolean;
 }
 
 Select.Ajax = ({
@@ -260,6 +263,7 @@ Select.Ajax = ({
   dependencies = [],
   dependenciesWait = 500,
   onDependenciesChanged,
+  error,
   ...props
 }: AjaxSelectProps) => {
   const {
@@ -355,6 +359,7 @@ Select.Ajax = ({
       willLoadMoreOptions={false}
       onScrolledToBottom={canFetch ? onPopupScroll : undefined}
       onSearch={onSearch}
+      error={error}
       {...props}
     ></Select>
   );
