@@ -1,5 +1,6 @@
 import {
   createdDatetimeFormat,
+  emailRegex,
   MediaScreen,
   useJob,
   useNavigate,
@@ -394,6 +395,19 @@ const DetailTicket = () => {
             }
           ),
         from: Yup.string().required("Email address is required").nullable(),
+        assignee: Yup.string().test(
+          "is-blank",
+          "The assignee does not exist",
+          (value: any) => {
+            if (!value) {
+              return true;
+            }
+            if (value?.includes(",") && emailRegex.test(value.split(",")[1])) {
+              return true;
+            }
+            return false;
+          }
+        ),
         CC: Yup.array()
           .test(
             "same from",
@@ -459,6 +473,19 @@ const DetailTicket = () => {
             return value !== findFromEmail;
           }
         ),
+      assignee: Yup.string().test(
+        "is-blank",
+        "The assignee does not exist",
+        (value: any) => {
+          if (!value) {
+            return true;
+          }
+          if (value?.includes(",") && emailRegex.test(value.split(",")[1])) {
+            return true;
+          }
+          return false;
+        }
+      ),
       from: Yup.string()
         .required("Email address is required")
         // .email("The email address is not valid")
@@ -496,6 +523,9 @@ const DetailTicket = () => {
     onFinish(formRef.current?.values, true);
   };
   const handleSaveTicket = (reload = false) => {
+    if (!formRef.current?.isValid) {
+      return;
+    }
     const values = formRef.current?.values;
     updateTicketApi(
       {
@@ -766,6 +796,14 @@ Hit Send to see what your message will look like
               <span className="truncate w-full  inline-block header-detail-ticket">{`Ticket ${ticket?.ticketId}: ${ticket?.subject}`}</span>
             ) as unknown as string
           }
+          breadcrumbs={[
+            {
+              content: "Ticket",
+              onAction: () => {
+                navigate(-1);
+              },
+            },
+          ]}
           fullWidth
         >
           <div className={styles.fixedICon}>
