@@ -1,13 +1,5 @@
-import {
-  Button,
-  DatePicker,
-  Icon,
-  Popover,
-  Stack,
-  Text,
-  TextField,
-} from "@shopify/polaris";
-import { CalendarMajor } from "@shopify/polaris-icons";
+import { DatePicker, Icon, Popover, TextField } from "@shopify/polaris";
+import { CalendarMinor } from "@shopify/polaris-icons";
 import dayjs from "dayjs";
 import { memo, useCallback, useEffect, useState } from "react";
 
@@ -21,7 +13,15 @@ interface SelectDateHolidaysProps {
   value?: string;
   onChange?: (value: any) => void;
 }
-
+const formatRenderDate = (date?: Date | string) => {
+  if (!date) return "";
+  if (typeof date === "string") {
+    return dayjs(date, "MM/DD/YYYY").format("MM/DD/YYYY");
+  }
+  return dayjs(date, "ddd MMM DD YYYY HH:mm:ss [GMT]Z (zzz)").format(
+    "MM/DD/YYYY"
+  );
+};
 const SelectDateHolidays = ({
   valueDate,
   onChangeValueDate,
@@ -42,7 +42,9 @@ const SelectDateHolidays = ({
     start: Date;
     end: Date;
   }>();
-
+  const showDatePicker = () => {
+    setPopoverActive(true);
+  };
   const handleMonthChange = useCallback((month) => setMonth(month), []);
   const handleChangeDate = useCallback((date: { start: Date; end: Date }) => {
     onChange && onChange(`${date.start.getDate()}`);
@@ -71,60 +73,34 @@ const SelectDateHolidays = ({
     }
   }, [value]);
   return (
-    <div>
-      <Stack alignment="trailing">
-        <div className="w-[150px]">
-          <TextField
-            disabled
-            autoComplete="off"
-            label={
-              <div>
-                <span className="text-red">*</span> Date:
-              </div>
-            }
-            value={
-              selectedDates
-                ? dayjs(selectedDates.start).format("MM/DD/YYYY")
-                : ""
-            }
-            error={error}
-          />
-        </div>
-        <div className={error ? "mb-8" : "mb-9px"}>
-          <Text as="p" variant="bodyMd">
-            to
-          </Text>
-        </div>
-        <div className="w-[150px]">
-          <TextField
-            disabled
-            autoComplete="off"
-            label="Date:"
-            labelHidden
-            value={
-              selectedDates ? dayjs(selectedDates.end).format("MM/DD/YYYY") : ""
-            }
-            error={error}
-          />
-        </div>
-        <div className={error ? "mb-6" : ""}>
-          <Popover
-            active={popoverActive}
-            activator={
-              <Button
-                icon={() => (
-                  <Icon
-                    accessibilityLabel="select"
-                    source={() => <CalendarMajor />}
-                  />
-                )}
-                onClick={togglePopoverActive}
-                disclosure
-              ></Button>
-            }
-            autofocusTarget="first-node"
-            onClose={togglePopoverActive}
-          >
+    <div style={{ width: 250 }}>
+      <div className={error ? "mb-6" : ""}>
+        <Popover
+          active={popoverActive}
+          activator={
+            <TextField
+              onFocus={showDatePicker}
+              autoComplete="off"
+              label={
+                <div>
+                  <span className="text-red">*</span> Date:
+                </div>
+              }
+              value={
+                selectedDates
+                  ? `${formatRenderDate(
+                      selectedDates?.start
+                    )} - ${formatRenderDate(selectedDates?.end)}`
+                  : ""
+              }
+              error={error}
+              prefix={<Icon source={CalendarMinor} color="base" />}
+            />
+          }
+          autofocusTarget="first-node"
+          onClose={togglePopoverActive}
+        >
+          <div className="p-5">
             <DatePicker
               month={month}
               year={dateNow.getFullYear()}
@@ -133,9 +109,9 @@ const SelectDateHolidays = ({
               selected={selectedDates}
               allowRange
             />
-          </Popover>
-        </div>
-      </Stack>
+          </div>
+        </Popover>
+      </div>
       <div className="hidden">{valueState}</div>
     </div>
   );
