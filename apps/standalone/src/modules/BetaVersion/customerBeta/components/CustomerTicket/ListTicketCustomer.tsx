@@ -1,8 +1,14 @@
 import { getTableHeigh } from "@moose-beta/helper/function";
-import { useNavigate, useSearchParams } from "@moose-desk/core";
+import {
+  Link,
+  priorityToTag,
+  upperCaseFirst,
+  useNavigate,
+  useSearchParams,
+} from "@moose-desk/core";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
-import { Customer } from "@moose-desk/repo";
-import { message } from "antd";
+import { Customer, StatusTicket, Ticket } from "@moose-desk/repo";
+import { message, Tag } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import classNames from "classnames";
 import dayjs from "dayjs";
@@ -28,7 +34,20 @@ dayjs.extend(timezone);
 dayjs.extend(utc);
 
 const limit = 10;
-
+const getStatusTag = (status: string) => {
+  switch (status) {
+    case "NEW":
+      return "#2db7f5";
+    case "OPEN":
+      return "rgb(255, 153, 0)";
+    case "PENDING":
+      return "#f50";
+    case "RESOLVED":
+      return "#87d068";
+    default:
+      return "#2db7f5";
+  }
+};
 export const ListTicketCustomer = React.memo(() => {
   const [searchParams] = useSearchParams();
   const customerId: string = searchParams.get("customer") || "";
@@ -61,14 +80,35 @@ export const ListTicketCustomer = React.memo(() => {
   }, [dataSource]);
   const columns = [
     {
+      title: "Status",
+      dataIndex: "status",
+      render: (_: any, record: Ticket) => (
+        <Tag color={getStatusTag(record.status)}>{`${upperCaseFirst(
+          record.status
+        )}`}</Tag>
+      ),
+      sorter: {
+        compare: (a: any, b: any) => a.status - b.status,
+      },
+      width: "10%",
+    },
+    {
       title: t("common:customers.ticket_title"),
       dataIndex: "subject",
-      width: "45%",
+      width: "25%",
       sorter: {
         compare: (a: any, b: any) => {
           return a.subject - b.subject;
         },
       },
+      render: (_: any, record: any) => (
+        <Link
+          className={`cursor-pointer hover:underline hover:text-blue-500 subject text-black ${
+            record.status === StatusTicket.NEW && "text-bold"
+          }`}
+          to={`/ticket/${record?._id}`}
+        >{`${record.subject}`}</Link>
+      ),
     },
     {
       title: t("common:customers.date_request"),
@@ -87,7 +127,7 @@ export const ListTicketCustomer = React.memo(() => {
               .format("MM/DD/YYYY")}
         </div>
       ),
-      width: "11%",
+      width: "15%",
     },
     {
       title: t("common:customers.last_update"),
@@ -108,28 +148,25 @@ export const ListTicketCustomer = React.memo(() => {
                 .format("MM/DD/YYYY")}
         </div>
       ),
-      width: "11%",
+      width: "15%",
     },
     {
-      title: t("common:customers.status"),
-      dataIndex: "status",
-      sorter: {
-        compare: (a: any, b: any) => a.status - b.status,
-      },
-      width: "11%",
-    },
-    {
-      title: t("common:customers.priority"),
+      title: "Priority",
       dataIndex: "priority",
+      render: (_: any, record: Ticket) => (
+        <Tag color={priorityToTag(record.priority)}>{`${upperCaseFirst(
+          record.priority
+        )}`}</Tag>
+      ),
       sorter: {
         compare: (a: any, b: any) => a.priority - b.priority,
       },
-      width: "11%",
+      width: "10%",
     },
     {
       title: t("common:customers.assignee"),
       dataIndex: "agentEmail",
-      width: "11%",
+      width: "25%",
     },
   ];
   const handleSearchInput = (query: string) => {
