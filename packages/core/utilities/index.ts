@@ -61,11 +61,15 @@ export function typeChannelTicket(isCreatedByWidget: boolean) {
 
 export function convertSecondsToMinutesAndSeconds(seconds: number) {
   if (seconds < 60) {
-    return seconds + "s";
+    return "00:" + seconds;
   } else {
     var minutes = Math.floor(seconds / 60);
     var remainingSeconds = seconds % 60;
-    return minutes + " m " + (remainingSeconds ? remainingSeconds + " s" : "");
+    return (
+      (minutes < 10 ? "0" + minutes : minutes) +
+      ":" +
+      (remainingSeconds < 10 ? "0" + remainingSeconds : remainingSeconds)
+    );
   }
 }
 
