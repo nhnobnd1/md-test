@@ -1,12 +1,13 @@
 import { getTableHeigh } from "@moose-beta/helper/function";
 import {
   createdDatetimeFormat,
+  Link,
   priorityToTag,
   upperCaseFirst,
   useSearchParams,
 } from "@moose-desk/core";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
-import { Ticket } from "@moose-desk/repo";
+import { StatusTicket, Ticket } from "@moose-desk/repo";
 import { message, Tag } from "antd";
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -87,6 +88,14 @@ export const Tickets = React.memo(() => {
       sorter: {
         compare: (a: any, b: any) => a.subject - b.subject,
       },
+      render: (_: any, record: any) => (
+        <Link
+          className={`cursor-pointer hover:underline hover:text-blue-500 subject text-black ${
+            record.status === StatusTicket.NEW && "text-bold"
+          }`}
+          to={`/ticket/${record?._id}`}
+        >{`${record.subject}`}</Link>
+      ),
       width: "50%",
     },
     {
