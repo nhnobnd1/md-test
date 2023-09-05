@@ -8,12 +8,13 @@ import {
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import useSaveDataGlobal from "@moose-desk/core/hooks/useSaveDataGlobal";
 import {
+  Agent,
   Customer,
   EmailIntegration,
   priorityOptions,
   TicketRepository,
 } from "@moose-desk/repo";
-import { Card } from "antd";
+import { Card, Select } from "antd";
 import { uniqBy } from "lodash-es";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -24,7 +25,6 @@ import TextEditorTicketBeta from "src/components/UI/Editor/TextEditorTicketBeta"
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
 import { MDInput } from "src/components/UI/Input";
-import Select from "src/components/UI/Select/Select";
 import useDeepEffect from "src/hooks/useDeepEffect";
 import useMessage from "src/hooks/useMessage";
 import useNotification from "src/hooks/useNotification";
@@ -90,6 +90,7 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
   const [searchCustomer, setSearchCustomer] = useState<string>("");
   const debounceCustomer: string = useDebounce(searchCustomer, 200);
   const [dataCustomersFetch, setDataCustomerFetch] = useState<Customer[]>([]);
+  const [agentSelected, setAgentSelected] = useState<Agent | undefined>();
   const { data: dataCustomers, isFetching: isFetchingCustomer } = useQuery({
     queryKey: ["getCustomers", { page: 1, limit: 10, query: debounceCustomer }],
     queryFn: () =>
@@ -186,10 +187,8 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
         name: fromEmail?.name,
       },
       senderConfigId: values.from,
-      agentObjectId: values.assignee
-        ? values.assignee.split(",")[0]
-        : undefined,
-      agentEmail: values.assignee ? values.assignee.split(",")[1] : undefined,
+      agentObjectId: agentSelected ? agentSelected?._id : undefined,
+      agentEmail: agentSelected ? agentSelected?.email : undefined,
       toEmails: [
         {
           email: values.to,
@@ -228,6 +227,8 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
   };
 
   const onChangeEmail = (value: string, options: any) => {
+    const regexEmail = emailRegex.test(value);
+    if (!regexEmail) return;
     setToEmail({
       value,
       id: options?.obj ? options?.obj?._id : "",
@@ -571,15 +572,33 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
             labelAlign="left"
             label={<span style={{ width: 60 }}>Assignee</span>}
             name="assignee"
+            rules={[
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value) {
+                    return Promise.resolve();
+                  }
+                  if (
+                    value?.includes("-") &&
+                    emailRegex.test(value.split("-")[1]?.trim())
+                  ) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(
+                    new Error("The assignee does not exist")
+                  );
+                },
+              }),
+            ]}
           >
-            <AgentSelect />
+            <AgentSelect size="middle" setAgentSelected={setAgentSelected} />
           </Form.Item>
           <Form.Item
             labelAlign="left"
             label={<span style={{ width: 60 }}>Priority</span>}
             name="priority"
           >
-            <Select size="large" options={priorityOptions}></Select>
+            <Select className="w-full" options={priorityOptions} />
           </Form.Item>
 
           <Form.Item
@@ -587,7 +606,7 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
             name="tags"
             label={<span style={{ width: 60 }}>Tags</span>}
           >
-            <TagSelect maxTagCount={undefined} />
+            <TagSelect size="middle" maxTagCount={undefined} />
           </Form.Item>
 
           <div>

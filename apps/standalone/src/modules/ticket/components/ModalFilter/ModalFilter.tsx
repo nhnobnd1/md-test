@@ -1,6 +1,7 @@
 import { useNavigate } from "@moose-desk/core";
-import { priorityOptions, statusOptions } from "@moose-desk/repo";
+import { Agent, priorityOptions, statusOptions } from "@moose-desk/repo";
 import { ModalProps } from "antd";
+import { useState } from "react";
 import { MDModalUI } from "src/components/MDModalUI";
 import { MDButton } from "src/components/UI/Button/MDButton";
 import { Form } from "src/components/UI/Form";
@@ -25,8 +26,13 @@ const ModalFilter = ({
   const navigate = useNavigate();
 
   const handleApplySubmit = () => {
-    handleApply(form.getFieldsValue());
+    handleApply({
+      ...form.getFieldsValue(),
+      agentObjectId: agentSelected?._id,
+    });
   };
+  const [agentSelected, setAgentSelected] = useState<Agent | undefined>();
+
   return (
     <MDModalUI
       title="Filter"
@@ -40,6 +46,7 @@ const ModalFilter = ({
             navigate(location.pathname, {});
 
             form.resetFields();
+            setAgentSelected(undefined);
           }}
         >
           Reset
@@ -60,7 +67,7 @@ const ModalFilter = ({
       <div>
         <Form layout="vertical" form={form}>
           <Form.Item label="Agent" name="agentObjectId">
-            <AgentSelect />
+            <AgentSelect setAgentSelected={setAgentSelected} />
           </Form.Item>
           <Form.Item label="Customer" name="customer">
             <CustomerSelect />

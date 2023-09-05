@@ -1,18 +1,28 @@
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
-import { SelectProps } from "antd";
+import { AutoComplete, SelectProps } from "antd";
 import { FC, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import useMessage from "src/hooks/useMessage";
-import { SelectList } from "src/modules/ticket/components/TicketForm/SelectList";
+import useViewport from "src/hooks/useViewport";
 import { getListAgentApi } from "src/modules/ticket/helper/api";
 
 interface SelectListProps extends SelectProps {
   filter?: boolean;
+  setAgentSelected?: any;
 }
-
+export const SelectList: FC<SelectListProps> = ({ ...props }) => {
+  const { isMobile } = useViewport();
+  return (
+    <AutoComplete
+      size={isMobile ? "middle" : "large"}
+      {...props}
+    ></AutoComplete>
+  );
+};
 export const AgentSelect: FC<SelectListProps> = ({
   filter = true,
+  setAgentSelected,
   ...props
 }) => {
   const message = useMessage();
@@ -52,7 +62,9 @@ export const AgentSelect: FC<SelectListProps> = ({
       label: item.lastName.includes("admin")
         ? `${item.firstName} - ${item.email}`
         : `${item.firstName} ${item.lastName} - ${item.email}`,
-      value: `${item._id},${item.email}`,
+      value: item.lastName.includes("admin")
+        ? `${item.firstName} - ${item.email}`
+        : `${item.firstName} ${item.lastName} - ${item.email}`,
       obj: item,
     }));
   }, [dataAgents, filter]);
@@ -70,6 +82,13 @@ export const AgentSelect: FC<SelectListProps> = ({
       }}
       allowClear
       showSearch
+      onSelect={(value) => {
+        const emailSelect = value.split("-")[1]?.trim();
+        const findAgent = dataAgents?.find(
+          (item) => item.email === emailSelect
+        );
+        setAgentSelected(findAgent);
+      }}
       onClear={() => {
         setSearch("");
       }}

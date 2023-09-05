@@ -11,6 +11,7 @@ import {
   useUnMount,
 } from "@moose-desk/core";
 import {
+  Agent,
   AttachFile,
   Conversation,
   CreateReplyTicketRequest,
@@ -184,7 +185,7 @@ const DetailTicketFormBeta = () => {
   const chatItemForward = useForwardTicket((state) => state.chatItem);
   const clickForward = useForwardTicket((state) => state.clickForward);
   const updateChatItem = useForwardTicket((state) => state.updateChatItem);
-
+  const [agentSelected, setAgentSelected] = useState<Agent | undefined>();
   const [isChanged, setIsChanged] = useState(false);
   const { data: dataPrimaryEmail } = useQuery({
     queryKey: ["emailIntegrationApi", id],
@@ -354,9 +355,7 @@ const DetailTicketFormBeta = () => {
     if (conversationList.length === 0) {
       return {
         status: ticket?.status,
-        assignee: ticket?.agentObjectId
-          ? `${ticket?.agentObjectId},${ticket?.agentEmail}`
-          : null,
+        assignee: ticket?.agentObjectId ? `${ticket?.agentEmail}` : null,
         priority: ticket?.priority,
         to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
         tags: ticket?.tags,
@@ -375,9 +374,7 @@ const DetailTicketFormBeta = () => {
     } else {
       return {
         status: ticket?.status,
-        assignee: ticket?.agentObjectId
-          ? `${ticket?.agentObjectId},${ticket?.agentEmail}`
-          : null,
+        assignee: ticket?.agentObjectId ? `${ticket?.agentEmail}` : null,
         priority: ticket?.priority,
         to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
         tags: ticket?.tags,
@@ -504,10 +501,8 @@ const DetailTicketFormBeta = () => {
       priority: values.priority,
       status: values.status,
       tags: values.tags,
-      agentObjectId: values.assignee
-        ? values.assignee.split(",")[0]
-        : undefined,
-      agentEmail: values.assignee ? values.assignee.split(",")[1] : undefined,
+      agentObjectId: agentSelected ? agentSelected?._id : undefined,
+      agentEmail: agentSelected ? agentSelected?.email : undefined,
       ids: [ticket?._id as string],
     });
     setFiles([]);
@@ -550,17 +545,22 @@ const DetailTicketFormBeta = () => {
     });
   };
 
-  const handleSaveTicket = () => {
-    const values = form.getFieldsValue();
-    startLoading();
-    updateTicketApi({
-      priority: values.priority,
-      status: values.status,
-      tags: values.tags,
-      agentObjectId: values.assignee ? values.assignee.split(",")[0] : "",
-      agentEmail: values.assignee ? values.assignee.split(",")[1] : "",
-      ids: [ticket?._id as string],
-    });
+  const handleSaveTicket = async () => {
+    try {
+      const values = form.getFieldsValue();
+      const validate = await form.validateFields();
+      startLoading();
+      updateTicketApi({
+        priority: values.priority,
+        status: values.status,
+        tags: values.tags,
+        agentObjectId: agentSelected ? agentSelected?._id : "",
+        agentEmail: agentSelected ? agentSelected?.email : "",
+        ids: [ticket?._id as string],
+      });
+    } catch (e) {
+      console.log({ e });
+    }
   };
 
   const onChangeEmailIntegration = (value: string, options: any) => {
@@ -1057,7 +1057,6 @@ Hit Send to see what your message will look like
                         menubar: false,
                         placeholder: "Please input your message here......",
                         plugins: "autoresize",
-                        autoresize_on_init: false,
                         max_height: 500,
                       }}
                       listFileAttach={
@@ -1164,11 +1163,30 @@ Hit Send to see what your message will look like
                 labelAlign="left"
                 label={<span style={{ width: 60 }}>Assignee</span>}
                 name="assignee"
+                rules={[
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (!value) {
+                        return Promise.resolve();
+                      }
+                      if (
+                        value?.includes("-") &&
+                        emailRegex.test(value.split("-")[1]?.trim())
+                      ) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(
+                        new Error("The assignee does not exist")
+                      );
+                    },
+                  }),
+                ]}
               >
                 <AgentSelect
                   size="middle"
                   placeholder="Search agents"
                   className="w-full"
+                  setAgentSelected={setAgentSelected}
                 />
               </Form.Item>
               <Form.Item
@@ -1254,6 +1272,7 @@ Hit Send to see what your message will look like
                   size="middle"
                   placeholder="Search agents"
                   className="w-full"
+                  setAgentSelected={setAgentSelected}
                 />
               </Form.Item>
 
