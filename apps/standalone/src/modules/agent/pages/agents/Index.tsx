@@ -18,6 +18,7 @@ import { AgentFormValues } from "src/modules/agent/components/AgentForm";
 import { PopupAgent } from "src/modules/agent/components/PopupAgent";
 import { getStatusAgent } from "src/modules/agent/constant";
 import { getListAgentFilter } from "src/modules/agent/helper/api";
+import { hiddenEditAgent } from "src/modules/agent/helper/function";
 import { defaultFilter } from "src/utils/localValue";
 
 const AgentsIndex = () => {
@@ -134,46 +135,27 @@ const AgentsIndex = () => {
     [setFilterData]
   ) as TableProps<Agent>["onChange"];
   const renderAction = (data: Agent) => {
-    // if (
-    //   hiddenEditAgent(
-    //     isOwner,
-    //     userId === data?._id,
-    //     data?.isOwner,
-    //     isAdmin,
-    //     isLead,
-    //     isAgent,
-    //     data?.role
-    //   )
-    // )
-    //   return null;
+    const isView =
+      hiddenEditAgent(
+        isOwner,
+        userId === data?._id,
+        data?.isOwner,
+        isAdmin,
+        isLead,
+        isAgent,
+        data?.role
+      ) || !(data?.isActive && data?.emailConfirmed);
     return (
       <TableAction
         record={data}
-        edit={!isAgent}
+        edit={!isView}
         onlyIcon
         onEdit={() => navigate(`/agent-beta?agent=${data?._id}`)}
+        view={isView}
+        onView={() => navigate(`/agent-beta?agent=${data?._id}`)}
       />
     );
   };
-  // const renderBetaAction = (data: Agent) => {
-  //   if (
-  //     hiddenEditAgent(
-  //       isOwner,
-  //       userId === data?._id,
-  //       data?.isOwner,
-  //       isAdmin,
-  //       isLead,
-  //       isAgent,
-  //       data?.role
-  //     )
-  //   )
-  //     return null;
-  //   return (
-  //     <Link to={`/agent-beta?agent=${data?._id}`}>
-  //       Detail<span className="md-beta-tag">Beta</span>
-  //     </Link>
-  //   );
-  // };
   return (
     <div>
       <PopupAgent
@@ -292,22 +274,14 @@ const AgentsIndex = () => {
                   a.twoFactorEnabled - b.twoFactorEnabled,
               }}
             />
-            {!isAgent ? (
-              <>
-                <Table.Column
-                  align="center"
-                  title="Action"
-                  render={(_, record: Agent) => renderAction(record)}
-                />
-                {/* <Table.Column
-                  key="beta-action"
-                  title=""
-                  render={(_, record: Agent) => renderBetaAction(record)}
-                /> */}
-              </>
-            ) : (
-              <></>
-            )}
+
+            <>
+              <Table.Column
+                align="center"
+                title="Action"
+                render={(_, record: Agent) => renderAction(record)}
+              />
+            </>
           </Table>
           {meta && agents.length > 0 && (
             <div className="flex justify-end items-end bg-white rounded-br-md rounded-bl-md pb-2 pr-4">
