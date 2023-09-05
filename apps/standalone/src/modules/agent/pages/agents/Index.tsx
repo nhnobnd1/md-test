@@ -205,13 +205,8 @@ const AgentsIndex = () => {
               title="Agent"
               render={(_, record: Agent) => (
                 <span
-                  className={
-                    !isAgent
-                      ? `cursor-pointer hover:underline hover:text-blue-500`
-                      : ``
-                  }
+                  className={`cursor-pointer hover:underline hover:text-blue-500`}
                   onClick={() => {
-                    if (isAgent) return;
                     navigate(`/agent-beta?agent=${record?._id}`);
                   }}
                 >
