@@ -1,6 +1,6 @@
-import { EyeOutlined } from "@ant-design/icons";
-import { Button, ButtonProps } from "antd";
+import { Button, ButtonProps, Tooltip } from "antd";
 import classNames from "classnames";
+import Icon from "src/components/UI/Icon";
 import "./ButtonView.scss";
 
 interface ButtonViewProps extends Omit<ButtonProps, "icon"> {
@@ -16,14 +16,16 @@ export const ButtonView = ({
   ...props
 }: ButtonViewProps) => {
   return (
-    <Button
-      className={classNames([className])}
-      type="default"
-      {...props}
-      icon={<EyeOutlined />}
-    >
-      {!onlyIcon && <>{children ?? "Detail"}</>}
-    </Button>
+    <Tooltip placement="top" title={"View"}>
+      <Button
+        className={classNames([className])}
+        type="text"
+        {...props}
+        icon={<Icon name="eye" />}
+      >
+        {!onlyIcon && <>{children ?? "Detail"}</>}
+      </Button>
+    </Tooltip>
   );
 };
 

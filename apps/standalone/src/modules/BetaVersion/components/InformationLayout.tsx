@@ -23,8 +23,8 @@ interface IProps {
   layout: "customer" | "profile" | "agent";
 }
 export default function InformationLayout({ layout }: IProps) {
-  const user = useUser();
-  if (!user) return null; // fix bug something went wrong khi logout
+  const user = useUser() || { sub: "" };
+  if (!user?.sub) return null; // fix bug something went wrong khi logout
   const { state: visible, off, toggle } = useToggle(false);
   const { setUpdated } = useUpdated();
   const { isMobile: isTable } = useViewport(1024);
