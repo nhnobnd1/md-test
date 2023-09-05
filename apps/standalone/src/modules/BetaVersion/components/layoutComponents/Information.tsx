@@ -1,8 +1,8 @@
 import { AgentInfoBlock } from "@moose-beta/agentBeta/components/AgentInfoBlock";
 import InputPhoneBeta from "@moose-beta/components/layoutComponents/component/InputPhoneBeta/InputPhoneBeta";
 import { FileSize } from "@moose-beta/profile/helper/enum";
-import { useNavigate, useUser } from "@moose-desk/core";
-import { Agent, Role } from "@moose-desk/repo";
+import { useUser } from "@moose-desk/core";
+import { Agent } from "@moose-desk/repo";
 import { Form, message, Select, Upload } from "antd";
 import { useForm } from "antd/es/form/Form";
 import React, { useEffect, useState } from "react";
@@ -22,6 +22,7 @@ import {
   ROLE_OPTIONS_FULL,
   ROLE_OPTIONS_LEAD,
 } from "src/modules/agent/helper/constant";
+import { hiddenEditAgent } from "src/modules/agent/helper/function";
 import { updateCustomer } from "src/modules/customer/api/api";
 import { updateProfile } from "src/modules/setting/api/api";
 import { regexPhoneValidate } from "src/regex";
@@ -43,12 +44,11 @@ const Information = ({
   onCloseDrawer,
 }: IProps) => {
   const { t } = useTranslation();
-  const { isLead, role } = usePermission();
+  const { isLead, isAdmin, isAgent } = usePermission();
   const { isUpdated, setUpdated } = useUpdated();
   const [form] = useForm();
   const notification = useNotification();
   const { sub: userId, isOwner }: string | any = useUser();
-  const navigate = useNavigate();
   const [avatar, setAvatar] = useState("");
   useEffect(() => {
     if (profile?.avatar) {
@@ -57,27 +57,23 @@ const Information = ({
     form.setFieldsValue(profile);
   }, [profile]);
 
-  useEffect(() => {
-    if (layout === "agent") {
-      if (
-        (role === profile?.role && isOwner === "False") ||
-        (isLead && profile?.role === Role.Admin) ||
-        userId === profile?._id
-      ) {
-        // vào trang bằng url nhập tay hoặc sau khi update agent có role bằng bản thân thì thoát ra ngoài
-        navigate(-1);
-      }
-    }
-  }, [profile?.role]);
   const isDisabledForm =
     !(profile?.isActive && profile?.emailConfirmed) && layout === "agent";
-  // const buttonEl: HTMLElement | null = document.getElementById("save_button");
+  const disabledChange =
+    hiddenEditAgent(
+      isOwner,
+      userId === profile?._id,
+      profile?.isOwner,
+      isAdmin,
+      isLead,
+      isAgent,
+      profile?.role
+    ) && layout === "agent";
   const { mutate: uploadAvatarMutate, isLoading: uploading } = useMutation({
     mutationFn: (payload: any) => postImageApi(payload),
     onSuccess: ({ data }) => {
       setAvatar(data?.urls[0]);
       setUpdated(true);
-      // addSaveButton();
     },
   });
 
@@ -180,7 +176,7 @@ const Information = ({
               />
 
               <div className={styles.wrapActionAvatar}>
-                {avatar && !isDisabledForm && (
+                {avatar && !isDisabledForm && !disabledChange && (
                   <div
                     className={styles.removeAvatar}
                     onClick={handleRemoveAvatar}
@@ -188,7 +184,7 @@ const Information = ({
                     <Icon name="delete" />
                   </div>
                 )}
-                {!isDisabledForm && (
+                {!isDisabledForm && !disabledChange && (
                   <div className={styles.edit}>
                     <Upload
                       name="avatar"
@@ -224,6 +220,7 @@ const Information = ({
                         placeholder="Honorific"
                         allowClear
                         onChange={() => setUpdated(true)}
+                        disabled={disabledChange}
                       >
                         {LIST_HONORIFIC.map((ho: string, i: number) => (
                           <Select.Option key={i} value={ho}>
@@ -253,7 +250,7 @@ const Information = ({
                     <MDInput
                       size="small"
                       placeholder="First Name"
-                      disabled={isDisabledForm}
+                      disabled={isDisabledForm || disabledChange}
                     />
                   </Form.Item>
                 </div>
@@ -276,7 +273,7 @@ const Information = ({
                     <MDInput
                       size="small"
                       placeholder="Last Name"
-                      disabled={isDisabledForm}
+                      disabled={isDisabledForm || disabledChange}
                     />
                   </Form.Item>
                 </div>
@@ -308,7 +305,7 @@ const Information = ({
                 >
                   <InputPhoneBeta
                     placeholder="Phone Number"
-                    disabled={isDisabledForm}
+                    disabled={isDisabledForm || disabledChange}
                   />
                 </Form.Item>
                 {layout === "agent" && (
@@ -323,7 +320,8 @@ const Information = ({
                       <Select
                         options={isLead ? ROLE_OPTIONS_LEAD : ROLE_OPTIONS_FULL}
                         disabled={
-                          !(profile?.isActive && profile?.emailConfirmed)
+                          !(profile?.isActive && profile?.emailConfirmed) ||
+                          disabledChange
                         }
                         onChange={() => setUpdated(true)}
                       />
@@ -385,6 +383,7 @@ const Information = ({
             profile={profile}
             loading={loadingProfile}
             onRefetch={onRefetch}
+            disabled={disabledChange}
           />
         )}
       </div>

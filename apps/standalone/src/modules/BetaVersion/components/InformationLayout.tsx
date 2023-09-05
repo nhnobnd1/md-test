@@ -1,13 +1,12 @@
 import Information from "@moose-beta/components/layoutComponents/Information";
 import Setting from "@moose-beta/components/layoutComponents/Setting";
 import {
-  TokenManager,
   useSearchParams,
   useToggle,
   useUnMount,
+  useUser,
 } from "@moose-desk/core";
 import { Agent, Customer } from "@moose-desk/repo";
-import * as jose from "jose";
 import { useCallback, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import { MDButton } from "src/components/UI/Button/MDButton";
@@ -24,6 +23,8 @@ interface IProps {
   layout: "customer" | "profile" | "agent";
 }
 export default function InformationLayout({ layout }: IProps) {
+  const user = useUser();
+  if (!user) return null; // fix bug something went wrong khi logout
   const { state: visible, off, toggle } = useToggle(false);
   const { setUpdated } = useUpdated();
   const { isMobile: isTable } = useViewport(1024);
@@ -33,14 +34,12 @@ export default function InformationLayout({ layout }: IProps) {
   const customerId: string = searchParams.get("customer") || "";
   const agentId: string = searchParams.get("agent") || "";
 
-  const token = jose.decodeJwt(TokenManager.getToken("base_token") || "");
   const [dataProfile, setDataProfile] = useState<Agent | Customer | any>();
-
   const { isLoading: isLoadingProfile, refetch: refetchProfile }: any =
     useQuery({
-      queryKey: ["profile", token.sub],
-      queryFn: () => getProfile(token.sub ?? ""),
-      enabled: !!token.sub && layout === "profile",
+      queryKey: ["profile", user?.sub],
+      queryFn: () => getProfile(user?.sub ?? ""),
+      enabled: !!user?.sub && layout === "profile",
       onSuccess: (data: any) => {
         setDataProfile(data?.data?.data);
       },
