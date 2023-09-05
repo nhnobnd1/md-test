@@ -37,6 +37,7 @@ const ChannelIndexPage = () => {
       <Header
         title="Channels"
         className="xs:h-[32px] md:h-[40px] flex items-center"
+        // back
       />
       <div className="mt-5">
         {listCategory.map((item, index) => (

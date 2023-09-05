@@ -20,9 +20,10 @@ interface IProps {
   profile: Agent;
   loading: boolean;
   onRefetch: () => void;
+  disabled: boolean;
 }
 export const AgentInfoBlock = React.memo(
-  ({ profile, loading, onRefetch }: IProps) => {
+  ({ profile, loading, onRefetch, disabled }: IProps) => {
     const notification = useNotification();
     const navigate = useNavigate();
     const { t } = useTranslation();
@@ -96,6 +97,7 @@ export const AgentInfoBlock = React.memo(
                 })
               }
               loading={sending}
+              disabled={disabled}
             >
               Send Invitation Email
             </MDButton>
@@ -118,6 +120,7 @@ export const AgentInfoBlock = React.memo(
                   onChange={handleChangeStatus}
                   loading={activeIng || deActiveIng}
                   checked={profile?.isActive}
+                  disabled={disabled}
                 />
                 <Tag
                   className="ml-2"

@@ -135,18 +135,18 @@ const AgentsIndex = () => {
     [setFilterData]
   ) as TableProps<Agent>["onChange"];
   const renderAction = (data: Agent) => {
-    if (
-      hiddenEditAgent(
-        isOwner,
-        userId === data?._id,
-        data?.isOwner,
-        isAdmin,
-        isLead,
-        isAgent,
-        data?.role
-      )
-    )
-      return null;
+    // if (
+    //   hiddenEditAgent(
+    //     isOwner,
+    //     userId === data?._id,
+    //     data?.isOwner,
+    //     isAdmin,
+    //     isLead,
+    //     isAgent,
+    //     data?.role
+    //   )
+    // )
+    //   return null;
     return (
       <TableAction
         record={data}

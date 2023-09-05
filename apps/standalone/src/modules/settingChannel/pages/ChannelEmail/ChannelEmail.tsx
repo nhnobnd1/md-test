@@ -229,7 +229,11 @@ const ChannelEmail = () => {
   return (
     <>
       <style scoped>{css}</style>
-      <Header title={showTitle ? "Email Configuration" : ""}>
+      <Header
+        title={showTitle ? "Email Configuration" : ""}
+        back
+        backAction={() => navigate("/setting-channel")}
+      >
         <div className="flex items-center justify-end flex-1 ">
           <HeaderList setShowTitle={setShowTitle} handleSearch={handleSearch}>
             <ButtonAdd onClick={handleRedirectToCreate}>Add new</ButtonAdd>

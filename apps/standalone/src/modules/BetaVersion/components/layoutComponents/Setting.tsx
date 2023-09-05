@@ -4,6 +4,7 @@ import { Security } from "@moose-beta/profile/components/Security";
 import { useNavigate, useSearchParams } from "@moose-desk/core";
 import { Tabs, TabsProps } from "antd";
 import React from "react";
+import { Header } from "src/components/UI/Header";
 import MDAvatar from "src/components/UI/MDAvatar/MDAvatar";
 import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import styles from "./style.module.scss";
@@ -65,6 +66,7 @@ const Setting = ({ layout, basicInformation, loading = false }: IProps) => {
     <div>
       <div className={styles.myProfile} id="md_my_profile">
         <div className={styles.profile}>
+          <Header back />
           <MDAvatar
             firstName={basicInformation.firstName}
             lastName={basicInformation.lastName}
