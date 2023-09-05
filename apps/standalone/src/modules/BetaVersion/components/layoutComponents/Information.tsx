@@ -308,7 +308,7 @@ const Information = ({
                     disabled={isDisabledForm || disabledChange}
                   />
                 </Form.Item>
-                {layout === "agent" && (
+                {layout === "agent" && userId !== profile?._id && (
                   <div className={styles.formItem}>
                     <Form.Item
                       label="Role"
@@ -334,12 +334,10 @@ const Information = ({
           {loadingProfile ? (
             <MDSkeleton lines={1} />
           ) : (
-            layout === "profile" && (
+            (layout === "profile" || userId === profile?._id) && (
               <div className={styles.moreInfo}>
                 <span className={styles.label}>Role</span>
-                <span className={styles.result}>
-                  {profile?.role || "End user"}
-                </span>
+                <span className={styles.result}>{profile?.role || "-"}</span>
               </div>
             )
           )}
@@ -378,7 +376,7 @@ const Information = ({
             )}
           </div>
         )}
-        {layout === "agent" && (
+        {layout === "agent" && userId !== profile?._id && (
           <AgentInfoBlock
             profile={profile}
             loading={loadingProfile}
