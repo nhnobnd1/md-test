@@ -276,7 +276,7 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
             overflow: "auto",
           }}
         >
-          <Header className="mb-5" title="New Ticket"></Header>
+          <Header back className="mb-5" title="New Ticket"></Header>
 
           <div className=" flex w-full  items-center pb-3">
             <Form.Item

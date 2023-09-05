@@ -60,7 +60,6 @@ import {
   getListEmailIntegration,
   getOneTicket,
 } from "src/modules/ticket/helper/api";
-import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import useFormCreateTicket from "src/modules/ticket/store/useFormCreateTicket";
 import useForwardTicket from "src/modules/ticket/store/useForwardTicket";
 import { trimHtmlCssJs, wrapImageWithAnchorTag } from "src/utils/localValue";
@@ -124,7 +123,7 @@ const DetailTicketFormBeta = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { state: send, on: openSend, off: closeSend } = useToggle(true);
+  const { state: send, on: openSend, off: closeSend } = useToggle(false);
   const [isForward, setIsForward] = useState(false);
   const [enableCC, setEnableCC] = useState(false);
   const [toEmail, setToEmail] = useState("");
@@ -319,7 +318,6 @@ const DetailTicketFormBeta = () => {
     },
   });
 
-  console.log({ customer });
   const customersOptions = useMemo(() => {
     if (!dataCustomers) return [];
     return dataCustomers.map((item) => {
@@ -702,11 +700,13 @@ Hit Send to see what your message will look like
     <>
       <div className="wrapContainer">
         <Header
-          backAction={() => {
-            navigate(TicketRoutePaths.Index);
-          }}
+          // backAction={() => {
+          //   navigate(TicketRoutePaths.Index);
+          // }}
+          back
+          className="mb-2"
         >
-          <div className="flex justify-between w-full items-center gap-2 mb-5">
+          <div className="flex justify-between w-full items-center gap-2">
             {processing ? (
               <div className="">
                 <MDSkeleton lines={1} />
@@ -1048,8 +1048,12 @@ Hit Send to see what your message will look like
                       setIsChanged={setIsChanged}
                       setLoadingButton={setLoadingButton}
                       init={{
+                        height: 100,
                         menubar: false,
                         placeholder: "Please input your message here......",
+                        plugins: "autoresize",
+                        autoresize_on_init: false,
+                        max_height: 500,
                       }}
                       listFileAttach={
                         isForward ? (
@@ -1160,7 +1164,9 @@ Hit Send to see what your message will look like
           </div>
           <Card
             className="max-w-[350px] xs:hidden lg:block h-full scroll-y"
-            bodyStyle={{ padding: 16 }}
+            bodyStyle={{
+              padding: 16,
+            }}
             style={{
               flexBasis: 350,
               flexShrink: 0,

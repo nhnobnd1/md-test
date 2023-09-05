@@ -60,21 +60,36 @@ export const RowMessageBeta: FC<RowMessageProps> = ({ item }) => {
   };
 
   return (
-    <Card className="w-[800px] mb-3">
+    <Card
+      bodyStyle={{
+        borderRadius: "8px",
+        boxShadow: "0px 0px 8px 1px gray",
+      }}
+      className="min-w-[800px] w-11/12 mb-3"
+    >
       <div className=" items-center gap-3 ">
         <div className="flex items-end gap-3 justify-between items-center  ">
-          <div
-            onClick={() => {
-              item?.customerId &&
-                navigate(`/customers/detail?customer=${item?.customerId}`);
-            }}
-            className={`flex gap-2 items-center flex-wrap max-w-[500] ${
-              item?.customerId ? "hover:cursor-pointer" : ""
-            }`}
-          >
-            <MDAvatar source={item.avatar} lastName={item.name} />
+          <div className={`flex gap-2 items-center flex-wrap max-w-[500]`}>
+            <div
+              className={` ${item?.customerId ? "hover:cursor-pointer" : ""}`}
+              onClick={() => {
+                item?.customerId &&
+                  navigate(`/customers/detail?customer=${item?.customerId}`);
+              }}
+            >
+              <MDAvatar source={item.avatar} lastName={item.name} />
+            </div>
             <div className="flex flex-col">
-              <div className="flex gap-2 items-center">
+              <div
+                // className="flex gap-2 items-center"
+                className={`flex gap-2 items-center ${
+                  item?.customerId ? "hover:cursor-pointer hover:underline" : ""
+                }`}
+                onClick={() => {
+                  item?.customerId &&
+                    navigate(`/customers/detail?customer=${item?.customerId}`);
+                }}
+              >
                 <span className="text-bold truncate max-w-[300px]">
                   {item.name}
                 </span>
