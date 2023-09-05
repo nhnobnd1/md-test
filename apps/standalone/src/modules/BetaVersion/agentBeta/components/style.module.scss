@@ -1,9 +1,11 @@
 @import "src/styles/variables.scss";
 @import "src/styles/mixin.scss";
+
 .blockContent {
   padding: 15px 10px;
   background-color: $white-color;
-//   border-bottom: 1px solid $gray-border;
+
+  //   border-bottom: 1px solid $gray-border;
   .moreInfo {
     display: flex;
     height: 32px;

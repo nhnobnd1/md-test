@@ -5,15 +5,6 @@ import {
   TokenManager,
   useSearchParams,
   useToggle,
-<<<<<<< HEAD
-} from "@moose-desk/core";
-import { Agent, Customer } from "@moose-desk/repo";
-import * as jose from "jose";
-import { useCallback, useMemo, useState } from "react";
-import { useQuery } from "react-query";
-import useScreenType from "src/hooks/useScreenType";
-=======
-  useUser,
 } from "@moose-desk/core";
 import { Agent, Customer } from "@moose-desk/repo";
 import { Button, Icon, LegacyCard, Modal } from "@shopify/polaris";
@@ -22,7 +13,6 @@ import { useCallback, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import useScreenType from "src/hooks/useScreenType";
 import { getOneAgent } from "src/modules/agent/api/api";
->>>>>>> 2989c34a (feat:done profile beta version in embedded)
 import { getOneCustomer } from "src/modules/customers/api/api";
 import { getProfile } from "src/modules/setting/api/api";
 import styles from "./layoutComponents/style.module.scss";
@@ -57,9 +47,6 @@ export default function InformationLayout({ layout }: IProps) {
         setDataProfile(data?.data?.data);
       },
     });
-<<<<<<< HEAD
-
-=======
   const { isLoading: isLoadingAgent, refetch: refetchAgent } = useQuery({
     queryKey: ["one_agent", agentId],
     queryFn: () => getOneAgent(agentId),
@@ -68,7 +55,6 @@ export default function InformationLayout({ layout }: IProps) {
       setDataProfile(data?.data?.data);
     },
   });
->>>>>>> 2989c34a (feat:done profile beta version in embedded)
   const handleRefetchProfile = useCallback(() => {
     switch (layout) {
       case "profile":
@@ -93,12 +79,9 @@ export default function InformationLayout({ layout }: IProps) {
     dataProfile?.email,
     dataProfile?.avatar,
   ]);
-<<<<<<< HEAD
-=======
   const handleCloseDrawer = () => {
     off();
   };
->>>>>>> 2989c34a (feat:done profile beta version in embedded)
   return (
     <section className={styles.container}>
       <div className={styles.wrapSetting}>
@@ -108,21 +91,6 @@ export default function InformationLayout({ layout }: IProps) {
           loading={loading}
         />
       </div>
-<<<<<<< HEAD
-      {/* {isMobile && (
-        <Button
-          onClick={toggle}
-          icon={<Icon name="user" />}
-        />
-      )} */}
-      {/* {isMobile ? (
-        <MDDrawer
-          title=""
-          visible={visible}
-          onClose={off}
-          rootClassName={styles.drawerSearch}
-          content={
-=======
       {isTable && (
         <div className={styles.toggleButton}>
           <Button
@@ -134,7 +102,6 @@ export default function InformationLayout({ layout }: IProps) {
       {isTable ? (
         <Modal title="" open={visible} onClose={off} fullScreen={true}>
           <LegacyCard sectioned>
->>>>>>> 2989c34a (feat:done profile beta version in embedded)
             <Information
               profile={dataProfile}
               layout={layout}

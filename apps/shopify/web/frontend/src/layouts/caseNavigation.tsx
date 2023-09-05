@@ -1,3 +1,4 @@
+import ProfileRoutePaths from "@moose-beta/profile/routes/paths";
 import { NavigationItemProps, SubNavigationItem } from "@shopify/polaris";
 import {
   BehaviorMinor,
@@ -113,6 +114,7 @@ export const getCaseNavigation = (badge = ""): NavigationItems[] => {
         {
           label: "Account & Security",
 <<<<<<< HEAD
+<<<<<<< HEAD
           url: SettingRoutePaths.AccountSecurity.Profile.Index,
           icon: () => <FraudProtectMinor />,
           tabBarNavigation: [
@@ -131,6 +133,14 @@ export const getCaseNavigation = (badge = ""): NavigationItems[] => {
               label: "Setting Account",
               url: `${ProfileBetaRoutePaths.Index}?tab=settings`,
 >>>>>>> 2989c34a (feat:done profile beta version in embedded)
+=======
+          url: `${ProfileRoutePaths.Index}?tab=settings`,
+          icon: () => <FraudProtectMinor />,
+          tabBarNavigation: [
+            {
+              label: "Setting Account",
+              url: `${ProfileRoutePaths.Index}?tab=settings`,
+>>>>>>> 3d619f24 (save: begta)
             },
             {
               label: "Access Manager",

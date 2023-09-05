@@ -124,15 +124,7 @@ const ProfileForm = (
           />
         </FormItem>
         <FormItem name="phoneNumber">
-<<<<<<< HEAD
-          <InputPhone
-            label="Phone"
-            placeholder="Your phone number"
-            disabled={disabled}
-          />
-=======
           <InputPhone label="Phone" placeholder="Your phone number" />
->>>>>>> 2989c34a (feat:done profile beta version in embedded)
         </FormItem>
         {layout === "agent" && (
           <Grid.Cell>

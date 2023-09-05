@@ -97,7 +97,7 @@ export const AgentInfoBlock = React.memo(
         {loading ? (
           <MDSkeleton lines={1} />
         ) : !profile?.emailConfirmed ? (
-          <div className="d-grid">
+          <div className="d-flex flex-column">
             <MDButton
               type="link"
               onClick={() =>
