@@ -142,7 +142,7 @@ const WidgetDetail = () => {
 
   return (
     <>
-      <Header title="Help Widget" className="xs:h-[32px] md:h-[40px]  mb-5   ">
+      <Header title="Help Widget" className="xs:h-[32px] md:h-[40px] mb-5" back>
         <div className="flex flex-1 justify-end items-center">
           <FooterButton />
         </div>
