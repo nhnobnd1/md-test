@@ -4,15 +4,18 @@ import { filesize } from "filesize";
 import { FC, useMemo, useState } from "react";
 import { ChatItem } from "src/modules/ticket/components/DetailTicketForm/DetailTicketForm";
 import ForwardIcon from "~icons/ion/forward";
+import MailIcon from "~icons/material-symbols/mail-outline";
 import QuoteIcon from "~icons/octicon/ellipsis-16";
 
 import axios from "axios";
 import fileDownload from "js-file-download";
 import MDAvatar from "src/components/UI/MDAvatar/MDAvatar";
 import useForwardTicket from "src/modules/ticket/store/useForwardTicket";
+
 import "./BoxReplyBeta.scss";
 interface RowMessageProps {
   item: ChatItem;
+  type: string;
 }
 
 function splitText(fileName: string, maxLength: number) {
@@ -27,7 +30,7 @@ function splitText(fileName: string, maxLength: number) {
 
 const regexContent = /^.*(?=<div class="md_quote">)/s;
 
-export const RowMessageBeta: FC<RowMessageProps> = ({ item }) => {
+export const RowMessageBeta: FC<RowMessageProps> = ({ item, type }) => {
   const [toggleQuote, setToggleQuote] = useState(true);
   const updateChatItem = useForwardTicket((state) => state.updateChatItem);
   const navigate = useNavigate();
@@ -63,9 +66,9 @@ export const RowMessageBeta: FC<RowMessageProps> = ({ item }) => {
     <Card
       bodyStyle={{
         borderRadius: "8px",
-        boxShadow: "0px 0px 8px 1px gray",
+        boxShadow: "0px 0px 8px 1px #d3d3d3",
       }}
-      className="min-w-[800px] w-11/12 mb-3"
+      className="min-w-[700px] w-11/12 mb-3"
     >
       <div className=" items-center gap-3 ">
         <div className="flex items-end gap-3 justify-between items-center  ">
@@ -93,16 +96,140 @@ export const RowMessageBeta: FC<RowMessageProps> = ({ item }) => {
                 <span className="text-bold truncate max-w-[300px]">
                   {item.name}
                 </span>
-                <span className="text-xs truncate max-w-[300px]">
-                  ({item.email})
-                </span>
+
+                <Tooltip
+                  title={
+                    <div className="flex flex-col px-2">
+                      <div className="flex flex-col">
+                        <span style={{ fontSize: 12 }}>
+                          <span
+                            style={{ color: "#A0A0A0", fontWeight: "bold" }}
+                          >
+                            From:{" "}
+                          </span>
+                          {item.name}
+                        </span>
+                        <span style={{ fontSize: 12 }} className="text-xs">
+                          ({item.email})
+                        </span>
+                      </div>
+                      <div>
+                        {item.toEmail && (
+                          <span style={{ fontSize: 12 }}>
+                            <span
+                              style={{
+                                fontWeight: "bold",
+                                color: "#A0A0A0",
+                              }}
+                            >
+                              To
+                            </span>
+                            : {item.nameTo}
+                          </span>
+                        )}
+                        <div>
+                          {" "}
+                          <span style={{ fontSize: 12 }} className="text-xs">
+                            ({item.toEmail})
+                          </span>
+                        </div>
+                      </div>
+                      {item?.ccEmails?.length ? (
+                        <>
+                          <Tooltip
+                            placement="bottom"
+                            title={item.ccEmails.map((i, index) =>
+                              index ===
+                              (item?.ccEmails?.length as number) - 1 ? (
+                                <span key={i}>{i}</span>
+                              ) : (
+                                <span key={i}>{i}, </span>
+                              )
+                            )}
+                            style={{ color: "black", fontSize: 12 }}
+                            className="truncate w-full"
+                          >
+                            <span
+                              style={{
+                                fontWeight: "bold",
+                                fontSize: 12,
+                                color: "#A0A0A0",
+                              }}
+                            >
+                              Cc
+                            </span>
+                            :{" "}
+                            {item.ccEmails.map((i, index) =>
+                              index ===
+                              (item?.ccEmails?.length as number) - 1 ? (
+                                <span key={i}>{i}</span>
+                              ) : (
+                                <span key={i}>{i}, </span>
+                              )
+                            )}
+                          </Tooltip>
+                        </>
+                      ) : (
+                        <></>
+                      )}
+                      {item?.bccEmails?.length ? (
+                        <>
+                          <Tooltip
+                            placement="bottom"
+                            title={item.bccEmails.map((i, index) =>
+                              index ===
+                              (item?.bccEmails?.length as number) - 1 ? (
+                                <span key={i}>{i}</span>
+                              ) : (
+                                <span key={i}>{i}, </span>
+                              )
+                            )}
+                            className="truncate w-full"
+                            style={{ color: "black", fontSize: 12 }}
+                          >
+                            <span
+                              style={{
+                                fontWeight: "bold",
+                                fontSize: 12,
+                                color: "#A0A0A0",
+                              }}
+                            >
+                              Bcc
+                            </span>
+                            :{" "}
+                            {item.bccEmails.map((i, index) =>
+                              index ===
+                              (item?.bccEmails?.length as number) - 1 ? (
+                                <span key={i}>{i}</span>
+                              ) : (
+                                <span key={i}>{i}, </span>
+                              )
+                            )}
+                          </Tooltip>
+                        </>
+                      ) : (
+                        <></>
+                      )}
+                      <div>
+                        {" "}
+                        <span
+                          style={{
+                            fontWeight: "bold",
+                            fontSize: 12,
+                            color: "#A0A0A0",
+                          }}
+                        >
+                          Date
+                        </span>
+                        : <span className="text-xs">{item.datetime}</span>
+                      </div>
+                      {type}
+                    </div>
+                  }
+                >
+                  <MailIcon />
+                </Tooltip>
               </div>
-              {item.toEmail && (
-                <span style={{ color: "black", fontSize: 12 }}>
-                  <span style={{ fontWeight: "bold" }}>To </span>:{" "}
-                  {item.toEmail}
-                </span>
-              )}
             </div>
           </div>
           <div className="flex gap-2 items-center">
@@ -124,7 +251,7 @@ export const RowMessageBeta: FC<RowMessageProps> = ({ item }) => {
         </div>
 
         <div className="flex  ml-12 flex-wrap flex-col">
-          {item?.ccEmails?.length ? (
+          {/* {item?.ccEmails?.length ? (
             <>
               <Tooltip
                 title={item.ccEmails.map((i, index) =>
@@ -149,8 +276,8 @@ export const RowMessageBeta: FC<RowMessageProps> = ({ item }) => {
             </>
           ) : (
             <></>
-          )}
-          {item?.bccEmails?.length ? (
+          )} */}
+          {/* {item?.bccEmails?.length ? (
             <>
               <Tooltip
                 title={item.bccEmails.map((i, index) =>
@@ -175,7 +302,7 @@ export const RowMessageBeta: FC<RowMessageProps> = ({ item }) => {
             </>
           ) : (
             <></>
-          )}
+          )} */}
         </div>
       </div>
       <Divider className="m-0 my-2" />

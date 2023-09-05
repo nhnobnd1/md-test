@@ -19,7 +19,7 @@ export const CollapseMessageBeta: FC<CollapseMessageProps> = ({ listChat }) => {
         item.right ? (isTablet ? "start" : "end") : "start"
       }`}
     >
-      <RowMessageBeta key={item.id} item={item} />
+      <RowMessageBeta key={item.id} item={item} type={listChat[0]?.typeChat} />
     </div>
   ));
 };

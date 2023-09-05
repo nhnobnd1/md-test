@@ -22,7 +22,7 @@ import {
   TicketRepository,
   UpdateTicket,
 } from "@moose-desk/repo";
-import { Button, Card, Select, Tag, Tooltip, Upload } from "antd";
+import { Button, Card, Select, Tooltip, Upload } from "antd";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
@@ -38,7 +38,6 @@ import { MDButton } from "src/components/UI/Button/MDButton";
 import TextEditorTicketBeta from "src/components/UI/Editor/TextEditorTicketBeta";
 import { Form } from "src/components/UI/Form";
 import { Header } from "src/components/UI/Header";
-import Icon from "src/components/UI/Icon";
 // import Select from "src/components/UI/Select/Select";
 import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import useDeepEffect from "src/hooks/useDeepEffect";
@@ -63,7 +62,6 @@ import {
 import useFormCreateTicket from "src/modules/ticket/store/useFormCreateTicket";
 import useForwardTicket from "src/modules/ticket/store/useForwardTicket";
 import { trimHtmlCssJs, wrapImageWithAnchorTag } from "src/utils/localValue";
-import ReplyIcon from "~icons/ion/reply";
 import DownIcon from "~icons/material-symbols/arrow-downward";
 import BackIcon from "~icons/mingcute/back-2-fill";
 import "./BoxReplyBeta.scss";
@@ -82,6 +80,7 @@ interface ValueForm {
 export interface ChatItem {
   id: string;
   name: string;
+  nameTo: string;
   chat: string;
   time: string;
   email: string;
@@ -123,7 +122,7 @@ const DetailTicketFormBeta = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { state: send, on: openSend, off: closeSend } = useToggle(false);
+  // const { state: send, on: openSend, off: closeSend } = useToggle(false);
   const [isForward, setIsForward] = useState(false);
   const [enableCC, setEnableCC] = useState(false);
   const [toEmail, setToEmail] = useState("");
@@ -254,11 +253,13 @@ const DetailTicketFormBeta = () => {
         return {
           id: item._id,
           name: item.fromEmail?.name,
+
           time: `${createdDatetimeFormat(item.createdDatetime, timezone)}`,
           chat: item.description,
           email: item.fromEmail?.email,
           attachments: item.attachments,
           toEmail: item.toEmails[0].email,
+          nameTo: item.toEmails[0]?.name,
           incoming: item?.incoming,
           ccEmails: item?.ccEmails,
           bccEmails: item?.bccEmails,
@@ -290,6 +291,7 @@ const DetailTicketFormBeta = () => {
         attachments: ticket.attachments,
         typeChat,
         toEmail: ticket.toEmails ? ticket.toEmails[0].email : "",
+        nameTo: ticket.toEmails ? ticket.toEmails[0].name : "",
         incoming: ticket?.incoming || ticket?.createdViaWidget,
         ccEmails: ticket?.ccEmails,
         bccEmails: ticket?.bccEmails,
@@ -610,7 +612,6 @@ const DetailTicketFormBeta = () => {
         </div>
       `
       );
-      closeSend();
     }
   }, [chatItemForward, clickForward]);
 
@@ -624,7 +625,6 @@ const DetailTicketFormBeta = () => {
   useDeepEffect(() => {
     if (isSampleEmail && !processing && !isLoadingConversation) {
       setTimeout(() => {
-        closeSend();
         form.setFieldValue(
           "content",
           `
@@ -686,13 +686,11 @@ Hit Send to see what your message will look like
       </div>
       `
     );
-    closeSend();
   };
   const handleReply = () => {
     form.resetFields();
     setFiles([]);
     setFileForward([]);
-    closeSend();
     setIsForward(false);
   };
 
@@ -717,7 +715,16 @@ Hit Send to see what your message will look like
                   {` Ticket ${ticket?.ticketId}: ${ticket?.subject}`}
                 </h1>
                 <div className="flex justify-end items-center ">
-                  <Tag color="red">{listChat[0]?.typeChat}</Tag>
+                  {/* <Tag color="red">{listChat[0]?.typeChat}</Tag> */}
+                  <Tooltip title="Forward all">
+                    <MDButton
+                      onClick={handleClickForwardAll}
+                      // icon={}
+                      className="flex gap-2 items-center"
+                    >
+                      Forward all
+                    </MDButton>
+                  </Tooltip>
                 </div>
               </div>
             )}
@@ -798,11 +805,9 @@ Hit Send to see what your message will look like
             </div>
             {ticket ? (
               <div
-                className={`w-full flex flex-col justify-between relative mt-${
-                  send ? 0 : 2
-                }`}
+                className={`w-full flex flex-col justify-between relative mt-2`}
               >
-                <div className={`box-comment ${send ? "hidden" : ""}`}>
+                <div className={`box-comment`}>
                   <div className="md-from-detail w-full flex items-center gap-2 px-3 ">
                     <span className="w-[40px]">From:</span>
                     <Form.Item
@@ -1106,54 +1111,21 @@ Hit Send to see what your message will look like
                     </>
                   ) : (
                     <div className="flex items-center gap-2 justify-end w-full">
-                      {send ? (
-                        <div className="flex gap-2">
-                          <MDButton
-                            icon={
-                              <span className="mr-2 translate-y-[3px]">
-                                <ReplyIcon fontSize={14} />
-                              </span>
-                            }
-                            onClick={handleReply}
-                          >
-                            Reply
-                          </MDButton>
-                          <Tooltip title="Forward all">
-                            <MDButton
-                              onClick={handleClickForwardAll}
-                              // icon={}
-                              className="flex gap-2 items-center"
-                            >
-                              Forward all
-                            </MDButton>
-                          </Tooltip>
-                        </div>
-                      ) : (
-                        <div className="flex items-center gap-2">
-                          <MDButton
-                            onClick={() => {
-                              openSend();
-                            }}
-                            type="text"
-                            icon={<Icon name="close" />}
-                          ></MDButton>
-                          {!isForward && (
-                            <MDButton
-                              disabled={!isChanged || loadingButton}
-                              onClick={handleCloseTicket}
-                            >
-                              Send & Close Ticket
-                            </MDButton>
-                          )}
-                          <MDButton
-                            type="primary"
-                            htmlType="submit"
-                            disabled={!isChanged || loadingButton}
-                          >
-                            Send
-                          </MDButton>
-                        </div>
-                      )}
+                      <div className="flex items-center gap-2">
+                        <MDButton
+                          disabled={!isChanged || loadingButton}
+                          onClick={handleCloseTicket}
+                        >
+                          Send & Close Ticket
+                        </MDButton>
+                        <MDButton
+                          type="primary"
+                          htmlType="submit"
+                          disabled={!isChanged || loadingButton}
+                        >
+                          Send
+                        </MDButton>
+                      </div>
                     </div>
                   )}
                 </div>

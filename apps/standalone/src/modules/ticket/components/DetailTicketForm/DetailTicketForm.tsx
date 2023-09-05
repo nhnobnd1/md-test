@@ -80,6 +80,7 @@ interface ValueForm {
 export interface ChatItem {
   id: string;
   name: string;
+  nameTo: string;
   chat: string;
   time: string;
   email: string;
