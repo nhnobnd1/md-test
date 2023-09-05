@@ -18,7 +18,6 @@ import { AgentFormValues } from "src/modules/agent/components/AgentForm";
 import { PopupAgent } from "src/modules/agent/components/PopupAgent";
 import { getStatusAgent } from "src/modules/agent/constant";
 import { getListAgentFilter } from "src/modules/agent/helper/api";
-import { hiddenEditAgent } from "src/modules/agent/helper/function";
 import { defaultFilter } from "src/utils/localValue";
 
 const AgentsIndex = () => {
@@ -225,31 +224,12 @@ const AgentsIndex = () => {
               render={(_, record: Agent) => (
                 <span
                   className={
-                    !hiddenEditAgent(
-                      isOwner,
-                      userId === record?._id,
-                      record?.isOwner,
-                      isAdmin,
-                      isLead,
-                      isAgent,
-                      record?.role
-                    )
+                    !isAgent
                       ? `cursor-pointer hover:underline hover:text-blue-500`
                       : ``
                   }
                   onClick={() => {
-                    if (
-                      hiddenEditAgent(
-                        isOwner,
-                        userId === record?._id,
-                        record?.isOwner,
-                        isAdmin,
-                        isLead,
-                        isAgent,
-                        record?.role
-                      )
-                    )
-                      return;
+                    if (isAgent) return;
                     navigate(`/agent-beta?agent=${record?._id}`);
                   }}
                 >

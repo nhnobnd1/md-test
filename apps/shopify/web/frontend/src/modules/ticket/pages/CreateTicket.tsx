@@ -1,7 +1,7 @@
 import {
-  generatePath,
   MediaScreen,
   useMount,
+  useNavigate,
   useToggle,
   useUnMount,
 } from "@moose-desk/core";
@@ -28,7 +28,6 @@ import useToggleGlobal from "src/hooks/useToggleGlobal";
 import ContentShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ContentShopifySearch";
 import { TicketForm } from "src/modules/ticket/components/TicketForm";
 import { getListEmailIntegration } from "src/modules/ticket/helper/api";
-import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import styles from "./style.module.scss";
 interface CreateTicketProps {}
 
@@ -50,6 +49,7 @@ const CreateTicket = (props: CreateTicketProps) => {
       show(t("messages:error.something_went_wrong"), { isError: true });
     },
   });
+  const navigate = useNavigate();
 
   const primaryEmail = useMemo(() => {
     if (!dataEmailIntegration) {
@@ -118,7 +118,13 @@ const CreateTicket = (props: CreateTicketProps) => {
       ) : (
         <Page
           breadcrumbs={[
-            { content: "Ticket", url: generatePath(TicketRoutePaths.Index) },
+            {
+              content: "Ticket",
+              // url: generatePath(TicketRoutePaths.Index),
+              onAction: () => {
+                navigate(-1);
+              },
+            },
           ]}
           title={(<span>New Ticket</span>) as unknown as string}
           fullWidth

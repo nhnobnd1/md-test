@@ -5444,9 +5444,9 @@ function Rb(e) {
 }
 function Cb(e) {
   if (e < 60)
-    return e + "s";
+    return "00:" + e;
   var t = Math.floor(e / 60), r = e % 60;
-  return t + " m " + (r ? r + " s" : "");
+  return (t < 10 ? "0" + t : t) + ":" + (r < 10 ? "0" + r : r);
 }
 var l_ = /* @__PURE__ */ ((e) => (e[e.XS = 320] = "XS", e[e.SM = 576] = "SM", e[e.MD = 768] = "MD", e[e.LG = 1024] = "LG", e[e.XL = 1280] = "XL", e[e.XXL = 1600] = "XXL", e))(l_ || {});
 function Ku(e, t) {

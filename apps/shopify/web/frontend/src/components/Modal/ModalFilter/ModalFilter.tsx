@@ -1,4 +1,4 @@
-import { useNavigate } from "@moose-desk/core";
+import { emailRegex, useNavigate } from "@moose-desk/core";
 import { priorityOptions, statusOptions } from "@moose-desk/repo";
 import {
   Button,
@@ -9,7 +9,7 @@ import {
 } from "@shopify/polaris";
 import { FilterMajor } from "@shopify/polaris-icons";
 import { FormikProps, FormikValues } from "formik";
-import { FC, useCallback, useRef, useState } from "react";
+import { FC, useCallback, useMemo, useRef, useState } from "react";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
 import BoxSelectAssignee from "src/components/Modal/ModalFilter/BoxSelectAssignee";
@@ -17,6 +17,8 @@ import BoxSelectFilter from "src/components/Modal/ModalFilter/BoxSelectFilter";
 import CustomerSelect from "src/components/Modal/ModalFilter/CustomerSelect";
 import { TagSelect } from "src/modules/ticket/components/TicketForm/TagSelect";
 import { FilterObject } from "src/modules/ticket/pages/Index";
+import * as Yup from "yup";
+
 interface ModalFilterProps {
   handleApply: (values: any) => void;
   handleResetModal: () => void;
@@ -50,6 +52,23 @@ export const ModalFilter: FC<ModalFilterProps> = ({
     handleApply(values);
     setActive(false);
   };
+  const ValidateForm = useMemo(() => {
+    return Yup.object().shape({
+      agentObjectId: Yup.string().test(
+        "is-blank",
+        "The assignee does not exist",
+        (value: any) => {
+          if (!value) {
+            return true;
+          }
+          if (value?.includes(",") && emailRegex.test(value.split(",")[1])) {
+            return true;
+          }
+          return false;
+        }
+      ),
+    });
+  }, []);
   return (
     <>
       <div>
@@ -90,6 +109,7 @@ export const ModalFilter: FC<ModalFilterProps> = ({
                 }
                 enableReinitialize
                 onSubmit={handleSubmitValue}
+                validationSchema={ValidateForm}
               >
                 <FormLayout>
                   <FormItem name="agentObjectId">

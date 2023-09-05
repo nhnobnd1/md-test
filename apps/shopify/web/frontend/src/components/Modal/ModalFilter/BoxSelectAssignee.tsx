@@ -64,6 +64,7 @@ const BoxSelectAssignee = (props: BoxSelectAutoReplyProps) => {
   const updateText = useCallback((value) => {
     setSearch(value);
     setInputValue(value);
+    props.onChange && props.onChange(value);
   }, []);
 
   useEffect(() => {
@@ -78,6 +79,7 @@ const BoxSelectAssignee = (props: BoxSelectAutoReplyProps) => {
       const matchedOption = agentsOptions.find((option) => {
         return option.value === selected;
       });
+
       setSelectedOption(selected);
       setInputValue((matchedOption && matchedOption.label) || "");
 
@@ -127,12 +129,12 @@ const BoxSelectAssignee = (props: BoxSelectAutoReplyProps) => {
           // onFocus={() => {
           //   setSearch("");
           // }}
-          onBlur={() => {
-            if (agentsOptions.length === 0) {
-              setInputValue("");
-              setSearch("");
-            }
-          }}
+          // onBlur={() => {
+          //   if (agentsOptions.length === 0) {
+          //     setInputValue("");
+          //     setSearch("");
+          //   }
+          // }}
           value={inputValue}
           autoComplete="off"
           error={props.error}
