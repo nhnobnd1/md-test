@@ -64,7 +64,12 @@ export default function InformationLayout({ layout }: IProps) {
       lastName: dataProfile?.lastName,
       email: dataProfile?.email,
     };
-  }, [dataProfile?.firstName, dataProfile?.lastName, dataProfile?.email]);
+  }, [
+    dataProfile?.firstName,
+    dataProfile?.lastName,
+    dataProfile?.email,
+    dataProfile?.avatar,
+  ]);
   return (
     <section className={styles.container}>
       <div className={styles.wrapSetting}>

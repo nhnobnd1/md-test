@@ -1,17 +1,28 @@
+@import "../../../styles/variables.scss";
+@import "../../../styles/mixin.scss";
 .totalResult {
-    margin-right: 20px;
+  margin-right: 20px;
 }
 .wrapTable {
-    margin-bottom: 20px;
-    :global {
-        .Polaris-IndexTable__TableRow {
-            cursor: pointer !important;
-        }
+  margin-bottom: 20px;
+  :global {
+    .Polaris-IndexTable__TableRow {
+      cursor: pointer !important;
     }
+  }
 }
 .wrapTab {
-    padding: 20px 20px 0;
+  padding: 20px 20px 0;
 }
 .searchWrap {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+}
+.searchWrap > div {
+  width: 300px;
+  @include mq(md, "max") {
+    width: 100%;
+  }
 }

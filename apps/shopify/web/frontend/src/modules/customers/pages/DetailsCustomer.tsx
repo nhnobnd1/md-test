@@ -1,9 +1,9 @@
 import InformationLayout from "@moose-beta/components/InformationLayout";
 
-export default function DetailAgent() {
+export default function DetailsCustomer() {
   return (
     <div>
-      <InformationLayout layout="agent" />
+      <InformationLayout layout="customer" />
     </div>
   );
 }

@@ -1,0 +1,29 @@
+.wrapSetting {
+  padding: 15px 10px;
+  .moreInfo {
+    display: flex;
+    min-height: 32px;
+    align-items: start;
+
+    .label {
+      min-width: 80px;
+      width: 80px;
+      font-size: 13px;
+      text-align: start;
+      padding-right: 10px;
+    }
+
+    .result {
+      color: #68737d;
+      font-size: 13px;
+      padding-left: 10px;
+      display: flex;
+      align-items: center;
+    }
+  }
+}
+.loading {
+    opacity: 0.5;
+    cursor: none;
+    pointer-events: none;
+}

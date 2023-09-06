@@ -17,6 +17,7 @@ export function useCountDown({ initValue, key }: CountDown): UseCountDown {
   const [listCountDown, setListCountDown] = useState<{
     [props: string]: number;
   }>({});
+  console.log(key, "key<<<<");
   const [timerObj, setTimerObj] = useState<{
     [props: string]: any;
   }>({});
@@ -38,6 +39,7 @@ export function useCountDown({ initValue, key }: CountDown): UseCountDown {
       if (countDownJson && leavingDateJson) {
         const countDownProcess = JSON.parse(countDownJson);
         const leavingDate = JSON.parse(leavingDateJson);
+
         if (countDownProcess[key]) {
           const time = leavingDate;
           const now = dayjs().unix();
@@ -45,7 +47,6 @@ export function useCountDown({ initValue, key }: CountDown): UseCountDown {
           const listProcess = {
             ...countDownProcess,
           };
-
           const listCount: any = {};
           Object.keys(listProcess).forEach((itemKey) => {
             const allTimeProcess: number =

@@ -3,7 +3,6 @@ import {
   generatePath,
   PageComponent,
   priorityToTagShopify,
-  typeChannelTicket,
   upperCaseFirst,
   useNavigate,
 } from "@moose-desk/core";
@@ -12,7 +11,6 @@ import {
   Badge,
   EmptySearchResult,
   IndexTable,
-  LegacyCard,
   Loading,
   Text,
 } from "@shopify/polaris";
@@ -29,6 +27,7 @@ import { useSubdomain } from "src/hooks/useSubdomain";
 import { getListTicketApi } from "src/modules/ticket/helper/api";
 
 import { useQuery } from "react-query";
+import { SkeletonTable } from "src/components/Skelaton/SkeletonTable";
 
 interface TicketIndexPageProps {
   agentId: string;
@@ -54,7 +53,6 @@ const Tickets: PageComponent<TicketIndexPageProps> = ({
   const [filterData, setFilterData] = useState<any>({
     limit: 10,
     page: 1,
-
     agentObjectId: "",
   });
 
@@ -62,9 +60,11 @@ const Tickets: PageComponent<TicketIndexPageProps> = ({
     if (!agentId) return;
     setFilterData((pre: any) => ({ ...pre, agentObjectId: agentId }));
   }, [agentId]);
+
   const { data: dataTicket, isLoading: loadingFilter } = useQuery({
     queryKey: ["getListTickets", filterData],
     queryFn: () => getListTicketApi(filterData),
+    enabled: !!filterData.agentObjectId,
     onError: () => {
       show(t("messages:error.get_ticket"), { isError: true });
     },
@@ -73,19 +73,20 @@ const Tickets: PageComponent<TicketIndexPageProps> = ({
     if (dataTicket?.data)
       return dataTicket.data.map((item) => ({ ...item, id: item._id }));
     return [];
-  }, [dataTicket]);
+  }, [dataTicket, filterData.agentObjectId]);
+
   const meta = useMemo(() => {
     if (dataTicket?.metadata) return dataTicket.metadata;
     return undefined;
   }, [dataTicket]);
+
   const { subDomain } = useSubdomain();
   const { timezone }: any = useGlobalData(false, subDomain || "");
 
   const listSort = [
+    "status",
     "ticketId",
     "subject",
-    "customer",
-    "createdViaWidget",
     "priority",
     "updatedTimestamp",
   ];
@@ -127,6 +128,11 @@ const Tickets: PageComponent<TicketIndexPageProps> = ({
         onClick={() => {}}
       >
         <IndexTable.Cell>
+          <Badge status={priorityToTagShopify(status)}>
+            {upperCaseFirst(status)}
+          </Badge>
+        </IndexTable.Cell>
+        <IndexTable.Cell>
           <div
             className="hover:underline"
             onClick={() => {
@@ -160,67 +166,54 @@ const Tickets: PageComponent<TicketIndexPageProps> = ({
             </div>
           }
         </IndexTable.Cell>
+
         <IndexTable.Cell>
-          {createdViaWidget || incoming ? (
-            <span className="subject max-w-lg truncate">{`${
-              fromEmail.name ? fromEmail.name : fromEmail.email
-            }`}</span>
-          ) : (
-            <span className="subject max-w-lg truncate">{`${
-              toEmails[0]?.name ? toEmails[0]?.name : toEmails[0]?.email
-            }`}</span>
-          )}
-        </IndexTable.Cell>
-        <IndexTable.Cell>
-          <Badge status={typeChannelTicket(createdViaWidget)}>
-            {createdViaWidget ? "Via widget" : "Email"}
-          </Badge>
+          {createdDatetimeFormat(updatedDatetime, timezone)}
         </IndexTable.Cell>
         <IndexTable.Cell>
           <Badge status={priorityToTagShopify(priority)}>
             {upperCaseFirst(priority)}
           </Badge>
         </IndexTable.Cell>
-        <IndexTable.Cell>
-          {createdDatetimeFormat(updatedDatetime, timezone)}
-        </IndexTable.Cell>
       </IndexTable.Row>
     )
   );
   return (
-    <LegacyCard>
+    <>
       {loadingFilter && <Loading />}
-      <>
-        <IndexTable
-          resourceName={{ singular: "ticket", plural: "tickets" }}
-          itemCount={tickets?.length}
-          selectable={false}
-          loading={loadingFilter}
-          emptyState={
-            <EmptySearchResult
-              title={
-                "Sorry! There is no records matched with your search criteria"
-              }
-              description={"Try changing the filters or search term"}
-              withIllustration
-            />
-          }
-          headings={[
-            { title: "Ticket ID" },
-            { title: "Ticket Title" },
-            { title: "Customer" },
-            { title: "Channel" },
-            { title: "Priority" },
-            { title: "Last Update" },
-          ]}
-          sortable={[true, true, true, true, true, true]}
-          sortDirection={direction}
-          sortColumnIndex={indexSort}
-          onSort={handleSort}
-        >
-          {rowMarkup}
-        </IndexTable>
-      </>
+      {loadingFilter ? (
+        <SkeletonTable columnsCount={5} rowsCount={10} />
+      ) : (
+        <div>
+          <IndexTable
+            resourceName={{ singular: "ticket", plural: "tickets" }}
+            itemCount={tickets?.length}
+            selectable={false}
+            emptyState={
+              <EmptySearchResult
+                title={
+                  "Sorry! There is no records matched with your search criteria"
+                }
+                description={"Try changing the filters or search term"}
+                withIllustration
+              />
+            }
+            headings={[
+              { title: "Status" },
+              { title: "Ticket ID" },
+              { title: "Ticket Title" },
+              { title: "Last Update" },
+              { title: "Priority" },
+            ]}
+            sortable={[true, true, true, true, true, true]}
+            sortDirection={direction}
+            sortColumnIndex={indexSort}
+            onSort={handleSort}
+          >
+            {rowMarkup}
+          </IndexTable>
+        </div>
+      )}
       <div>
         {meta?.totalCount ? (
           <div className={styles.wrapPagination}>
@@ -243,7 +236,7 @@ const Tickets: PageComponent<TicketIndexPageProps> = ({
           </div>
         ) : null}
       </div>
-    </LegacyCard>
+    </>
   );
 };
 

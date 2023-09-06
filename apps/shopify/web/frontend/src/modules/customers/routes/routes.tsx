@@ -17,12 +17,12 @@ const customersRoutes: IRoute = {
       index: true,
       component: lazy(() => import("src/modules/customers/pages/Index")),
     },
-    // {
-    //   path: CustomersRoutePaths.Details,
-    //   component: lazy(
-    //     () => import("src/modules/customers/pages/DetailsCustomer")
-    //   ),
-    // },
+    {
+      path: CustomersRoutePaths.Details,
+      component: lazy(
+        () => import("src/modules/customers/pages/DetailsCustomer")
+      ),
+    },
     // {
     //   path: CustomersRoutePaths.Create,
     //   component: lazy(

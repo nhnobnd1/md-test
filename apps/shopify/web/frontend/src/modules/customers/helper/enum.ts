@@ -1,3 +1,3 @@
 export enum FileSize {
-  MAX = 5000000,
+  MAX = 3000000,
 }

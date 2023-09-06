@@ -39,14 +39,21 @@
   display: flex;
   justify-content: space-between;
   padding: 25px 20px 0;
+  align-items: center;
+
   @include mq(md, "max") {
-    flex-direction: column;
+    // flex-direction: column;
+  }
+  .buttonBack {
+    padding-right: 16px;
+    display: flex;
+    align-items: center;
   }
   .profile {
     display: flex;
     align-items: center;
     @include mq(md, "max") {
-      margin-bottom: 10px;
+      margin-bottom: 0;
     }
    
     .name {
@@ -54,6 +61,14 @@
       font-weight: 500;
       margin-left: 10px;
       margin-right: 5px;
+      max-width: calc(100% - 150px);
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      line-height: 25px;
+      @include mq(md, "max") {
+        max-width: calc(100% - 80px);
+      }
     }
   
   }
@@ -189,7 +204,14 @@
 .showButton {
   display: flex;
 }
-
+.toggleButton {
+  position: absolute;
+  right: 20px;
+  top: 25px;
+  @include mq(md, "max") {
+    top: 75px;
+  }
+}
 @keyframes glowing {
   0% {
     opacity: 1;

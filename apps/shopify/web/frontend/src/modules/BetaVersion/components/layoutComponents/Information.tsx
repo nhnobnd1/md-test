@@ -1,3 +1,4 @@
+import { useUser } from "@moose-desk/core";
 import { Agent } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import { Button, DropZone, Icon, SkeletonBodyText } from "@shopify/polaris";
@@ -7,7 +8,10 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
 import MDAvatar from "src/components/MDAvatar/MDAvatar";
+import { updateAgent } from "src/modules/agent/api/api";
+import { SettingStatus } from "src/modules/agent/components/SettingStatus/SettingStatus";
 import { updateCustomer } from "src/modules/customers/api/api";
+import { FileSize } from "src/modules/customers/helper/enum";
 import { updateProfile } from "src/modules/setting/api/api";
 import ProfileForm from "src/modules/setting/component/ProfileForm";
 import styles from "./style.module.scss";
@@ -27,6 +31,7 @@ const Information = ({
 }: IProps) => {
   const { t } = useTranslation();
   const { show } = useToast();
+  const { sub: userId }: string | any = useUser();
   const formRef = useRef<FormikProps<any>>(null);
 
   const [avatar, setAvatar] = useState("");
@@ -69,20 +74,17 @@ const Information = ({
         show(t("messages:error.update_customer"));
       },
     });
+  const { mutate: updateAgentMutate, isLoading: agentUpdating } = useMutation({
+    mutationFn: (payload: any) => updateAgent(profile?._id || "", payload),
+    onSuccess: async () => {
+      onRefetch();
 
-  // const addSaveButton = () => {
-  //   if (buttonEl?.classList.contains(styles.showButton)) return;
-  //   buttonEl?.classList.add(styles.showButton);
-  // };
-  // const removeSaveButton = () => {
-  //   if (buttonEl?.classList.contains(styles.showButton)) {
-  //     buttonEl?.classList.remove(styles.showButton);
-  //   }
-  // };
-
-  // const handleChangeForm = () => {
-  //   addSaveButton();
-  // };
+      show(t("messages:success.agent_update"));
+    },
+    onError: () => {
+      show(t("messages:error.agent_update"));
+    },
+  });
   const handleRemoveAvatar = () => {
     setAvatar("");
   };
@@ -93,6 +95,8 @@ const Information = ({
         return updateProfileMutate(payload);
       case "customer":
         return updateCustomerMutate(payload);
+      case "agent":
+        return updateAgentMutate(payload);
       default:
         return () => {};
     }
@@ -100,8 +104,24 @@ const Information = ({
   const handleSubmitForm = useCallback(() => {
     formRef.current?.submitForm();
   }, [formRef.current]);
-  const loading = uploading || customerUpdating || profileUpdating;
-
+  const handleUploadFile = (files: any) => {
+    const file = files[0];
+    if (file) {
+      if (file.size > FileSize.MAX) {
+        show("Size of the image must not exceed 3MB.");
+        return;
+      }
+      if (!file.type.includes("image")) {
+        show("Invalid image format.");
+        return;
+      }
+      uploadAvatarMutate(file);
+    }
+  };
+  const loading =
+    uploading || customerUpdating || profileUpdating || agentUpdating;
+  const isDisabledForm =
+    !(profile?.isActive && profile?.emailConfirmed) && layout === "agent";
   return (
     <div className={styles.contentWrap}>
       <div className={styles.blockContent}>
@@ -114,37 +134,61 @@ const Information = ({
               source={avatar}
             />
 
-            <div className={styles.wrapActionAvatar}>
-              {/* {avatar && (
-                <div
-                  className={styles.removeAvatar}
-                  onClick={handleRemoveAvatar}
-                >
-                  <Icon name="delete" />
-                </div>
-              )} */}
-              <div className={styles.edit}>
-                <Icon source={EditMajor} color="base" />
-                <div className={styles.dropzone}>
-                  <DropZone>
-                    <DropZone.FileUpload />
-                  </DropZone>
-                </div>
-                {/* <Upload
-                  name="avatar"
-                  // listType="picture-circle"
-                  className="avatar-uploader"
-                  showUploadList={false}
-                  beforeUpload={() => {
-                    return false;
-                  }}
-                  onChange={handleChange}
-                >
-                  <Icon name="edit" color="#8C8C8C" />
-                </Upload> */}
+              <div className={styles.wrapActionAvatar}>
+                {profile?.isActive && profile?.emailConfirmed && avatar && (
+                  <div
+                    className={styles.removeAvatar}
+                    onClick={handleRemoveAvatar}
+                  >
+                    <Icon source={DeleteMajor} color="base" />
+                  </div>
+                )}
+                {!isDisabledForm && (
+                  <div className={styles.edit}>
+                    <Icon source={EditMajor} color="base" />
+                    <div className={styles.dropzone}>
+                      <DropZone
+                        accept=".png, .jpg, .jpeg, .svg"
+                        onDrop={handleUploadFile}
+                      >
+                        <DropZone.FileUpload />
+                      </DropZone>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
+          {loadingProfile ? (
+            <SkeletonBodyText lines={4} />
+          ) : (
+            <div className={styles.formInfo}>
+              <>
+                <ProfileForm
+                  updateForm={handleChangeForm}
+                  ref={formRef}
+                  initialValues={profile}
+                  submit={handleSubmitProfile}
+                  layout={layout}
+                  beta
+                  isSelf={profile?._id === userId}
+                  disabled={isDisabledForm}
+                />
+              </>
+            </div>
+          )}
+          {layout !== "agent" && (
+            <>
+              {loadingProfile ? (
+                <SkeletonBodyText lines={1} />
+              ) : (
+                <div className={styles.moreInfo}>
+                  <span className={styles.label}>Role</span>
+                  <span className={styles.result}>{profile?.role || "-"}</span>
+                </div>
+              )}
+            </>
+          )}
         </div>
         {loadingProfile ? (
           <SkeletonBodyText lines={4} />
@@ -169,42 +213,25 @@ const Information = ({
                 </Button>
               </div>
             </>
+          )}
+        </div>
+        {layout === "agent" && profile?._id && profile?._id !== userId && (
+          <div>
+            {loadingProfile ? (
+              <SkeletonBodyText lines={2} />
+            ) : (
+              <>
+                <SettingStatus
+                  confirmed={profile?.emailConfirmed}
+                  id={profile?._id}
+                  onRefetch={onRefetch}
+                  email={profile?.email}
+                  storeId={profile?.storeId}
+                  isActive={profile?.isActive}
+                />
+              </>
+            )}
           </div>
-        )}
-        {loadingProfile ? (
-          <SkeletonBodyText lines={1} />
-        ) : (
-          <div className={styles.moreInfo}>
-            <span className={styles.label}>Role</span>
-            <span className={styles.result}>{profile?.role || "End user"}</span>
-          </div>
-        )}
-      </div>
-      <div className={styles.blockContent}>
-        {loadingProfile ? (
-          <SkeletonBodyText lines={2} />
-        ) : (
-          <>
-            <div className={styles.moreInfo}>
-              <span className={styles.label}>Group</span>
-              <span className={styles.result}>
-                {convertListGroup?.length > 0
-                  ? convertListGroup?.map(
-                      (groupName: string, index: number) => (
-                        <span key={index} style={{ marginRight: 3 }}>
-                          {groupName}
-                          {index === convertListGroup?.length - 1 ? "" : ","}
-                        </span>
-                      )
-                    )
-                  : "-"}
-              </span>
-            </div>
-            <div className={styles.moreInfo}>
-              <span className={styles.label}>Timezone</span>
-              <span className={styles.result}>{profile?.timezone || "-"}</span>
-            </div>
-          </>
         )}
       </div>
     </div>

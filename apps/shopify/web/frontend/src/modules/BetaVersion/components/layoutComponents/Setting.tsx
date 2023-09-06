@@ -1,10 +1,12 @@
-import { Security } from "@moose-beta/profile/components/Security";
+import Tickets from "@moose-beta/components/layoutComponents/component/Tickets";
 import { useNavigate } from "@moose-desk/core";
-import { Button, SkeletonBodyText, Tabs } from "@shopify/polaris";
+import { Button, Icon, SkeletonBodyText, Tabs } from "@shopify/polaris";
+import { ArrowLeftMinor } from "@shopify/polaris-icons";
 import React, { useCallback, useState } from "react";
 import MDAvatar from "src/components/MDAvatar/MDAvatar";
+import { ListTicketCustomer } from "src/modules/customers/component/ListTicketCustomer";
+import { Security } from "src/modules/profileBeta/components/Security";
 import styles from "./style.module.scss";
-
 interface IProps {
   layout: "profile" | "customer" | "agent";
   basicInformation: {
@@ -24,9 +26,8 @@ const Setting = ({ layout, basicInformation, loading = false }: IProps) => {
       navigate(`/setting-account?tab=${profileTab[selectedTabIndex]?.id}`);
     }
   }, []);
-
-  const handleRedirectCreateTicket = () => {
-    if (layout === "profile") navigate("/ticket/new");
+  const handleBack = () => {
+    navigate(-1);
   };
   const renderName = () => {
     if (basicInformation.firstName || basicInformation.lastName) {
@@ -37,18 +38,17 @@ const Setting = ({ layout, basicInformation, loading = false }: IProps) => {
   const customerTab = [
     {
       id: "tickets",
-      value: <></>,
+      value:
+        layout === "customer" ? (
+          <ListTicketCustomer customerId={basicInformation?._id || ""} />
+        ) : (
+          <Tickets agentId={basicInformation?._id || ""} />
+        ),
       content: "Tickets",
       panelID: "tickets",
     },
   ];
   const profileTab = [
-    // {
-    //   id: "tickets",
-    //   value: <Tickets agentId={basicInformation?._id || ""} />,
-    //   content: "Tickets",
-    //   panelID: "tickets",
-    // },
     {
       id: "setting",
       content: "Security Settings",
@@ -60,6 +60,15 @@ const Setting = ({ layout, basicInformation, loading = false }: IProps) => {
   return (
     <div>
       <div className={styles.myProfile}>
+        {layout !== "profile" && (
+          <div className={styles.buttonBack}>
+            <Button
+              icon={<Icon source={ArrowLeftMinor} color="base" />}
+              onClick={handleBack}
+              size="medium"
+            ></Button>
+          </div>
+        )}
         <div className={styles.profile}>
           <MDAvatar
             firstName={basicInformation.firstName}
