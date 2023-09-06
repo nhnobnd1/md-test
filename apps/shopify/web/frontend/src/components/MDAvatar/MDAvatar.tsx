@@ -18,8 +18,8 @@ const MDAvatar = ({
 }: IProps) => {
   const convertAvatarText = () => {
     if (firstName?.trim() || lastName?.trim()) {
-      return `${getFirstCharacter(firstName)}${getFirstCharacter(
-        lastName
+      return `${getFirstCharacter(firstName?.trim())}${getFirstCharacter(
+        lastName?.trim()
       )}`.toUpperCase();
     }
     if (email) {

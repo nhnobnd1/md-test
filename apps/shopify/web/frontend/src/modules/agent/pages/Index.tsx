@@ -4,12 +4,14 @@ import {
   useNavigate,
   usePrevious,
 } from "@moose-desk/core";
-import { GetListAgentRequest, ScreenType } from "@moose-desk/repo";
+import { Agent, GetListAgentRequest, ScreenType } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Badge,
+  Button,
   ButtonGroup,
   EmptySearchResult,
+  Icon,
   IndexTable,
   LegacyCard,
   Link,
@@ -18,23 +20,23 @@ import {
   Text,
   useIndexResourceState,
 } from "@shopify/polaris";
+import { ViewMajor } from "@shopify/polaris-icons";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import { Banner } from "src/components/Banner";
 import { useBannerState } from "src/components/Banner/useBannerState";
+import { ButtonEdit } from "src/components/Button/ButtonEdit";
 import { HeaderList } from "src/components/HeaderList";
 import Pagination from "src/components/Pagination/Pagination";
 import { useBanner } from "src/hooks/useBanner";
 import useScreenType from "src/hooks/useScreenType";
 import { Role } from "src/models/Rule";
 import { ModalAddNewAgent } from "src/modules/agent/components/Modal/ModalAddNewAgent";
-import { ModalDetailAgent } from "src/modules/agent/components/Modal/ModalDetailAgent";
 import { getStatusAgent } from "src/modules/agent/constant";
 import { getListAgentFilter } from "src/modules/agent/helper/api";
 import AgentRoutePaths from "src/modules/agent/routes/paths";
 import { defaultFilter } from "src/utils/localValue";
-
 interface AgentIndexPageProps {}
 
 const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
@@ -183,6 +185,9 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
     margin:0
   }
   `;
+  const handleRedirectDetail = (records: Agent) => {
+    navigate(`/settings/people/agent/detail?agent=${records?._id}`);
+  };
   return (
     <>
       <style scoped>{screenType === ScreenType.SM ? css : ""}</style>{" "}
@@ -307,10 +312,23 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
                 </IndexTable.Cell>
                 <IndexTable.Cell className="py-3">
                   <ButtonGroup>
-                    <ModalDetailAgent
+                    {agentItem.emailConfirmed ? (
+                      <ButtonEdit
+                        isTable
+                        onClick={() => handleRedirectDetail(agentItem)}
+                      ></ButtonEdit>
+                    ) : (
+                      <Button
+                        icon={<Icon source={ViewMajor} color="base" />}
+                        plain
+                        onClick={() => handleRedirectDetail(agentItem)}
+                      ></Button>
+                    )}
+
+                    {/* <ModalDetailAgent
                       getListAgentApi={refetch}
                       agentSaved={agentItem}
-                    />
+                    /> */}
                   </ButtonGroup>
                 </IndexTable.Cell>
               </IndexTable.Row>

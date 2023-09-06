@@ -54,7 +54,6 @@ const Tickets: PageComponent<TicketIndexPageProps> = ({
   const [filterData, setFilterData] = useState<any>({
     limit: 10,
     page: 1,
-
     agentObjectId: "",
   });
 

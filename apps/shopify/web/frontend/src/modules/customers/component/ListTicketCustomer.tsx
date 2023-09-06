@@ -1,7 +1,12 @@
-import { useNavigate } from "@moose-desk/core";
+import {
+  priorityToTagShopify,
+  upperCaseFirst,
+  useNavigate,
+} from "@moose-desk/core";
 import { QUERY_KEY } from "@moose-desk/core/helper/constant";
 import { useToast } from "@shopify/app-bridge-react";
 import {
+  Badge,
   EmptySearchResult,
   IndexTable,
   LegacyCard,
@@ -68,9 +73,10 @@ export const ListTicketCustomer = memo(({ customerId }: IProps) => {
     isLoading,
     isFetching,
   }: any = useQuery({
-    queryKey: [QUERY_KEY.LIST_TICKET_CUSTOMER, filter],
+    queryKey: [QUERY_KEY.LIST_TICKET_CUSTOMER, filter, customerId],
     queryFn: () => getListTicketCustomer(customerId, filter),
     keepPreviousData: true,
+    enabled: !!customerId,
     onError: () => {
       show(t("messages:error.get_ticket_customer"), {
         isError: true,
@@ -122,8 +128,20 @@ export const ListTicketCustomer = memo(({ customerId }: IProps) => {
           {isLoading ? (
             <SkeletonBodyText lines={1} />
           ) : (
+            <div onClick={() => handleClickRow(_id)}>
+              <Badge status={priorityToTagShopify(status)}>
+                {upperCaseFirst(status)}
+              </Badge>
+            </div>
+          )}
+        </IndexTable.Cell>
+
+        <IndexTable.Cell>
+          {isLoading ? (
+            <SkeletonBodyText lines={1} />
+          ) : (
             <div
-              style={{ width: 300, whiteSpace: "pre-line" }}
+              className="hover:underline max-w-lg truncate"
               onClick={() => handleClickRow(_id)}
             >
               {subject}
@@ -159,14 +177,11 @@ export const ListTicketCustomer = memo(({ customerId }: IProps) => {
           {isLoading ? (
             <SkeletonBodyText lines={1} />
           ) : (
-            <div onClick={() => handleClickRow(_id)}>{status}</div>
-          )}
-        </IndexTable.Cell>
-        <IndexTable.Cell>
-          {isLoading ? (
-            <SkeletonBodyText lines={1} />
-          ) : (
-            <div onClick={() => handleClickRow(_id)}>{priority}</div>
+            <div onClick={() => handleClickRow(_id)}>
+              <Badge status={priorityToTagShopify(priority)}>
+                {upperCaseFirst(priority)}
+              </Badge>
+            </div>
           )}
         </IndexTable.Cell>
         <IndexTable.Cell>
@@ -187,53 +202,51 @@ export const ListTicketCustomer = memo(({ customerId }: IProps) => {
       <section className={styles.wrapTable}>
         {isFetching && <Loading />}
         {isLoading ? (
-          <SkeletonTable columnsCount={6} rowsCount={5} />
+          <SkeletonTable columnsCount={6} rowsCount={10} />
         ) : (
           <LegacyCard>
-            <>
-              <IndexTable
-                resourceName={resourceName}
-                itemCount={memoDataSource?.data?.length || 0}
-                selectable={false}
-                headings={[
-                  { title: "Ticket Title" },
-                  { title: "Date Requested" },
-                  { title: "Last Updated" },
-                  { title: "Status" },
-                  { title: "Priority" },
-                  { title: "Assignee" },
-                ]}
-                sortDirection={direction}
-                sortColumnIndex={indexSort}
-                onSort={handleSort}
-                sortable={[true, true, true, true, true, true]}
-                emptyState={
-                  <EmptySearchResult
-                    title={
-                      "Sorry! There is no records matched with your search criteria"
-                    }
-                    description={"Try changing the filters or search term"}
-                    withIllustration
-                  />
-                }
-              >
-                {rowMarkup}
-              </IndexTable>
-              <div className="flex items-center justify-center mt-4 pb-4">
-                <Pagination
-                  total={
-                    memoDataSource?.metadata
-                      ? memoDataSource?.metadata?.totalCount
-                      : 1
+            <IndexTable
+              resourceName={resourceName}
+              itemCount={memoDataSource?.data?.length || 0}
+              selectable={false}
+              headings={[
+                { title: "Status" },
+                { title: "Ticket Title" },
+                { title: "Date Requested" },
+                { title: "Last Updated" },
+                { title: "Priority" },
+                { title: "Assignee" },
+              ]}
+              sortDirection={direction}
+              sortColumnIndex={indexSort}
+              onSort={handleSort}
+              sortable={[true, true, true, true, true, true]}
+              emptyState={
+                <EmptySearchResult
+                  title={
+                    "Sorry! There is no records matched with your search criteria"
                   }
-                  pageSize={filter.limit ?? 0}
-                  currentPage={filter.page ?? 1}
-                  onChangePage={handleChangePage}
-                  previousTooltip={"Previous"}
-                  nextTooltip={"Next"}
+                  description={"Try changing the filters or search term"}
+                  withIllustration
                 />
-              </div>
-            </>
+              }
+            >
+              {rowMarkup}
+            </IndexTable>
+            <div className="flex items-center justify-center mt-4 pb-4">
+              <Pagination
+                total={
+                  memoDataSource?.metadata
+                    ? memoDataSource?.metadata?.totalCount
+                    : 1
+                }
+                pageSize={filter.limit ?? 0}
+                currentPage={filter.page ?? 1}
+                onChangePage={handleChangePage}
+                previousTooltip={"Previous"}
+                nextTooltip={"Next"}
+              />
+            </div>
           </LegacyCard>
         )}
       </section>

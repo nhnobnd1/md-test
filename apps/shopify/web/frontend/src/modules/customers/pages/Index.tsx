@@ -19,7 +19,7 @@ import {
 } from "@shopify/polaris";
 import { MobileBackArrowMajor, SearchMinor } from "@shopify/polaris-icons";
 import classNames from "classnames";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 // import { isMobile } from "react-device-detect";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "react-query";
@@ -31,11 +31,7 @@ import { Search } from "src/components/Search/Search";
 import { SkeletonTable } from "src/components/Skelaton/SkeletonTable";
 import env from "src/core/env";
 import useScreenType from "src/hooks/useScreenType";
-import {
-  deleteCustomer,
-  getListCustomer,
-  getOneCustomer,
-} from "src/modules/customers/api/api";
+import { deleteCustomer, getListCustomer } from "src/modules/customers/api/api";
 import { CustomModal } from "src/modules/customers/component/Modal";
 import { MoreOption } from "src/modules/customers/component/MoreOption";
 import styles from "./styles.module.scss";
@@ -88,25 +84,6 @@ export default function CustomerIndexPage() {
     },
     onError: () => {},
   });
-  useEffect(() => {
-    if (!querySearchCustomer) return;
-    const getCustomerData = async () => {
-      try {
-        const { data: customerData }: any = await getOneCustomer(
-          querySearchCustomer
-        );
-        if (customerData?.data && Object.keys(customerData?.data).length > 0) {
-          handleOpenPopup(customerData?.data);
-        } else {
-          show("Customer not found", { isError: true });
-          navigate("/customers");
-        }
-      } catch (error) {
-        console.log(error, "error");
-      }
-    };
-    getCustomerData();
-  }, [querySearchCustomer, listCustomers]);
   const convertCustomerData = useMemo(() => {
     return listCustomers?.data;
   }, [listCustomers]);
@@ -119,7 +96,7 @@ export default function CustomerIndexPage() {
         <IndexTable.Cell className="py-3">
           <Link
             monochrome
-            onClick={() => handleOpenPopup(records)}
+            onClick={() => handleRedirectCustomerDetail(records)}
             removeUnderline
           >
             <Text variant="bodyMd" fontWeight="bold" as="span">
@@ -136,7 +113,7 @@ export default function CustomerIndexPage() {
             <div className="flex gap-2">
               <ButtonEdit
                 isTable
-                onClick={() => handleOpenPopup(records)}
+                onClick={() => handleRedirectCustomerDetail(records)}
               ></ButtonEdit>
               <ButtonDelete
                 isTable
@@ -169,9 +146,8 @@ export default function CustomerIndexPage() {
   const handleSearch = (keyword: string) => {
     setFilterData((pre) => ({ ...pre, query: keyword }));
   };
-  const handleOpenPopup = (records: any) => {
-    setCustomerData(records);
-    openPopup();
+  const handleRedirectCustomerDetail = (records: any) => {
+    navigate(`/customers/detail?customer=${records?._id}`);
   };
   const handleClosePopup = () => {
     closePopup();

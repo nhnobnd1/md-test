@@ -410,6 +410,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
       <style scoped>{css}</style>
       <div className="flex h-full">
         <div className="w-full flex-1 pr-4 pl-1 flex flex-col h-full min-w-[350px] justify-between py-1 overflow-y-auto">
+
           <div className="mb-3 mt-1">
             <FormItem name="subject">
               <TextField label="" autoComplete="off" placeholder="Subject" />

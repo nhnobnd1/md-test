@@ -14,6 +14,7 @@ import AgentRoutePaths from "src/modules/agent/routes/paths";
 import CustomersRoutePaths from "src/modules/customers/routes/paths";
 import DashboardRoutePaths from "src/modules/dashboard/routes/paths";
 import GroupsRoutePaths from "src/modules/groups/routes/paths";
+import ProfileBetaRoutePaths from "src/modules/profileBeta/routes/paths";
 import ReportRoutePaths from "src/modules/report/routes/paths";
 import SettingRoutePaths from "src/modules/setting/routes/paths";
 import SettingChannelRoutePaths from "src/modules/settingChannel/routes/paths";
@@ -111,25 +112,17 @@ export const getCaseNavigation = (badge = ""): NavigationItems[] => {
         },
         {
           label: "Account & Security",
-          url: SettingRoutePaths.AccountSecurity.Profile.Index,
+          url: `${ProfileBetaRoutePaths.Index}?tab=settings`,
           icon: () => <FraudProtectMinor />,
           tabBarNavigation: [
             {
-              label: "Profile",
-              url: SettingRoutePaths.AccountSecurity.Profile.Index,
-            },
-            {
-              label: "Security",
-              url: SettingRoutePaths.AccountSecurity.Security.Index,
+              label: "Setting Account",
+              url: `${ProfileBetaRoutePaths.Index}?tab=settings`,
             },
             {
               label: "Access Manager",
               url: SettingRoutePaths.AccountSecurity.AccessManager.Index,
             },
-            // {
-            //   label: "Setting Account Beta",
-            //   url: `${ProfileRoutePaths.Index}?tab=tickets`,
-            // },
           ],
         },
       ],

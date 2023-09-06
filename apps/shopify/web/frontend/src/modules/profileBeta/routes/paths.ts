@@ -1,7 +1,7 @@
 import { createRoutePath } from "@moose-desk/core";
 
-const ProfileBetaRoutePath = createRoutePath({
+const ProfileBetaRoutePaths = createRoutePath({
   Index: "setting-account",
 } as const);
 
-export default ProfileBetaRoutePath;
+export default ProfileBetaRoutePaths;

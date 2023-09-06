@@ -15,7 +15,6 @@ import {
   resendInviteEmail,
 } from "src/modules/agent/api/api";
 import styles from "./style.module.scss";
-
 interface IProps {
   profile: Agent;
   loading: boolean;
@@ -24,6 +23,15 @@ interface IProps {
 }
 export const AgentInfoBlock = React.memo(
   ({ profile, loading, onRefetch, disabled }: IProps) => {
+    // const {
+    //   state: countDown,
+    //   clearCountDown,
+    //   initCountdown,
+    //   checkTimerProcess,
+    // } = useCountDown({
+    //   initValue: 300,
+    //   key: `agent_${profile?._id}`,
+    // });
     const notification = useNotification();
     const navigate = useNavigate();
     const { t } = useTranslation();
@@ -32,6 +40,7 @@ export const AgentInfoBlock = React.memo(
       mutationFn: (payload: ResendEmailInvitationRequest) =>
         resendInviteEmail(payload),
       onSuccess: async () => {
+        // initCountdown(`agent_${profile?._id}`);
         notification.success(`Resend invitation ${profile?.email}`, {
           description: t("messages:success.resend_invitation_email"),
         });
@@ -43,6 +52,7 @@ export const AgentInfoBlock = React.memo(
     const { mutate: removeAgentMutate, isLoading: removing } = useMutation({
       mutationFn: () => removeAgent(profile?._id || ""),
       onSuccess: async () => {
+        // clearCountDown(`agent_${profile?._id}`);
         notification.success(t("messages:success.deleted_agent"));
         off();
         navigate(-1);
@@ -87,7 +97,7 @@ export const AgentInfoBlock = React.memo(
         {loading ? (
           <MDSkeleton lines={1} />
         ) : !profile?.emailConfirmed ? (
-          <div className="d-grid">
+          <div className="d-flex flex-column">
             <MDButton
               type="link"
               onClick={() =>
@@ -97,9 +107,15 @@ export const AgentInfoBlock = React.memo(
                 })
               }
               loading={sending}
+              // disabled={disabled || checkTimerProcess}
               disabled={disabled}
             >
-              Send Invitation Email
+              Send Invitation Email{" "}
+              {/* {countDown && (
+                <span className="ml-1">
+                  {convertSecondsToMinutesAndSeconds(countDown)}
+                </span>
+              )} */}
             </MDButton>
             <MDButton
               onClick={on}

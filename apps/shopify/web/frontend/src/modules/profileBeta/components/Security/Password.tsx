@@ -1,6 +1,7 @@
 import { useToggle } from "@moose-desk/core";
 import { Button } from "@shopify/polaris";
 import React from "react";
+import ModalChangePassword from "src/modules/profileBeta/components/Security/ModalChangePassword";
 import styles from "./style.module.scss";
 
 export const Password = React.memo(() => {
@@ -14,14 +15,11 @@ export const Password = React.memo(() => {
       <div className={styles.title}>Password</div>
       <div className={styles.group}>
         <Button onClick={handleOpenChangePassword}>Change</Button>
-        <div className={styles.subContent}>
-          <p className={styles.passwordHide}>●●●●●●●●●●●</p>
-        </div>
+        <ModalChangePassword
+          visible={visibleModalChangePassword}
+          onClose={handleCloseChangePassword}
+        />
       </div>
-      {/* <ModalChangePassword
-        visible={visibleModalChangePassword}
-        onClose={handleCloseChangePassword}
-      /> */}
     </div>
   );
 });

@@ -1,9 +1,9 @@
 import InformationLayout from "@moose-beta/components/InformationLayout";
 
-export default function Profile() {
+export default function DetailsCustomer() {
   return (
     <div>
-      <InformationLayout layout="profile" />
+      <InformationLayout layout="customer" />
     </div>
   );
 }

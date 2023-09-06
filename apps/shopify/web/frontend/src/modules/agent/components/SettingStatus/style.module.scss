@@ -1,15 +1,9 @@
-@import "src/styles/variables.scss";
-@import "src/styles/mixin.scss";
-
-.blockContent {
+.wrapSetting {
   padding: 15px 10px;
-  background-color: $white-color;
-
-  //   border-bottom: 1px solid $gray-border;
   .moreInfo {
     display: flex;
-    height: 32px;
-    align-items: center;
+    min-height: 32px;
+    align-items: start;
 
     .label {
       min-width: 80px;
@@ -27,4 +21,9 @@
       align-items: center;
     }
   }
+}
+.loading {
+    opacity: 0.5;
+    cursor: none;
+    pointer-events: none;
 }

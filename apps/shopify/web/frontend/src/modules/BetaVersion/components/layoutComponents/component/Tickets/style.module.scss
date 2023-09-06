@@ -1,8 +1,10 @@
 @import "../../../../../../styles/mixin.scss";
 @import "../../../../../../styles/variables.scss";
+
 .wrapPagination {
     margin-top: 16px;
     padding-bottom: 16px;
+
     @include mq(md, "max") {
         // justify-content: center;
     }
