@@ -205,36 +205,34 @@ export const ListTicketCustomer = memo(({ customerId }: IProps) => {
           <SkeletonTable columnsCount={6} rowsCount={10} />
         ) : (
           <LegacyCard>
-            <div className="overflowScroll-400">
-              <IndexTable
-                resourceName={resourceName}
-                itemCount={memoDataSource?.data?.length || 0}
-                selectable={false}
-                headings={[
-                  { title: "Status" },
-                  { title: "Ticket Title" },
-                  { title: "Date Requested" },
-                  { title: "Last Updated" },
-                  { title: "Priority" },
-                  { title: "Assignee" },
-                ]}
-                sortDirection={direction}
-                sortColumnIndex={indexSort}
-                onSort={handleSort}
-                sortable={[true, true, true, true, true, true]}
-                emptyState={
-                  <EmptySearchResult
-                    title={
-                      "Sorry! There is no records matched with your search criteria"
-                    }
-                    description={"Try changing the filters or search term"}
-                    withIllustration
-                  />
-                }
-              >
-                {rowMarkup}
-              </IndexTable>
-            </div>
+            <IndexTable
+              resourceName={resourceName}
+              itemCount={memoDataSource?.data?.length || 0}
+              selectable={false}
+              headings={[
+                { title: "Status" },
+                { title: "Ticket Title" },
+                { title: "Date Requested" },
+                { title: "Last Updated" },
+                { title: "Priority" },
+                { title: "Assignee" },
+              ]}
+              sortDirection={direction}
+              sortColumnIndex={indexSort}
+              onSort={handleSort}
+              sortable={[true, true, true, true, true, true]}
+              emptyState={
+                <EmptySearchResult
+                  title={
+                    "Sorry! There is no records matched with your search criteria"
+                  }
+                  description={"Try changing the filters or search term"}
+                  withIllustration
+                />
+              }
+            >
+              {rowMarkup}
+            </IndexTable>
             <div className="flex items-center justify-center mt-4 pb-4">
               <Pagination
                 total={

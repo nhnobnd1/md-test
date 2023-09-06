@@ -16,7 +16,7 @@ const renderName = (isAgent: boolean, id: string, name: string) => {
     <span className={styles.name}>{name}</span>
   ) : (
     <Link
-      url={id ? `/customers?id=${id}` : "#"} // for checking undefined id when re-build backend
+      url={id ? `/customers/detail?customer=${id}` : "#"} // for checking undefined id when re-build backend
       monochrome
       removeUnderline
     >
