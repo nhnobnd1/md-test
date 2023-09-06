@@ -62,8 +62,7 @@ const InputPhoneBeta = ({
     setValueSelect(getDataByFlag?.code || "");
     setFlagValue(flag);
     setValueField(phoneValue);
-  }, [value]);
-
+  }, [value, valueSelect]);
   return (
     <div className={classNames(styles.MDPhone, "flex")}>
       <Select
