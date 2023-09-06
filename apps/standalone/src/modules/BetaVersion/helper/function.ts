@@ -8,9 +8,9 @@ export const getTableHeigh = (
   const headerTableHeight = 38;
   const paginationHeight = 50;
   return (
-    Number(screenHeigh) -
-    Number(headerHeight) -
-    Number(tabHeaderHeight) -
+    Number(screenHeigh || 0) -
+    Number(headerHeight || 0) -
+    Number(tabHeaderHeight || 0) -
     headerTableHeight -
     paginationHeight -
     pageHeader -
