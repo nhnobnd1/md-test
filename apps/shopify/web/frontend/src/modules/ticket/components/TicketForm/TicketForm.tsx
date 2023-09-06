@@ -10,11 +10,11 @@ import {
   AgentRepository,
   Customer,
   EmailIntegration,
-  priorityOptions,
   TicketRepository,
+  priorityOptions,
 } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
-import { Button, Divider, Select, TextField } from "@shopify/polaris";
+import { Button, Divider, TextField } from "@shopify/polaris";
 import { uniqBy } from "lodash-es";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -525,13 +525,8 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
             </div>
           </div>
         </div>
-        <div className="w-[350px] overflow-auto pl-4 h-full md-border-left">
+        <div className="w-[350px] overflow-auto pl-4 h-full md-border-left pr-1 pt-1 md-form-label">
           <div className="">
-            <FormItem name="tags">
-              <TagSelect />
-            </FormItem>
-          </div>
-          <div className="mt-4">
             <FormItem name="assignee">
               <BoxSelectAssignee label="Assignee" placeholder="Search agents" />
             </FormItem>
@@ -539,7 +534,12 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
 
           <div className="mt-4">
             <FormItem name="priority">
-              <Select label="Priority" options={priorityOptions} />
+              <BoxSelectFilter data={priorityOptions} label="Priority" />
+            </FormItem>
+          </div>
+          <div className="mt-4">
+            <FormItem name="tags">
+              <TagSelect />
             </FormItem>
           </div>
           <div className="my-4">

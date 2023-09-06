@@ -7,6 +7,14 @@
   border: 1px solid #aeb4b8 !important;
   border-bottom: none !important;
 }
-.md-border-left{
+.md-border-left {
   border-left: 1px solid #d9d9d9;
+}
+.md-form-label {
+  .Polaris-Labelled__LabelWrapper {
+    float: left;
+    margin-top: 6px;
+    width: 60px;
+    margin-right: 10px;
+  }
 }

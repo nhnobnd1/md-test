@@ -41,7 +41,6 @@ import {
 import { CancelMajor, PriceLookupMinor } from "@shopify/polaris-icons";
 import classNames from "classnames";
 import { FormikProps } from "formik";
-import moment from "moment";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery, useQueryClient } from "react-query";
@@ -869,18 +868,23 @@ Hit Send to see what your message will look like
                         >
                           <div className="flex flex-col gap-3 w-[280px] px-2">
                             <FormItem name="status">
-                              <Select
+                              {/* <Select
                                 disabled={disabled}
                                 label="Status"
                                 options={statusOptions}
+                              /> */}
+                              <BoxSelectFilter
+                                disabled={disabled}
+                                data={statusOptions}
+                                label="Status"
                               />
                             </FormItem>
 
                             <FormItem name="priority">
-                              <Select
+                              <BoxSelectFilter
                                 disabled={disabled}
+                                data={priorityOptions}
                                 label="Priority"
-                                options={priorityOptions}
                               />
                             </FormItem>
                             <FormItem name="assignee">
