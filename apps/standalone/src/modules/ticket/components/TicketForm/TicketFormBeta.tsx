@@ -298,7 +298,7 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
 
           <div className="flex-1 flex justify-end flex-col">
             <div className="md-from-detail w-full flex items-center gap-2 px-3">
-              <span className="w-[40px]">From:</span>
+              <span className="w-[40px]">From</span>
               <Form.Item
                 className="m-0 w-full"
                 name="from"
@@ -320,7 +320,7 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
               </Form.Item>
             </div>
             <div className="md-to-detail w-full flex items-center gap-2 px-3">
-              <span className="w-[40px]">To:</span>
+              <span className="w-[40px]">To</span>
               <Form.Item
                 className="w-full m-0"
                 name="to"
@@ -374,7 +374,7 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
             </div>
             {enableCC ? (
               <div className="md-cc-detail w-full flex items-center gap-2 px-3">
-                <span className="w-[40px]">CC:</span>
+                <span className="w-[40px]">CC</span>
                 <Form.Item
                   className="w-full m-0"
                   name="CC"
@@ -448,7 +448,7 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
             )}
             {enableCC ? (
               <div className="md-bcc-detail w-full flex items-center gap-2 px-3">
-                <span className="w-[40px]">BCC:</span>
+                <span className="w-[40px]">BCC</span>
 
                 <Form.Item
                   className="m-0 w-full"

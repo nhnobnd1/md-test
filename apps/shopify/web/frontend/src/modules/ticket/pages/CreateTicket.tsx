@@ -129,36 +129,27 @@ const CreateTicket = (props: CreateTicketProps) => {
           title={(<span>New Ticket</span>) as unknown as string}
           fullWidth
         >
-          <Layout>
-            <Layout.Section>
-              <div className={visible ? "d-flex gap-5" : ""}>
-                <LegacyCard sectioned>
-                  <div className={""}>
-                    <div className={styles.wrapSearchToggle}>
-                      <Button
-                        icon={PriceLookupMinor}
-                        onClick={handleToggleSearch}
-                      />
-                    </div>
-                    {primaryEmail ? (
-                      <TicketForm
-                        innerRef={formRef}
-                        initialValues={initialValuesForm}
-                        enableReinitialize
-                        onValuesChange={updateForm}
-                        primaryEmail={primaryEmail}
-                      />
-                    ) : (
-                      <></>
-                    )}
-                  </div>
-                </LegacyCard>
-                <div className={visible ? styles.wrapSearch : "d-none"}>
-                  <ContentShopifySearch />
-                </div>
+          <div className="form-ticket">
+            <div className="bg-white p-4 h-full rounded-lg">
+              <div className={styles.wrapSearchToggle}>
+                <Button icon={PriceLookupMinor} onClick={handleToggleSearch} />
               </div>
-            </Layout.Section>
-          </Layout>
+              {primaryEmail ? (
+                <TicketForm
+                  innerRef={formRef}
+                  initialValues={initialValuesForm}
+                  enableReinitialize
+                  onValuesChange={updateForm}
+                  primaryEmail={primaryEmail}
+                />
+              ) : (
+                <></>
+              )}
+            </div>
+            <div className={visible ? styles.wrapSearch : "d-none"}>
+              <ContentShopifySearch />
+            </div>
+          </div>
         </Page>
       )}
     </>

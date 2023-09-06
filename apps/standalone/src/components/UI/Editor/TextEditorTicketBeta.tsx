@@ -281,7 +281,6 @@ const TextEditorTicketBeta = ({
   .tox-editor-header{
     display: none!important;
   }
-  
   `;
 
   return (

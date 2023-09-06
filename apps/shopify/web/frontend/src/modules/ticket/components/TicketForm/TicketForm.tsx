@@ -14,7 +14,7 @@ import {
   priorityOptions,
 } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
-import { Button, FormLayout, Link, Select, TextField } from "@shopify/polaris";
+import { Button, Divider, Select, TextField } from "@shopify/polaris";
 import { uniqBy } from "lodash-es";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -40,6 +40,7 @@ import useFormCreateTicket from "src/modules/ticket/store/useFormCreateTicket";
 import useSelectFrom from "src/modules/ticket/store/useSelectFrom";
 import { wrapImageWithAnchorTag } from "src/utils/localValue";
 import * as Yup from "yup";
+import "./style.scss";
 
 interface TicketFormProps extends Partial<FormProps> {
   primaryEmail: EmailIntegration | undefined;
@@ -49,7 +50,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
   const [enableCC, setEnableCC] = useState(false);
   const navigate = useNavigate();
   const { show } = useToast();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { state: visible, on: openPopup, off: closePopup } = useToggle();
 
   const [toEmail, setToEmail] = useState("");
@@ -407,153 +408,145 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
       onValuesChange={handleChangeForm}
     >
       <style scoped>{css}</style>
-      <FormLayout>
-        <div className="grid xs:grid-cols-1 gap-x-[7%]">
-          <div className="flex items-center gap-2 justify-start">
-            <div className="flex-1">
-              <div className="flex-1 xs:mt-4 0">
+      <div className="flex h-full">
+        <div className="w-full flex-1 pr-4 pl-1 flex flex-col h-full min-w-[350px] justify-between py-1 overflow-y-auto">
+          <div className="mb-3 mt-1">
+            <FormItem name="subject">
+              <TextField label="" autoComplete="off" placeholder="Subject" />
+            </FormItem>
+          </div>
+          <div className=" flex justify-end flex-col">
+            <div className="flex items-start px-2 gap-2 md-add-border">
+              <span className="w-[40px] mt-2">From</span>
+              <div className="flex-1 md-remove-border">
                 <FormItem name="from">
                   <BoxSelectFilter
                     // disabled={disabled}
-                    label="From"
                     data={emailIntegrationOptions}
                     placeholder="Defined Email address"
                   />
                 </FormItem>
               </div>
             </div>
-          </div>
-          <div className="xs:order-first ">
-            <FormItem name="to">
-              <FormItem name="to">
-                <BoxSelectCustomer
-                  openPopup={openPopup}
-                  form={props.innerRef}
-                  label={
-                    <div className="flex justify-between w-full">
-                      <div>
-                        <span className="mr-1 text-red-500">*</span>
-                        <span>To</span>
-                      </div>
-                      <div className="flex gap-2">
-                        <Link
-                          onClick={() => {
-                            setEnableCC(!enableCC);
-                          }}
-                        >
-                          CC/BCC
-                        </Link>
-                      </div>
-                    </div>
-                  }
-                  data={customersOptions}
-                  placeholder="Email"
-                  onSearch={(e) => {
-                    setSearchCustomer(e);
+            <div className="flex items-start px-2 gap-2 md-add-border">
+              <span className="w-[40px] mt-2 ">To</span>
+              <div className="flex-1 md-remove-border">
+                <FormItem name="to">
+                  <BoxSelectCustomer
+                    openPopup={openPopup}
+                    form={props.innerRef}
+                    data={customersOptions}
+                    placeholder="Email"
+                    onSearch={(e) => {
+                      setSearchCustomer(e);
+                    }}
+                    loading={isLoadingCustomer}
+                  />
+                </FormItem>
+              </div>
+              <span
+                className="link mt-2"
+                onClick={() => {
+                  setEnableCC(!enableCC);
+                }}
+              >
+                CC/BCC
+              </span>
+            </div>
+            {enableCC ? (
+              <div className="flex items-start px-2 gap-2 md-add-border min-h-[37px]">
+                <span className="w-[40px] mt-2 ">CC</span>
+                <div className="flex-1 md-remove-border">
+                  <FormItem name="CC">
+                    <SelectAddEmail
+                      placeholder="Email"
+                      data={customersOptions}
+                      defaultTag={[]}
+                      onSearch={(e) => {
+                        setSearchCustomer(e);
+                      }}
+                      loading={isLoadingCustomer}
+                    />
+                  </FormItem>
+                </div>
+              </div>
+            ) : (
+              <></>
+            )}
+            {enableCC ? (
+              <div className="flex items-start px-2 gap-2 md-add-border min-h-[37px]">
+                <span className="w-[40px] mt-2 ">BCC</span>
+                <div className="flex-1 md-remove-border">
+                  <FormItem name="BCC">
+                    <SelectAddEmail
+                      placeholder="Email"
+                      data={customersOptions}
+                      defaultTag={[]}
+                      onSearch={(e) => {
+                        setSearchCustomer(e);
+                      }}
+                      loading={isLoadingCustomer}
+                    />
+                  </FormItem>
+                </div>
+              </div>
+            ) : (
+              <></>
+            )}
+            <div className="w-full ">
+              <FormItem name="content">
+                <TextEditorTicket
+                  files={files}
+                  setFiles={setFiles}
+                  formRef={props.innerRef}
+                  setLoadingButton={setLoadingButton}
+                  labelProps={{
+                    as: "span",
+                    variant: "bodyMd",
+                    children: "Content",
                   }}
-                  loading={isLoadingCustomer}
-                />
-              </FormItem>
-            </FormItem>
-          </div>
-          {enableCC ? (
-            <div className="flex-1 mt-3 xs:-order-2 ">
-              <FormItem name="CC">
-                <SelectAddEmail
-                  label="CC"
-                  data={customersOptions}
-                  defaultTag={[]}
-                  onSearch={(e) => {
-                    setSearchCustomer(e);
+                  init={{
+                    placeholder: "Please input your message here......",
                   }}
-                  loading={isLoadingCustomer}
                 />
               </FormItem>
             </div>
-          ) : (
-            <></>
-          )}
-          {enableCC ? (
-            <div className="flex-1 mt-3 xs:-order-1 ">
-              <FormItem name="BCC">
-                <SelectAddEmail
-                  label="BCC"
-                  data={customersOptions}
-                  defaultTag={[]}
-                  onSearch={(e) => {
-                    setSearchCustomer(e);
-                  }}
-                  loading={isLoadingCustomer}
-                />
-              </FormItem>
+            <div className="flex justify-end gap-2 mt-3">
+              <Button
+                onClick={() => {
+                  navigate(TicketRoutePaths.Index);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button primary loading={loadingButton} submit>
+                Send
+              </Button>
             </div>
-          ) : (
-            <></>
-          )}
-          <div className="mt-4">
-            <FormItem name="subject">
-              <TextField
-                label={
-                  <div>
-                    <span className="mr-1 text-red-500">*</span>
-                    <span>Subject</span>
-                  </div>
-                }
-                autoComplete="off"
-                placeholder="Enter subject"
-              />
-            </FormItem>
           </div>
-          <div className="w-full mt-4">
-            <FormItem name="content">
-              <TextEditorTicket
-                files={files}
-                setFiles={setFiles}
-                formRef={props.innerRef}
-                setLoadingButton={setLoadingButton}
-                labelProps={{
-                  as: "span",
-                  variant: "bodyMd",
-                  children: "Content",
-                }}
-                init={{
-                  placeholder: "Please input your message here......",
-                }}
-              />
-            </FormItem>
-          </div>
-
-          <div className="mt-4">
+        </div>
+        <div className="w-[350px] overflow-auto pl-4 h-full md-border-left">
+          <div className="">
             <FormItem name="tags">
               <TagSelect />
             </FormItem>
           </div>
-        </div>
-        <div className="mt-4">
-          <FormItem name="assignee">
-            <BoxSelectAssignee label="Assignee" placeholder="Search agents" />
-          </FormItem>
-        </div>
+          <div className="mt-4">
+            <FormItem name="assignee">
+              <BoxSelectAssignee label="Assignee" placeholder="Search agents" />
+            </FormItem>
+          </div>
 
-        <div className="mt-4">
-          <FormItem name="priority">
-            <Select label="Priority" options={priorityOptions} />
-          </FormItem>
+          <div className="mt-4">
+            <FormItem name="priority">
+              <Select label="Priority" options={priorityOptions} />
+            </FormItem>
+          </div>
+          <div className="my-4">
+            <Divider />
+          </div>
         </div>
-
-        <div className="flex justify-end gap-2">
-          <Button
-            onClick={() => {
-              navigate(TicketRoutePaths.Index);
-            }}
-          >
-            Cancel
-          </Button>
-          <Button primary loading={loadingButton} submit>
-            Send
-          </Button>
-        </div>
-      </FormLayout>
+      </div>
       <CustomModal
         title={"New Customer"}
         visible={visible}
