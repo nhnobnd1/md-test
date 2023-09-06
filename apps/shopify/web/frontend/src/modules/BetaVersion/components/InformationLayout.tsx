@@ -2,9 +2,9 @@ import Information from "@moose-beta/components/layoutComponents/Information";
 import Setting from "@moose-beta/components/layoutComponents/Setting";
 import {
   MediaScreen,
-  TokenManager,
   useSearchParams,
   useToggle,
+  useUser,
 } from "@moose-desk/core";
 import { Agent, Customer } from "@moose-desk/repo";
 import { Button, Icon, LegacyCard, Modal } from "@shopify/polaris";
@@ -16,24 +16,25 @@ import { getOneAgent } from "src/modules/agent/api/api";
 import { getOneCustomer } from "src/modules/customers/api/api";
 import { getProfile } from "src/modules/setting/api/api";
 import styles from "./layoutComponents/style.module.scss";
-
 interface IProps {
-  layout: "customer" | "profile";
+  layout: "customer" | "profile" | "agent";
 }
 export default function InformationLayout({ layout }: IProps) {
+  const user = useUser() || { sub: "" };
+  if (!user?.sub) return null; // fix bug something went wrong khi logout
   const { state: visible, off, toggle } = useToggle(false);
   const [screenType, screenWidth] = useScreenType();
-  const isMobile = Boolean(screenWidth < MediaScreen.MD);
+  const isTable = Boolean(screenWidth <= MediaScreen.LG);
   const [searchParams] = useSearchParams();
   const customerId: string = searchParams.get("customer") || "";
-  const token = jose.decodeJwt(TokenManager.getToken("base_token") || "");
-  const [dataProfile, setDataProfile] = useState<Agent | Customer | any>();
+  const agentId: string = searchParams.get("agent") || "";
 
+  const [dataProfile, setDataProfile] = useState<Agent | Customer | any>();
   const { isLoading: isLoadingProfile, refetch: refetchProfile }: any =
     useQuery({
-      queryKey: ["profile", token.sub],
-      queryFn: () => getProfile(token.sub ?? ""),
-      enabled: !!token.sub && layout === "profile",
+      queryKey: ["profile", user?.sub],
+      queryFn: () => getProfile(user?.sub ?? ""),
+      enabled: !!user?.sub && layout === "profile",
       onSuccess: (data: any) => {
         setDataProfile(data?.data?.data);
       },
@@ -61,17 +62,20 @@ export default function InformationLayout({ layout }: IProps) {
         return refetchProfile();
       case "customer":
         return refetchCustomer();
+      case "agent":
+        return refetchAgent();
       default:
         return () => {};
     }
   }, [layout]);
-  const loading = isLoadingProfile || isLoadingCustomer;
+  const loading = isLoadingProfile || isLoadingCustomer || isLoadingAgent;
   const basicInformation = useMemo(() => {
     return {
       _id: dataProfile?._id,
       firstName: dataProfile?.firstName,
       lastName: dataProfile?.lastName,
       email: dataProfile?.email,
+      avatar: dataProfile?.avatar,
     };
   }, [
     dataProfile?.firstName,
@@ -79,9 +83,6 @@ export default function InformationLayout({ layout }: IProps) {
     dataProfile?.email,
     dataProfile?.avatar,
   ]);
-  const handleCloseDrawer = () => {
-    off();
-  };
   return (
     <section className={styles.container}>
       <div className={styles.wrapSetting}>

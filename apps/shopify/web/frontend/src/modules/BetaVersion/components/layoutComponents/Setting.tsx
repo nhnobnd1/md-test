@@ -1,7 +1,10 @@
+import Tickets from "@moose-beta/components/layoutComponents/component/Tickets";
 import { useNavigate } from "@moose-desk/core";
-import { SkeletonBodyText, Tabs } from "@shopify/polaris";
+import { Button, Icon, SkeletonBodyText, Tabs } from "@shopify/polaris";
+import { ArrowLeftMinor } from "@shopify/polaris-icons";
 import React, { useCallback, useState } from "react";
 import MDAvatar from "src/components/MDAvatar/MDAvatar";
+import { ListTicketCustomer } from "src/modules/customers/component/ListTicketCustomer";
 import { Security } from "src/modules/profileBeta/components/Security";
 import styles from "./style.module.scss";
 interface IProps {
@@ -48,10 +51,10 @@ const Setting = ({ layout, basicInformation, loading = false }: IProps) => {
   ];
   const profileTab = [
     {
-      id: "setting",
+      id: "settings",
       content: "Security Settings",
       value: <Security />,
-      panelID: "setting",
+      panelID: "settings",
     },
   ];
   const tabs = layout === "profile" ? profileTab : customerTab;

@@ -1,5 +1,6 @@
 @import "../../../../styles/variables.scss";
 @import "../../../../styles/mixin.scss";
+
 .container {
   height: calc(100vh - 56px);
   overflow: hidden;
@@ -10,12 +11,13 @@
   width: 100%;
   border: 1px solid $border-gray;
   position: relative;
+
   .buttonToggle {
     position: absolute;
     right: 20px;
     top: 70px;
   }
- 
+
   .wrapInfo {
     width: 360px;
     background-color: $white-color;
@@ -24,22 +26,27 @@
     // border: none;
     overflow-y: scroll;
   }
+
   .wrapSetting {
     width: calc(100% - 360px);
     background-color: $white-color;
+
     @include breakpoints(zero, lg) {
       width: 100%;
     }
   }
 }
+
 .tabContentWrap {
   padding: 10px 20px;
+
   :global {
     .Polaris-LegacyCard {
       overflow-y: scroll;
     }
   }
 }
+
 .myProfile {
   display: flex;
   justify-content: space-between;
@@ -49,51 +56,59 @@
   @include mq(md, "max") {
     // flex-direction: column;
   }
+
   .buttonBack {
     padding-right: 16px;
     display: flex;
     align-items: center;
   }
+
   .profile {
     display: flex;
     align-items: center;
     width: 100%;
+
     @include mq(md, "max") {
       margin-bottom: 0;
     }
-   
+
     .name {
       font-size: 20px;
       font-weight: 500;
       margin-left: 10px;
       margin-right: 5px;
-        max-width: calc(100% - 200px);
-          text-overflow: ellipsis;
-          overflow: hidden;
-          white-space: nowrap;
-        
-          @include mq(md, 'max') {
-            max-width: calc(100% - 100px);
-          }
+      max-width: calc(100% - 150px);
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      line-height: 25px;
+
+      @include mq(md, "max") {
+        max-width: calc(100% - 80px);
+      }
     }
   }
 }
+
 .contentWrap {
   .blockContent {
     padding: 15px 10px;
     background-color: $white-color;
     border-bottom: 1px solid $border-gray;
+
     &:last-child {
       border: none;
     }
+
     // border-radius: 5px;
     // margin-bottom: 8px;
   }
-  
+
   .avatar {
     border-radius: 50%;
     height: 150px;
     width: 150px;
+
     :global {
       .Polaris-Avatar {
         height: 100% !important;
@@ -102,19 +117,23 @@
     }
   }
 }
+
 .formInfo {
   padding-top: 16px;
+
   :global {
-    .Polaris-Grid-Cell > div,
-    .Polaris-FormLayout__Item:nth-child(3) > div,
-    .Polaris-FormLayout__Item:nth-child(4) > div {
+
+    .Polaris-Grid-Cell>div,
+    .Polaris-FormLayout__Item:nth-child(3)>div,
+    .Polaris-FormLayout__Item:nth-child(4)>div {
       display: grid;
       grid-template-columns: 80px calc(100% - 80px);
     }
+
     .Polaris-TextField__Input {
       font-size: 13px;
     }
-       
+
     .Polaris-Labelled__LabelWrapper {
       display: flex;
       align-items: center;
@@ -123,6 +142,7 @@
       font-size: 13px;
       margin-bottom: 0;
     }
+
     .Polaris-Labelled__Error {
       word-break: keep-all;
       white-space: nowrap;
@@ -130,12 +150,13 @@
     }
   }
 }
+
 .avatarWrap {
   display: flex;
   justify-content: center;
   margin-bottom: 30px;
   position: relative;
-  
+
   .wrapActionAvatar {
     position: absolute;
     bottom: -15px;
@@ -156,17 +177,21 @@
       display: flex;
       align-items: center;
       justify-content: center;
+
       &:hover {
         opacity: 0.8;
       }
     }
+
     .removeAvatar {
       margin-right: 8px;
     }
   }
+
   .edit {
     position: relative;
   }
+
   .dropzone {
     position: absolute;
     width: 30px;
@@ -175,6 +200,7 @@
     left: 0;
     border-radius: 50%;
     opacity: 0;
+
     :global {
       .Polaris-DropZone--sizeSmall {
         min-height: 30px;
@@ -182,10 +208,12 @@
     }
   }
 }
+
 .moreInfo {
   display: flex;
   min-height: 32px;
   align-items: start;
+
   .label {
     min-width: 80px;
     width: 80px;
@@ -193,6 +221,7 @@
     text-align: start;
     padding-right: 10px;
   }
+
   .result {
     color: #68737d;
     font-size: 13px;
@@ -201,11 +230,13 @@
     align-items: center;
   }
 }
+
 .groupButton {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: flex-end;
+
   // display: none;
   .shiningButton {
     margin-left: 10px;
@@ -213,23 +244,32 @@
     // transition: all 0.3s;
   }
 }
+
 .showButton {
   display: flex;
 }
+
 .toggleButton {
   position: absolute;
   right: 20px;
   top: 25px;
+
+  @include mq(md, "max") {
+    top: 75px;
+  }
 }
+
 @keyframes glowing {
   0% {
     opacity: 1;
     box-shadow: unset;
   }
+
   50% {
     opacity: 0.7;
     box-shadow: rgba(16, 121, 226, 0.2) 0px 7px 29px 0px;
   }
+
   100% {
     opacity: 1;
     box-shadow: unset;

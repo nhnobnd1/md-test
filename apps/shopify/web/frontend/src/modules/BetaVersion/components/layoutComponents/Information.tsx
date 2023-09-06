@@ -1,8 +1,14 @@
+import { uploadImage } from "@moose-beta/helper/api";
 import { useUser } from "@moose-desk/core";
 import { Agent } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
-import { Button, DropZone, Icon, SkeletonBodyText } from "@shopify/polaris";
-import { EditMajor } from "@shopify/polaris-icons";
+import {
+  ContextualSaveBar,
+  DropZone,
+  Icon,
+  SkeletonBodyText,
+} from "@shopify/polaris";
+import { DeleteMajor, EditMajor } from "@shopify/polaris-icons";
 import { FormikProps } from "formik";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -18,7 +24,7 @@ import styles from "./style.module.scss";
 const LIST_HONORIFIC = ["Mr", "Mrs", "Ms"];
 
 interface IProps {
-  layout: "profile" | "customer";
+  layout: "profile" | "customer" | "agent";
   profile: Agent | any;
   onRefetch: () => void;
   loadingProfile?: boolean;
@@ -33,8 +39,8 @@ const Information = ({
   const { show } = useToast();
   const { sub: userId }: string | any = useUser();
   const formRef = useRef<FormikProps<any>>(null);
-
   const [avatar, setAvatar] = useState("");
+  const [changed, setChanged] = useState(false);
   useEffect(() => {
     if (profile?.avatar) {
       setAvatar(profile?.avatar);
@@ -44,16 +50,17 @@ const Information = ({
     (group: { id: string; name: string }) => group?.name
   );
   const { mutate: uploadAvatarMutate, isLoading: uploading } = useMutation({
-    // mutationFn: (payload: any) => postImageApi(payload),
-
-    onSuccess: ({ data }) => {
-      setAvatar(data?.urls[0]);
-      // addSaveButton();
+    mutationFn: (payload: any) => uploadImage(payload),
+    onSuccess: ({ data }: any) => {
+      if (data?.data?.urls?.length) {
+        setAvatar(data?.data?.urls[0]);
+        setChanged(true);
+      }
     },
   });
   const { mutate: updateProfileMutate, isLoading: profileUpdating } =
     useMutation({
-      mutationFn: (payload: any) => updateProfile(profile?._id || "", payload),
+      mutationFn: (payload: any) => updateProfile(payload, profile?._id || ""),
       onSuccess: () => {
         onRefetch();
         show(t("messages:success.update_profile"));
@@ -87,6 +94,7 @@ const Information = ({
   });
   const handleRemoveAvatar = () => {
     setAvatar("");
+    setChanged(true);
   };
   const handleSubmitProfile = (data: any) => {
     const payload = { ...data, avatar };
@@ -101,8 +109,8 @@ const Information = ({
         return () => {};
     }
   };
-  const handleSubmitForm = useCallback(() => {
-    formRef.current?.submitForm();
+  const handleChangeForm = useCallback(() => {
+    setChanged(formRef.current?.dirty || false);
   }, [formRef.current]);
   const handleUploadFile = (files: any) => {
     const file = files[0];
@@ -123,16 +131,28 @@ const Information = ({
   const isDisabledForm =
     !(profile?.isActive && profile?.emailConfirmed) && layout === "agent";
   return (
-    <div className={styles.contentWrap}>
-      <div className={styles.blockContent}>
-        <div className={styles.avatarWrap}>
-          <div className={styles.avatar}>
-            <MDAvatar
-              firstName={profile?.firstName}
-              lastName={profile?.lastName}
-              email={profile?.email}
-              source={avatar}
-            />
+    <>
+      {changed && (
+        <ContextualSaveBar
+          fullWidth
+          message={"Unsaved changes"}
+          saveAction={{
+            onAction: () => formRef.current?.submitForm(),
+            loading: loading,
+          }}
+        />
+      )}
+      <div className={styles.contentWrap}>
+        <div className={styles.blockContent}>
+          <div className={styles.avatarWrap}>
+            <div className={styles.avatar}>
+              <MDAvatar
+                firstName={profile?.firstName}
+                lastName={profile?.lastName}
+                email={profile?.email}
+                source={avatar}
+                skeleton={uploading}
+              />
 
               <div className={styles.wrapActionAvatar}>
                 {profile?.isActive && profile?.emailConfirmed && avatar && (
@@ -190,27 +210,31 @@ const Information = ({
             </>
           )}
         </div>
-        {loadingProfile ? (
-          <SkeletonBodyText lines={4} />
-        ) : (
-          <div className={styles.formInfo}>
+        <div className={styles.blockContent}>
+          {loadingProfile ? (
+            <SkeletonBodyText lines={2} />
+          ) : (
             <>
-              <ProfileForm
-                updateForm={() => {}}
-                ref={formRef}
-                initialValues={profile}
-                submit={handleSubmitProfile}
-                beta
-              />
-              <div className={styles.groupButton}>
-                <Button
-                  primary
-                  onClick={handleSubmitForm}
-                  loading={loading}
-                  disabled={!formRef.current?.dirty}
-                >
-                  Save
-                </Button>
+              <div className={styles.moreInfo}>
+                <span className={styles.label}>Group</span>
+                <span className={styles.result}>
+                  {convertListGroup?.length > 0
+                    ? convertListGroup?.map(
+                        (groupName: string, index: number) => (
+                          <span key={index} style={{ marginRight: 3 }}>
+                            {groupName}
+                            {index === convertListGroup?.length - 1 ? "" : ","}
+                          </span>
+                        )
+                      )
+                    : "-"}
+                </span>
+              </div>
+              <div className={styles.moreInfo}>
+                <span className={styles.label}>Timezone</span>
+                <span className={styles.result}>
+                  {profile?.timezone || "-"}
+                </span>
               </div>
             </>
           )}
@@ -234,7 +258,7 @@ const Information = ({
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 };
 
