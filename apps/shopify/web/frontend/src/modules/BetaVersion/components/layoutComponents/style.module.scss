@@ -34,6 +34,11 @@
 }
 .tabContentWrap {
   padding: 10px 20px;
+  :global {
+    .Polaris-LegacyCard {
+      overflow-y: scroll;
+    }
+  }
 }
 .myProfile {
   display: flex;
@@ -52,6 +57,10 @@
   .profile {
     display: flex;
     align-items: center;
+<<<<<<< HEAD
+=======
+    width: 100%;
+>>>>>>> 2989c34a (feat:done profile beta version in embedded)
     @include mq(md, "max") {
       margin-bottom: 0;
     }
@@ -61,6 +70,7 @@
       font-weight: 500;
       margin-left: 10px;
       margin-right: 5px;
+<<<<<<< HEAD
       max-width: calc(100% - 150px);
       text-overflow: ellipsis;
       overflow: hidden;
@@ -71,6 +81,17 @@
       }
     }
   
+=======
+        max-width: calc(100% - 200px);
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+        
+          @include mq(md, 'max') {
+            max-width: calc(100% - 100px);
+          }
+    }
+>>>>>>> 2989c34a (feat:done profile beta version in embedded)
   }
 }
 .contentWrap {
@@ -100,7 +121,13 @@
 .formInfo {
   padding-top: 16px;
   :global {
+<<<<<<< HEAD
     .Polaris-Grid-Cell>div, .Polaris-FormLayout__Item:nth-child(3)>div, .Polaris-FormLayout__Item:nth-child(4)>div {
+=======
+    .Polaris-Grid-Cell > div,
+    .Polaris-FormLayout__Item:nth-child(3) > div,
+    .Polaris-FormLayout__Item:nth-child(4) > div {
+>>>>>>> 2989c34a (feat:done profile beta version in embedded)
       display: grid;
       grid-template-columns: 80px calc(100% - 80px);
     }
@@ -111,10 +138,15 @@
     .Polaris-Labelled__LabelWrapper {
       display: flex;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: flex-start;
       padding-right: 10px;
       font-size: 13px;
       margin-bottom: 0;
+    }
+    .Polaris-Labelled__Error {
+      word-break: keep-all;
+      white-space: nowrap;
+      margin-left: 80px;
     }
   }
 }
@@ -178,7 +210,7 @@
     min-width: 80px;
     width: 80px;
     font-size: 13px;
-    text-align: end;
+    text-align: start;
     padding-right: 10px;
   }
   .result {
@@ -208,9 +240,13 @@
   position: absolute;
   right: 20px;
   top: 25px;
+<<<<<<< HEAD
   @include mq(md, "max") {
     top: 75px;
   }
+=======
+
+>>>>>>> 2989c34a (feat:done profile beta version in embedded)
 }
 @keyframes glowing {
   0% {

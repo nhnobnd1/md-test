@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import Tickets from "@moose-beta/components/layoutComponents/component/Tickets";
 import { useNavigate } from "@moose-desk/core";
 import { Button, Icon, SkeletonBodyText, Tabs } from "@shopify/polaris";
@@ -5,6 +6,12 @@ import { ArrowLeftMinor } from "@shopify/polaris-icons";
 import React, { useCallback, useState } from "react";
 import MDAvatar from "src/components/MDAvatar/MDAvatar";
 import { ListTicketCustomer } from "src/modules/customers/component/ListTicketCustomer";
+=======
+import { useNavigate } from "@moose-desk/core";
+import { SkeletonBodyText, Tabs } from "@shopify/polaris";
+import React, { useCallback, useState } from "react";
+import MDAvatar from "src/components/MDAvatar/MDAvatar";
+>>>>>>> 2989c34a (feat:done profile beta version in embedded)
 import { Security } from "src/modules/profileBeta/components/Security";
 import styles from "./style.module.scss";
 interface IProps {
@@ -14,6 +21,7 @@ interface IProps {
     firstName?: string;
     lastName?: string;
     email?: string;
+    avatar?: string;
   };
   loading?: boolean;
 }
@@ -74,19 +82,14 @@ const Setting = ({ layout, basicInformation, loading = false }: IProps) => {
             firstName={basicInformation.firstName}
             lastName={basicInformation.lastName}
             email={basicInformation.email}
+            source={basicInformation.avatar}
+            skeleton={loading}
           />
 
           <div className={styles.name}>
             {loading ? <SkeletonBodyText lines={1} /> : renderName()}
           </div>
         </div>
-        {layout === "profile" && (
-          <div className={styles.buttonCreate}>
-            <Button primary onClick={handleRedirectCreateTicket}>
-              New Ticket
-            </Button>
-          </div>
-        )}
       </div>
       <Tabs
         tabs={layout === "profile" ? profileTab : tabs}

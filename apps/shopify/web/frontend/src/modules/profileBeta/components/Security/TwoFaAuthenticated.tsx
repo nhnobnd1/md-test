@@ -73,7 +73,7 @@ export default function TwoFaAuthenticated() {
   }, [statusSecurity]);
   const handleCloseRecoveryCodes = useCallback(() => {
     handleCloseRecoveryCodeModal();
-    navigate("/setting-account?tab=setting", { replace: true });
+    navigate("/setting-account?tab=settings", { replace: true });
   }, []);
   const handleAcceptRequestCodes = useCallback(() => {
     handleOpenRecoveryCodeModal();
@@ -129,22 +129,6 @@ export default function TwoFaAuthenticated() {
         <Button onClick={() => setOpen2FA(true)} disabled={!status}>
           {method.show ? "Change" : "Enable 2FA"}
         </Button>
-        <div className={styles.subContent}>
-          <p
-          // type={
-          //   method.show
-          //     ? status
-          //       ? "success"
-          //       : "secondary"
-          //     : status
-          //     ? "danger"
-          //     : "secondary"
-          // }
-          // strong
-          >
-            {method.show ? "Active" : "InActive"}
-          </p>
-        </div>
       </div>
       {open2FA ? (
         <Enable2FAModal
