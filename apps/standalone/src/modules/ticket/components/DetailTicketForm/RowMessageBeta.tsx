@@ -223,7 +223,19 @@ export const RowMessageBeta: FC<RowMessageProps> = ({ item, type }) => {
                         </span>
                         : <span className="text-xs">{item.datetime}</span>
                       </div>
-                      {type}
+                      <div>
+                        {" "}
+                        <span
+                          style={{
+                            fontWeight: "bold",
+                            fontSize: 12,
+                            color: "#A0A0A0",
+                          }}
+                        >
+                          Sent via:
+                        </span>
+                        : <span className="text-xs">{type}</span>
+                      </div>
                     </div>
                   }
                 >

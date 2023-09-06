@@ -35,7 +35,11 @@ function Form<Values extends FormikValues = any>(
             </>
           )
         : ({ handleSubmit }) => (
-            <form className="" onSubmit={handleSubmit} {...formDefaultProps}>
+            <form
+              className="h-full"
+              onSubmit={handleSubmit}
+              {...formDefaultProps}
+            >
               <FormikEffect onChange={handleFormValuesChange} />
               {props.children}
             </form>

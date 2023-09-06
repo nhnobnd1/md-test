@@ -86,7 +86,7 @@ export interface ChatItem {
   time: string;
   email: string;
   attachments?: AttachFile[];
-  typeChat?: "reported via widget" | "reported via email" | "agent created";
+  typeChat?: "email" | "widget";
   toEmail?: string;
   incoming?: boolean;
   ccEmails?: [];
@@ -276,12 +276,10 @@ const DetailTicketFormBeta = () => {
     );
     if (ticket) {
       let typeChat;
-      if (ticket.incoming) {
-        typeChat = "reported via email";
-      } else if (ticket.createdViaWidget) {
-        typeChat = "reported via widget";
+      if (ticket?.createdViaWidget) {
+        typeChat = "widget";
       } else {
-        typeChat = "agent created";
+        typeChat = "email";
       }
       conversationMapping?.unshift({
         id: ticket._id,
@@ -785,6 +783,7 @@ Hit Send to see what your message will look like
                           endOfPage ? "opacity-0 pointer-events-none" : ""
                         }`}
                         onClick={() => {
+                          setEndOfPage(true);
                           endOfPageRef?.current?.scrollIntoView({
                             behavior: "smooth",
                           });
@@ -809,7 +808,7 @@ Hit Send to see what your message will look like
               >
                 <div className={`box-comment`}>
                   <div className="md-from-detail w-full flex items-center gap-2 px-3 ">
-                    <span className="w-[40px]">From:</span>
+                    <span className="w-[40px]">From</span>
                     <Form.Item
                       className="m-0 w-full"
                       name="from"
@@ -838,7 +837,7 @@ Hit Send to see what your message will look like
                   </div>
 
                   <div className="md-to-detail w-full flex items-center gap-2 px-3">
-                    <span className="w-[40px]">To:</span>
+                    <span className="w-[40px]">To</span>
                     <Form.Item
                       className="m-0 w-full"
                       name="to"
@@ -890,7 +889,7 @@ Hit Send to see what your message will look like
                   </div>
                   {enableCC ? (
                     <div className="md-cc-detail w-full flex items-center gap-2 px-3">
-                      <span className="w-[40px]">CC:</span>
+                      <span className="w-[40px]">CC</span>
                       <Form.Item
                         className="m-0 w-full"
                         name="CC"
@@ -967,7 +966,7 @@ Hit Send to see what your message will look like
                   )}
                   {enableCC ? (
                     <div className="md-bcc-detail w-full flex items-center px-3 gap-2">
-                      <span className="w-[40px]">BCC:</span>
+                      <span className="w-[40px]">BCC</span>
                       <Form.Item
                         name="BCC"
                         className="m-0 w-full"

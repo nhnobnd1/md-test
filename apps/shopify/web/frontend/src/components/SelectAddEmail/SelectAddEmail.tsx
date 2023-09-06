@@ -153,6 +153,7 @@ const SelectAddEmail = (props: BoxSelectAutoReplyProps) => {
               onFocus={() => {
                 props.onSearch && props.onSearch(inputValue);
               }}
+              placeholder={props.placeholder}
             />
           </div>
         }

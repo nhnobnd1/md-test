@@ -8,6 +8,7 @@ import {
   Modal,
   TextContainer,
   TextProps,
+  Tooltip,
 } from "@shopify/polaris";
 import { Editor, IAllProps } from "@tinymce/tinymce-react";
 import { filesize } from "filesize";
@@ -21,10 +22,16 @@ import React, {
 import { useDropzone } from "react-dropzone";
 import { useTranslation } from "react-i18next";
 import { catchError, map, of } from "rxjs";
+import ImageIcon from "~icons/material-symbols/photo-camera-back-outline";
 
 import { verifyShopifyAppIos } from "src/utils/localValue";
 import DeleteIcon from "~icons/ic/baseline-delete-outline";
 import UploadIcon from "~icons/ic/outline-cloud-upload";
+import ZoomInIcon from "~icons/material-symbols/zoom-in-map";
+import ZoomOutIcon from "~icons/material-symbols/zoom-out-map";
+import AttachIcon from "~icons/solar/paperclip-2-bold";
+import IconText from "~icons/solar/text-bold";
+
 import "./editor.scss";
 const QuillEditor = React.lazy(
   () => import("src/components/QuillEditor/QuillEditor")
@@ -39,6 +46,9 @@ interface RichTextProps extends Omit<IAllProps, "onChange" | "value"> {
   setFiles?: any;
   files?: any;
   setIsChanged?: any;
+  listFileAttach?: any;
+
+  isSignature?: boolean;
 }
 
 export const TextEditorTicket = ({
@@ -51,6 +61,8 @@ export const TextEditorTicket = ({
   setIsChanged,
   files,
   setLoadingButton,
+  listFileAttach,
+  isSignature,
   ...props
 }: RichTextProps) => {
   const editorRef = useRef<any>(null);
@@ -61,6 +73,8 @@ export const TextEditorTicket = ({
   const [idAttachments, setIdAttachments] = useState<string[]>([]);
   const { show } = useToast();
   const { t, i18n } = useTranslation();
+  const { state: showToolbar, toggle } = useToggle(false);
+  const [isZoomIn, setIsZoomIn] = useState(false);
 
   const [errorText, setErrorText] = useState("");
   const onDrop = useCallback(
@@ -163,9 +177,10 @@ export const TextEditorTicket = ({
     setMyFiles(newFiles);
     setIdAttachments(newIdAttachments);
   };
+
   const ListFileRow = useMemo(() => {
     return (
-      <div className="flex justify-start flex-row items-center gap-2 flex-wrap">
+      <div className="flex justify-start flex-row items-center px-2 gap-2 flex-wrap file-row-attach">
         {myFiles.map((item: any, index: number) => {
           return (
             <div className="item-file" key={item.path}>
@@ -218,6 +233,22 @@ export const TextEditorTicket = ({
     closeModal();
     setErrorText("");
   }, []);
+  const imageHandler = () => {
+    // const editor = editorRef.current;
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "image/*");
+    input.click();
+
+    input.onchange = async () => {
+      const file = input.files && input.files[0];
+      postImage(file, (link: any) => {
+        editorRef.current?.insertContent(
+          '<img width="200px" src="' + link.urls[0] + '" />'
+        );
+      });
+    };
+  };
   useEffect(() => {
     setFiles(idAttachments);
   }, [idAttachments.length]);
@@ -226,9 +257,17 @@ export const TextEditorTicket = ({
       setMyFiles([]);
     }
   }, [files]);
+  const css = `
+ 
+  .tox-editor-header{
+    display: none!important;
+  }
+  
+  `;
 
   return (
     <div>
+      <style>{showToolbar ? "" : css}</style>
       <Modal open={modal} onClose={handleCloseModal} title="Upload file">
         <Modal.Section>
           <TextContainer>
@@ -269,10 +308,7 @@ export const TextEditorTicket = ({
           </TextContainer>
         </Modal.Section>
       </Modal>
-      <div className="mb-1">
-        <span className="mr-1 text-red-500">*</span>
-        <span>Message</span>
-      </div>
+
       {verifyShopifyAppIos() ? (
         <div className="xs:pb-14  lg:pb-10">
           <QuillEditor
@@ -290,18 +326,20 @@ export const TextEditorTicket = ({
           onEditorChange={handleChange}
           value={value}
           init={{
-            height: 400,
+            height: 200,
             branding: false,
             menubar: false,
-            // toolbar_mode: "sliding",
+            toolbar_mode: "scrolling",
+            toolbar_location: "bottom",
+
             fontsize_formats:
               "8pt 9pt 10pt 11pt 12pt 14pt 18pt 24pt 30pt 36pt 48pt 60pt 72pt 96pt",
             content_style:
               "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
             toolbar:
-              "undo redo  bold italic underline align  blocks fontfamily fontsizeinput  importfile image media link code  past blockquote backcolor forecolor indent lineheight strikethrough",
-            plugins: ["image", "link", "code"],
-            toolbar_sticky: true,
+              "undo redo  bold italic underline align  blocks fontfamily fontsizeinput   link code  past blockquote backcolor forecolor indent lineheight strikethrough",
+            plugins: ["link", "code"],
+            toolbar_sticky: false,
             file_picker_types: "image",
             file_picker_callback: function (cb, value, meta) {
               if (meta.filetype === "image") {
@@ -326,20 +364,32 @@ export const TextEditorTicket = ({
                 input.click();
               }
             },
-            setup: (editor) => {
-              editor.ui.registry.addButton("importfile", {
-                text: "Upload file",
-                icon: "upload",
-                onAction: () => {
-                  openModal();
-                },
-              });
-            },
-            // init_instance_callback: (ed) => {
-            //   ed.on("click", function (e) {
-            //     ed.editorCommands.execCommand("fontName", false, "Helvetica");
+            // setup: (editor) => {
+            //   editor.on("paste", function (e) {
+            //     const clipboardData = e.clipboardData;
+            //     if (!clipboardData) {
+            //       return;
+            //     }
+            //     const items = clipboardData.items;
+            //     for (let i = 0; i < items.length; i++) {
+            //       const item = items[i];
+            //       const file = item.getAsFile();
+            //       if (item.kind === "file" && item.type.startsWith("image/")) {
+            //         e.preventDefault();
+
+            //           postImage(file, (data: any) => {
+            //           cb(data.urls[0], {
+            //             title: file.name,
+            //             alt: file.name,
+            //             width: "200px",
+            //           });
+            //         });
+            //       }
+            //     }
+            //     return e;
             //   });
             // },
+
             statusbar: false,
 
             paste_data_images: true,
@@ -347,8 +397,72 @@ export const TextEditorTicket = ({
           }}
         ></Editor>
       )}
+      <div className="md-list-file-attach">{listFileAttach}</div>
 
       {isShowFile ? ListFileRow : ""}
+      <div className="md-custom-border">
+        <Tooltip content="Format text">
+          <Button
+            // className={showToolbar ? "bg-gray-100" : ""}
+            onClick={toggle}
+            monochrome
+            plain
+            icon={<IconText />}
+          ></Button>
+        </Tooltip>
+        {isSignature ? (
+          <></>
+        ) : (
+          <Tooltip content="Attachment">
+            <Button
+              onClick={openModal}
+              plain
+              monochrome
+              icon={<AttachIcon fontSize={16} />}
+            ></Button>
+          </Tooltip>
+        )}
+        {isSignature ? (
+          <></>
+        ) : (
+          <Tooltip content="Insert image">
+            <Button
+              onClick={imageHandler}
+              plain
+              monochrome
+              icon={<ImageIcon fontSize={16} />}
+            ></Button>
+          </Tooltip>
+        )}
+        <Button
+          onClick={() => {
+            const editorElement = document.querySelector(
+              "div.tox.tox-tinymce.tox-tinymce--toolbar-bottom"
+            );
+
+            if (editorElement) {
+              if (isZoomIn) {
+                editorElement.classList.add("editor-small");
+                editorElement.classList.remove("editor-large");
+              } else {
+                editorElement.classList.remove("editor-small");
+                editorElement.classList.add("editor-large");
+              }
+            }
+
+            setIsZoomIn(!isZoomIn);
+          }}
+          plain
+          monochrome
+          icon={
+            isZoomIn ? (
+              <ZoomInIcon fontSize={16} />
+            ) : (
+              <ZoomOutIcon fontSize={16} />
+            )
+          }
+        ></Button>
+      </div>
       {error ? (
         <div className="mt-1">
           <InlineError message={error} fieldID="myFieldID" />

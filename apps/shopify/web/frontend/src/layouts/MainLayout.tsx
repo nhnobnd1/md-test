@@ -203,7 +203,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
         showMobileNavigation={mobileNavigationActive}
         onNavigationDismiss={toggleMobileNavigationActive}
       >
-        <div className="pb-8">
+        <div className="">
           <Outlet />
         </div>
         <Rating />
