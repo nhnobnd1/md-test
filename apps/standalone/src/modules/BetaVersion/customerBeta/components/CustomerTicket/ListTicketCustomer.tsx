@@ -3,7 +3,6 @@ import {
   Link,
   priorityToTag,
   upperCaseFirst,
-  useNavigate,
   useSearchParams,
 } from "@moose-desk/core";
 import useGlobalData from "@moose-desk/core/hooks/useGlobalData";
@@ -53,7 +52,6 @@ export const ListTicketCustomer = React.memo(() => {
   const customerId: string = searchParams.get("customer") || "";
   const { subDomain } = useSubdomain();
   const { timezone } = useGlobalData(false, subDomain || "");
-  const navigate = useNavigate();
   const { t } = useTranslation();
   const [filter, setFilter] = useState<ListTicketCustomerFilter>({
     limit,
@@ -199,9 +197,6 @@ export const ListTicketCustomer = React.memo(() => {
     },
     []
   );
-  const handleClickRow = (record: TicketCustomerResponse) => {
-    navigate(`/ticket/${record?._id}`);
-  };
   const headerSettingEl = document.getElementById("md_my_profile");
   const tabHeaderEl = document.querySelector(".ant-tabs-nav-wrap");
   const screenHeight = window.innerHeight;
@@ -234,11 +229,6 @@ export const ListTicketCustomer = React.memo(() => {
             pagination={false}
             loading={isFetchingListTicket}
             onChange={handleChangeTable}
-            onRow={(record) => {
-              return {
-                onClick: () => handleClickRow(record),
-              };
-            }}
           />
         )}
         {/* <section className={styles.wrapPagination}> */}

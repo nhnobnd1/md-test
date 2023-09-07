@@ -5,7 +5,7 @@ import { useUser } from "@moose-desk/core";
 import { Agent } from "@moose-desk/repo";
 import { Form, message, Select, Upload } from "antd";
 import { useForm } from "antd/es/form/Form";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
 import { ContextualSaveBar } from "src/components/ContextualSaveBar";
@@ -136,6 +136,10 @@ const Information = ({
     setAvatar("");
     setUpdated(true);
   };
+  const handleCheckRemoveAvatar = useCallback(() => {
+    if (profile?.avatar) return;
+    handleRemoveAvatar();
+  }, [profile?.avatar]);
   const handleSubmitProfile = (data: any) => {
     const payload = { ...data, avatar };
     switch (layout) {
@@ -381,6 +385,7 @@ const Information = ({
             profile={profile}
             loading={loadingProfile}
             onRefetch={onRefetch}
+            onRemoveAvatar={handleCheckRemoveAvatar}
             disabled={disabledChange}
           />
         )}

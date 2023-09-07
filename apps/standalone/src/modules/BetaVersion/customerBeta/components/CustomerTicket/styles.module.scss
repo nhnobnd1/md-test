@@ -1,11 +1,6 @@
 @import "../../../../../styles/variables.scss";
 @import "../../../../../styles/mixin.scss";
 .wrapTable {
-  :global {
-    .ant-table-row {
-      cursor: pointer;
-    }
-  }
   @include mq(md, "max") {
     margin: 0 -16px;
   }

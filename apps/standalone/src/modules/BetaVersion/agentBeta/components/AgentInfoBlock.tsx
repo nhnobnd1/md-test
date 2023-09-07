@@ -8,6 +8,7 @@ import { MDModalConfirm } from "src/components/MDModalUI";
 import { MDButton } from "src/components/UI/Button/MDButton";
 import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import useNotification from "src/hooks/useNotification";
+import useUpdated from "src/hooks/useUpdated";
 import {
   activeAgent,
   deActiveAgent,
@@ -20,9 +21,10 @@ interface IProps {
   loading: boolean;
   onRefetch: () => void;
   disabled: boolean;
+  onRemoveAvatar: () => void;
 }
 export const AgentInfoBlock = React.memo(
-  ({ profile, loading, onRefetch, disabled }: IProps) => {
+  ({ profile, loading, onRefetch, onRemoveAvatar, disabled }: IProps) => {
     // const {
     //   state: countDown,
     //   clearCountDown,
@@ -33,6 +35,8 @@ export const AgentInfoBlock = React.memo(
     //   key: `agent_${profile?._id}`,
     // });
     const notification = useNotification();
+    const { setUpdated } = useUpdated();
+
     const navigate = useNavigate();
     const { t } = useTranslation();
     const { state: visible, on, off } = useToggle(false);
@@ -77,7 +81,9 @@ export const AgentInfoBlock = React.memo(
       {
         mutationFn: () => deActiveAgent(profile?._id || ""),
         onSuccess: async () => {
+          onRemoveAvatar();
           onRefetch();
+          setUpdated(false);
           notification.success(t("messages:success.deactivate_agent"));
         },
         onError: () => {

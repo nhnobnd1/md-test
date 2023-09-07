@@ -7,6 +7,7 @@ import {
   DropZone,
   Icon,
   SkeletonBodyText,
+  Spinner,
 } from "@shopify/polaris";
 import { DeleteMajor, EditMajor } from "@shopify/polaris-icons";
 import { FormikProps } from "formik";
@@ -146,13 +147,17 @@ const Information = ({
         <div className={styles.blockContent}>
           <div className={styles.avatarWrap}>
             <div className={styles.avatar}>
-              <MDAvatar
-                firstName={profile?.firstName}
-                lastName={profile?.lastName}
-                email={profile?.email}
-                source={avatar}
-                skeleton={uploading}
-              />
+              {uploading ? (
+                <Spinner />
+              ) : (
+                <MDAvatar
+                  firstName={profile?.firstName}
+                  lastName={profile?.lastName}
+                  email={profile?.email}
+                  source={avatar}
+                  skeleton={uploading}
+                />
+              )}
 
               <div className={styles.wrapActionAvatar}>
                 {profile?.isActive && profile?.emailConfirmed && avatar && (
@@ -197,7 +202,7 @@ const Information = ({
               </>
             </div>
           )}
-          {layout !== "agent" && (
+          {layout === "profile" && (
             <>
               {loadingProfile ? (
                 <SkeletonBodyText lines={1} />
@@ -210,35 +215,39 @@ const Information = ({
             </>
           )}
         </div>
-        <div className={styles.blockContent}>
-          {loadingProfile ? (
-            <SkeletonBodyText lines={2} />
-          ) : (
-            <>
-              <div className={styles.moreInfo}>
-                <span className={styles.label}>Group</span>
-                <span className={styles.result}>
-                  {convertListGroup?.length > 0
-                    ? convertListGroup?.map(
-                        (groupName: string, index: number) => (
-                          <span key={index} style={{ marginRight: 3 }}>
-                            {groupName}
-                            {index === convertListGroup?.length - 1 ? "" : ","}
-                          </span>
+        {layout !== "customer" && (
+          <div className={styles.blockContent}>
+            {loadingProfile ? (
+              <SkeletonBodyText lines={2} />
+            ) : (
+              <>
+                <div className={styles.moreInfo}>
+                  <span className={styles.label}>Group</span>
+                  <span className={styles.result}>
+                    {convertListGroup?.length > 0
+                      ? convertListGroup?.map(
+                          (groupName: string, index: number) => (
+                            <span key={index} style={{ marginRight: 3 }}>
+                              {groupName}
+                              {index === convertListGroup?.length - 1
+                                ? ""
+                                : ","}
+                            </span>
+                          )
                         )
-                      )
-                    : "-"}
-                </span>
-              </div>
-              <div className={styles.moreInfo}>
-                <span className={styles.label}>Timezone</span>
-                <span className={styles.result}>
-                  {profile?.timezone || "-"}
-                </span>
-              </div>
-            </>
-          )}
-        </div>
+                      : "-"}
+                  </span>
+                </div>
+                <div className={styles.moreInfo}>
+                  <span className={styles.label}>Timezone</span>
+                  <span className={styles.result}>
+                    {profile?.timezone || "-"}
+                  </span>
+                </div>
+              </>
+            )}
+          </div>
+        )}
         {layout === "agent" && profile?._id && profile?._id !== userId && (
           <div>
             {loadingProfile ? (
