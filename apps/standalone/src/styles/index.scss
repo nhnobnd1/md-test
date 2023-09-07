@@ -392,3 +392,24 @@ select {
 .recharts-legend-wrapper {
   bottom: -5px !important;
 }
+// table-column
+.max-width-column {
+  display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1 !important;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+}
+.max-width-column-350 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1 !important;
+  width: 350px;
+  max-width: 350px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+}

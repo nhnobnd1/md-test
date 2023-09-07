@@ -194,12 +194,12 @@ const Tickets: PageComponent<TicketIndexPageProps> = ({
     setFilterData((pre: any) => ({ ...pre, query: value }));
   };
   return (
-    <LegacyCard>
+    <>
       {(loadingFilter || !filterData.agentObjectId) && <Loading />}
-      <>
-        <div className={styles.searchWrap}>
-          <Search onTypeSearch={handleSearch} />
-        </div>
+      <div className={styles.searchWrap}>
+        <Search onTypeSearch={handleSearch} />
+      </div>
+      <LegacyCard>
         <IndexTable
           resourceName={{ singular: "ticket", plural: "tickets" }}
           itemCount={tickets?.length}
@@ -229,30 +229,30 @@ const Tickets: PageComponent<TicketIndexPageProps> = ({
         >
           {rowMarkup}
         </IndexTable>
-      </>
-      <div>
-        {meta?.totalCount ? (
-          <div className={styles.wrapPagination}>
-            {filterData.page && filterData.limit && meta?.totalCount && (
-              <>
-                <div className="col-span-3 flex justify-center">
-                  <Pagination
-                    total={meta.totalCount}
-                    pageSize={filterData.limit ?? 0}
-                    currentPage={meta.page}
-                    onChangePage={(page) =>
-                      setFilterData((val: any) => {
-                        return { ...val, page };
-                      })
-                    }
-                  />
-                </div>
-              </>
-            )}
-          </div>
-        ) : null}
-      </div>
-    </LegacyCard>
+        <div>
+          {meta?.totalCount ? (
+            <div className={styles.wrapPagination}>
+              {filterData.page && filterData.limit && meta?.totalCount && (
+                <>
+                  <div className="col-span-3 flex justify-center">
+                    <Pagination
+                      total={meta.totalCount}
+                      pageSize={filterData.limit ?? 0}
+                      currentPage={meta.page}
+                      onChangePage={(page) =>
+                        setFilterData((val: any) => {
+                          return { ...val, page };
+                        })
+                      }
+                    />
+                  </div>
+                </>
+              )}
+            </div>
+          ) : null}
+        </div>
+      </LegacyCard>
+    </>
   );
 };
 
