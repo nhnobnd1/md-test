@@ -291,7 +291,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
             <div
               className={classNames(styles.buttonAdd, "md-btn md-btn-primary")}
             >
-              <ButtonAdd onClick={handleAddCustomer}>Add customer</ButtonAdd>
+              <ButtonAdd onClick={handleAddCustomer}>Add new</ButtonAdd>
             </div>
           </div>
         </div>

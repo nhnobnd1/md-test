@@ -130,7 +130,7 @@
   },
   "customers": {
     "customer": "Customer",
-    "add_customer": "Add customer",
+    "add_customer": "Add new",
     "name": "Customer name",
     "email_address": "Email address",
     "ticket_count": "Number of tickets",

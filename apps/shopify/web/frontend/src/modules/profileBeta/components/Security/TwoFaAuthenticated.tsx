@@ -82,6 +82,8 @@ export default function TwoFaAuthenticated() {
     <div className={classNames(styles.block, { "align-start": method.show })}>
       <div className={styles.title}>
         <span>Two-Factor Authentication</span>
+      </div>
+      <div className={styles.group}>
         <div>
           {method.show && (
             <div className="flex items-center">
@@ -124,8 +126,6 @@ export default function TwoFaAuthenticated() {
             />
           </div>
         ) : null}
-      </div>
-      <div className={styles.group}>
         <Button onClick={() => setOpen2FA(true)} disabled={!status}>
           {method.show ? "Change" : "Enable 2FA"}
         </Button>

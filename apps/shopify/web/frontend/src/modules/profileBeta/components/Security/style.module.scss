@@ -29,8 +29,8 @@
 
     .group {
       display: flex;
-      align-items: center;
-
+      align-items: flex-start;
+      flex-direction: column;
       button {
         min-width: 120px;
       }
@@ -68,6 +68,7 @@
 }
 
 .recoveryCode {
+  margin-bottom: 10px;
   button {
     padding-left: 0 !important;
   }
