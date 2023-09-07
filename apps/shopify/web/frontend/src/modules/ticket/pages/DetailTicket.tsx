@@ -176,7 +176,9 @@ const DetailTicket = () => {
   const handleContainerOnBottom = useCallback(() => {
     setEndOfPage(true);
   }, []);
-  const containerRef = useBottomScrollListener(handleContainerOnBottom, {});
+  const containerRef = useBottomScrollListener(handleContainerOnBottom, {
+    offset: 100,
+  });
 
   const [enableCC, setEnableCC] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
