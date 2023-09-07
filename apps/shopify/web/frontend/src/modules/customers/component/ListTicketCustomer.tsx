@@ -141,7 +141,7 @@ export const ListTicketCustomer = memo(({ customerId }: IProps) => {
             <SkeletonBodyText lines={1} />
           ) : (
             <span
-              className="hover:underline subject max-w-lg truncate"
+              className="hover:underline subject max-w-lg "
               onClick={() => handleClickRow(_id)}
             >
               {subject}
@@ -188,7 +188,7 @@ export const ListTicketCustomer = memo(({ customerId }: IProps) => {
           {isLoading ? (
             <SkeletonBodyText lines={1} />
           ) : (
-            <span className="subject max-w-lg truncate">{agentEmail}</span>
+            <span className="subject max-w-lg ">{agentEmail}</span>
           )}
         </IndexTable.Cell>
       </IndexTable.Row>
