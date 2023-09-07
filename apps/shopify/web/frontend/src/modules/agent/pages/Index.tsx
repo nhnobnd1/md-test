@@ -244,7 +244,7 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
               />
             }
             headings={[
-              { title: "Agent" },
+              { title: "Agent Name" },
               { title: "Email" },
               { title: "Roles" },
               { title: "Status" },
@@ -263,8 +263,8 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
                 selected={selectedResources.includes(agentItem._id)}
                 position={index}
               >
-                <IndexTable.Cell className="py-3">
-                  <div className="unstyle-link">
+                <IndexTable.Cell>
+                  <div className="unstyle-link subject max-w-lg">
                     <Link
                       data-polaris-unstyled
                       url={generatePath(AgentRoutePaths.Detail, {
@@ -280,11 +280,13 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
                     </Link>
                   </div>
                 </IndexTable.Cell>
-                <IndexTable.Cell>{agentItem.email}</IndexTable.Cell>
-                <IndexTable.Cell className="py-3">
+                <IndexTable.Cell>
+                  <span className="subject max-w-lg">{agentItem.email}</span>
+                </IndexTable.Cell>
+                <IndexTable.Cell>
                   {getLabelRole(agentItem.role)}
                 </IndexTable.Cell>
-                <IndexTable.Cell className="py-3">
+                <IndexTable.Cell>
                   <Text variant="bodyMd" as="span">
                     <Badge
                       status={
@@ -303,14 +305,14 @@ const AgentIndexPage: PageComponent<AgentIndexPageProps> = () => {
                     </Badge>
                   </Text>
                 </IndexTable.Cell>
-                <IndexTable.Cell className="py-3">
+                <IndexTable.Cell>
                   <Text variant="bodyMd" as="span">
                     {agentItem.twoFactorEnabled
                       ? agentItem.twoFactorMethod
                       : "Off"}
                   </Text>
                 </IndexTable.Cell>
-                <IndexTable.Cell className="py-3">
+                <IndexTable.Cell>
                   <ButtonGroup>
                     {agentItem.emailConfirmed ? (
                       <ButtonEdit

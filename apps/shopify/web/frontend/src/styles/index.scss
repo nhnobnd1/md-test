@@ -147,10 +147,10 @@ body {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1 !important;
-  width: 200px;
+  width: 250px;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: normal;
+  white-space: normal !important;
 }
 .ticket-statistic {
   overflow-x: auto;
