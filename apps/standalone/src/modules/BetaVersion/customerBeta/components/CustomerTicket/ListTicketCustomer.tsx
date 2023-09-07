@@ -93,7 +93,7 @@ export const ListTicketCustomer = React.memo(() => {
     {
       title: t("common:customers.ticket_title"),
       dataIndex: "subject",
-      width: "25%",
+      width: "30%",
       sorter: {
         compare: (a: any, b: any) => {
           return a.subject - b.subject;
@@ -101,7 +101,7 @@ export const ListTicketCustomer = React.memo(() => {
       },
       render: (_: any, record: any) => (
         <Link
-          className={`cursor-pointer hover:underline hover:text-blue-500 subject text-black ${
+          className={`cursor-pointer hover:underline hover:text-blue-500 max-width-column text-black ${
             record.status === StatusTicket.NEW && "text-bold"
           }`}
           to={`/ticket/${record?._id}`}
@@ -164,7 +164,10 @@ export const ListTicketCustomer = React.memo(() => {
     {
       title: t("common:customers.assignee"),
       dataIndex: "agentEmail",
-      width: "25%",
+      width: "20%",
+      render: (_: any, record: any) => (
+        <span className="max-width-column">{record?.agentEmail}</span>
+      ),
     },
   ];
   const handleSearchInput = (query: string) => {

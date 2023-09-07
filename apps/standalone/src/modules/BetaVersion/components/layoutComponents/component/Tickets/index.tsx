@@ -12,6 +12,7 @@ import { message, Tag } from "antd";
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
+import { MDSearchInput } from "src/components/UI/MDSearchInput";
 import Pagination from "src/components/UI/Pagination/Pagination";
 import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import { Table } from "src/components/UI/Table";
@@ -72,7 +73,7 @@ export const Tickets = React.memo(() => {
       sorter: {
         compare: (a: any, b: any) => a.status - b.status,
       },
-      width: "10%",
+      width: "15%",
     },
     {
       title: "Ticket ID",
@@ -90,13 +91,13 @@ export const Tickets = React.memo(() => {
       },
       render: (_: any, record: any) => (
         <Link
-          className={`cursor-pointer hover:underline hover:text-blue-500 subject text-black ${
+          className={`cursor-pointer hover:underline hover:text-blue-500 text-black max-width-column-350 ${
             record.status === StatusTicket.NEW && "text-bold"
           }`}
           to={`/ticket/${record?._id}`}
         >{`${record.subject}`}</Link>
       ),
-      width: "50%",
+      width: "40%",
     },
     {
       title: "Last Update",
@@ -121,7 +122,7 @@ export const Tickets = React.memo(() => {
       sorter: {
         compare: (a: any, b: any) => a.priority - b.priority,
       },
-      width: "10%",
+      width: "15%",
     },
   ];
   const handleChangePage = useCallback(
@@ -136,11 +137,19 @@ export const Tickets = React.memo(() => {
     },
     []
   );
+  const handleSearchInput = (query: string) => {
+    setFilter((pre) => ({ ...pre, query }));
+  };
   const headerSettingEl = document.getElementById("md_my_profile");
   const tabHeaderEl = document.querySelector(".ant-tabs-nav-wrap");
   const screenHeight = window.innerHeight;
   return (
     <div>
+      <div className={styles.searchBlock}>
+        <div className={styles.searchWrap}>
+          <MDSearchInput onTypeSearch={handleSearchInput} />
+        </div>
+      </div>
       <Table
         dataSource={(dataTicket as any)?.data}
         loading={fetchingFilter}

@@ -221,10 +221,10 @@ const AgentsIndex = () => {
           >
             <Table.Column
               key="lastName"
-              title="Agent"
+              title="Agent Name"
               render={(_, record: Agent) => (
                 <span
-                  className={`cursor-pointer hover:underline hover:text-blue-500`}
+                  className={`cursor-pointer hover:underline hover:text-blue-500 max-width-column max-width-column`}
                   onClick={() => {
                     navigate(`/agents?agent=${record?._id}`);
                   }}
@@ -237,6 +237,7 @@ const AgentsIndex = () => {
               sorter={{
                 compare: (a: any, b: any) => a.lastName - b.lastName,
               }}
+              width="25%"
             />
             <Table.Column
               key="email"
@@ -245,6 +246,10 @@ const AgentsIndex = () => {
               sorter={{
                 compare: (a: any, b: any) => a.email - b.email,
               }}
+              width="25%"
+              render={(_, record: Agent) => (
+                <span className="max-width-column">{record.email}</span>
+              )}
             ></Table.Column>
             <Table.Column
               key="role"
@@ -255,6 +260,7 @@ const AgentsIndex = () => {
               sorter={{
                 compare: (a: any, b: any) => a.roles - b.roles,
               }}
+              width="15%"
             />
             <Table.Column
               key="isActive"
@@ -273,6 +279,7 @@ const AgentsIndex = () => {
                   }
                 ></Badge>
               )}
+              width="10%"
             />
             <Table.Column
               key="twoFactorEnabled"
@@ -287,6 +294,7 @@ const AgentsIndex = () => {
                 compare: (a: any, b: any) =>
                   a.twoFactorEnabled - b.twoFactorEnabled,
               }}
+              width="10%"
             />
 
             <>
@@ -294,6 +302,7 @@ const AgentsIndex = () => {
                 align="center"
                 title="Action"
                 render={(_, record: Agent) => renderAction(record)}
+                width="15%"
               />
             </>
           </Table>
