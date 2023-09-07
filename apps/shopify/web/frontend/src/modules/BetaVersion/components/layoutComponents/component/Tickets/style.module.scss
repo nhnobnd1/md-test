@@ -2,10 +2,16 @@
 @import "../../../../../../styles/variables.scss";
 
 .wrapPagination {
-    margin-top: 16px;
-    padding-bottom: 16px;
+  margin-top: 16px;
+  padding-bottom: 16px;
 
-    @include mq(md, "max") {
-        // justify-content: center;
-    }
+  @include mq(md, "max") {
+    // justify-content: center;
+  }
+}
+.searchWrap {
+  margin-bottom: 20px;
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
 }

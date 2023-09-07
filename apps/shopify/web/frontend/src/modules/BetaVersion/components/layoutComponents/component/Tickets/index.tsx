@@ -29,6 +29,7 @@ import { useSubdomain } from "src/hooks/useSubdomain";
 import { getListTicketApi } from "src/modules/ticket/helper/api";
 
 import { useQuery } from "react-query";
+import { Search } from "src/components/Search/Search";
 
 interface TicketIndexPageProps {
   agentId: string;
@@ -55,10 +56,12 @@ const Tickets: PageComponent<TicketIndexPageProps> = ({
     limit: 10,
     page: 1,
     agentObjectId: "",
+    query: "",
   });
 
   useEffect(() => {
     if (!agentId) return;
+
     setFilterData((pre: any) => ({ ...pre, agentObjectId: agentId }));
   }, [agentId]);
   const { data: dataTicket, isLoading: loadingFilter } = useQuery({
@@ -69,10 +72,11 @@ const Tickets: PageComponent<TicketIndexPageProps> = ({
     },
   });
   const tickets = useMemo(() => {
+    if (!filterData.agentObjectId) return [];
     if (dataTicket?.data)
       return dataTicket.data.map((item) => ({ ...item, id: item._id }));
     return [];
-  }, [dataTicket]);
+  }, [dataTicket, filterData.agentObjectId]);
   const meta = useMemo(() => {
     if (dataTicket?.metadata) return dataTicket.metadata;
     return undefined;
@@ -144,7 +148,7 @@ const Tickets: PageComponent<TicketIndexPageProps> = ({
         <IndexTable.Cell>
           {
             <div
-              className="hover:underline max-w-lg truncate"
+              className="hover:underline subject max-w-lg"
               onClick={() => {
                 navigate(generatePath(TicketRoutePaths.Detail, { id: _id }));
               }}
@@ -161,11 +165,11 @@ const Tickets: PageComponent<TicketIndexPageProps> = ({
         </IndexTable.Cell>
         <IndexTable.Cell>
           {createdViaWidget || incoming ? (
-            <span className="subject max-w-lg truncate">{`${
+            <span className="subject max-w-lg">{`${
               fromEmail.name ? fromEmail.name : fromEmail.email
             }`}</span>
           ) : (
-            <span className="subject max-w-lg truncate">{`${
+            <span className="subject max-w-lg">{`${
               toEmails[0]?.name ? toEmails[0]?.name : toEmails[0]?.email
             }`}</span>
           )}
@@ -186,10 +190,16 @@ const Tickets: PageComponent<TicketIndexPageProps> = ({
       </IndexTable.Row>
     )
   );
+  const handleSearch = (value: string) => {
+    setFilterData((pre: any) => ({ ...pre, query: value }));
+  };
   return (
     <LegacyCard>
       {(loadingFilter || !filterData.agentObjectId) && <Loading />}
       <>
+        <div className={styles.searchWrap}>
+          <Search onTypeSearch={handleSearch} />
+        </div>
         <IndexTable
           resourceName={{ singular: "ticket", plural: "tickets" }}
           itemCount={tickets?.length}

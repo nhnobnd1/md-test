@@ -100,12 +100,12 @@ export default function CustomerIndexPage() {
             removeUnderline
           >
             <Text variant="bodyMd" fontWeight="bold" as="span">
-              <span className="subject max-w-lg truncate">{`${records?.firstName} ${records?.lastName}`}</span>
+              <span className="subject max-w-lg">{`${records?.firstName} ${records?.lastName}`}</span>
             </Text>
           </Link>
         </IndexTable.Cell>
         <IndexTable.Cell>
-          <span className="subject max-w-lg truncate">{records?.email}</span>
+          <span className="subject max-w-lg">{records?.email}</span>
         </IndexTable.Cell>
         <IndexTable.Cell>{records?.ticketsCount}</IndexTable.Cell>
         <IndexTable.Cell>
