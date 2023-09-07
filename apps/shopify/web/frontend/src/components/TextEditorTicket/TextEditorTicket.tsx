@@ -180,7 +180,7 @@ export const TextEditorTicket = ({
 
   const ListFileRow = useMemo(() => {
     return (
-      <div className="flex justify-start flex-row items-center px-2 gap-2 flex-wrap file-row-attach">
+      <div className="flex max-h-[130px] overflow-auto justify-start flex-row items-center px-2 gap-2 flex-wrap file-row-attach">
         {myFiles.map((item: any, index: number) => {
           return (
             <div className="item-file" key={item.path}>

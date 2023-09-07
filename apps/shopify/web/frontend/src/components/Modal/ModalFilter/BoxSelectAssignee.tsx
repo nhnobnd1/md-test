@@ -126,15 +126,10 @@ const BoxSelectAssignee = (props: BoxSelectAutoReplyProps) => {
           onChange={updateText}
           label={props.label}
           labelHidden={!props.label}
-          // onFocus={() => {
-          //   setSearch("");
-          // }}
-          // onBlur={() => {
-          //   if (agentsOptions.length === 0) {
-          //     setInputValue("");
-          //     setSearch("");
-          //   }
-          // }}
+          clearButton
+          onClearButtonClick={() => {
+            props.onChange && props.onChange(null);
+          }}
           value={inputValue}
           autoComplete="off"
           error={props.error}

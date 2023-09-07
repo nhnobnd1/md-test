@@ -168,6 +168,16 @@ export const emailIntegrationApi = (): Promise<EmailIntegration> => {
   });
 };
 
+export const getCustomerTicket = (
+  payload: string | undefined
+): Promise<Customer> => {
+  return new Promise((resolve, reject) => {
+    lastValueFrom(CustomerRepository().getOne(payload))
+      .then(({ data }) => resolve(data.data))
+      .catch((error) => reject(error));
+  });
+};
+
 export const getListEmailIntegration = (
   payload: GetListEmailRequest
 ): Promise<EmailIntegration[]> => {

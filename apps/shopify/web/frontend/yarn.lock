@@ -4985,6 +4985,13 @@ react-async-script@^1.1.1:
     hoist-non-react-statics "^3.3.0"
     prop-types "^15.5.0"
 
+react-bottom-scroll-listener@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/react-bottom-scroll-listener/-/react-bottom-scroll-listener-5.1.0.tgz#8544536ad794c47ee0728c117f988d69cb05e0ff"
+  integrity sha512-HI4qRKLbQ0Ox8xwIgYtLMk+1zETTaLtGBrhcTUFVRLL3OjVzfnyPPiXPGDnAPY6sGQh4KFH7Flp1dddnSmG33A==
+  dependencies:
+    lodash.debounce "^4.0.8"
+
 react-color@^2.19.3:
   version "2.19.3"
   resolved "https://registry.npmjs.org/react-color/-/react-color-2.19.3.tgz"

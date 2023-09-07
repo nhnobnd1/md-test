@@ -66,6 +66,7 @@ import UilImport from "~icons/uil/import";
 
 import { identity, pickBy } from "lodash-es";
 import { useQuery } from "react-query";
+import RichText from "src/components/RichText/RichText";
 import useDeepEffect from "src/hooks/useDeepEffect";
 import { ExportTicket } from "src/modules/ticket/components/ExportTicket";
 import useTicketSelected from "src/modules/ticket/store/useTicketSelected";
@@ -869,6 +870,9 @@ const TicketIndexPage: PageComponent<TicketIndexPageProps> = () => {
           )}
         </LegacyCard>
       </Page>
+      <div className="hidden">
+        <RichText />
+      </div>
     </div>
   );
 };

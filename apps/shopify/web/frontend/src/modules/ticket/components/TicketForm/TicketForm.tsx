@@ -314,7 +314,6 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
     const assigneeEmail = values.assignee
       ? values.assignee.split(",")[1]
       : undefined;
-    console.log({ assigneeId, assigneeEmail });
     const findEmailIntegration = emailIntegrationOptions.find(
       (item) => item.value === values.from
     );

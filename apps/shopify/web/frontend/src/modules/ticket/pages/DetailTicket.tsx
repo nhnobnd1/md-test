@@ -1,7 +1,7 @@
 import {
   createdDatetimeFormat,
+  createdDatetimeFormatDefault,
   emailRegex,
-  MediaScreen,
   useJob,
   useNavigate,
   useParams,
@@ -13,60 +13,52 @@ import {
   Conversation,
   CreateReplyTicketRequest,
   Priority,
-  priorityOptions,
   ScreenType,
-  statusOptions,
   StatusTicket,
   TicketRepository,
   UpdateTicket,
+  priorityOptions,
+  statusOptions,
 } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
   Button,
   FormLayout,
-  Icon,
-  Layout,
-  LegacyCard,
-  Link,
   Modal,
   Page,
   Select,
   SkeletonBodyText,
   SkeletonDisplayText,
-  SkeletonPage,
   TextContainer,
   TextField,
   Tooltip,
 } from "@shopify/polaris";
-import { CancelMajor, PriceLookupMinor } from "@shopify/polaris-icons";
 import classNames from "classnames";
 import { FormikProps } from "formik";
 import { useCallback, useMemo, useRef, useState } from "react";
+import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import { useTranslation } from "react-i18next";
 import { useQuery, useQueryClient } from "react-query";
 import { catchError, map, of } from "rxjs";
 import Form from "src/components/Form";
 import FormItem from "src/components/Form/Item";
+import DownIcon from "~icons/material-symbols/arrow-downward";
+
 import BoxSelectFilter from "src/components/Modal/ModalFilter/BoxSelectFilter";
 import SelectAddEmail from "src/components/SelectAddEmail/SelectAddEmail";
 import { TextEditorTicket } from "src/components/TextEditorTicket";
 import useGlobalData from "src/hooks/useGlobalData";
 import useScreenType from "src/hooks/useScreenType";
 import { useSubdomain } from "src/hooks/useSubdomain";
-import useToggleGlobal from "src/hooks/useToggleGlobal";
 import { CollapseList } from "src/modules/ticket/components/CollapseList";
-import ContentShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ContentShopifySearch";
 import useSelectFrom from "src/modules/ticket/store/useSelectFrom";
 import { trimHtmlCssJs, wrapImageWithAnchorTag } from "src/utils/localValue";
 import * as Yup from "yup";
-import FaMailReply from "~icons/fa/mail-reply";
-import InfoIcon from "~icons/material-symbols/info";
 
 import { Crisp } from "crisp-sdk-web";
 import useDeepEffect from "src/hooks/useDeepEffect";
 import useFormCreateTicket from "src/modules/ticket/store/useFormCreateTicket";
 import ForwardIcon from "~icons/ion/forward";
-import ReplyIcon from "~icons/ion/reply";
 import BackIcon from "~icons/mingcute/back-2-fill";
 
 import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
@@ -76,6 +68,7 @@ import BoxSelectCustomer from "src/modules/ticket/components/BoxSelectCustomer/B
 import { TagSelect } from "src/modules/ticket/components/TicketForm/TagSelect";
 import {
   emailIntegrationApi,
+  getCustomerTicket,
   getListConversation,
   getListCustomerApi,
   getListEmailIntegration,
@@ -83,7 +76,9 @@ import {
 } from "src/modules/ticket/helper/api";
 import { UploadForward } from "src/modules/ticket/pages/UploadForward";
 import useForwardTicket from "src/modules/ticket/store/useForwardTicket";
+import useRating from "src/store/useRating";
 import styles from "./style.module.scss";
+import "./style.scss";
 export interface ChatItem {
   id: string;
   name: string;
@@ -91,12 +86,16 @@ export interface ChatItem {
   time: string;
   email: string;
   attachments?: AttachFile[];
-  typeChat?: "reported via widget" | "reported via email" | "agent created";
+  typeChat?: "email" | "widget";
   toEmail?: string;
   incoming?: boolean;
+  nameTo?: string;
   ccEmails?: [];
   bccEmails?: [];
   datetime?: string;
+  right?: boolean;
+  avatar?: string;
+  customerId?: string;
 }
 interface ValueForm {
   status: StatusTicket;
@@ -126,11 +125,8 @@ const DetailTicket = () => {
     onError: () => {
       navigate("/dashboard");
       show(t("messages:error.get_ticket"), { isError: true });
-
-      // message.error(t("messages:error.get_ticket"));
     },
   });
-  // const [ticket, setTicket] = useState<Ticket>();
   const ticket = useMemo(() => {
     if (dataTicket)
       return {
@@ -142,30 +138,47 @@ const DetailTicket = () => {
   const { t } = useTranslation();
   const endPageRef = useRef<any>(null);
   const navigate = useNavigate();
+  const ratingState = useRating((state) => state);
+
   const {
     data: dataConversations,
     isLoading: isLoadingConversation,
     isFetching: isFetchConversation,
-    refetch: refetchConversation,
   } = useQuery({
     queryKey: ["getListConversation", id],
     queryFn: () => getListConversation(id as string),
     retry: 1,
     onSuccess: (data) => {
       setConversationList(data);
+      setEndOfPage(true);
+      setTimeout(() => {
+        endOfPageRef?.current?.scrollIntoView({});
+      }, 0);
     },
 
-    onError: () => {
-      // message.error(t("messages:error.get_ticket"));
-    },
+    onError: () => {},
   });
 
+  const { data: customer } = useQuery({
+    queryKey: ["getCustomer", { id: ticket?.customerObjectId }],
+    queryFn: () => getCustomerTicket(ticket?.customerObjectId),
+    retry: 3,
+    staleTime: 10000,
+    enabled: !!ticket?.customerObjectId,
+    onError: () => {},
+  });
   const [conversationList, setConversationList] = useState<Conversation[]>(
     dataConversations || []
   );
-  // const [conversationList, setConversationList] = useState<Conversation[]>([]);
+  const [endOfPage, setEndOfPage] = useState(false);
+  const endOfPageRef = useRef<any>(null);
 
-  const [enableCC, setEnableCC] = useState(true);
+  const handleContainerOnBottom = useCallback(() => {
+    setEndOfPage(true);
+  }, []);
+  const containerRef = useBottomScrollListener(handleContainerOnBottom, {});
+
+  const [enableCC, setEnableCC] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
   const { data: dataPrimaryEmail } = useQuery({
     queryKey: ["emailIntegrationApi", id],
@@ -183,7 +196,6 @@ const DetailTicket = () => {
       return undefined;
     }
   }, [dataPrimaryEmail]);
-  // const [primaryEmail, setPrimaryEmail] = useState<EmailIntegration>();
   const [files, setFiles] = useState<any>([]);
   const [loadingButton, setLoadingButton] = useState(false);
   const { data: dataEmailIntegration } = useQuery({
@@ -210,7 +222,6 @@ const DetailTicket = () => {
     off: closeStatusModal,
   } = useToggle();
   const [screenType, screenWidth] = useScreenType();
-  const isMobileOrTablet = Boolean(screenWidth <= MediaScreen.LG);
   const selectedFrom = useSelectFrom((state) => state.selected);
   // detail ticket
   const contentCreate = useFormCreateTicket((state) => state.content);
@@ -227,8 +238,6 @@ const DetailTicket = () => {
       show(t("messages:error.get_customer"), { isError: true });
     },
   });
-  const { visible, setVisible } = useToggleGlobal();
-  const { state: send, on: openSend, off: closeSend } = useToggle();
   const [isForward, setIsForward] = useState(false);
 
   const chatItemForward = useForwardTicket((state) => state.chatItem);
@@ -250,21 +259,26 @@ const DetailTicket = () => {
           email: item.fromEmail?.email,
           attachments: item.attachments,
           toEmail: item.toEmails[0].email,
+          nameTo: item.toEmails[0]?.name,
           incoming: item?.incoming,
           ccEmails: item?.ccEmails,
           bccEmails: item?.bccEmails,
-          datetime: createdDatetimeFormat(item.createdDatetime, timezone),
+          datetime: createdDatetimeFormatDefault(
+            item.createdDatetime,
+            timezone
+          ),
+          right: !!item?.senderConfigId,
+          avatar: item?.senderConfigId ? "" : customer?.avatar,
+          customerId: item?.senderConfigId ? "" : customer?._id,
         };
       }
     );
     if (ticket) {
       let typeChat;
-      if (ticket.incoming) {
-        typeChat = "reported via email";
-      } else if (ticket.createdViaWidget) {
-        typeChat = "reported via widget";
+      if (ticket?.createdViaWidget) {
+        typeChat = "widget";
       } else {
-        typeChat = "agent created";
+        typeChat = "email";
       }
       conversationMapping?.unshift({
         id: ticket._id,
@@ -276,14 +290,21 @@ const DetailTicket = () => {
         attachments: ticket.attachments,
         typeChat,
         toEmail: ticket.toEmails ? ticket.toEmails[0].email : "",
+        nameTo: ticket.toEmails ? ticket.toEmails[0].name : "",
         incoming: ticket?.incoming || ticket?.createdViaWidget,
         ccEmails: ticket?.ccEmails,
         bccEmails: ticket?.bccEmails,
-        datetime: createdDatetimeFormat(ticket.createdDatetime, timezone),
+        datetime: createdDatetimeFormatDefault(
+          ticket.createdDatetime,
+          timezone
+        ),
+        right: !!ticket?.senderConfigId,
+        avatar: ticket?.senderConfigId ? "" : customer?.avatar,
+        customerId: ticket?.senderConfigId ? "" : customer?._id,
       });
     }
     return conversationMapping;
-  }, [ticket, conversationList, timezone]);
+  }, [ticket, conversationList, timezone, customer]);
 
   const { run: postReplyApi } = useJob((payload: CreateReplyTicketRequest) => {
     return TicketRepository()
@@ -293,7 +314,15 @@ const DetailTicket = () => {
           if (data.statusCode === 200) {
             show(t("messages:success.send_mail"));
             setConversationList([...conversationList, data.data]);
+            queryClient.setQueryData(
+              ["getListConversation", id],
+              [...conversationList, data.data]
+            );
           }
+        }),
+        catchError((err) => {
+          show(t("messages:error.something_went_wrong"), { isError: true });
+          return of(err);
         })
       );
   });
@@ -306,10 +335,8 @@ const DetailTicket = () => {
           map(({ data }) => {
             if (data.statusCode === 200) {
               show(t("messages:success.update_ticket"));
+              ratingState.changeFetchStatistic(false);
               queryClient.invalidateQueries("getStatisticTicket");
-
-              // eslint-disable-next-line no-unused-expressions
-              reload ? refetch() : "";
             }
           }),
           catchError((err) => {
@@ -330,6 +357,7 @@ const DetailTicket = () => {
     const fromValidate = emailIntegrationOptions?.find(
       (item: any) => item.value === from
     );
+
     if (conversationList.length === 0) {
       return {
         status: ticket?.status,
@@ -341,7 +369,7 @@ const DetailTicket = () => {
         to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
         tags: ticket?.tags,
         content: "",
-        from: from,
+        from: fromValidate ? from : "",
         ccEmails: ticket?.ccEmails,
         CC: ticket?.ccEmails?.map((item) => {
           return item.replace(/.*<([^>]*)>.*/, "$1") || item;
@@ -361,7 +389,7 @@ const DetailTicket = () => {
         to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
         tags: ticket?.tags,
         content: "",
-        from: from,
+        from: fromValidate ? from : "",
         ccEmails: ticket?.ccEmails,
         CC: conversationList[conversationList.length - 1]?.ccEmails?.map(
           (item) => {
@@ -394,10 +422,8 @@ const DetailTicket = () => {
             }
           ),
         from: Yup.string().required("Email address is required").nullable(),
-        assignee: Yup.string().test(
-          "is-blank",
-          "The assignee does not exist",
-          (value: any) => {
+        assignee: Yup.string()
+          .test("is-blank", "The assignee does not exist", (value: any) => {
             if (!value) {
               return true;
             }
@@ -405,8 +431,8 @@ const DetailTicket = () => {
               return true;
             }
             return false;
-          }
-        ),
+          })
+          .nullable(),
         CC: Yup.array()
           .test(
             "same from",
@@ -472,10 +498,8 @@ const DetailTicket = () => {
             return value !== findFromEmail;
           }
         ),
-      assignee: Yup.string().test(
-        "is-blank",
-        "The assignee does not exist",
-        (value: any) => {
+      assignee: Yup.string()
+        .test("is-blank", "The assignee does not exist", (value: any) => {
           if (!value) {
             return true;
           }
@@ -483,8 +507,8 @@ const DetailTicket = () => {
             return true;
           }
           return false;
-        }
-      ),
+        })
+        .nullable(),
       from: Yup.string()
         .required("Email address is required")
         // .email("The email address is not valid")
@@ -526,19 +550,14 @@ const DetailTicket = () => {
       return;
     }
     const values = formRef.current?.values;
-    updateTicketApi(
-      {
-        priority: values.priority,
-        status: values.status,
-        tags: values.tags,
-        agentObjectId: values.assignee
-          ? values.assignee.split(",")[0]
-          : undefined,
-        agentEmail: values.assignee ? values.assignee.split(",")[1] : undefined,
-        ids: [ticket?._id as string],
-      },
-      reload
-    );
+    updateTicketApi({
+      priority: values.priority,
+      status: values.status,
+      tags: values.tags,
+      agentObjectId: values.assignee ? values.assignee.split(",")[0] : "",
+      agentEmail: values.assignee ? values.assignee.split(",")[1] : "",
+      ids: [ticket?._id as string],
+    });
   };
   const onFinish = (values: ValueForm, closeTicket = false) => {
     if (isSampleEmail) {
@@ -548,7 +567,6 @@ const DetailTicket = () => {
         trimHtmlCssJs(formRef.current?.values?.content)
       );
     }
-    closeSend();
     setIsForward(false);
     if (isForward) {
       updateContent({ content: undefined });
@@ -608,13 +626,9 @@ const DetailTicket = () => {
     );
     setFiles([]);
     setFileForward([]);
-
     formRef.current?.setFieldValue("content", "");
   };
 
-  const handleToggleSearch = () => {
-    setVisible(!visible);
-  };
   const handleChangeForm = useCallback((changedValue) => {
     if (changedValue.content) {
       const contentSplit = changedValue.content.split("- - - - - - -");
@@ -623,16 +637,6 @@ const DetailTicket = () => {
       updateContent({ content: undefined });
     }
   }, []);
-
-  const handleOpenReply = () => {
-    setFiles([]);
-    setFileForward([]);
-    openSend();
-    setIsForward(false);
-    setTimeout(() => {
-      window.scrollTo(0, document.body.scrollHeight);
-    }, 0);
-  };
 
   const handleClickForwardAll = () => {
     setIsForward(true);
@@ -677,14 +681,12 @@ const DetailTicket = () => {
         </div>
         `
     );
-    openSend();
     setTimeout(() => {
       window.scrollTo(0, document.body.scrollHeight);
     }, 0);
   };
 
   useUnMount(() => {
-    setVisible(false);
     updateContent({ content: undefined });
     updateChatItem(undefined);
   });
@@ -717,8 +719,6 @@ const DetailTicket = () => {
         </div>
       `
       );
-
-      openSend();
     }
   }, [chatItemForward, clickForward]);
 
@@ -732,7 +732,6 @@ const DetailTicket = () => {
   useDeepEffect(() => {
     if (isSampleEmail && !processing && !isLoadingConversation) {
       setTimeout(() => {
-        openSend();
         formRef.current?.setFieldValue(
           "content",
           `
@@ -762,470 +761,382 @@ Hit Send to see what your message will look like
           }<div class='divide'> - - - - - - - </div><div class='signature'>${signature}</div>`
         : contentCreate
     );
-  }, [selectedFrom, emailIntegrationOptions, isForward, send]);
+  }, [selectedFrom, emailIntegrationOptions, isForward]);
 
   return (
-    <div className="relative">
-      {processing || isFetchConversation ? (
-        <Page fullWidth>
-          <SkeletonPage primaryAction />
-          <Layout>
-            <Layout.Section>
-              <LegacyCard sectioned>
-                <TextContainer>
-                  <SkeletonDisplayText size="extraLarge" />
-                  <SkeletonBodyText />
-                </TextContainer>
-              </LegacyCard>
-              <LegacyCard sectioned>
-                <TextContainer>
-                  <SkeletonDisplayText size="extraLarge" />
-                  <SkeletonBodyText />
-                </TextContainer>
-              </LegacyCard>
-            </Layout.Section>
-          </Layout>
-        </Page>
-      ) : isMobileOrTablet && visible ? (
-        <ContentShopifySearch />
-      ) : (
-        <Page
-          title={
-            (
-              <span className="truncate w-full  inline-block header-detail-ticket">{`Ticket ${ticket?.ticketId}: ${ticket?.subject}`}</span>
-            ) as unknown as string
-          }
-          breadcrumbs={[
+    <div className="relative h-full">
+      <Page
+        title={
+          !processing
+            ? ((
+                <span className="truncate w-full  inline-block header-detail-ticket">{`Ticket ${ticket?.ticketId}: ${ticket?.subject}`}</span>
+              ) as unknown as string)
+            : ((<SkeletonDisplayText size="small" />) as unknown as string)
+        }
+        breadcrumbs={[
+          {
+            content: "Ticket",
+            onAction: () => {
+              navigate(-1);
+            },
+          },
+        ]}
+        fullWidth
+      >
+        <div className="form-ticket">
+          <div className="flex h-full bg-white p-4 rounded-lg overflow-auto">
+            <div
+              className={classNames(
+                styles.wrapSearchToggle,
+                `${screenType === ScreenType.SM && "mt-[-5px]"} flex gap-2`
+              )}
+            >
+              <Tooltip content="Forward all" preferredPosition="above">
+                <Button
+                  onClick={handleClickForwardAll}
+                  icon={<ForwardIcon style={{ fontSize: 18 }} />}
+                ></Button>
+              </Tooltip>
+            </div>
+            <Form
+              innerRef={formRef}
+              initialValues={initialValues}
+              enableReinitialize
+              validationSchema={DetailTicketFormSchema}
+              onSubmit={() => {}}
+              onValuesChange={handleChangeForm}
+            >
+              <div className="flex flex-wrap  md:flex-row-reverse xs:flex-col justify-between  h-full">
+                <div
+                  className={classNames(
+                    styles.borderLeft,
+                    "xs:hidden md:block h-full w-[320px]"
+                  )}
+                >
+                  {!isFetchConversation ? (
+                    <div className="flex flex-col gap-3  px-2">
+                      <FormItem name="status">
+                        <BoxSelectFilter
+                          disabled={disabled}
+                          data={statusOptions}
+                          label="Status"
+                        />
+                      </FormItem>
+
+                      <FormItem name="priority">
+                        <BoxSelectFilter
+                          disabled={disabled}
+                          data={priorityOptions}
+                          label="Priority"
+                        />
+                      </FormItem>
+                      <FormItem name="assignee">
+                        <BoxSelectAssignee
+                          disabled={disabled}
+                          label="Assignee"
+                          placeholder="Search agents"
+                        />
+                      </FormItem>
+                      <FormItem name="tags">
+                        <TagSelect disabled={disabled} />
+                      </FormItem>
+                    </div>
+                  ) : (
+                    <SkeletonBodyText lines={4} />
+                  )}
+
+                  <div className="flex justify-end mb-3 mt-3">
+                    <Button
+                      disabled={disabled}
+                      primary
+                      onClick={handleSaveTicket}
+                      fullWidth
+                    >
+                      Save
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="flex-1 px-4 overflow-auto h-full flex gap-2 flex-col justify-between py-1 ">
+                  <div
+                    onScroll={() => {
+                      setEndOfPage(false);
+                    }}
+                    ref={containerRef as any}
+                    className="overflow-y-auto  px-1"
+                  >
+                    {!isFetchConversation ? (
+                      <>
+                        <CollapseList listChat={listChat} />
+                        <div
+                          style={{ margin: "auto" }}
+                          className="sticky  bottom-0 right-0 h-[40px]   w-[300px] flex justify-center items-center "
+                        >
+                          <div
+                            className={`${
+                              endOfPage ? "opacity-0 pointer-events-none" : ""
+                            } w-[36px] h-[36px] rounded-3xl flex justify-center items-center  hover:cursor-pointer  overflow-hidden`}
+                          >
+                            <Button
+                              disabled={false}
+                              onClick={() => {
+                                setEndOfPage(true);
+                                endOfPageRef?.current?.scrollIntoView({
+                                  behavior: "smooth",
+                                });
+                              }}
+                              icon={<DownIcon />}
+                              primary
+                            ></Button>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <SkeletonBodyText lines={10} />
+                    )}
+                    <div ref={endOfPageRef}></div>
+                  </div>
+                  <div className="md-ticket-detail-editor relative">
+                    <div className="w-full flex justify-between  flex-wrap flex-col">
+                      <div className="flex  flex-col flex-1 ">
+                        <div className="flex items-start px-2 gap-2 md-add-border">
+                          <span className="w-[40px] mt-2">From</span>
+
+                          <div className="flex-1 md-remove-border">
+                            <FormItem name="from">
+                              <BoxSelectFilter
+                                data={emailIntegrationOptions}
+                                disabled={disabled}
+                              />
+                            </FormItem>
+                          </div>
+                        </div>
+                        <div className="flex items-start px-2 gap-2 md-add-border">
+                          <span className="w-[40px] mt-2 ">To</span>
+                          <div className="flex-1 md-remove-border">
+                            <FormItem name="to">
+                              {isForward ? (
+                                <BoxSelectCustomer
+                                  form={formRef}
+                                  placeholder="Email"
+                                  data={customersOptions}
+                                  onSearch={(e) => {
+                                    setSearchCustomer(e);
+                                  }}
+                                  loading={isLoadingCustomer}
+                                />
+                              ) : (
+                                <TextField
+                                  label=""
+                                  disabled
+                                  autoComplete="off"
+                                />
+                              )}
+                            </FormItem>
+                          </div>
+                          <span
+                            className="link mt-2"
+                            onClick={() => {
+                              setEnableCC(!enableCC);
+                            }}
+                          >
+                            CC/BCC
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex flex-col flex-1">
+                        {enableCC ? (
+                          <div className="flex items-start px-2 gap-2 md-add-border min-h-[37px]">
+                            <span className="w-[40px] mt-2 ">CC</span>
+                            <div className={`flex-1 md-remove-border`}>
+                              <FormItem name="CC">
+                                <SelectAddEmail
+                                  defaultTag={initialValues.CC}
+                                  disabled={disabled}
+                                  data={customersOptions}
+                                  onSearch={(e) => {
+                                    setSearchCustomer(e);
+                                  }}
+                                  loading={isLoadingCustomer}
+                                />
+                              </FormItem>
+                            </div>
+                          </div>
+                        ) : (
+                          <></>
+                        )}
+                        {enableCC ? (
+                          <div className="flex items-start px-2 gap-2 md-add-border min-h-[37px]">
+                            <span className="w-[40px] mt-2 ">BCC</span>
+                            <div className={`flex-1 md-remove-border`}>
+                              <FormItem name="BCC">
+                                <SelectAddEmail
+                                  defaultTag={initialValues.BCC}
+                                  disabled={disabled}
+                                  data={customersOptions}
+                                  onSearch={(e) => {
+                                    setSearchCustomer(e);
+                                  }}
+                                  loading={isLoadingCustomer}
+                                />
+                              </FormItem>
+                            </div>
+                          </div>
+                        ) : (
+                          <></>
+                        )}
+                      </div>
+                    </div>
+
+                    <FormItem name="content">
+                      <TextEditorTicket
+                        files={files}
+                        setFiles={setFiles}
+                        formRef={formRef}
+                        disabled={
+                          formRef.current?.values.status ===
+                          StatusTicket.RESOLVED
+                        }
+                        setIsChanged={setIsChanged}
+                        setLoadingButton={setLoadingButton}
+                        init={{
+                          height: 100,
+
+                          menubar: false,
+                          placeholder: "Please input your message here......",
+                          plugins: "autoresize",
+                          max_height: 400,
+                        }}
+                        listFileAttach={
+                          isForward ? (
+                            <div
+                              key={chatItemForward ? chatItemForward.id : "all"}
+                            >
+                              <UploadForward
+                                defaultFileList={uniqBy(
+                                  chatItemForward
+                                    ? chatItemForward?.attachments?.map(
+                                        (item) => ({
+                                          uid: item?._id as string,
+                                          name: item?.name as string,
+
+                                          url: item?.attachmentUrl as string,
+                                        })
+                                      )
+                                    : listChat
+                                        .map((item) => item.attachments)
+                                        .flat()
+                                        .map((item) => ({
+                                          uid: item?._id as string,
+                                          name: item?.name as string,
+
+                                          url: item?.attachmentUrl as string,
+                                        })),
+                                  "uid"
+                                )}
+                                setFileForward={setFileForward}
+                              />
+                            </div>
+                          ) : null
+                        }
+                      />
+                    </FormItem>
+
+                    <div className="flex justify-end absolute right-2 bottom-[5px]">
+                      {formRef.current?.values.status ===
+                      StatusTicket.RESOLVED ? (
+                        <>
+                          <Button
+                            icon={<BackIcon fontSize={14} />}
+                            onClick={handleReopenTicket}
+                            disabled={false}
+                          >
+                            Reopen
+                          </Button>
+                        </>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <Button
+                            disabled={!isChanged || loadingButton}
+                            onClick={() => {
+                              if (formRef.current?.isValid) {
+                                handleCloseTicket();
+                              }
+                            }}
+                          >
+                            Send & Close Ticket
+                          </Button>
+                          <Button
+                            primary
+                            onClick={() => {
+                              if (!formRef.current?.isValid) {
+                                return;
+                              }
+                              onFinish(formRef.current?.values);
+                            }}
+                            disabled={!isChanged || loadingButton}
+                          >
+                            Send
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Form>
+          </div>
+        </div>
+        <Modal
+          open={statusModal}
+          onClose={closeStatusModal}
+          title=""
+          primaryAction={{
+            content: "Save",
+            onAction: () => {
+              handleSaveTicket(true);
+            },
+          }}
+          secondaryActions={[
             {
-              content: "Ticket",
+              content: "Cancel",
               onAction: () => {
-                navigate(-1);
+                closeStatusModal();
               },
             },
           ]}
-          fullWidth
         >
-          <div className={styles.fixedICon}>
-            <div className="xs:flex flex-col gap-4 md:hidden">
-              <Button
-                onClick={handleClickForwardAll}
-                icon={<ForwardIcon style={{ fontSize: 18 }} />}
-              ></Button>
-              <Button
-                onClick={handleOpenReply}
-                icon={<FaMailReply style={{ fontSize: 16 }} />}
-              ></Button>
-              {disabled ? null : (
-                <Button
-                  onClick={openStatusModal}
-                  icon={<InfoIcon style={{ fontSize: 16 }} />}
-                ></Button>
-              )}
-              <Button
-                onClick={handleToggleSearch}
-                icon={PriceLookupMinor}
-              ></Button>
-            </div>
-          </div>
-          <Layout>
-            <Layout.Section>
-              <div className={visible ? "d-flex gap-5" : ""}>
-                <LegacyCard sectioned>
-                  <div className={""}>
-                    <div
-                      className={classNames(
-                        styles.wrapSearchToggle,
-                        `${screenType === ScreenType.SM && "hidden"} flex gap-2`
-                      )}
-                    >
-                      <Tooltip content="Forward all" preferredPosition="above">
-                        <Button
-                          onClick={handleClickForwardAll}
-                          icon={<ForwardIcon style={{ fontSize: 18 }} />}
-                        ></Button>
-                      </Tooltip>
-                      <Tooltip content="Search shopify">
-                        <Button
-                          icon={PriceLookupMinor}
-                          onClick={handleToggleSearch}
-                        />
-                      </Tooltip>
-                    </div>
-                    <Form
-                      innerRef={formRef}
-                      initialValues={initialValues}
-                      enableReinitialize
-                      validationSchema={DetailTicketFormSchema}
-                      onSubmit={() => {}}
-                      onValuesChange={handleChangeForm}
-                    >
-                      <div className="flex flex-wrap  md:flex-row-reverse xs:flex-col justify-between overflow-auto">
-                        <div
-                          className={classNames(
-                            styles.borderLeft,
-                            "xs:hidden md:block"
-                          )}
-                        >
-                          <div className="flex flex-col gap-3 w-[280px] px-2">
-                            <FormItem name="status">
-                              {/* <Select
-                                disabled={disabled}
-                                label="Status"
-                                options={statusOptions}
-                              /> */}
-                              <BoxSelectFilter
-                                disabled={disabled}
-                                data={statusOptions}
-                                label="Status"
-                              />
-                            </FormItem>
-
-                            <FormItem name="priority">
-                              <BoxSelectFilter
-                                disabled={disabled}
-                                data={priorityOptions}
-                                label="Priority"
-                              />
-                            </FormItem>
-                            <FormItem name="assignee">
-                              <BoxSelectAssignee
-                                disabled={disabled}
-                                label="Assignee"
-                                placeholder="Search agents"
-                              />
-                            </FormItem>
-                            <FormItem name="tags">
-                              <TagSelect disabled={disabled} />
-                            </FormItem>
-                          </div>
-
-                          <div className="flex justify-end mb-3 mt-3">
-                            <Button
-                              disabled={disabled}
-                              primary
-                              onClick={handleSaveTicket}
-                              // fullWidth
-                            >
-                              Save
-                            </Button>
-                          </div>
-                        </div>
-
-                        <div className="flex-1 px-4">
-                          <CollapseList listChat={listChat} />
-
-                          {formRef.current?.values?.status ===
-                          StatusTicket.RESOLVED ? (
-                            <Button
-                              icon={<BackIcon fontSize={14} />}
-                              onClick={handleReopenTicket}
-                              disabled={false}
-                            >
-                              Reopen
-                            </Button>
-                          ) : (
-                            <div
-                              className={`flex gap-2 mb-4 ${
-                                send ? "hidden" : ""
-                              }`}
-                            >
-                              <Button
-                                icon={<ReplyIcon fontSize={14} />}
-                                onClick={handleOpenReply}
-                              >
-                                Reply
-                              </Button>
-                              {/* <Button
-                                icon={<ForwardIcon fontSize={14} />}
-                                onClick={handleClickForwardAll}
-                              >
-                                Forward all
-                              </Button> */}
-                            </div>
-                          )}
-                          <div className={send ? "" : "hidden"}>
-                            <LegacyCard sectioned>
-                              <div className="mb-5 flex justify-end">
-                                <Tooltip
-                                  content="Close"
-                                  preferredPosition="above"
-                                >
-                                  <Button
-                                    onClick={() => {
-                                      closeSend();
-                                      setIsForward(false);
-                                      updateContent({ content: undefined });
-                                      formRef.current?.setFieldValue(
-                                        "content",
-                                        ""
-                                      );
-                                    }}
-                                    size="large"
-                                    plain
-                                    icon={
-                                      <Icon source={CancelMajor} color="base" />
-                                    }
-                                  />
-                                </Tooltip>
-                              </div>
-                              <div className="w-full flex justify-between gap-2 flex-wrap ">
-                                <div className="flex  flex-col flex-1 ">
-                                  <div className="md:w-[400px] xs:w-[300px]">
-                                    <FormItem name="from">
-                                      <BoxSelectFilter
-                                        label="From"
-                                        data={emailIntegrationOptions}
-                                        disabled={disabled}
-                                      />
-                                    </FormItem>
-                                  </div>
-                                  <div className="md:w-[400px] xs:w-[300px] mt-5 mb-5">
-                                    <FormItem name="to">
-                                      {isForward ? (
-                                        <BoxSelectCustomer
-                                          form={formRef}
-                                          label={
-                                            <div className="flex justify-between md:w-[400px] xs:w-[300px] ">
-                                              <span>To</span>
-                                              <Link
-                                                onClick={() => {
-                                                  setEnableCC(!enableCC);
-                                                }}
-                                              >
-                                                CC/BCC
-                                              </Link>
-                                            </div>
-                                          }
-                                          placeholder="Email"
-                                          data={customersOptions}
-                                          onSearch={(e) => {
-                                            setSearchCustomer(e);
-                                          }}
-                                          loading={isLoadingCustomer}
-                                        />
-                                      ) : (
-                                        <TextField
-                                          label={
-                                            <div className="flex justify-between md:w-[400px] xs:w-[300px] ">
-                                              <span>To</span>
-                                              <span
-                                                className="link  inline-block hover:underline hover:cursor-pointer text-blue-500"
-                                                onClick={() => {
-                                                  setEnableCC(!enableCC);
-                                                }}
-                                              >
-                                                CC/BCC
-                                              </span>
-                                            </div>
-                                          }
-                                          disabled
-                                          autoComplete="off"
-                                        />
-                                      )}
-                                    </FormItem>
-                                  </div>
-                                </div>
-                                <div className="flex  flex-col flex-1">
-                                  {enableCC ? (
-                                    <div
-                                      className={`min-w-[300px] max-w-[400px] md:w-[400px] xs:w-[300px] `}
-                                    >
-                                      <FormItem name="CC">
-                                        <SelectAddEmail
-                                          defaultTag={initialValues.CC}
-                                          disabled={disabled}
-                                          label="CC"
-                                          data={customersOptions}
-                                          onSearch={(e) => {
-                                            setSearchCustomer(e);
-                                          }}
-                                          loading={isLoadingCustomer}
-                                        />
-                                      </FormItem>
-                                    </div>
-                                  ) : (
-                                    <></>
-                                  )}
-                                  {enableCC ? (
-                                    <div
-                                      className={`min-w-[300px] max-w-[400px] md:w-[400px] xs:w-[300px] mt-5 mb-5 min-h-[60px]`}
-                                    >
-                                      <FormItem name="BCC">
-                                        <SelectAddEmail
-                                          defaultTag={initialValues.BCC}
-                                          disabled={disabled}
-                                          label="BCC"
-                                          data={customersOptions}
-                                          onSearch={(e) => {
-                                            setSearchCustomer(e);
-                                          }}
-                                          loading={isLoadingCustomer}
-                                        />
-                                      </FormItem>
-                                    </div>
-                                  ) : (
-                                    <></>
-                                  )}
-                                </div>
-                              </div>
-
-                              <FormItem name="content">
-                                <TextEditorTicket
-                                  files={files}
-                                  setFiles={setFiles}
-                                  formRef={formRef}
-                                  disabled={
-                                    formRef.current?.values.status ===
-                                    StatusTicket.RESOLVED
-                                  }
-                                  setIsChanged={setIsChanged}
-                                  setLoadingButton={setLoadingButton}
-                                  init={{
-                                    menubar: false,
-                                    placeholder:
-                                      "Please input your message here......",
-                                  }}
-                                />
-                              </FormItem>
-
-                              {isForward ? (
-                                <div
-                                  key={
-                                    chatItemForward ? chatItemForward.id : "all"
-                                  }
-                                  className="mt-5"
-                                >
-                                  <UploadForward
-                                    defaultFileList={uniqBy(
-                                      chatItemForward
-                                        ? chatItemForward?.attachments?.map(
-                                            (item) => ({
-                                              uid: item?._id as string,
-                                              name: item?.name as string,
-
-                                              url: item?.attachmentUrl as string,
-                                            })
-                                          )
-                                        : listChat
-                                            .map((item) => item.attachments)
-                                            .flat()
-                                            .map((item) => ({
-                                              uid: item?._id as string,
-                                              name: item?.name as string,
-
-                                              url: item?.attachmentUrl as string,
-                                            })),
-                                      "uid"
-                                    )}
-                                    setFileForward={setFileForward}
-                                  />
-                                </div>
-                              ) : (
-                                <></>
-                              )}
-                              <div className="flex justify-end mt-5">
-                                {formRef.current?.values.status ===
-                                StatusTicket.RESOLVED ? (
-                                  <>
-                                    <Button
-                                      icon={<BackIcon fontSize={14} />}
-                                      onClick={handleReopenTicket}
-                                      disabled={false}
-                                    >
-                                      Reopen
-                                    </Button>
-                                  </>
-                                ) : (
-                                  <div className="flex items-center gap-2">
-                                    <Button
-                                      disabled={!isChanged || loadingButton}
-                                      onClick={() => {
-                                        if (formRef.current?.isValid) {
-                                          handleCloseTicket();
-                                        }
-                                      }}
-                                    >
-                                      Send & Close Ticket
-                                    </Button>
-                                    <Button
-                                      primary
-                                      onClick={() => {
-                                        if (!formRef.current?.isValid) {
-                                          return;
-                                        }
-                                        onFinish(formRef.current?.values);
-                                      }}
-                                      disabled={!isChanged || loadingButton}
-                                    >
-                                      Send
-                                    </Button>
-                                  </div>
-                                )}
-                              </div>
-                            </LegacyCard>
-                          </div>
-                        </div>
-                      </div>
-                    </Form>
-                  </div>
-                </LegacyCard>
-                <div className={visible ? styles.wrapSearch : "d-none"}>
-                  <ContentShopifySearch />
-                </div>
-              </div>
-              <Modal
-                open={statusModal}
-                onClose={closeStatusModal}
-                title=""
-                primaryAction={{
-                  content: "Save",
-                  onAction: () => {
-                    handleSaveTicket(true);
-                  },
-                }}
-                secondaryActions={[
-                  {
-                    content: "Cancel",
-                    onAction: () => {
-                      closeStatusModal();
-                    },
-                  },
-                ]}
+          <Modal.Section>
+            <TextContainer>
+              <Form
+                initialValues={initialValues}
+                ref={formRef}
+                enableReinitialize
+                onSubmit={() => {}}
               >
-                <Modal.Section>
-                  <TextContainer>
-                    <Form
-                      initialValues={initialValues}
-                      ref={formRef}
-                      enableReinitialize
-                      onSubmit={() => {}}
-                    >
-                      <FormLayout>
-                        <FormItem name="status">
-                          <Select label="Status" options={statusOptions} />
-                        </FormItem>
+                <FormLayout>
+                  <FormItem name="status">
+                    <Select label="Status" options={statusOptions} />
+                  </FormItem>
 
-                        <FormItem name="priority">
-                          <Select label="Priority" options={priorityOptions} />
-                        </FormItem>
-                        <FormItem name="assignee">
-                          <BoxSelectAssignee
-                            label="Assignee"
-                            placeholder="Search agents"
-                          />
-                        </FormItem>
-                        <FormItem name="tags">
-                          <TagSelect />
-                        </FormItem>
-                      </FormLayout>
-                    </Form>
-                  </TextContainer>
-                </Modal.Section>
-              </Modal>
-            </Layout.Section>
-          </Layout>
-        </Page>
-      )}
+                  <FormItem name="priority">
+                    <Select label="Priority" options={priorityOptions} />
+                  </FormItem>
+                  <FormItem name="assignee">
+                    <BoxSelectAssignee
+                      label="Assignee"
+                      placeholder="Search agents"
+                    />
+                  </FormItem>
+                  <FormItem name="tags">
+                    <TagSelect />
+                  </FormItem>
+                </FormLayout>
+              </Form>
+            </TextContainer>
+          </Modal.Section>
+        </Modal>
+      </Page>
       <div ref={endPageRef}></div>
     </div>
   );

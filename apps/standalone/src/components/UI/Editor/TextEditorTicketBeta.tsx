@@ -210,7 +210,7 @@ const TextEditorTicketBeta = ({
 
   const ListFileRow = useMemo(() => {
     return (
-      <div className="flex  justify-start flex-row items-center gap-2 px-2 w-full flex-wrap file-row-attach">
+      <div className="flex max-h-[130px] overflow-auto  justify-start flex-row items-center gap-2 px-2 w-full flex-wrap file-row-attach">
         {myFiles.map((item: any, index: number) => {
           return (
             <div className="item-file flex gap-3" key={item.path}>

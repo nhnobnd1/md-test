@@ -1,6 +1,7 @@
-import { Button, Divider } from "@shopify/polaris";
-import { FC, useState } from "react";
-import { CollapseItem } from "src/modules/ticket/components/CollapseList/CollapseItem";
+import { MediaScreen } from "@moose-desk/core";
+import { FC } from "react";
+import useScreenType from "src/hooks/useScreenType";
+import { RowMessage } from "src/modules/ticket/components/RowMessage";
 import { ChatItem } from "src/modules/ticket/pages/DetailTicket";
 
 interface CollapseListProps {
@@ -8,53 +9,18 @@ interface CollapseListProps {
 }
 
 export const CollapseList: FC<CollapseListProps> = ({ listChat }) => {
-  const [showMiddleItems, setShowMiddleItems] = useState(false);
-  const handleShowMiddleItems = () => {
-    setShowMiddleItems(!showMiddleItems);
-  };
+  const [screenType, screenWidth] = useScreenType();
 
-  return listChat.length > 4 ? (
-    <>
-      {listChat.slice(0, 2).map((item: ChatItem) => (
-        <CollapseItem key={item.id} item={item} />
-      ))}
-      {!showMiddleItems && (
-        <div className="mb-2 flex  items-center w-full ">
-          <div
-            onClick={handleShowMiddleItems}
-            className="w-[40px] h-[36px] rounded-3xl flex justify-center items-center  hover:cursor-pointer text-white overflow-hidden"
-          >
-            <Button primary>{listChat.length - 4 + ""}</Button>
-          </div>
-          <div className="w-full overflow-hidden">
-            <div className="m-2">
-              <Divider />
-            </div>
-            <div className="m-2">
-              <Divider />
-            </div>
-          </div>
-        </div>
-      )}
-      {showMiddleItems &&
-        listChat
-          .slice(2, listChat.length - 2)
-          .map((item: ChatItem) => <CollapseItem key={item.id} item={item} />)}
-      {listChat
-        .slice(listChat.length - 2, listChat.length)
-        .map((item: ChatItem) => (
-          <CollapseItem key={item.id} item={item} status={true} />
-        ))}
-    </>
-  ) : (
-    listChat.map((item: ChatItem, index: number, array: ChatItem[]) => {
-      return (
-        <CollapseItem
-          key={item.id}
-          item={item}
-          status={array.length - 3 < index}
-        />
-      );
-    })
-  );
+  const isTablet = Boolean(screenWidth <= MediaScreen.XXL);
+
+  return listChat.map((item: ChatItem, index: number) => (
+    <div
+      key={item.id}
+      className={`flex justify-${
+        item.right ? (isTablet ? "start" : "end") : "start"
+      }`}
+    >
+      <RowMessage key={item.id} item={item} type={listChat[0]?.typeChat} />
+    </div>
+  ));
 };

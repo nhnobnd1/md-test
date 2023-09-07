@@ -2,7 +2,6 @@ import {
   createdDatetimeFormat,
   createdDatetimeFormatDefault,
   emailRegex,
-  MediaScreen,
   useJob,
   useLoading,
   useNavigate,
@@ -17,11 +16,11 @@ import {
   CreateReplyTicketRequest,
   Customer,
   Priority,
-  priorityOptions,
-  statusOptions,
   StatusTicket,
   TicketRepository,
   UpdateTicket,
+  priorityOptions,
+  statusOptions,
 } from "@moose-desk/repo";
 import { Button, Card, Select, Tooltip, Upload } from "antd";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -44,7 +43,6 @@ import MDSkeleton from "src/components/UI/Skeleton/MDSkeleton";
 import useDeepEffect from "src/hooks/useDeepEffect";
 import useMessage from "src/hooks/useMessage";
 import { useSubdomain } from "src/hooks/useSubdomain";
-import useViewport from "src/hooks/useViewport";
 import { CollapseMessageBeta } from "src/modules/ticket/components/DetailTicketForm/CollapseMessageBeta";
 import ResultShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ResultShopifySearch";
 import { AgentSelect } from "src/modules/ticket/components/TicketForm/AgentSelect";
@@ -63,8 +61,10 @@ import {
 import useFormCreateTicket from "src/modules/ticket/store/useFormCreateTicket";
 import useForwardTicket from "src/modules/ticket/store/useForwardTicket";
 import { trimHtmlCssJs, wrapImageWithAnchorTag } from "src/utils/localValue";
+import ForwardIcon from "~icons/ion/forward";
 import DownIcon from "~icons/material-symbols/arrow-downward";
 import BackIcon from "~icons/mingcute/back-2-fill";
+
 import "./BoxReplyBeta.scss";
 interface ValueForm {
   status: StatusTicket;
@@ -150,7 +150,6 @@ const DetailTicketFormBeta = () => {
     data: dataConversations,
     isLoading: isLoadingConversation,
     isFetching: isFetchConversation,
-    refetch: refetchConversation,
   } = useQuery({
     queryKey: ["getListConversation", id],
     queryFn: () => getListConversation(id as string),
@@ -180,7 +179,6 @@ const DetailTicketFormBeta = () => {
   }, []);
 
   const containerRef = useBottomScrollListener(handleContainerOnBottom, {});
-  const { isMobile: isTablet } = useViewport(MediaScreen.LG);
   const contentCreate = useFormCreateTicket((state) => state.content);
   const chatItemForward = useForwardTicket((state) => state.chatItem);
   const clickForward = useForwardTicket((state) => state.clickForward);
@@ -353,7 +351,7 @@ const DetailTicketFormBeta = () => {
     if (conversationList.length === 0) {
       return {
         status: ticket?.status,
-        assignee: ticket?.agentObjectId ? `${ticket?.agentEmail}` : null,
+        assignee: ticket?.agentObjectId ? `- ${ticket?.agentEmail}` : null,
         priority: ticket?.priority,
         to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
         tags: ticket?.tags,
@@ -372,7 +370,7 @@ const DetailTicketFormBeta = () => {
     } else {
       return {
         status: ticket?.status,
-        assignee: ticket?.agentObjectId ? `${ticket?.agentEmail}` : null,
+        assignee: ticket?.agentObjectId ? `- ${ticket?.agentEmail}` : null,
         priority: ticket?.priority,
         to: condition ? ticket.fromEmail.email : ticket?.toEmails[0].email,
         tags: ticket?.tags,
@@ -499,8 +497,8 @@ const DetailTicketFormBeta = () => {
       priority: values.priority,
       status: values.status,
       tags: values.tags,
-      agentObjectId: agentSelected ? agentSelected?._id : undefined,
-      agentEmail: agentSelected ? agentSelected?.email : undefined,
+      agentObjectId: agentSelected ? agentSelected?._id : "",
+      agentEmail: agentSelected ? agentSelected?.email : "",
       ids: [ticket?._id as string],
     });
     setFiles([]);
@@ -685,23 +683,11 @@ Hit Send to see what your message will look like
       `
     );
   };
-  const handleReply = () => {
-    form.resetFields();
-    setFiles([]);
-    setFileForward([]);
-    setIsForward(false);
-  };
 
   return (
     <>
       <div className="wrapContainer">
-        <Header
-          // backAction={() => {
-          //   navigate(TicketRoutePaths.Index);
-          // }}
-          back
-          className="mb-2"
-        >
+        <Header back className="mb-2">
           <div className="flex justify-between w-full items-center gap-2">
             {processing ? (
               <div className="">
@@ -713,28 +699,16 @@ Hit Send to see what your message will look like
                   {` Ticket ${ticket?.ticketId}: ${ticket?.subject}`}
                 </h1>
                 <div className="flex justify-end items-center ">
-                  {/* <Tag color="red">{listChat[0]?.typeChat}</Tag> */}
                   <Tooltip title="Forward all">
                     <MDButton
                       onClick={handleClickForwardAll}
-                      // icon={}
+                      icon={<ForwardIcon style={{ fontSize: 18 }} />}
                       className="flex gap-2 items-center"
-                    >
-                      Forward all
-                    </MDButton>
+                    ></MDButton>
                   </Tooltip>
                 </div>
               </div>
             )}
-            <div className="flex gap-2 ">
-              {/* <Tooltip title="Status">
-                <Button
-                  className={isTablet ? "flex" : "hidden"}
-                  onClick={() => openStatusModal()}
-                  icon={<Icon name="statusTicket" />}
-                />
-              </Tooltip> */}
-            </div>
           </div>
         </Header>
         <Form
@@ -1056,7 +1030,7 @@ Hit Send to see what your message will look like
                         menubar: false,
                         placeholder: "Please input your message here......",
                         plugins: "autoresize",
-                        max_height: 500,
+                        max_height: 400,
                       }}
                       listFileAttach={
                         isForward ? (

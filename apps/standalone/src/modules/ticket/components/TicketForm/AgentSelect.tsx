@@ -72,6 +72,7 @@ export const AgentSelect: FC<SelectListProps> = ({
     <SelectList
       onSearch={(value) => {
         if (!value) {
+          setAgentSelected(undefined);
           setSearch(value);
           return;
         }
@@ -91,6 +92,7 @@ export const AgentSelect: FC<SelectListProps> = ({
       }}
       onClear={() => {
         setSearch("");
+        setAgentSelected(undefined);
       }}
       placeholder="Search agents"
       options={agentsOptions}

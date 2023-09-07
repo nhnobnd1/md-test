@@ -355,6 +355,8 @@ select {
   border-top: none;
   background-color: white;
   padding: 0px 12px;
+  max-height: 70px;
+  overflow: auto;
 }
 .form-ticket {
   height: calc(100vh - 64px - 48px);

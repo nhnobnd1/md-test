@@ -261,6 +261,8 @@ body {
   border-top: none;
   background-color: white;
   padding: 0px 12px;
+  max-height: 70px;
+  overflow: auto;
 }
 .file-row-attach {
   border: 1px solid #aeb4b8;
@@ -282,4 +284,7 @@ body {
 
 .form-ticket {
   height: calc(100vh - 56px - 76px);
+  form {
+    width: 100% !important;
+  }
 }
