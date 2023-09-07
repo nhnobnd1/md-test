@@ -90,25 +90,25 @@ export default function CustomerIndexPage() {
   const rowMarkup = convertCustomerData?.data?.map(
     (records: any, index: number) => (
       <IndexTable.Row id={records?._id} key={records?._id} position={index}>
-        <IndexTable.Cell className={classNames("py-3", styles.honorific)}>
+        <IndexTable.Cell className={classNames(styles.honorific)}>
           {records?.honorific || ""}
         </IndexTable.Cell>
-        <IndexTable.Cell className="py-3">
+        <IndexTable.Cell>
           <Link
             monochrome
             onClick={() => handleRedirectCustomerDetail(records)}
             removeUnderline
           >
             <Text variant="bodyMd" fontWeight="bold" as="span">
-              {`${records?.firstName} ${records?.lastName}`}
+              <span className="subject max-w-lg truncate">{`${records?.firstName} ${records?.lastName}`}</span>
             </Text>
           </Link>
         </IndexTable.Cell>
-        <IndexTable.Cell className="py-3">{records?.email}</IndexTable.Cell>
-        <IndexTable.Cell className="py-3">
-          {records?.ticketsCount}
+        <IndexTable.Cell>
+          <span className="subject max-w-lg truncate">{records?.email}</span>
         </IndexTable.Cell>
-        <IndexTable.Cell className="py-3">
+        <IndexTable.Cell>{records?.ticketsCount}</IndexTable.Cell>
+        <IndexTable.Cell>
           <ButtonGroup>
             <div className="flex gap-2">
               <ButtonEdit
@@ -253,6 +253,7 @@ export default function CustomerIndexPage() {
               onSort={handleSort}
               sortable={[true, true, true, true, false]}
               loading={loadingCustomer}
+              lastColumnSticky
               emptyState={
                 <EmptySearchResult
                   title={
