@@ -188,7 +188,7 @@ const Tickets: PageComponent<TicketIndexPageProps> = ({
   );
   return (
     <LegacyCard>
-      {loadingFilter && <Loading />}
+      {(loadingFilter || !filterData.agentObjectId) && <Loading />}
       <>
         <IndexTable
           resourceName={{ singular: "ticket", plural: "tickets" }}
