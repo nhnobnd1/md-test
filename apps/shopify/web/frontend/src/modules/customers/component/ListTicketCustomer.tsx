@@ -128,7 +128,7 @@ export const ListTicketCustomer = memo(({ customerId }: IProps) => {
           {isLoading ? (
             <SkeletonBodyText lines={1} />
           ) : (
-            <div onClick={() => handleClickRow(_id)}>
+            <div>
               <Badge status={priorityToTagShopify(status)}>
                 {upperCaseFirst(status)}
               </Badge>
@@ -152,7 +152,7 @@ export const ListTicketCustomer = memo(({ customerId }: IProps) => {
           {isLoading ? (
             <SkeletonBodyText lines={1} />
           ) : (
-            <div onClick={() => handleClickRow(_id)}>
+            <div>
               {!!timezone &&
                 dayjs
                   .utc(createdDatetime)
@@ -165,7 +165,7 @@ export const ListTicketCustomer = memo(({ customerId }: IProps) => {
           {isLoading ? (
             <SkeletonBodyText lines={1} />
           ) : (
-            <div onClick={() => handleClickRow(_id)}>
+            <div>
               {dayjs
                 .utc(updatedDatetime ?? createdDatetime)
                 .tz(timezone ?? "America/New_York")
@@ -177,7 +177,7 @@ export const ListTicketCustomer = memo(({ customerId }: IProps) => {
           {isLoading ? (
             <SkeletonBodyText lines={1} />
           ) : (
-            <div onClick={() => handleClickRow(_id)}>
+            <div>
               <Badge status={priorityToTagShopify(priority)}>
                 {upperCaseFirst(priority)}
               </Badge>
@@ -185,11 +185,7 @@ export const ListTicketCustomer = memo(({ customerId }: IProps) => {
           )}
         </IndexTable.Cell>
         <IndexTable.Cell>
-          {isLoading ? (
-            <SkeletonBodyText lines={1} />
-          ) : (
-            <div onClick={() => handleClickRow(_id)}>{agentEmail}</div>
-          )}
+          {isLoading ? <SkeletonBodyText lines={1} /> : <div>{agentEmail}</div>}
         </IndexTable.Cell>
       </IndexTable.Row>
     )

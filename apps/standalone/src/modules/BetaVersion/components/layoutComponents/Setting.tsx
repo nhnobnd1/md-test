@@ -1,7 +1,7 @@
 import { Tickets } from "@moose-beta/components/layoutComponents/component/Tickets";
 import { ListTicketCustomer } from "@moose-beta/customerBeta/components/CustomerTicket/ListTicketCustomer";
 import { Security } from "@moose-beta/profile/components/Security";
-import { useNavigate, useSearchParams } from "@moose-desk/core";
+import { useSearchParams } from "@moose-desk/core";
 import { Tabs, TabsProps } from "antd";
 import React from "react";
 import { Header } from "src/components/UI/Header";
@@ -21,24 +21,8 @@ interface IProps {
   loading?: boolean;
 }
 const Setting = ({ layout, basicInformation, loading = false }: IProps) => {
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const currentTab = searchParams.get("tab");
-  const onChange = (key: string) => {
-    // if (layout === "profile") navigate(`/setting-account?tab=${key}`);
-  };
-  // const items: TabsProps["items"] = [
-  //   {
-  //     key: "ticket",
-  //     label: "Tickets",
-  //     children:
-  //       layout === "customer" ? (
-  //         <ListTicketCustomer />
-  //       ) : (
-  //         <Tickets email={basicInformation.email} />
-  //       ),
-  //   },
-  // ];
   const items: TabsProps["items"] = [
     {
       key: layout === "profile" ? "settings" : "ticket",
@@ -53,9 +37,6 @@ const Setting = ({ layout, basicInformation, loading = false }: IProps) => {
         ),
     },
   ];
-  // const handleRedirectCreateTicket = () => {
-  //   if (layout === "profile") navigate("/ticket/new");
-  // };
   const renderName = () => {
     if (basicInformation.firstName || basicInformation.lastName) {
       return `${basicInformation.firstName} ${basicInformation.lastName}`;
@@ -66,7 +47,7 @@ const Setting = ({ layout, basicInformation, loading = false }: IProps) => {
     <div>
       <div className={styles.myProfile} id="md_my_profile">
         <div className={styles.profile}>
-          <Header back />
+          {layout !== "profile" && <Header back />}
           <MDAvatar
             firstName={basicInformation.firstName}
             lastName={basicInformation.lastName}
@@ -79,31 +60,8 @@ const Setting = ({ layout, basicInformation, loading = false }: IProps) => {
             {loading ? <MDSkeleton lines={1} width={100} /> : renderName()}
           </div>
         </div>
-        {/* {layout === "profile" && (
-          <div className={styles.buttonCreate}>
-            <ButtonAdd type="primary" onClick={handleRedirectCreateTicket}>
-              New Ticket
-            </ButtonAdd>
-          </div>
-        )} */}
       </div>
-      <Tabs
-        activeKey={currentTab || "ticket"}
-        // items={[
-        //   ...items,
-        //   ...(layout === "profile"
-        //     ? [
-        //         {
-        //           key: "setting",
-        //           label: "Security Settings",
-        //           children: <Security />,
-        //         },
-        //       ]
-        //     : []),
-        // ]}
-        items={items}
-        onChange={onChange}
-      />
+      <Tabs activeKey={currentTab || "ticket"} items={items} />
     </div>
   );
 };

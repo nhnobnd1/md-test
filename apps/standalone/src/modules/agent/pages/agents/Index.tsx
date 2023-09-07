@@ -150,12 +150,31 @@ const AgentsIndex = () => {
         record={data}
         edit={!isView}
         onlyIcon
-        onEdit={() => navigate(`/agent-beta?agent=${data?._id}`)}
+        onEdit={() => navigate(`/agents?agent=${data?._id}`)}
         view={isView}
-        onView={() => navigate(`/agent-beta?agent=${data?._id}`)}
+        onView={() => navigate(`/agents?agent=${data?._id}`)}
       />
     );
   };
+  // const renderBetaAction = (data: Agent) => {
+  //   if (
+  //     hiddenEditAgent(
+  //       isOwner,
+  //       userId === data?._id,
+  //       data?.isOwner,
+  //       isAdmin,
+  //       isLead,
+  //       isAgent,
+  //       data?.role
+  //     )
+  //   )
+  //     return null;
+  //   return (
+  //     <Link to={`/agents?agent=${data?._id}`}>
+  //       Detail<span className="md-beta-tag">Beta</span>
+  //     </Link>
+  //   );
+  // };
   return (
     <div>
       <PopupAgent
@@ -207,7 +226,7 @@ const AgentsIndex = () => {
                 <span
                   className={`cursor-pointer hover:underline hover:text-blue-500`}
                   onClick={() => {
-                    navigate(`/agent-beta?agent=${record?._id}`);
+                    navigate(`/agents?agent=${record?._id}`);
                   }}
                 >
                   {record.lastName === "admin"
