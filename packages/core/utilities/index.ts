@@ -61,7 +61,7 @@ export function typeChannelTicket(isCreatedByWidget: boolean) {
 
 export function convertSecondsToMinutesAndSeconds(seconds: number) {
   if (seconds < 60) {
-    return "00:" + seconds;
+    return "00:" + (seconds < 10 ? "0" + seconds : seconds);
   } else {
     var minutes = Math.floor(seconds / 60);
     var remainingSeconds = seconds % 60;
