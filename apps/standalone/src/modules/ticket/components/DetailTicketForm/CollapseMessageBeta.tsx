@@ -10,7 +10,7 @@ interface CollapseMessageProps {
 }
 
 export const CollapseMessageBeta: FC<CollapseMessageProps> = ({ listChat }) => {
-  const { isMobile: isTablet } = useViewport(MediaScreen.LG);
+  const { isMobile: isTablet } = useViewport(MediaScreen.XXL);
 
   return listChat.map((item: ChatItem, index: number) => (
     <div

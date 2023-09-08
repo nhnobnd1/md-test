@@ -132,6 +132,9 @@ const DetailTicketFormBeta = () => {
     queryKey: ["getTicket", id],
     queryFn: () => getOneTicket(id as string),
     retry: 1,
+    onSuccess: (data) => {
+      setAgentSelected({ _id: data?.agentObjectId, email: data?.agentEmail });
+    },
 
     onError: () => {
       navigate("/dashboard");
@@ -183,7 +186,7 @@ const DetailTicketFormBeta = () => {
   const chatItemForward = useForwardTicket((state) => state.chatItem);
   const clickForward = useForwardTicket((state) => state.clickForward);
   const updateChatItem = useForwardTicket((state) => state.updateChatItem);
-  const [agentSelected, setAgentSelected] = useState<Agent | undefined>();
+  const [agentSelected, setAgentSelected] = useState<Agent | undefined | any>();
   const [isChanged, setIsChanged] = useState(false);
   const { data: dataPrimaryEmail } = useQuery({
     queryKey: ["emailIntegrationApi", id],
@@ -426,7 +429,14 @@ const DetailTicketFormBeta = () => {
             stopLoading();
             message.success(t("messages:success.update_ticket"));
             queryClient.invalidateQueries("getStatisticTicket");
-            queryClient.invalidateQueries(["getTicket", id]);
+            queryClient.setQueryData(["getTicket", id], (prev: any) => {
+              return {
+                ...prev,
+                ...data.data,
+              };
+            });
+
+            // queryClient.invalidateQueries(["getTicket", id]);
           }
         }),
         catchError((err) => {
@@ -730,7 +740,7 @@ Hit Send to see what your message will look like
           className="flex form-ticket-detail"
         >
           <div
-            className="flex-1 h-full w-full  "
+            className="flex-1 h-full  w-[100px] "
             style={{
               height: "100%",
               display: "flex",
@@ -746,7 +756,7 @@ Hit Send to see what your message will look like
               }}
               className=" h-full  overflow-auto box-chat bg-white p-4"
             >
-              <div className="relative ">
+              <div className="overflow-y-auto ">
                 {!isFetchConversation ? (
                   <>
                     <CollapseMessageBeta listChat={listChat} />
