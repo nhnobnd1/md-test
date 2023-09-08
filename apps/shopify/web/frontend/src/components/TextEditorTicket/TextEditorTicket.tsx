@@ -434,34 +434,36 @@ export const TextEditorTicket = ({
             ></Button>
           </Tooltip>
         )}
-        <Button
-          onClick={() => {
-            const editorElement = document.querySelector(
-              "div.tox.tox-tinymce.tox-tinymce--toolbar-bottom"
-            );
+        <Tooltip content="zoom">
+          <Button
+            onClick={() => {
+              const editorElement = document.querySelector(
+                "div.tox.tox-tinymce.tox-tinymce--toolbar-bottom"
+              );
 
-            if (editorElement) {
-              if (isZoomIn) {
-                editorElement.classList.add("editor-small");
-                editorElement.classList.remove("editor-large");
-              } else {
-                editorElement.classList.remove("editor-small");
-                editorElement.classList.add("editor-large");
+              if (editorElement) {
+                if (isZoomIn) {
+                  editorElement.classList.add("editor-small");
+                  editorElement.classList.remove("editor-large");
+                } else {
+                  editorElement.classList.remove("editor-small");
+                  editorElement.classList.add("editor-large");
+                }
               }
-            }
 
-            setIsZoomIn(!isZoomIn);
-          }}
-          plain
-          monochrome
-          icon={
-            isZoomIn ? (
-              <ZoomInIcon fontSize={16} />
-            ) : (
-              <ZoomOutIcon fontSize={16} />
-            )
-          }
-        ></Button>
+              setIsZoomIn(!isZoomIn);
+            }}
+            plain
+            monochrome
+            icon={
+              isZoomIn ? (
+                <ZoomInIcon fontSize={16} />
+              ) : (
+                <ZoomOutIcon fontSize={16} />
+              )
+            }
+          ></Button>
+        </Tooltip>
       </div>
       {error ? (
         <div className="mt-1">

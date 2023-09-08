@@ -339,9 +339,12 @@ const DetailTicket = () => {
               show(t("messages:success.update_ticket"));
               ratingState.changeFetchStatistic(false);
               queryClient.invalidateQueries("getStatisticTicket");
-              queryClient.invalidateQueries(["getTicket", id]);
-
-              // queryClient.setQueryData(["getTicket", id], data.data);
+              queryClient.setQueryData(["getTicket", id], (prev: any) => {
+                return {
+                  ...prev,
+                  ...data.data,
+                };
+              });
             }
           }),
           catchError((err) => {
