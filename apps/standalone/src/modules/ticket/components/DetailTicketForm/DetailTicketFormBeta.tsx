@@ -123,10 +123,11 @@ const DetailTicketFormBeta = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  // const { state: send, on: openSend, off: closeSend } = useToggle(false);
   const [isForward, setIsForward] = useState(false);
   const [enableCC, setEnableCC] = useState(false);
   const [toEmail, setToEmail] = useState("");
+
+  const debounceToEmail: string = useDebounce(toEmail, 200);
 
   const { data: dataTicket, isLoading: processing } = useQuery({
     queryKey: ["getTicket", id],
@@ -395,6 +396,7 @@ const DetailTicketFormBeta = () => {
       };
     }
   }, [ticket, primaryEmail, conversationList, dataEmailIntegration]);
+
   const { run: postReplyApi } = useJob((payload: CreateReplyTicketRequest) => {
     return TicketRepository()
       .postReply(payload)
@@ -451,7 +453,11 @@ const DetailTicketFormBeta = () => {
   const handleChangeForm = useCallback((changedValue) => {
     if (changedValue.status) return;
     if (changedValue.to) {
-      setToEmail(changedValue.to);
+      const regexEmail = emailRegex.test(changedValue.to);
+
+      if (regexEmail) {
+        setToEmail(changedValue.to);
+      }
     }
     if (changedValue.content) {
       const contentSplit = changedValue.content.split("- - - - - - -");
@@ -1118,7 +1124,7 @@ Hit Send to see what your message will look like
             )}
           </div>
           <Card
-            className="max-w-[350px] xs:hidden lg:block h-full scroll-y"
+            className="max-w-[320px] xs:hidden lg:block h-full scroll-y"
             bodyStyle={{
               padding: 16,
             }}
@@ -1201,7 +1207,7 @@ Hit Send to see what your message will look like
             </div>
             <div>
               <ResultShopifySearch
-                email={toEmail || form.getFieldValue("to")}
+                email={debounceToEmail || initialValues.to}
                 id={getCustomerId()}
               />
             </div>

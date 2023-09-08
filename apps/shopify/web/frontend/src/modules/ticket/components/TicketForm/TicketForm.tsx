@@ -10,8 +10,8 @@ import {
   AgentRepository,
   Customer,
   EmailIntegration,
-  priorityOptions,
   TicketRepository,
+  priorityOptions,
 } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import { Button, Divider, TextField } from "@shopify/polaris";
@@ -55,6 +55,9 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
   const { state: visible, on: openPopup, off: closePopup } = useToggle();
 
   const [toEmail, setToEmail] = useState("");
+  const debounceToEmail: string = useDebounce(toEmail, 200);
+  const [isChanged, setIsChanged] = useState(false);
+
   const [files, setFiles] = useState<any>([]);
   const [loadingButton, setLoadingButton] = useState(false);
   const selectedFrom = useSelectFrom((state) => state.selected);
@@ -353,9 +356,12 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
     closePopup();
   };
 
-  const handleChangeForm = useCallback((changedValue) => {
+  const handleChangeForm = useCallback((changedValue, options: any) => {
     if (changedValue?.to) {
-      setToEmail(changedValue?.to);
+      const regexEmail = emailRegex.test(changedValue.to);
+      if (regexEmail) {
+        setToEmail(changedValue.to);
+      }
     }
     if (changedValue.content) {
       const contentSplit = changedValue.content.split("- - - - - - -");
@@ -417,7 +423,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
     >
       <style scoped>{css}</style>
       <div className="flex h-full">
-        <div className="w-full flex-1 pr-4 pl-1 flex flex-col h-full min-w-[350px] justify-between py-1 overflow-y-auto">
+        <div className="w-full flex-1 pr-4 pl-1 flex flex-col h-full min-w-[320px] justify-between py-1 overflow-y-auto">
           <div className="mb-3 mt-1">
             <FormItem name="subject">
               <TextField label="" autoComplete="off" placeholder="Subject" />
@@ -505,6 +511,7 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
               <FormItem name="content">
                 <TextEditorTicket
                   files={files}
+                  setIsChanged={setIsChanged}
                   setFiles={setFiles}
                   formRef={props.innerRef}
                   setLoadingButton={setLoadingButton}
@@ -527,13 +534,18 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
               >
                 Cancel
               </Button>
-              <Button primary loading={loadingButton} submit>
+              <Button
+                primary
+                loading={loadingButton}
+                submit
+                disabled={!isChanged}
+              >
                 Send
               </Button>
             </div>
           </div>
         </div>
-        <div className="w-[350px] overflow-auto pl-4 h-full md-border-left pr-1 pt-1 md-form-label">
+        <div className="w-[320px] overflow-auto pl-4 h-full md-border-left pr-1 pt-1 md-form-label">
           <div className="">
             <FormItem name="assignee">
               <BoxSelectAssignee label="Assignee" placeholder="Search agents" />
@@ -553,16 +565,8 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
           <div className="my-4">
             <Divider />
           </div>
-          {/* {isMobile ? (
-            <DrawerShopifySearch
-              visible={visible}
-              onClose={() => setVisible(false)}
-            />
-          ) : ( */}
 
-          <ResultShopifySearch email={toEmail} id={getCustomerId()} />
-
-          {/* )} */}
+          <ResultShopifySearch email={debounceToEmail} id={getCustomerId()} />
         </div>
       </div>
       <CustomModal

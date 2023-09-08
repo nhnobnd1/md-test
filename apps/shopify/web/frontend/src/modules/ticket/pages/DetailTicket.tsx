@@ -12,13 +12,14 @@ import {
   AttachFile,
   Conversation,
   CreateReplyTicketRequest,
+  Customer,
   Priority,
-  priorityOptions,
   ScreenType,
-  statusOptions,
   StatusTicket,
   TicketRepository,
   UpdateTicket,
+  priorityOptions,
+  statusOptions,
 } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
@@ -247,7 +248,8 @@ const DetailTicket = () => {
   const clickForward = useForwardTicket((state) => state.clickForward);
   const updateChatItem = useForwardTicket((state) => state.updateChatItem);
   const [fileForward, setFileForward] = useState<any>([]);
-
+  const [toEmail, setToEmail] = useState("");
+  const debounceToEmail: string = useDebounce(toEmail, 200);
   const { subDomain } = useSubdomain();
   const { timezone }: any = useGlobalData(false, subDomain || "");
   const listChat = useMemo<ChatItem[]>(() => {
@@ -308,7 +310,6 @@ const DetailTicket = () => {
     }
     return conversationMapping;
   }, [ticket, conversationList, timezone, customer]);
-  console.log(listChat, "listChat<<<<<");
   const { run: postReplyApi } = useJob((payload: CreateReplyTicketRequest) => {
     return TicketRepository()
       .postReply(payload)
@@ -638,6 +639,13 @@ const DetailTicket = () => {
   };
 
   const handleChangeForm = useCallback((changedValue) => {
+    if (changedValue.to) {
+      const regexEmail = emailRegex.test(changedValue.to);
+
+      if (regexEmail) {
+        setToEmail(changedValue.to);
+      }
+    }
     if (changedValue.content) {
       const contentSplit = changedValue.content.split("- - - - - - -");
       updateContent({ content: contentSplit[0] });
@@ -770,14 +778,14 @@ Hit Send to see what your message will look like
         : contentCreate
     );
   }, [selectedFrom, emailIntegrationOptions, isForward]);
-  // const getCustomerId = useCallback(() => {
-  //   const email = toEmail;
-  //   if (!email) return "";
-  //   const customerSelected: Customer | undefined = dataCustomers?.find(
-  //     (customer: Customer) => customer.email === email
-  //   );
-  //   return customerSelected?._id || "";
-  // }, [toEmail, dataCustomers]);
+  const getCustomerId = useCallback(() => {
+    const email = toEmail;
+    if (!email) return "";
+    const customerSelected: Customer | undefined = dataCustomers?.find(
+      (customer: Customer) => customer.email === email
+    );
+    return customerSelected?._id || "";
+  }, [toEmail, dataCustomers]);
   return (
     <div className="relative h-full">
       <Page
@@ -829,12 +837,19 @@ Hit Send to see what your message will look like
                   )}
                 >
                   {!isFetchConversation ? (
-                    <div className="flex flex-col gap-3  px-2">
+                    <div className="flex flex-col gap-3  px-2 md-form-label">
                       <FormItem name="status">
                         <BoxSelectFilter
                           disabled={disabled}
                           data={statusOptions}
                           label="Status"
+                        />
+                      </FormItem>
+                      <FormItem name="assignee">
+                        <BoxSelectAssignee
+                          disabled={disabled}
+                          label="Assignee"
+                          placeholder="Search agents"
                         />
                       </FormItem>
 
@@ -845,13 +860,7 @@ Hit Send to see what your message will look like
                           label="Priority"
                         />
                       </FormItem>
-                      <FormItem name="assignee">
-                        <BoxSelectAssignee
-                          disabled={disabled}
-                          label="Assignee"
-                          placeholder="Search agents"
-                        />
-                      </FormItem>
+
                       <FormItem name="tags">
                         <TagSelect disabled={disabled} />
                       </FormItem>
@@ -870,8 +879,8 @@ Hit Send to see what your message will look like
                     </Button>
                   </div>
                   <ResultShopifySearch
-                    email={"vuong.cu@moosedesk.com"}
-                    id={"6905378079013"}
+                    email={debounceToEmail}
+                    id={getCustomerId()}
                   />
                 </div>
                 <div className="flex-1 px-4 overflow-auto h-full flex gap-2 flex-col justify-between py-1 ">
