@@ -2,7 +2,7 @@
 
 name = "MooseDesk Local"
 client_id = "6beffae9e7e2d336d04c001812119383"
-application_url = "https://accessed-fighters-val-tribe.trycloudflare.com"
+application_url = "https://season-hawaii-impressed-luther.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ use_legacy_install_flow = true
 
 [auth]
 redirect_urls = [
-  "https://accessed-fighters-val-tribe.trycloudflare.com/auth/callback",
-  "https://accessed-fighters-val-tribe.trycloudflare.com/auth/shopify/callback",
-  "https://accessed-fighters-val-tribe.trycloudflare.com/api/auth/callback"
+  "https://season-hawaii-impressed-luther.trycloudflare.com/auth/callback",
+  "https://season-hawaii-impressed-luther.trycloudflare.com/auth/shopify/callback",
+  "https://season-hawaii-impressed-luther.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
