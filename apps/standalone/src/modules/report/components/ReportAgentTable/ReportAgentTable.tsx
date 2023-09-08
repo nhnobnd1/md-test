@@ -58,6 +58,7 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
       title: t("common:reporting.agent_name"),
       dataIndex: "agentFirstName",
       width: "30%",
+      ellipsis: true,
       sorter: {
         compare: (a: any, b: any) => {
           return a.agentFirstName - b.agentFirstName;
@@ -71,6 +72,7 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
       title: t("common:reporting.email"),
       dataIndex: "agentEmail",
       width: "30%",
+      ellipsis: true,
       sorter: {
         compare: (a: any, b: any) => {
           return a.agentEmail - b.agentEmail;
@@ -80,7 +82,8 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
     {
       title: t("common:reporting.ticket_assigned"),
       dataIndex: "ticketAssigned",
-      width: "20%",
+      width: "15%",
+
       sorter: {
         compare: (a: any, b: any) => {
           return a.ticketAssigned - b.ticketAssigned;
@@ -95,7 +98,7 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
           return a.ticketClosed - b.ticketClosed;
         },
       },
-      width: "20%",
+      width: "15%",
     },
     {
       title: t("common:reporting.percentage_resolved"),
@@ -105,7 +108,7 @@ export const ReportAgentTable = ({ rangeTime }: ReportAgentTableProps) => {
           return a.percentage - b.percentage;
         },
       },
-      width: "20%",
+      width: "30%",
     },
   ];
   const onChangeTable = useCallback(

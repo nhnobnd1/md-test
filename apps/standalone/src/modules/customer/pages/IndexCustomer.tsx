@@ -142,13 +142,14 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
       title: t("common:customers.name"),
       dataIndex: "name",
       width: "30%",
+      ellipsis: true,
       sorter: {
         compare: (a: any, b: any) => a.lastName - b.lastName,
       },
 
       render: (_: string, record: Customer) => (
         <Link
-          className="cursor-pointer fit-content text-black hover-text max-width-column-350"
+          className="cursor-pointer fit-content text-black hover-text "
           to={`/customers/detail?customer=${record?._id}`}
         >{`${record.firstName} ${record.lastName}`}</Link>
       ),
@@ -156,6 +157,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
     {
       title: t("common:customers.email_address"),
       dataIndex: "email",
+      ellipsis: true,
       sorter: {
         compare: (a: any, b: any) => {
           return a.email - b.email;
@@ -163,7 +165,7 @@ const CustomerIndexPage: PageComponent<CustomerIndexPageProps> = () => {
       },
       width: "30%",
       render: (_: string, record: Customer) => (
-        <span className="max-width-column-350">{record?.email}</span>
+        <span className="">{record?.email}</span>
       ),
     },
     {
