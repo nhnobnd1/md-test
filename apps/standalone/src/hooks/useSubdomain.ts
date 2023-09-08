@@ -5,7 +5,7 @@ export function useSubdomain() {
   const [subDomain, setSubDomain] = useState<string | undefined>();
 
   const getSubDomain = useCallback(() => {
-    const domain = window.location.hostname;
+    const domain = "truong-0001";
     if (import.meta.env.MODE === "development") {
       if (domain.includes(".moosedesk.net")) {
         return domain.replace(".moosedesk.net", "");
