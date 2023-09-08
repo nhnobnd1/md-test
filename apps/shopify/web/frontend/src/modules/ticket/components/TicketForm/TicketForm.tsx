@@ -10,8 +10,8 @@ import {
   AgentRepository,
   Customer,
   EmailIntegration,
-  TicketRepository,
   priorityOptions,
+  TicketRepository,
 } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import { Button, Divider, TextField } from "@shopify/polaris";
@@ -30,6 +30,7 @@ import { TextEditorTicket } from "src/components/TextEditorTicket";
 import useDeepEffect from "src/hooks/useDeepEffect";
 import { CustomModal } from "src/modules/customers/component/Modal";
 import BoxSelectCustomer from "src/modules/ticket/components/BoxSelectCustomer/BoxSelectCustomer";
+import ResultShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ResultShopifySearch";
 import { TagSelect } from "src/modules/ticket/components/TicketForm/TagSelect";
 import {
   getListCustomerApi,
@@ -393,6 +394,14 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
       keyEvent.preventDefault();
     }
   }, []);
+  const getCustomerId = useCallback(() => {
+    const email = toEmail;
+    if (!email) return "";
+    const customerSelected: Customer | undefined = dataCustomers?.find(
+      (customer: Customer) => customer.email === email
+    );
+    return customerSelected?._id || "";
+  }, [toEmail, dataCustomers]);
   return (
     <Form
       {...props}
@@ -544,6 +553,16 @@ export const TicketForm = ({ ...props }: TicketFormProps) => {
           <div className="my-4">
             <Divider />
           </div>
+          {/* {isMobile ? (
+            <DrawerShopifySearch
+              visible={visible}
+              onClose={() => setVisible(false)}
+            />
+          ) : ( */}
+
+          <ResultShopifySearch email={toEmail} id={getCustomerId()} />
+
+          {/* )} */}
         </div>
       </div>
       <CustomModal
