@@ -21,3 +21,6 @@ api_version = "2022-10"
 
 [pos]
 embedded = false
+
+[build]
+dev_store_url = "md-dev-vuong-01.myshopify.com"
