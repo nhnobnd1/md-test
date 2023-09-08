@@ -2,7 +2,7 @@
 
 name = "nam999"
 client_id = "1daf15909ca639111b7358c7c37e6660"
-application_url = "https://tennessee-study-rapid-hostel.trycloudflare.com"
+application_url = "https://positions-arrow-enzyme-gift.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ use_legacy_install_flow = true
 
 [auth]
 redirect_urls = [
-  "https://tennessee-study-rapid-hostel.trycloudflare.com/auth/callback",
-  "https://tennessee-study-rapid-hostel.trycloudflare.com/auth/shopify/callback",
-  "https://tennessee-study-rapid-hostel.trycloudflare.com/api/auth/callback"
+  "https://positions-arrow-enzyme-gift.trycloudflare.com/auth/callback",
+  "https://positions-arrow-enzyme-gift.trycloudflare.com/auth/shopify/callback",
+  "https://positions-arrow-enzyme-gift.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

@@ -339,6 +339,9 @@ const DetailTicket = () => {
               show(t("messages:success.update_ticket"));
               ratingState.changeFetchStatistic(false);
               queryClient.invalidateQueries("getStatisticTicket");
+              queryClient.invalidateQueries(["getTicket", id]);
+
+              // queryClient.setQueryData(["getTicket", id], data.data);
             }
           }),
           catchError((err) => {
@@ -519,10 +522,9 @@ const DetailTicket = () => {
   }, [enableCC, emailIntegrationOptions]);
 
   const disabled = useMemo(() => {
-    if (formRef.current?.values.status === StatusTicket.RESOLVED) return true;
+    if (ticket?.status === StatusTicket.RESOLVED) return true;
     return false;
-  }, [formRef.current?.values.status]);
-
+  }, [ticket?.status]);
   const customersOptions = useMemo(() => {
     if (!dataCustomers) return [];
     return dataCustomers.map((item) => {
@@ -613,19 +615,19 @@ const DetailTicket = () => {
 
     postReplyApi(dataPost);
 
-    updateTicketApi(
-      {
-        priority: values.priority,
-        status: closeTicket ? StatusTicket.RESOLVED : values.status,
-        tags: values.tags,
-        agentObjectId: values.assignee
-          ? values.assignee.split(",")[0]
-          : undefined,
-        agentEmail: values.assignee ? values.assignee.split(",")[1] : undefined,
-        ids: [ticket?._id as string],
-      },
-      true
-    );
+    // updateTicketApi(
+    //   {
+    //     priority: values.priority,
+    //     status: closeTicket ? StatusTicket.RESOLVED : values.status,
+    //     tags: values.tags,
+    //     agentObjectId: values.assignee
+    //       ? values.assignee.split(",")[0]
+    //       : undefined,
+    //     agentEmail: values.assignee ? values.assignee.split(",")[1] : undefined,
+    //     ids: [ticket?._id as string],
+    //   },
+    //   true
+    // );
     setFiles([]);
     setFileForward([]);
     formRef.current?.setFieldValue("content", "");
@@ -995,10 +997,7 @@ Hit Send to see what your message will look like
                         files={files}
                         setFiles={setFiles}
                         formRef={formRef}
-                        disabled={
-                          formRef.current?.values.status ===
-                          StatusTicket.RESOLVED
-                        }
+                        disabled={disabled}
                         setIsChanged={setIsChanged}
                         setLoadingButton={setLoadingButton}
                         init={{
@@ -1045,8 +1044,7 @@ Hit Send to see what your message will look like
                     </FormItem>
 
                     <div className="flex justify-end absolute right-2 bottom-[5px]">
-                      {formRef.current?.values.status ===
-                      StatusTicket.RESOLVED ? (
+                      {disabled ? (
                         <>
                           <Button
                             icon={<BackIcon fontSize={14} />}

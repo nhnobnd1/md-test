@@ -426,6 +426,7 @@ const DetailTicketFormBeta = () => {
             stopLoading();
             message.success(t("messages:success.update_ticket"));
             queryClient.invalidateQueries("getStatisticTicket");
+            queryClient.invalidateQueries(["getTicket", id]);
           }
         }),
         catchError((err) => {
@@ -493,14 +494,14 @@ const DetailTicketFormBeta = () => {
     };
     postReplyApi(dataPost);
 
-    updateTicketApi({
-      priority: values.priority,
-      status: values.status,
-      tags: values.tags,
-      agentObjectId: agentSelected ? agentSelected?._id : "",
-      agentEmail: agentSelected ? agentSelected?.email : "",
-      ids: [ticket?._id as string],
-    });
+    // updateTicketApi({
+    //   priority: values.priority,
+    //   status: values.status,
+    //   tags: values.tags,
+    //   agentObjectId: agentSelected ? agentSelected?._id : "",
+    //   agentEmail: agentSelected ? agentSelected?.email : "",
+    //   ids: [ticket?._id as string],
+    // });
     setFiles([]);
     setFileForward([]);
     form.setFieldValue("content", "");
@@ -611,6 +612,11 @@ const DetailTicketFormBeta = () => {
     }
   }, [chatItemForward, clickForward]);
 
+  const disabled = useMemo(() => {
+    if (ticket?.status === StatusTicket.RESOLVED) return true;
+    return false;
+  }, [ticket?.status]);
+
   const isSampleEmail = useMemo(() => {
     if (ticket?.meta?.isSample && dataConversations?.length === 0) {
       return true;
@@ -713,10 +719,7 @@ Hit Send to see what your message will look like
         </Header>
         <Form
           colon={false}
-          disabled={
-            form.getFieldValue("status") === StatusTicket.RESOLVED ||
-            loadingButton
-          }
+          disabled={disabled || loadingButton}
           form={form}
           layout="horizontal"
           initialValues={initialValues}
@@ -1019,9 +1022,7 @@ Hit Send to see what your message will look like
                     <TextEditorTicketBeta
                       form={form}
                       files={files}
-                      disabled={
-                        form.getFieldValue("status") === StatusTicket.RESOLVED
-                      }
+                      disabled={disabled}
                       setFiles={setFiles}
                       setIsChanged={setIsChanged}
                       setLoadingButton={setLoadingButton}
@@ -1067,7 +1068,7 @@ Hit Send to see what your message will look like
                   </Form.Item>
                 </div>
                 <div className={`flex justify-end absolute right-5 bottom-2`}>
-                  {form.getFieldValue("status") === StatusTicket.RESOLVED ? (
+                  {disabled ? (
                     <>
                       <MDButton
                         icon={

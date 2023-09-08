@@ -128,6 +128,7 @@ const BoxSelectAssignee = (props: BoxSelectAutoReplyProps) => {
           labelHidden={!props.label}
           clearButton
           onClearButtonClick={() => {
+            setSearch("");
             props.onChange && props.onChange(null);
           }}
           value={inputValue}
