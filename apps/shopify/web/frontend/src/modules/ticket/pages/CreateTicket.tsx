@@ -1,14 +1,7 @@
-import {
-  MediaScreen,
-  useMount,
-  useNavigate,
-  useToggle,
-  useUnMount,
-} from "@moose-desk/core";
+import { useMount, useNavigate, useToggle } from "@moose-desk/core";
 import { Priority } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
-  Button,
   Layout,
   LegacyCard,
   Page,
@@ -17,26 +10,16 @@ import {
   SkeletonPage,
   TextContainer,
 } from "@shopify/polaris";
-import { PriceLookupMinor } from "@shopify/polaris-icons";
 import { FormikProps } from "formik";
 import { useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
-import useSaveDataGlobal from "src/hooks/useSaveDataGlobal";
-import useScreenType from "src/hooks/useScreenType";
-import useToggleGlobal from "src/hooks/useToggleGlobal";
-import ContentShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ContentShopifySearch";
 import { TicketForm } from "src/modules/ticket/components/TicketForm";
 import { getListEmailIntegration } from "src/modules/ticket/helper/api";
-import styles from "./style.module.scss";
 interface CreateTicketProps {}
 
 const CreateTicket = (props: CreateTicketProps) => {
   const { toggle: updateForm } = useToggle();
-  const { visible, setVisible } = useToggleGlobal();
-  const { dataSaved, setDataSaved }: any = useSaveDataGlobal();
-  const [screenType, screenWidth] = useScreenType();
-  const isMobileOrTablet = Boolean(screenWidth <= MediaScreen.LG);
   const formRef = useRef<FormikProps<any>>(null);
   // const [primaryEmail, setPrimaryEmail] = useState<EmailIntegration>();
 
@@ -80,14 +63,6 @@ const CreateTicket = (props: CreateTicketProps) => {
   useMount(() => {
     updateForm();
   });
-  useUnMount(() => {
-    setVisible(false);
-    setDataSaved(undefined);
-  });
-
-  const handleToggleSearch = () => {
-    setVisible(!visible);
-  };
 
   return (
     <>
@@ -113,8 +88,6 @@ const CreateTicket = (props: CreateTicketProps) => {
             </Layout>
           </Page>
         </>
-      ) : isMobileOrTablet && visible ? (
-        <ContentShopifySearch />
       ) : (
         <Page
           breadcrumbs={[
@@ -131,9 +104,6 @@ const CreateTicket = (props: CreateTicketProps) => {
         >
           <div className="form-ticket">
             <div className="bg-white p-4 h-full rounded-lg">
-              <div className={styles.wrapSearchToggle}>
-                <Button icon={PriceLookupMinor} onClick={handleToggleSearch} />
-              </div>
               {primaryEmail ? (
                 <TicketForm
                   innerRef={formRef}
@@ -145,9 +115,6 @@ const CreateTicket = (props: CreateTicketProps) => {
               ) : (
                 <></>
               )}
-            </div>
-            <div className={visible ? styles.wrapSearch : "d-none"}>
-              <ContentShopifySearch />
             </div>
           </div>
         </Page>
