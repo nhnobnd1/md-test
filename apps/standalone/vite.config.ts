@@ -36,13 +36,13 @@ export default defineConfig(({ mode }) => ({
   esbuild: {
     drop: mode === "production" ? ["console", "debugger"] : [],
   },
-  build: {
-    rollupOptions: {
-      output: {
-        entryFileNames: "index.js", // Set the desired filename
-        chunkFileNames: "chunk-[name].js", // Set the desired chunk filename
-        assetFileNames: "assets/[name].[ext]", // Set the desired asset filename
-      },
-    },
-  },
+  // build: {
+  //   rollupOptions: {
+  //     output: {
+  //       entryFileNames: "index.js", // Set the desired filename
+  //       chunkFileNames: "chunk-[name].js", // Set the desired chunk filename
+  //       assetFileNames: "assets/[name].[ext]", // Set the desired asset filename
+  //     },
+  //   },
+  // },
 }));
