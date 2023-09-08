@@ -34,37 +34,6 @@ export const DetailOrderCustomer = memo(({ dataOrder }: IProps) => {
   const countPrice = (item: any) => {
     return item?.quantity * Number(item?.price);
   };
-  const LIST_OVERVIEW = [
-    {
-      title: "Order #",
-      value: dataOrder?.order_number,
-      style: "text-underlined",
-    },
-    {
-      title: "Order Status",
-      value: `${dataOrder?.financial_status || "refund"}, ${
-        dataOrder?.fulfillment_status || "unfulfilled"
-      }`,
-      style: "text-bold",
-    },
-    {
-      title: "Date",
-      value: formatTimeDDMMYY(dataOrder?.created_at),
-    },
-    {
-      title: "Tax",
-      value: `${dataOrder?.current_total_tax || 0}${unit}`,
-    },
-    {
-      title: "Shipping",
-      value: `${countShippingPrice()}${unit}`,
-    },
-    {
-      title: "Total",
-      value: `${dataOrder?.current_total_price || 0}${unit}`,
-      style: "text-bold",
-    },
-  ];
 
   const memoDataSource = useMemo(() => {
     const listRefundsItem = dataOrder?.refunds;
@@ -208,7 +177,7 @@ export const DetailOrderCustomer = memo(({ dataOrder }: IProps) => {
                   "text-line-through": item?.isRefund,
                 })}
               >
-                {item?.quantity}x{item?.name}
+                {item?.quantity}x {item?.name}
                 {item?.sku && (
                   <div
                     className={classNames(styles.orderName, {
@@ -224,8 +193,7 @@ export const DetailOrderCustomer = memo(({ dataOrder }: IProps) => {
                   "text-line-through": item?.isRefund,
                 })}
               >
-                {countPrice(item)}
-                {unit}
+                {countPrice(item)} {unit}
               </div>
             </div>
           ))}
@@ -234,22 +202,19 @@ export const DetailOrderCustomer = memo(({ dataOrder }: IProps) => {
           <div className={styles.tax}>
             <span>Tax:</span>
             <p>
-              {dataOrder?.current_total_tax || 0}
-              {unit}
+              {dataOrder?.current_total_tax || 0} {unit}
             </p>
           </div>
           <div className={styles.shipping}>
             <span>Shipping:</span>
             <p>
-              {countShippingPrice()}
-              {unit}
+              {countShippingPrice()} {unit}
             </p>
           </div>
           <div className={styles.total}>
             <span>Total:</span>
             <p>
-              {dataOrder?.current_total_price || 0}
-              {unit}
+              {dataOrder?.current_total_price || 0} {unit}
             </p>
           </div>
         </div>
@@ -268,8 +233,7 @@ export const DetailOrderCustomer = memo(({ dataOrder }: IProps) => {
               <div className={styles.contentBlock}>
                 <span className={styles.labels}>Refunded:</span>
                 <p className={styles.number}>
-                  {memoDetailRefund?.totalRefund}
-                  {unit}
+                  {memoDetailRefund?.totalRefund} {unit}
                 </p>
               </div>
               <div className={styles.contentBlock}>
