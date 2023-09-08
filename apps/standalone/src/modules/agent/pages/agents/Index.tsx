@@ -156,25 +156,7 @@ const AgentsIndex = () => {
       />
     );
   };
-  // const renderBetaAction = (data: Agent) => {
-  //   if (
-  //     hiddenEditAgent(
-  //       isOwner,
-  //       userId === data?._id,
-  //       data?.isOwner,
-  //       isAdmin,
-  //       isLead,
-  //       isAgent,
-  //       data?.role
-  //     )
-  //   )
-  //     return null;
-  //   return (
-  //     <Link to={`/agents?agent=${data?._id}`}>
-  //       Detail<span className="md-beta-tag">Beta</span>
-  //     </Link>
-  //   );
-  // };
+
   return (
     <div>
       <PopupAgent
@@ -218,13 +200,15 @@ const AgentsIndex = () => {
             dataSource={agents}
             loading={loadingList}
             onChange={onChangeTable}
+            scroll={{ x: 1024 }}
           >
             <Table.Column
+              ellipsis
               key="lastName"
               title="Agent Name"
               render={(_, record: Agent) => (
                 <span
-                  className={`cursor-pointer hover:underline hover:text-blue-500 max-width-column max-width-column`}
+                  className={`cursor-pointer hover:underline hover:text-blue-500`}
                   onClick={() => {
                     navigate(`/agents?agent=${record?._id}`);
                   }}
@@ -240,6 +224,7 @@ const AgentsIndex = () => {
               width="25%"
             />
             <Table.Column
+              ellipsis
               key="email"
               title="Email"
               dataIndex="email"
@@ -248,7 +233,7 @@ const AgentsIndex = () => {
               }}
               width="25%"
               render={(_, record: Agent) => (
-                <span className="max-width-column">{record.email}</span>
+                <span className="">{record.email}</span>
               )}
             ></Table.Column>
             <Table.Column
