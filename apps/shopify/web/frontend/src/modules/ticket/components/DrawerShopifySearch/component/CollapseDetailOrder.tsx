@@ -28,8 +28,7 @@ const CollapseDetailOrder = ({ order, uniqueIndex }: IProps) => {
             {order?.name}
           </div>
           <p className={styles.price}>
-            {order?.total}
-            {order?.currency}
+            {order?.total} {order?.currency}
           </p>
         </div>
       </div>

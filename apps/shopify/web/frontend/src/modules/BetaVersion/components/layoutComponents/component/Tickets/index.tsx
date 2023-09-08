@@ -1,35 +1,17 @@
-import {
-  createdDatetimeFormat,
-  generatePath,
-  PageComponent,
-  priorityToTagShopify,
-  typeChannelTicket,
-  upperCaseFirst,
-  useNavigate,
-} from "@moose-desk/core";
-import { StatusTicket } from "@moose-desk/repo";
-import {
-  Badge,
-  EmptySearchResult,
-  IndexTable,
-  LegacyCard,
-  Loading,
-  Text,
-} from "@shopify/polaris";
+import { PageComponent, useNavigate } from "@moose-desk/core";
+import { Loading } from "@shopify/polaris";
 
 import { useToast } from "@shopify/app-bridge-react";
 import { useEffect, useMemo, useState } from "react";
-import { Pagination } from "src/components/Pagination";
-import TicketRoutePaths from "src/modules/ticket/routes/paths";
 import styles from "./style.module.scss";
 // import { ScreenType } from "@moose-desk/repo/";
 import { useTranslation } from "react-i18next";
-import useGlobalData from "src/hooks/useGlobalData";
-import { useSubdomain } from "src/hooks/useSubdomain";
 import { getListTicketApi } from "src/modules/ticket/helper/api";
 
+import { TicketTable } from "@moose-beta/components/layoutComponents/component/Tickets/TicketTable";
 import { useQuery } from "react-query";
 import { Search } from "src/components/Search/Search";
+import { SkeletonTable } from "src/components/Skelaton/SkeletonTable";
 
 interface TicketIndexPageProps {
   agentId: string;
@@ -48,10 +30,6 @@ const Tickets: PageComponent<TicketIndexPageProps> = ({
   const navigate = useNavigate();
   const { show } = useToast();
   const { t } = useTranslation();
-  const [direction, setDirection] = useState<"descending" | "ascending">(
-    "descending"
-  );
-  const [indexSort, setIndexSort] = useState<number | undefined>(undefined);
   const [filterData, setFilterData] = useState<any>({
     limit: 10,
     page: 1,
@@ -64,12 +42,17 @@ const Tickets: PageComponent<TicketIndexPageProps> = ({
 
     setFilterData((pre: any) => ({ ...pre, agentObjectId: agentId }));
   }, [agentId]);
-  const { data: dataTicket, isLoading: loadingFilter } = useQuery({
+  const {
+    data: dataTicket,
+    refetch: refetchListTicket,
+    isLoading: loadingFilter,
+  } = useQuery({
     queryKey: ["getListTickets", filterData],
     queryFn: () => getListTicketApi(filterData),
     onError: () => {
       show(t("messages:error.get_ticket"), { isError: true });
     },
+    keepPreviousData: true,
   });
   const tickets = useMemo(() => {
     if (!filterData.agentObjectId) return [];
@@ -81,117 +64,14 @@ const Tickets: PageComponent<TicketIndexPageProps> = ({
     if (dataTicket?.metadata) return dataTicket.metadata;
     return undefined;
   }, [dataTicket]);
-  const { subDomain } = useSubdomain();
-  const { timezone }: any = useGlobalData(false, subDomain || "");
-
-  const listSort = [
-    "ticketId",
-    "subject",
-    "customer",
-    "createdViaWidget",
-    "priority",
-    "updatedTimestamp",
-  ];
-
-  const handleSort = (
-    headingIndex: number,
-    direction: "descending" | "ascending"
-  ) => {
-    setIndexSort(Number(headingIndex));
-    setDirection(direction);
-    setFilterData((pre: any) => ({
-      ...pre,
-      sortBy: listSort[Number(headingIndex)],
-      sortOrder: direction === "ascending" ? 1 : -1,
-    }));
-  };
-
-  const rowMarkup = tickets.map(
-    (
-      {
-        _id,
-        ticketId,
-        subject,
-        priority,
-        updatedDatetime,
-        tags,
-        incoming,
-        createdViaWidget,
-        fromEmail,
-        toEmails,
-        status,
-      },
-      index
-    ) => (
-      <IndexTable.Row
-        id={_id}
-        key={ticketId}
-        position={index}
-        onClick={() => {}}
-      >
-        <IndexTable.Cell>
-          <div
-            className="hover:underline"
-            onClick={() => {
-              navigate(generatePath(TicketRoutePaths.Detail, { id: _id }));
-            }}
-          >
-            <Text
-              variant="bodyMd"
-              fontWeight={status === StatusTicket.NEW ? "bold" : "medium"}
-              as="span"
-            >
-              {ticketId}
-            </Text>
-          </div>
-        </IndexTable.Cell>
-        <IndexTable.Cell>
-          {
-            <div
-              className="hover:underline subject max-w-lg"
-              onClick={() => {
-                navigate(generatePath(TicketRoutePaths.Detail, { id: _id }));
-              }}
-            >
-              <Text
-                variant="bodyMd"
-                fontWeight={status === StatusTicket.NEW ? "bold" : "medium"}
-                as="span"
-              >
-                {subject}
-              </Text>
-            </div>
-          }
-        </IndexTable.Cell>
-        <IndexTable.Cell>
-          {createdViaWidget || incoming ? (
-            <span className="subject max-w-lg">{`${
-              fromEmail.name ? fromEmail.name : fromEmail.email
-            }`}</span>
-          ) : (
-            <span className="subject max-w-lg">{`${
-              toEmails[0]?.name ? toEmails[0]?.name : toEmails[0]?.email
-            }`}</span>
-          )}
-        </IndexTable.Cell>
-        <IndexTable.Cell>
-          <Badge status={typeChannelTicket(createdViaWidget)}>
-            {createdViaWidget ? "Via widget" : "Email"}
-          </Badge>
-        </IndexTable.Cell>
-        <IndexTable.Cell>
-          <Badge status={priorityToTagShopify(priority)}>
-            {upperCaseFirst(priority)}
-          </Badge>
-        </IndexTable.Cell>
-        <IndexTable.Cell>
-          {createdDatetimeFormat(updatedDatetime, timezone)}
-        </IndexTable.Cell>
-      </IndexTable.Row>
-    )
-  );
   const handleSearch = (value: string) => {
     setFilterData((pre: any) => ({ ...pre, query: value }));
+  };
+  const handleChangePage = (page: number) => {
+    setFilterData((pre: any) => ({ ...pre, page }));
+  };
+  const handleSort = (sortBy: string, sortOrder: string) => {
+    setFilterData((pre: any) => ({ ...pre, sortBy, sortOrder }));
   };
   return (
     <>
@@ -199,59 +79,19 @@ const Tickets: PageComponent<TicketIndexPageProps> = ({
       <div className={styles.searchWrap}>
         <Search onTypeSearch={handleSearch} />
       </div>
-      <LegacyCard>
-        <IndexTable
-          resourceName={{ singular: "ticket", plural: "tickets" }}
-          itemCount={tickets?.length}
-          selectable={false}
-          loading={loadingFilter}
-          emptyState={
-            <EmptySearchResult
-              title={
-                "Sorry! There is no records matched with your search criteria"
-              }
-              description={"Try changing the filters or search term"}
-              withIllustration
-            />
-          }
-          headings={[
-            { title: "Ticket ID" },
-            { title: "Ticket Title" },
-            { title: "Customer" },
-            { title: "Channel" },
-            { title: "Priority" },
-            { title: "Last Update" },
-          ]}
-          sortable={[true, true, true, true, true, true]}
-          sortDirection={direction}
-          sortColumnIndex={indexSort}
+      {loadingFilter ? (
+        <SkeletonTable columnsCount={7} rowsCount={10} />
+      ) : (
+        <TicketTable
+          data={filterData.agentObjectId ? tickets : []}
+          meta={filterData.agentObjectId ? meta : undefined}
+          limit={filterData.limit}
+          onRefetch={() => refetchListTicket()}
+          onChangePagination={handleChangePage}
           onSort={handleSort}
-        >
-          {rowMarkup}
-        </IndexTable>
-        <div>
-          {meta?.totalCount ? (
-            <div className={styles.wrapPagination}>
-              {filterData.page && filterData.limit && meta?.totalCount && (
-                <>
-                  <div className="col-span-3 flex justify-center">
-                    <Pagination
-                      total={meta.totalCount}
-                      pageSize={filterData.limit ?? 0}
-                      currentPage={meta.page}
-                      onChangePage={(page) =>
-                        setFilterData((val: any) => {
-                          return { ...val, page };
-                        })
-                      }
-                    />
-                  </div>
-                </>
-              )}
-            </div>
-          ) : null}
-        </div>
-      </LegacyCard>
+          name="ticket"
+        />
+      )}
     </>
   );
 };

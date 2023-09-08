@@ -152,6 +152,15 @@ body {
   text-overflow: ellipsis;
   white-space: normal !important;
 }
+.subject-350 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1 !important;
+  width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal !important;
+}
 .ticket-statistic {
   overflow-x: auto;
   overflow-y: hidden;
