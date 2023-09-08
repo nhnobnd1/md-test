@@ -13,12 +13,12 @@ import {
   Conversation,
   CreateReplyTicketRequest,
   Priority,
+  priorityOptions,
   ScreenType,
+  statusOptions,
   StatusTicket,
   TicketRepository,
   UpdateTicket,
-  priorityOptions,
-  statusOptions,
 } from "@moose-desk/repo";
 import { useToast } from "@shopify/app-bridge-react";
 import {
@@ -65,6 +65,7 @@ import { useDebounce } from "@moose-desk/core/hooks/useDebounce";
 import { uniqBy } from "lodash-es";
 import BoxSelectAssignee from "src/components/Modal/ModalFilter/BoxSelectAssignee";
 import BoxSelectCustomer from "src/modules/ticket/components/BoxSelectCustomer/BoxSelectCustomer";
+import ResultShopifySearch from "src/modules/ticket/components/DrawerShopifySearch/ResultShopifySearch";
 import { TagSelect } from "src/modules/ticket/components/TicketForm/TagSelect";
 import {
   emailIntegrationApi,
@@ -307,7 +308,7 @@ const DetailTicket = () => {
     }
     return conversationMapping;
   }, [ticket, conversationList, timezone, customer]);
-
+  console.log(listChat, "listChat<<<<<");
   const { run: postReplyApi } = useJob((payload: CreateReplyTicketRequest) => {
     return TicketRepository()
       .postReply(payload)
@@ -769,7 +770,14 @@ Hit Send to see what your message will look like
         : contentCreate
     );
   }, [selectedFrom, emailIntegrationOptions, isForward]);
-
+  // const getCustomerId = useCallback(() => {
+  //   const email = toEmail;
+  //   if (!email) return "";
+  //   const customerSelected: Customer | undefined = dataCustomers?.find(
+  //     (customer: Customer) => customer.email === email
+  //   );
+  //   return customerSelected?._id || "";
+  // }, [toEmail, dataCustomers]);
   return (
     <div className="relative h-full">
       <Page
@@ -851,7 +859,6 @@ Hit Send to see what your message will look like
                   ) : (
                     <SkeletonBodyText lines={4} />
                   )}
-
                   <div className="flex justify-end mb-3 mt-3">
                     <Button
                       disabled={disabled}
@@ -862,8 +869,11 @@ Hit Send to see what your message will look like
                       Save
                     </Button>
                   </div>
+                  <ResultShopifySearch
+                    email={"vuong.cu@moosedesk.com"}
+                    id={"6905378079013"}
+                  />
                 </div>
-
                 <div className="flex-1 px-4 overflow-auto h-full flex gap-2 flex-col justify-between py-1 ">
                   <div
                     onScroll={() => {
