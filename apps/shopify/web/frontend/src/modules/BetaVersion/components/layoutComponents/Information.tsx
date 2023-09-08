@@ -131,6 +131,13 @@ const Information = ({
     uploading || customerUpdating || profileUpdating || agentUpdating;
   const isDisabledForm =
     !(profile?.isActive && profile?.emailConfirmed) && layout === "agent";
+  const isShowDelete =
+    (layout === "agent" &&
+      profile?.isActive &&
+      profile?.emailConfirmed &&
+      avatar) ||
+    (layout !== "agent" && avatar);
+
   return (
     <>
       {changed && (
@@ -160,7 +167,7 @@ const Information = ({
               )}
 
               <div className={styles.wrapActionAvatar}>
-                {profile?.isActive && profile?.emailConfirmed && avatar && (
+                {isShowDelete && (
                   <div
                     className={styles.removeAvatar}
                     onClick={handleRemoveAvatar}
