@@ -79,6 +79,9 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
   const updateContent = useFormCreateTicket((state) => state.updateState);
   const [fromEmail, setFromEmail] = useState(primaryEmail);
   const [toEmail, setToEmail] = useState({ value: "", id: "" });
+
+  const debounceToEmail: string = useDebounce(toEmail.value, 200);
+
   const [form] = Form.useForm();
   const [files, setFiles] = useState<any>([]);
   const [loadingButton, setLoadingButton] = useState(false);
@@ -565,7 +568,7 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
           style={{
             borderRadius: 0,
           }}
-          className="w-[350px] scroll-y"
+          className="w-[320px] scroll-y"
           bodyStyle={{ padding: 16 }}
         >
           <Form.Item
@@ -610,7 +613,7 @@ export const TicketFormBeta = ({ primaryEmail, ...props }: TicketFormProps) => {
           </Form.Item>
 
           <div>
-            <ResultShopifySearch email={toEmail?.value} id={toEmail?.id} />
+            <ResultShopifySearch email={debounceToEmail} id={toEmail?.id} />
           </div>
           {/* <Divider /> */}
         </Card>
